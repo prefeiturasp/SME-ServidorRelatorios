@@ -10,7 +10,7 @@ namespace SME.SR.JRSClient
         public static IServiceCollection AddJasperClient(this IServiceCollection services, string urlBase)
         {
 
-            services.AddScoped<IInformacaoServidorService, InformacaoServidorService>();
+            services.AddTransient<IInformacaoServidorService, InformacaoServidorService>();
             services.AddSingleton<Configuracoes>(new Configuracoes() { UrlBase = urlBase });
 
             return services;
