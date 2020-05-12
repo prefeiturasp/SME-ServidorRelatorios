@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using SME.SR.JRSClient;
 namespace SME.SR.Api
 {
     public class Startup
@@ -25,6 +25,7 @@ namespace SME.SR.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddJasperClient("http://127.0.0.1:8080");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -33,6 +34,8 @@ namespace SME.SR.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>
