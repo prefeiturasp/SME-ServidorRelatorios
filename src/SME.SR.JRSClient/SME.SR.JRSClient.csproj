@@ -1,7 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Refit" Version="5.1.67" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SME.SR.Infra\SME.SR.Infra.csproj" />
+  </ItemGroup>
 
 </Project>
