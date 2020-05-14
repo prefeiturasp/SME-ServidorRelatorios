@@ -1,14 +1,13 @@
-﻿version: '3'
+﻿version: "3"
 services:
-
-##########################################################
-### JRS - Jasper Reports Server ##########################
-##########################################################
+  ##########################################################
+  ### JRS - Jasper Reports Server ##########################
+  ##########################################################
   mariadb:
-    image: 'bitnami/mariadb:10.3'
+    image: "bitnami/mariadb:10.3"
     environment:
-      - MARIADB_USER=jasperreports
-      - MARIADB_DATABASE=jasperreports
+      - MARIADB_USER=bn_jasperreports
+      - MARIADB_DATABASE=bitnami_jasperreports
       - ALLOW_EMPTY_PASSWORD=yes
     #volumes:
     #  - 'mariadb_data:/volumes/mariadb:Z'
@@ -18,8 +17,8 @@ services:
     environment:
       - MARIADB_HOST=mariadb
       - MARIADB_PORT_NUMBER=3306
-      - JASPERREPORTS_DATABASE_USER=jasperreports
-      - JASPERREPORTS_DATABASE_NAME=jasperreports
+      - JASPERREPORTS_DATABASE_USER=bn_jasperreports
+      - JASPERREPORTS_DATABASE_NAME=bitnami_jasperreports
       - ALLOW_EMPTY_PASSWORD=yes
     image: bitnami/jasperreports:7.2.0
     #volumes:

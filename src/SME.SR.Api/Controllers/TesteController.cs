@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SME.SR.JRSClient.Interfaces;
-using SME.SR.JRSClient.Requisicao;
+
 
 namespace SME.SR.Api.Controllers
 {
@@ -12,6 +12,11 @@ namespace SME.SR.Api.Controllers
         public async Task<IActionResult> Get([FromServices] IInformacaoServidorService informacaoServidorRequisicao)
         {
             return Ok(await informacaoServidorRequisicao.Obter());
+        }
+        [HttpGet("status")]
+        public async Task<IActionResult> ReportStatus([FromServices] ILoginService loginService)
+        {
+            return Ok(await loginService.ObterReportStatus());
         }
     }
 }
