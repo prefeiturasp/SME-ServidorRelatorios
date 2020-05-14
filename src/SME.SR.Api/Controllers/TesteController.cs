@@ -13,10 +13,17 @@ namespace SME.SR.Api.Controllers
         {
             return Ok(await informacaoServidorRequisicao.Obter());
         }
+
         [HttpGet("status")]
         public async Task<IActionResult> ReportStatus([FromServices] ILoginService loginService)
         {
             return Ok(await loginService.ObterReportStatus());
+        }
+
+        [HttpGet("inputControll")]
+        public async Task<IActionResult> InputControll([FromServices] IControleEntradaService controleEntradaService)
+        {
+            return Ok(await controleEntradaService.ObterControlesEntrada("Nova_pasta/a", excludeState: false));
         }
     }
 }

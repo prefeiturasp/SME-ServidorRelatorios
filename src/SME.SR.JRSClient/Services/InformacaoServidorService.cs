@@ -6,18 +6,14 @@ using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Services
 {
-    public class InformacaoServidorService : IInformacaoServidorService
+    public class InformacaoServidorService : ServiceBase<IInfra>, IInformacaoServidorService
     {
-        private readonly Configuracoes configuracoes;
-
-        public InformacaoServidorService(Configuracoes configuracoes)
+        public InformacaoServidorService(Configuracoes configuracoes) : base(configuracoes)
         {
-            this.configuracoes = configuracoes ?? throw new System.ArgumentNullException(nameof(configuracoes));
         }
+
         public  async Task<InformacaoServidorRespostaDto> Obter()
         {
-            var restService = RestService.For<IInfra>(configuracoes.UrlBase);
-
             return await restService.GetInformacaoServidorAsync();            
         }        
     }
