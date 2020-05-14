@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SME.SR.Infra.Dtos
+namespace SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostExecucaoRelatorioAsync
 {
     public class ExecucaoRelatorioRequisicaoDto
     {
