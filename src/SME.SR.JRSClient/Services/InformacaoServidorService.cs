@@ -4,7 +4,7 @@ using SME.SR.JRSClient.Grupos;
 using SME.SR.JRSClient.Interfaces;
 using System.Threading.Tasks;
 
-namespace SME.SR.JRSClient.Requisicao
+namespace SME.SR.JRSClient.Services
 {
     public class InformacaoServidorService : IInformacaoServidorService
     {

@@ -9,5 +9,9 @@ namespace SME.SR.JRSClient.Grupos
         [Headers("Accept: application/json")]
         [Get("/jasperserver/rest_v2/serverInfo")]
         Task<InformacaoServidorRespostaDto> GetInformacaoServidorAsync();
+
+        [Headers("Accept: application/json")]
+        [Get("/jasperserver/rest_v2/login")]
+        Task<ApiResponse<string>> GetLoginAsync(string j_username, string j_password);
     }
 }
