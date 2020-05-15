@@ -29,6 +29,6 @@ namespace SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostExecucaoRelatorioAs
         public bool Paginas { get; set; }
 
         [JsonProperty("parameters")]
-        public ParametroDto Parametros { get; set; }
+        public ParametrosRelatorioDto Parametros { get; set; }
     }
 }
