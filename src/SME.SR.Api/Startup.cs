@@ -35,8 +35,6 @@ namespace SME.SR.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            
-
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
