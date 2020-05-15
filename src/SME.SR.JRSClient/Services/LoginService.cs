@@ -8,9 +8,9 @@ namespace SME.SR.JRSClient.Services
 {
     public class LoginService : ServiceBase, ILoginService
     {
-        public LoginService(Configuracoes configuracoes)  : base(configuracoes)
+        public LoginService(Configuracoes configuracoes) : base(configuracoes)
         {
-            
+
         }
         public async Task<string> ObterTokenAutenticacao(string login, string senha)
         {
@@ -25,17 +25,18 @@ namespace SME.SR.JRSClient.Services
                     var jSessionId = cookies.FirstOrDefault(a => a.Contains("JSESSIONID"));
                     if (!string.IsNullOrEmpty(jSessionId))
                         return jSessionId;
-                }                
+                }
             }
             return string.Empty;
         }
 
         public async Task<string> ObterReportStatus()
         {
-            var restService = RestService.For<IReports>(configuracoes.UrlBase);
+            var restService = RestService.For<IInfra>(configuracoes.UrlBase);
 
-            return await restService.GetStatusAsync(ObterCabecalhoAutenticacaoBasica());            
-            
+            return null;
+
+            //return await restService.GetStatusAsync(ObterCabecalhoAutenticacaoBasica());
         }
     }
 }
