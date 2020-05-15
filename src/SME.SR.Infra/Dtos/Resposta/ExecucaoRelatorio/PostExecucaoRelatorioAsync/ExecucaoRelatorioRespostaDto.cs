@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.PostExecucaoRelatorioAsync
+namespace SME.SR.Infra.Dtos.Resposta
 {
     public class ExecucaoRelatorioRespostaDto
     {
@@ -18,6 +18,6 @@ namespace SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.PostExecucaoRelatorioAsyn
         public string Status { get; set; }
 
         [JsonProperty("exports")]
-        public ExportacoesDto Exportacoes { get; set; }
+        public ExportacoesDto[] Exportacoes { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.GetDetalhesExecucaoRelatorio
+namespace SME.SR.Infra.Dtos.Resposta
 {
     public class DetalhesExecucaoRelatorioRespostaDto
     {
@@ -20,6 +20,6 @@ namespace SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.GetDetalhesExecucaoRelato
         public string RelatorioUri { get; set; }
 
         [JsonProperty("exports")]
-        public ExportacaoDto[] Exportacoes { get; set; }
+        public ExportacaoDetalhesDto[] Exportacoes { get; set; }
     }
 }

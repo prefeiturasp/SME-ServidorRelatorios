@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostExportacaoRelatorioAsync
+namespace SME.SR.Infra.Dtos.Requisicao
 {
     public class ExportacaoRelatorioRequisicaoDto
     {

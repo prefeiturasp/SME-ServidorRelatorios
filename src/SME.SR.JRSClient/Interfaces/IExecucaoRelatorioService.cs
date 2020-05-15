@@ -1,12 +1,5 @@
-﻿using SME.SR.Infra.Dtos;
-using SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.GetRelatoriosTarefasEmAndamento;
-using SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostExecucaoRelatorioAsync;
-using SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostExportacaoRelatorioAsync;
-using SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostModificarParametrosRelatorio;
-using SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.GetDetalhesExecucaoRelatorio;
-using SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.GetRelatoriosTarefasEmAndamento;
-using SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.PostExecucaoRelatorioAsync;
-using SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.PostExportacaoRelatorioAsync;
+﻿using SME.SR.Infra.Dtos.Requisicao;
+using SME.SR.Infra.Dtos.Resposta;
 using System;
 using System.Threading.Tasks;
 

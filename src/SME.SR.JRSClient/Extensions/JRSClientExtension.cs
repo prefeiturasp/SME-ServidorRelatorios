@@ -12,6 +12,7 @@ namespace SME.SR.JRSClient
 
             services.AddTransient<IInformacaoServidorService, InformacaoServidorService>();
             services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<IExecucaoRelatorioService, ExecucaoRelatorioService>();
 
             services.AddSingleton<Configuracoes>(new Configuracoes()
             {

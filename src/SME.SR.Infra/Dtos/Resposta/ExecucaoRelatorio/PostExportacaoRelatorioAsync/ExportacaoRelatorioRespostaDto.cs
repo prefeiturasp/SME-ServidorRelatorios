@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json;
-using SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.GetDetalhesExecucaoRelatorio;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.PostExportacaoRelatorioAsync
+namespace SME.SR.Infra.Dtos.Resposta
 {
     public class ExportacaoRelatorioRespostaDto
     {

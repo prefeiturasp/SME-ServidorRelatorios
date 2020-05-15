@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostExecucaoRelatorioAsync
+namespace SME.SR.Infra.Dtos.Requisicao
 {
     public class ExecucaoRelatorioRequisicaoDto
     {
@@ -11,7 +11,7 @@ namespace SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostExecucaoRelatorioAs
         public bool Async { get; set; }
 
         [JsonProperty("freshData")]
-        public bool DadosRecentes { get; set; }
+        public bool IgnorarCache { get; set; }
 
         [JsonProperty("saveDataSnapshot")]
         public bool SalvarSnapshot { get; set; }
@@ -23,10 +23,10 @@ namespace SME.SR.Infra.Dtos.Requisicao.ExecucaoRelatorio.PostExecucaoRelatorioAs
         public bool Interativo { get; set; }
 
         [JsonProperty("ignorePagination")]
-        public bool IgnorarPaginacao { get; set; }
+        public bool? IgnorarPaginacao { get; set; }
 
         [JsonProperty("pages")]
-        public bool Paginas { get; set; }
+        public bool? Paginas { get; set; }
 
         [JsonProperty("parameters")]
         public ParametrosRelatorioDto Parametros { get; set; }

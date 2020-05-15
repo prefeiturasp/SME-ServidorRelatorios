@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SME.SR.Infra.Dtos.Resposta.ExecucaoRelatorio.GetDetalhesExecucaoRelatorio
+namespace SME.SR.Infra.Dtos.Resposta
 {
-    public class ExportacaoDto
+    public class ExportacaoDetalhesDto
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }
