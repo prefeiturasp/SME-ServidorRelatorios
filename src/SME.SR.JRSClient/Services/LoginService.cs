@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Services
 {
-    public class LoginService : ServiceBase, ILoginService
+    public class LoginService : ServiceBase<IInfra>, ILoginService
     {
         public LoginService(Configuracoes configuracoes)  : base(configuracoes)
         {
@@ -14,7 +14,6 @@ namespace SME.SR.JRSClient.Services
         }
         public async Task<string> ObterTokenAutenticacao(string login, string senha)
         {
-            var restService = RestService.For<IInfra>(configuracoes.UrlBase);
             var resposta = await restService.GetLoginAsync(login, senha);
 
             if (resposta.IsSuccessStatusCode)
@@ -31,10 +30,10 @@ namespace SME.SR.JRSClient.Services
         }
 
         public async Task<string> ObterReportStatus()
-        {
-            var restService = RestService.For<IReports>(configuracoes.UrlBase);
+        {   
+            var restService = RestService.For<IReports>(configuracoes.UrlBase, settings);
 
-            return await restService.GetStatusAsync(ObterCabecalhoAutenticacaoBasica());            
+            return await restService.GetStatusAsync();            
             
         }
     }
