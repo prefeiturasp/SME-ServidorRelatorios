@@ -25,7 +25,7 @@ namespace SME.SR.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddJasperClient("http://127.0.0.1:8080");
+            services.AddJasperClient("http://127.0.0.1:8080", "user", "bitnami");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -34,8 +34,6 @@ namespace SME.SR.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>

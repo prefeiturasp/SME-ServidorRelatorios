@@ -1,11 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dtos\Respostas\**" />
+    <EmbeddedResource Remove="Dtos\Respostas\**" />
+    <None Remove="Dtos\Respostas\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enumeradores\" />
   </ItemGroup>
 
 </Project>
