@@ -11,6 +11,7 @@ namespace SME.SR.JRSClient.Grupos
         [Get("/jasperserver/rest_v2/reportExecutions/123/status/")]
         Task<string> GetStatusAsync();
 
+        #region Input Controls
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/reports/{**caminhoRelatorio}/inputControls")]
         Task<ListaControlesEntradaDto> GetObterControlesEntradaAsync(string caminhoRelatorio, [AliasAs("exclude")] string ignorarEstados);
@@ -26,5 +27,10 @@ namespace SME.SR.JRSClient.Grupos
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/reports/{**caminhoRelatorio}/inputControls/values")]
         Task<ListaEstadosControleEntradaDto> GetObterEstadosControlesEntradaAsync(string caminhoRelatorio, [AliasAs("freshData")] bool ignorarCache);
+        #endregion
+
+        [Headers("Accept: application/json", "Authorization: Basic")]
+        [Get("/jasperserver/rest_v2/resources")]
+        Task<BuscaRepositorioRespostaDto> GetRecursos([Query] BuscaRepositorioRequisicaoDto requisicaoDto);
     }
 }

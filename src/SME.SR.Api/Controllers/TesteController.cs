@@ -53,5 +53,11 @@ namespace SME.SR.Api.Controllers
 
             return Ok(await controleEntradaService.SetarValoresControleEntrada(_caminhoRelatorio, valores, true));
         }
+
+        [HttpGet("resources")]
+        public async Task<IActionResult> BuscarRecursos([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.BuscarRepositorio(new Infra.Dtos.BuscaRepositorioRequisicaoDto()));
+        }
     }
 }
