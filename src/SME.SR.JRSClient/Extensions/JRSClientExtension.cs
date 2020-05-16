@@ -13,15 +13,15 @@ namespace SME.SR.JRSClient
             services.AddTransient<IInformacaoServidorService, InformacaoServidorService>();
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<IControleEntradaService, ControleEntradaService>();
-
+            services.AddTransient<IRelatorioService, RelatorioService>();
+            
             services.AddSingleton<Configuracoes>(new Configuracoes()
             {
                 UrlBase = urlBase,
                 JasperLogin = jasperLogin,
                 JasperPassword = jasperPassword
             });
-
-
+            
             return services;
         }
     }
