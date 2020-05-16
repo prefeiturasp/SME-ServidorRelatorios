@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SME.SR.Infra.Dtos;
 using SME.SR.JRSClient.Interfaces;
 
 
@@ -52,6 +53,21 @@ namespace SME.SR.Api.Controllers
             };
 
             return Ok(await controleEntradaService.SetarValoresControleEntrada(_caminhoRelatorio, valores, true));
+        }
+
+        [HttpGet("report")]
+        public async Task<IActionResult> ObterRelatorioSincrono([FromServices] IRelatorioService relatorioService)
+        {
+            var dto = new RelatorioSincronoDto
+            {
+                CaminhoRelatorio = _caminhoRelatorio,
+                Formato = Infra.Enumeradores.Enumeradores.FormatoEnum.Pdf,
+                IgnorarPaginacao = true,
+                Interativo = false,
+                Pagina = 1
+            };
+            
+            return Ok(await relatorioService.GetRelatorioSincrono(dto));
         }
     }
 }

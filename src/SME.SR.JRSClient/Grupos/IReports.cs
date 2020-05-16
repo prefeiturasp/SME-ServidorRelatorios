@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Refit;
-using SME.SR.Infra.Dtos.Requisicao;
-using System;
+using SME.SR.Infra.Dtos;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Grupos
@@ -29,5 +28,9 @@ namespace SME.SR.JRSClient.Grupos
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/reports/{**caminhoRelatorio}/inputControls/values")]
         Task<ListaEstadosControleEntradaDto> GetObterEstadosControlesEntradaAsync(string caminhoRelatorio, [AliasAs("freshData")] bool ignorarCache);
+        
+        [Headers("Accept: application/json", "Authorization: Basic")]
+        [Get("/jasperserver/rest_v2/reports/{**caminhoCompleto}")]
+        Task<Stream> GetRelatorioSincrono(string caminhoCompleto, ExecutarRelatorioSincronoDto Dto);
     }
 }
