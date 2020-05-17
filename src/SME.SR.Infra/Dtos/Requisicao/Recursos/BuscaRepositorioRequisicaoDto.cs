@@ -1,46 +1,43 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Refit;
 
 namespace SME.SR.Infra.Dtos
 {
     public class BuscaRepositorioRequisicaoDto
     {
-        [JsonProperty("q")]
+        [AliasAs("q")]
         public string Query { get; set; }
 
-        [JsonProperty("folderUri")]
+        [AliasAs("folderUri")]
         public string CaminhoPasta { get; set; }
 
-        [JsonProperty("recursive")]
-        public bool Recursivo { get; set; }
+        [AliasAs("recursive")]
+        public bool Recursivo { get; set; } = true;
 
-        [JsonProperty("type")]
+        [AliasAs("type")]
         public string Tipo { get; set; }
 
-        [JsonProperty("accessType")]
-        public long TipoAcesso { get; set; }
+        [AliasAs("accessType")]
+        public string TipoAcesso { get; set; }
 
-        [JsonProperty("dependsOn")]
+        [AliasAs("dependsOn")]
         public string DiretorioDependencia { get; set; }
 
-        [JsonProperty("showHiddenItems")]
+        [AliasAs("showHiddenItems")]
         public bool ExibirItensOcultos { get; set; }
 
-        [JsonProperty("sortBy")]
+        [AliasAs("sortBy")]
         public string Ordenacao { get; set; }
 
-        [JsonProperty("limit")]
-        public int LimitePaginacao { get; set; }
+        [AliasAs("limit")]
+        public int? LimitePaginacao { get; set; }
 
-        [JsonProperty("offset")]
-        public int Offset { get; set; }
+        [AliasAs("offset")]
+        public int? Offset { get; set; }
 
-        [JsonProperty("forceFullPage")]
-        public bool ForcarPaginaInteira { get; set; }
+        [AliasAs("forceFullPage")]
+        public bool? ForcarPaginaInteira { get; set; }
 
-        [JsonProperty("forceTotalCount")]
-        public bool ForcarContadorPaginas { get; set; }
+        [AliasAs("forceTotalCount")]
+        public bool? ForcarContadorPaginas { get; set; }
     }
 }

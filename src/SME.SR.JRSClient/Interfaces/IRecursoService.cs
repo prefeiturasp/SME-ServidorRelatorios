@@ -9,5 +9,7 @@ namespace SME.SR.JRSClient.Interfaces
     public interface IRecursoService
     {
         Task<BuscaRepositorioRespostaDto> BuscarRepositorio(BuscaRepositorioRequisicaoDto requisicaoDto);
+
+        Task<DetalhesRecursoDto> ObterDetalhesRecurso(string caminhoRelatorio, bool expanded);
     }
 }

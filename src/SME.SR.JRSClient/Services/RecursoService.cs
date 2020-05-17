@@ -18,5 +18,10 @@ namespace SME.SR.JRSClient.Services
         {
             return await restService.GetRecursos(requisicaoDto);
         }
+
+        public async Task<DetalhesRecursoDto> ObterDetalhesRecurso(string caminhoRelatorio, bool expanded)
+        {
+            return await restService.GetDetalhesRecurso(caminhoRelatorio, expanded);
+        }
     }
 }

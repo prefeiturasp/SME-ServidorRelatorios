@@ -22,7 +22,7 @@ namespace SME.SR.JRSClient.Grupos
 
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Post("/jasperserver/rest_v2/reports/{**caminhoRelatorio}/inputControls")]
-        Task<ListaControlesEntradaDto> SetarValoresControleEntradaAsync(string caminhoRelatorio, [Body] IDictionary<string, object[]> valoresControles, [Query,AliasAs("freshData")]bool atualizarCache);
+        Task<ListaControlesEntradaDto> SetarValoresControleEntradaAsync(string caminhoRelatorio, [Body] IDictionary<string, object[]> valoresControles, [Query, AliasAs("freshData")]bool atualizarCache);
 
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/reports/{**caminhoRelatorio}/inputControls/values")]
@@ -32,5 +32,22 @@ namespace SME.SR.JRSClient.Grupos
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/resources")]
         Task<BuscaRepositorioRespostaDto> GetRecursos([Query] BuscaRepositorioRequisicaoDto requisicaoDto);
+
+        [Headers("Accept: application/json", "Authorization: Basic")]
+        [Get("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
+        Task<DetalhesRecursoDto> GetDetalhesRecurso(string caminhoRelatorio, [Query] bool expanded);
+
+        [Headers("Accept: application/json", "Authorization: Basic")]
+        [Post("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
+        Task<DetalhesRecursoDto> PostRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool overwrite);
+
+        [Headers("Accept: application/json", "Authorization: Basic")]
+        [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
+        Task<DetalhesRecursoDto> PutRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool overwrite);
+
+        [Headers("Accept: application/json", "Authorization: Basic")]
+        [Delete("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
+        Task<DetalhesRecursoDto> DeleteRecurso(string caminhoRelatorio, [Query] string resourceUri);
+
     }
 }

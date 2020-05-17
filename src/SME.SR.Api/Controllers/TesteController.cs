@@ -57,7 +57,16 @@ namespace SME.SR.Api.Controllers
         [HttpGet("resources")]
         public async Task<IActionResult> BuscarRecursos([FromServices] IRecursoService recursoService)
         {
-            return Ok(await recursoService.BuscarRepositorio(new Infra.Dtos.BuscaRepositorioRequisicaoDto()));
+            return Ok(await recursoService.BuscarRepositorio(new Infra.Dtos.BuscaRepositorioRequisicaoDto()
+            {
+                Query = "adhoc"
+            }));
+        }
+
+        [HttpGet("resources/details")]
+        public async Task<IActionResult> ObterDetalhesRecursoRelatorios([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.ObterDetalhesRecurso("/themes/default/images", false));
         }
     }
 }
