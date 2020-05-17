@@ -23,5 +23,20 @@ namespace SME.SR.JRSClient.Services
         {
             return await restService.GetDetalhesRecurso(caminhoRelatorio, expanded);
         }
+
+        public async Task<DetalhesRecursoDto> Post(string caminhoRelatorio, bool criarCaminho, bool? sobrescrever)
+        {
+            return await restService.PostRecurso(caminhoRelatorio, criarCaminho, sobrescrever,
+                    new DetalhesRecursoDto()
+                    {
+                        DataAtualizacao = DateTime.Now,
+                        DataCriacao = DateTime.Now,
+                        Descricao = "Testando",
+                        Diretorio = "/teste/teste",
+                        MascaraPermissao = "1",
+                        Titulo = "Testando",
+                        Versao = "1"
+                    });
+        }
     }
 }

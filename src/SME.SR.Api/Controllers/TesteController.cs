@@ -68,5 +68,11 @@ namespace SME.SR.Api.Controllers
         {
             return Ok(await recursoService.ObterDetalhesRecurso("/themes/default/images", false));
         }
+
+        [HttpGet("resources/post")]
+        public async Task<IActionResult> Post([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.Post("/themes", true));
+        }
     }
 }

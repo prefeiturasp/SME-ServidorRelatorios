@@ -13,6 +13,9 @@ namespace SME.SR.Infra.Dtos
         [JsonProperty("visible")]
         public string Visivel { get; set; }
 
+        [JsonProperty("type")]
+        public string Tipo { get; set; }
+
         [JsonProperty("usedFields")]
         public string CamposUtilizados { get; set; }
 

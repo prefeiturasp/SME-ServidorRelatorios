@@ -4,6 +4,9 @@ namespace SME.SR.Infra.Dtos
 {
     public class TipoInformacaoRecursoDto : DetalhesRecursoDto
     {
+        [JsonProperty("type")]
+        public string Tipo { get; set; }
+
         [JsonProperty("pattern")]
         public string Padrao { get; set; }
 

@@ -1,7 +1,4 @@
 ﻿using SME.SR.Infra.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Interfaces
@@ -11,5 +8,7 @@ namespace SME.SR.JRSClient.Interfaces
         Task<BuscaRepositorioRespostaDto> BuscarRepositorio(BuscaRepositorioRequisicaoDto requisicaoDto);
 
         Task<DetalhesRecursoDto> ObterDetalhesRecurso(string caminhoRelatorio, bool expanded);
+
+        Task<DetalhesRecursoDto> Post(string caminhoRelatorio, bool criarCaminho, bool? sobrescrever = null);
     }
 }
