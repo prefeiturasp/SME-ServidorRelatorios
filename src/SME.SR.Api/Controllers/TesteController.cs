@@ -72,7 +72,19 @@ namespace SME.SR.Api.Controllers
         [HttpGet("resources/post")]
         public async Task<IActionResult> Post([FromServices] IRecursoService recursoService)
         {
-            return Ok(await recursoService.Post("/themes", true));
+            return Ok(await recursoService.Post("/themes", true, null, new Infra.Dtos.DetalhesRecursoDto()));
+        }
+
+        [HttpGet("resources/put")]
+        public async Task<IActionResult> Put([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.Put("/themes", true, null, new Infra.Dtos.DetalhesRecursoDto()));
+        }
+
+        [HttpGet("resources/delete")]
+        public async Task<IActionResult> Delete([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.Delete("/themes", "teste"));
         }
     }
 }

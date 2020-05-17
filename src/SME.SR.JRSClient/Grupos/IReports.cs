@@ -121,8 +121,6 @@ namespace SME.SR.JRSClient.Grupos
         [Post("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
         Task<MondrianXMLARecursoDto> PostRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] MondrianXMLARecursoDto dto);
 
-
-
         [Headers("Accept: application/json", "Content-Type: application/repository.folder+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
         Task<DetalhesRecursoDto> PutRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] DetalhesRecursoDto dto);
