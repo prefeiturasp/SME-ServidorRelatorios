@@ -2,7 +2,7 @@
 
 namespace SME.SR.Infra.Dtos
 {
-    public class ControleEntradaQueryRecursoDto
+    public class QueryReferenciaRecursoDto
     {
         [JsonProperty("queryReference")]
         public CaminhoArquivoRecursoDto CaminhoArquivo { get; set; }

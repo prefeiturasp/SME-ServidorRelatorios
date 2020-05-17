@@ -2,7 +2,7 @@
 
 namespace SME.SR.Infra.Dtos
 {
-    public class OpcoesRelatorioRecursoDto
+    public class OpcoesRelatorioRecursoDto : DetalhesRecursoDto
     {
         [JsonProperty("reportUri")]
         public string CaminhoRelatorio { get; set; }

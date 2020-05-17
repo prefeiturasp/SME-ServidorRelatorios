@@ -23,12 +23,12 @@ namespace SME.SR.Infra.Dtos
         public ControleEntradaListaValoresRecursoDto ListaValores { get; set; }
 
         [JsonProperty("visibleColumns")]
-        public string ColunasVisiveis { get; set; }
+        public string[] ColunasVisiveis { get; set; }
 
         [JsonProperty("valueColumn")]
         public string ColunaValor { get; set; }
 
         [JsonProperty("query")]
-        public ControleEntradaQueryRecursoDto Query { get; set; }
+        public QueryReferenciaRecursoDto Query { get; set; }
     }
 }

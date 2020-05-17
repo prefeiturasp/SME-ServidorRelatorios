@@ -20,7 +20,7 @@ namespace SME.SR.Infra.Dtos
         public FonteDadosRecursoDto FonteDados { get; set; }
 
         [JsonProperty("query")]
-        public ControleEntradaQueryRecursoDto ClasseDriver { get; set; }
+        public QueryReferenciaRecursoDto Query { get; set; }
 
         [JsonProperty("jrxml")]
         public JRXMLRecursoDto JRXML { get; set; }

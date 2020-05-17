@@ -16,7 +16,7 @@ namespace SME.SR.Infra.Dtos
         [JsonProperty("username")]
         public string Usuario { get; set; }
 
-        [JsonProperty("locale")]
+        [JsonProperty("password")]
         public string Senha { get; set; }
     }
 }
