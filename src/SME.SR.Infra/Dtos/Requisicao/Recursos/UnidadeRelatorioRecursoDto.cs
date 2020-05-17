@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SME.SR.Infra.Dtos.Requisicao.Recursos
+namespace SME.SR.Infra.Dtos
 {
-   public class UnidadeRelatorioRecursoDto : DetalhesRecursoDto
+    public class UnidadeRelatorioRecursoDto : DetalhesRecursoDto
     {
         [JsonProperty("alwaysPromptControls")]
         public bool SempreExibirControles { get; set; }
@@ -20,7 +17,7 @@ namespace SME.SR.Infra.Dtos.Requisicao.Recursos
         public string RelatiorioRenderizandoVisualizacao { get; set; }
 
         [JsonProperty("dataSource")]
-        public QueryFonteDadosRecursoDto FonteDados { get; set; }
+        public FonteDadosRecursoDto FonteDados { get; set; }
 
         [JsonProperty("query")]
         public ControleEntradaQueryRecursoDto ClasseDriver { get; set; }

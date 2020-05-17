@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SME.SR.Infra.Dtos.Requisicao.Recursos
+namespace SME.SR.Infra.Dtos
 {
-   public class JRXMLRecursoDto
+    public class JRXMLRecursoDto
     {
         [JsonProperty("jrxmlFileReference")]
         public CaminhoArquivoRecursoDto CaminhoArquivo { get; set; }

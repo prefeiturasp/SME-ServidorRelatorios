@@ -2,9 +2,9 @@
 
 namespace SME.SR.Infra.Dtos
 {
-    public class ControleEntradaJRXMLRecursoDto
+    public class ConexaoOlapRecursoDto
     {
-        [JsonProperty("inputControlReference")]
+        [JsonProperty("olapConnectionReference")]
         public CaminhoArquivoRecursoDto CaminhoArquivo { get; set; }
     }
 }

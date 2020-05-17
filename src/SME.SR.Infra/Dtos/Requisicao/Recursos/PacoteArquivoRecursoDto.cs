@@ -2,9 +2,9 @@
 
 namespace SME.SR.Infra.Dtos
 {
-    public class ControleEntradaJRXMLRecursoDto
+    public class PacoteArquivoRecursoDto
     {
-        [JsonProperty("inputControlReference")]
+        [JsonProperty("fileReference")]
         public CaminhoArquivoRecursoDto CaminhoArquivo { get; set; }
     }
 }
