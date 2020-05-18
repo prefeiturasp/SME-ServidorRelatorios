@@ -37,6 +37,10 @@ namespace SME.SR.JRSClient.Grupos
         [Get("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
         Task<DetalhesRecursoDto> GetDetalhesRecurso(string caminhoRelatorio, [Query] bool expanded);
 
+        [Headers("Accept: application/json", "Authorization: Basic")]
+        [Post("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
+        Task<DetalhesRecursoDto> PostRecurso(string caminhoRelatorio, [Header("Content-Location")] string contentLocation, [Query] bool createFolders, [Query] bool? overwrite);
+
         [Headers("Accept: application/json", "Content-Type: application/repository.folder+json",  "Authorization: Basic")]
         [Post("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
         Task<DetalhesRecursoDto> PostRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] DetalhesRecursoDto dto);
@@ -120,6 +124,10 @@ namespace SME.SR.JRSClient.Grupos
         [Headers("Accept: application/json", "Content-Type: application/repository.mondrianXmlaDefinition+json", "Authorization: Basic")]
         [Post("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
         Task<MondrianXMLARecursoDto> PostRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] MondrianXMLARecursoDto dto);
+
+        [Headers("Accept: application/json", "Authorization: Basic")]
+        [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
+        Task<DetalhesRecursoDto> PutRecurso(string caminhoRelatorio, [Header("Content-Location")] string contentLocation, [Query] bool createFolders, [Query] bool? overwrite);
 
         [Headers("Accept: application/json", "Content-Type: application/repository.folder+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]

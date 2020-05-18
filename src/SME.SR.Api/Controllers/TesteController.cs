@@ -86,5 +86,11 @@ namespace SME.SR.Api.Controllers
         {
             return Ok(await recursoService.Delete("/themes", "teste"));
         }
+
+        [HttpGet("resources/content")]
+        public async Task<IActionResult> Content([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.Post("/themes", "/themes/default", true, false));
+        }
     }
 }

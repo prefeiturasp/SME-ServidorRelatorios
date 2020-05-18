@@ -129,6 +129,11 @@ namespace SME.SR.JRSClient.Services
             return await restService.PostRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
         }
 
+        public async Task<DetalhesRecursoDto> Post(string caminhoRelatorio, string caminhoConteudo, bool criarDiretorio, bool? sobrescrever)
+        {
+            return await restService.PostRecurso(caminhoRelatorio, caminhoConteudo, criarDiretorio, sobrescrever);
+        }
+
         public async Task<UnidadeRelatorioRecursoDto> PostTopicoDominio(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, UnidadeRelatorioRecursoDto dto)
         {
             return await restService.PostRecursoTopicoDominio(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
@@ -232,6 +237,11 @@ namespace SME.SR.JRSClient.Services
         public async Task<MondrianXMLARecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, MondrianXMLARecursoDto dto)
         {
             return await restService.PutRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
+        }
+
+        public async Task<DetalhesRecursoDto> Put(string caminhoRelatorio, string caminhoConteudo, bool criarDiretorio, bool? sobrescrever)
+        {
+            return await restService.PutRecurso(caminhoRelatorio, caminhoConteudo, criarDiretorio, sobrescrever);
         }
 
         public async Task<UnidadeRelatorioRecursoDto> PutTopicoDominio(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, UnidadeRelatorioRecursoDto dto)

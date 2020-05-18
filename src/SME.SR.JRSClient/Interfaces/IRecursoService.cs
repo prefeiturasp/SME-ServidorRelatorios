@@ -9,6 +9,8 @@ namespace SME.SR.JRSClient.Interfaces
 
         Task<DetalhesRecursoDto> ObterDetalhesRecurso(string caminhoRelatorio, bool expandido);
 
+        Task<DetalhesRecursoDto> Post(string caminhoRelatorio, string caminhoConteudo, bool criarDiretorio, bool? sobrescrever);
+
         Task<DetalhesRecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, DetalhesRecursoDto dto);
 
         Task<JNDIRecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, JNDIRecursoDto dto);
@@ -50,6 +52,8 @@ namespace SME.SR.JRSClient.Interfaces
         Task<ConexaoOlapRecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, ConexaoOlapRecursoDto dto);
 
         Task<MondrianXMLARecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, MondrianXMLARecursoDto dto);
+
+        Task<DetalhesRecursoDto> Put(string caminhoRelatorio, string caminhoConteudo, bool criarDiretorio, bool? sobrescrever);
 
         Task<DetalhesRecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, DetalhesRecursoDto dto);
 
