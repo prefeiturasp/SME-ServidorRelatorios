@@ -13,7 +13,7 @@ namespace SME.SR.JRSClient.Services
         public RelatorioService(Configuracoes configuracoes) : base(configuracoes)
         {
         }
-
+        
         public async Task<Stream> GetRelatorioSincrono(RelatorioSincronoDto Dto)
         {
             if (string.IsNullOrWhiteSpace(Dto.CaminhoRelatorio) || (int)Dto.Formato == 0)
