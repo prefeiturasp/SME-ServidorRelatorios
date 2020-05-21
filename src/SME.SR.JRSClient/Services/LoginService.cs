@@ -8,8 +8,9 @@ namespace SME.SR.JRSClient.Services
 {
     public class LoginService : ServiceBase<IInfra>, ILoginService
     {
-        public LoginService(Configuracoes configuracoes)  : base(configuracoes)
+        public LoginService(Configuracoes configuracoes) : base(configuracoes)
         {
+
         }
 
         public async Task<string> ObterTokenAutenticacao(string login, string senha)

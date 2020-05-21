@@ -16,6 +16,7 @@ namespace SME.SR.JRSClient
             services.AddTransient<IRelatorioService, RelatorioService>();
             services.AddTransient<ITrabalhoService, TrabalhoService>();
             services.AddTransient<IRecursoService, RecursoService>();
+            services.AddTransient<IExecucaoRelatorioService, ExecucaoRelatorioService>();
 
             services.AddSingleton<Configuracoes>(new Configuracoes()
             {
