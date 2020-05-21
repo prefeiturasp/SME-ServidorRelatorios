@@ -33,8 +33,7 @@ namespace SME.SR.JRSClient.Services
         {   
             var restService = RestService.For<IReports>(configuracoes.UrlBase, settings);
 
-            return await restService.GetStatusAsync();            
-            
+            return await restService.GetStatusAsync();
         }
     }
 }
