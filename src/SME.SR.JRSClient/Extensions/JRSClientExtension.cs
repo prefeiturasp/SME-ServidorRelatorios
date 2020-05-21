@@ -13,6 +13,8 @@ namespace SME.SR.JRSClient
             services.AddTransient<IInformacaoServidorService, InformacaoServidorService>();
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<IControleEntradaService, ControleEntradaService>();
+            services.AddTransient<IRelatorioService, RelatorioService>();
+            services.AddTransient<ITrabalhoService, TrabalhoService>();
 
             services.AddSingleton<Configuracoes>(new Configuracoes()
             {
@@ -20,8 +22,7 @@ namespace SME.SR.JRSClient
                 JasperLogin = jasperLogin,
                 JasperPassword = jasperPassword
             });
-
-
+            
             return services;
         }
     }
