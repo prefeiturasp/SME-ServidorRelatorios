@@ -14,7 +14,8 @@ namespace SME.SR.JRSClient
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<IControleEntradaService, ControleEntradaService>();
             services.AddTransient<IRelatorioService, RelatorioService>();
-            
+            services.AddTransient<ITrabalhoService, TrabalhoService>();
+
             services.AddSingleton<Configuracoes>(new Configuracoes()
             {
                 UrlBase = urlBase,
