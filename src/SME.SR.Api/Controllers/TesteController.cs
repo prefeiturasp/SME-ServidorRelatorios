@@ -22,12 +22,6 @@ namespace SME.SR.Api.Controllers
             return Ok(await informacaoServidorRequisicao.Obter());
         }
 
-        [HttpGet("status")]
-        public async Task<IActionResult> ReportStatus([FromServices] ILoginService loginService)
-        {
-            return Ok(await loginService.ObterReportStatus());
-        }
-
         [HttpGet("inputControll")]
         public async Task<IActionResult> InputControll([FromServices] IControleEntradaService controleEntradaService)
         {
@@ -181,6 +175,45 @@ namespace SME.SR.Api.Controllers
             };
             
             return Ok(await relatorioService.GetRelatorioSincrono(dto));
+        }
+
+        [HttpGet("resources")]
+        public async Task<IActionResult> BuscarRecursos([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.BuscarRepositorio(new Infra.Dtos.BuscaRepositorioRequisicaoDto()
+            {
+                Query = "adhoc"
+            }));
+        }
+
+        [HttpGet("resources/details")]
+        public async Task<IActionResult> ObterDetalhesRecursoRelatorios([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.ObterDetalhesRecurso("/themes/default/images", false));
+        }
+
+        [HttpGet("resources/post")]
+        public async Task<IActionResult> Post([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.Post("/themes", true, null, new Infra.Dtos.DetalhesRecursoDto()));
+        }
+
+        [HttpGet("resources/put")]
+        public async Task<IActionResult> Put([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.Put("/themes", true, null, new Infra.Dtos.DetalhesRecursoDto()));
+        }
+
+        [HttpGet("resources/delete")]
+        public async Task<IActionResult> Delete([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.Delete("/themes", "teste"));
+        }
+
+        [HttpGet("resources/content")]
+        public async Task<IActionResult> Content([FromServices] IRecursoService recursoService)
+        {
+            return Ok(await recursoService.Post("/themes", "/themes/default", true, false));
         }
     }
 }
