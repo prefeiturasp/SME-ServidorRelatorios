@@ -10,8 +10,8 @@ namespace SME.SR.JRSClient.Grupos
     public interface IReports
     {
         [Headers("Accept: application/json", "Authorization: Basic")]
-        [Get("/jasperserver/rest_v2/reportExecutions/123/status/")]
-        Task<string> GetStatusAsync();
+        [Get("/jasperserver/rest_v2/reportExecutions/{reportExecutionId}/status")]
+        Task<string> GetStatusAsync(int reportExecutionId);
 
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/reports/{**caminhoRelatorio}/inputControls")]

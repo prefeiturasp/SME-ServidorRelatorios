@@ -8,24 +8,25 @@ namespace SME.SR.JRSClientTest
 {
     public class LoginServiceTest
     {
-        // TODO Evitar instancia compartilhada na execução dos caso de testes
-        LoginService loginService = new LoginService(new JRSClient.Configuracoes
+        // TODO Evitar instancia compartilhada na execuÃ§Ã£o dos caso de testes
+        static JRSClient.Configuracoes Settings = new JRSClient.Configuracoes
         {
-            JasperLogin = "admin",
+            JasperLogin = "user",
             JasperPassword = "bitnami",
             UrlBase = "http://localhost:8080"
-        });
+        };
 
         [Fact]
-        public void ObterTokenAutenticacaoTest()
+        public void DeveInstaciarOServicoDeLoginEAutenticarNoServidor()
         {
-            ObterTokenAutenticacaoTestAync(loginService).Wait();
-        }
+            LoginService loginService = new LoginService(Settings);
+            Assert.NotNull(loginService);
 
-        private async Task ObterTokenAutenticacaoTestAync(LoginService loginService)
-        {
-            string response = await loginService.ObterReportStatus();
-            Assert.NotNull(response);
+            string token = loginService.ObterTokenAutenticacao(
+                Settings.JasperLogin, 
+                Settings.JasperPassword
+            ).Result;
+            Assert.NotEmpty(token);
         }
     }
 }

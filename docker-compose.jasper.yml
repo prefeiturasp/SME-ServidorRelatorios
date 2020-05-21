@@ -6,9 +6,13 @@ services:
   mariadb:
     image: "bitnami/mariadb:10.3"
     environment:
-      - MARIADB_USER=bn_jasperreports
-      - MARIADB_DATABASE=bitnami_jasperreports
-      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=jrs
+      - MARIADB_DATABASE=jrsdb
+      - MARIADB_PASSWORD=jrs
+      - MARIADB_ROOT_PASSWORD=jrs
+      - ALLOW_EMPTY_PASSWORD=no
+    ports:
+      - "3306:3006"
     #volumes:
     #  - 'mariadb_data:/volumes/mariadb:Z'
 
@@ -17,9 +21,10 @@ services:
     environment:
       - MARIADB_HOST=mariadb
       - MARIADB_PORT_NUMBER=3306
-      - JASPERREPORTS_DATABASE_USER=bn_jasperreports
-      - JASPERREPORTS_DATABASE_NAME=bitnami_jasperreports
-      - ALLOW_EMPTY_PASSWORD=yes
+      - JASPERREPORTS_DATABASE_USER=jrs
+      - JASPERREPORTS_DATABASE_NAME=jrsdb
+      - JASPERREPORTS_DATABASE_PASSWORD=jrs
+      - ALLOW_EMPTY_PASSWORD=no
     image: bitnami/jasperreports:7.2.0
     #volumes:
     #  - 'jasperreports_data:/volumes/jasperreports:Z'
