@@ -2,6 +2,7 @@
 using SME.SR.JRSClient.Grupos;
 using SME.SR.JRSClient.Interfaces;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Services
@@ -11,6 +12,11 @@ namespace SME.SR.JRSClient.Services
         public LoginService(Configuracoes configuracoes) : base(configuracoes)
         {
 
+        }
+
+        public LoginService(HttpClient httpClient, Configuracoes configuracoes) : base(httpClient, configuracoes)
+        {
+            
         }
 
         public async Task<string> ObterTokenAutenticacao(string login, string senha)

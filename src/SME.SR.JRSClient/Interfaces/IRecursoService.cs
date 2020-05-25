@@ -35,7 +35,7 @@ namespace SME.SR.JRSClient.Interfaces
 
         Task<ArquivoRecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, ArquivoRecursoDto dto);
 
-        Task<UnidadeRelatorioRecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, UnidadeRelatorioRecursoDto dto);
+        Task<UnidadeRelatorioRecursoDto> CriarRelatorio(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, UnidadeRelatorioRecursoDto dto);
 
         Task<OpcoesRelatorioRecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, OpcoesRelatorioRecursoDto dto);
 

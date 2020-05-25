@@ -18,6 +18,9 @@ namespace SME.SR.JRSClient.Services
         {
             if (string.IsNullOrWhiteSpace(Dto.CaminhoRelatorio) || (int)Dto.Formato == 0)
                 throw new Exception("O Caminho do relatorio e o formato devem ser informados");
+
+            if(Dto.CaminhoRelatorio.StartsWith("/"))
+                Dto.CaminhoRelatorio = Dto.CaminhoRelatorio.Substring(1);
             
             return await restService.GetRelatorioSincrono(Dto.CaminhoCompleto, Dto);
         }

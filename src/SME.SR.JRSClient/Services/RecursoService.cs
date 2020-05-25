@@ -4,6 +4,7 @@ using SME.SR.JRSClient.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Services
@@ -11,6 +12,10 @@ namespace SME.SR.JRSClient.Services
     public class RecursoService : ServiceBase<IReports>, IRecursoService
     {
         public RecursoService(Configuracoes configuracoes) : base(configuracoes)
+        {
+        }
+
+        public RecursoService(HttpClient httpClient, Configuracoes configuracoes) : base(httpClient, configuracoes)
         {
         }
 
@@ -89,9 +94,9 @@ namespace SME.SR.JRSClient.Services
             return await restService.PostRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
         }
 
-        public async Task<UnidadeRelatorioRecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, UnidadeRelatorioRecursoDto dto)
+        public async Task<UnidadeRelatorioRecursoDto> CriarRelatorio(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, UnidadeRelatorioRecursoDto dto)
         {
-            return await restService.PostRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
+            return await restService.CriarRecursoRelatorio(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
         }
 
         public async Task<OpcoesRelatorioRecursoDto> Post(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, OpcoesRelatorioRecursoDto dto)
@@ -156,22 +161,22 @@ namespace SME.SR.JRSClient.Services
 
         public async Task<AWSRecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, AWSRecursoDto dto)
         {
-            return await restService.PutRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
+            return await restService.CriarRecursoAWSDatsource(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
         }
 
         public async Task<VirtualRecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, VirtualRecursoDto dto)
         {
-            return await restService.PutRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
+            return await restService.CriarRecursoVirtualDataSource(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
         }
 
         public async Task<CustomizadoRecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, CustomizadoRecursoDto dto)
         {
-            return await restService.PutRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
+            return await restService.CriarRecursoCustomDataSource(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
         }
 
         public async Task<BeanRecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, BeanRecursoDto dto)
         {
-            return await restService.PutRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
+            return await restService.CriarRecursoBeanDataSource(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
         }
 
         public async Task<TipoInformacaoRecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, TipoInformacaoRecursoDto dto)
@@ -201,7 +206,7 @@ namespace SME.SR.JRSClient.Services
 
         public async Task<UnidadeRelatorioRecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, UnidadeRelatorioRecursoDto dto)
         {
-            return await restService.PutRecurso(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
+            return await restService.CriarRecursoRelatorioComId(caminhoRelatorio, criarDiretorio, sobrescrever, dto);
         }
 
         public async Task<OpcoesRelatorioRecursoDto> Put(string caminhoRelatorio, bool criarDiretorio, bool? sobrescrever, OpcoesRelatorioRecursoDto dto)

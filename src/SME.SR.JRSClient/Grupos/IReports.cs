@@ -148,7 +148,7 @@ namespace SME.SR.JRSClient.Grupos
 
         [Headers("Accept: application/json", "Content-Type: application/repository.reportUnit+json", "Authorization: Basic")]
         [Post("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
-        Task<UnidadeRelatorioRecursoDto> PostRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] UnidadeRelatorioRecursoDto dto);
+        Task<UnidadeRelatorioRecursoDto> CriarRecursoRelatorio(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] UnidadeRelatorioRecursoDto dto);
 
         [Headers("Accept: application/json", "Content-Type: application/repository.reportOptions+json", "Authorization: Basic")]
         [Post("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
@@ -200,19 +200,19 @@ namespace SME.SR.JRSClient.Grupos
 
         [Headers("Accept: application/json", "Content-Type: application/repository.awsDataSource+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
-        Task<AWSRecursoDto> PutRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] AWSRecursoDto dto);
+        Task<AWSRecursoDto> CriarRecursoAWSDatsource(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] AWSRecursoDto dto);
 
         [Headers("Accept: application/json", "Content-Type: application/repository.virtualDataSource+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
-        Task<VirtualRecursoDto> PutRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] VirtualRecursoDto dto);
+        Task<VirtualRecursoDto> CriarRecursoVirtualDataSource(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] VirtualRecursoDto dto);
 
         [Headers("Accept: application/json", "Content-Type: application/repository.customDataSource+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
-        Task<CustomizadoRecursoDto> PutRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] CustomizadoRecursoDto dto);
+        Task<CustomizadoRecursoDto> CriarRecursoCustomDataSource(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] CustomizadoRecursoDto dto);
 
         [Headers("Accept: application/json", "Content-Type: application/repository.beanDataSource+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
-        Task<BeanRecursoDto> PutRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] BeanRecursoDto dto);
+        Task<BeanRecursoDto> CriarRecursoBeanDataSource(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] BeanRecursoDto dto);
 
         [Headers("Accept: application/json", "Content-Type: application/repository.dataType+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
@@ -236,7 +236,7 @@ namespace SME.SR.JRSClient.Grupos
 
         [Headers("Accept: application/json", "Content-Type: application/repository.reportUnit+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]
-        Task<UnidadeRelatorioRecursoDto> PutRecurso(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] UnidadeRelatorioRecursoDto dto);
+        Task<UnidadeRelatorioRecursoDto> CriarRecursoRelatorioComId(string caminhoRelatorio, [Query] bool createFolders, [Query] bool? overwrite, [Body] UnidadeRelatorioRecursoDto dto);
 
         [Headers("Accept: application/json", "Content-Type: application/repository.reportOptions+json", "Authorization: Basic")]
         [Put("/jasperserver/rest_v2/resources{**caminhoRelatorio}")]

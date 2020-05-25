@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Services
 {
-    public class ExecucaoRelatorioService : ServiceBase, IExecucaoRelatorioService
+    public class ExecucaoRelatorioService : ServiceBase<IReports>, IExecucaoRelatorioService
     {
         public ExecucaoRelatorioService(Configuracoes configuracoes) : base(configuracoes)
         {
@@ -63,10 +63,8 @@ namespace SME.SR.JRSClient.Services
         public async Task<RelatoriosTarefasEmAndamentoRespostaDto> ObterRelatoriosTarefasEmAndamento(RelatoriosTarefasEmAndamentoRequisicaoDto requisicao)
         {
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
-
             var retorno = await restService.GetRelatoriosTarefasEmAndamento(ObterCabecalhoAutenticacaoBasica(), requisicao);
-
-            return default;
+            return retorno.Content;
         }
 
         public async Task<string> ObterSaida(Guid requisicaoId, Guid exportacaoId)
