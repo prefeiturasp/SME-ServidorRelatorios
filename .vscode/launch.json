@@ -5,6 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "SME.SR.Workers.SGP",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/SME.SR.Workers.SGP/bin/Debug/netcoreapp3.0/SME.SR.Workers.SGP.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/SME.SR.Workers.SGP",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+            }
+        },
+        {
             "name": "SME.SR.JRSClientTest",
             "type": "coreclr",
             "request": "launch",

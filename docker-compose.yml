@@ -19,57 +19,78 @@ services:
 #    depends_on:
 #      - flyway
 #      - jasper_reports_server
-  
-  postgres:
-    env_file:
-      - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
-    container_name: sme_sr_postgres_container
-    image: postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      PGDATA: /data/postgres
-    volumes:
-      - postgres:/data/postgres
-    ports:
-      - "5432:5432"
-    networks:
-      - default
-        
-  pgadmin:
-    env_file:
-      - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
-    container_name: sme_sr_pgadmin_container
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-    volumes:
-      - pgadmin:/root/.pgadmin
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - default
-      
-  flyway:
-    container_name: sme_sr_flyway
-    image: boxfuse/flyway:5.2.4
-    command: -url=jdbc:postgresql://postgres_container:5432/sme_sr?user=${POSTGRES_USER:-postgres}&password=${POSTGRES_PASSWORD:-postgres} -locations='filesystem:/opt/scripts' -outOfOrder=false migrate
-    volumes:
-      - ./scripts:/opt/scripts
-    depends_on:
-      - postgres
 
+  # sgpworker:
+  #   env_file:
+  #     - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
+  #   container_name: sme_sr_sgp_worker_container
+  #   build: ./src/SME.SR.Workers.SGP
+  #   ports:
+  #     - "5001:5001"
+  #     - "5000:5000"
+  #   links:
+  #     - rabbitmq
+  #     - jasper_reports_server
+  #   networks:
+  #     - default
+  #   depends_on:
+  #     - jasper_reports_server
+  #     - rabbitmq
+
+##########################################################
+### Database #############################################
+##########################################################
+  # postgres:
+  #   env_file:
+  #     - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
+  #   container_name: sme_sr_postgres_container
+  #   image: postgres
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER:-postgres}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+  #     PGDATA: /data/postgres
+  #   volumes:
+  #     - postgres:/data/postgres
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - default
+        
+  # pgadmin:
+  #   env_file:
+  #     - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
+  #   container_name: sme_sr_pgadmin_container
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.com}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+  #   volumes:
+  #     - pgadmin:/root/.pgadmin
+  #   ports:
+  #     - "${PGADMIN_PORT:-5050}:80"
+  #   networks:
+  #     - default
+      
+  # flyway:
+  #   container_name: sme_sr_flyway
+  #   image: boxfuse/flyway:5.2.4
+  #   command: -url=jdbc:postgresql://postgres_container:5432/sme_sr?user=${POSTGRES_USER:-postgres}&password=${POSTGRES_PASSWORD:-postgres} -locations='filesystem:/opt/scripts' -outOfOrder=false migrate
+  #   volumes:
+  #     - ./scripts:/opt/scripts
+  #   depends_on:
+  #     - postgres
+
+##########################################################
+### Mensageria ###########################################
+##########################################################
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3.7-alpine
+    image: rabbitmq:3.7-management-alpine
     networks:
       - default
     ports:
-      - "25672:25672"
-      - "4369:4369"
-      - "5671:5671"
       - "5672:5672"
+      - "15672:15672"
 
 ##########################################################
 ### JRS - Jasper Reports Server ##########################
