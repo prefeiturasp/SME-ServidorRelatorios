@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SME.SR.Workers.SGP.Commons
+namespace SME.SR.Workers.SGP.Commons.Attributes
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
     public class ActionAttribute : System.Attribute

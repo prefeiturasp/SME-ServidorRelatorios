@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using SME.SR.Workers.SGP.Commons;
+using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP.Services
 {
+    // TODO Turn this into a generic listener or common lib
     public class RabbitBackgroundListener : BackgroundService
     {
         private readonly ILogger _logger;

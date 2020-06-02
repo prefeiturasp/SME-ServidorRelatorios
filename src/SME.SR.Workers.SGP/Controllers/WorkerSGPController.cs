@@ -6,7 +6,9 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using SME.SR.Workers.SGP.Commons;
+using SME.SR.Workers.SGP.Commons.Attributes;
+using Microsoft.Extensions.DependencyInjection;
+using SME.SR.Workers.SGP.UseCases;
 
 namespace SME.SR.Workers.SGP.Controllers
 {
@@ -15,21 +17,14 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-        private IMediator _mediator;
-
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        private IHttpContextAccessor HttpContextAccessor;
 
         [HttpGet("/relatorio-diario-de-classe")]
         [Action("relatorio_diario_de_classe")]
-        public void RelatorioDiarioDeClasse([FromQuery]JObject request)
+        public async Task RelatorioDiarioDeClasse([FromQuery]JObject request)
         {
-            Console.WriteLine("[ DEBUG ] Relatorio Diario de Classe requisitado.");
-        }
-
-        [HttpGet]
-        public ActionResult Get()
-        {
-            return Ok("Ping <> Pong");
+            IMediator mediator = HttpContext.RequestServices.GetService<IMediator>();
+            await RelatorioDiarioDeClasseUseCase.Executar(mediator);
         }
     }
 }

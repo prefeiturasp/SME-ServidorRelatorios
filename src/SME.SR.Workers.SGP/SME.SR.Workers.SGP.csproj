@@ -9,6 +9,7 @@
     <Folder Include="Commons\Attributes\" />
     <Folder Include="Commons\Exceptions\" />
     <Folder Include="Infra\" />
+    <Folder Include="UseCases\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +18,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.0.0" />
+    <PackageReference Include="MediatR.Extensions" Version="0.6.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjectionFixed" Version="5.1.2" />
   </ItemGroup>
 
   <ItemGroup>

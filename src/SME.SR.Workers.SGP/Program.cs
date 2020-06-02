@@ -14,7 +14,6 @@ namespace SME.SR.Workers.SGP
     {
         public async static Task Main(string[] args)
         {
-            //CreateHostBuilder(args).Build().Run();
             var host = CreateHostBuilder(args).Build();
             await host.RunAsync();
         }
@@ -23,13 +22,7 @@ namespace SME.SR.Workers.SGP
             Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder
-                    .UseKestrel(c =>
-                    {
-                        c.ConfigureHttpsDefaults(opt =>
-                        {
-                            opt.SslProtocols = SslProtocols.Tls;
-                        });
-                    })
+                    .UseKestrel()
                     .UseUrls("http://0.0.0.0:5010;https://0.0.0.0:5011;")
                     .UseStartup<Startup>();
                     //.UseSentry(option => { option.Dsn = VariaveisAmbiente.SentryDsn; });

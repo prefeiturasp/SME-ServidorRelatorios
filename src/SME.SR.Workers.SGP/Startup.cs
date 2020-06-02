@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SME.SR.Workers.SGP.Commands;
 using SME.SR.Workers.SGP.Services;
 
 namespace SME.SR.Workers.SGP
@@ -34,10 +35,14 @@ namespace SME.SR.Workers.SGP
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
             });
 
-
             services.AddMediatR(Assembly.GetExecutingAssembly());
+
             services.AddControllers();
             services.AddHostedService<RabbitBackgroundListener>();
+
+            // Commands
+            services.AddMediatR(typeof(RelatorioDiarioDeClasseCommand).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(RelatorioDiarioDeClasseCommandHandler).GetTypeInfo().Assembly);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
