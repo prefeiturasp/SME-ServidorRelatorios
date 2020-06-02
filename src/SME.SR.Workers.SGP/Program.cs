@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,16 +12,27 @@ namespace SME.SR.Workers.SGP
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            //CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder
+                    .UseKestrel(c =>
+                    {
+                        c.ConfigureHttpsDefaults(opt =>
+                        {
+                            opt.SslProtocols = SslProtocols.Tls;
+                        });
+                    })
+                    .UseUrls("http://0.0.0.0:5010;https://0.0.0.0:5011;")
+                    .UseStartup<Startup>();
+                    //.UseSentry(option => { option.Dsn = VariaveisAmbiente.SentryDsn; });
+            });
     }
 }
