@@ -17,14 +17,12 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-        private IHttpContextAccessor HttpContextAccessor;
-
-        [HttpGet("/relatorio-diario-de-classe")]
-        [Action("relatorio_diario_de_classe")]
-        public async Task RelatorioDiarioDeClasse([FromQuery]JObject request)
+        [HttpGet("relatorio/dadosaluno")]
+        [Action("relatorio/dadosaluno")]
+        public async Task<bool> RelatorioDadosAluno([FromQuery] JObject request, [FromServices] IMediator mediator)
         {
-            IMediator mediator = HttpContext.RequestServices.GetService<IMediator>();
-            await RelatorioDiarioDeClasseUseCase.Executar(mediator);
+            Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
+            return await RelatorioDadosAlunoUseCase.Executar(mediator);
         }
     }
 }

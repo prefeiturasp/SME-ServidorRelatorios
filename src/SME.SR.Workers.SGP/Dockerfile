@@ -4,6 +4,8 @@ ARG SME_SERVIDOR_RELATORIOS_ENVIRONMENT=dev
 
 ENV SRConnection=$SME_SERVIDOR_RELATORIOS_CONNECTION_STRING
 ENV SentryDsn=$SentryDsn
+ENV EolConnection=$EolConnection
+ENV SgpConnection=$SgpConnection
 ENV TZ=America/Sao_Paulo
 ENV DEBIAN_FRONTEND=noninteractive
 

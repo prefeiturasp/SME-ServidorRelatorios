@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
@@ -15,9 +17,11 @@ using System.Threading.Tasks;
 namespace SME.SR.Workers.SGP.Services
 {
     // TODO Turn this into a generic listener or common lib
-    public class RabbitBackgroundListener : BackgroundService
+    public class RabbitBackgroundListener : IHostedService
     {
         private readonly ILogger _logger;
+
+        private readonly IServiceScopeFactory _scopeFactory;
 
         private IConnection _connection;
         
@@ -30,9 +34,10 @@ namespace SME.SR.Workers.SGP.Services
 
         public static string RouteKeys = "sme.sr.workers.sgp.*";
 
-        public RabbitBackgroundListener(ILoggerFactory loggerFactory)
+        public RabbitBackgroundListener(ILoggerFactory loggerFactory, IServiceScopeFactory scopeFactory)
         {
             _logger = loggerFactory.CreateLogger<RabbitBackgroundListener>();
+            _scopeFactory = scopeFactory;
             InitRabbitMQ();
         }
 
@@ -47,28 +52,6 @@ namespace SME.SR.Workers.SGP.Services
             _channel.QueueBind(QueueName, ExchangeName, RouteKeys, null);
             _channel.BasicQos(0, 1, false);
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
-        }
-
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            stoppingToken.ThrowIfCancellationRequested();
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (ch, ea) =>
-            {
-                var body = ea.Body.Span;
-                var content = System.Text.Encoding.UTF8.GetString(body);
-                HandleMessage(content);
-                _channel.BasicAck(ea.DeliveryTag, false);
-            };
-
-            consumer.Shutdown += OnConsumerShutdown;
-            consumer.Registered += OnConsumerRegistered;
-            consumer.Unregistered += OnConsumerUnregistered;
-            consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
-
-            WorkerAttribute worker = GetWorkerAttribute(typeof(WorkerSGPController));
-            _channel.BasicConsume(worker.WorkerQueue, false, consumer);
-            return Task.CompletedTask;
         }
 
         private void HandleMessage(string content)
@@ -86,7 +69,13 @@ namespace SME.SR.Workers.SGP.Services
                 {
                     // TODO Turn into a injected controller or dynamically registered
                     _logger.LogInformation($"[ INFO ] Invoking action: {actionName}");
-                    method.Invoke(new WorkerSGPController(), new object[] { request });
+                    
+                    var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
+                    var controller = (WorkerSGPController)serviceProvider.GetRequiredService<WorkerSGPController>();
+                    var mediator = (IMediator)serviceProvider.GetRequiredService<IMediator>();
+
+                    method.Invoke(controller, new object[] { request, mediator });
+                    
                     _logger.LogInformation($"[ INFO ] Action terminated: {actionName}");
                     return;
                 }
@@ -122,11 +111,33 @@ namespace SME.SR.Workers.SGP.Services
         private void OnConsumerShutdown(object sender, ShutdownEventArgs e) { }
         private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e) { }
 
-        public override void Dispose()
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += (ch, ea) =>
+            {
+                var body = ea.Body.Span;
+                var content = System.Text.Encoding.UTF8.GetString(body);
+                HandleMessage(content);
+                _channel.BasicAck(ea.DeliveryTag, false);
+            };
+
+            consumer.Shutdown += OnConsumerShutdown;
+            consumer.Registered += OnConsumerRegistered;
+            consumer.Unregistered += OnConsumerUnregistered;
+            consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
+
+            WorkerAttribute worker = GetWorkerAttribute(typeof(WorkerSGPController));
+            _channel.BasicConsume(worker.WorkerQueue, false, consumer);
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
         {
             _channel.Close();
             _connection.Close();
-            base.Dispose();
+            return Task.CompletedTask;
         }
     }
 }

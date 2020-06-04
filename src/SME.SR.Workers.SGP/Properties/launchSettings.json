@@ -7,7 +7,9 @@
       "launchUrl": "",
       "applicationUrl": "https://localhost:5011;http://localhost:5010",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "EolConnection": "Server=10.49.16.60;Database=se1426;User Id=user_se1426_cotic;Password=3ol_c0tic@;",
+        "SgpConnection": "User ID=postgres;Password=postgres;Host=10.50.1.33;Port=30808;Database=sgp_db-dev;Pooling=true;"
       }
     }
   }

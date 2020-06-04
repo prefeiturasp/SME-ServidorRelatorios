@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SME.SR.Workers.SGP.Commands;
+using SME.SR.Workers.SGP.Commons.Interfaces.Repositories;
+using SME.SR.Workers.SGP.Infra.Repositories;
 using SME.SR.Workers.SGP.Services;
 
 namespace SME.SR.Workers.SGP
@@ -38,11 +40,15 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddControllers();
+            services.AddMvc().AddControllersAsServices();
             services.AddHostedService<RabbitBackgroundListener>();
 
+            // Repositories
+            services.AddTransient(typeof(IEolRepository), typeof(EolRepository));
+
             // Commands
-            services.AddMediatR(typeof(RelatorioDiarioDeClasseCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(RelatorioDiarioDeClasseCommandHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(RelatorioDadosAlunoCommand).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(RelatorioDadosAlunoCommandHandler).GetTypeInfo().Assembly);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

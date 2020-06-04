@@ -4,29 +4,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using SME.SR.Workers.SGP.Commons.Interfaces.Repositories;
+using SME.SR.Workers.SGP.Models;
+using SME.SR.Infra.Enumeradores;
+using SME.SR.JRSClient.Services;
+using SME.SR.Infra.Dtos;
 
 namespace SME.SR.Workers.SGP.Commands
 {
-    public class RelatorioDiarioDeClasseCommand : IRequest<bool>
+    public class RelatorioDadosAlunoCommand : IRequest<bool>
     {
         public string FiltroExemplo { get; set; }
 
-        public RelatorioDiarioDeClasseCommand(string filtroExemplo)
+        public RelatorioDadosAlunoCommand(string filtroExemplo)
         {
             this.FiltroExemplo = filtroExemplo;
         }
     }
 
-    public class RelatorioDiarioDeClasseCommandHandler : IRequestHandler<RelatorioDiarioDeClasseCommand, bool>
+    public class RelatorioDadosAlunoCommandHandler : IRequestHandler<RelatorioDadosAlunoCommand, bool>
     {
-        public RelatorioDiarioDeClasseCommandHandler()
-        {
+        private IEolRepository _sgpRepository;
 
+        public RelatorioDadosAlunoCommandHandler(IEolRepository sgpRepository)
+        {
+            this._sgpRepository = sgpRepository;
         }
 
-        public async Task<bool> Handle(RelatorioDiarioDeClasseCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(RelatorioDadosAlunoCommand request, CancellationToken cancellationToken)
         {
-            // TODO Call report service
+            // List <DadosAluno> dadosAluno = await this._sgpRepository.ObterDadosAlunos();
+
+            List<DadosAluno> dadosAluno = new List<DadosAluno> {};
+            // TODO move to DI and configurations
+            JRSClient.Configuracoes Settings = new JRSClient.Configuracoes
+            {
+                JasperLogin = "user",
+                JasperPassword = "bitnami",
+                UrlBase = "http://localhost:8080"
+            };
+
+            RelatorioService relatorioService = new RelatorioService(Settings);
+            var relatorio = relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto
+            {
+                CaminhoRelatorio = "/testes/jrsclient/abstract_book_cover.jrxml/abstract_book_cover.jrxml",
+                Formato = Enumeradores.FormatoEnum.Pdf
+            }).Result;
+
             return true;
         }
     }
