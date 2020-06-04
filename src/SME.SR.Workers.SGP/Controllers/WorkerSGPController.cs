@@ -17,8 +17,8 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-        [HttpGet("relatorio/dadosaluno")]
-        [Action("relatorio/dadosaluno")]
+        [HttpGet("relatorios/alunos/dados")]
+        [Action("relatorios/alunos/dados")]
         public async Task<bool> RelatorioDadosAluno([FromQuery] JObject request, [FromServices] IMediator mediator)
         {
             Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);

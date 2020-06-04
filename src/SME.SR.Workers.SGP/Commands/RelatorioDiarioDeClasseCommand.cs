@@ -45,11 +45,13 @@ namespace SME.SR.Workers.SGP.Commands
             };
 
             RelatorioService relatorioService = new RelatorioService(Settings);
-            var relatorio = relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto
+            
+            var relatorio = await relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto
             {
                 CaminhoRelatorio = "/testes/jrsclient/abstract_book_cover.jrxml/abstract_book_cover.jrxml",
                 Formato = Enumeradores.FormatoEnum.Pdf
-            }).Result;
+                
+            });
 
             return true;
         }
