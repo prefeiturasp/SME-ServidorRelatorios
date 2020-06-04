@@ -10,13 +10,13 @@ namespace SME.SR.JRSClient
         public static IServiceCollection AddJasperClient(this IServiceCollection services, string urlBase, string jasperLogin, string jasperPassword)
         {
 
-            services.AddTransient<IInformacaoServidorService, InformacaoServidorService>();
-            services.AddTransient<ILoginService, LoginService>();
-            services.AddTransient<IControleEntradaService, ControleEntradaService>();
-            services.AddTransient<IRelatorioService, RelatorioService>();
-            services.AddTransient<ITrabalhoService, TrabalhoService>();
-            services.AddTransient<IRecursoService, RecursoService>();
-            services.AddTransient<IExecucaoRelatorioService, ExecucaoRelatorioService>();
+            services.AddScoped<IInformacaoServidorService, InformacaoServidorService>();
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IControleEntradaService, ControleEntradaService>();
+            services.AddScoped<IRelatorioService, RelatorioService>();
+            services.AddScoped<ITrabalhoService, TrabalhoService>();
+            services.AddScoped<IRecursoService, RecursoService>();
+            services.AddScoped<IExecucaoRelatorioService, ExecucaoRelatorioService>();
 
             services.AddSingleton<Configuracoes>(new Configuracoes()
             {

@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SME.SR.Data;
 using SME.SR.Workers.SGP.Commands;
 using SME.SR.Workers.SGP.Commons.Interfaces.Repositories;
-using SME.SR.Workers.SGP.Infra.Repositories;
+using SME.SR.JRSClient;
 using SME.SR.Workers.SGP.Services;
 
 namespace SME.SR.Workers.SGP
@@ -42,13 +44,19 @@ namespace SME.SR.Workers.SGP
             services.AddControllers();
             services.AddMvc().AddControllersAsServices();
             services.AddHostedService<RabbitBackgroundListener>();
+            
+            //TODO: Informaçoes do arquivo de configuração
+            services.AddJasperClient("http://127.0.0.1:8080", "user", "bitnami");
 
-            // Repositories
-            services.AddTransient(typeof(IEolRepository), typeof(EolRepository));
+            // TODO: Criar arquivo especficio para as injeções
+            RegistrarRepositorios(services);            
 
-            // Commands
-            services.AddMediatR(typeof(RelatorioDadosAlunoCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(RelatorioDadosAlunoCommandHandler).GetTypeInfo().Assembly);
+            
+        }
+
+        private void RegistrarRepositorios(IServiceCollection services)
+        {
+            services.TryAddScoped<IExemploRepository, ExemploRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

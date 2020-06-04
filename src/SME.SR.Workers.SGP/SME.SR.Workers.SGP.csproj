@@ -8,7 +8,7 @@
   <ItemGroup>
     <Folder Include="Commons\Attributes\" />
     <Folder Include="Commons\Exceptions\" />
-    <Folder Include="UseCases\" />
+    <Folder Include="Infra\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SME.SR.Data\SME.SR.Data.csproj" />
     <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
   </ItemGroup>
 

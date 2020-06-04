@@ -45,13 +45,16 @@ namespace SME.SR.Workers.SGP.Commands
             };
 
             RelatorioService relatorioService = new RelatorioService(Settings);
+
+            var dados = new Dictionary<string, string>();
+            dados.Add("filtro", "json");
             
             var relatorio = await relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto
             {
                 CaminhoRelatorio = "/testes/jrsclient/abstract_book_cover.jrxml/abstract_book_cover.jrxml",
-                Formato = Enumeradores.FormatoEnum.Pdf
-                
-            });
+                Formato = Enumeradores.FormatoEnum.Pdf,
+                ControlesDeEntrada = dados
+            }); ;
 
             return true;
         }
