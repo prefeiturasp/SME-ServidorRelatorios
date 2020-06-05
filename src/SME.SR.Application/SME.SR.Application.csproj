@@ -4,4 +4,14 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SME.SR.Data\SME.SR.Data.csproj" />
+    <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
+  </ItemGroup>
+
 </Project>

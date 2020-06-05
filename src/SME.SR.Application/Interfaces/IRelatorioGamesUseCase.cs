@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP
 {
     public interface IRelatorioGamesUseCase
     {
-        Task Executar(int ano);
+        Task Executar(JObject request);
     }
 }

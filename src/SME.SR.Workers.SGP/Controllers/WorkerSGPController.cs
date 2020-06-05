@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using SME.SR.Workers.SGP.Commons.Attributes;
-using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 
 
 namespace SME.SR.Workers.SGP.Controllers
@@ -17,6 +12,8 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
+        private readonly IRelatorioGamesUseCase relatorioGamesUseCase;
+
         //[HttpGet("relatorios/alunos/dados")]
         //[Action("relatorios/alunos/dados")]
         //public async Task<bool> RelatorioDadosAluno([FromQuery] JObject request, [FromServices] IMediator mediator)
@@ -24,11 +21,15 @@ namespace SME.SR.Workers.SGP.Controllers
         //    Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
         //    return await RelatorioDadosAlunoUseCase.Executar(mediator);
         //}
-
-        [HttpGet("relatorios/games/")]
-        [Action("relatorios/games/")]
-        public async Task<bool> RelatorioGames([FromQuery] JObject request, [FromServices]IRelatorioGamesUseCase )
+        public WorkerSGPController(IRelatorioGamesUseCase relatorioGamesUseCase)
         {
+            this.relatorioGamesUseCase = relatorioGamesUseCase ?? throw new ArgumentNullException(nameof(relatorioGamesUseCase));
+        }
+        [HttpGet("relatorios/alunos")]
+        [Action("relatorios/alunos")]
+        public async Task<bool> RelatorioGames([FromQuery] JObject request)
+        {
+            await relatorioGamesUseCase.Executar(request);
             //Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
             //return await RelatorioDadosAlunoUseCase.Executar(mediator);
             return true;

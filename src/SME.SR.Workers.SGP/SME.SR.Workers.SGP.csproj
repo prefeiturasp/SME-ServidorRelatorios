@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SME.SR.Application\SME.SR.Application.csproj" />
     <ProjectReference Include="..\SME.SR.Data\SME.SR.Data.csproj" />
     <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
   </ItemGroup>

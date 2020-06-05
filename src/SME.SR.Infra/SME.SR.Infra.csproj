@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="Enumeradores\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>

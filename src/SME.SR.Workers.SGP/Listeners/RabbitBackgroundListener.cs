@@ -72,9 +72,9 @@ namespace SME.SR.Workers.SGP.Services
                     
                     var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
                     var controller = (WorkerSGPController)serviceProvider.GetRequiredService<WorkerSGPController>();
-                    var mediator = (IMediator)serviceProvider.GetRequiredService<IMediator>();
+                    //var mediator = (IMediator)serviceProvider.GetRequiredService<IMediator>();
 
-                    method.Invoke(controller, new object[] { request, mediator });
+                    method.Invoke(controller, new object[] { request });
                     
                     _logger.LogInformation($"[ INFO ] Action terminated: {actionName}");
                     return;
