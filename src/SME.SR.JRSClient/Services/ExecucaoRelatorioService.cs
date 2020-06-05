@@ -29,7 +29,10 @@ namespace SME.SR.JRSClient.Services
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
             var retorno = await restService.GetAnexosRelatorio(ObterCabecalhoAutenticacaoBasica(), requisicaoId, exportacaoId, nomeArquivo);
-
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
             return default;
         }
 
@@ -38,7 +41,10 @@ namespace SME.SR.JRSClient.Services
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
             var retorno = await restService.GetDetalhesExecucaoRelatorio(ObterCabecalhoAutenticacaoBasica(), requisicaoId);
-
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
             return default;
         }
 
@@ -47,7 +53,10 @@ namespace SME.SR.JRSClient.Services
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
             var retorno = await restService.GetPoolExecucaoRelatorio(ObterCabecalhoAutenticacaoBasica(), requisicaoId);
-
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
             return default;
         }
 
@@ -56,7 +65,10 @@ namespace SME.SR.JRSClient.Services
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
             var retorno = await restService.GetPoolExecucaoExportacao(ObterCabecalhoAutenticacaoBasica(), requisicaoId, exportacaoId);
-
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
             return default;
         }
 
@@ -64,7 +76,12 @@ namespace SME.SR.JRSClient.Services
         {
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
             var retorno = await restService.GetRelatoriosTarefasEmAndamento(ObterCabecalhoAutenticacaoBasica(), requisicao);
-            return retorno.Content;
+
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
+            return default;
         }
 
         public async Task<string> ObterSaida(Guid requisicaoId, Guid exportacaoId)
@@ -72,7 +89,10 @@ namespace SME.SR.JRSClient.Services
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
             var retorno = await restService.GetSaidaRelatorio(ObterCabecalhoAutenticacaoBasica(), requisicaoId, exportacaoId);
-
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
             return default;
         }
 
@@ -80,7 +100,12 @@ namespace SME.SR.JRSClient.Services
         {
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
-           return await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
+            var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
+            return default;
         }
 
         public async Task<ExportacaoRelatorioRespostaDto> PostExportacao(Guid requisicaoId, ExportacaoRelatorioRequisicaoDto requisicao)
@@ -88,7 +113,10 @@ namespace SME.SR.JRSClient.Services
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
             var retorno = await restService.PostExportacaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicaoId, requisicao);
-
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
             return default;
         }
 
@@ -97,7 +125,10 @@ namespace SME.SR.JRSClient.Services
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
             var retorno = await restService.PostModificarParametrosRelatorio(ObterCabecalhoAutenticacaoBasica(), requisicaoId, requisicao);
-
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
             return default;
         }
     }

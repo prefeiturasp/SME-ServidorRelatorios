@@ -276,7 +276,7 @@ namespace SME.SR.JRSClient.Grupos
 
         [Headers("Accept: application/json")]
         [Post("/jasperserver/rest_v2/reportExecutions")]
-        Task<ExecucaoRelatorioRespostaDto> PostExecucaoRelatorioAsync([Header("Authorization")] string authorization, [Body]ExecucaoRelatorioRequisicaoDto request);
+        Task<ApiResponse<ExecucaoRelatorioRespostaDto>> PostExecucaoRelatorioAsync([Header("Authorization")] string authorization, [Body]ExecucaoRelatorioRequisicaoDto request);
 
         [Headers("Accept: application/json")]
         [Get("/jasperserver/rest_v2/reportExecutions/{requestId}/status/")]

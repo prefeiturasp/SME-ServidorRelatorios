@@ -17,7 +17,7 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(JObject request)
         {
-            var ano = int.Parse(request["Dados"]["ano"].ToString());
+            var ano = int.Parse(request["Filtros"]["Ano"].ToString());
 
             var nomeDoGame = await mediator.Send(new GamesQuery(ano));
 

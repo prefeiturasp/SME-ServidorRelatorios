@@ -12,18 +12,18 @@ namespace SME.SR.Application
     public class RelatorioGamesCommandHandler : IRequestHandler<RelatorioGamesCommand, bool>
     {
         private readonly IExecucaoRelatorioService execucaoRelatorioService;
+        private readonly IRelatorioService relatorioService;
 
-        public RelatorioGamesCommandHandler(IExecucaoRelatorioService execucaoRelatorioService)
+        public RelatorioGamesCommandHandler(IExecucaoRelatorioService execucaoRelatorioService, IRelatorioService relatorioService)
         {
             this.execucaoRelatorioService = execucaoRelatorioService ?? throw new ArgumentNullException(nameof(execucaoRelatorioService));
+            this.relatorioService = relatorioService ?? throw new ArgumentNullException(nameof(relatorioService));
         }
 
         public async Task<bool> Handle(RelatorioGamesCommand request, CancellationToken cancellationToken)
         {
             try
             {
-
-
                 var dadosParaRelatorioSerializado = JsonConvert.SerializeObject(request);
 
                 var dadosParaEnvioArray = new string[10];
@@ -31,28 +31,36 @@ namespace SME.SR.Application
 
                 var parametroDto = new ParametroDto() { Nome = "relatorioGames", Valor = dadosParaEnvioArray };
 
-                var parametrosDoDto = new Infra.Dtos.Requisicao.ParametrosRelatorioDto();
+                var parametrosDoDto = new ParametrosRelatorioDto();
 
                 var parametrosDto = new List<ParametroDto>();
                 parametrosDto.Add(parametroDto);
 
-                var retorno = await execucaoRelatorioService.PostAsync(new Infra.Dtos.Requisicao.ExecucaoRelatorioRequisicaoDto()
+                var retorno = await execucaoRelatorioService.PostAsync(new ExecucaoRelatorioRequisicaoDto()
                 {
                     Async = true,
                     FormatoSaida = "PDF",
-                    Parametros = parametrosDoDto,
-                    UnidadeRelatorioUri = "/sme_sgp/diario.jrxml/diario.jrxml"
-
+                    UnidadeRelatorioUri = "/sme_sgp/teste"
                 });
+
+
+                var teste = await execucaoRelatorioService.PostExportacao(retorno.RequisicaoId, new ExportacaoRelatorioRequisicaoDto
+                {
+                    AnexosPrefixo = "teste",
+                    FormatoSaida = "pdf"
+                });
+
+
+                //var retorno = await relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto
 
                 //retorno.URIRelatorio()
 
-                //var relatorio = await relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto
                 //{
-                //    CaminhoRelatorio = "/testes/jrsclient/relatorio_exemplo_games.jrxml/relatorio_exemplo_games.jrxml",
+                //    CaminhoRelatorio = "/sme_sgp/teste",
                 //    Formato = Enumeradores.FormatoEnum.Pdf,
-                //    ControlesDeEntrada = dadosParaEnvio
                 //});
+                //var teste = await execucaoRelatorioService.ObterDetalhes(retorno.RequisicaoId);
+
             }
             catch (Exception ex)
             {

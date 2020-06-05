@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -8,8 +7,6 @@ using RabbitMQ.Client.Events;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +21,7 @@ namespace SME.SR.Workers.SGP.Services
         private readonly IServiceScopeFactory _scopeFactory;
 
         private IConnection _connection;
-        
+
         private IModel _channel;
 
         // TODO move to a dynamic listener factory (Attributes???)
@@ -44,7 +41,7 @@ namespace SME.SR.Workers.SGP.Services
         private void InitRabbitMQ()
         {
             // TODO Separação das variáveis de ambiente e adição da connection no DI
-            var factory = new ConnectionFactory { HostName = "localhost" };
+            var factory = new ConnectionFactory { HostName = "localhost", UserName = "user", Password = "bitnami" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.ExchangeDeclare(ExchangeName, ExchangeType.Topic);
@@ -65,17 +62,17 @@ namespace SME.SR.Workers.SGP.Services
             foreach (MethodInfo method in methods)
             {
                 ActionAttribute actionAttribute = GetActionAttribute(method);
-                if(actionAttribute != null && actionAttribute.Name == actionName)
+                if (actionAttribute != null && actionAttribute.Name == actionName)
                 {
                     // TODO Turn into a injected controller or dynamically registered
                     _logger.LogInformation($"[ INFO ] Invoking action: {actionName}");
-                    
+
                     var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
                     var controller = (WorkerSGPController)serviceProvider.GetRequiredService<WorkerSGPController>();
                     //var mediator = (IMediator)serviceProvider.GetRequiredService<IMediator>();
 
                     method.Invoke(controller, new object[] { request });
-                    
+
                     _logger.LogInformation($"[ INFO ] Action terminated: {actionName}");
                     return;
                 }
