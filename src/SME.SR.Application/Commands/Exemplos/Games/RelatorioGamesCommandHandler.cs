@@ -34,15 +34,21 @@ namespace SME.SR.Application
                 var parametrosDoDto = new ParametrosRelatorioDto();
 
                 var parametrosDto = new List<ParametroDto>();
-                parametrosDto.Add(parametroDto);
 
-                var retorno = await execucaoRelatorioService.PostAsync(new ExecucaoRelatorioRequisicaoDto()
+                parametrosDto.Add(parametroDto);
+                parametrosDoDto.ParametrosRelatorio = parametrosDto.ToArray();
+
+                var post = new ExecucaoRelatorioRequisicaoDto()
                 {
                     Async = true,
                     FormatoSaida = "PDF",
-                    UnidadeRelatorioUri = "/sme_sgp/teste"
-                });
+                    UnidadeRelatorioUri = "/sme_sgp/teste",
+                    Parametros = parametrosDoDto
+                };
 
+                JsonConvert.SerializeObject(post);
+
+                var retorno = await execucaoRelatorioService.PostAsync(post);
 
                 var teste = await execucaoRelatorioService.PostExportacao(retorno.RequisicaoId, new ExportacaoRelatorioRequisicaoDto
                 {
