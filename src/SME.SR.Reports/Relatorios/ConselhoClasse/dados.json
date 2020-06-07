@@ -1,0 +1,37 @@
+{
+  "ConselhoClasse": {
+    "cabecalho": {
+      "nomeDre": "nome da dre",
+      "nomeUe": "nome da ue",
+      "data": "01/05/2020"
+    },
+    "aluno": {
+      "nome": "Alana ferreira de oliveira",
+      "situacaoMatricula": "Matriculado em 04/02/2019",
+      "dataNascimento": "02/02/2000",
+      "frequenciaGlobal": "96%",
+      "codigoEol": "4241513",
+      "parecerConclusivo": "Parecer conclusivo"
+    },
+    "componentesCurriculares": [
+      {
+        "nome": "História",
+        "nota": "10",
+        "notaPosConselho": "10",
+        "aulas": "10",
+        "faltas": "3",
+        "ausenciasCompensadas": "0",
+        "percentualFrequencia": "75"
+      },
+      {
+        "nome": "Artes",
+        "nota": "1",
+        "notaPosConselho": "2",
+        "aulas": "10",
+        "faltas": "9",
+        "ausenciasCompensadas": "0",
+        "percentualFrequencia": "75"
+      }
+    ]
+  }
+}
