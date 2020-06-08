@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Newtonsoft.Json.Linq;
 using SME.SR.Application;
+using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
 
@@ -15,13 +15,13 @@ namespace SME.SR.Workers.SGP
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task Executar(JObject request)
+        public async Task Executar(FiltroRelatorioDto request)
         {
-            var ano = int.Parse(request["Filtros"]["Ano"].ToString());
+            var gamesQuery = request.ObterObjetoFiltro<GamesQuery>();
 
-            var nomeDoGame = await mediator.Send(new GamesQuery(ano));
+            var nomeDoGame = await mediator.Send(gamesQuery);
 
-            var envioDoRelatorio = await mediator.Send(new RelatorioGamesCommand(nomeDoGame));
+           await mediator.Send(new RelatorioGamesCommand(nomeDoGame));
         }
     }
 }

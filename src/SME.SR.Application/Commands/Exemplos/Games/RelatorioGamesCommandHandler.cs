@@ -4,6 +4,7 @@ using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.JRSClient.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,12 +25,13 @@ namespace SME.SR.Application
         {
             try
             {
-                var dadosParaRelatorioSerializado = JsonConvert.SerializeObject(request);
+                var dadosParaRelatorioSerializado = @"";
+                //var dadosParaRelatorioSerializado = JsonConvert.SerializeObject(request);
 
-                var dadosParaEnvioArray = new string[10];
+                var dadosParaEnvioArray = new List<string>() { dadosParaRelatorioSerializado };
                 dadosParaEnvioArray[0] = dadosParaRelatorioSerializado;
 
-                var parametroDto = new ParametroDto() { Nome = "relatorioGames", Valor = dadosParaEnvioArray };
+                var parametroDto = new ParametroDto() { Nome = "jsonString", Valor = dadosParaEnvioArray.ToArray() };
 
                 var parametrosDoDto = new ParametrosRelatorioDto();
 
@@ -40,9 +42,13 @@ namespace SME.SR.Application
 
                 var post = new ExecucaoRelatorioRequisicaoDto()
                 {
+                    UnidadeRelatorioUri = "sme/sgp/RelatorioConselhoClasse/ConselhoClasse",
                     Async = true,
-                    FormatoSaida = "PDF",
-                    UnidadeRelatorioUri = "/sme_sgp/teste",
+                    SalvarSnapshot = false,
+                    FormatoSaida = "pdf",
+                    Interativo = false,
+                    IgnorarPaginacao = true,
+                    Paginas = null,
                     Parametros = parametrosDoDto
                 };
 
@@ -50,11 +56,8 @@ namespace SME.SR.Application
 
                 var retorno = await execucaoRelatorioService.PostAsync(post);
 
-                var teste = await execucaoRelatorioService.PostExportacao(retorno.RequisicaoId, new ExportacaoRelatorioRequisicaoDto
-                {
-                    AnexosPrefixo = "teste",
-                    FormatoSaida = "pdf"
-                });
+                var exportacaoId = Guid.Parse(retorno.Exportacoes?.FirstOrDefault()?.Exportacao?.Id);
+                var teste = await execucaoRelatorioService.ObterSaida(retorno.RequisicaoId, exportacaoId);
 
 
                 //var retorno = await relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto

@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
@@ -55,17 +57,17 @@ namespace SME.SR.Workers.SGP.Services
         {
             _logger.LogInformation($"[ INFO ] Messaged received: {content}");
 
-            JObject request = JObject.Parse(content);
-            string actionName = (string)request["action"];
+            var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
+            //string actionName = (string)request["action"];
             MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
 
             foreach (MethodInfo method in methods)
             {
                 ActionAttribute actionAttribute = GetActionAttribute(method);
-                if (actionAttribute != null && actionAttribute.Name == actionName)
+                if (actionAttribute != null && actionAttribute.Name == request.Action)
                 {
                     // TODO Turn into a injected controller or dynamically registered
-                    _logger.LogInformation($"[ INFO ] Invoking action: {actionName}");
+                    _logger.LogInformation($"[ INFO ] Invoking action: {request.Action}");
 
                     var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
                     var controller = (WorkerSGPController)serviceProvider.GetRequiredService<WorkerSGPController>();
@@ -73,12 +75,12 @@ namespace SME.SR.Workers.SGP.Services
 
                     method.Invoke(controller, new object[] { request });
 
-                    _logger.LogInformation($"[ INFO ] Action terminated: {actionName}");
+                    _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
                     return;
                 }
             }
 
-            _logger.LogInformation($"[ INFO ] Method not found to action: {actionName}");
+            _logger.LogInformation($"[ INFO ] Method not found to action: {request.Action}");
         }
 
         private WorkerAttribute GetWorkerAttribute(Type type)
