@@ -109,7 +109,7 @@
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[new net.sf.jasperreports.engine.data.JsonQLDataSource(new java.io.ByteArrayInputStream( $P{jsonString}.getBytes("UTF-8") ), "")]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression><![CDATA["/Relatorios/ConselhoClasse/Componentes.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["/Sgp/ConselhoClasse/Componentes.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
