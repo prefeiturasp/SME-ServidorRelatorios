@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SME.SR.Data;
+using SME.SR.Infra;
 using SME.SR.JRSClient;
 using SME.SR.Workers.SGP.Services;
 using System;
@@ -39,6 +40,8 @@ namespace SME.SR.Workers.SGP
 
             //TODO: Informaçoes do arquivo de configuração
             services.AddJasperClient("http://127.0.0.1:8080", "user", "bitnami");
+
+            services.AddSingleton(new VariaveisAmbiente());
 
             // TODO: Criar arquivo especficio para as injeções
             RegistrarRepositorios(services);

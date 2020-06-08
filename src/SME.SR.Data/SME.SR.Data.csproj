@@ -13,4 +13,11 @@
     <ProjectReference Include="..\SME.SR.Infra\SME.SR.Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\CoreSso\" />
+    <Folder Include="Interfaces\Sgp\" />
+    <Folder Include="Repositories\CoreSso\" />
+    <Folder Include="Repositories\Sgp\" />
+  </ItemGroup>
+
 </Project>
