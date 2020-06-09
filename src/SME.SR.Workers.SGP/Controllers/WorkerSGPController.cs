@@ -18,6 +18,30 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             this.relatorioGamesUseCase = relatorioGamesUseCase ?? throw new ArgumentNullException(nameof(relatorioGamesUseCase));
         }
+		
+        [HttpGet("relatorio/dadosaluno")]
+        [Action("relatorio/dadosaluno")]
+        public async Task<bool> RelatorioDadosAluno([FromQuery] JObject request, [FromServices] IMediator mediator)
+        {
+            Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
+            return await RelatorioDadosAlunoUseCase.Executar(mediator);
+        }
+		
+        [HttpGet("relatorio/conselhoclasseturma")]
+        [Action("relatorio/conselhoclasseturma")]
+        public async Task<string> RelatorioConselhoClasseTurma([FromQuery] JObject request, [FromServices] IMediator mediator)
+        {
+            Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
+            return await RelatorioConselhoClasseTurmaUseCase.Executar(mediator, request);
+        }
+
+        [HttpGet("relatorio/conselhoclassealuno")]
+        [Action("relatorio/conselhoclassealuno")]
+        public async Task<string> RelatorioConselhoClasseAluno([FromQuery] JObject request, [FromServices] IMediator mediator)
+        {
+            Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
+            return await RelatorioConselhoClasseAlunoUseCase.Executar(mediator,request);
+        }
 
         [HttpGet("relatorios/alunos")]
         [Action("relatorios/alunos")]

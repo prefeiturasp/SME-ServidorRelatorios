@@ -35,7 +35,7 @@ namespace SME.SR.Workers.SGP.Commands
         {
             // List <DadosAluno> dadosAluno = await this._sgpRepository.ObterDadosAlunos();
 
-            List<DadosAluno> dadosAluno = new List<DadosAluno> {};
+            List<Aluno> dadosAluno = new List<Aluno> {};
             // TODO move to DI and configurations
             JRSClient.Configuracoes Settings = new JRSClient.Configuracoes
             {
