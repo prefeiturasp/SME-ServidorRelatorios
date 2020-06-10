@@ -108,14 +108,16 @@ services:
     #  - 'mariadb_data:/volumes/mariadb:Z'
 
   jasper_reports_server:
-    container_name: jasper_reports_server
+    container_name: jasper_reports_server_edited
     environment:
       - MARIADB_HOST=mariadb
       - MARIADB_PORT_NUMBER=3306
       - JASPERREPORTS_DATABASE_USER=jasperreports
       - JASPERREPORTS_DATABASE_NAME=jasperreports
       - ALLOW_EMPTY_PASSWORD=yes
-    image: bitnami/jasperreports:7.2.0
+    build:
+      context: .
+      dockerfile: jasper_server/Dockerfile  
     #volumes:
     #  - 'jasperreports_data:/volumes/jasperreports:Z'
     networks:
