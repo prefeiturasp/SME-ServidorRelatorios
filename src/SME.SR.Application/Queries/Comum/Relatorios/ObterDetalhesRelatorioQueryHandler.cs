@@ -17,7 +17,6 @@ namespace SME.SR.Application.Queries.Comum.Relatorios
         }
         public async Task<DetalhesExecucaoRelatorioRespostaDto> Handle(ObterDetalhesRelatorioQuery request, CancellationToken cancellationToken)
         {
-            //TODO PEGAR SESSIONID E RETORNAR JUNTO NO DTO
             return await execucaoRelatorioService.ObterDetalhes(request.RequisicaoId, request.JSessionId);
         }
     }
