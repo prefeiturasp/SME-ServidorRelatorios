@@ -26,8 +26,6 @@ namespace SME.SR.Application
             try
             {
                 var dadosParaRelatorioSerializado = @"";
-                //var dadosParaRelatorioSerializado = JsonConvert.SerializeObject(request);
-
                 var dadosParaEnvioArray = new List<string>() { dadosParaRelatorioSerializado };
                 dadosParaEnvioArray[0] = dadosParaRelatorioSerializado;
 
@@ -42,7 +40,7 @@ namespace SME.SR.Application
 
                 var post = new ExecucaoRelatorioRequisicaoDto()
                 {
-                    UnidadeRelatorioUri = "sme/sgp/RelatorioConselhoClasse/ConselhoClasse",
+                    UnidadeRelatorioUri = "/sme/sgp/RelatorioBoletim/RelatorioBoletim",
                     Async = true,
                     SalvarSnapshot = false,
                     FormatoSaida = "pdf",
@@ -56,8 +54,15 @@ namespace SME.SR.Application
 
                 var retorno = await execucaoRelatorioService.PostAsync(post);
 
-                var exportacaoId = Guid.Parse(retorno.Exportacoes?.FirstOrDefault()?.Exportacao?.Id);
-                var teste = await execucaoRelatorioService.ObterSaida(retorno.RequisicaoId, exportacaoId);
+                //var exportacaoId = Guid.Parse(retorno.Exportacoes?.FirstOrDefault()?.Exportacao?.Id);
+                //TODO ENFILEIRAR COM DADOS DA EXPORTACAO
+
+
+
+
+
+                //var teste = await execucaoRelatorioService.ObterSaida(retorno.RequisicaoId, exportacaoId);
+                //var teddste = await execucaoRelatorioService.ObterDetalhes(retorno.RequisicaoId, exportacaoId);
 
 
                 //var retorno = await relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto

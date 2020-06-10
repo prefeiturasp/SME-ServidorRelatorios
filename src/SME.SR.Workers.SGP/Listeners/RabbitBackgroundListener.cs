@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SME.SR.Infra;
@@ -22,35 +21,30 @@ namespace SME.SR.Workers.SGP.Services
 
         private readonly IServiceScopeFactory _scopeFactory;
 
-        private IConnection _connection;
+        private readonly IConnection _connection;
 
-        private IModel _channel;
+        private readonly IModel _channel;
 
-        // TODO move to a dynamic listener factory (Attributes???)
-        public static string ExchangeName = "sme.sr.workers";
-
-        public static string QueueName = "sme.sr.workers.sgp";
-
-        public static string RouteKeys = "sme.sr.workers.sgp.*";
-
-        public RabbitBackgroundListener(ILoggerFactory loggerFactory, IServiceScopeFactory scopeFactory)
+        public RabbitBackgroundListener(ILoggerFactory loggerFactory,
+                                        IServiceScopeFactory scopeFactory,
+                                        IModel channel,
+                                        IConnection connection)
         {
             _logger = loggerFactory.CreateLogger<RabbitBackgroundListener>();
             _scopeFactory = scopeFactory;
-            InitRabbitMQ();
+            _connection = connection;
+            _channel = channel;
+            InitRabbit();
         }
 
-        private void InitRabbitMQ()
+        private void InitRabbit()
         {
-            // TODO Separação das variáveis de ambiente e adição da connection no DI
-            var factory = new ConnectionFactory { HostName = "localhost", UserName = "user", Password = "bitnami" };
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(ExchangeName, ExchangeType.Topic);
-            _channel.QueueDeclare(QueueName, false, false, false, null);
-            _channel.QueueBind(QueueName, ExchangeName, RouteKeys, null);
+            _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Topic);
+            _channel.QueueDeclare(RotasRabbit.FilaWorkerRelatorios, false, false, false, null);
+
+            //esperando todas as filas a partir de 'sme.sr.workers.sgp'
+            _channel.QueueBind(RotasRabbit.FilaWorkerRelatorios, RotasRabbit.ExchangeListenerWorkerRelatorios, "*", null);
             _channel.BasicQos(0, 1, false);
-            _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
         }
 
         private void HandleMessage(string content)
@@ -58,7 +52,6 @@ namespace SME.SR.Workers.SGP.Services
             _logger.LogInformation($"[ INFO ] Messaged received: {content}");
 
             var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
-            //string actionName = (string)request["action"];
             MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
 
             foreach (MethodInfo method in methods)
@@ -66,14 +59,14 @@ namespace SME.SR.Workers.SGP.Services
                 ActionAttribute actionAttribute = GetActionAttribute(method);
                 if (actionAttribute != null && actionAttribute.Name == request.Action)
                 {
-                    // TODO Turn into a injected controller or dynamically registered
                     _logger.LogInformation($"[ INFO ] Invoking action: {request.Action}");
 
                     var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
-                    var controller = (WorkerSGPController)serviceProvider.GetRequiredService<WorkerSGPController>();
-                    //var mediator = (IMediator)serviceProvider.GetRequiredService<IMediator>();
+                   
+                    var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
+                    var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
 
-                    method.Invoke(controller, new object[] { request });
+                    method.Invoke(controller, new object[] { request, useCase });
 
                     _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
                     return;

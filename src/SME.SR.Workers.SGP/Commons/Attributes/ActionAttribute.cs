@@ -1,27 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP.Commons.Attributes
 {
-    [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ActionAttribute : System.Attribute
+    [AttributeUsage(AttributeTargets.Method)]
+    public class ActionAttribute : Attribute
     {
-        private string _name;
-
-        public ActionAttribute(string name)
+        public ActionAttribute(string name, Type tipoCasoDeUso)
         {
-            this._name = name;
+            Name = name;
+            TipoCasoDeUso = tipoCasoDeUso;
         }
 
-        public string Name
-        {
-            get
-            {
-                return this._name;
-            }
-        }
+        public string Name { get; }
+        public Type TipoCasoDeUso { get; }
     }
 }
 

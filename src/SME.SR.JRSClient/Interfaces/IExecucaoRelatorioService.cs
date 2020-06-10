@@ -11,7 +11,7 @@ namespace SME.SR.JRSClient.Interfaces
 
         Task<string> ObterPool(Guid requisicaoId);
 
-        Task<DetalhesExecucaoRelatorioRespostaDto> ObterDetalhes(Guid requisicaoId);
+        Task<DetalhesExecucaoRelatorioRespostaDto> ObterDetalhes(Guid requisicaoId, string jSessionId);
 
         Task<string> ObterSaida(Guid requisicaoId, Guid exportacaoId);
 
