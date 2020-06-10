@@ -224,6 +224,8 @@ pipeline {
         
             }
         }
+  }	  
+	  
         
 
 
@@ -248,5 +250,4 @@ post {
           telegramSend("O Build ${BUILD_DISPLAY_NAME} - Foi abortado.\nConsulte o log para detalhes -> [Job logs](${env.BUILD_URL}console)")
         }
     }
-}
 }
