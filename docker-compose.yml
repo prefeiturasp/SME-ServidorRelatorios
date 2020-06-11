@@ -118,8 +118,8 @@ services:
     build:
       context: .
       dockerfile: jasper_server/Dockerfile  
-    #volumes:
-    #  - 'jasperreports_data:/volumes/jasperreports:Z'
+    # volumes:
+    #  - ./jasper_server/WEB-INF/web.xml:/bitnami/tomcat/data/jasperserver/WEB-INF/web.xml:z
     networks:
       - default
     ports:
