@@ -15,12 +15,15 @@ namespace SME.SR.Application
     {
         private readonly IExecucaoRelatorioService execucaoRelatorioService;
         private readonly IServicoFila servicoFila;
+        private readonly ILoginService loginService;
 
         public GerarRelatorioAssincronoCommandHandler(IExecucaoRelatorioService execucaoRelatorioService,
-                                                      IServicoFila servicoFila)
+                                                      IServicoFila servicoFila,
+                                                      ILoginService loginService)
         {
             this.execucaoRelatorioService = execucaoRelatorioService ?? throw new System.ArgumentNullException(nameof(execucaoRelatorioService));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
+            this.loginService = loginService ?? throw new ArgumentNullException(nameof(loginService));
         }
         public async Task<bool> Handle(GerarRelatorioAssincronoCommand request, CancellationToken cancellationToken)
         {
@@ -38,11 +41,13 @@ namespace SME.SR.Application
                 Parametros = parametrosDoDto
             };
 
-            var retorno = await execucaoRelatorioService.PostAsync(post);
+            var jsessionId = await loginService.ObterTokenAutenticacao("user", "bitnami");
+
+            var retorno = await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId);
             var exportacaoId = retorno.Exports?.FirstOrDefault()?.Id;
             if (exportacaoId != null)
             {
-                var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, Guid.NewGuid(), retorno.JSessionId);
+                var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
 
                 servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando));
 

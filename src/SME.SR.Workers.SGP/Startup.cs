@@ -53,16 +53,21 @@ namespace SME.SR.Workers.SGP
 
             services.AddSingleton(jasperCookieHandler);
 
+            var urlJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Hostname");
+            var usuarioJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Username");
+            var senhaJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Password");
+
+
             services.AddHttpClient<IExecucaoRelatorioService, ExecucaoRelatorioService>(c =>
             {
-                c.BaseAddress = new Uri("http://127.0.0.1:8080");
+                c.BaseAddress = new Uri(urlJasper);
             })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
                     return jasperCookieHandler;
                 });
 
-            services.AddJasperClient("http://127.0.0.1:8080", "user", "bitnami");
+            services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
 
             services.AddSingleton(new VariaveisAmbiente());
 

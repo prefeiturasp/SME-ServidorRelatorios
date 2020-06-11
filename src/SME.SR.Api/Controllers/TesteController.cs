@@ -221,7 +221,7 @@ namespace SME.SR.Api.Controllers
         [HttpGet("postasync")]
         public async Task<IActionResult> PostAsync([FromServices] IExecucaoRelatorioService execucaoRelatorioService)
         {
-            return Ok(await execucaoRelatorioService.PostAsync(
+            return Ok(await execucaoRelatorioService.SolicitarRelatorio(
                 new ExecucaoRelatorioRequisicaoDto()
                 {
                     Async = true,

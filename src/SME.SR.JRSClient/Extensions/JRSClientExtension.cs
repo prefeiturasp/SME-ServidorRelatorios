@@ -22,6 +22,7 @@ namespace SME.SR.JRSClient
             services.AddScoped<IRelatorioService, RelatorioService>();
             services.AddScoped<ITrabalhoService, TrabalhoService>();
             services.AddScoped<IRecursoService, RecursoService>();
+            //services.AddScoped<IExecucaoRelatorioService, ExecucaoRelatorioService>();
 
             //TODO FAZER ISSO FUNCIONAR E REMOVER DO STARTUP DO WORKER =/
             //services.AddHttpClient<IExecucaoRelatorioService, ExecucaoRelatorioService>(c =>

@@ -52,7 +52,7 @@ namespace SME.SR.Application
 
                 JsonConvert.SerializeObject(post);
 
-                var retorno = await execucaoRelatorioService.PostAsync(post);
+                var retorno = await execucaoRelatorioService.SolicitarRelatorio(post,string.Empty);
 
                 //var exportacaoId = Guid.Parse(retorno.Exportacoes?.FirstOrDefault()?.Exportacao?.Id);
                 //TODO ENFILEIRAR COM DADOS DA EXPORTACAO
