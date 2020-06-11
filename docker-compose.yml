@@ -83,17 +83,17 @@ services:
   ##########################################################
   ### Mensageria ###########################################
   ##########################################################
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.7-management-alpine
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=bitnami
-    networks:
-      - default
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+  # rabbitmq:
+  #   container_name: rabbitmq
+  #   image: rabbitmq:3.7-management-alpine
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=user
+  #     - RABBITMQ_DEFAULT_PASS=bitnami
+  #   networks:
+  #     - default
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
 
   ##########################################################
   ### JRS - Jasper Reports Server ##########################
