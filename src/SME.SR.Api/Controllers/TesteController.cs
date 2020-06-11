@@ -241,7 +241,7 @@ namespace SME.SR.Api.Controllers
                     SalvarSnapshot = false,
                     UnidadeRelatorioUri = "/Nova_pasta/Report",
                     Paginas = null
-                }));
+                }, String.Empty));
         }
 
         [HttpGet("pool/{requestId}")]
