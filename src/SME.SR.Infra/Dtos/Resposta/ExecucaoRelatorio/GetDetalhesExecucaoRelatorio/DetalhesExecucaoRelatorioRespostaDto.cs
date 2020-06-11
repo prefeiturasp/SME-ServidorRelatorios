@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.SR.Infra.Dtos.Resposta
 {
@@ -21,5 +19,11 @@ namespace SME.SR.Infra.Dtos.Resposta
 
         [JsonProperty("exports")]
         public ExportacaoDetalhesDto[] Exportacoes { get; set; }
+        public bool Pronto => !string.IsNullOrWhiteSpace(Status) && Status.Equals("ready");
+        public string JSessionId { get; set; }
+        public void AdicionarJSessionId(string jSessionId)
+        {
+            JSessionId = jSessionId;
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SME.SR.Application;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
-using System;
 using System.Threading.Tasks;
 
 
@@ -12,18 +12,19 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-        private readonly IRelatorioGamesUseCase relatorioGamesUseCase;
-
-        public WorkerSGPController(IRelatorioGamesUseCase relatorioGamesUseCase)
-        {
-            this.relatorioGamesUseCase = relatorioGamesUseCase ?? throw new ArgumentNullException(nameof(relatorioGamesUseCase));
-        }
-
         [HttpGet("relatorios/alunos")]
-        [Action("relatorios/alunos")]
-        public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request)
+        [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
+        public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGamesUseCase relatorioGamesUseCase)
         {
             await relatorioGamesUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/processando")]
+        [Action("relatorios/processando", typeof(IMonitorarStatusRelatorioUseCase))]
+        public async Task<bool> RelatoriosProcessando([FromQuery] FiltroRelatorioDto request, [FromServices] IMonitorarStatusRelatorioUseCase monitorarStatusRelatorioUseCase)
+        {
+            await monitorarStatusRelatorioUseCase.Executar(request);
             return true;
         }
     }

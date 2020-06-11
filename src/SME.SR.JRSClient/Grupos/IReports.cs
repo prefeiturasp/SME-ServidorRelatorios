@@ -284,7 +284,7 @@ namespace SME.SR.JRSClient.Grupos
 
         [Headers("Accept: application/json")]
         [Get("/jasperserver/rest_v2/reportExecutions/{requestID}")]
-        Task<ApiResponse<DetalhesExecucaoRelatorioRespostaDto>> GetDetalhesExecucaoRelatorio([Header("Authorization")] string authorization, [AliasAs("requestID")] Guid requestId);
+        Task<ApiResponse<DetalhesExecucaoRelatorioRespostaDto>> GetDetalhesExecucaoRelatorio([Header("Authorization")] string authorization, [Header("Set-Cookie")] string jSessionId, [AliasAs("requestID")] Guid requestId);
 
         [Headers("Accept: application/json")]
         [Get("/jasperserver/rest_v2/reportExecutions/{requestID}/exports/{exportID}/outputResource")]

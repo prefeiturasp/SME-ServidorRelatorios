@@ -221,7 +221,7 @@ namespace SME.SR.Api.Controllers
         [HttpGet("postasync")]
         public async Task<IActionResult> PostAsync([FromServices] IExecucaoRelatorioService execucaoRelatorioService)
         {
-            return Ok(await execucaoRelatorioService.PostAsync(
+            return Ok(await execucaoRelatorioService.SolicitarRelatorio(
                 new ExecucaoRelatorioRequisicaoDto()
                 {
                     Async = true,
@@ -254,7 +254,7 @@ namespace SME.SR.Api.Controllers
         [HttpGet("detalhes/{requestId}")]
         public async Task<IActionResult> Detalhes([FromServices] IExecucaoRelatorioService execucaoRelatorioService, Guid requestId)
         {
-            return Ok(await execucaoRelatorioService.ObterDetalhes(requestId));
+            return Ok(await execucaoRelatorioService.ObterDetalhes(requestId,string.Empty));
         }
 
         [HttpGet("saida/{requestId}/exports/{exportID}/outputResource")]
