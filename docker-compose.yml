@@ -20,22 +20,21 @@ services:
   #      - flyway
   #      - jasper_reports_server
 
-  # sgpworker:
-  #   env_file:
-  #     - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
-  #   container_name: sme_sr_sgp_worker_container
-  #   build: ./src/SME.SR.Workers.SGP
-  #   ports:
-  #     - "5001:5001"
-  #     - "5000:5000"
-  #   links:
-  #     - rabbitmq
-  #     - jasper_reports_server
-  #   networks:
-  #     - default
-  #   depends_on:
-  #     - jasper_reports_server
-  #     - rabbitmq
+  sme_sr_sgpworker:
+    env_file:
+      - sme_servidor_relatorios_worker.env
+    container_name: sme_sr_sgp_worker_container
+    build: 
+      context: .
+      dockerfile: ./src/SME.SR.Workers.SGP/Dockerfile
+    ports:
+      - "5001:5001"
+      - "5000:5000"    
+    networks:
+      - default
+    depends_on:
+      - sme_sr_jasper_reports_server
+      - sme_sr_rabbitmq
 
   ##########################################################
   ### Database #############################################
@@ -83,17 +82,17 @@ services:
   ##########################################################
   ### Mensageria ###########################################
   ##########################################################
-  # rabbitmq:
-  #   container_name: rabbitmq
-  #   image: rabbitmq:3.7-management-alpine
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=user
-  #     - RABBITMQ_DEFAULT_PASS=bitnami
-  #   networks:
-  #     - default
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
+  sme_sr_rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.7-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=bitnami
+    networks:
+      - default
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
   ##########################################################
   ### JRS - Jasper Reports Server ##########################
@@ -107,7 +106,7 @@ services:
     #volumes:
     #  - 'mariadb_data:/volumes/mariadb:Z'
 
-  jasper_reports_server:
+  sme_sr_jasper_reports_server:
     container_name: jasper_reports_server_edited
     environment:
       - MARIADB_HOST=mariadb
@@ -132,8 +131,6 @@ services:
 ### Volumes, rede e infra estrutura ######################
 ##########################################################
 volumes:
-  postgres:
-  pgadmin:
   jasperreports_data:
     driver: local
   mariadb_data:
