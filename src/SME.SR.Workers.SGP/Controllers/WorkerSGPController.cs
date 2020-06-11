@@ -12,19 +12,6 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-        private readonly IRelatorioGamesUseCase relatorioGamesUseCase;
-        private readonly IRelatorioConselhoClasseTurmaUseCase relatorioConselhoClasseTurmaUseCase;
-        private readonly IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase;
-
-        public WorkerSGPController(IRelatorioGamesUseCase relatorioGamesUseCase,
-                                   IRelatorioConselhoClasseTurmaUseCase relatorioConselhoClasseTurmaUseCase,
-                                   IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
-        {
-            this.relatorioGamesUseCase = relatorioGamesUseCase ?? throw new ArgumentNullException(nameof(relatorioGamesUseCase));
-            this.relatorioConselhoClasseTurmaUseCase = relatorioConselhoClasseTurmaUseCase ?? throw new ArgumentNullException(nameof(relatorioConselhoClasseTurmaUseCase));
-            this.relatorioConselhoClasseAlunoUseCase = relatorioConselhoClasseAlunoUseCase ?? throw new ArgumentNullException(nameof(relatorioConselhoClasseAlunoUseCase));
-        }
-
         [HttpGet("relatorios/alunos")]
         [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
         public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGamesUseCase relatorioGamesUseCase)
@@ -34,16 +21,16 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorio/conselhoclasseturma")]
-        [Action("relatorio/conselhoclasseturma")]
-        public async Task<bool> RelatorioConselhoClasseTurma([FromQuery] FiltroRelatorioDto request)
+        [Action("relatorio/conselhoclasseturma", typeof(IRelatorioConselhoClasseTurmaUseCase))]
+        public async Task<bool> RelatorioConselhoClasseTurma([FromQuery] FiltroRelatorioDto request, IRelatorioConselhoClasseTurmaUseCase relatorioConselhoClasseTurmaUseCase)
         {
             await relatorioConselhoClasseTurmaUseCase.Executar(request);
             return true;
         }
 
         [HttpGet("relatorio/conselhoclassealuno")]
-        [Action("relatorio/conselhoclassealuno")]
-        public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request)
+        [Action("relatorio/conselhoclassealuno", typeof(IRelatorioConselhoClasseAlunoUseCase))]
+        public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request, IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
         {
             await relatorioConselhoClasseAlunoUseCase.Executar(request);
             return true;
