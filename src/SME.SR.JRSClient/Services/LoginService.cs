@@ -1,6 +1,7 @@
 ﻿using Refit;
 using SME.SR.JRSClient.Grupos;
 using SME.SR.JRSClient.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -26,8 +27,9 @@ namespace SME.SR.JRSClient.Services
             if (!resposta.IsSuccessStatusCode)
                 return string.Empty;
 
-            var cookies = resposta.Headers.GetValues("Set-Cookie");
-            if (!cookies.Any())
+            IEnumerable<string> cookies=null;
+            resposta.Headers?.TryGetValues("Set-Cookie",out cookies);
+            if (cookies==null || !cookies.Any())
                 return string.Empty;
             
             var jSessionId = cookies.FirstOrDefault(a => a.Contains("JSESSIONID"));
