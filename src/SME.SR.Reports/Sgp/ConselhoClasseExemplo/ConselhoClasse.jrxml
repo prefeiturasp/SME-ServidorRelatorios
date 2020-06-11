@@ -12,7 +12,7 @@
 	<parameter name="JSON_INPUT_STREAM" class="java.io.InputStream" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new java.io.ByteArrayInputStream($P{jsonString}.getBytes("UTF-8"))]]></defaultValueExpression>
 	</parameter>
-	<queryString language="jsonql">
+	<queryString language="json">
 		<![CDATA[ConselhoClasse]]>
 	</queryString>
 	<field name="data" class="java.lang.String">

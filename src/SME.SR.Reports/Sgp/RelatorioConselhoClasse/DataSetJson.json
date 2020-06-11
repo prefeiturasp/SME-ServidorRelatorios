@@ -1,0 +1,195 @@
+{
+  "relatorioConselhoDeClasse": 
+  {
+	   "gruposMatrizComponentesComNota":[
+		  {
+			 "componentesComNota":[
+				{
+				   "notaConceito":"9",
+				   "notaPosConselho":"10",
+				   "aulas":1,
+				   "componente":"MATEMATICA",
+				   "faltas":0,
+				   "ausenciasCompensadas":0,
+				   "frequencia":100
+				},
+				{
+				   "notaConceito":"9",
+				   "notaPosConselho":"9",
+				   "aulas":1,
+				   "componente":"ED. FISICA",
+				   "faltas":0,
+				   "ausenciasCompensadas":0,
+				   "frequencia":100
+				},
+				{
+				   "notaConceito":"",
+				   "notaPosConselho":null,
+				   "aulas":0,
+				   "componente":"HISTORIA",
+				   "faltas":0,
+				   "ausenciasCompensadas":0,
+				   "frequencia":100
+				},
+				{
+				   "notaConceito":"9",
+				   "notaPosConselho":"9",
+				   "aulas":1,
+				   "componente":"GEOGRAFIA",
+				   "faltas":0,
+				   "ausenciasCompensadas":0,
+				   "frequencia":100
+				},
+				{
+				   "notaConceito":"9",
+				   "notaPosConselho":"9",
+				   "aulas":1,
+				   "componente":"CIENCIAS",
+				   "faltas":0,
+				   "ausenciasCompensadas":0,
+				   "frequencia":100
+				},
+				{
+				   "notaConceito":"9",
+				   "notaPosConselho":"9",
+				   "aulas":1,
+				   "componente":"LINGUA PORTUGUESA",
+				   "faltas":0,
+				   "ausenciasCompensadas":0,
+				   "frequencia":100
+				},
+				{
+				   "notaConceito":"5,5",
+				   "notaPosConselho":"5,5",
+				   "aulas":0,
+				   "componente":"ARTE",
+				   "faltas":0,
+				   "ausenciasCompensadas":0,
+				   "frequencia":100
+				}
+			 ],
+			 "nome":"Base Nacional Comum"
+		  },
+		  {
+			 "componentesComNota":[
+				{
+				   "notaConceito":"9",
+				   "notaPosConselho":"9",
+				   "aulas":1,
+				   "componente":"INGLES",
+				   "faltas":0,
+				   "ausenciasCompensadas":0,
+				   "frequencia":100
+				}
+			 ],
+			 "nome":"Diversificada"
+		  }
+	   ],
+	   "gruposMatrizComponentesSemNota":[
+		  {
+			 "componentesSemNota":[
+				{
+				   "componente":"INFORMATICA - OIE",
+				   "faltas":0,
+				   "frequencia":100
+				},
+				{
+				   "componente":"LEITURA - OSL",
+				   "faltas":0,
+				   "frequencia":100
+				}
+			 ],
+			 "nome":"Enriquecimento Curricular"
+		  },
+		  {
+			 "componentesSemNota":[
+				{
+				   "componente":"INFORMATICA - OIE",
+				   "faltas":0,
+				   "frequencia":100
+				},
+				{
+				   "componente":"LEITURA - OSL",
+				   "faltas":0,
+				   "frequencia":100
+				}
+			 ],
+			 "nome":"Enriquecimento Curricular"
+		  }
+	   ],
+	   "titulo":"Conselho de Classe",
+	   "dre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE",
+	   "ue":"MAXIMO DE MOURA SANTOS, PROF.",
+	   "turma":"8B",
+	   "data":"2020-06-07T21:19:59.7967358-03:00",
+	   "alunoNome":"ANA BEATRIZ THEODOCELLO GOMES",
+	   "alunoNumero":1,
+	   "alunoDataDeNascimento":"2006-10-13T00:00:00",
+	   "alunoCodigoEol":"4820277",
+	   "alunoSituacao":"Ativo em 09/10/2019",
+	   "alunofrequenciaGlobal":85.19,
+	   "alunoParecerConclusivo":null,
+	   "bimestre":"2",
+	   "anotacoesPedagogicas":null,
+	   "recomendacaoAluno":"\u003Cul\u003E\u003Cli\u003EBusque ir al\u00E9m dos conhecimentos trabalhados em sala de aula. Seja curioso.\u003C/li\u003E\u003Cli\u003ECuide de seu material escolar. Ele \u00E9 de sua responsabilidade.\u003C/li\u003E\u003Cli\u003ECuide de suas rela\u00E7\u00F5es pessoais. Busque ajuda e orienta\u00E7\u00E3o de professores,funcion\u00E1rios e gestores sempre que necess\u00E1rio.\u003C/li\u003E\u003Cli\u003EDesenvolva uma rotina de estudo e organiza\u00E7\u00E3o para o cumprimento das tarefas e prazos escolares.\u003C/li\u003E\u003Cli\u003EEsclare\u00E7a suas d\u00FAvidas com os professores sempre que necess\u00E1rio.\u003C/li\u003E\u003Cli\u003EFrequente \u00E0s aulas diariamente. Em caso de aus\u00EAncia,justifique-a.\u003C/li\u003E\u003Cli\u003EFrequente bibliotecas e sites confi\u00E1veis para pesquisa.\u003C/li\u003E\u003Cli\u003ELeia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.\u003C/li\u003E\u003Cli\u003EParticipe das aulas com aten\u00E7\u00E3o,pergunte quando tiver d\u00FAvidas e fa\u00E7a registro das ideias centrais da aula.\u003C/li\u003E\u003Cli\u003EPe\u00E7a permiss\u00E3o para falar e saiba ouvir seus colegas.\u003C/li\u003E\u003Cli\u003EPesquise. Reflita. Questione. Discuta. Escreva.\u003C/li\u003E\u003Cli\u003EProcure desenvolver seus pr\u00F3prios m\u00E9todos de estudo. Use agenda e anote seus compromissos.\u003C/li\u003E\u003Cli\u003EValorize,respeite e coopere com o trabalho de todos no ambiente escolar.\u003C/li\u003E\u003C/ul\u003E",
+	   "recomendacaoFamilia":"\u003Cul\u003E\u003Cli\u003EAcompanhe a frequ\u00EAncia de seus filhos \u00E0s aulas e \u00E0s atividades escolares.\u003C/li\u003E\u003Cli\u003EAcompanhe seu filho na realiza\u00E7\u00E3o das li\u00E7\u00F5es de casa.\u003C/li\u003E\u003Cli\u003EAjude a construir uma escola democr\u00E1tica. Participe do Conselho de Escola.\u003C/li\u003E\u003Cli\u003ECompare\u00E7a \u00E0s reuni\u00F5es da escola. D\u00EA sua opini\u00E3o. Ela \u00E9 muito importante.\u003C/li\u003E\u003Cli\u003EConfira o boletim escolar de seu filho,caso tenha alguma d\u00FAvida procure o professor/coordenador.\u003C/li\u003E\u003Cli\u003EIncentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.\u003C/li\u003E\u003Cli\u003ELeia bilhetes e avisos que a escola mandar e responda quando necess\u00E1rio.\u003C/li\u003E\u003Cli\u003EOriente seu filho a cuidar de seu material escolar.\u003C/li\u003E\u003Cli\u003EPe\u00E7a orienta\u00E7\u00E3o aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.\u003C/li\u003E\u003Cli\u003EProcure visitar a escola de seus filhos sempre que precisar.\u003C/li\u003E\u003Cli\u003EVerifique diariamente os cadernos e livros de seus filhos.\u003C/li\u003E\u003C/ul\u003E",
+	   "anotacoesAluno":[
+		  {
+			 "anotacao":null,
+			 "data":"2020-04-29T18:02:20.310132",
+			 "disciplina":"Arte",
+			 "disciplinaId":"139",
+			 "professor":"SADAKO MORITA",
+			 "professorRf":"3135535"
+		  },
+		  {
+			 "anotacao":null,
+			 "data":"2020-05-04T09:46:57.624468",
+			 "disciplina":"Matem\u00E1tica",
+			 "disciplinaId":"2",
+			 "professor":"ARACI NOBUE NAKANE CHAEBO GADUM",
+			 "professorRf":"7213000"
+		  },
+		  {
+			 "anotacao":null,
+			 "data":"2020-05-04T09:56:00.218293",
+			 "disciplina":"Educa\u00E7\u00E3o F\u00EDsica",
+			 "disciplinaId":"6",
+			 "professor":"MARCO ANTONIO RUEDA",
+			 "professorRf":"7442351"
+		  },
+		  {
+			 "anotacao":null,
+			 "data":"2020-05-04T10:00:36.341178",
+			 "disciplina":"Geografia",
+			 "disciplinaId":"8",
+			 "professor":"ELIANE VAZ",
+			 "professorRf":"6766714"
+		  },
+		  {
+			 "anotacao":null,
+			 "data":"2020-05-04T10:07:56.653391",
+			 "disciplina":"Ci\u00EAncias",
+			 "disciplinaId":"89",
+			 "professor":"JUCIARA TEIXEIRA HOLZMANN VERNIER",
+			 "professorRf":"6517579"
+		  },
+		  {
+			 "anotacao":null,
+			 "data":"2020-05-04T10:12:12.864943",
+			 "disciplina":"Ingl\u00EAs",
+			 "disciplinaId":"9",
+			 "professor":"ALYSSON EDUARDO GUARIENTO PASCHOAL PINTO",
+			 "professorRf":"7268173"
+		  },
+		  {
+			 "anotacao":null,
+			 "data":"2020-05-04T10:17:01.173715",
+			 "disciplina":"L\u00EDngua Portuguesa",
+			 "disciplinaId":"138",
+			 "professor":"DALVA DOS SANTOS",
+			 "professorRf":"7485433"
+		  }
+	   ]
+	}
+}
