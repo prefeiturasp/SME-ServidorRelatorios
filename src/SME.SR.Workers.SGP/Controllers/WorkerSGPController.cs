@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using System;
@@ -13,34 +14,32 @@ namespace SME.SR.Workers.SGP.Controllers
     public class WorkerSGPController : ControllerBase
     {
         private readonly IRelatorioGamesUseCase relatorioGamesUseCase;
+        private readonly IRelatorioConselhoClasseTurmaUseCase relatorioConselhoClasseTurmaUseCase;
+        private readonly IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase;
 
-        public WorkerSGPController(IRelatorioGamesUseCase relatorioGamesUseCase)
+        public WorkerSGPController(IRelatorioGamesUseCase relatorioGamesUseCase,
+                                   IRelatorioConselhoClasseTurmaUseCase relatorioConselhoClasseTurmaUseCase,
+                                   IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
         {
             this.relatorioGamesUseCase = relatorioGamesUseCase ?? throw new ArgumentNullException(nameof(relatorioGamesUseCase));
-        }
-		
-        [HttpGet("relatorio/dadosaluno")]
-        [Action("relatorio/dadosaluno")]
-        public async Task<bool> RelatorioDadosAluno([FromQuery] JObject request, [FromServices] IMediator mediator)
-        {
-            Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
-            return await RelatorioDadosAlunoUseCase.Executar(mediator);
+            this.relatorioConselhoClasseTurmaUseCase = relatorioConselhoClasseTurmaUseCase ?? throw new ArgumentNullException(nameof(relatorioConselhoClasseTurmaUseCase));
+            this.relatorioConselhoClasseAlunoUseCase = relatorioConselhoClasseAlunoUseCase ?? throw new ArgumentNullException(nameof(relatorioConselhoClasseAlunoUseCase));
         }
 		
         [HttpGet("relatorio/conselhoclasseturma")]
         [Action("relatorio/conselhoclasseturma")]
-        public async Task<string> RelatorioConselhoClasseTurma([FromQuery] JObject request, [FromServices] IMediator mediator)
+        public async Task<bool> RelatorioConselhoClasseTurma([FromQuery] FiltroRelatorioDto request)
         {
-            Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
-            return await RelatorioConselhoClasseTurmaUseCase.Executar(mediator, request);
+            await relatorioConselhoClasseTurmaUseCase.Executar(request);
+            return true;
         }
 
         [HttpGet("relatorio/conselhoclassealuno")]
         [Action("relatorio/conselhoclassealuno")]
-        public async Task<string> RelatorioConselhoClasseAluno([FromQuery] JObject request, [FromServices] IMediator mediator)
+        public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request)
         {
-            Console.WriteLine("[ INFO ] Nome da action: " + request["action"]);
-            return await RelatorioConselhoClasseAlunoUseCase.Executar(mediator,request);
+            await relatorioConselhoClasseAlunoUseCase.Executar(request);
+            return true;
         }
 
         [HttpGet("relatorios/alunos")]
