@@ -1,18 +1,52 @@
 ﻿using Refit;
 using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.Infra.Dtos.Resposta;
+using SME.SR.JRSClient.Extensions;
 using SME.SR.JRSClient.Grupos;
 using SME.SR.JRSClient.Interfaces;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Services
 {
     public class ExecucaoRelatorioService : ServiceBase<IReports>, IExecucaoRelatorioService
     {
-        public ExecucaoRelatorioService(Configuracoes configuracoes) : base(configuracoes)
-        {
+        private readonly HttpClient httpClient;
+        private readonly JasperCookieHandler jasperCookieHandler;
 
+        public ExecucaoRelatorioService(HttpClient httpClient, Configuracoes configuracoes, JasperCookieHandler jasperCookieHandler) : base(httpClient, configuracoes)
+        {
+            this.httpClient = httpClient;
+            this.jasperCookieHandler = jasperCookieHandler;
+        }
+
+
+        public async Task<DetalhesExecucaoRelatorioRespostaDto> ObterDetalhes(Guid requisicaoId, string jSessionId)
+        {
+            if (!string.IsNullOrWhiteSpace(jSessionId))
+                jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
+
+            var retorno = await restService.GetDetalhesExecucaoRelatorio(ObterCabecalhoAutenticacaoBasica(), jSessionId, requisicaoId);
+            if (retorno.IsSuccessStatusCode)
+            {
+                retorno.Content.AdicionarJSessionId(jSessionId);
+                return retorno.Content;
+            }
+            return default;
+        }
+
+        public async Task<ExecucaoRelatorioRespostaDto> SolicitarRelatorio(ExecucaoRelatorioRequisicaoDto requisicao, string jSessionId)
+        {
+            if (!string.IsNullOrWhiteSpace(jSessionId))
+                jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
+
+            var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
+            if (retorno.IsSuccessStatusCode)
+            {
+                return retorno.Content;
+            }
+            return default;
         }
 
         public async Task<string> InterromperRelatoriosTarefas(Guid requisicaoId)
@@ -36,17 +70,6 @@ namespace SME.SR.JRSClient.Services
             return default;
         }
 
-        public async Task<DetalhesExecucaoRelatorioRespostaDto> ObterDetalhes(Guid requisicaoId)
-        {
-            var restService = RestService.For<IReports>(configuracoes.UrlBase);
-
-            var retorno = await restService.GetDetalhesExecucaoRelatorio(ObterCabecalhoAutenticacaoBasica(), requisicaoId);
-            if (retorno.IsSuccessStatusCode)
-            {
-                return retorno.Content;
-            }
-            return default;
-        }
 
         public async Task<string> ObterPool(Guid requisicaoId)
         {
@@ -89,18 +112,6 @@ namespace SME.SR.JRSClient.Services
             var restService = RestService.For<IReports>(configuracoes.UrlBase);
 
             var retorno = await restService.GetSaidaRelatorio(ObterCabecalhoAutenticacaoBasica(), requisicaoId, exportacaoId);
-            if (retorno.IsSuccessStatusCode)
-            {
-                return retorno.Content;
-            }
-            return default;
-        }
-
-        public async Task<ExecucaoRelatorioRespostaDto> PostAsync(ExecucaoRelatorioRequisicaoDto requisicao)
-        {
-            var restService = RestService.For<IReports>(configuracoes.UrlBase);
-
-            var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
             if (retorno.IsSuccessStatusCode)
             {
                 return retorno.Content;

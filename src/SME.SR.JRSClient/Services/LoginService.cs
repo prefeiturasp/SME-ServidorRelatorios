@@ -32,7 +32,7 @@ namespace SME.SR.JRSClient.Services
             
             var jSessionId = cookies.FirstOrDefault(a => a.Contains("JSESSIONID"));
             if (!string.IsNullOrEmpty(jSessionId))
-                return jSessionId;
+                return jSessionId.Substring(11, 32);
 
             return string.Empty;
         }
