@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Interfaces;
 using SME.SR.Application.Queries.Comum.Relatorios;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
