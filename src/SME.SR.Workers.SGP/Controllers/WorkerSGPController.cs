@@ -2,7 +2,6 @@
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
-using System;
 using System.Threading.Tasks;
 
 
@@ -25,7 +24,15 @@ namespace SME.SR.Workers.SGP.Controllers
             this.relatorioConselhoClasseTurmaUseCase = relatorioConselhoClasseTurmaUseCase ?? throw new ArgumentNullException(nameof(relatorioConselhoClasseTurmaUseCase));
             this.relatorioConselhoClasseAlunoUseCase = relatorioConselhoClasseAlunoUseCase ?? throw new ArgumentNullException(nameof(relatorioConselhoClasseAlunoUseCase));
         }
-		
+
+        [HttpGet("relatorios/alunos")]
+        [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
+        public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGamesUseCase relatorioGamesUseCase)
+        {
+            await relatorioGamesUseCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorio/conselhoclasseturma")]
         [Action("relatorio/conselhoclasseturma")]
         public async Task<bool> RelatorioConselhoClasseTurma([FromQuery] FiltroRelatorioDto request)
@@ -42,11 +49,11 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet("relatorios/alunos")]
-        [Action("relatorios/alunos")]
-        public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request)
+        [HttpGet("relatorios/processando")]
+        [Action("relatorios/processando", typeof(IMonitorarStatusRelatorioUseCase))]
+        public async Task<bool> RelatoriosProcessando([FromQuery] FiltroRelatorioDto request, [FromServices] IMonitorarStatusRelatorioUseCase monitorarStatusRelatorioUseCase)
         {
-            await relatorioGamesUseCase.Executar(request);
+            await monitorarStatusRelatorioUseCase.Executar(request);
             return true;
         }
     }

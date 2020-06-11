@@ -25,7 +25,10 @@ namespace SME.SR.Application
             var conselhoClasse = await mediator.Send(new RelatorioExemploQuery());
             var dadosRelatorio = JsonConvert.SerializeObject(conselhoClasse);
 
-            await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioConselhoClasse/ConselhoClasse", dadosRelatorio, FormatoEnum.Pdf));
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sme/sgp/RelatorioConselhoClasse/ConselhoClasse",
+                                                                    dadosRelatorio,
+                                                                    FormatoEnum.Pdf,
+                                                                    request.CodigoCorrelacao));
         }
     }
 }

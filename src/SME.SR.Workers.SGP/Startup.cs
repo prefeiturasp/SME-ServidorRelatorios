@@ -12,9 +12,15 @@ using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.JRSClient;
+using SME.SR.JRSClient.Extensions;
+using SME.SR.JRSClient.Interfaces;
+using SME.SR.JRSClient.Services;
+using SME.SR.Workers.SGP.Configuracoes;
 using SME.SR.Workers.SGP.Services;
 using System;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 
 namespace SME.SR.Workers.SGP
@@ -40,10 +46,31 @@ namespace SME.SR.Workers.SGP
 
             services.AddControllers();
             services.AddMvc().AddControllersAsServices();
+            services.AddRabbitMQ();
             services.AddHostedService<RabbitBackgroundListener>();
 
             //TODO: Informaçoes do arquivo de configuração
-            services.AddJasperClient("http://127.0.0.1:8080", "user", "bitnami");
+
+            var cookieContainer = new CookieContainer();
+            var jasperCookieHandler = new JasperCookieHandler() { CookieContainer = cookieContainer };
+
+            services.AddSingleton(jasperCookieHandler);
+
+            var urlJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Hostname");
+            var usuarioJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Username");
+            var senhaJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Password");
+
+
+            services.AddHttpClient<IExecucaoRelatorioService, ExecucaoRelatorioService>(c =>
+            {
+                c.BaseAddress = new Uri(urlJasper);
+            })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return jasperCookieHandler;
+                });
+
+            services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
 
             services.AddSingleton(new VariaveisAmbiente());
 
@@ -53,6 +80,7 @@ namespace SME.SR.Workers.SGP
             RegistrarHandlers(services);
             RegistrarCommands(services);
             RegistrarUseCase(services);
+            RegistrarServicos(services);
         }
 
         private void RegistrarRepositorios(IServiceCollection services)
@@ -128,8 +156,14 @@ namespace SME.SR.Workers.SGP
         private void RegistrarUseCase(IServiceCollection services)
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
+            services.TryAddScoped<IMonitorarStatusRelatorioUseCase, MonitorarStatusRelatorioUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAlunoUseCase, RelatorioConselhoClasseAlunoUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
+        }
+
+        private void RegistrarServicos(IServiceCollection services)
+        {
+            services.TryAddScoped<IServicoFila, FilaRabbit>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -150,6 +184,7 @@ namespace SME.SR.Workers.SGP
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }
