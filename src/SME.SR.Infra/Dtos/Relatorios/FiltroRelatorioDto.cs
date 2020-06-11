@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace SME.SR.Infra
 {
@@ -6,6 +7,7 @@ namespace SME.SR.Infra
     {
         public string Action { get; set; }
         public object Filtros { get; set; }
+        public Guid CodigoCorrelacao { get; set; }
 
         public T ObterObjetoFiltro<T>() where T: class
         {
