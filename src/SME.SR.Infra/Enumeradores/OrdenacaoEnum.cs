@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace SME.SR.Infra
+{
     public static partial class Enumeradores
     {
         public enum OrdenacaoEnum

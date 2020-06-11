@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using static SME.SR.Infra.Enumeradores;
 
-namespace SME.SR.Workers.SGP.UseCases
+namespace SME.SR.Application
 {
     public class RelatorioConselhoClasseTurmaUseCase: IRelatorioConselhoClasseTurmaUseCase
     {

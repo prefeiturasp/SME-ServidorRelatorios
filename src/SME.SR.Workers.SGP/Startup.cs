@@ -6,12 +6,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using SME.SR.Application;
+using SME.SR.Application.Interfaces;
 using SME.SR.Data;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.JRSClient;
 using SME.SR.Workers.SGP.Services;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace SME.SR.Workers.SGP
 {
@@ -46,14 +50,14 @@ namespace SME.SR.Workers.SGP
             // TODO: Criar arquivo especficio para as injeções
             RegistrarRepositorios(services);
 			RegistrarQueries(services);
-			RegistrarCommands(services);
+            RegistrarHandlers(services);
+            RegistrarCommands(services);
             RegistrarUseCase(services);
         }
 
         private void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IExemploRepository, ExemploRepository>();
-            services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
 			services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(IComponenteCurricularRepository), typeof(ComponenteCurricularRepository));
@@ -73,8 +77,6 @@ namespace SME.SR.Workers.SGP
 
         private void RegistrarCommands(IServiceCollection services)
         {
-            services.AddMediatR(typeof(RelatorioDadosAlunoCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(RelatorioDadosAlunoCommandHandler).GetTypeInfo().Assembly);
 		}
 		
         private void RegistrarQueries(IServiceCollection services)
@@ -97,7 +99,7 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterParecerConclusivoPorAlunoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmaPeriodoFechamentoPorIdQuery).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
 		}
 		
         private void RegistrarHandlers(IServiceCollection services)
@@ -119,13 +121,15 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterParecerConclusivoPorAlunoQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmaPeriodoFechamentoPorIdQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
 		}
 		
         private void RegistrarUseCase(IServiceCollection services)
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
+            services.TryAddScoped<IRelatorioConselhoClasseAlunoUseCase, RelatorioConselhoClasseAlunoUseCase>();
+            services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

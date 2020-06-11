@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
-using SME.SR.Application.Interfaces;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;

@@ -1,4 +1,5 @@
 ﻿namespace SME.SR.Data
+{
     public class RecomendacaoConselhoClasseAluno
     {
         public string RecomendacoesAluno { get; set; }

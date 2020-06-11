@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Data
+﻿using SME.SR.Infra;
+
+namespace SME.SR.Data
 {
     public class Turma
     {

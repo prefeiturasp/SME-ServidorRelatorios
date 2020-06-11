@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 namespace SME.SR.Data
+{
     public class ComponenteComNotaBimestre : ComponenteComNota
     {
         [JsonProperty("notaConceito")]

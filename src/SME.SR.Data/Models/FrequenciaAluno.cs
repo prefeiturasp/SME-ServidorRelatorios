@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SME.SR.Infra;
+using System;
 
 namespace SME.SR.Data
 {
