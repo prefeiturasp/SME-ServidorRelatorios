@@ -7,7 +7,7 @@ namespace SME.SR.JRSClient.Interfaces
 {
     public interface IExecucaoRelatorioService
     {
-        Task<ExecucaoRelatorioRespostaDto> PostAsync(ExecucaoRelatorioRequisicaoDto requisicao);
+        Task<ExecucaoRelatorioRespostaDto> SolicitarRelatorio(ExecucaoRelatorioRequisicaoDto requisicao, string jSessionId);
 
         Task<string> ObterPool(Guid requisicaoId);
 
