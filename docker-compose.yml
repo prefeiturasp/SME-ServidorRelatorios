@@ -24,6 +24,7 @@ services:
     env_file:
       - sme_servidor_relatorios_worker.env
     container_name: sme_sr_sgp_worker_container
+    restart: on-failure
     build: 
       context: .
       dockerfile: ./src/SME.SR.Workers.SGP/Dockerfile
