@@ -13,10 +13,12 @@ namespace SME.SR.Workers.SGP.Controllers
     public class WorkerSGPController : ControllerBase
     {
         private readonly IRelatorioGamesUseCase relatorioGamesUseCase;
+        private readonly IRelatorioBoletimEscolarUseCase relatorioBoletimEscolarUseCase;
 
-        public WorkerSGPController(IRelatorioGamesUseCase relatorioGamesUseCase)
+        public WorkerSGPController(IRelatorioGamesUseCase relatorioGamesUseCase, IRelatorioBoletimEscolarUseCase relatorioBoletimEscolarUseCase)
         {
             this.relatorioGamesUseCase = relatorioGamesUseCase ?? throw new ArgumentNullException(nameof(relatorioGamesUseCase));
+            this.relatorioBoletimEscolarUseCase = relatorioBoletimEscolarUseCase ?? throw new ArgumentNullException(nameof(relatorioBoletimEscolarUseCase));
         }
 
         [HttpGet("relatorios/alunos")]
@@ -24,6 +26,14 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request)
         {
             await relatorioGamesUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/boletimescolar")]
+        [Action("relatorios/boletimescolar")]
+        public async Task<bool> RelatorioBoletimEscolar([FromQuery] FiltroRelatorioDto request)
+        {
+            await relatorioBoletimEscolarUseCase.Executar(request);
             return true;
         }
     }

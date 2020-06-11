@@ -57,6 +57,7 @@ namespace SME.SR.Workers.SGP
         private void RegistrarUseCase(IServiceCollection services)
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
+            services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
