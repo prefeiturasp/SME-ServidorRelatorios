@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SME.SR.Application;
+using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using System.Threading.Tasks;
@@ -17,6 +17,22 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGamesUseCase relatorioGamesUseCase)
         {
             await relatorioGamesUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorio/conselhoclasseturma")]
+        [Action("relatorio/conselhoclasseturma", typeof(IRelatorioConselhoClasseTurmaUseCase))]
+        public async Task<bool> RelatorioConselhoClasseTurma([FromQuery] FiltroRelatorioDto request, IRelatorioConselhoClasseTurmaUseCase relatorioConselhoClasseTurmaUseCase)
+        {
+            await relatorioConselhoClasseTurmaUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorio/conselhoclassealuno")]
+        [Action("relatorio/conselhoclassealuno", typeof(IRelatorioConselhoClasseAlunoUseCase))]
+        public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request, IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
+        {
+            await relatorioConselhoClasseAlunoUseCase.Executar(request);
             return true;
         }
 

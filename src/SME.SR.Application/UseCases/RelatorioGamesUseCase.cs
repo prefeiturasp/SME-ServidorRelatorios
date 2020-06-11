@@ -1,13 +1,12 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
-using SME.SR.Application;
-using SME.SR.Application.Queries.Exemplos.RelatorioExemplo;
+using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
-using static SME.SR.Infra.Enumeradores.Enumeradores;
+using static SME.SR.Infra.Enumeradores;
 
-namespace SME.SR.Workers.SGP
+namespace SME.SR.Application
 {
     public class RelatorioGamesUseCase : IRelatorioGamesUseCase
     {
