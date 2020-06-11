@@ -41,40 +41,36 @@
 	<subDataset name="DatasetComponentesSemNota" uuid="3c247fbc-123f-4951-9251-7af37f5417bf">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
 		<queryString language="json">
-			<![CDATA[relatorioConselhoDeClasse.gruposMatrizComponentesSemNota.componentesSemNota]]>
+			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesSemNota.componentesSemNota]]>
 		</queryString>
-		<field name="componente" class="java.lang.String">
+		<field name="Componente" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="componente"/>
-			<fieldDescription><![CDATA[componente]]></fieldDescription>
+			<fieldDescription><![CDATA[Componente]]></fieldDescription>
 		</field>
-		<field name="faltas" class="java.lang.Integer">
+		<field name="Faltas" class="java.lang.Integer">
 			<property name="net.sf.jasperreports.json.field.expression" value="faltas"/>
-			<fieldDescription><![CDATA[faltas]]></fieldDescription>
+			<fieldDescription><![CDATA[Faltas]]></fieldDescription>
 		</field>
-		<field name="frequencia" class="java.lang.Integer">
+		<field name="Frequencia" class="java.lang.Integer">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequencia"/>
-			<fieldDescription><![CDATA[frequencia]]></fieldDescription>
+			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
 		</field>
 	</subDataset>
 	<parameter name="NOME_COLUNA" class="java.lang.String"/>
 	<queryString language="json">
-		<![CDATA[relatorioConselhoDeClasse.gruposMatrizComponentesSemNota]]>
+		<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesSemNota.Nome]]>
 	</queryString>
-	<field name="nome" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
-		<fieldDescription><![CDATA[nome]]></fieldDescription>
+	<field name="Nome" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="relatorioConselhoDeClasse.GruposMatrizComponentesSemNota.Nome"/>
+		<fieldDescription><![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesSemNota.Nome]]></fieldDescription>
 	</field>
-	<variable name="NOME_COLUNA" class="java.lang.String" resetType="None">
-		<variableExpression><![CDATA[$F{nome}]]></variableExpression>
-		<initialValueExpression><![CDATA[$F{nome}]]></initialValueExpression>
-	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
 		<band height="84" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="23" width="553" height="61" uuid="7697ad65-6223-4e0f-9502-3e4b44e711a0">
+				<reportElement positionType="Float" x="0" y="23" width="553" height="61" uuid="7697ad65-6223-4e0f-9502-3e4b44e711a0">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -83,7 +79,7 @@
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DatasetComponentesSemNota" uuid="986f269b-7a6c-4dd2-9015-2afada453c4b">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesSemNota")]]></dataSourceExpression>
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("ComponentesSemNota")]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="90" uuid="81d0c585-83d1-44ac-87c8-7fa5e6eb086b">
 						<jr:columnHeader style="Table_CH" height="30"/>
@@ -91,7 +87,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="90" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{componente}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -107,7 +103,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="230" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{faltas}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -123,7 +119,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="233" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{frequencia}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
