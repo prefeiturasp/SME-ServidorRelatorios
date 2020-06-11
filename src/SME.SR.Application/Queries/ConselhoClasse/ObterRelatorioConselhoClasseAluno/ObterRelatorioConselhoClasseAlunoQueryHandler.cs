@@ -38,7 +38,7 @@ namespace SME.SR.Application
 
             relatorio.Titulo = "Conselho de Classe";
             relatorio.Turma = fechamentoTurma.Turma.Nome;
-            relatorio.Data = DateTime.Now;
+            relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
             var dreUe = await ObterDreUePorTurma(fechamentoTurma.Turma.CodigoTurma);
 
@@ -49,7 +49,7 @@ namespace SME.SR.Application
 
             relatorio.AlunoNome = dadosAluno.NomeAluno;
             relatorio.AlunoNumero = Convert.ToInt32(dadosAluno.NumeroAlunoChamada);
-            relatorio.AlunoDataDeNascimento = dadosAluno.DataNascimento;
+            relatorio.AlunoDataDeNascimento = dadosAluno.DataNascimento.ToString("dd/MM/yyyy");
             relatorio.AlunoCodigoEol = dadosAluno.CodigoAluno.ToString();
             relatorio.AlunoSituacao = $"{dadosAluno.SituacaoMatricula} em {dadosAluno.DataSituacao:dd/MM/yyyy}";
 

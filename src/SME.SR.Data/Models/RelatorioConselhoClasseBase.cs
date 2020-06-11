@@ -19,7 +19,7 @@ namespace SME.SR.Data
         public string Turma { get; set; }
 
         [JsonProperty("data")]
-        public DateTime Data { get; set; }
+        public string Data { get; set; }
 
         [JsonProperty("alunoNome")]
         public string AlunoNome { get; set; }
@@ -28,7 +28,7 @@ namespace SME.SR.Data
         public int AlunoNumero { get; set; }
 
         [JsonProperty("alunoDataDeNascimento")]
-        public DateTime AlunoDataDeNascimento { get; set; }
+        public string AlunoDataDeNascimento { get; set; }
 
         [JsonProperty("alunoCodigoEol")]
         public string AlunoCodigoEol { get; set; }
