@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using System;
 
@@ -9,13 +10,13 @@ namespace SME.SR.Workers.SGP.Configuracoes
 
        
 
-        public static void AddRabbitMQ(this IServiceCollection services)
+        public static void AddRabbitMQ(this IServiceCollection services, IConfiguration configuration)
         {
             var factory = new ConnectionFactory
             {
-                HostName = Environment.GetEnvironmentVariable("ConfiguracaoRabbit__HostName"),
-                UserName = Environment.GetEnvironmentVariable("ConfiguracaoRabbit__UserName"),
-                Password = Environment.GetEnvironmentVariable("ConfiguracaoRabbit__Password")
+                HostName = configuration.GetValue<string>("ConfiguracaoRabbit:HostName"),
+                UserName = configuration.GetValue<string>("ConfiguracaoRabbit:UserName"),
+                Password = configuration.GetValue<string>("ConfiguracaoRabbit:Password")
             };
 
             var conexaoRabbit = factory.CreateConnection();

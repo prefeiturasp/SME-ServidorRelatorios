@@ -23,9 +23,12 @@ namespace SME.SR.Workers.SGP
             {
                 webBuilder
                     .UseKestrel()
-                    .UseUrls("http://0.0.0.0:5010;https://0.0.0.0:5011;")
+                    .ConfigureAppConfiguration((hostingContext, config) =>
+                       {
+                           config.AddEnvironmentVariables();
+                       })
                     .UseStartup<Startup>();
-                    //.UseSentry(option => { option.Dsn = VariaveisAmbiente.SentryDsn; });
+                    
             });
     }
 }

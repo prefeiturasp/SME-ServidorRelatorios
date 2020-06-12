@@ -241,7 +241,6 @@ namespace SME.SR.Api.Controllers
                 UnidadeRelatorioUri = "/Nova_pasta/Report",
                 Paginas = null
             };
-
             var jsessionId = await loginService.ObterTokenAutenticacao("user", "bitnami");
 
             return Ok(await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId));
