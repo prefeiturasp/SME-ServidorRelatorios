@@ -1,8 +1,11 @@
-﻿namespace SME.SR.Data
+﻿using SME.SR.Infra;
+using System.Runtime.InteropServices.ComTypes;
+
+namespace SME.SR.Data
 {
     public static class TurmaConsultas
     {
-		internal static string DadosAlunos = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+        internal static string DadosAlunos = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -118,11 +121,35 @@
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-		internal static string DadosDreUe = @"select dre.nome Dre,
+        internal static string DadosDreUe = @"select dre.nome Dre,
 		ue.nome Ue
         from  turma t
         inner join ue on ue.id = t.ue_id 
         inner join dre on ue.dre_id = dre.id 
        where t.turma_id = @codigoTurma";
-	}
+
+
+		internal static string TurmaPorUe(Modalidade? modalidade, int? anoLetivo, long? periodoEscolarId)
+        {
+			var query = @"select t.turma_id, t.nome, t.modalidade_codigo 
+					from  turma t
+					inner join ue on ue.id = t.ue_id
+					where t.ue_id = @codigoUe";
+
+			if (modalidade.HasValue)
+				query += " and t.modalidade_codigo = @modalidade";
+
+			if (anoLetivo.HasValue)
+				query += " and t.ano_letivo = @anoLetivo";
+
+			// TODO falta adicionar periodoEscolar
+
+			return query;
+        }
+
+        internal static string TurmaPorCodigo = @"select t.turma_id, t.nome, t.modalidade_codigo 
+        from  turma t
+        inner join ue on ue.id = t.ue_id
+        where t.turma_id = @codigoTurma";
+    }
 }

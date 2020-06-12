@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.BoletimEscolar;
 using SME.SR.Infra.Dtos.Relatorios.ConselhoClasse;
 

@@ -6,6 +6,11 @@ namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
 {
     public class BoletimEscolarDto
     {
-        public IEnumerable<BoletimEscolarAlunoDto> Alunos { get; set; }
+        public List<BoletimEscolarAlunoDto> Alunos { get; set; }
+
+        public BoletimEscolarDto()
+        {
+            Alunos = new List<BoletimEscolarAlunoDto>();
+        }
     }
 }

@@ -38,7 +38,7 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
         {
             return await mediator.Send(new ObterAlunosPorTurmaQuery()
             {
-                CodigoTurma = codigoTurma
+                TurmaCodigo = codigoTurma
             });
         }
 

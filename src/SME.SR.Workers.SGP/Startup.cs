@@ -89,6 +89,7 @@ namespace SME.SR.Workers.SGP
 			services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(IComponenteCurricularRepository), typeof(ComponenteCurricularRepository));
+            services.TryAddScoped(typeof(IConselhoClasseRepository), typeof(ConselhoClasseRepository));
             services.TryAddScoped(typeof(IConselhoClasseAlunoRepository), typeof(ConselhoClasseAlunoRepository));
             services.TryAddScoped(typeof(IConselhoClasseNotaRepository), typeof(ConselhoClasseNotaRepository));
             services.TryAddScoped(typeof(IConselhoClasseRecomendacaoRepository), typeof(ConselhoClasseRecomendacaoRepository));

@@ -7,5 +7,13 @@ namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
     public class BoletimEscolarAlunoDto
     {
         public BoletimEscolarCabecalhoDto Cabecalho { get; set; }
+
+        public List<ComponenteCurricularDto> ComponentesCurriculares { get; set; }
+
+        public BoletimEscolarAlunoDto()
+        {
+            Cabecalho = new BoletimEscolarCabecalhoDto();
+            ComponentesCurriculares = new List<ComponenteCurricularDto>();
+        }
     }
 }
