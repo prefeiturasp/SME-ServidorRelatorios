@@ -672,7 +672,7 @@
 
     <session-config>
         <!-- Default to 20 minute session timeouts -->
-        <session-timeout>1</session-timeout>
+        <session-timeout>1440</session-timeout>
     </session-config>
 
     <jsp-config>
