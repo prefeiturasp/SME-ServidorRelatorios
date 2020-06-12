@@ -57,30 +57,30 @@
 		</field>
 	</subDataset>
 	<queryString language="jsonql">
-		<![CDATA[RelatorioFechamentoParecerConclusivo.pareceresConclusivos.estudantes]]>
+		<![CDATA[]]>
 	</queryString>
 	<field name="dre" class="java.lang.String">
-		<property name="net.sf.jasperreports.jsonql.field.expression" value="dre"/>
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="RelatorioFechamentoParecerConclusivo.pareceresConclusivos.dre"/>
 		<fieldDescription><![CDATA[dre]]></fieldDescription>
 	</field>
 	<field name="ue" class="java.lang.String">
-		<property name="net.sf.jasperreports.jsonql.field.expression" value="ue"/>
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="RelatorioFechamentoParecerConclusivo.pareceresConclusivos.ue"/>
 		<fieldDescription><![CDATA[ue]]></fieldDescription>
 	</field>
 	<field name="modalidade" class="java.lang.String">
-		<property name="net.sf.jasperreports.jsonql.field.expression" value="modalidade"/>
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="RelatorioFechamentoParecerConclusivo.pareceresConclusivos.modalidade"/>
 		<fieldDescription><![CDATA[modalidade]]></fieldDescription>
 	</field>
 	<field name="ciclo" class="java.lang.String">
-		<property name="net.sf.jasperreports.jsonql.field.expression" value="ciclo"/>
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="RelatorioFechamentoParecerConclusivo.pareceresConclusivos.ciclo"/>
 		<fieldDescription><![CDATA[ciclo]]></fieldDescription>
 	</field>
 	<field name="ano" class="java.lang.Integer">
-		<property name="net.sf.jasperreports.jsonql.field.expression" value="ano"/>
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="RelatorioFechamentoParecerConclusivo.pareceresConclusivos.ano"/>
 		<fieldDescription><![CDATA[ano]]></fieldDescription>
 	</field>
 	<field name="estudantes" class="java.lang.String">
-		<property name="net.sf.jasperreports.jsonql.field.expression" value="estudantes"/>
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="RelatorioFechamentoParecerConclusivo.pareceresConclusivos.estudantes"/>
 		<fieldDescription><![CDATA[estudantes]]></fieldDescription>
 	</field>
 	<background>
@@ -97,13 +97,13 @@
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="PareceresDataset" uuid="ff8d30e5-2327-4e2a-8e8a-36d9664bc23c">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("RelatorioFechamentoParecerConclusivo.pareceresConclusivos")]]></dataSourceExpression>
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("RelatorioFechamentoParecerConclusivo.pareceresConclusivos.estudantes")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="66" uuid="b0c101f9-ca4b-44c5-8454-4f31175f9eb7">
+					<jr:column width="46" uuid="b0c101f9-ca4b-44c5-8454-4f31175f9eb7">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="66" height="30" uuid="f9ba7bae-cc1b-4551-97c3-d3d31d06d7f4">
+								<reportElement x="0" y="0" width="46" height="30" uuid="f9ba7bae-cc1b-4551-97c3-d3d31d06d7f4">
 									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 								</reportElement>
 								<textElement verticalAlignment="Middle">
@@ -114,17 +114,21 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="66" height="30" uuid="1036039b-a54a-4b0c-84c8-b3c89556b85a"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="46" height="30" uuid="1036039b-a54a-4b0c-84c8-b3c89556b85a">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								</reportElement>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="5"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{numeroChamada}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="274" uuid="681b612a-fdc2-4f4e-bb4c-d950ca222dca">
+					<jr:column width="294" uuid="681b612a-fdc2-4f4e-bb4c-d950ca222dca">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="274" height="30" uuid="f86f5841-107c-414c-9d2e-f0c2a8e06b77">
+								<reportElement x="0" y="0" width="294" height="30" uuid="f86f5841-107c-414c-9d2e-f0c2a8e06b77">
 									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 								</reportElement>
 								<textElement verticalAlignment="Middle">
@@ -135,8 +139,12 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="274" height="30" uuid="850c3f72-fa6f-425f-a533-5cc176e4452e"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="294" height="30" uuid="850c3f72-fa6f-425f-a533-5cc176e4452e">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								</reportElement>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<paragraph leftIndent="5"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -156,8 +164,12 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="215" height="30" uuid="2b75cd88-08ba-4102-a33a-c12c83416bd8"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="215" height="30" uuid="2b75cd88-08ba-4102-a33a-c12c83416bd8">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								</reportElement>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<paragraph leftIndent="5"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{parecerConclusivo}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
