@@ -1,0 +1,28 @@
+{
+  "RelatorioFechamentoParecerConclusivo": {
+    "cabecalho": {
+      "dre": "nome da dre caso unica",
+      "ue": "nome da ue caso unica",
+      "cicloEAno": "",
+      "data": "26/03/2020",
+      "usuario": "alana ferreira de oliveira",
+      "rf": "1234567"
+    },
+    "pareceresConclusivos": [
+      {
+        "dre": "Nome da dre",
+        "ue": "Nome da ue",
+        "modalidade": "nome da modalidade",
+        "ciclo": "nome do ciclo",
+        "ano": "1",
+        "estudantes": [
+          {
+            "numeroChamada": "10",
+            "nome": "antônio amaral",
+            "parecerConclusivo": "Continuidade de estudo"
+          }
+        ]
+      }
+    ]
+  }
+}
