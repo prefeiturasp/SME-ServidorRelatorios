@@ -2,9 +2,9 @@
 using SME.SR.Infra.Dtos.Relatorios.BoletimEscolar;
 using SME.SR.Infra.Dtos.Relatorios.ConselhoClasse;
 
-namespace SME.SR.Application.Queries.RelatorioBoletimEscolar
+namespace SME.SR.Application.Queries.BoletimEscolar
 {
-    public class RelatorioBoletimEscolarQuery : IRequest<BoletimEscolarDto>
+    public class ObterRelatorioBoletimEscolarQuery : IRequest<BoletimEscolarDto>
     {
     }
 }

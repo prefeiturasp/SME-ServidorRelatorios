@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
 using SME.SR.Application;
-using SME.SR.Application.Queries.RelatorioBoletimEscolar;
+using SME.SR.Application.Queries.BoletimEscolar;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
@@ -20,13 +20,12 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var gamesQuery = request.ObterObjetoFiltro<RelatorioBoletimEscolarQuery>();
-            var nomeDoGame = await mediator.Send(gamesQuery);
+            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
+            var relatorio = await mediator.Send(relatorioQuery);
 
-            var conselhoClasse = await mediator.Send(new RelatorioBoletimEscolarQuery());
-            var dadosRelatorio = JsonConvert.SerializeObject(conselhoClasse);
+            var jsonString = JsonConvert.SerializeObject(relatorio);
 
-            await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioBoletimEscolar/BoletimEscolar", dadosRelatorio, FormatoEnum.Pdf, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioBoletimEscolar/BoletimEscolar", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
         }
     }
 }
