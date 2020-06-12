@@ -1,0 +1,83 @@
+{
+  "RelatorioBoletimEscolar": [
+    {
+      "cabecalho": {
+        "nomeDre": "DRE CAMPO LIMPO",
+        "nomeUe": "UE:091847 CEU EMEF PARAISOPOLIS",
+        "nomeTurma": "EM-1A",
+        "aluno": "09 0 ÁLVARO RAMOS GRASSI"
+      },
+      "observacoes": "O aluno teve faltas excessivas.",
+      "grupos": [
+        {
+          "id": "1",
+          "nome": "GRUPO 01",
+          "descricao": "Base Nacional comum",
+          "componentesCurriculares": [
+            {
+              "nome": "História",
+              "notaBimestre1": "10",
+              "frequenciaBimestre1": "100",
+              "notaBimestre2": "7",
+              "frequenciaBimestre2": "100",
+              "notaBimestre3": "10",
+              "frequenciaBimestre3": "100",
+              "notaBimestre4": "4.5",
+              "frequenciaBimestre4": "100",
+              "notaFinal": "4.5",
+              "frequenciaFinal": "100"
+            },
+            {
+              "nome": "Biologia",
+              "grupo": "1",
+              "notaBimestre1": "9",
+              "frequenciaBimestre1": "100",
+              "notaBimestre2": "10",
+              "frequenciaBimestre2": "100",
+              "notaBimestre3": "8",
+              "frequenciaBimestre3": "100",
+              "notaBimestre4": "10",
+              "frequenciaBimestre4": "100",
+              "notaFinal": "4.5",
+              "frequenciaFinal": "100"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "nome": "GRUPO 02",
+          "descricao": "Diversificadas",
+          "componentesCurriculares": [
+            {
+              "nome": "História",
+              "notaBimestre1": "10",
+              "frequenciaBimestre1": "100",
+              "notaBimestre2": "7",
+              "frequenciaBimestre2": "100",
+              "notaBimestre3": "10",
+              "frequenciaBimestre3": "100",
+              "notaBimestre4": "4.5",
+              "frequenciaBimestre4": "100",
+              "notaFinal": "4.5",
+              "frequenciaFinal": "100"
+            },
+            {
+              "nome": "Biologia",
+              "grupo": "1",
+              "notaBimestre1": "9",
+              "frequenciaBimestre1": "100",
+              "notaBimestre2": "10",
+              "frequenciaBimestre2": "100",
+              "notaBimestre3": "8",
+              "frequenciaBimestre3": "100",
+              "notaBimestre4": "10",
+              "frequenciaBimestre4": "100",
+              "notaFinal": "4.5",
+              "frequenciaFinal": "100"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
