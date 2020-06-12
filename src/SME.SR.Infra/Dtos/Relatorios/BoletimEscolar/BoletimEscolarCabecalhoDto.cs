@@ -15,10 +15,5 @@ namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
         public string Aluno { get; set; }
 
         public DateTime Data { get; set; }
-
-
-        public BoletimEscolarCabecalhoDto
-        {
-        }
     }
 }

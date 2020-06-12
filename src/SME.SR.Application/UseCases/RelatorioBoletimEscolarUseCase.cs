@@ -26,7 +26,7 @@ namespace SME.SR.Workers.SGP
             var conselhoClasse = await mediator.Send(new RelatorioBoletimEscolarQuery());
             var dadosRelatorio = JsonConvert.SerializeObject(conselhoClasse);
 
-            await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioBoletimEscolar/BoletimEscolar", dadosRelatorio, FormatoEnum.Pdf));
+            await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioBoletimEscolar/BoletimEscolar", dadosRelatorio, FormatoEnum.Pdf, request.CodigoCorrelacao));
         }
     }
 }
