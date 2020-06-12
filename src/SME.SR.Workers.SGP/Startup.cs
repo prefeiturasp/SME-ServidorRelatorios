@@ -43,19 +43,19 @@ namespace SME.SR.Workers.SGP
 
             services.AddControllers();
             services.AddMvc().AddControllersAsServices();
-            services.AddRabbitMQ();
+            services.AddRabbitMQ(Configuration);
             services.AddHostedService<RabbitBackgroundListener>();
 
-            //TODO: Informaçoes do arquivo de configuração
+            //TODO: Informaï¿½oes do arquivo de configuraï¿½ï¿½o
 
             var cookieContainer = new CookieContainer();
             var jasperCookieHandler = new JasperCookieHandler() { CookieContainer = cookieContainer };
 
             services.AddSingleton(jasperCookieHandler);
 
-            var urlJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Hostname");
-            var usuarioJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Username");
-            var senhaJasper = Environment.GetEnvironmentVariable("ConfiguracaoJasper__Password");
+            var urlJasper = Configuration.GetValue<string>("ConfiguracaoJasper:Hostname");
+            var usuarioJasper = Configuration.GetValue<string>("ConfiguracaoJasper:Username");
+            var senhaJasper = Configuration.GetValue<string>("ConfiguracaoJasper:Password");
 
 
             services.AddHttpClient<IExecucaoRelatorioService, ExecucaoRelatorioService>(c =>
@@ -71,7 +71,7 @@ namespace SME.SR.Workers.SGP
 
             services.AddSingleton(new VariaveisAmbiente());
 
-            // TODO: Criar arquivo especficio para as injeções
+            // TODO: Criar arquivo especficio para as injeï¿½ï¿½es
             RegistrarRepositorios(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
