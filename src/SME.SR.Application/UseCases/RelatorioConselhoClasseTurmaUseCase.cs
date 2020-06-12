@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
@@ -6,7 +7,6 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using static SME.SR.Infra.Enumeradores;
 
@@ -33,12 +33,12 @@ namespace SME.SR.Application
                 if (relatorioAlunos.FirstOrDefault() is RelatorioConselhoClasseBimestre)
                 {
                     List<RelatorioConselhoClasseBimestre> listBimestre = relatorioAlunos.Cast<RelatorioConselhoClasseBimestre>().ToList();
-                    jsonString = JsonSerializer.Serialize(listBimestre);
+                    jsonString = JsonConvert.SerializeObject(listBimestre);
                 }
                 else
                 {
                     List<RelatorioConselhoClasseFinal> listFinal = relatorioAlunos.Cast<RelatorioConselhoClasseFinal>().ToList();
-                    jsonString = JsonSerializer.Serialize(listFinal);
+                    jsonString = JsonConvert.SerializeObject(listFinal);
                 }
 
                 await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioConselhoClasse/ConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
