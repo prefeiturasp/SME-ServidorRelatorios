@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelatorioParecerConclusivo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9657b8a9-fce4-4579-bdaf-5dab01dba981">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ParecerConclusivoAdapter"/>
+	<subDataset name="PareceresDataset" uuid="d7993a36-1c09-4656-8fbc-36ac5b88927e">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ParecerConclusivoAdapter"/>
+		<queryString language="json">
+			<![CDATA[RelatorioFechamentoParecerConclusivo.pareceresConclusivos]]>
+		</queryString>
+		<field name="dre" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="dre"/>
+			<fieldDescription><![CDATA[dre]]></fieldDescription>
+		</field>
+		<field name="ue" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="ue"/>
+			<fieldDescription><![CDATA[ue]]></fieldDescription>
+		</field>
+		<field name="modalidade" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="modalidade"/>
+			<fieldDescription><![CDATA[modalidade]]></fieldDescription>
+		</field>
+		<field name="ciclo" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="ciclo"/>
+			<fieldDescription><![CDATA[ciclo]]></fieldDescription>
+		</field>
+		<field name="ano" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="ano"/>
+			<fieldDescription><![CDATA[ano]]></fieldDescription>
+		</field>
+		<field name="estudantes" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="estudantes"/>
+			<fieldDescription><![CDATA[estudantes]]></fieldDescription>
+		</field>
+	</subDataset>
+	<parameter name="jsonString" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JSON_INPUT_STREAM" class="java.io.InputStream" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new java.io.ByteArrayInputStream($P{jsonString}.getBytes("UTF-8"))]]></defaultValueExpression>
+	</parameter>
+	<queryString language="json">
+		<![CDATA[]]>
+	</queryString>
+	<field name="dre" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="RelatorioFechamentoParecerConclusivo.cabecalho.dre"/>
+		<fieldDescription><![CDATA[dre]]></fieldDescription>
+	</field>
+	<field name="ue" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="RelatorioFechamentoParecerConclusivo.cabecalho.ue"/>
+		<fieldDescription><![CDATA[ue]]></fieldDescription>
+	</field>
+	<field name="cicloEAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="RelatorioFechamentoParecerConclusivo.cabecalho.cicloEAno"/>
+		<fieldDescription><![CDATA[cicloEAno]]></fieldDescription>
+	</field>
+	<field name="data" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="RelatorioFechamentoParecerConclusivo.cabecalho.data"/>
+		<fieldDescription><![CDATA[data]]></fieldDescription>
+	</field>
+	<field name="usuario" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="RelatorioFechamentoParecerConclusivo.cabecalho.usuario"/>
+		<fieldDescription><![CDATA[usuario]]></fieldDescription>
+	</field>
+	<field name="rf" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.json.field.expression" value="RelatorioFechamentoParecerConclusivo.cabecalho.rf"/>
+		<fieldDescription><![CDATA[rf]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="128" splitType="Stretch">
+			<image>
+				<reportElement x="6" y="5" width="149" height="60" uuid="53ac912d-761d-4215-bcab-802682f6350c"/>
+				<imageExpression><![CDATA["/logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="311" y="5" width="250" height="20" uuid="ff87baa1-6205-4393-bfae-49a847bd02e3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SGP - SISTEMA DE GESTÃO PEDAGÓGICA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="78" width="28" height="23" uuid="782e4645-a493-402e-acac-9cf4cebcf3be">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[DRE:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="204" y="78" width="236" height="23" uuid="4a57867e-1619-42d5-8430-537ca6766d60">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="440" y="78" width="113" height="23" uuid="bbc6498c-a8a7-459c-ac16-307fcaced30b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="204" y="78" width="35" height="23" uuid="184c0949-60ad-4849-ae78-45e4767bca57">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5" spacingBefore="0"/>
+				</textElement>
+				<text><![CDATA[UE:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="0" y="78" width="204" height="23" uuid="069b1a2a-c113-4fac-a10a-66dc65587ac9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="78" width="30" height="23" uuid="559c3c56-a7d5-470c-8e20-43b666a97aac">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[DRE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="30" width="129" height="20" uuid="23bac58d-7972-4ef7-a37f-dea55ebb01ac"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[PARECER CONCLUSIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="101" width="28" height="23" uuid="e9348868-9302-4c7c-ac74-464fded42b46">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[DRE:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="334" y="101" width="106" height="23" uuid="946458da-c820-41c5-8131-9e0d07bc15cf">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="440" y="101" width="113" height="23" uuid="b45a1fc5-9309-4cc4-9f21-21444ca41754">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="334" y="101" width="25" height="23" uuid="87f858de-b8ba-4b76-b922-3774f257a653">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5" spacingBefore="0"/>
+				</textElement>
+				<text><![CDATA[RF:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="0" y="101" width="334" height="23" uuid="0b3e0a9f-9339-4848-8ac1-325ffbbf4e73">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="1" y="101" width="55" height="23" uuid="35440a3f-67a5-4d28-96d9-21b1a93b9d02">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[USUÁRIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="101" width="35" height="23" uuid="65352f78-a3b7-4091-8c5a-9c82c4ec48f6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5" spacingBefore="0"/>
+				</textElement>
+				<text><![CDATA[DATA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="56" y="106" width="260" height="13" uuid="59b0bb6f-0e1e-4d4f-96b8-9ad00000c0f2"/>
+				<textFieldExpression><![CDATA[UPPER($F{usuario} )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="359" y="106" width="81" height="13" uuid="6e11e946-75ae-4dab-a685-e560fe4035a6"/>
+				<textFieldExpression><![CDATA[$F{rf}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="475" y="106" width="78" height="13" uuid="593c8dee-e7b8-4b85-9778-9011ccd3e2b0"/>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="83" width="174" height="13" uuid="c3f1e5a3-24cd-483a-bfd8-e715d39bf2fb">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[UPPER( $F{dre})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="239" y="83" width="201" height="13" uuid="7977a471-0087-4199-80e8-a798bdc16019">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[UPPER($F{ue} )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="83" width="113" height="13" uuid="b83acd6a-bc0c-4cfd-aa51-4138693d4be4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{cicloEAno}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="317" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="20" width="555" height="279" uuid="16804ea9-ddb0-4bf5-bfac-f0209abcae12"/>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[new net.sf.jasperreports.engine.data.JsonQLDataSource(new java.io.ByteArrayInputStream( $P{jsonString}.getBytes("UTF-8") ), "")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["PareceresConclusivos.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="369" height="20" uuid="c4bd599c-5412-431d-85b7-3a7a49656691">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[SGP - Sistema de gestão Pedagógica | PARECER CONCLUSIVO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="515" y="0" width="20" height="22" uuid="61912ca6-32e0-409f-899e-0aa0733e705c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="535" y="0" width="20" height="22" uuid="d7f9176e-9599-45ca-a7ba-0fc5362d61f9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
