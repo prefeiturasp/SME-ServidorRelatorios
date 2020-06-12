@@ -32,7 +32,7 @@
 	<subDataset name="DatasetGrupoComponentesComNota" uuid="a8673d0e-7392-485b-9792-fa5e64c11081">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
 		<queryString language="json">
-			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota]]>
+			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota.Componentes]]>
 		</queryString>
 		<field name="nome" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
@@ -42,7 +42,7 @@
 	<subDataset name="DatasetComponentes" uuid="b25fa50b-e15e-4782-8182-4ff72a846f32">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
 		<queryString language="json">
-			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota.componentesComNota]]>
+			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota.ComponentesComNota]]>
 		</queryString>
 		<field name="NotaConceito" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="notaConceito"/>
