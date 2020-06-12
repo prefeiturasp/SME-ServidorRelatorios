@@ -44,7 +44,7 @@ namespace SME.SR.Application
             var jsessionId = await loginService.ObterTokenAutenticacao("user", "bitnami");
 
             var retorno = await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId);
-            var exportacaoId = retorno.Exports?.FirstOrDefault()?.Id;
+            var exportacaoId = retorno?.Exports?.FirstOrDefault()?.Id;
             if (exportacaoId != null)
             {
                 var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);

@@ -219,30 +219,32 @@ namespace SME.SR.Api.Controllers
 
         //OK
         [HttpGet("postasync")]
-        public async Task<IActionResult> PostAsync([FromServices] IExecucaoRelatorioService execucaoRelatorioService)
+        public async Task<IActionResult> PostAsync([FromServices] ILoginService loginService, [FromServices] IExecucaoRelatorioService execucaoRelatorioService)
         {
-            return Ok(await execucaoRelatorioService.SolicitarRelatorio(
-                new ExecucaoRelatorioRequisicaoDto()
+            var post = new ExecucaoRelatorioRequisicaoDto()
+            {
+                Async = true,
+                FormatoSaida = "pdf",
+                IgnorarCache = true,
+                IgnorarPaginacao = true,
+                Interativo = false,
+                Parametros = new ParametrosRelatorioDto()
                 {
-                    Async = true,
-                    FormatoSaida = "pdf",
-                    IgnorarCache = true,
-                    IgnorarPaginacao = true,
-                    Interativo = false,
-                    Parametros = new ParametrosRelatorioDto()
-                    {
-                        ParametrosRelatorio = new ParametroDto[] {
+                    ParametrosRelatorio = new ParametroDto[] {
                                  new ParametroDto()
                                  {
                                       Nome = "Parametro",
                                        Valor = new string[] { "a" }
                                  }
                                }
-                    },
-                    SalvarSnapshot = false,
-                    UnidadeRelatorioUri = "/Nova_pasta/Report",
-                    Paginas = null
-                }));
+                },
+                SalvarSnapshot = false,
+                UnidadeRelatorioUri = "/Nova_pasta/Report",
+                Paginas = null
+            };
+            var jsessionId = await loginService.ObterTokenAutenticacao("user", "bitnami");
+
+            return Ok(await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId));
         }
 
         [HttpGet("pool/{requestId}")]
