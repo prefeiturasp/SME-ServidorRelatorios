@@ -5,7 +5,7 @@ using SME.SR.Application.Queries.RelatorioBoletimEscolar;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
-using static SME.SR.Infra.Enumeradores.Enumeradores;
+using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Workers.SGP
 {
@@ -22,7 +22,7 @@ namespace SME.SR.Workers.SGP
         {
             var gamesQuery = request.ObterObjetoFiltro<RelatorioBoletimEscolarQuery>();
             var nomeDoGame = await mediator.Send(gamesQuery);
-            
+
             var conselhoClasse = await mediator.Send(new RelatorioBoletimEscolarQuery());
             var dadosRelatorio = JsonConvert.SerializeObject(conselhoClasse);
 

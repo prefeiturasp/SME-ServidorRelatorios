@@ -45,8 +45,8 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/boletimescolar")]
-        [Action("relatorios/boletimescolar")]
-        public async Task<bool> RelatorioBoletimEscolar([FromQuery] FiltroRelatorioDto request)
+        [Action("relatorios/boletimescolar", typeof(IRelatorioBoletimEscolarUseCase))]
+        public async Task<bool> RelatorioBoletimEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarUseCase relatorioBoletimEscolarUseCase)
         {
             await relatorioBoletimEscolarUseCase.Executar(request);
             return true;

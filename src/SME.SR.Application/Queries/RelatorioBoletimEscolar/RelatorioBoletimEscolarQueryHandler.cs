@@ -18,7 +18,12 @@ namespace SME.SR.Application.Queries.RelatorioBoletimEscolar
                 {
                     new BoletimEscolarAlunoDto
                     {
-                        Cabecalho = new BoletimEscolarCabecalhoDto("xpto","xpto 2",DateTime.Now)
+                        Cabecalho = new BoletimEscolarCabecalhoDto
+                        {
+                            NomeDre = "dre 123",
+                            NomeUe = "ue 123",
+                            Data = DateTime.Now
+                        }
                     }
                 }
             });
