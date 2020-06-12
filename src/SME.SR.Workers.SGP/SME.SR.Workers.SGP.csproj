@@ -8,7 +8,6 @@
   <ItemGroup>
     <Folder Include="Commons\Attributes\" />
     <Folder Include="Commons\Exceptions\" />
-    <Folder Include="Infra\" />
   </ItemGroup>
 
   <ItemGroup>

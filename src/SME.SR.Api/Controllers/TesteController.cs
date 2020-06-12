@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
 using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.JRSClient.Interfaces;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Api.Controllers
 {
@@ -169,7 +168,7 @@ namespace SME.SR.Api.Controllers
             var dto = new RelatorioSincronoDto
             {
                 CaminhoRelatorio = _caminhoRelatorio,
-                Formato = Infra.Enumeradores.Enumeradores.FormatoEnum.Pdf,
+                Formato = FormatoEnum.Pdf,
                 IgnorarPaginacao = true,
                 Interativo = false,
                 Pagina = 1
@@ -242,7 +241,7 @@ namespace SME.SR.Api.Controllers
                     SalvarSnapshot = false,
                     UnidadeRelatorioUri = "/Nova_pasta/Report",
                     Paginas = null
-                }));
+                }, String.Empty));
         }
 
         [HttpGet("pool/{requestId}")]
