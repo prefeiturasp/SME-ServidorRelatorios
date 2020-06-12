@@ -1,9 +1,9 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 using static SME.SR.Infra.Enumeradores;
 
@@ -26,8 +26,8 @@ namespace SME.SR.Application
                 var relatorio = await mediator.Send(relatorioQuery);
 
                 string jsonString = relatorio is RelatorioConselhoClasseBimestre ?
-                    JsonSerializer.Serialize((RelatorioConselhoClasseBimestre)relatorio) :
-                    JsonSerializer.Serialize((RelatorioConselhoClasseFinal)relatorio);
+                    JsonConvert.SerializeObject((RelatorioConselhoClasseBimestre)relatorio) :
+                    JsonConvert.SerializeObject((RelatorioConselhoClasseFinal)relatorio);
 
                 await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioConselhoClasse/ConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
