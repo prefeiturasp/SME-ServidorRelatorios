@@ -256,23 +256,5 @@
 				</jr:list>
 			</componentElement>
 		</band>
-		<band height="50">
-			<componentElement>
-				<reportElement x="-20" y="10" width="560" height="30" uuid="935f199f-7cf7-4afa-84e9-5f140771d2a7">
-					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-				</reportElement>
-				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Horizontal">
-					<datasetRun subDataset="DatasetBoletimGrupos" uuid="1f1327bf-931a-412f-99ce-f3cc4fc9ebcd">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("grupos")]]></dataSourceExpression>
-					</datasetRun>
-					<jr:listContents height="30" width="560">
-						<textField textAdjust="StretchHeight">
-							<reportElement x="0" y="0" width="560" height="30" uuid="f5807218-db3a-4550-a430-bbb5eb8bfa78"/>
-							<textFieldExpression><![CDATA[CONCATENATE($F{nomeGrupo}, ": ", $F{descricao}, " | ")]]></textFieldExpression>
-						</textField>
-					</jr:listContents>
-				</jr:list>
-			</componentElement>
-		</band>
 	</detail>
 </jasperReport>

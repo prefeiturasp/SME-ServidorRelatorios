@@ -31,6 +31,10 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="observacoes"/>
 		<fieldDescription><![CDATA[observacoes]]></fieldDescription>
 	</field>
+	<field name="descricaoGrupos" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="descricaoGrupos"/>
+		<fieldDescription><![CDATA[descricaoGrupos]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -393,7 +397,7 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="304" splitType="Stretch">
+		<band height="186" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="-25" width="555" height="211" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
@@ -404,24 +408,32 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="113" splitType="Stretch">
-			<rectangle radius="0">
-				<reportElement x="-20" y="-20" width="595" height="133" uuid="f7b16174-59f8-4f95-ba38-7b3fc869b3aa">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-			</rectangle>
+		<band height="114" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="-10" width="80" height="20" forecolor="#42474A" uuid="bf78107a-9172-4e6b-bcee-17da939251eb"/>
+				<reportElement x="0" y="40" width="80" height="20" forecolor="#42474A" uuid="bf78107a-9172-4e6b-bcee-17da939251eb"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[OBSERVAÇÕES:]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="1" y="4" width="559" height="16" uuid="a488c332-99da-444e-8cba-8f785c4de8ee"/>
+				<reportElement x="0" y="52" width="559" height="16" forecolor="#42474A" uuid="a488c332-99da-444e-8cba-8f785c4de8ee"/>
 				<textFieldExpression><![CDATA[$F{observacoes}]]></textFieldExpression>
 			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="1" y="2" width="551" height="16" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricaoGrupos}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-20" y="34" width="595" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
 		</band>
 	</pageFooter>
 </jasperReport>
