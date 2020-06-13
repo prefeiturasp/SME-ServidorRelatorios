@@ -140,6 +140,23 @@
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DatasetComponenteComNotaAbaFinal" uuid="9e99a19b-a184-4713-bd38-c8c15c3def65"/>
+					<jr:column width="33" uuid="2e13056c-6cf8-435f-ad42-5955ed0f9e31">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="33" height="30" uuid="ca4dad59-b6ee-40bd-bad7-1d0703d4a406"/>
+								<text><![CDATA[Componente]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="33" height="30" uuid="3d5760d8-f0d5-4284-9af8-7caf10dd360c"/>
+								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
 					<jr:column width="33" uuid="f977cc80-57bb-4e83-a62b-0055ab5ae8ae">
 						<jr:tableHeader style="Table_TH" height="30"/>
 						<jr:tableFooter style="Table_TH" height="30"/>
@@ -171,23 +188,6 @@
 							<textField>
 								<reportElement x="0" y="0" width="33" height="30" uuid="576aa8e6-e6ab-40c6-a804-935d0f23ef01"/>
 								<textFieldExpression><![CDATA[$F{NotasBimestre}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="33" uuid="2e13056c-6cf8-435f-ad42-5955ed0f9e31">
-						<jr:tableHeader style="Table_TH" height="30"/>
-						<jr:tableFooter style="Table_TH" height="30"/>
-						<jr:columnHeader style="Table_CH" height="30">
-							<staticText>
-								<reportElement x="0" y="0" width="33" height="30" uuid="ca4dad59-b6ee-40bd-bad7-1d0703d4a406"/>
-								<text><![CDATA[Componente]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30"/>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="33" height="30" uuid="3d5760d8-f0d5-4284-9af8-7caf10dd360c"/>
-								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -225,19 +225,19 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="33" uuid="935e24e3-35e8-45fb-b106-94eb1fa593b3">
+					<jr:column width="75" uuid="935e24e3-35e8-45fb-b106-94eb1fa593b3">
 						<jr:tableHeader style="Table_TH" height="30"/>
 						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="33" height="30" uuid="f1d6d72c-6898-41cc-8c04-9bf5eea61bad"/>
+								<reportElement x="0" y="0" width="75" height="30" uuid="f1d6d72c-6898-41cc-8c04-9bf5eea61bad"/>
 								<text><![CDATA[Frequencia]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="Table_CH" height="30"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="33" height="30" uuid="812352ad-7a6d-4fc1-9f3a-36e7f1aa5a74"/>
+								<reportElement x="0" y="0" width="75" height="30" uuid="812352ad-7a6d-4fc1-9f3a-36e7f1aa5a74"/>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
