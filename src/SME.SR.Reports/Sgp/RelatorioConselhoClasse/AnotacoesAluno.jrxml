@@ -44,9 +44,10 @@
 	<pageHeader>
 		<band height="71">
 			<staticText>
-				<reportElement x="0" y="0" width="553" height="23" uuid="5b81e509-729d-4cde-9803-299e46597511">
+				<reportElement x="0" y="0" width="553" height="23" isRemoveLineWhenBlank="true" uuid="5b81e509-729d-4cde-9803-299e46597511">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{Anotacao} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
@@ -58,10 +59,11 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="24" width="553" height="23" backcolor="#F3F3F3" uuid="51bc9d09-dc0b-4866-97c1-31a49b5f00db">
+				<reportElement mode="Opaque" x="0" y="24" width="553" height="23" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="51bc9d09-dc0b-4866-97c1-31a49b5f00db">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{Anotacao} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
@@ -72,9 +74,10 @@
 				<text><![CDATA[ANOTAÇÕES DO ALUNO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="47" width="553" height="23" uuid="8f922161-6d2b-41b5-bc77-c6d898770ac3">
+				<reportElement x="0" y="47" width="553" height="23" isRemoveLineWhenBlank="true" uuid="8f922161-6d2b-41b5-bc77-c6d898770ac3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{Anotacao} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
@@ -90,9 +93,10 @@
 	<detail>
 		<band height="53" splitType="Stretch">
 			<textField>
-				<reportElement positionType="Float" mode="Opaque" x="120" y="-1" width="240" height="23" backcolor="#F3F3F3" uuid="6a90ef18-a8ff-4d9e-ba69-1d59c4bef5c6">
+				<reportElement positionType="Float" mode="Opaque" x="120" y="-1" width="240" height="23" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="6a90ef18-a8ff-4d9e-ba69-1d59c4bef5c6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{Anotacao} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
@@ -103,9 +107,10 @@
 				<textFieldExpression><![CDATA["PROF. "+$F{Professor}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" mode="Opaque" x="0" y="-1" width="120" height="23" backcolor="#F3F3F3" uuid="1baf78f6-0606-4e9a-bc45-949c6561a10e">
+				<reportElement positionType="Float" mode="Opaque" x="0" y="-1" width="120" height="23" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="1baf78f6-0606-4e9a-bc45-949c6561a10e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{Anotacao} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
@@ -116,9 +121,10 @@
 				<textFieldExpression><![CDATA[$F{Disciplina}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" mode="Opaque" x="360" y="-1" width="95" height="23" backcolor="#F3F3F3" uuid="d0d8eda2-1995-4e31-baf0-f4e4ec4b915c">
+				<reportElement positionType="Float" mode="Opaque" x="360" y="-1" width="95" height="23" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="d0d8eda2-1995-4e31-baf0-f4e4ec4b915c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{Anotacao} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
@@ -129,9 +135,10 @@
 				<textFieldExpression><![CDATA["RF = "+$F{ProfessorRf}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" mode="Opaque" x="455" y="-1" width="98" height="23" backcolor="#F3F3F3" uuid="e41a6c08-39d4-455b-92ba-efc2fdd82452">
+				<reportElement positionType="Float" mode="Opaque" x="455" y="-1" width="98" height="23" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="e41a6c08-39d4-455b-92ba-efc2fdd82452">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{Anotacao} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
