@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using System;
-using static SME.SR.Infra.Enumeradores.Enumeradores;
+using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Application
 {

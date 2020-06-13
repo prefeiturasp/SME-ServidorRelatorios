@@ -1,0 +1,57 @@
+﻿using MediatR;
+using SME.SR.Data;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasseTurma
+{
+    public class ObterRelatorioConselhoClasseTurmaQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseTurmaQuery, IEnumerable<RelatorioConselhoClasseBase>>
+    {
+        private readonly IMediator mediator;
+
+        public ObterRelatorioConselhoClasseTurmaQueryHandler(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
+
+        public async Task<IEnumerable<RelatorioConselhoClasseBase>> Handle(ObterRelatorioConselhoClasseTurmaQuery request, CancellationToken cancellationToken)
+        {
+            var alunos = await ObterAlunosTurma(request.CodigoTurma.ToString());
+
+            var lstRelatorioAlunos = new List<RelatorioConselhoClasseBase>();
+            string codigoAluno;
+
+            foreach (var aluno in alunos)
+            {
+                codigoAluno = aluno.CodigoAluno.ToString();
+
+                lstRelatorioAlunos.Add(await ObterRelatorioConselhoClasseAluno(request.ConselhoClasseId, request.FechamentoTurmaId,
+                                                                               codigoAluno));
+            }
+
+            return lstRelatorioAlunos;
+        }
+
+        private async Task<IEnumerable<Aluno>> ObterAlunosTurma(string codigoTurma)
+        {
+            return await mediator.Send(new ObterAlunosPorTurmaQuery()
+            {
+                TurmaCodigo = codigoTurma
+            });
+        }
+
+        private async Task<RelatorioConselhoClasseBase> ObterRelatorioConselhoClasseAluno(long conselhoClasseId,
+                                                                                                long fechamentoTurmaId,
+                                                                                                string codigoAluno)
+        {
+            return await mediator.Send(new ObterRelatorioConselhoClasseAlunoQuery()
+            {
+                CodigoAluno = codigoAluno,
+                ConselhoClasseId = conselhoClasseId,
+                FechamentoTurmaId = fechamentoTurmaId
+            });
+        }
+    }
+}
