@@ -10,7 +10,7 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<Aluno>> ObterDadosAlunos(string codigoTurma);
 
-        Task<IEnumerable<Turma>> ObterPorUe(string codigoUe, Modalidade? modalidade, int? anoLetivo, long? periodoEscolarId);
+        Task<IEnumerable<Turma>> ObterPorFiltros(string codigoUe, Modalidade? modalidade, int? anoLetivo, int? semestre);
 
         Task<Turma> ObterPorCodigo(string codigoTurma);
     }

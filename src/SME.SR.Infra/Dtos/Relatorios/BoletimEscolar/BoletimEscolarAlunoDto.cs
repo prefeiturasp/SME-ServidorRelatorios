@@ -10,12 +10,12 @@ namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
 
         public BoletimEscolarCabecalhoDto Cabecalho { get; set; }
 
-        public List<ComponenteCurricularDto> ComponentesCurriculares { get; set; }
+        public List<GrupoMatrizComponenteCurricularDto> Grupos { get; set; }
 
         public BoletimEscolarAlunoDto()
         {
             Cabecalho = new BoletimEscolarCabecalhoDto();
-            ComponentesCurriculares = new List<ComponenteCurricularDto>();
+            Grupos = new List<GrupoMatrizComponenteCurricularDto>();
         }
     }
 }

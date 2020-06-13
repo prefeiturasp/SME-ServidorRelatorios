@@ -20,8 +20,8 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            //var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
-            var relatorio = await mediator.Send((ObterRelatorioBoletimEscolarQuery)request.Filtros);
+            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
+            var relatorio = await mediator.Send(relatorioQuery);
 
             var jsonString = JsonConvert.SerializeObject(relatorio);
 

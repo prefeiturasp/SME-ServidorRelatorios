@@ -9,8 +9,6 @@ namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
     {
         public string Nome { get; set; }
 
-        public string Grupo { get; set; }
-
         public string NotaBimestre1 { get; set; }
 
         public string FrequenciaBimestre1 { get; set; }

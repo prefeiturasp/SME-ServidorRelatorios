@@ -121,26 +121,30 @@ namespace SME.SR.Data
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-        internal static string DadosDreUe = @"select dre.nome Dre,
-		ue.nome Ue
-        from  turma t
-        inner join ue on ue.id = t.ue_id 
-        inner join dre on ue.dre_id = dre.id 
-       where t.turma_id = @codigoTurma";
+        internal static string DadosDreUe = @"select dre.abreviacao Dre,
+	 				concat(ue.ue_id, ' - ', tp.descricao, ' ', ue.nome) Ue
+					from  turma t
+					inner join ue on ue.id = t.ue_id 
+					inner join dre on ue.dre_id = dre.id 
+					inner join tipo_escola tp on ue.tipo_escola = tp.id 
+				   where t.turma_id = @codigoTurma";
 
 
-		internal static string TurmaPorUe(Modalidade? modalidade, int? anoLetivo, long? periodoEscolarId)
+		internal static string TurmaPorUe(Modalidade? modalidade, int? anoLetivo, int? semestre)
         {
 			var query = @"select t.turma_id, t.nome, t.modalidade_codigo 
 					from  turma t
 					inner join ue on ue.id = t.ue_id
-					where t.ue_id = @codigoUe";
+					where ue.ue_id = @codigoUe";
 
 			if (modalidade.HasValue)
 				query += " and t.modalidade_codigo = @modalidade";
 
 			if (anoLetivo.HasValue)
 				query += " and t.ano_letivo = @anoLetivo";
+
+			if (semestre.HasValue)
+				query += " and t.semestre = @anoLetivo";
 
 			// TODO falta adicionar periodoEscolar
 

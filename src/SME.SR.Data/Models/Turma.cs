@@ -1,4 +1,6 @@
 ﻿using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
+using System.ComponentModel.DataAnnotations;
 
 namespace SME.SR.Data
 {
@@ -15,5 +17,7 @@ namespace SME.SR.Data
                 ModalidadeTipoCalendario.EJA :
                 ModalidadeTipoCalendario.FundamentalMedio;
         }
+
+        public string NomeRelatorio => $"({ModalidadeCodigo.GetAttribute<DisplayAttribute>().ShortName}) - {Nome}";
     }
 }

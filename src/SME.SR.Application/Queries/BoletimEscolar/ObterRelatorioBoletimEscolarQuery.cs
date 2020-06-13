@@ -11,9 +11,7 @@ namespace SME.SR.Application.Queries.BoletimEscolar
 
         public string UeCodigo { get; set; }
 
-        public long? CicloId { get; set; }
-
-        public long? PeriodoEscolarId { get; set; }
+        public int? Semestre { get; set; }
 
         public string TurmaCodigo { get; set; }
 
