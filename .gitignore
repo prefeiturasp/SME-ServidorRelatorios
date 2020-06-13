@@ -270,3 +270,4 @@ src/SME.SGP.Api/healthchecksdb
 **/bin/
 **/*.jasper
 
+/sme_servidor_relatorios_worker.env

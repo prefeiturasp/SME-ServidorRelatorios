@@ -29,7 +29,7 @@ namespace SME.SR.Application
                     JsonConvert.SerializeObject((RelatorioConselhoClasseBimestre)relatorio) :
                     JsonConvert.SerializeObject((RelatorioConselhoClasseFinal)relatorio);
 
-                await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioConselhoClasse/ConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioConselhoClasse/RelatorioConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
             catch (Exception ex)
             {
