@@ -9,6 +9,6 @@ namespace SME.SR.Infra.Dtos
     public class TrabalhoAlertaEnderecoDto
     {
         [JsonProperty("address"), AliasAs("address")]
-        public IList<string>? Enderecos { get; set; }
+        public IList<string> Enderecos { get; set; }
     }
 }

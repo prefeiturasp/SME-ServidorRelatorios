@@ -18,7 +18,7 @@ namespace SME.SR.JRSClient.Interfaces
         Task<TrabalhoListaIdsDto> PausarTrabalhos(TrabalhoListaIdsDto trabalhoListaIdsDto);
         Task<TrabalhoListaIdsDto> InciarTrabalhos(TrabalhoListaIdsDto trabalhoListaIdsDto);
         Task<TrabalhoListaIdsDto> ReinicarTrabalhosFalhados(TrabalhoListaIdsDto trabalhoListaIdsDto);
-        Task<TrabalhoListaIdsDto> AtualizarTrabalhosEmLote(IEnumerable<int>? ids, bool sobrescreverGatilhoIgnorandoTipo, TrabalhoDefinicaoDto? trabalhoDefinicao);
+        Task<TrabalhoListaIdsDto> AtualizarTrabalhosEmLote(IEnumerable<int> ids, bool sobrescreverGatilhoIgnorandoTipo, TrabalhoDefinicaoDto trabalhoDefinicao);
         Task<int> DeletarTrabalhoPorId(int trabalhoId);
         Task<TrabalhoListaIdsDto> DeletarTrabalhosPorListaId(IEnumerable<int> ids);
     }

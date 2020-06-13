@@ -7,7 +7,7 @@ namespace SME.SR.Infra.Dtos
     public class TrabalhoGatilhoSimplesDto
     {
         [JsonProperty("timezone"), AliasAs("timezone")]
-        public string? TimeZone { get; set; }
+        public string TimeZone { get; set; }
 
         [JsonProperty("id"), AliasAs("id")]
         public int? Id { get; set; }
@@ -16,7 +16,7 @@ namespace SME.SR.Infra.Dtos
         public int? Versao { get; set; }
         
         [JsonProperty("calendarName"), AliasAs("calendarName")]
-        public object? NomeCalendario { get; set; }
+        public object NomeCalendario { get; set; }
 
         [JsonProperty("startType"), AliasAs("startType")]
         public int? TipoInicio { get; set; }
@@ -36,6 +36,6 @@ namespace SME.SR.Infra.Dtos
         public int? ContagemOcorrencias { get; set; }
 
         [JsonProperty("recurrenceInterval"), AliasAs("recurrenceInterval")]
-        public object? IntervaloRecorrencia { get; set; }
+        public object IntervaloRecorrencia { get; set; }
     }
 }
