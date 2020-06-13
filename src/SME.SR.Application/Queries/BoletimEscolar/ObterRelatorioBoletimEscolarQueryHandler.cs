@@ -2,8 +2,10 @@
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.BoletimEscolar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +14,11 @@ namespace SME.SR.Application.Queries.BoletimEscolar
     public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, BoletimEscolarDto>
     {
         private IMediator _mediator;
+
+        public ObterRelatorioBoletimEscolarQueryHandler(IMediator mediator)
+        {
+            this._mediator = mediator;
+        }
 
         public async Task<BoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
         {
@@ -23,42 +30,31 @@ namespace SME.SR.Application.Queries.BoletimEscolar
                 DreUe dreUe = await ObterDadosDreUePorTurma(request.TurmaCodigo);
 
                 // preenchero relatório para os alunos selecionados;
-                if (request.AlunosCodigo.Any())
+                if (request.AlunosCodigo != null && request.AlunosCodigo.Any())
                 {
                     IEnumerable<FechamentoTurma> fechamentos = await ObterFechamentoPorCodigoTurma(request.TurmaCodigo);
 
-                    foreach (FechamentoTurma fechamento in fechamentos)
+                    foreach (string codigoAluno in request.AlunosCodigo)
                     {
-                        long conselhoClasseId = await ObterConselhoPorFechamentoTurmaId(fechamento.Id);
+                        Aluno dadosAluno = await ObterDadosAluno(request.TurmaCodigo, codigoAluno);
 
-                        foreach (string codigoAluno in request.AlunosCodigo)
-                        {
-                            Aluno dadosAluno = await ObterDadosAluno(request.TurmaCodigo, codigoAluno);
+                        BoletimEscolarAlunoDto boletim = await MontarRelatorio(dadosAluno, dadosTurma, dreUe, fechamentos);
 
-                            BoletimEscolarAlunoDto boletim = await MontarRelatorio(dadosAluno, dadosTurma, dreUe, fechamento, conselhoClasseId);
-
-                            relatorio.Alunos.Add(boletim);
-                        }
+                        relatorio.Boletins.Add(boletim);
                     }
-
                 }
                 // preenchero relatório para os alunos da turma;
                 else
                 {
                     IEnumerable<FechamentoTurma> fechamentos = await ObterFechamentoPorCodigoTurma(request.TurmaCodigo);
 
-                    foreach (FechamentoTurma fechamento in fechamentos)
+                    IEnumerable<Aluno> dadosAlunos = await ObterDadosAlunos(request.TurmaCodigo);
+
+                    foreach (Aluno dadosAluno in dadosAlunos)
                     {
-                        long conselhoClasseId = await ObterConselhoPorFechamentoTurmaId(fechamento.Id);
+                        BoletimEscolarAlunoDto boletim = await MontarRelatorio(dadosAluno, dadosTurma, dreUe, fechamentos);
 
-                        IEnumerable<Aluno> dadosAlunos = await ObterDadosAlunos(request.TurmaCodigo);
-
-                        foreach (Aluno dadosAluno in dadosAlunos)
-                        {
-                            BoletimEscolarAlunoDto boletim = await MontarRelatorio(dadosAluno, dadosTurma, dreUe, fechamento, conselhoClasseId);
-
-                            relatorio.Alunos.Add(boletim);
-                        }
+                        relatorio.Boletins.Add(boletim);
                     }
                 }
             }
@@ -77,16 +73,11 @@ namespace SME.SR.Application.Queries.BoletimEscolar
 
                         IEnumerable<Aluno> dadosAlunos = await ObterDadosAlunos(dadosTurma.CodigoTurma);
 
-                        foreach (FechamentoTurma fechamento in fechamentos)
+                        foreach (Aluno dadosAluno in dadosAlunos)
                         {
-                            long conselhoClasseId = await ObterConselhoPorFechamentoTurmaId(fechamento.Id);
+                            BoletimEscolarAlunoDto boletim = await MontarRelatorio(dadosAluno, dadosTurma, dreUe, fechamentos);
 
-                            foreach (Aluno dadosAluno in dadosAlunos)
-                            {
-                                BoletimEscolarAlunoDto boletim = await MontarRelatorio(dadosAluno, dadosTurma, dreUe, fechamento, conselhoClasseId);
-
-                                relatorio.Alunos.Add(boletim);
-                            }
+                            relatorio.Boletins.Add(boletim);
                         }
                     }
                 }
@@ -95,11 +86,11 @@ namespace SME.SR.Application.Queries.BoletimEscolar
             return relatorio;
         }
 
-        private async Task<BoletimEscolarAlunoDto> MontarRelatorio(Aluno dadosAluno, Turma dadosTurma, DreUe dreUe, FechamentoTurma fechamento, long conselhoClasseId)
+        private async Task<BoletimEscolarAlunoDto> MontarRelatorio(Aluno dadosAluno, Turma dadosTurma, DreUe dreUe, IEnumerable<FechamentoTurma> fechamentosTurma)
         {
             BoletimEscolarAlunoDto boletim = InicializarRelatorioBoletim(dadosTurma, dreUe, dadosAluno);
 
-            List<ComponenteCurricularDto> componentes = await ProcessarFechamentos(dadosAluno, dadosTurma, fechamento, conselhoClasseId);
+            List<ComponenteCurricularDto> componentes = await ProcessarFechamentos(dadosAluno.CodigoAluno.ToString(), dadosTurma, fechamentosTurma);
 
             boletim.ComponentesCurriculares.AddRange(componentes);
 
@@ -120,40 +111,162 @@ namespace SME.SR.Application.Queries.BoletimEscolar
             };
         }
 
-        private async Task<List<ComponenteCurricularDto>> ProcessarFechamentos(Aluno dadosAluno, Turma dadosTurma, FechamentoTurma fechamento, long conselhoClasseId)
+        private async Task<List<ComponenteCurricularDto>> ProcessarFechamentos(string codigoAluno, Turma dadosTurma, IEnumerable<FechamentoTurma> fechamentosTurma)
         {
             List<ComponenteCurricularDto> componentes = new List<ComponenteCurricularDto>();
 
-            IEnumerable<GrupoMatrizComponenteComNotaFinal> fechamentoNotas = await ObterFechamento(fechamento.Id, conselhoClasseId, dadosTurma, dadosAluno.CodigoAluno.ToString(), fechamento.PeriodoEscolar);
-
-            foreach (GrupoMatrizComponenteComNotaFinal fechamentoNota in fechamentoNotas)
+            foreach (var fechamento in fechamentosTurma)
             {
-                foreach (ComponenteComNotaFinal componente in fechamentoNota.ComponentesComNota)
+                var conselhoClasseId = await ObterConselhoPorFechamentoTurmaId(fechamento.Id);
+
+                componentes.AddRange(await ObterComponentesComNotaAsync(codigoAluno, dadosTurma, fechamento, conselhoClasseId));
+                componentes.AddRange(await ObterComponentesSemNotaAsync(codigoAluno, dadosTurma.CodigoTurma, fechamento.PeriodoEscolar.Bimestre));
+            }
+
+            return componentes;
+        }
+
+        public async Task<IEnumerable<ComponenteCurricularDto>> ObterComponentesComNotaAsync(string codigoAluno, Turma dadosTurma, FechamentoTurma fechamento, long conselhoClasseId)
+        {
+            List<ComponenteCurricularDto> componentes = new List<ComponenteCurricularDto>();
+
+            if (fechamento.PeriodoEscolarId.HasValue)
+            {
+                var dadosComponentesComNota = await _mediator.Send(new ObterDadosComponenteComNotaBimestreQuery()
                 {
-                    // preencher componentescurriculares
-                    ComponenteCurricularDto dto = new ComponenteCurricularDto
+                    CodigoAluno = codigoAluno,
+                    ConselhoClasseId = conselhoClasseId,
+                    FechamentoTurmaId = fechamento.Id,
+                    PeriodoEscolar = fechamento.PeriodoEscolar,
+                    Turma = dadosTurma
+                });
+
+                foreach (var grupoMatriz in dadosComponentesComNota)
+                {
+                    foreach (var componenteCurricular in grupoMatriz.ComponentesComNota)
                     {
-                        Nome = componente.Componente,
-                        Grupo = fechamentoNota.Nome,
-                        NotaBimestre1 = componente.NotasBimestre.FirstOrDefault(x => x.Bimestre == 1).NotaConceito,
-                        NotaBimestre2 = componente.NotasBimestre.FirstOrDefault(x => x.Bimestre == 2).NotaConceito,
-                        NotaBimestre3 = componente.NotasBimestre.FirstOrDefault(x => x.Bimestre == 3).NotaConceito,
-                        NotaBimestre4 = componente.NotasBimestre.FirstOrDefault(x => x.Bimestre == 4).NotaConceito,
-                        NotaFinal = componente.NotaFinal
-                    };
+                        var grupoComponente = componentes.FirstOrDefault(c => c.Grupo == grupoMatriz.Nome &&
+                                                                              c.Nome == componenteCurricular.Componente);
 
-                    IEnumerable<FrequenciaAluno> frequencias = await ObterFrequenciaPorDisciplinaBimestres(dadosAluno.CodigoAluno.ToString(), dadosTurma.CodigoTurma);
+                        var notaConceito = componenteCurricular.NotaPosConselho ?? componenteCurricular.NotaConceito;
 
-                    dto.FrequenciaBimestre1 = frequencias.FirstOrDefault(x => x.Bimestre == 1)?.PercentualFrequencia.ToString();
-                    dto.FrequenciaBimestre2 = frequencias.FirstOrDefault(x => x.Bimestre == 2)?.PercentualFrequencia.ToString();
-                    dto.FrequenciaBimestre3 = frequencias.FirstOrDefault(x => x.Bimestre == 3)?.PercentualFrequencia.ToString();
-                    dto.FrequenciaBimestre4 = frequencias.FirstOrDefault(x => x.Bimestre == 4)?.PercentualFrequencia.ToString();
+                        if (grupoComponente != null)
+                        {
+                            SetarNotaFrequencia(grupoComponente, fechamento.PeriodoEscolar.Bimestre,
+                                                componenteCurricular.Frequencia, notaConceito);
+                        }
+                        else
+                        {
+                            grupoComponente = new ComponenteCurricularDto()
+                            {
+                                Grupo = grupoMatriz.Nome,
+                                Nome = componenteCurricular.Componente
+                            };
 
-                    componentes.Add(dto);
+                            SetarNotaFrequencia(grupoComponente, fechamento.PeriodoEscolar.Bimestre,
+                                                componenteCurricular.Frequencia, notaConceito);
+
+                            componentes.Add(grupoComponente);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var dadosComponentesComNota = await _mediator.Send(new ObterDadosComponenteComNotaFinalQuery()
+                {
+                    CodigoAluno = codigoAluno,
+                    ConselhoClasseId = conselhoClasseId,
+                    FechamentoTurmaId = fechamento.Id,
+                    PeriodoEscolar = fechamento.PeriodoEscolar,
+                    Turma = dadosTurma
+                });
+
+                foreach (var grupoMatriz in dadosComponentesComNota)
+                {
+                    foreach (var componenteCurricular in grupoMatriz.ComponentesComNota)
+                    {
+                        componentes.FirstOrDefault(c => c.Grupo == grupoMatriz.Nome &&
+                                                   c.Nome == componenteCurricular.Componente)
+                                                   .NotaFinal = componenteCurricular.NotaFinal;
+                    }
                 }
             }
 
             return componentes;
+        }
+
+        public async Task<IEnumerable<ComponenteCurricularDto>> ObterComponentesSemNotaAsync(string codigoAluno, string codigoTurma, int? bimestre)
+        {
+            List<ComponenteCurricularDto> componentes = new List<ComponenteCurricularDto>();
+
+            if (bimestre.HasValue)
+            {
+                var dadosComponentesSemNota = await _mediator.Send(new ObterDadosComponenteSemNotaBimestreQuery()
+                {
+                    Bimestre = bimestre,
+                    CodigoTurma = codigoTurma,
+                    CodigoAluno = codigoAluno
+                });
+
+                foreach (var grupoMatriz in dadosComponentesSemNota)
+                {
+                    foreach (var componenteCurricular in grupoMatriz.ComponentesSemNota)
+                    {
+                        var grupoComponente = componentes.FirstOrDefault(c => c.Grupo == grupoMatriz.Nome &&
+                                                                              c.Nome == componenteCurricular.Componente);
+
+                        if (grupoComponente != null)
+                        {
+                            SetarNotaFrequencia(grupoComponente, bimestre.Value,
+                                                componenteCurricular.Frequencia, null);
+                        }
+                        else
+                        {
+                            grupoComponente = new ComponenteCurricularDto()
+                            {
+                                Grupo = grupoMatriz.Nome,
+                                Nome = componenteCurricular.Componente
+                            };
+
+                            SetarNotaFrequencia(grupoComponente, bimestre.Value,
+                                                componenteCurricular.Frequencia, null);
+
+                            componentes.Add(grupoComponente);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var dadosComponentesSemNota = await _mediator.Send(new ObterDadosComponenteSemNotaFinalQuery()
+                {
+                    Bimestre = bimestre,
+                    CodigoTurma = codigoTurma,
+                    CodigoAluno = codigoAluno
+                });
+
+                foreach (var grupoMatriz in dadosComponentesSemNota)
+                {
+                    foreach (var componenteCurricular in grupoMatriz.ComponentesSemNota)
+                    {
+                        componentes.FirstOrDefault(c => c.Grupo == grupoMatriz.Nome &&
+                                                   c.Nome == componenteCurricular.Componente)
+                                                   .NotaFinal = componenteCurricular.Parecer;
+                    }
+                }
+            }
+
+            return componentes;
+        }
+
+        private void SetarNotaFrequencia(ComponenteCurricularDto grupoComponente, int bimestre, double? frequencia, string notaConceito)
+        {
+            PropertyInfo propriedadeComponenteCurricular = grupoComponente.GetType().GetProperty($"FrequenciaBimestre{bimestre}");
+            propriedadeComponenteCurricular.SetValue(grupoComponente, Convert.ChangeType(frequencia, propriedadeComponenteCurricular.PropertyType), null);
+
+            propriedadeComponenteCurricular = grupoComponente.GetType().GetProperty($"NotaBimestre{bimestre}");
+            propriedadeComponenteCurricular.SetValue(grupoComponente, Convert.ChangeType(notaConceito, propriedadeComponenteCurricular.PropertyType), null);
         }
 
         private async Task<Aluno> ObterDadosAluno(string codigoTurma, string codigoAluno)
@@ -196,20 +309,6 @@ namespace SME.SR.Application.Queries.BoletimEscolar
             return turmas;
         }
 
-        private async Task<IEnumerable<GrupoMatrizComponenteComNotaFinal>> ObterFechamento(long fechamentoTurmaId, long conselhoClasseId, Turma turma, string codigoAluno, PeriodoEscolar periodoEscolar)
-        {
-            IEnumerable<GrupoMatrizComponenteComNotaFinal> fechamento = await _mediator.Send(new ObterDadosComponenteComNotaFinalQuery
-            {
-                FechamentoTurmaId = fechamentoTurmaId,
-                ConselhoClasseId = conselhoClasseId,
-                Turma = turma,
-                CodigoAluno = codigoAluno,
-                PeriodoEscolar = periodoEscolar
-            });
-
-            return fechamento;
-        }
-
         private async Task<IEnumerable<FechamentoTurma>> ObterFechamentoPorCodigoTurma(string turmaCodigo)
         {
             IEnumerable<FechamentoTurma> fechamento = await _mediator.Send(new ObterFechamentosPorCodigoTurmaQuery
@@ -225,17 +324,6 @@ namespace SME.SR.Application.Queries.BoletimEscolar
             long fechamento = await _mediator.Send(new ObterConselhoClassePorFechamentoTurmaIdQuery
             {
                 FechamentoTurmaId = fechamentoTurmaId,
-            });
-
-            return fechamento;
-        }
-
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorDisciplinaBimestres(string codigoAluno, string codigoTurma)
-        {
-            IEnumerable<FrequenciaAluno> fechamento = await _mediator.Send(new ObterFrequenciaPorDisciplinaBimestresQuery
-            {
-                CodigoAluno = codigoAluno,
-                CodigoTurma = codigoTurma
             });
 
             return fechamento;

@@ -12,7 +12,8 @@
                            left join periodo_escolar pe on pe.id = f.periodo_escolar_id
                           where f.id = @fechamentoTurmaId";
 
-        internal static string FechamentosTurmaPorCodigoTurma = @" f.id, f.turma_id TurmaId, f.periodo_escolar_id PeriodoEscolarId,
+        internal static string FechamentosTurmaPorCodigoTurma = @"select
+                      f.id, f.turma_id TurmaId, f.periodo_escolar_id PeriodoEscolarId,
                       t.turma_id CodigoTurma, t.nome, t.ano_letivo AnoLetivo, 
                       t.modalidade_codigo ModalidadeCodigo, t.Semestre,
                       p.bimestre, p.periodo_inicio PeriodoInicio, p.periodo_fim PeriodoFim

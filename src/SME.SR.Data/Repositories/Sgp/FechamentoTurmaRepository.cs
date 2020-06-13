@@ -40,7 +40,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<FechamentoTurma>> ObterTurmaPeriodoFechamentoPorId(string codigoTurma)
         {
             var query = FechamentoTurmaConsultas.FechamentosTurmaPorCodigoTurma;
-            var parametros = new { TurmaCodigo= codigoTurma };
+            var parametros = new { TurmaCodigo = codigoTurma };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SME.SR.Infra;
 
 namespace SME.SR.Data
 {

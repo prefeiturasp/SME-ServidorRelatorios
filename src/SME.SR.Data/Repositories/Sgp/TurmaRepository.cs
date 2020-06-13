@@ -23,7 +23,7 @@ namespace SME.SR.Data
             var query = TurmaConsultas.DadosAlunos;
             var parametros = new { CodigoTurma = codigoTurma };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
                 return await conexao.QueryAsync<Aluno>(query, parametros);
             }

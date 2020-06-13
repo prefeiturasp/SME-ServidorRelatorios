@@ -12,6 +12,11 @@ namespace SME.SR.Application.Queries.BoletimEscolar
     {
         private IConselhoClasseRepository _conselhoClasseRepository;
 
+        public ObterConselhoClassePorFechamentoTurmaIdQueryHandler(IConselhoClasseRepository conselhoClasseRepository)
+        {
+            this._conselhoClasseRepository = conselhoClasseRepository;
+        }
+
         public async Task<long> Handle(ObterConselhoClassePorFechamentoTurmaIdQuery request, CancellationToken cancellationToken)
         {
             return await _conselhoClasseRepository.ObterConselhoPorFechamentoTurmaId(request.FechamentoTurmaId);

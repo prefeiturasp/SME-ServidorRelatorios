@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SME.SR.Application.Interfaces;
+using SME.SR.Application.Queries.BoletimEscolar;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using System.Threading.Tasks;
@@ -48,6 +49,18 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/boletimescolar", typeof(IRelatorioBoletimEscolarUseCase))]
         public async Task<bool> RelatorioBoletimEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarUseCase relatorioBoletimEscolarUseCase)
         {
+            request.Filtros = new ObterRelatorioBoletimEscolarQuery()
+            {
+                AnoLetivo = 2020,
+                DreCodigo = "108800",
+                TurmaCodigo = "2117389",
+                UeCodigo = "094765",
+                Modalidade = null,
+                AlunosCodigo = null,
+                CicloId = null,
+                PeriodoEscolarId = null
+            };
+
             await relatorioBoletimEscolarUseCase.Executar(request);
             return true;
         }

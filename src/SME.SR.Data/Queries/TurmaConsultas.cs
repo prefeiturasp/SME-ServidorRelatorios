@@ -147,9 +147,9 @@ namespace SME.SR.Data
 			return query;
         }
 
-        internal static string TurmaPorCodigo = @"select t.turma_id, t.nome, t.modalidade_codigo 
+        internal static string TurmaPorCodigo = @"select t.turma_id CodigoTurma, 
+			t.nome, t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano_letivo AnoLetivo
         from  turma t
-        inner join ue on ue.id = t.ue_id
         where t.turma_id = @codigoTurma";
     }
 }

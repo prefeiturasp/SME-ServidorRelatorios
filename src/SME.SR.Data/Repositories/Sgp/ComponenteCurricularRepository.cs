@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -32,7 +33,7 @@ namespace SME.SR.Data
         {
             var query = ComponenteCurricularConsultas.Listar;
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringApiEol))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
             {
                 return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
             }
@@ -42,7 +43,7 @@ namespace SME.SR.Data
         {
             var query = ComponenteCurricularConsultas.ListarGruposMatriz;
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringApiEol))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
             {
                 return await conexao.QueryAsync<ComponenteCurricularGrupoMatriz>(query);
             }

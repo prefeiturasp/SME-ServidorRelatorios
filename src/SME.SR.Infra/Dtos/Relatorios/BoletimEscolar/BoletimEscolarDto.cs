@@ -6,11 +6,11 @@ namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
 {
     public class BoletimEscolarDto
     {
-        public List<BoletimEscolarAlunoDto> Alunos { get; set; }
+        public List<BoletimEscolarAlunoDto> Boletins { get; set; }
 
         public BoletimEscolarDto()
         {
-            Alunos = new List<BoletimEscolarAlunoDto>();
+            Boletins = new List<BoletimEscolarAlunoDto>();
         }
     }
 }
