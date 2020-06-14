@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Dtos.Relatorios.BoletimEscolar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +8,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.BoletimEscolar
+namespace SME.SR.Application
 {
-    public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, BoletimEscolarDto>
+    public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, RelatorioBoletimEscolarDto>
     {
         private IMediator _mediator;
 
@@ -20,7 +19,7 @@ namespace SME.SR.Application.Queries.BoletimEscolar
             this._mediator = mediator;
         }
 
-        public async Task<BoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
+        public async Task<RelatorioBoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
         {
             BoletimEscolarDto relatorio = new BoletimEscolarDto();
 
@@ -83,7 +82,7 @@ namespace SME.SR.Application.Queries.BoletimEscolar
                 }
             }
 
-            return relatorio;
+            return new RelatorioBoletimEscolarDto(relatorio);
         }
 
         private async Task<BoletimEscolarAlunoDto> MontarRelatorio(Aluno dadosAluno, Turma dadosTurma, DreUe dreUe, IEnumerable<FechamentoTurma> fechamentosTurma)

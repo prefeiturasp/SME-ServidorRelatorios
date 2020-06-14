@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.BoletimEscolar
+namespace SME.SR.Application
 {
     public class ObterFechamentosPorCodigoTurmaQueryHandler : IRequestHandler<ObterFechamentosPorCodigoTurmaQuery, IEnumerable<FechamentoTurma>>
     {

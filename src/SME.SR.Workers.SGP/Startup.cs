@@ -20,7 +20,6 @@ using SME.SR.Workers.SGP.Services;
 using System;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Reflection;
 
 namespace SME.SR.Workers.SGP
@@ -100,6 +99,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped(typeof(IFrequenciaAlunoRepository), typeof(FrequenciaAlunoRepository));
             services.TryAddScoped(typeof(IParametroSistemaRepository), typeof(ParametroSistemaRepository));
             services.TryAddScoped(typeof(IPeriodoEscolarRepository), typeof(PeriodoEscolarRepository));
+            services.TryAddScoped(typeof(IPermissaoRepository), typeof(PermissaoRepository));
             services.TryAddScoped(typeof(ITipoCalendarioRepository), typeof(TipoCalendarioRepository));
             services.TryAddScoped(typeof(ITurmaRepository), typeof(TurmaRepository));
         }

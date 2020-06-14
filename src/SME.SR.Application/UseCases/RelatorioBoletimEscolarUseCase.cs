@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
 using SME.SR.Application;
-using SME.SR.Application.Queries.BoletimEscolar;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
