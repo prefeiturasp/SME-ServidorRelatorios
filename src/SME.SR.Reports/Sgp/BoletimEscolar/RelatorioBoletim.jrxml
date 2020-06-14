@@ -2,14 +2,8 @@
 <!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelatorioBoletim" pageWidth="595" pageHeight="600" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7118107b-5099-4b69-bb10-e0b894e57a27">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
-	<parameter name="jsonString" class="java.lang.String">
-		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
-	</parameter>
-	<parameter name="JSON_INPUT_STREAM" class="java.io.InputStream" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new java.io.ByteArrayInputStream($P{jsonString}.getBytes("UTF-8"))]]></defaultValueExpression>
-	</parameter>
 	<queryString language="jsonql">
-		<![CDATA[RelatorioBoletimEscolar.boletins]]>
+		<![CDATA[grupos]]>
 	</queryString>
 	<field name="nomeDre" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="cabecalho.nomeDre"/>
@@ -415,13 +409,6 @@
 				</textElement>
 				<text><![CDATA[ESTUDANTE:]]></text>
 			</staticText>
-			<image>
-				<reportElement x="25" y="4" width="121" height="45" uuid="6d92ad5e-8071-433d-9da4-fa8a476995f6">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<imageExpression><![CDATA["logo.png"]]></imageExpression>
-			</image>
 		</band>
 	</pageHeader>
 	<detail>
@@ -429,9 +416,9 @@
 			<subreport>
 				<reportElement x="19" y="-1" width="555" height="265" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[new net.sf.jasperreports.engine.data.JsonQLDataSource(new java.io.ByteArrayInputStream( $P{jsonString}.getBytes("UTF-8") ), "RelatorioBoletimEscolar")]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression><![CDATA["GrupoComponenteCurricular.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["/Sgp/BoletimEscolar/GrupoComponenteCurricular.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
