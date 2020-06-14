@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Interfaces;
 using SME.SR.Application.Queries.Comum.Relatorios;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -25,11 +26,11 @@ namespace SME.SR.Application
 
             if (detalhesRelatorio != null && detalhesRelatorio.Pronto)
             {
-                servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaClientsSgp, RotasRabbit.RotaRelatoriosProntosSgp));
+                servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaClientsSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, filtroRelatorioDto.CodigoCorrelacao));
             }
             else
             {
-                UtilTimer.SetTimeout(5000, () => servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando)));
+                UtilTimer.SetTimeout(5000, () => servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando, null, filtroRelatorioDto.CodigoCorrelacao)));
             }
         }
     }

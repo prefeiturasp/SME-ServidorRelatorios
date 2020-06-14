@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.35" />
+    <PackageReference Include="Npgsql" Version="4.1.3.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
   </ItemGroup>
 
@@ -15,9 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\CoreSso\" />
-    <Folder Include="Interfaces\Sgp\" />
     <Folder Include="Repositories\CoreSso\" />
-    <Folder Include="Repositories\Sgp\" />
   </ItemGroup>
 
 </Project>
