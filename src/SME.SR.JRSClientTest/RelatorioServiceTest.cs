@@ -1,6 +1,6 @@
 using SME.SR.Infra.Dtos;
 using SME.SR.JRSClient.Services;
-using SME.SR.Infra.Enumeradores;
+
 using SME.SR.JRSClientTest.Mock;
 using System;
 using System.IO;
@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xunit;
+using SME.SR.Infra;
 
 namespace SME.SR.JRSClientTest
 {
