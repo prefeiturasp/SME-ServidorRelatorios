@@ -5,7 +5,7 @@ namespace SME.SR.Data
 {
     public class GrupoMatrizComponenteComNotaBimestre : GrupoMatriz
     {
-        [JsonProperty("ComponentesComNota")]
+        [JsonProperty("componentesComNota")]
         public IEnumerable<ComponenteComNotaBimestre> ComponentesComNota { get; set; }
     }
 }

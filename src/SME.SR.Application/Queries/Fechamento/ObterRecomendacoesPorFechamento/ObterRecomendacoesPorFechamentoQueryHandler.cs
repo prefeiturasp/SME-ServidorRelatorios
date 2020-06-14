@@ -2,9 +2,12 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,18 +40,36 @@ namespace SME.SR.Application
                 };
             }
 
+            RemoverTags(recomendacoes);
+
             return recomendacoes;
+        }
+
+        private void RemoverTags(RecomendacaoConselhoClasseAluno recomendacaoConselho)
+        {
+            foreach (PropertyInfo prop in recomendacaoConselho.GetType().GetProperties())
+            {
+                var tipo = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                var valor = prop.GetValue(recomendacaoConselho, null)?.ToString();
+                if (tipo == typeof(string) && !string.IsNullOrEmpty(valor))
+                {
+                    DateTime valorData;
+                    if (DateTime.TryParse(valor, out valorData))
+                        prop.SetValue(recomendacaoConselho, valorData.ToString("dd/MM/yyyy"));
+                    else
+                        prop.SetValue(recomendacaoConselho, Regex.Replace(valor, "<.*?>", String.Empty));
+                }
+            }
         }
 
         private string MontaTextUlLis(IEnumerable<string> textos)
         {
-            var str = new StringBuilder("<ul>");
+            var str = new StringBuilder();
 
             foreach (var item in textos)
             {
-                str.AppendFormat("<li>{0}</li>", item);
+                str.AppendFormat(item);
             }
-            str.AppendLine("</ul>");
 
             return str.ToString().Trim();
         }

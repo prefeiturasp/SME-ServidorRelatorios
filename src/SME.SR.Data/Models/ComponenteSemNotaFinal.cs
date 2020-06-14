@@ -4,7 +4,7 @@ namespace SME.SR.Data
 {
     public class ComponenteSemNotaFinal : ComponenteSemNota
     {
-        [JsonProperty("Parecer")]
+        [JsonProperty("parecer")]
         public string Parecer { get; set; }
     }
 }

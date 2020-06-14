@@ -1,10 +1,13 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Application
 {
@@ -24,7 +27,7 @@ namespace SME.SR.Application
                 var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
                 var relatorio = await mediator.Send(relatorioQuery);
 
-                var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
+                var relatorioSerializado = JsonConvert.SerializeObject(relatorio, UtilJson.ObterConfigConverterNulosEmVazio());
 
                 await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
@@ -34,4 +37,8 @@ namespace SME.SR.Application
             }
         }
     }
+
+   
+
+    
 }
