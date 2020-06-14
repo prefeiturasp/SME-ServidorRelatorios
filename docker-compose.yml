@@ -20,22 +20,22 @@ services:
   #      - flyway
   #      - jasper_reports_server
 
-  # sgpworker:
-  #   env_file:
-  #     - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
-  #   container_name: sme_sr_sgp_worker_container
-  #   build: ./src/SME.SR.Workers.SGP
-  #   ports:
-  #     - "5001:5001"
-  #     - "5000:5000"
-  #   links:
-  #     - rabbitmq
-  #     - jasper_reports_server
-  #   networks:
-  #     - default
-  #   depends_on:
-  #     - jasper_reports_server
-  #     - rabbitmq
+  sme_sr_sgpworker:
+    env_file:
+      - sme_servidor_relatorios_worker.env
+    container_name: sme_sr_sgp_worker_container
+    restart: on-failure
+    build: 
+      context: .
+      dockerfile: ./src/SME.SR.Workers.SGP/Dockerfile
+    ports:
+      - "5001:5001"
+      - "5000:5000"    
+    networks:
+      - default
+    depends_on:
+      - sme_sr_jasper_reports_server
+      - sme_sr_rabbitmq
 
   ##########################################################
   ### Database #############################################
@@ -83,7 +83,7 @@ services:
   ##########################################################
   ### Mensageria ###########################################
   ##########################################################
-  rabbitmq:
+  sme_sr_rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.7-management-alpine
     environment:
@@ -107,17 +107,19 @@ services:
     #volumes:
     #  - 'mariadb_data:/volumes/mariadb:Z'
 
-  jasper_reports_server:
-    container_name: jasper_reports_server
+  sme_sr_jasper_reports_server:
+    container_name: jasper_reports_server_edited
     environment:
       - MARIADB_HOST=mariadb
       - MARIADB_PORT_NUMBER=3306
       - JASPERREPORTS_DATABASE_USER=jasperreports
       - JASPERREPORTS_DATABASE_NAME=jasperreports
       - ALLOW_EMPTY_PASSWORD=yes
-    image: bitnami/jasperreports:7.2.0
-    #volumes:
-    #  - 'jasperreports_data:/volumes/jasperreports:Z'
+    build:
+      context: .
+      dockerfile: jasper_server/Dockerfile  
+    # volumes:
+    #  - ./jasper_server/WEB-INF/web.xml:/bitnami/tomcat/data/jasperserver/WEB-INF/web.xml:z
     networks:
       - default
     ports:
@@ -130,8 +132,6 @@ services:
 ### Volumes, rede e infra estrutura ######################
 ##########################################################
 volumes:
-  postgres:
-  pgadmin:
   jasperreports_data:
     driver: local
   mariadb_data:
