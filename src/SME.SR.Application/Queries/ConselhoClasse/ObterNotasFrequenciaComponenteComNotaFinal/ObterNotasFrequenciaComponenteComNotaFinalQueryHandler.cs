@@ -40,7 +40,7 @@ namespace SME.SR.Application
 
         private NotaBimestre ObterNotaFinalComponentePeriodo(long codigoComponenteCurricular, int bimestre, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
-            double? notaConceito = null;
+            string notaConceito = null;
             // Busca nota do FechamentoNota
             var notaFechamento = notasFechamentoAluno.FirstOrDefault(c => c.ComponenteCurricularCodigo == codigoComponenteCurricular);
             if (notaFechamento != null)
@@ -49,7 +49,7 @@ namespace SME.SR.Application
             return new NotaBimestre()
             {
                 Bimestre = bimestre,
-                NotaConceito = notaConceito.ToString()
+                NotaConceito = notaConceito
             };
         }
 
@@ -63,7 +63,7 @@ namespace SME.SR.Application
                 notasPeriodos.Add(new NotaBimestre()
                 {
                     Bimestre = notaFechamento.Bimestre.Value,
-                    NotaConceito = notaFechamento.NotaConceito.ToString()
+                    NotaConceito = notaFechamento.NotaConceito
                 });
             }
 
