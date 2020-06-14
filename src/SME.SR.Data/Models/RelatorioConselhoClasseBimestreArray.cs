@@ -9,7 +9,7 @@ namespace SME.SR.Data
         {
             Relatorio = new List<RelatorioConselhoClasseBase>();
         }
-        [JsonProperty("RelatorioConselhoDeClasse")]
+        [JsonProperty("relatorioConselhoDeClasse")]
         public List<RelatorioConselhoClasseBase> Relatorio { get; set; }
     }
 }
