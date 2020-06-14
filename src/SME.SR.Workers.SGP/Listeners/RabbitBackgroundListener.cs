@@ -51,29 +51,33 @@ namespace SME.SR.Workers.SGP.Services
         {
             _logger.LogInformation($"[ INFO ] Messaged received: {content}");
 
-            var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
-            MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
-
-            foreach (MethodInfo method in methods)
+            if (!content.Equals("null"))
             {
-                ActionAttribute actionAttribute = GetActionAttribute(method);
-                if (actionAttribute != null && actionAttribute.Name == request.Action)
+                var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
+                MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
+
+                foreach (MethodInfo method in methods)
                 {
-                    _logger.LogInformation($"[ INFO ] Invoking action: {request.Action}");
+                    ActionAttribute actionAttribute = GetActionAttribute(method);
+                    if (actionAttribute != null && actionAttribute.Name == request.Action)
+                    {
+                        _logger.LogInformation($"[ INFO ] Invoking action: {request.Action}");
 
-                    var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
-                   
-                    var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
-                    var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
+                        var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
 
-                    method.Invoke(controller, new object[] { request, useCase });
+                        var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
+                        var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
 
-                    _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
-                    return;
+                        method.Invoke(controller, new object[] { request, useCase });
+
+                        _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
+                        return;
+                    }
                 }
-            }
 
-            _logger.LogInformation($"[ INFO ] Method not found to action: {request.Action}");
+                _logger.LogInformation($"[ INFO ] Method not found to action: {request.Action}");
+            }
+            
         }
 
         private WorkerAttribute GetWorkerAttribute(Type type)
