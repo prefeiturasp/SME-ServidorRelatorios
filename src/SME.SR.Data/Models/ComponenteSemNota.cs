@@ -4,13 +4,13 @@ namespace SME.SR.Data
 {
     public class ComponenteSemNota
     {
-        [JsonProperty("componente")]
+        [JsonProperty("Componente")]
         public string Componente { get; set; }
 
-        [JsonProperty("faltas")]
+        [JsonProperty("Faltas")]
         public int? Faltas { get; set; }
 
-        [JsonProperty("frequencia")]
+        [JsonProperty("Frequencia")]
         public double? Frequencia { get; set; }
     }
 }

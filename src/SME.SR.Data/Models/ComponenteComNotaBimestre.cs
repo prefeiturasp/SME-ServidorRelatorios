@@ -4,13 +4,13 @@ namespace SME.SR.Data
 {
     public class ComponenteComNotaBimestre : ComponenteComNota
     {
-        [JsonProperty("notaConceito")]
+        [JsonProperty("NotaConceito")]
         public string NotaConceito { get; set; }
 
-        [JsonProperty("notaPosConselho")]
+        [JsonProperty("NotaPosConselho")]
         public string NotaPosConselho { get; set; }
 
-        [JsonProperty("aulas")]
+        [JsonProperty("Aulas")]
         public int? Aulas { get; set; }
     }
 }

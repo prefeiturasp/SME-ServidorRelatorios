@@ -18,7 +18,7 @@ namespace SME.SR.Infra
         {
             if (!string.IsNullOrWhiteSpace(publicaFilaDto.Rota))
             {
-                var request = new MensagemRabbit(publicaFilaDto.Rota.Replace(".","/"), publicaFilaDto.Dados);
+                var request = new MensagemRabbit(publicaFilaDto.Rota.Replace(".","/"), publicaFilaDto.Dados, publicaFilaDto.CodigoCorrelacao);
 
                 var mensagem = JsonConvert.SerializeObject(request);
                 var body = Encoding.UTF8.GetBytes(mensagem);

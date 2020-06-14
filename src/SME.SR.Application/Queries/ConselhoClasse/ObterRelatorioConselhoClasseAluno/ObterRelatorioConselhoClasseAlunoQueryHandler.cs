@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioConselhoClasseAlunoQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAlunoQuery, RelatorioConselhoClasseBase>
+    public class ObterRelatorioConselhoClasseAlunoQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAlunoQuery, RelatorioConselhoClasseArray>
     {
         private IMediator _mediator;
 
@@ -16,7 +16,7 @@ namespace SME.SR.Application
             this._mediator = mediator;
         }
 
-        public async Task<RelatorioConselhoClasseBase> Handle(ObterRelatorioConselhoClasseAlunoQuery request, CancellationToken cancellationToken)
+        public async Task<RelatorioConselhoClasseArray> Handle(ObterRelatorioConselhoClasseAlunoQuery request, CancellationToken cancellationToken)
         {
             var fechamentoTurma = await ObterFechamentoTurmaPorId(request.FechamentoTurmaId);
 
@@ -24,8 +24,11 @@ namespace SME.SR.Application
 
             int? bimestre = null;
 
+            var relatorioParaEnviar = new RelatorioConselhoClasseArray();
+
             if (fechamentoTurma.PeriodoEscolarId.HasValue)
             {
+                
                 relatorio = new RelatorioConselhoClasseBimestre();
                 bimestre = fechamentoTurma.PeriodoEscolar.Bimestre;
                 relatorio.Bimestre = fechamentoTurma.PeriodoEscolar.Bimestre.ToString();
@@ -111,7 +114,9 @@ namespace SME.SR.Application
 
             relatorio.AnotacoesAluno = anotacoes;
 
-            return relatorio;
+            relatorioParaEnviar.Relatorio.Add(relatorio);
+
+            return relatorioParaEnviar;
         }
 
         private async Task<FechamentoTurma> ObterFechamentoTurmaPorId(long fechamentoTurmaId)

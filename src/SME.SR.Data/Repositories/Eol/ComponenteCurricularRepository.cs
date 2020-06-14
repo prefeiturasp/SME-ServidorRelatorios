@@ -23,41 +23,24 @@ namespace SME.SR.Data
             var query = ComponenteCurricularConsultas.BuscarPorTurma;
             var parametros = new { CodigoTurma = codigoTurma };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
-            }
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
         }
 
         public async Task<IEnumerable<ComponenteCurricularApiEol>> Listar()
         {
             var query = ComponenteCurricularConsultas.Listar;
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
-            {
-                return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
+            return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
         }
 
         public async Task<IEnumerable<ComponenteCurricularGrupoMatriz>> ListarGruposMatriz()
         {
             var query = ComponenteCurricularConsultas.ListarGruposMatriz;
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
-            {
-                return await conexao.QueryAsync<ComponenteCurricularGrupoMatriz>(query);
-            }
-        }
-
-        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmaEProfessor(string login, string codigoTurma)
-        {
-            var query = ComponenteCurricularConsultas.BuscarPorTurmaEProfessor;
-            var parametros = new { Login = login, CodigoTurma = codigoTurma };
-
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
+            return await conexao.QueryAsync<ComponenteCurricularGrupoMatriz>(query);
         }
 
         public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string turmaCodigo, IEnumerable<long> componentesCurricularesId)
@@ -67,6 +50,17 @@ namespace SME.SR.Data
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
                 return await conexao.QueryAsync<ComponenteCurricularTerritorioSaber>(query);
+            }
+        }
+
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmaEProfessor(string login, string codigoTurma)
+        {
+            var query = ComponenteCurricularConsultas. BuscarPorTurmaEProfessor;
+            var parametros = new { Login = login, CodigoTurma = codigoTurma };
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricular>(query);
             }
         }
     }

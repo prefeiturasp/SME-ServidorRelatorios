@@ -38,6 +38,10 @@ namespace SME.SR.JRSClient.Services
 
         public async Task<ExecucaoRelatorioRespostaDto> SolicitarRelatorio(ExecucaoRelatorioRequisicaoDto requisicao, string jSessionId)
         {
+            try
+            {
+
+            
             if (!string.IsNullOrWhiteSpace(jSessionId))
                 jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
 
@@ -47,6 +51,14 @@ namespace SME.SR.JRSClient.Services
                 return retorno.Content;
             }
             return default;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
         }
 
         public async Task<string> InterromperRelatoriosTarefas(Guid requisicaoId)
