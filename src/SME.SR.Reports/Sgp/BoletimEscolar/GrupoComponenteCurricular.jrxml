@@ -27,7 +27,7 @@
 	<subDataset name="DatasetBoletim" uuid="a5e431c4-8651-46d3-8908-49422fe85323">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
 		<queryString language="json">
-			<![CDATA[RelatorioBoletimEscolar.grupos.componentesCurriculares]]>
+			<![CDATA[RelatorioBoletimEscolarboletins.boletins.grupos.componentesCurriculares]]>
 		</queryString>
 		<field name="nome" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
@@ -80,7 +80,7 @@
 	<subDataset name="DatasetBoletimGrupos" uuid="f5f268e2-3fa4-476c-aa91-92f1bdfa7483">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
 		<queryString language="json">
-			<![CDATA[RelatorioBoletimEscolar.grupos]]>
+			<![CDATA[RelatorioBoletimEscolar.boletins.grupos]]>
 		</queryString>
 		<field name="id" class="java.lang.Integer">
 			<property name="net.sf.jasperreports.json.field.expression" value="id"/>
@@ -107,7 +107,7 @@
 				</reportElement>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="DatasetBoletimGrupos" uuid="1f1327bf-931a-412f-99ce-f3cc4fc9ebcd">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("grupos")]]></dataSourceExpression>
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("boletins.grupos")]]></dataSourceExpression>
 					</datasetRun>
 					<jr:listContents height="50" width="560">
 						<componentElement>
@@ -268,10 +268,12 @@
 							</jr:table>
 						</componentElement>
 						<rectangle>
-							<reportElement stretchType="ContainerHeight" x="0" y="0" width="32" height="50" forecolor="#DADADA" uuid="c1218e33-7142-4ef9-84c0-4bcb45aeea25"/>
+							<reportElement stretchType="ContainerHeight" x="1" y="0" width="31" height="50" forecolor="#DADADA" uuid="c1218e33-7142-4ef9-84c0-4bcb45aeea25">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
 						</rectangle>
 						<textField>
-							<reportElement x="4" y="0" width="24" height="50" forecolor="#42474A" uuid="407a7e21-be3b-4bda-b0e6-1bac7399d653"/>
+							<reportElement x="5" y="0" width="24" height="50" forecolor="#42474A" uuid="407a7e21-be3b-4bda-b0e6-1bac7399d653"/>
 							<box>
 								<pen lineColor="#DADADA"/>
 							</box>
