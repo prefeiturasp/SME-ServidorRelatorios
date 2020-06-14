@@ -22,6 +22,7 @@
     <PackageReference Include="RabbitMQ.Client" Version="6.1.0" />
     <PackageReference Include="MediatR.Extensions" Version="0.6.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjectionFixed" Version="5.1.2" />
+    <PackageReference Include="Sentry" Version="2.1.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
   </ItemGroup>
 

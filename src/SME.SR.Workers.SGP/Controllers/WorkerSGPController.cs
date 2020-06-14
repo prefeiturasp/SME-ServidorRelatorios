@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Sentry;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
@@ -12,6 +14,12 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
+        private readonly IConfiguration configuration;
+
+        public WorkerSGPController(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
         [HttpGet("relatorios/alunos")]
         [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
         public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGamesUseCase relatorioGamesUseCase)
@@ -32,6 +40,10 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorio/conselhoclassealuno", typeof(IRelatorioConselhoClasseAlunoUseCase))]
         public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request, IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
         {
+            using (SentrySdk.Init(configuration.GetValue<string>("Sentry:DSN")))
+            {
+                SentrySdk.CaptureMessage("4 - relatorio/conselhoclassealuno");
+            }
             await relatorioConselhoClasseAlunoUseCase.Executar(request);
             return true;
         }
@@ -40,6 +52,10 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/processando", typeof(IMonitorarStatusRelatorioUseCase))]
         public async Task<bool> RelatoriosProcessando([FromQuery] FiltroRelatorioDto request, [FromServices] IMonitorarStatusRelatorioUseCase monitorarStatusRelatorioUseCase)
         {
+            using (SentrySdk.Init(configuration.GetValue<string>("Sentry:DSN")))
+            {
+                SentrySdk.CaptureMessage("7 - relatorios/processando");
+            }
             await monitorarStatusRelatorioUseCase.Executar(request);
             return true;
         }
