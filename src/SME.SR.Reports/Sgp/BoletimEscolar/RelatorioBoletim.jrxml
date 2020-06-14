@@ -9,7 +9,7 @@
 		<defaultValueExpression><![CDATA[new java.io.ByteArrayInputStream($P{jsonString}.getBytes("UTF-8"))]]></defaultValueExpression>
 	</parameter>
 	<queryString language="jsonql">
-		<![CDATA[RelatorioBoletimEscolar]]>
+		<![CDATA[RelatorioBoletimEscolar.boletins]]>
 	</queryString>
 	<field name="nomeDre" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="cabecalho.nomeDre"/>
@@ -62,6 +62,9 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.7" lineStyle="Solid"/>
+				</graphicElement>
 			</rectangle>
 			<textField>
 				<reportElement x="45" y="53" width="253" height="12" uuid="170fa3f0-7e8b-4b24-9c48-0a5ca7f3cdc7"/>
@@ -75,6 +78,9 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.7"/>
+				</graphicElement>
 			</rectangle>
 			<textField isBlankWhenNull="false">
 				<reportElement x="322" y="53" width="250" height="13" uuid="7203f66e-f524-4afc-8800-defba9226c69"/>
@@ -88,12 +94,18 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.7" lineStyle="Solid"/>
+				</graphicElement>
 			</rectangle>
 			<rectangle radius="0">
 				<reportElement x="299" y="66" width="275" height="13" uuid="da9eaae1-cad2-4fd0-ac7f-d56cf85b55a7">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.7"/>
+				</graphicElement>
 			</rectangle>
 			<textField>
 				<reportElement x="59" y="66" width="238" height="13" uuid="fee352b1-4d92-403f-8112-91dfb68522fd"/>
@@ -169,8 +181,9 @@
 	<pageHeader>
 		<band height="39" splitType="Stretch">
 			<rectangle>
-				<reportElement x="494" y="9" width="80" height="15" forecolor="#DADADA" backcolor="#F5F6F8" uuid="108fee6b-940c-4969-9d5e-bd227fda7b37">
+				<reportElement x="494" y="7" width="80" height="17" forecolor="#DADADA" backcolor="#F5F6F8" uuid="108fee6b-940c-4969-9d5e-bd227fda7b37">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</rectangle>
 			<staticText>
@@ -223,19 +236,19 @@
 				<text><![CDATA[Nota]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="414" y="9" width="80" height="15" forecolor="#DADADA" backcolor="#F5F6F8" uuid="6ce2b346-59bf-45f9-85e4-76c063502d05">
+				<reportElement x="414" y="7" width="80" height="17" forecolor="#DADADA" backcolor="#F5F6F8" uuid="6ce2b346-59bf-45f9-85e4-76c063502d05">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="334" y="9" width="80" height="15" forecolor="#DADADA" backcolor="#F5F6F8" uuid="3780a6b9-e459-4ac9-867a-1b5900a0328a">
+				<reportElement x="334" y="7" width="80" height="17" forecolor="#DADADA" backcolor="#F5F6F8" uuid="3780a6b9-e459-4ac9-867a-1b5900a0328a">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="254" y="9" width="80" height="15" forecolor="#DADADA" backcolor="#F5F6F8" uuid="e7437f60-5462-4b4d-879c-8b9770bc8539">
+				<reportElement x="254" y="7" width="80" height="17" forecolor="#DADADA" backcolor="#F5F6F8" uuid="e7437f60-5462-4b4d-879c-8b9770bc8539">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -251,7 +264,7 @@
 				<text><![CDATA[4º BIMESTRE]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="174" y="9" width="80" height="15" forecolor="#DADADA" backcolor="#F5F6F8" uuid="816eed42-0a7a-4c83-acb8-742c7ae8d884">
+				<reportElement x="174" y="7" width="80" height="17" forecolor="#DADADA" backcolor="#F5F6F8" uuid="816eed42-0a7a-4c83-acb8-742c7ae8d884">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>

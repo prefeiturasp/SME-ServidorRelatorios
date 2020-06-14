@@ -1,110 +1,302 @@
 {
   "RelatorioBoletimEscolar": {
-    "descricaoGrupos": "GRUPO 01 : Base Nacional comum | GRUPO 01 : Base Nacional comum | GRUPO 01 : Base Nacional comum | GRUPO 01 : Base Nacional comum",
-    "observacoes": "O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas.",
-    "cabecalho": {
-      "nomeDre": "DRE CAMPO LIMPO",
-      "nomeUe": "091847 CEU EMEF PARAISOPOLIS",
-      "nomeTurma": "EM-1A",
-      "aluno": "09 - ÁLVARO RAMOS GRASSI"
-    },
-    "grupos": [
-      {
-        "id": "1",
-        "nome": "GRUPO 01",
-        "descricao": "Base Nacional comum",
-        "componentesCurriculares": [
+    "boletins": [
+      {        
+        "descricaoGrupos": "GRUPO 01 : Base Nacional comum | GRUPO 01 : Base Nacional comum | GRUPO 01 : Base Nacional comum | GRUPO 01 : Base Nacional comum",
+        "observacoes": "O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas.",
+        "cabecalho": {
+          "nomeDre": "DRE CAMPO LIMPO",
+          "nomeUe": "091847 CEU EMEF PARAISOPOLIS",
+          "nomeTurma": "EM-1A",
+          "aluno": "09 - ÁLVARO RAMOS GRASSI"
+        },
+        "grupos": [
           {
-            "nome": "História",
-            "notaBimestre1": "10",
-            "frequenciaBimestre1": "100",
-            "notaBimestre2": "7",
-            "frequenciaBimestre2": "100",
-            "notaBimestre3": "10",
-            "frequenciaBimestre3": "100",
-            "notaBimestre4": "4.5",
-            "frequenciaBimestre4": "100",
-            "notaFinal": "4.5",
-            "frequenciaFinal": "100"
+            "id": "1",
+            "nome": "GRUPO 01",
+            "descricao": "Base Nacional comum",
+            "componentesCurriculares": [
+              {
+                "nome": "História",
+                "notaBimestre1": "10",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "7",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "10",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "4.5",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "Biologia",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "aaaaaaaa",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              }
+            ]
           },
           {
-            "nome": "Biologia",
-            "grupo": "1",
-            "notaBimestre1": "9",
-            "frequenciaBimestre1": "100",
-            "notaBimestre2": "10",
-            "frequenciaBimestre2": "100",
-            "notaBimestre3": "8",
-            "frequenciaBimestre3": "100",
-            "notaBimestre4": "10",
-            "frequenciaBimestre4": "100",
-            "notaFinal": "4.5",
-            "frequenciaFinal": "100"
+            "id": "2",
+            "nome": "GRUPO 02",
+            "descricao": "Diversificadas",
+            "componentesCurriculares": [
+              {
+                "nome": "História",
+                "notaBimestre1": "10",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "7",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "10",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "4.5",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              }
+            ]
           },
           {
-            "nome": "aaaaaaaa",
-            "grupo": "1",
-            "notaBimestre1": "9",
-            "frequenciaBimestre1": "100",
-            "notaBimestre2": "10",
-            "frequenciaBimestre2": "100",
-            "notaBimestre3": "8",
-            "frequenciaBimestre3": "100",
-            "notaBimestre4": "10",
-            "frequenciaBimestre4": "100",
-            "notaFinal": "4.5",
-            "frequenciaFinal": "100"
+            "id": "2",
+            "nome": "GRUPO 02",
+            "descricao": "Diversificadas",
+            "componentesCurriculares": [
+              {
+                "nome": "História",
+                "notaBimestre1": "10",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "7",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "10",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "4.5",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "Biologia",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "Biologia",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              },
+              {
+                "nome": "Biologia",
+                "grupo": "1",
+                "notaBimestre1": "9",
+                "frequenciaBimestre1": "100",
+                "notaBimestre2": "10",
+                "frequenciaBimestre2": "100",
+                "notaBimestre3": "8",
+                "frequenciaBimestre3": "100",
+                "notaBimestre4": "10",
+                "frequenciaBimestre4": "100",
+                "notaFinal": "4.5",
+                "frequenciaFinal": "100"
+              }
+            ]
           }
         ]
-      },
-      {
-        "id": "2",
-        "nome": "GRUPO 02",
-        "descricao": "Diversificadas",
-        "componentesCurriculares": [
-          {
-            "nome": "História",
-            "notaBimestre1": "10",
-            "frequenciaBimestre1": "100",
-            "notaBimestre2": "7",
-            "frequenciaBimestre2": "100",
-            "notaBimestre3": "10",
-            "frequenciaBimestre3": "100",
-            "notaBimestre4": "4.5",
-            "frequenciaBimestre4": "100",
-            "notaFinal": "4.5",
-            "frequenciaFinal": "100"
-          },
-          {
-            "nome": "Biologia",
-            "grupo": "1",
-            "notaBimestre1": "9",
-            "frequenciaBimestre1": "100",
-            "notaBimestre2": "10",
-            "frequenciaBimestre2": "100",
-            "notaBimestre3": "8",
-            "frequenciaBimestre3": "100",
-            "notaBimestre4": "10",
-            "frequenciaBimestre4": "100",
-            "notaFinal": "4.5",
-            "frequenciaFinal": "100"
-          },
-          {
-            "nome": "bbbbbb",
-            "grupo": "1",
-            "notaBimestre1": "9",
-            "frequenciaBimestre1": "100",
-            "notaBimestre2": "10",
-            "frequenciaBimestre2": "100",
-            "notaBimestre3": "8",
-            "frequenciaBimestre3": "100",
-            "notaBimestre4": "10",
-            "frequenciaBimestre4": "100",
-            "notaFinal": "4.5",
-            "frequenciaFinal": "100"
-          }
-        ]
-      }
+      }  
     ]
   }
 }
