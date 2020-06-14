@@ -14,9 +14,9 @@
 	<queryString language="json">
 		<![CDATA[relatorioConselhoDeClasse]]>
 	</queryString>
-	<field name="RecomendacaoFamilia" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="RecomendacaoFamilia"/>
-		<fieldDescription><![CDATA[RecomendacaoFamilia]]></fieldDescription>
+	<field name="RecomendacaoAluno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="RecomendacaoAluno"/>
+		<fieldDescription><![CDATA[RecomendacaoAluno]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -26,7 +26,7 @@
 			<staticText>
 				<reportElement positionType="Float" x="1" y="0" width="553" height="23" isRemoveLineWhenBlank="true" uuid="2730bd4e-1dba-44a7-aadb-829fe8f26a86">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[$F{RecomendacaoFamilia} != null]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{RecomendacaoAluno} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
@@ -46,9 +46,9 @@
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.spacingBefore" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
-					<printWhenExpression><![CDATA[$F{RecomendacaoFamilia} != null]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{RecomendacaoAluno} != null]]></printWhenExpression>
 				</reportElement>
-				<box topPadding="0" leftPadding="20" bottomPadding="0" rightPadding="0">
+				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
@@ -56,9 +56,9 @@
 					<rightPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<paragraph lineSpacing="Single" lineSpacingSize="1.0" leftIndent="0"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" leftIndent="20"/>
 				</textElement>
-				<text><![CDATA[RECOMENDAÇÕES A FAMÍLIA]]></text>
+				<text><![CDATA[RECOMENDAÇÕES AO ALUNO]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -68,19 +68,19 @@
 				<reportElement positionType="Float" x="1" y="0" width="553" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="7e57ce12-3116-4a2a-b1cb-1ddbfc0e4f21">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
-					<printWhenExpression><![CDATA[$F{RecomendacaoFamilia} != null]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{RecomendacaoAluno} != null]]></printWhenExpression>
 				</reportElement>
-				<box topPadding="0" leftPadding="20" bottomPadding="0" rightPadding="0">
+				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<paragraph leftIndent="0"/>
+				<textElement>
+					<paragraph leftIndent="20"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{RecomendacaoFamilia}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{RecomendacaoAluno}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -67,7 +67,7 @@ namespace SME.SR.Workers.SGP
             })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
-                    return jasperCookieHandler;
+                    return new JasperCookieHandler() { CookieContainer = cookieContainer }; 
                 });
 
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);

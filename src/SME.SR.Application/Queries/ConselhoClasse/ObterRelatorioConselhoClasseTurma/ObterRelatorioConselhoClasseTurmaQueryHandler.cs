@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,12 +47,14 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
                                                                                                 long fechamentoTurmaId,
                                                                                                 string codigoAluno)
         {
-            return await mediator.Send(new ObterRelatorioConselhoClasseAlunoQuery()
+         var retorno = await mediator.Send(new ObterRelatorioConselhoClasseAlunoQuery()
             {
                 CodigoAluno = codigoAluno,
                 ConselhoClasseId = conselhoClasseId,
                 FechamentoTurmaId = fechamentoTurmaId
             });
+
+            return retorno.Relatorio.FirstOrDefault();
         }
     }
 }

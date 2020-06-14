@@ -3,7 +3,7 @@ using SME.SR.Data;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioConselhoClasseAlunoQuery : IRequest<RelatorioConselhoClasseBase>
+    public class ObterRelatorioConselhoClasseAlunoQuery : IRequest<RelatorioConselhoClasseArray>
     {
         public long FechamentoTurmaId { get; set; }
         public long ConselhoClasseId { get; set; }
