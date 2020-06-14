@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SME.SR.Infra.Utilitarios;
 
 namespace SME.SR.Infra
 {
@@ -11,6 +12,11 @@ namespace SME.SR.Infra
                             {
                                 NullValueHandling = NullValueHandling.Ignore
                             });
+        }
+
+        public static JsonSerializerSettings ObterConfigConverterNulosEmVazio()
+        {
+            return new JsonSerializerSettings() { ContractResolver = new NullToEmptyStringResolver() };
         }
     }
 }
