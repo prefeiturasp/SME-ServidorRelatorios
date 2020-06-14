@@ -2,9 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Sentry;
+using Newtonsoft.Json.Serialization;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using static SME.SR.Infra.Enumeradores;
 
@@ -23,8 +27,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
-            {
+           
                 var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
                 var relatorio = await mediator.Send(relatorioQuery);
 
@@ -36,11 +39,11 @@ namespace SME.SR.Application
                 }
 
                 await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+           
         }
     }
+
+   
+
+    
 }
