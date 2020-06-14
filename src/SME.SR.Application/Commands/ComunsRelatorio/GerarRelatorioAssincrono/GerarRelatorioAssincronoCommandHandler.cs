@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.Infra.Utilitarios;
@@ -16,14 +17,17 @@ namespace SME.SR.Application
         private readonly IExecucaoRelatorioService execucaoRelatorioService;
         private readonly IServicoFila servicoFila;
         private readonly ILoginService loginService;
+        private readonly IConfiguration configuration;
 
         public GerarRelatorioAssincronoCommandHandler(IExecucaoRelatorioService execucaoRelatorioService,
                                                       IServicoFila servicoFila,
-                                                      ILoginService loginService)
+                                                      ILoginService loginService, 
+                                                      IConfiguration  configuration)
         {
             this.execucaoRelatorioService = execucaoRelatorioService ?? throw new System.ArgumentNullException(nameof(execucaoRelatorioService));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
             this.loginService = loginService ?? throw new ArgumentNullException(nameof(loginService));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
         public async Task<bool> Handle(GerarRelatorioAssincronoCommand request, CancellationToken cancellationToken)
         {
@@ -41,7 +45,7 @@ namespace SME.SR.Application
                 Parametros = parametrosDoDto
             };
 
-            var jsessionId = await loginService.ObterTokenAutenticacao("user", "bitnami");
+            var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
 
             var retorno = await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId);
             var exportacaoId = retorno?.Exports?.FirstOrDefault()?.Id;
@@ -49,7 +53,7 @@ namespace SME.SR.Application
             {
                 var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
 
-                servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando));
+                servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando, null, request.CodigoCorrelacao));
 
                 return await Task.FromResult(true);
             }

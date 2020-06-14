@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponenteComNotaContainer" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="517d9b31-0633-4a8a-b1c5-e64dfb836c81">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
-	<style name="Table_TH" mode="Opaque" backcolor="#F3F3F3">
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -11,7 +11,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table_CH" mode="Opaque" backcolor="#F3F3F3">
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -73,6 +73,36 @@
 			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
 		</field>
 	</subDataset>
+	<subDataset name="DatasetComponenteComNotaAbaFinal" uuid="52104e28-11b7-44d2-840b-ea70fb933da5">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
+		<queryString language="json">
+			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota.ComponentesComNota]]>
+		</queryString>
+		<field name="NotaFinal" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="NotaFinal"/>
+			<fieldDescription><![CDATA[NotaFinal]]></fieldDescription>
+		</field>
+		<field name="NotasBimestre" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="NotasBimestre"/>
+			<fieldDescription><![CDATA[NotasBimestre]]></fieldDescription>
+		</field>
+		<field name="Componente" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="Componente"/>
+			<fieldDescription><![CDATA[Componente]]></fieldDescription>
+		</field>
+		<field name="Faltas" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="Faltas"/>
+			<fieldDescription><![CDATA[Faltas]]></fieldDescription>
+		</field>
+		<field name="AusenciasCompensadas" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="AusenciasCompensadas"/>
+			<fieldDescription><![CDATA[AusenciasCompensadas]]></fieldDescription>
+		</field>
+		<field name="Frequencia" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="Frequencia"/>
+			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
+		</field>
+	</subDataset>
 	<queryString language="JSON">
 		<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota]]>
 	</queryString>
@@ -84,7 +114,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="83" splitType="Stretch">
+		<band height="255" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="553" height="23" uuid="ba3aa18c-517d-4771-ac43-4aebd861d1ea">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -102,126 +132,112 @@
 				<textFieldExpression><![CDATA[$F{Nome}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="0" y="23" width="553" height="60" uuid="709f5efd-7ce2-45c1-84d3-997b2a1e2f5e">
+				<reportElement x="0" y="23" width="553" height="200" uuid="29efe68a-d817-4c49-87a1-9d9ae6ab3854">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DatasetComponentes" uuid="b540b73f-85c9-4353-b986-3a5850bcb98b">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("ComponentesComNota")]]></dataSourceExpression>
-					</datasetRun>
-					<jr:column width="90" uuid="81d0c585-83d1-44ac-87c8-7fa5e6eb086b">
+					<datasetRun subDataset="DatasetComponenteComNotaAbaFinal" uuid="9e99a19b-a184-4713-bd38-c8c15c3def65"/>
+					<jr:column width="33" uuid="2e13056c-6cf8-435f-ad42-5955ed0f9e31">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="90" height="30" uuid="b51f24a6-5243-48e1-92f5-2bb4b5b344c5"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[COMPONENTE]]></text>
+								<reportElement x="0" y="0" width="33" height="30" uuid="ca4dad59-b6ee-40bd-bad7-1d0703d4a406"/>
+								<text><![CDATA[Componente]]></text>
 							</staticText>
 						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="90" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="33" height="30" uuid="3d5760d8-f0d5-4284-9af8-7caf10dd360c"/>
 								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="90" uuid="95984bdd-89e4-4212-81a9-34cf15275a71">
+					<jr:column width="33" uuid="f977cc80-57bb-4e83-a62b-0055ab5ae8ae">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="90" height="30" uuid="abd89629-bc53-4ceb-a56b-be4967bd3779"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[NOTA/CONCEITO]]></text>
+								<reportElement x="0" y="0" width="33" height="30" uuid="70cd72ed-a6eb-4c1e-a310-90dc5fb7f17b"/>
+								<text><![CDATA[NotaFinal]]></text>
 							</staticText>
 						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="90" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{NotaConceito}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="33" height="30" uuid="ff1194fa-d703-4c21-86a1-b939350c0e80"/>
+								<textFieldExpression><![CDATA[$F{NotaFinal}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="130" uuid="d02ca614-2946-4f51-bd5e-fc35b8ad1772">
+					<jr:column width="33" uuid="3e65bb6f-376d-4c3a-8829-a366262c47ed">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="130" height="30" uuid="20de03bc-4e3b-481f-8162-7e33548d0f55"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[NOTA PÓS-CONSELHO]]></text>
+								<reportElement x="0" y="0" width="33" height="30" uuid="103b2b07-98c0-4142-a18b-7e66305ed23c"/>
+								<text><![CDATA[NotasBimestre]]></text>
 							</staticText>
 						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="130" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{NotaPosConselho}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="33" height="30" uuid="576aa8e6-e6ab-40c6-a804-935d0f23ef01"/>
+								<textFieldExpression><![CDATA[$F{NotasBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="40" uuid="c21ed296-3d75-41c0-a478-d55dd1c60775">
+					<jr:column width="33" uuid="34335454-0da3-4780-9fa1-cc5af0b8ce4f">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="40" height="30" uuid="a6384e1a-2e78-4201-b1d0-fd67d0bff0fa"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[AULAS]]></text>
+								<reportElement x="0" y="0" width="33" height="30" uuid="4d747164-4d7a-4b05-82f0-d135f0e33cbe"/>
+								<text><![CDATA[Faltas]]></text>
 							</staticText>
 						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="40" height="30" uuid="191c7138-3fe6-4404-a266-e2c5fec6a01b"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{Aulas}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="50" uuid="b34caede-bb3b-4f89-b1ea-8db702ca503b">
-						<jr:columnHeader style="Table_CH" height="30">
-							<staticText>
-								<reportElement x="0" y="0" width="50" height="30" uuid="4601d51d-0080-4252-bf0f-8fe33643c5cc"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[FALTAS]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="50" height="30" uuid="d964abf3-dbee-4783-a4ea-e1aef3b36997"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="33" height="30" uuid="994df05b-956a-4bc8-94bb-2ec750bd6fe1"/>
 								<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="100" uuid="6fc50282-efb5-4775-b65b-868f70958ea0">
+					<jr:column width="33" uuid="d9d2ef57-76f2-4c57-8bc9-71d57a8c1f7a">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="100" height="30" uuid="d786930a-8807-45a5-b27f-08f9db8f275d">
-									<property name="com.jaspersoft.studio.unit.width" value="px"/>
-								</reportElement>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[AUSÊNCIAS COMPENSADAS]]></text>
+								<reportElement x="0" y="0" width="33" height="30" uuid="1bd35241-714e-4890-9018-8f68e4557c7e"/>
+								<text><![CDATA[AusenciasCompensadas]]></text>
 							</staticText>
 						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="100" height="30" uuid="36c206fd-956c-43fb-9342-04adae4e2518"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="33" height="30" uuid="fdbdc40d-8c4e-420d-9a47-60f0ad197519"/>
 								<textFieldExpression><![CDATA[$F{AusenciasCompensadas}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="53" uuid="2d9b966c-b433-4f4b-85ef-82341348db11">
+					<jr:column width="75" uuid="935e24e3-35e8-45fb-b106-94eb1fa593b3">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="53" height="30" uuid="dd51dee7-b861-4e48-9f25-24e83dada8e6"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[% FREQ.]]></text>
+								<reportElement x="0" y="0" width="75" height="30" uuid="f1d6d72c-6898-41cc-8c04-9bf5eea61bad"/>
+								<text><![CDATA[Frequencia]]></text>
 							</staticText>
 						</jr:columnHeader>
+						<jr:columnFooter style="Table_CH" height="30"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="53" height="30" uuid="b51dac7e-118c-4616-bb59-c1ee14359338"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="75" height="30" uuid="812352ad-7a6d-4fc1-9f3a-36e7f1aa5a74"/>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>

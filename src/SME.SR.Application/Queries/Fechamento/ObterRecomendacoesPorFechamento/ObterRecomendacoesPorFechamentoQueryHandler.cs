@@ -2,9 +2,12 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,18 +40,34 @@ namespace SME.SR.Application
                 };
             }
 
+            RemoverTags(recomendacoes);
+
             return recomendacoes;
+        }
+
+        private void RemoverTags(RecomendacaoConselhoClasseAluno recomendacaoConselho)
+        {
+            if (!string.IsNullOrEmpty(recomendacaoConselho.AnotacoesPedagogicas))
+                recomendacaoConselho.AnotacoesPedagogicas =
+                    Regex.Replace(recomendacaoConselho.AnotacoesPedagogicas, "<.*?>", String.Empty);
+
+            if (!string.IsNullOrEmpty(recomendacaoConselho.RecomendacoesAluno))
+                recomendacaoConselho.RecomendacoesAluno =
+                    Regex.Replace(recomendacaoConselho.RecomendacoesAluno, "<.*?>", String.Empty);
+
+            if (!string.IsNullOrEmpty(recomendacaoConselho.RecomendacoesFamilia))
+                recomendacaoConselho.RecomendacoesFamilia =
+                    Regex.Replace(recomendacaoConselho.RecomendacoesFamilia, "<.*?>", String.Empty);
         }
 
         private string MontaTextUlLis(IEnumerable<string> textos)
         {
-            var str = new StringBuilder("<ul>");
+            var str = new StringBuilder();
 
             foreach (var item in textos)
             {
-                str.AppendFormat("<li>{0}</li>", item);
+                str.AppendFormat(item);
             }
-            str.AppendLine("</ul>");
 
             return str.ToString().Trim();
         }

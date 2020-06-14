@@ -3,6 +3,7 @@ using SME.SR.Infra.Dtos;
 using SME.SR.JRSClient.Services;
 using System.IO;
 using Xunit;
+using SME.SR.Infra;
 
 namespace SME.SR.JRSClientTest
 {

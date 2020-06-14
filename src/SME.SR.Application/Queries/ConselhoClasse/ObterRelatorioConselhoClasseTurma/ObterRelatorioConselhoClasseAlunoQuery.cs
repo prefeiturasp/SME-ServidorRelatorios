@@ -11,5 +11,3 @@ namespace SME.SR.Application
         public string CodigoTurma { get; set; }
     }
 }
-
-
