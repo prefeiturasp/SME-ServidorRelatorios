@@ -30,21 +30,14 @@ namespace SME.SR.Application
 
         private void RemoverTags(IEnumerable<FechamentoAlunoAnotacaoConselho> anotacaoConselhos)
         {
+            DateTime data;
             foreach (var anotacao in anotacaoConselhos)
             {
-                foreach (PropertyInfo prop in anotacao.GetType().GetProperties())
-                {
-                    var tipo = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                    var valor = prop.GetValue(anotacao, null)?.ToString();
-                    if (tipo == typeof(string) && !string.IsNullOrEmpty(valor))
-                    {
-                        DateTime valorData;
-                        if (DateTime.TryParse(valor, out valorData))
-                            prop.SetValue(anotacao, valorData.ToString("dd/MM/yyyy"));
-                        else
-                            prop.SetValue(anotacao, Regex.Replace(valor, "<.*?>", String.Empty));
-                    }
-                }
+                if (!string.IsNullOrEmpty(anotacao.Data) && DateTime.TryParse(anotacao.Data, out data))
+                    anotacao.Data = data.ToString("dd/MM/yyyy");
+
+                if (!string.IsNullOrEmpty(anotacao.Anotacao))
+                    anotacao.Anotacao = Regex.Replace(anotacao.Anotacao, "<.*?>", String.Empty);
             }
         }
     }

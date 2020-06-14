@@ -6,55 +6,55 @@ namespace SME.SR.Data
 {
     public abstract class RelatorioConselhoClasseBase
     {
-        [JsonProperty("titulo")]
+        [JsonProperty("Titulo")]
         public string Titulo { get; set; }
 
-        [JsonProperty("dre")]
+        [JsonProperty("Dre")]
         public string Dre { get; set; }
 
-        [JsonProperty("ue")]
+        [JsonProperty("Ue")]
         public string Ue { get; set; }
 
         [JsonProperty("turma")]
         public string Turma { get; set; }
 
-        [JsonProperty("data")]
+        [JsonProperty("Data")]
         public string Data { get; set; }
 
-        [JsonProperty("alunoNome")]
+        [JsonProperty("AlunoNome")]
         public string AlunoNome { get; set; }
 
-        [JsonProperty("alunoNumero")]
+        [JsonProperty("AlunoNumero")]
         public int AlunoNumero { get; set; }
 
-        [JsonProperty("alunoDataDeNascimento")]
+        [JsonProperty("AlunoDataDeNascimento")]
         public string AlunoDataDeNascimento { get; set; }
 
-        [JsonProperty("alunoCodigoEol")]
+        [JsonProperty("AlunoCodigoEol")]
         public string AlunoCodigoEol { get; set; }
 
-        [JsonProperty("alunoSituacao")]
+        [JsonProperty("AlunoSituacao")]
         public string AlunoSituacao { get; set; }
 
-        [JsonProperty("alunoFrequenciaGlobal")]
+        [JsonProperty("AlunoFrequenciaGlobal")]
         public double AlunoFrequenciaGlobal { get; set; }
 
-        [JsonProperty("alunoParecerConclusivo")]
+        [JsonProperty("AlunoParecerConclusivo")]
         public string AlunoParecerConclusivo { get; set; }
 
-        [JsonProperty("bimestre")]
+        [JsonProperty("Bimestre")]
         public string Bimestre { get; set; }
 
-        [JsonProperty("anotacoesPedagogicas")]
+        [JsonProperty("AnotacoesPedagogicas")]
         public string AnotacoesPedagogicas { get; set; }
 
-        [JsonProperty("recomendacaoAluno")]
+        [JsonProperty("RecomendacaoAluno")]
         public string RecomendacaoAluno { get; set; }
 
-        [JsonProperty("recomendacaoFamilia")]
+        [JsonProperty("RecomendacaoFamilia")]
         public string RecomendacaoFamilia { get; set; }
 
-        [JsonProperty("anotacoesAluno")]
+        [JsonProperty("AnotacoesAluno")]
         public IEnumerable<FechamentoAlunoAnotacaoConselho> AnotacoesAluno { get; set; }
     }
 }

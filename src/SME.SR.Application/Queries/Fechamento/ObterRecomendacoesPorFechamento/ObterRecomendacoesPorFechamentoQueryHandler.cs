@@ -47,19 +47,17 @@ namespace SME.SR.Application
 
         private void RemoverTags(RecomendacaoConselhoClasseAluno recomendacaoConselho)
         {
-            foreach (PropertyInfo prop in recomendacaoConselho.GetType().GetProperties())
-            {
-                var tipo = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                var valor = prop.GetValue(recomendacaoConselho, null)?.ToString();
-                if (tipo == typeof(string) && !string.IsNullOrEmpty(valor))
-                {
-                    DateTime valorData;
-                    if (DateTime.TryParse(valor, out valorData))
-                        prop.SetValue(recomendacaoConselho, valorData.ToString("dd/MM/yyyy"));
-                    else
-                        prop.SetValue(recomendacaoConselho, Regex.Replace(valor, "<.*?>", String.Empty));
-                }
-            }
+            if (!string.IsNullOrEmpty(recomendacaoConselho.AnotacoesPedagogicas))
+                recomendacaoConselho.AnotacoesPedagogicas =
+                    Regex.Replace(recomendacaoConselho.AnotacoesPedagogicas, "<.*?>", String.Empty);
+
+            if (!string.IsNullOrEmpty(recomendacaoConselho.RecomendacoesAluno))
+                recomendacaoConselho.RecomendacoesAluno =
+                    Regex.Replace(recomendacaoConselho.RecomendacoesAluno, "<.*?>", String.Empty);
+
+            if (!string.IsNullOrEmpty(recomendacaoConselho.RecomendacoesFamilia))
+                recomendacaoConselho.RecomendacoesFamilia =
+                    Regex.Replace(recomendacaoConselho.RecomendacoesFamilia, "<.*?>", String.Empty);
         }
 
         private string MontaTextUlLis(IEnumerable<string> textos)

@@ -4,10 +4,10 @@ namespace SME.SR.Data
 {
     public class NotaBimestre
     {
-        [JsonProperty("notaConceito")]
+        [JsonProperty("NotaConceito")]
         public string NotaConceito { get; set; }
 
-        [JsonProperty("bimestre")]
+        [JsonProperty("Bimestre")]
         public int Bimestre { get; set; }
     }
 }

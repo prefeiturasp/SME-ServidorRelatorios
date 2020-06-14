@@ -5,10 +5,10 @@ namespace SME.SR.Data
 {
     public class ComponenteComNotaFinal : ComponenteComNota
     {
-        [JsonProperty("notaFinal")]
+        [JsonProperty("NotaFinal")]
         public string NotaFinal { get; set; }
 
-        [JsonProperty("notasBimestre")]
+        [JsonProperty("NotasBimestre")]
         public IEnumerable<NotaBimestre> NotasBimestre { get; set; }
 
 
