@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Sentry;
 using SME.SR.Data;
+using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,11 +14,13 @@ namespace SME.SR.Application
     {
         private IMediator _mediator;
         private readonly IConfiguration configuration;
+        private readonly VariaveisAmbiente variaveisAmbiente;
 
-        public ObterRelatorioConselhoClasseAlunoQueryHandler(IMediator mediator, IConfiguration configuration)
+        public ObterRelatorioConselhoClasseAlunoQueryHandler(IMediator mediator, IConfiguration configuration, VariaveisAmbiente variaveisAmbiente)
         {
             this._mediator = mediator;
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
         public async Task<RelatorioConselhoClasseArray> Handle(ObterRelatorioConselhoClasseAlunoQuery request, CancellationToken cancellationToken)
@@ -29,6 +32,9 @@ namespace SME.SR.Application
                 {
 
                     SentrySdk.AddBreadcrumb("Iniciando obter Dados", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+                    SentrySdk.AddBreadcrumb("CONNECTION STRING DO EOL" + variaveisAmbiente.ConnectionStringEol, "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
 
                     var fechamentoTurma = await ObterFechamentoTurmaPorId(request.FechamentoTurmaId);
 
