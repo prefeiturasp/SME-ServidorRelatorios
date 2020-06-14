@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelatorioBoletim" pageWidth="595" pageHeight="600" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7118107b-5099-4b69-bb10-e0b894e57a27">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
 	<parameter name="jsonString" class="java.lang.String">
@@ -40,14 +40,6 @@
 	</background>
 	<title>
 		<band height="92" splitType="Stretch">
-			<image>
-				<reportElement x="19" y="4" width="121" height="45" uuid="8895e6b7-3b88-404f-83d0-a5b500d68918">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<imageExpression><![CDATA["BoletimEscolar/Imagens/logo.png"]]></imageExpression>
-			</image>
 			<staticText>
 				<reportElement x="329" y="4" width="245" height="39" forecolor="#42474A" uuid="01accfbf-01c6-4c1a-a910-20abcf8e39ae">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -164,6 +156,10 @@
 				</textElement>
 				<text><![CDATA[ESTUDANTE:]]></text>
 			</staticText>
+			<image>
+				<reportElement x="20" y="4" width="79" height="50" uuid="d01de958-5697-4dad-afa8-7470315af6b7"/>
+				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
@@ -436,14 +432,14 @@
 				</textElement>
 				<text><![CDATA[OBSERVAÇÕES:]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField isStretchWithOverflow="true">
 				<reportElement x="19" y="32" width="559" height="16" forecolor="#42474A" uuid="a488c332-99da-444e-8cba-8f785c4de8ee"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{observacoes}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="StretchHeight">
+			<textField isStretchWithOverflow="true">
 				<reportElement x="18" y="-5" width="551" height="16" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d"/>
 				<textElement>
 					<font size="8"/>
