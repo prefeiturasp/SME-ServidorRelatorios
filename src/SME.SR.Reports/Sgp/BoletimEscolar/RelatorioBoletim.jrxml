@@ -287,14 +287,6 @@
 				</textElement>
 				<text><![CDATA[Nota]]></text>
 			</staticText>
-			<image>
-				<reportElement x="24" y="2" width="121" height="45" uuid="98a3a7e4-b53c-4a67-bc1c-4b347654da07">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<imageExpression><![CDATA["BoletimEscolar/Imagens/logo.png"]]></imageExpression>
-			</image>
 			<staticText>
 				<reportElement x="334" y="2" width="245" height="39" forecolor="#42474A" uuid="7284266b-de4e-4141-8db4-3e25283433a0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -423,6 +415,13 @@
 				</textElement>
 				<text><![CDATA[ESTUDANTE:]]></text>
 			</staticText>
+			<image>
+				<reportElement x="25" y="4" width="121" height="45" uuid="6d92ad5e-8071-433d-9da4-fa8a476995f6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+			</image>
 		</band>
 	</pageHeader>
 	<detail>
