@@ -280,7 +280,8 @@ namespace SME.SR.Application.Queries.BoletimEscolar
                         gruposMatriz.FirstOrDefault(c => c.Descricao == grupoMatriz.Nome).
                                 ComponentesCurriculares.FirstOrDefault(cc =>
                                               cc.Nome == componenteCurricular.Componente)
-                                              .NotaFinal = componenteCurricular.Parecer.Equals("Frequente") ? "F" : "NF";
+                                              .NotaFinal = componenteCurricular.Parecer
+                                              .Equals("Frequente") ? "F" : "NF";
                     }
                 }
             }
@@ -293,6 +294,8 @@ namespace SME.SR.Application.Queries.BoletimEscolar
 
             propriedadeComponenteCurricular = grupoComponente.GetType().GetProperty($"NotaBimestre{bimestre}");
             propriedadeComponenteCurricular.SetValue(grupoComponente, Convert.ChangeType(notaConceito, propriedadeComponenteCurricular.PropertyType), null);
+
+            grupoComponente.SetarTipoNota(notaConceito);
         }
 
         private async Task<Aluno> ObterDadosAluno(string codigoTurma, string codigoAluno)
