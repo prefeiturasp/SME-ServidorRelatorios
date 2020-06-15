@@ -179,7 +179,7 @@ namespace SME.SR.Workers.SGP
                     .AllowAnyHeader()
                     .AllowAnyMethod())
                 .UseRouting()
-                .UseAuthorization()
+                .UseAuthorization()                
                 .UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
