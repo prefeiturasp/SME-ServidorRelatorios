@@ -25,11 +25,11 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
 
-            try
+            using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
             {
-
-                using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
+                try
                 {
+
                     var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
 
 
@@ -42,7 +42,7 @@ namespace SME.SR.Application
                     //SentrySdk.AddBreadcrumb("Obtive o relatório", "5 - RelatorioConselhoClasseAlunoUseCase");
 
                     var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
-                                       
+
                     SentrySdk.CaptureMessage("5.2 Serializei relatório.. - RelatorioConselhoClasseAlunoUseCase");
 
                     //SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
@@ -51,13 +51,13 @@ namespace SME.SR.Application
 
                     SentrySdk.CaptureMessage("5 FINAL - RelatorioConselhoClasseAlunoUseCase");
 
-                }
 
-            }
-            catch (Exception ex)
-            {
-                SentrySdk.CaptureException(ex);
-                throw ex;
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                    throw ex;
+                }
             }
 
         }
