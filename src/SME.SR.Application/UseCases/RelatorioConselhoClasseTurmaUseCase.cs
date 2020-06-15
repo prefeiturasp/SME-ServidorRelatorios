@@ -40,7 +40,7 @@ namespace SME.SR.Application
                     jsonString = JsonConvert.SerializeObject(new { relatorioConselhoDeClasse = listFinal }, UtilJson.ObterConfigConverterNulosEmVazio());
                 }
 
-                await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioConselhoClasse/ConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
             catch (Exception ex)
             {

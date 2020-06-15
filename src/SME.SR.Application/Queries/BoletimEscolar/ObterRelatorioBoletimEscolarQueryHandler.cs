@@ -51,9 +51,20 @@ namespace SME.SR.Application
 
                     foreach (Aluno dadosAluno in dadosAlunos)
                     {
-                        BoletimEscolarAlunoDto boletim = await MontarRelatorio(dadosAluno, dadosTurma, dreUe, fechamentos);
+                        try
+                        {
 
-                        relatorio.Boletins.Add(boletim);
+
+                            BoletimEscolarAlunoDto boletim = await MontarRelatorio(dadosAluno, dadosTurma, dreUe, fechamentos);
+
+                            relatorio.Boletins.Add(boletim);
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw ex;
+                        }
                     }
                 }
             }
@@ -87,15 +98,24 @@ namespace SME.SR.Application
 
         private async Task<BoletimEscolarAlunoDto> MontarRelatorio(Aluno dadosAluno, Turma dadosTurma, DreUe dreUe, IEnumerable<FechamentoTurma> fechamentosTurma)
         {
-            BoletimEscolarAlunoDto boletim = InicializarRelatorioBoletim(dadosTurma, dreUe, dadosAluno);
+            try
+            {
+                BoletimEscolarAlunoDto boletim = InicializarRelatorioBoletim(dadosTurma, dreUe, dadosAluno);
 
-            List<GrupoMatrizComponenteCurricularDto> grupos = await ProcessarFechamentos(dadosAluno.CodigoAluno.ToString(), dadosTurma, fechamentosTurma);
+                List<GrupoMatrizComponenteCurricularDto> grupos = await ProcessarFechamentos(dadosAluno.CodigoAluno.ToString(), dadosTurma, fechamentosTurma);
 
-            boletim.DescricaoGrupos = string.Join(" | ", grupos.Select(x => $"{x.Nome}: {x.Descricao}").ToArray());
-            boletim.SetarTipoNota(ObterNotaValida(grupos)); 
-            boletim.Grupos.AddRange(grupos);
+                boletim.DescricaoGrupos = string.Join(" | ", grupos.Select(x => $"{x.Nome}: {x.Descricao}").ToArray());
+                boletim.SetarTipoNota(ObterNotaValida(grupos));
+                boletim.Grupos.AddRange(grupos);
 
-            return boletim;
+                return boletim;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         private string ObterNotaValida(List<GrupoMatrizComponenteCurricularDto> grupos)
@@ -137,10 +157,20 @@ namespace SME.SR.Application
 
             foreach (var fechamento in fechamentosTurma)
             {
-                var conselhoClasseId = await ObterConselhoPorFechamentoTurmaId(fechamento.Id);
+                try
+                {
+                    var conselhoClasseId = await ObterConselhoPorFechamentoTurmaId(fechamento.Id);
 
-                await ObterComponentesComNotaAsync(gruposMatriz, codigoAluno, dadosTurma, fechamento, conselhoClasseId);
-                await ObterComponentesSemNotaAsync(gruposMatriz, codigoAluno, dadosTurma.CodigoTurma, fechamento.PeriodoEscolar?.Bimestre);
+                    await ObterComponentesComNotaAsync(gruposMatriz, codigoAluno, dadosTurma, fechamento, conselhoClasseId);
+                    await ObterComponentesSemNotaAsync(gruposMatriz, codigoAluno, dadosTurma.CodigoTurma, fechamento.PeriodoEscolar?.Bimestre);
+
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+
             }
 
             return gruposMatriz;

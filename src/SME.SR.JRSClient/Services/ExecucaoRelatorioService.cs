@@ -42,33 +42,27 @@ namespace SME.SR.JRSClient.Services
 
         public async Task<ExecucaoRelatorioRespostaDto> SolicitarRelatorio(ExecucaoRelatorioRequisicaoDto requisicao, string jSessionId)
         {
-
-            using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
+            try
             {
+                if (!string.IsNullOrWhiteSpace(jSessionId))
+                    jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
 
-                try
+                SentrySdk.AddBreadcrumb("Obtendo PostExecucaoRelatorioAsync", "6.1 - ExecucaoRelatorioService");
+
+                var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
+                if (retorno.IsSuccessStatusCode)
                 {
-                    if (!string.IsNullOrWhiteSpace(jSessionId))
-                        jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
-
-                    SentrySdk.AddBreadcrumb("Obtendo PostExecucaoRelatorioAsync", "6.1 - ExecucaoRelatorioService");
-
-                    var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
-                    if (retorno.IsSuccessStatusCode)
-                    {
-                        SentrySdk.CaptureMessage("6.1 - ExecucaoRelatorioService - Sucesso ao executar envio do relatório");
-                        return retorno.Content;
-                    }
-                    return default;
-
+                    SentrySdk.CaptureMessage("6.1 - ExecucaoRelatorioService - Sucesso ao executar envio do relatório");
+                    return retorno.Content;
                 }
-                catch (Exception ex)
-                {
-                    SentrySdk.CaptureException(ex);
-                    throw ex;
-                }
+                return default;
+
             }
-
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                throw ex;
+            }
         }
 
         public async Task<string> InterromperRelatoriosTarefas(Guid requisicaoId)
