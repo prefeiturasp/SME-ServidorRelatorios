@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace SME.SR.Application
                     SentrySdk.CaptureMessage("5.1 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
                     //SentrySdk.AddBreadcrumb("Obtendo relatório..", "5 - RelatorioConselhoClasseAlunoUseCase");
 
-                    var relatorio = await mediator.Send(relatorioQuery);
+                    RelatorioConselhoClasseArray relatorio = await mediator.Send(relatorioQuery);
 
                     SentrySdk.CaptureMessage("5.2 Obtive relatorio.. - RelatorioConselhoClasseAlunoUseCase");
                     //SentrySdk.AddBreadcrumb("Obtive o relatório", "5 - RelatorioConselhoClasseAlunoUseCase");
