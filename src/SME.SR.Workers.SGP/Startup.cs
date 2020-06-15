@@ -105,7 +105,8 @@ namespace SME.SR.Workers.SGP
 
         private void RegistrarCommands(IServiceCollection services)
         {
-		}
+            services.AddMediatR(typeof(GerarRelatorioAssincronoCommand).GetTypeInfo().Assembly);
+        }
 		
         private void RegistrarQueries(IServiceCollection services)
         {
@@ -151,6 +152,8 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
+
+
 		}
 		
         private void RegistrarUseCase(IServiceCollection services)

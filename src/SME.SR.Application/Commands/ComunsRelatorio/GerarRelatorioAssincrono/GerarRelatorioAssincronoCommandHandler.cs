@@ -32,9 +32,7 @@ namespace SME.SR.Application
         }
         public async Task<bool> Handle(GerarRelatorioAssincronoCommand request, CancellationToken cancellationToken)
         {
-            using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
-            {
-                
+                       
                 try
                 {
                     
@@ -91,11 +89,7 @@ namespace SME.SR.Application
                 {
                     SentrySdk.CaptureException(ex);
                     throw ex;
-                }
-            }
-
-
-
+                }       
         }
 
         private static ParametrosRelatorioDto ObterParametrosRelatorio(string dados)
