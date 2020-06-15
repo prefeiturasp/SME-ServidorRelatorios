@@ -52,5 +52,16 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<ComponenteCurricularTerritorioSaber>(query);
             }
         }
+
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmaEProfessor(string login, string codigoTurma)
+        {
+            var query = ComponenteCurricularConsultas. BuscarPorTurmaEProfessor;
+            var parametros = new { Login = login, CodigoTurma = codigoTurma };
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricular>(query);
+            }
+        }
     }
 }
