@@ -15,7 +15,7 @@ namespace SME.SR.Data
         [JsonProperty("Ue")]
         public string Ue { get; set; }
 
-        [JsonProperty("turma")]
+        [JsonProperty("Turma")]
         public string Turma { get; set; }
 
         [JsonProperty("Data")]
