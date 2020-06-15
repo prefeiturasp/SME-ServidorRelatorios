@@ -1,11 +1,9 @@
 ﻿using MediatR;
 using SME.SR.Infra;
-using SME.SR.Infra.Dtos.Relatorios.BoletimEscolar;
-using SME.SR.Infra.Dtos.Relatorios.ConselhoClasse;
 
-namespace SME.SR.Application.Queries.BoletimEscolar
+namespace SME.SR.Application
 {
-    public class ObterRelatorioBoletimEscolarQuery : IRequest<BoletimEscolarDto>
+    public class ObterRelatorioBoletimEscolarQuery : IRequest<RelatorioBoletimEscolarDto>
     {
         public string DreCodigo { get; set; }
 

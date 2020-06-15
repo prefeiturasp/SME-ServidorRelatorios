@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SME.SR.Application.Queries.BoletimEscolar
+namespace SME.SR.Application
 {
     public class ObterFechamentosPorCodigoTurmaQuery : IRequest<IEnumerable<FechamentoTurma>>
     {

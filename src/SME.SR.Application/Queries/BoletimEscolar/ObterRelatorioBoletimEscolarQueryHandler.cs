@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Dtos.Relatorios.BoletimEscolar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +8,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.BoletimEscolar
+namespace SME.SR.Application
 {
-    public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, BoletimEscolarDto>
+    public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, RelatorioBoletimEscolarDto>
     {
         private IMediator _mediator;
 
@@ -20,7 +19,7 @@ namespace SME.SR.Application.Queries.BoletimEscolar
             this._mediator = mediator;
         }
 
-        public async Task<BoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
+        public async Task<RelatorioBoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
         {
             BoletimEscolarDto relatorio = new BoletimEscolarDto();
 
@@ -83,7 +82,7 @@ namespace SME.SR.Application.Queries.BoletimEscolar
                 }
             }
 
-            return relatorio;
+            return new RelatorioBoletimEscolarDto(relatorio);
         }
 
         private async Task<BoletimEscolarAlunoDto> MontarRelatorio(Aluno dadosAluno, Turma dadosTurma, DreUe dreUe, IEnumerable<FechamentoTurma> fechamentosTurma)
@@ -93,10 +92,27 @@ namespace SME.SR.Application.Queries.BoletimEscolar
             List<GrupoMatrizComponenteCurricularDto> grupos = await ProcessarFechamentos(dadosAluno.CodigoAluno.ToString(), dadosTurma, fechamentosTurma);
 
             boletim.DescricaoGrupos = string.Join(" | ", grupos.Select(x => $"{x.Nome}: {x.Descricao}").ToArray());
-
+            boletim.SetarTipoNota(ObterNotaValida(grupos)); 
             boletim.Grupos.AddRange(grupos);
 
             return boletim;
+        }
+
+        private string ObterNotaValida(List<GrupoMatrizComponenteCurricularDto> grupos)
+        {
+            foreach (var grupo in grupos)
+            {
+                foreach (var componenteCurricular in grupo.ComponentesCurriculares)
+                {
+                    string notaValida = componenteCurricular.NotaBimestre1 ?? componenteCurricular.NotaBimestre2 ??
+                                        componenteCurricular.NotaBimestre3 ?? componenteCurricular.NotaBimestre4;
+
+                    if (!string.IsNullOrEmpty(notaValida))
+                        return notaValida;
+                }
+            }
+
+            return string.Empty;
         }
 
         private static BoletimEscolarAlunoDto InicializarRelatorioBoletim(Turma dadosTurma, DreUe dreUe, Aluno dadosAluno)
@@ -206,6 +222,11 @@ namespace SME.SR.Application.Queries.BoletimEscolar
                             ComponentesCurriculares.FirstOrDefault(cc =>
                                                    cc.Nome == componenteCurricular.Componente)
                                                    .NotaFinal = componenteCurricular.NotaFinal;
+
+                        gruposMatriz.FirstOrDefault(c => c.Descricao == grupoMatriz.Nome).
+                            ComponentesCurriculares.FirstOrDefault(cc =>
+                                                   cc.Nome == componenteCurricular.Componente)
+                                                   .FrequenciaFinal = componenteCurricular.Frequencia.ToString();
                     }
                 }
             }
@@ -282,6 +303,11 @@ namespace SME.SR.Application.Queries.BoletimEscolar
                                               cc.Nome == componenteCurricular.Componente)
                                               .NotaFinal = componenteCurricular.Parecer
                                               .Equals("Frequente") ? "F" : "NF";
+
+                        gruposMatriz.FirstOrDefault(c => c.Descricao == grupoMatriz.Nome).
+                               ComponentesCurriculares.FirstOrDefault(cc =>
+                                             cc.Nome == componenteCurricular.Componente)
+                                             .FrequenciaFinal = componenteCurricular.Frequencia.ToString();
                     }
                 }
             }
@@ -294,8 +320,6 @@ namespace SME.SR.Application.Queries.BoletimEscolar
 
             propriedadeComponenteCurricular = grupoComponente.GetType().GetProperty($"NotaBimestre{bimestre}");
             propriedadeComponenteCurricular.SetValue(grupoComponente, Convert.ChangeType(notaConceito, propriedadeComponenteCurricular.PropertyType), null);
-
-            grupoComponente.SetarTipoNota(notaConceito);
         }
 
         private async Task<Aluno> ObterDadosAluno(string codigoTurma, string codigoAluno)
