@@ -161,7 +161,7 @@ namespace SME.SR.Application
 
                     SentrySdk.CaptureMessage("4.1 FINALIZOU OK - ObterRelatorioConselhoClasseAlunoQueryHandler");
 
-                    return relatorioParaEnviar;
+                    return await Task.FromResult(relatorioParaEnviar);
                 }
 
                 catch (Exception ex)
