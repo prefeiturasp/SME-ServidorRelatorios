@@ -11,20 +11,6 @@ namespace SME.SR.Infra
         [JsonProperty("nome")]
         public string Nome { get; set; }
 
-        [JsonProperty("tipoNota")]
-        private string TipoNota { get; set; } = "Sem Nota";
-
-        public void SetarTipoNota(string notaConceito)
-        {
-            if (!string.IsNullOrEmpty(notaConceito))
-            {
-                if (double.TryParse(notaConceito, out _))
-                    TipoNota = "Nota";
-                else
-                    TipoNota = "Conceito";
-            }
-        }
-
         [JsonProperty("notaBimestre1")]
         public string NotaBimestre1 { get; set; }
 

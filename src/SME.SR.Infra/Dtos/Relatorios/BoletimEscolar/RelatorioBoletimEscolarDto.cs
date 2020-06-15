@@ -12,7 +12,6 @@ namespace SME.SR.Infra
             this.RelatorioBoletimEscolar = relatorioBoletimEscolar;
         }
 
-        [JsonProperty("relatorioBoletimEscolar")]
         public BoletimEscolarDto RelatorioBoletimEscolar { get; set; }
     }
 }
