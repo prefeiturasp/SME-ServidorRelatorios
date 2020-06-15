@@ -33,59 +33,52 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
 			<fieldDescription><![CDATA[nome]]></fieldDescription>
 		</field>
-		<field name="notaBimestre1" class="java.lang.Integer">
+		<field name="notaBimestre1" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre1"/>
 			<fieldDescription><![CDATA[notaBimestre1]]></fieldDescription>
 		</field>
-		<field name="frequenciaBimestre1" class="java.lang.Integer">
+		<field name="frequenciaBimestre1" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre1"/>
 			<fieldDescription><![CDATA[frequenciaBimestre1]]></fieldDescription>
 		</field>
-		<field name="notaBimestre2" class="java.lang.Integer">
+		<field name="notaBimestre2" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre2"/>
 			<fieldDescription><![CDATA[notaBimestre2]]></fieldDescription>
 		</field>
-		<field name="frequenciaBimestre2" class="java.lang.Integer">
+		<field name="frequenciaBimestre2" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre2"/>
 			<fieldDescription><![CDATA[frequenciaBimestre2]]></fieldDescription>
 		</field>
-		<field name="notaBimestre3" class="java.lang.Integer">
+		<field name="notaBimestre3" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre3"/>
 			<fieldDescription><![CDATA[notaBimestre3]]></fieldDescription>
 		</field>
-		<field name="frequenciaBimestre3" class="java.lang.Integer">
+		<field name="frequenciaBimestre3" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre3"/>
 			<fieldDescription><![CDATA[frequenciaBimestre3]]></fieldDescription>
 		</field>
-		<field name="notaBimestre4" class="java.math.BigDecimal">
+		<field name="notaBimestre4" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre4"/>
 			<fieldDescription><![CDATA[notaBimestre4]]></fieldDescription>
 		</field>
-		<field name="frequenciaBimestre4" class="java.lang.Integer">
+		<field name="frequenciaBimestre4" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre4"/>
 			<fieldDescription><![CDATA[frequenciaBimestre4]]></fieldDescription>
 		</field>
-		<field name="notaFinal" class="java.math.BigDecimal">
+		<field name="notaFinal" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="notaFinal"/>
 			<fieldDescription><![CDATA[notaFinal]]></fieldDescription>
 		</field>
-		<field name="frequenciaFinal" class="java.lang.Integer">
+		<field name="frequenciaFinal" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaFinal"/>
 			<fieldDescription><![CDATA[frequenciaFinal]]></fieldDescription>
 		</field>
-		<group name="Group1">
-			<groupExpression><![CDATA[$F{nome}]]></groupExpression>
-		</group>
 	</subDataset>
 	<subDataset name="DatasetBoletimGrupos" uuid="f5f268e2-3fa4-476c-aa91-92f1bdfa7483">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
 		<queryString language="json">
 			<![CDATA[RelatorioBoletimEscolar.boletins.grupos]]>
 		</queryString>
-		<field name="id" class="java.lang.Integer">
-			<property name="net.sf.jasperreports.json.field.expression" value="id"/>
-			<fieldDescription><![CDATA[id]]></fieldDescription>
-		</field>
 		<field name="nomeGrupo" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
 			<fieldDescription><![CDATA[nome]]></fieldDescription>
