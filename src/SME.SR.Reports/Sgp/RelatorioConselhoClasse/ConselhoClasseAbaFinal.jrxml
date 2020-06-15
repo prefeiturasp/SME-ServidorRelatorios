@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConselhoClasse" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5b7b40f2-5361-4f9e-95a6-7f51b83a4bda">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
-	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
-	<property name="ireport.jasperserver.user" value="ebufaino"/>
-	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioConselhoClasse/ConselhoClasse_files/main_jrxml"/>
-	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioConselhoClasse/ConselhoClasse"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
+	<property name="ireport.jasperserver.url" value="http://localhost:8080/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="user"/>
+	<property name="ireport.jasperserver.report.resource" value="/sme/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal/ConselhoClasse_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sme/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal/ConselhoClasse"/>
 	<parameter name="jsonString" class="java.lang.String">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
@@ -169,10 +169,10 @@
 				<textFieldExpression><![CDATA["DRE: "+$F{Dre}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement x="1" y="109" width="213" height="23" uuid="60b484c8-1ae8-4f05-aaea-2cbb5b5afed7"/>
+				<reportElement x="1" y="110" width="213" height="23" uuid="60b484c8-1ae8-4f05-aaea-2cbb5b5afed7"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="214" y="109" width="183" height="23" uuid="cb385d5e-ef6c-41af-a318-f15520092445">
+				<reportElement x="214" y="110" width="183" height="23" uuid="cb385d5e-ef6c-41af-a318-f15520092445">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -200,7 +200,7 @@
 				<textFieldExpression><![CDATA["DATA DE NASCIMENTO: "+$F{AlunoDataDeNascimento}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="397" y="109" width="157" height="23" uuid="cde1932b-0151-442e-94d3-d3c7c14a9bbe">
+				<reportElement x="397" y="110" width="157" height="23" uuid="cde1932b-0151-442e-94d3-d3c7c14a9bbe">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 				</reportElement>
@@ -289,20 +289,20 @@
 					<pen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{Bimestre}+"º Bimestre"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Bimestre}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<detail>
 		<band height="454" splitType="Stretch">
 			<subreport>
-				<reportElement positionType="Float" x="1" y="-1" width="553" height="70" isRemoveLineWhenBlank="true" uuid="9d73da0f-9cae-4185-93b6-d636c12f8a21">
+				<reportElement positionType="Float" x="1" y="-1" width="553" height="70" uuid="9d73da0f-9cae-4185-93b6-d636c12f8a21">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("GruposMatrizComponentesComNota")]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression><![CDATA["ComponenteComNota.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["ComponenteComNotaAbaFinal.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
 				<reportElement positionType="Float" x="1" y="70" width="554" height="70" isRemoveLineWhenBlank="true" uuid="c843597d-2ccc-4017-94a3-c770952b6959"/>
@@ -332,7 +332,7 @@
 				</subreportParameter>
 				<subreportExpression><![CDATA["AnotacoesPedagogicas.jasper"]]></subreportExpression>
 			</subreport>
-			<subreport overflowType="Stretch">
+			<subreport>
 				<reportElement positionType="Float" x="1" y="368" width="553" height="76" isRemoveLineWhenBlank="true" uuid="520fcb07-220d-4e01-81e8-4e3d9581c65e"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("AnotacoesAluno")]]></subreportParameterExpression>
@@ -340,7 +340,7 @@
 				<subreportExpression><![CDATA["AnotacoesAluno.jasper"]]></subreportExpression>
 			</subreport>
 			<break>
-				<reportElement x="0" y="450" width="556" height="1" uuid="569d57f5-64f9-4789-8033-2ae9af29dabc"/>
+				<reportElement x="0" y="448" width="553" height="1" uuid="56da1027-a831-48a5-86ab-ef6b198364d3"/>
 			</break>
 		</band>
 	</detail>
