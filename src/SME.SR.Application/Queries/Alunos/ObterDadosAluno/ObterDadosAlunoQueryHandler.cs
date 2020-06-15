@@ -19,23 +19,7 @@ namespace SME.SR.Application
         }
 
         public async Task<Aluno> Handle(ObterDadosAlunoQuery request, CancellationToken cancellationToken)
-        {
-
-            //using (var clientHttp = new HttpClient())
-            //{
-            //    var retorno = await clientHttp.GetAsync($"http://dev.smeintegracaoapi.sme.prefeitura.sp.gov.br/api/alunos/{request.CodigoAluno}/turmas/anosletivos/2020");
-
-            //    if (retorno.IsSuccessStatusCode)
-            //    {
-
-            //        var retornoStr = await retorno.Content.ReadAsStringAsync();
-            //        dynamic jObctRetorno = JArray.Parse(retornoStr);
-
-
-            //    }
-
-            //}
-            //return default;
+        {           
             return await _alunoRepository.ObterDados(request.CodigoTurma, request.CodigoAluno);
         }
     }
