@@ -39,6 +39,10 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="descricaoGrupos"/>
 		<fieldDescription><![CDATA[descricaoGrupos]]></fieldDescription>
 	</field>
+	<field name="tipoNota" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota"/>
+		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -67,12 +71,12 @@
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="536" y="101" width="36" height="13" forecolor="#42474A" uuid="40f7dc2c-1f5e-4381-b01d-2d5d121dc63a">
+				<reportElement x="538" y="102" width="36" height="13" forecolor="#42474A" uuid="40f7dc2c-1f5e-4381-b01d-2d5d121dc63a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement>
-					<font size="9" isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[% Freq.]]></text>
 			</staticText>
@@ -89,16 +93,6 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 			</rectangle>
-			<staticText>
-				<reportElement x="502" y="102" width="25" height="13" forecolor="#42474A" uuid="19452ecf-c516-4766-a173-f8a6e43c1428">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement>
-					<font size="9" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Nota]]></text>
-			</staticText>
 			<rectangle>
 				<reportElement x="414" y="83" width="80" height="17" forecolor="#DADADA" backcolor="#F5F6F8" uuid="6ce2b346-59bf-45f9-85e4-76c063502d05">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -156,44 +150,24 @@
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="376" y="102" width="36" height="13" forecolor="#42474A" uuid="a63d5d08-bc80-4b2a-acb2-866786841d09">
+				<reportElement x="378" y="102" width="36" height="13" forecolor="#42474A" uuid="a63d5d08-bc80-4b2a-acb2-866786841d09">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement>
-					<font size="9" isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[% Freq.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="456" y="102" width="36" height="13" forecolor="#42474A" uuid="f5071dab-62e0-41fb-9e45-b380edfa34cd">
+				<reportElement x="458" y="102" width="36" height="13" forecolor="#42474A" uuid="f5071dab-62e0-41fb-9e45-b380edfa34cd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement>
-					<font size="9" isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[% Freq.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="421" y="102" width="25" height="13" forecolor="#42474A" uuid="fccfcfaa-380b-4d45-8f80-2899d1b8b83c">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement>
-					<font size="9" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Nota]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="342" y="102" width="25" height="13" forecolor="#42474A" uuid="dcf99c5d-afa7-4417-a176-4dee23b6461d">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement>
-					<font size="9" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Nota]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="334" y="-2" width="245" height="39" forecolor="#42474A" uuid="7284266b-de4e-4141-8db4-3e25283433a0">
@@ -327,6 +301,27 @@
 				<reportElement x="25" y="2" width="95" height="51" uuid="7a5e3be6-e96d-41e4-b488-bef84eb92c58"/>
 				<imageExpression><![CDATA["/BoletimEscolarEja/logo.png"]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement x="334" y="102" width="40" height="13" forecolor="#42474A" uuid="7718b501-1048-4517-aa09-a8881e638490"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="414" y="103" width="40" height="13" forecolor="#42474A" uuid="4f2ed81b-3851-4b3c-946b-e85b079b5693"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="494" y="102" width="40" height="13" forecolor="#42474A" uuid="0de76f08-45a7-40a8-a560-0b5c02d7d7f2"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
