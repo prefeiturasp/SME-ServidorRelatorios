@@ -55,11 +55,11 @@
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="521" y="86" width="30" height="15" forecolor="#42474A" uuid="b3b8eace-481f-4aee-9533-33a7d3ff451e">
+				<reportElement x="494" y="86" width="75" height="15" forecolor="#42474A" uuid="b3b8eace-481f-4aee-9533-33a7d3ff451e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Final]]></text>
@@ -112,11 +112,11 @@
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="421" y="85" width="65" height="15" forecolor="#42474A" uuid="f3ae3d91-c4fd-491b-9210-f7e5a372f75b">
+				<reportElement x="414" y="85" width="80" height="15" forecolor="#42474A" uuid="f3ae3d91-c4fd-491b-9210-f7e5a372f75b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[4º BIMESTRE]]></text>
@@ -128,31 +128,31 @@
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="343" y="85" width="65" height="15" forecolor="#42474A" uuid="7698acfd-33a0-4606-94a0-d7b5a192073a">
+				<reportElement x="334" y="85" width="80" height="15" forecolor="#42474A" uuid="7698acfd-33a0-4606-94a0-d7b5a192073a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[3º BIMESTRE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="262" y="85" width="65" height="15" forecolor="#42474A" uuid="02fdbb55-7cd9-42b4-91ed-dd3adf702550">
+				<reportElement x="255" y="85" width="79" height="15" forecolor="#42474A" uuid="02fdbb55-7cd9-42b4-91ed-dd3adf702550">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[2º BIMESTRE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="182" y="85" width="65" height="15" forecolor="#42474A" uuid="02a1a8a1-872c-4ee6-bebb-da03acd6b483">
+				<reportElement x="174" y="85" width="80" height="15" forecolor="#42474A" uuid="02a1a8a1-872c-4ee6-bebb-da03acd6b483">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[1º BIMESTRE]]></text>
@@ -375,7 +375,7 @@
 			</staticText>
 			<image>
 				<reportElement x="25" y="2" width="95" height="51" uuid="7a5e3be6-e96d-41e4-b488-bef84eb92c58"/>
-				<imageExpression><![CDATA["/BoletimEscolar/logo.png"]]></imageExpression>
+				<imageExpression><![CDATA["/Sgp/BoletimEscolar/logo.png"]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="174" y="102" width="40" height="13" forecolor="#42474A" uuid="0f94b3e2-50c4-4a8b-a756-3bdb43720da2"/>
@@ -421,7 +421,7 @@
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression><![CDATA["/BoletimEscolar/GrupoComponenteCurricular.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["/Sgp/BoletimEscolar/GrupoComponenteCurricular.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
