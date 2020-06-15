@@ -26,9 +26,6 @@ namespace SME.SR.Application
 
         public async Task<RelatorioConselhoClasseArray> Handle(ObterRelatorioConselhoClasseAlunoQuery request, CancellationToken cancellationToken)
         {
-            using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
-            {
-
                 try
                 {
 
@@ -170,7 +167,7 @@ namespace SME.SR.Application
                     SentrySdk.CaptureException(ex);
                     throw ex;
                 }
-            }
+            
         }
 
         private async Task<FechamentoTurma> ObterFechamentoTurmaPorId(long fechamentoTurmaId)
