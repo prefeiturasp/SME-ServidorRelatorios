@@ -36,7 +36,7 @@ namespace SME.SR.Application
                     SentrySdk.CaptureMessage("4.09 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
                     //SentrySdk.AddBreadcrumb("Obtendo relatório..", "5 - RelatorioConselhoClasseAlunoUseCase");
 
-                    RelatorioConselhoClasseArray relatorio = await mediator.Send(relatorioQuery);
+                    //RelatorioConselhoClasseArray relatorio = await mediator.Send(relatorioQuery);
 
                     SentrySdk.CaptureMessage("5.1 Obtive relatorio.. - RelatorioConselhoClasseAlunoUseCase");
                     //SentrySdk.AddBreadcrumb("Obtive o relatório", "5 - RelatorioConselhoClasseAlunoUseCase");
