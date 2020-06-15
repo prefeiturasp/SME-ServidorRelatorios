@@ -1,4 +1,6 @@
-﻿using Refit;
+﻿using Microsoft.Extensions.Configuration;
+using Refit;
+using Sentry;
 using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.Infra.Dtos.Resposta;
 using SME.SR.JRSClient.Extensions;
@@ -14,11 +16,13 @@ namespace SME.SR.JRSClient.Services
     {
         private readonly HttpClient httpClient;
         private readonly JasperCookieHandler jasperCookieHandler;
+        private readonly IConfiguration configuration;
 
-        public ExecucaoRelatorioService(HttpClient httpClient, Configuracoes configuracoes, JasperCookieHandler jasperCookieHandler) : base(httpClient, configuracoes)
+        public ExecucaoRelatorioService(HttpClient httpClient, Configuracoes configuracoes, JasperCookieHandler jasperCookieHandler, IConfiguration configuration) : base(httpClient, configuracoes)
         {
             this.httpClient = httpClient;
             this.jasperCookieHandler = jasperCookieHandler;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
 
@@ -38,25 +42,31 @@ namespace SME.SR.JRSClient.Services
 
         public async Task<ExecucaoRelatorioRespostaDto> SolicitarRelatorio(ExecucaoRelatorioRequisicaoDto requisicao, string jSessionId)
         {
-            try
+
+            using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
             {
 
-            
-            if (!string.IsNullOrWhiteSpace(jSessionId))
-                jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(jSessionId))
+                        jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
 
-            var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
-            if (retorno.IsSuccessStatusCode)
-            {
-                return retorno.Content;
-            }
-            return default;
+                    SentrySdk.AddBreadcrumb("Obtendo PostExecucaoRelatorioAsync", "6.1 - ExecucaoRelatorioService");
 
-            }
-            catch (Exception ex)
-            {
+                    var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
+                    if (retorno.IsSuccessStatusCode)
+                    {
+                        SentrySdk.CaptureMessage("6.1 - ExecucaoRelatorioService - Sucesso ao executar envio do relatório");
+                        return retorno.Content;
+                    }
+                    return default;
 
-                throw ex;
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                    throw ex;
+                }
             }
 
         }
