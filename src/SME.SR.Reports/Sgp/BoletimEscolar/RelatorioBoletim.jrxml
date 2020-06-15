@@ -426,9 +426,9 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="264" splitType="Stretch">
+		<band height="425" splitType="Stretch">
 			<subreport>
-				<reportElement x="19" y="-2" width="555" height="265" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7"/>
+				<reportElement x="19" y="-2" width="555" height="427" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
