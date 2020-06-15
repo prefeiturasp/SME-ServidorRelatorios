@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SME.SR.Application.Interfaces;
-using SME.SR.Application.Queries.BoletimEscolar;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using System.Threading.Tasks;
