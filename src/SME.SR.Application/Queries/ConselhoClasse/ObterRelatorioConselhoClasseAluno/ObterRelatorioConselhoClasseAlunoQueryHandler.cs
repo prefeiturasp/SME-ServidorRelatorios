@@ -157,7 +157,7 @@ namespace SME.SR.Application
 
                     relatorioParaEnviar.Relatorio.Add(relatorio);
 
-                    SentrySdk.AddBreadcrumb("Relatório serializado -> " + JsonConvert.SerializeObject(relatorio), "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                    SentrySdk.AddBreadcrumb("Relatório serializado -> " + JsonConvert.SerializeObject(relatorioParaEnviar), "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
 
                     SentrySdk.CaptureMessage("4.1 FINALIZOU OK - ObterRelatorioConselhoClasseAlunoQueryHandler");
 
