@@ -36,7 +36,7 @@ namespace SME.SR.Application
                     SentrySdk.CaptureMessage("4.09 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
                     //SentrySdk.AddBreadcrumb("Obtendo relatório..", "5 - RelatorioConselhoClasseAlunoUseCase");
 
-                    RelatorioConselhoClasseArray relatorio = await mediator.Send(new ObterRelatorioConselhoClasseAlunoQuery()
+                    var relatorio = await mediator.Send(new ObterRelatorioConselhoClasseAlunoQuery()
                     {
                         CodigoAluno = relatorioQuery.CodigoAluno,
                         ConselhoClasseId = relatorioQuery.ConselhoClasseId,
@@ -47,15 +47,14 @@ namespace SME.SR.Application
                     SentrySdk.CaptureMessage("5.1 Obtive relatorio.. - RelatorioConselhoClasseAlunoUseCase");
                     //SentrySdk.AddBreadcrumb("Obtive o relatório", "5 - RelatorioConselhoClasseAlunoUseCase");
 
-                    //var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
+                    var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
 
                     SentrySdk.CaptureMessage("5.2 Serializei relatório.. - RelatorioConselhoClasseAlunoUseCase");
 
-                    //SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
+                    SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
+                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
 
-                    //await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
-
-                    //SentrySdk.CaptureMessage("5 FINAL - RelatorioConselhoClasseAlunoUseCase");
+                    SentrySdk.CaptureMessage("5 FINAL - RelatorioConselhoClasseAlunoUseCase");
 
 
                 }
