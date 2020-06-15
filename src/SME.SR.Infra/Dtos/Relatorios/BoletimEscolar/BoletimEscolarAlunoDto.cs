@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace SME.SR.Infra
 {
@@ -11,7 +12,7 @@ namespace SME.SR.Infra
         public string DescricaoGrupos { get; set; }
 
         [JsonProperty("tipoNota")]
-        public string TipoNota { get; private set; }
+        public string TipoNota { get; private set; } = "Nota";
 
         public void SetarTipoNota(string notaConceito)
         {
@@ -19,7 +20,7 @@ namespace SME.SR.Infra
             {
                 if (double.TryParse(notaConceito, out _))
                     TipoNota = "Nota";
-                else if(notaConceito.Equals("NF") ||
+                else if (notaConceito.Equals("NF") ||
                         notaConceito.Equals("F"))
                     TipoNota = "Sintese";
                 else
