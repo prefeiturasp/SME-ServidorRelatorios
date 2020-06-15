@@ -2,19 +2,15 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Sentry;
-using Newtonsoft.Json.Serialization;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Application
 {
-    public class RelatorioConselhoClasseAlunoUseCase: IRelatorioConselhoClasseAlunoUseCase
+    public class RelatorioConselhoClasseAlunoUseCase : IRelatorioConselhoClasseAlunoUseCase
     {
         private readonly IMediator mediator;
         private readonly IConfiguration configuration;
@@ -27,23 +23,40 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-           
-                var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
-                var relatorio = await mediator.Send(relatorioQuery);
 
-                var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
+            try
+            {
 
                 using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
                 {
+                    var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
+
+                    SentrySdk.AddBreadcrumb("Obtendo relatório..", "5 - RelatorioConselhoClasseAlunoUseCase");
+
+                    var relatorio = await mediator.Send(relatorioQuery);
+                    
+                    var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
+
+
+                    SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
+
+                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
+
                     SentrySdk.CaptureMessage("5 - RelatorioConselhoClasseAlunoUseCase");
+
                 }
 
-                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
-           
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                throw ex;
+            }
+
         }
     }
 
-   
 
-    
+
+
 }
