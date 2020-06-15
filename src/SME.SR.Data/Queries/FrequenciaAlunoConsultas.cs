@@ -3,7 +3,7 @@
     public static class FrequenciaAlunoConsultas
     {
         internal static string FrequenciaGlobal = @"select 
-	   ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2) FrequenciaGlobal
+	    coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),0) FrequenciaGlobal
         from frequencia_aluno fa
        where tipo = 2
         and codigo_aluno = @codigoAluno
