@@ -15,22 +15,22 @@ namespace SME.SR.Infra.Dtos
         public int? Versao { get; set; }
 
         [JsonProperty("recipient"), AliasAs("recipient")]
-        public string? Recipiente { get; set; }
+        public string Recipiente { get; set; }
 
         [JsonProperty("toAddresses"), AliasAs("toAddresses")]
-        public TrabalhoAlertaEnderecoDto? Enderecos { get; set; }
+        public TrabalhoAlertaEnderecoDto Enderecos { get; set; }
 
         [JsonProperty("jobState"), AliasAs("jobState")]
-        public string? EstadoTrabalho { get; set; }
+        public string EstadoTrabalho { get; set; }
 
         [JsonProperty("messageText"), AliasAs("messageText")]
-        public string? TextoMensagem { get; set; }
+        public string TextoMensagem { get; set; }
 
         [JsonProperty("messageTextWhenJobFails"), AliasAs("messageTextWhenJobFails")]
-        public string? TextoMensagemFalha { get; set; }
+        public string TextoMensagemFalha { get; set; }
 
         [JsonProperty("subject"), AliasAs("subject")]
-        public string? Assunto { get; set; }
+        public string Assunto { get; set; }
 
         [JsonProperty("includingStackTrace"), AliasAs("includingStackTrace")]
         public bool? StackTraceIncluso { get; set; }

@@ -9,6 +9,6 @@ namespace SME.SR.Infra.Dtos
     public class TrabalhoParametrosDto
     {
         [JsonProperty("parameterValues"), AliasAs("parameterValues")]
-        public IDictionary<string, IEnumerable<string>>? Parametros { get; set; }
+        public IDictionary<string, IEnumerable<string>> Parametros { get; set; }
     }
 }

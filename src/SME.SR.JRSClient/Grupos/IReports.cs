@@ -64,7 +64,7 @@ namespace SME.SR.JRSClient.Grupos
 
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/jobs")]
-        Task<TrabalhoListaResumoDto> GetTrabalhosRelatoriosAsync(TrabalhoFiltroDto filtro, [AliasAs("example")] string? exemplo);
+        Task<TrabalhoListaResumoDto> GetTrabalhosRelatoriosAsync(TrabalhoFiltroDto filtro, [AliasAs("example")] string exemplo);
 
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/jobs/{trabalhoId}")]
@@ -76,7 +76,7 @@ namespace SME.SR.JRSClient.Grupos
 
         [Headers("Accept: application/json", "Authorization: Basic", "Content-Type: application/json")]
         [Post("/jasperserver/rest_v2/jobs")]
-        Task<TrabalhoListaIdsDto> PostAtualizarTrabalhosEmLoteAsync([AliasAs("id"),Query(CollectionFormat.Multi)] IEnumerable<int>? ids, bool replaceTriggerIgnoreType, [Body]string? trabalhoDefinicaoJson);
+        Task<TrabalhoListaIdsDto> PostAtualizarTrabalhosEmLoteAsync([AliasAs("id"),Query(CollectionFormat.Multi)] IEnumerable<int> ids, bool replaceTriggerIgnoreType, [Body]string trabalhoDefinicaoJson);
 
         [Headers("Accept: application/json", "Authorization: Basic")]
         [Get("/jasperserver/rest_v2/jobs/{trabalhoId}/state")]

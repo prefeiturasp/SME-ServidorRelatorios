@@ -20,7 +20,6 @@ using SME.SR.Workers.SGP.Services;
 using System;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Reflection;
 
 namespace SME.SR.Workers.SGP
@@ -89,6 +88,7 @@ namespace SME.SR.Workers.SGP
 			services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(IComponenteCurricularRepository), typeof(ComponenteCurricularRepository));
+            services.TryAddScoped(typeof(IConselhoClasseRepository), typeof(ConselhoClasseRepository));
             services.TryAddScoped(typeof(IConselhoClasseAlunoRepository), typeof(ConselhoClasseAlunoRepository));
             services.TryAddScoped(typeof(IConselhoClasseNotaRepository), typeof(ConselhoClasseNotaRepository));
             services.TryAddScoped(typeof(IConselhoClasseRecomendacaoRepository), typeof(ConselhoClasseRecomendacaoRepository));
@@ -99,6 +99,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped(typeof(IFrequenciaAlunoRepository), typeof(FrequenciaAlunoRepository));
             services.TryAddScoped(typeof(IParametroSistemaRepository), typeof(ParametroSistemaRepository));
             services.TryAddScoped(typeof(IPeriodoEscolarRepository), typeof(PeriodoEscolarRepository));
+            services.TryAddScoped(typeof(IPermissaoRepository), typeof(PermissaoRepository));
             services.TryAddScoped(typeof(ITipoCalendarioRepository), typeof(TipoCalendarioRepository));
             services.TryAddScoped(typeof(ITurmaRepository), typeof(TurmaRepository));
         }
@@ -162,6 +163,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped<IMonitorarStatusRelatorioUseCase, MonitorarStatusRelatorioUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAlunoUseCase, RelatorioConselhoClasseAlunoUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
+            services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
         }
 
         private void RegistrarServicos(IServiceCollection services)

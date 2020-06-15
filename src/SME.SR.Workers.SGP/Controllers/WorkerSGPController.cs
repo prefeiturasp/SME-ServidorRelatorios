@@ -59,5 +59,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await monitorarStatusRelatorioUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/boletimescolar")]
+        [Action("relatorios/boletimescolar", typeof(IRelatorioBoletimEscolarUseCase))]
+        public async Task<bool> RelatorioBoletimEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarUseCase relatorioBoletimEscolarUseCase)
+        {
+            await relatorioBoletimEscolarUseCase.Executar(request);
+            return true;
+        }
     }
 }

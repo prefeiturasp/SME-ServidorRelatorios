@@ -32,12 +32,12 @@ namespace SME.SR.Application
                 if (relatorioAlunos.FirstOrDefault() is RelatorioConselhoClasseBimestre)
                 {
                     List<RelatorioConselhoClasseBimestre> listBimestre = relatorioAlunos.Cast<RelatorioConselhoClasseBimestre>().ToList();
-                    jsonString = JsonConvert.SerializeObject(new { relatorioConselhoDeClasse = listBimestre });
+                    jsonString = JsonConvert.SerializeObject(new { relatorioConselhoDeClasse = listBimestre }, UtilJson.ObterConfigConverterNulosEmVazio());
                 }
                 else
                 {
                     List<RelatorioConselhoClasseFinal> listFinal = relatorioAlunos.Cast<RelatorioConselhoClasseFinal>().ToList();
-                    jsonString = JsonConvert.SerializeObject(new { relatorioConselhoDeClasse = listFinal });
+                    jsonString = JsonConvert.SerializeObject(new { relatorioConselhoDeClasse = listFinal }, UtilJson.ObterConfigConverterNulosEmVazio());
                 }
 
                 await mediator.Send(new GerarRelatorioAssincronoCommand("sme/sgp/RelatorioConselhoClasse/ConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
