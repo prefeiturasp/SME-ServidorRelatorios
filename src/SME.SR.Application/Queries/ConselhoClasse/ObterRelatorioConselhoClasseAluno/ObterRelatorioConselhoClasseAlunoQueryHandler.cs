@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Data;
 using SME.SR.Infra;
@@ -136,7 +137,7 @@ namespace SME.SR.Application
                             });
                     }
 
-                    SentrySdk.AddBreadcrumb("Obtendo ObterRecomendacoesPorFechamento Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                    SentrySdk.AddBreadcrumb("Obtendo ObterRecomendacoesPorFechamento", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                     var recomendacoes = await ObterRecomendacoesPorFechamento(
                        request.FechamentoTurmaId,
                        request.CodigoAluno);
@@ -146,7 +147,7 @@ namespace SME.SR.Application
                     relatorio.AnotacoesPedagogicas = recomendacoes.AnotacoesPedagogicas;
 
 
-                    SentrySdk.AddBreadcrumb("Obtendo ObterAnotacoesAluno Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                    SentrySdk.AddBreadcrumb("Obtendo ObterAnotacoesAluno", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                     var anotacoes = await ObterAnotacoesAluno(
                        request.FechamentoTurmaId,
                        request.CodigoAluno
@@ -156,7 +157,9 @@ namespace SME.SR.Application
 
                     relatorioParaEnviar.Relatorio.Add(relatorio);
 
-                    SentrySdk.CaptureMessage("4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                    SentrySdk.AddBreadcrumb("Relatório serializado -> " + JsonConvert.SerializeObject(relatorio), "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+                    SentrySdk.CaptureMessage("4.1 FINALIZOU OK - ObterRelatorioConselhoClasseAlunoQueryHandler");
 
                     return relatorioParaEnviar;
                 }
