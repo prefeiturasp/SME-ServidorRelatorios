@@ -69,7 +69,7 @@
 		</field>
 	</subDataset>
 	<queryString language="JSON">
-		<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota]]>
+		<![CDATA[]]>
 	</queryString>
 	<field name="Nome" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="Nome"/>
@@ -134,11 +134,18 @@
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[NOTA/CONCEITO]]></text>
+								<text><![CDATA[NOTA/CONCEITO BIMESTRES]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<subreport>
+								<reportElement x="0" y="0" width="120" height="30" uuid="0018896c-9d9b-4832-9d8f-45551ef4a179"/>
+								<subreportParameter name="REPORT_DATA_SOURCE">
+									<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+								</subreportParameter>
+								<subreportExpression><![CDATA["NotasBimestre.jasper"]]></subreportExpression>
+							</subreport>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="139" uuid="145d8428-df4a-4030-9f85-6f27cffd709a">

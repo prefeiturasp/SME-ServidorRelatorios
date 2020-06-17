@@ -7,49 +7,22 @@
 			 "ComponentesComNota":[
 				{
 				   "NotaFinal":"9,5",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"10",
-						 "Bimestre":4
-					  }
-				   ],
+				   "NotaConceitoBimestre1":"6",
+				   "NotaConceitoBimestre2":"6",
+				   "NotaConceitoBimestre3":"6",
+				   "NotaConceitoBimestre4":"6",
 				   "Componente":"MATEMATICA",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
-				   "Frequencia":100
+				   "Frequencia":100,
+				   "EhEja": false
 				},
 				{
 				   "NotaFinal":"9,5",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
+				   "NotaConceitoBimestre1":"9",
+				   "NotaConceitoBimestre2":"9",
+				   "NotaConceitoBimestre3":"9",
+				   "NotaConceitoBimestre4":"9",
 				   "Componente":"ED. FISICA",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
@@ -70,49 +43,22 @@
 				},
 				{
 				   "NotaFinal":"9",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
+				   "NotaConceitoBimestre1":"8",
+				   "NotaConceitoBimestre2":"8",
+				   "NotaConceitoBimestre3":null,
+				   "NotaConceitoBimestre4":null,
 				   "Componente":"GEOGRAFIA",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
-				   "Frequencia":100
+				   "Frequencia":100,
+				   "EhEja": true
 				},
 				{
 				   "NotaFinal":"8",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"8",
-						 "Bimestre":4
-					  }
-				   ],
+				   "NotaConceitoBimestre1":"7",
+				   "NotaConceitoBimestre2":"7",
+				   "NotaConceitoBimestre3":"7",
+				   "NotaConceitoBimestre4":"7",
 				   "Componente":"CIENCIAS",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
@@ -120,53 +66,27 @@
 				},
 				{
 				   "NotaFinal":"8",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
+				   "NotaConceitoBimestre1":null,
+				   "NotaConceitoBimestre2":null,
+				   "NotaConceitoBimestre3":null,
+				   "NotaConceitoBimestre4":"10",
 				   "Componente":"LINGUA PORTUGUESA",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
-				   "Frequencia":100
+				   "Frequencia":100,
+				   "EhEja": false
 				},
 				{
 				   "NotaFinal":"7",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"8",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"5,5",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"4,5",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"10",
-						 "Bimestre":4
-					  }
-				   ],
+				   "NotaConceitoBimestre1":null,
+				   "NotaConceitoBimestre2":null,
+				   "NotaConceitoBimestre3":"10",
+				   "NotaConceitoBimestre4":null,
 				   "Componente":"ARTE",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
-				   "Frequencia":100
+				   "Frequencia":100,
+				   "EhEja": false
 				}
 			 ],
 			 "Nome":"Base Nacional Comum"
@@ -175,28 +95,15 @@
 			 "ComponentesComNota":[
 				{
 				   "NotaFinal":"9",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
+				   "NotaConceitoBimestre1":"5",
+				   "NotaConceitoBimestre2":"5",
+				   "NotaConceitoBimestre3":null,
+				   "NotaConceitoBimestre4":"9",
 				   "Componente":"INGLES",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
-				   "Frequencia":100
+				   "Frequencia":100,
+				   "EhEja": false
 				}
 			 ],
 			 "Nome":"Diversificada"
@@ -222,7 +129,7 @@
 		  }
 	   ],
 	   "Titulo":"Conselho de Classe",
-	   "Dre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE",
+	   "Dre":"JT",
 	   "Ue":"MAXIMO DE MOURA SANTOS, PROF.",
 	   "Turma":"8B",
 	   "Data":"2020-06-07T21:36:05.9077995-03:00",
@@ -306,156 +213,121 @@
 	},
 	{
 	   "GruposMatrizComponentesComNota":[
-		  {
-			 "ComponentesComNota":[
-				{
-				   "NotaFinal":"9,5",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"10",
-						 "Bimestre":4
-					  }
-				   ],
-				   "Componente":"MATEMATICA",
-				   "Faltas":0,
-				   "AusenciasCompensadas":0,
-				   "Frequencia":100
-				},
-				{
-				   "NotaFinal":"9,5",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
-				   "Componente":"ED. FISICA",
-				   "Faltas":0,
-				   "AusenciasCompensadas":0,
-				   "Frequencia":100
-				},
-				{
-				   "NotaFinal":"9",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
-				   "Componente":"HISTORIA",
-				   "Faltas":0,
-				   "AusenciasCompensadas":0,
-				   "Frequencia":100
-				},
-				{
-				   "NotaFinal":"9",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
-				   "Componente":"GEOGRAFIA",
-				   "Faltas":0,
-				   "AusenciasCompensadas":0,
-				   "Frequencia":100
-				},
-				{
-				   "NotaFinal":"8",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"8",
-						 "Bimestre":4
-					  }
-				   ],
-				   "Componente":"CIENCIAS",
-				   "Faltas":0,
-				   "AusenciasCompensadas":0,
-				   "Frequencia":100
-				},
-				{
-				   "NotaFinal":"8",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":1
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":2
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":3
-					  },
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
-				   "Componente":"LINGUA PORTUGUESA",
-				   "Faltas":0,
-				   "AusenciasCompensadas":0,
-				   "Frequencia":100
-				}
-			 ],
-			 "Nome":"Base Nacional Comum"
-		  }
-	   ],
+		{
+		   "ComponentesComNota":[
+			  {
+				 "NotaFinal":"9,5",
+				 "NotaConceitoBimestre1":"9",
+				 "NotaConceitoBimestre2":"9",
+				 "NotaConceitoBimestre3":"9",
+				 "NotaConceitoBimestre4":"9",
+				 "Componente":"MATEMATICA",
+				 "Faltas":0,
+				 "AusenciasCompensadas":0,
+				 "Frequencia":100,
+				   "EhEja": false
+			  },
+			  {
+				 "NotaFinal":"9,5",
+				 "NotaConceitoBimestre1":"9",
+				 "NotaConceitoBimestre2":"9",
+				 "NotaConceitoBimestre3":"9",
+				 "NotaConceitoBimestre4":"9",
+				 "Componente":"ED. FISICA",
+				 "Faltas":0,
+				 "AusenciasCompensadas":0,
+				 "Frequencia":100,
+				   "EhEja": false
+			  },
+			  {
+				 "NotaFinal":"9",
+				 "NotasBimestre":[
+					{
+					   "NotaConceito":"9",
+					   "Bimestre":4
+					}
+				 ],
+				 "Componente":"HISTORIA",
+				 "Faltas":0,
+				 "AusenciasCompensadas":0,
+				 "Frequencia":100,
+				   "EhEja": false
+			  },
+			  {
+				 "NotaFinal":"9",
+				 "NotaConceitoBimestre1":"8",
+				 "NotaConceitoBimestre2":"8",
+				 "NotaConceitoBimestre3":"8",
+				 "NotaConceitoBimestre4":"8",
+				 "Componente":"GEOGRAFIA",
+				 "Faltas":0,
+				 "AusenciasCompensadas":0,
+				 "Frequencia":100,
+				 "EhEja": false
+			  },
+			  {
+				 "NotaFinal":"8",
+				 "NotaConceitoBimestre1":"7",
+				 "NotaConceitoBimestre2":"7",
+				 "NotaConceitoBimestre3":"7",
+				 "NotaConceitoBimestre4":"7",
+				 "Componente":"CIENCIAS",
+				 "Faltas":0,
+				 "AusenciasCompensadas":0,
+				 "Frequencia":100,
+				 "EhEja": false
+			  },
+			  {
+				 "NotaFinal":"8",
+				 "NotaConceitoBimestre1":null,
+				 "NotaConceitoBimestre2":null,
+				 "NotaConceitoBimestre3":null,
+				 "NotaConceitoBimestre4":"10",
+				 "Componente":"LINGUA PORTUGUESA",
+				 "Faltas":0,
+				 "AusenciasCompensadas":0,
+				 "Frequencia":100,
+				 "EhEja": false
+			  },
+			  {
+				 "NotaFinal":"7",
+				 "NotaConceitoBimestre1":null,
+				 "NotaConceitoBimestre2":null,
+				 "NotaConceitoBimestre3":"10",
+				 "NotaConceitoBimestre4":null,
+				 "Componente":"ARTE",
+				 "Faltas":0,
+				 "AusenciasCompensadas":0,
+				 "Frequencia":100,
+				 "EhEja": false
+			  }
+		   ],
+		   "Nome":"Base Nacional Comum"
+		},
+		{
+		   "ComponentesComNota":[
+			  {
+				 "NotaFinal":"9",
+				 "NotaConceitoBimestre1":"5",
+				 "NotaConceitoBimestre2":"5",
+				 "NotaConceitoBimestre3":null,
+				 "NotaConceitoBimestre4":"9",
+				 "Componente":"INGLES",
+				 "Faltas":0,
+				 "AusenciasCompensadas":0,
+				 "Frequencia":100,
+				 "EhEja": false
+			  }
+		   ],
+		   "Nome":"Diversificada"
+		}
+	 ],
 	   "Titulo":"Conselho de Classe",
 	   "Dre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE",
 	   "Ue":"MAXIMO DE MOURA SANTOS, PROF.",
 	   "Turma":"8B",
 	   "Data":"2020-06-07T21:36:05.9077995-03:00",
-	   "AlunoNome":"ANA BEATRIZ THEODOCELLO GOMES",
+	   "AlunoNome":"DEISE",
 	   "AlunoNumero":1,
 	   "AlunoDataDeNascimento":"2006-10-13T00:00:00",
 	   "AlunoCodigoEol":"4820277",
