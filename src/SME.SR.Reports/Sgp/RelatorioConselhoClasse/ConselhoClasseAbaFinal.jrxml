@@ -2,10 +2,10 @@
 <!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConselhoClasse" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5b7b40f2-5361-4f9e-95a6-7f51b83a4bda">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
-	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
-	<property name="ireport.jasperserver.user" value="ebufaino"/>
-	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal_files/main_jrxml"/>
-	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal"/>
+	<property name="ireport.jasperserver.url" value="http://localhost:8080/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="user"/>
+	<property name="ireport.jasperserver.report.resource" value="/sme/sgp/RelatorioConselhoClasseAbaFinal/ConselhoClasseAbaFinal_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sme/sgp/RelatorioConselhoClasseAbaFinal/ConselhoClasseAbaFinal"/>
 	<parameter name="jsonString" class="java.lang.String">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
@@ -289,7 +289,7 @@
 	<detail>
 		<band height="454" splitType="Stretch">
 			<subreport>
-				<reportElement positionType="Float" x="1" y="-1" width="553" height="70" uuid="9d73da0f-9cae-4185-93b6-d636c12f8a21">
+				<reportElement positionType="Float" x="1" y="-2" width="553" height="70" uuid="9d73da0f-9cae-4185-93b6-d636c12f8a21">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
@@ -298,35 +298,35 @@
 				<subreportExpression><![CDATA["ComponenteComNotaAbaFinal.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="28" y="130" width="554" height="70" isRemoveLineWhenBlank="true" uuid="c843597d-2ccc-4017-94a3-c770952b6959"/>
+				<reportElement positionType="Float" x="1" y="68" width="554" height="70" isRemoveLineWhenBlank="true" uuid="c843597d-2ccc-4017-94a3-c770952b6959"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("GruposMatrizComponentesSemNota")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["ComponenteSemNota.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="140" width="553" height="76" isRemoveLineWhenBlank="true" uuid="678b78a0-74f1-4c90-9f2d-932e95ca254e"/>
+				<reportElement positionType="Float" x="0" y="139" width="553" height="76" isRemoveLineWhenBlank="true" uuid="678b78a0-74f1-4c90-9f2d-932e95ca254e"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["RecomendacoesAluno.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="216" width="553" height="76" isRemoveLineWhenBlank="true" uuid="aa88153a-b91c-481c-8fae-7baab2cf3c4c"/>
+				<reportElement positionType="Float" x="0" y="215" width="553" height="76" isRemoveLineWhenBlank="true" uuid="aa88153a-b91c-481c-8fae-7baab2cf3c4c"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["RecomendacoesFamilia.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="292" width="553" height="76" isRemoveLineWhenBlank="true" uuid="a8d2e999-42b2-4965-a097-cbc7b5cb5dc9"/>
+				<reportElement positionType="Float" x="0" y="291" width="553" height="76" isRemoveLineWhenBlank="true" uuid="a8d2e999-42b2-4965-a097-cbc7b5cb5dc9"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["AnotacoesPedagogicas.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="1" y="368" width="553" height="76" isRemoveLineWhenBlank="true" uuid="520fcb07-220d-4e01-81e8-4e3d9581c65e"/>
+				<reportElement positionType="Float" x="1" y="367" width="553" height="76" isRemoveLineWhenBlank="true" uuid="520fcb07-220d-4e01-81e8-4e3d9581c65e"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("AnotacoesAluno")]]></subreportParameterExpression>
 				</subreportParameter>

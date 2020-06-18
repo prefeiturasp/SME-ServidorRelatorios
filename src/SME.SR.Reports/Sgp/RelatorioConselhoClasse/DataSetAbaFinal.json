@@ -26,25 +26,25 @@
 				   "Componente":"ED. FISICA",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
-				   "Frequencia":100
+				   "Frequencia":100,
+				   "EhEja": false
 				},
 				{
 				   "NotaFinal":"9",
-				   "NotasBimestre":[
-					  {
-						 "NotaConceito":"9",
-						 "Bimestre":4
-					  }
-				   ],
+				   "NotaConceitoBimestre1":"4",
+				   "NotaConceitoBimestre2":"4",
+				   "NotaConceitoBimestre3":"4",
+				   "NotaConceitoBimestre4":"5",
 				   "Componente":"HISTORIA",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
-				   "Frequencia":100
+				   "Frequencia":100,
+				   "EhEja": true
 				},
 				{
 				   "NotaFinal":"9",
 				   "NotaConceitoBimestre1":"8",
-				   "NotaConceitoBimestre2":"8",
+				   "NotaConceitoBimestre2":null,
 				   "NotaConceitoBimestre3":null,
 				   "NotaConceitoBimestre4":null,
 				   "Componente":"GEOGRAFIA",
@@ -62,7 +62,8 @@
 				   "Componente":"CIENCIAS",
 				   "Faltas":0,
 				   "AusenciasCompensadas":0,
-				   "Frequencia":100
+				   "Frequencia":100,
+				   "EhEja": false
 				},
 				{
 				   "NotaFinal":"8",
@@ -225,7 +226,7 @@
 				 "Faltas":0,
 				 "AusenciasCompensadas":0,
 				 "Frequencia":100,
-				   "EhEja": false
+				 "EhEja": false
 			  },
 			  {
 				 "NotaFinal":"9,5",
@@ -237,21 +238,19 @@
 				 "Faltas":0,
 				 "AusenciasCompensadas":0,
 				 "Frequencia":100,
-				   "EhEja": false
+				 "EhEja": false
 			  },
 			  {
-				 "NotaFinal":"9",
-				 "NotasBimestre":[
-					{
-					   "NotaConceito":"9",
-					   "Bimestre":4
-					}
-				 ],
-				 "Componente":"HISTORIA",
+				 "NotaFinal":"9,5",
+				 "NotaConceitoBimestre1":"9",
+				 "NotaConceitoBimestre2":"9",
+				 "NotaConceitoBimestre3":"9",
+				 "NotaConceitoBimestre4":"9",
+				 "Componente":"ED. FISICA",
 				 "Faltas":0,
 				 "AusenciasCompensadas":0,
 				 "Frequencia":100,
-				   "EhEja": false
+				 "EhEja": false
 			  },
 			  {
 				 "NotaFinal":"9",
