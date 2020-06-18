@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Sentry;
+using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
@@ -65,6 +66,13 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioBoletimEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarUseCase relatorioBoletimEscolarUseCase)
         {
             await relatorioBoletimEscolarUseCase.Executar(request);
+            return true;
+        }
+        [HttpGet("relatorios/conselhoclasseatafinal")]
+        [Action("relatorios/conselhoclasseatafinal", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
+        public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase)
+        {
+            await relatorioConselhoClasseAtaFinalUseCase.Executar(request);
             return true;
         }
     }
