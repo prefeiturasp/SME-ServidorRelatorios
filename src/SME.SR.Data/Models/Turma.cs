@@ -10,6 +10,7 @@ namespace SME.SR.Data
         public int AnoLetivo { get; set; }
         public string Nome { get; set; }
         public int Semestre { get; set; }
+        public string CodigoUe { get; set; }
         public Modalidade ModalidadeCodigo { get; set; }
         public ModalidadeTipoCalendario ModalidadeTipoCalendario
         {

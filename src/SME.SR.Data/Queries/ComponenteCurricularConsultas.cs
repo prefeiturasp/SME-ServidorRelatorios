@@ -105,6 +105,28 @@
 						)
 						and grade_ter.cd_componente_curricular in @codigosComponentesCurriculares";
 
+        internal static string BuscarPorIds = @"SELECT 
+                        cd_componente_curricular AS IdComponenteCurricular, 
+                        RTRIM(LTRIM(dc_componente_curricular)) AS Descricao,
+                        0 as EhTerritorio,
+                        CASE
+                            WHEN cd_componente_curricular IN (508, 511, 1064, 1065, 1104, 1105, 1112, 1113, 1114, 1115, 1117, 1121, 1124, 1125, 1211, 1212, 1213, 1290, 1301) THEN 1
+                            ELSE 0
+                        END EhRegencia
+                    FROM componente_curricular";
+
+        internal static string BuscarTerritorioAgrupado(string[] ids) { 
+        
+            return $@"select distinct(convert(bigint,concat(stg.cd_turma_escola, grade_ter.cd_territorio_saber, grade_ter.cd_experiencia_pedagogica, FORMAT(grade_ter.dt_inicio, 'MM'), FORMAT(grade_ter.dt_inicio, 'dd')))) as CdComponenteCurricular,
+                    concat( ter.dc_territorio_saber, ' - ',exp.dc_experiencia_pedagogica)  as Descricao, 
+                    0 as EhRegencia,
+                    1 as Territorio
+                    from  turma_grade_territorio_experiencia grade_ter inner join território_saber ter on ter.cd_territorio_saber = grade_ter.cd_territorio_saber 
+                    inner join tipo_experiencia_pedagogica exp on exp.cd_experiencia_pedagogica = grade_ter.cd_experiencia_pedagogica
+                    inner join serie_turma_grade stg on stg.cd_serie_grade = grade_ter.cd_serie_grade
+                    where convert(bigint,concat(stg.cd_turma_escola, grade_ter.cd_territorio_saber, grade_ter.cd_experiencia_pedagogica, FORMAT(grade_ter.dt_inicio, 'MM'), FORMAT(grade_ter.dt_inicio, 'dd'))) IN ({string.Join(',', ids)})";
+        } 
+
         internal static string Listar = @"SELECT IdComponenteCurricular, 
                             IdComponenteCurricularPai, 
                             EhCompartilhada, 

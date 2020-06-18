@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesRegencia;
 using SME.SR.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace SME.SR.Application
             foreach (var grupoDisciplinasMatriz in lstComponentesComNota.OrderBy(k => k.Key))
             {
                 var lstCompComNota = new List<ComponenteComNotaFinal>();
+                var compRegenciaComNota = new ComponenteFrequenciaRegenciaBimestre();
 
                 foreach (var disciplina in grupoDisciplinasMatriz)
                 {
@@ -48,7 +50,15 @@ namespace SME.SR.Application
                         PeriodoEscolar = request.PeriodoEscolar
                     });
 
-                    lstCompComNota.Add(ObterNotasFrequenciaComponenteComNotaFinal(disciplina,
+                    if (disciplina.Regencia)
+                        compRegenciaComNota = await ObterNotasFrequenciaRegencia(disciplina,
+                                                                                frequenciaAluno,
+                                                                                request.PeriodoEscolar,
+                                                                                request.Turma,
+                                                                                notasConselhoClasse,
+                                                                                notasFechamento);
+                    else
+                        lstCompComNota.Add(ObterNotasFrequenciaComponenteComNotaFinal(disciplina,
                                                                     frequenciaAluno,
                                                                     request.PeriodoEscolar,
                                                                     request.Turma,
@@ -66,6 +76,40 @@ namespace SME.SR.Application
             }
 
             return lstGruposMatrizCompNota;
+        }
+
+        private async Task<ComponenteFrequenciaRegenciaBimestre> ObterNotasFrequenciaRegencia(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento)
+        {
+            var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
+            {
+                Aulas = frequenciaAluno.TotalAulas,
+                Faltas = frequenciaAluno?.TotalAusencias ?? 0,
+                AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
+                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100)
+            };
+
+            var componentesRegencia = await _mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
+            {
+                Turma = turma,
+                CdComponenteCurricular = disciplina.CodDisciplina
+            });
+
+            foreach (var componenteRegencia in componentesRegencia)
+            {
+                conselhoClasseComponente.ComponentesCurriculares.Add(ObterNotasRegencia(componenteRegencia, periodoEscolar, notasConselhoClasse, notasFechamento));
+            }
+
+            return conselhoClasseComponente;
+        }
+
+        private ComponenteRegenciaComNotaBimestre ObterNotasRegencia(ComponenteCurricularPorTurma componenteCurricular, PeriodoEscolar periodoEscolar, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento)
+        {
+            return new ComponenteRegenciaComNotaBimestre()
+            {
+                Nome = componenteCurricular.Disciplina,
+                NotaConceito = ObterNotasComponente(componenteCurricular, periodoEscolar, notasFechamento).FirstOrDefault()?.NotaConceito,
+                NotaPosConselho = ObterNotaPosConselho(componenteCurricular, periodoEscolar?.Bimestre, notasConselhoClasse, notasFechamento)
+            };
         }
 
         private ComponenteComNotaFinal ObterNotasFrequenciaComponenteComNotaFinal(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)

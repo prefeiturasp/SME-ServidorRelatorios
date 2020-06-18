@@ -1,0 +1,73 @@
+﻿using MediatR;
+using SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesPorIds;
+using SME.SR.Data;
+using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesRegencia
+{
+    public class ObterComponentesCurricularesRegenciaQueryHandler : IRequestHandler<ObterComponentesCurricularesRegenciaQuery, IEnumerable<ComponenteCurricularPorTurma>>
+    {
+        private static readonly long[] IDS_COMPONENTES_REGENCIA = { 2, 7, 8, 89, 138 };
+        private IMediator _mediator;
+        private IAtribuicaoCJRepository _atribuicaoCJRepository;
+
+        public ObterComponentesCurricularesRegenciaQueryHandler(IMediator mediator, IAtribuicaoCJRepository atribuicaoCJRepository)
+        {
+            this._mediator = mediator;
+            this._atribuicaoCJRepository = atribuicaoCJRepository;
+        }
+
+        public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesRegenciaQuery request, CancellationToken cancellationToken)
+        {
+            Turma turma = request.Turma;
+
+            if (request.ProfessorCJ)
+                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.CodigoTurma, turma.CodigoUe, request.CdComponenteCurricular, request.UsuarioRf);
+            else
+            {
+                var componentesCurriculares = await _mediator.Send(new
+                    ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery()
+                {
+                    CodigoTurma = turma.CodigoTurma,
+                    Login = request.UsuarioRf,
+                    IdPerfil = request.PerfilAtual
+                });
+
+
+                return componentesCurriculares.Where(c => c.Regencia);
+            }
+        }
+
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCJ(Modalidade? modalidade, string codigoTurma, string ueId, long codigoDisciplina, string rf, bool ignorarDeParaRegencia = false)
+        {
+            IEnumerable<ComponenteCurricularPorTurma> componentes = null;
+            var atribuicoes = await _atribuicaoCJRepository.ObterPorFiltros(modalidade,
+                codigoTurma,
+                ueId,
+                codigoDisciplina,
+                rf,
+                string.Empty,
+                true);
+
+            if (atribuicoes == null || !atribuicoes.Any())
+                return null;
+
+            var disciplinasEol = await _mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = atribuicoes.Select(a => a.DisciplinaId).Distinct().ToArray() });
+
+            var componenteRegencia = disciplinasEol?.FirstOrDefault(c => c.Regencia);
+            if (componenteRegencia == null || ignorarDeParaRegencia)
+                return disciplinasEol;
+
+            var componentesRegencia = await _mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = IDS_COMPONENTES_REGENCIA });
+            if (componentesRegencia != null)
+                return componentesRegencia;
+
+            return componentes;
+        }
+    }
+}

@@ -9,6 +9,10 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurma(string codigoTurma);
 
+        Task<IEnumerable<ComponenteCurricularApiEol>> ListarComponentes();
+
+        Task<IEnumerable<ComponenteCurricularApiEol>> ListarComponentesTerritorioSaber(string[] ids);
+
         Task<IEnumerable<ComponenteCurricularApiEol>> Listar();
 
         Task<IEnumerable<ComponenteCurricularGrupoMatriz>> ListarGruposMatriz();

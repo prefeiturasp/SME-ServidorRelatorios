@@ -35,6 +35,14 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
         }
 
+        public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarComponentesTerritorioSaber(string[] ids)
+        {
+            var query = ComponenteCurricularConsultas.BuscarTerritorioAgrupado(ids);
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
+        }
+
         public async Task<IEnumerable<ComponenteCurricularGrupoMatriz>> ListarGruposMatriz()
         {
             var query = ComponenteCurricularConsultas.ListarGruposMatriz;
@@ -61,6 +69,16 @@ namespace SME.SR.Data
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
                 return await conexao.QueryAsync<ComponenteCurricular>(query);
+            }
+        }
+
+        public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarComponentes()
+        {
+            var query = ComponenteCurricularConsultas.BuscarPorIds;
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
             }
         }
     }
