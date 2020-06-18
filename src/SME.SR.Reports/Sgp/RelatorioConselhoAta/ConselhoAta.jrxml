@@ -1,0 +1,740 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConselhoAta" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8fa6a720-37a6-4ec7-816a-34b257822a5f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioConselhoAta/ConselhoAta_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioConselhoAta/ConselhoAta"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab_CG" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab_CT" mode="Opaque" backcolor="#005FB3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab_CD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 1_CH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 1_CG" mode="Opaque" backcolor="#F3F3F3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 1_CT" mode="Opaque" backcolor="#005FB3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 1_CD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 2_CH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 2_CG" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 2_CT" mode="Opaque" backcolor="#005FB3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 2_CD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 3_CH" mode="Opaque" backcolor="#F3F3F3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 3_CG" mode="Opaque" backcolor="#F3F3F3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 3_CT" mode="Opaque" backcolor="#005FB3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab 3_CD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="73d0c784-e21a-40ea-9e44-b5b5eebf7ea5">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="GruposSemagrupamento"/>
+		<queryString language="json">
+			<![CDATA[RelatorioConselhoAta.Grupos]]>
+		</queryString>
+		<field name="NomeGrupo" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="NomeGrupo"/>
+			<fieldDescription><![CDATA[NomeGrupo]]></fieldDescription>
+		</field>
+		<field name="NomeComponente" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="NomeComponente"/>
+			<fieldDescription><![CDATA[NomeComponente]]></fieldDescription>
+		</field>
+		<field name="Nota" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Nota"/>
+			<fieldDescription><![CDATA[Nota]]></fieldDescription>
+		</field>
+		<field name="Bimestre" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Bimestre"/>
+			<fieldDescription><![CDATA[Bimestre]]></fieldDescription>
+		</field>
+		<field name="Sf" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Sf"/>
+			<fieldDescription><![CDATA[Sf]]></fieldDescription>
+		</field>
+		<field name="F" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="F"/>
+			<fieldDescription><![CDATA[F]]></fieldDescription>
+		</field>
+		<field name="Ca" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Ca"/>
+			<fieldDescription><![CDATA[Ca]]></fieldDescription>
+		</field>
+		<field name="Frequencia" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Frequencia"/>
+			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
+		</field>
+		<field name="AlunoNome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="AlunoNome"/>
+			<fieldDescription><![CDATA[AlunoNome]]></fieldDescription>
+		</field>
+		<field name="CodigoEol" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="CodigoEol"/>
+			<fieldDescription><![CDATA[CodigoEol]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="Agrupado" uuid="d37747e4-0b94-4d4f-8923-789f6c1fce97">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="GruposSemagrupamento"/>
+		<queryString language="json">
+			<![CDATA[RelatorioConselhoAta.Grupos]]>
+		</queryString>
+		<field name="NomeGrupo" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="NomeGrupo"/>
+			<fieldDescription><![CDATA[NomeGrupo]]></fieldDescription>
+		</field>
+		<field name="NomeComponente" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="NomeComponente"/>
+			<fieldDescription><![CDATA[NomeComponente]]></fieldDescription>
+		</field>
+		<field name="Nota" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Nota"/>
+			<fieldDescription><![CDATA[Nota]]></fieldDescription>
+		</field>
+		<field name="Bimestre" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Bimestre"/>
+			<fieldDescription><![CDATA[Bimestre]]></fieldDescription>
+		</field>
+		<field name="Sf" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Sf"/>
+			<fieldDescription><![CDATA[Sf]]></fieldDescription>
+		</field>
+		<field name="F" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="F"/>
+			<fieldDescription><![CDATA[F]]></fieldDescription>
+		</field>
+		<field name="Ca" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Ca"/>
+			<fieldDescription><![CDATA[Ca]]></fieldDescription>
+		</field>
+		<field name="Frequencia" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Frequencia"/>
+			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
+		</field>
+		<field name="AlunoNome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="AlunoNome"/>
+			<fieldDescription><![CDATA[AlunoNome]]></fieldDescription>
+		</field>
+		<field name="CodigoEol" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="CodigoEol"/>
+			<fieldDescription><![CDATA[CodigoEol]]></fieldDescription>
+		</field>
+		<group name="NomeGrupo">
+			<groupExpression><![CDATA[$F{NomeGrupo}]]></groupExpression>
+		</group>
+		<group name="NomeComponente">
+			<groupExpression><![CDATA[$F{NomeComponente}]]></groupExpression>
+		</group>
+		<group name="Bimestre">
+			<groupExpression><![CDATA[$F{Bimestre}]]></groupExpression>
+		</group>
+	</subDataset>
+	<parameter name="jsonString" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["{'RelatorioConselhoAta':{'Cabecalho':{'Dre':'DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE','Ue':'EMEF MAXIMO DE MOURA SANTOS, PROF.','Ciclo':'Alfabetização','AnoLetivo':'2020','Turma':'1A','Data':'01/06/2020'},'Grupos':[{'NomeGrupo':'Basediversificada','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'1','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'Basediversificada','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'20','Bimestre':'2','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'Basediversificada','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'30','Bimestre':'3','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'Basediversificada','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'40','Bimestre':'4','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'Basediversificada','NomeComponente':'Matematica','Nota':'20','Bimestre':'1','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'Basediversificada','NomeComponente':'Matematica','Nota':'30','Bimestre':'2','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'Basediversificada','NomeComponente':'Matematica','Nota':'40','Bimestre':'3','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'Basediversificada','NomeComponente':'Matematica','Nota':'10','Bimestre':'4','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'1','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'2','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'3','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'4','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'Antônioamaral','CodigoEol':'1'},{'NomeGrupo':'Basediversificada','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'1','Bimestre':'1','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'Basediversificada','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'2','Bimestre':'2','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'Basediversificada','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'3','Bimestre':'3','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'Basediversificada','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'4','Bimestre':'4','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'Basediversificada','NomeComponente':'Matematica','Nota':'9','Bimestre':'1','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'Basediversificada','NomeComponente':'Matematica','Nota':'8','Bimestre':'2','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'Basediversificada','NomeComponente':'Matematica','Nota':'7','Bimestre':'3','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'Basediversificada','NomeComponente':'Matematica','Nota':'6','Bimestre':'4','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'1','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'2','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'3','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'4','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'AntônioSilva','CodigoEol':'2'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'1','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'JoséSilva','CodigoEol':'3'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'2','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'JoséSilva','CodigoEol':'3'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'3','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'JoséSilva','CodigoEol':'3'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'4','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'JoséSilva','CodigoEol':'3'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'1','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'MarcosFerreira','CodigoEol':'4'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'2','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'MarcosFerreira','CodigoEol':'4'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'3','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'MarcosFerreira','CodigoEol':'4'},{'NomeGrupo':'BaseComum','NomeComponente':'Investigaçãocientificaeprocessosmatematicos','Nota':'10','Bimestre':'4','Sf':'50','F':'60','Ca':'70','Frequencia':'80','AlunoNome':'MarcosFerreira','CodigoEol':'4'}]}}"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JSON_INPUT_STREAM" class="java.io.InputStream" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new java.io.ByteArrayInputStream($P{jsonString}.getBytes("UTF-8"))]]></defaultValueExpression>
+	</parameter>
+	<queryString language="JSON">
+		<![CDATA[RelatorioConselhoAta]]>
+	</queryString>
+	<field name="Dre" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Cabecalho.Dre"/>
+		<fieldDescription><![CDATA[Dre]]></fieldDescription>
+	</field>
+	<field name="Ue" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Cabecalho.Ue"/>
+		<fieldDescription><![CDATA[Ue]]></fieldDescription>
+	</field>
+	<field name="Ciclo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Cabecalho.Ciclo"/>
+		<fieldDescription><![CDATA[Ciclo]]></fieldDescription>
+	</field>
+	<field name="AnoLetivo" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.json.field.expression" value="Cabecalho.AnoLetivo"/>
+		<fieldDescription><![CDATA[AnoLetivo]]></fieldDescription>
+	</field>
+	<field name="Turma" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Cabecalho.Turma"/>
+		<fieldDescription><![CDATA[Turma]]></fieldDescription>
+	</field>
+	<field name="Data" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Cabecalho.Data"/>
+		<fieldDescription><![CDATA[Data]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="158" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout"/>
+			<image>
+				<reportElement x="20" y="20" width="149" height="60" uuid="f211ac9d-b8b0-46d0-bcad-88d6e351dce1"/>
+				<imageExpression><![CDATA["/logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="560" y="9" width="250" height="20" uuid="3788059b-94a7-4768-8f3f-11786eb553c5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SGP - SISTEMA DE GESTÃO PEDAGÓGICA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="26" y="97" width="28" height="23" uuid="4fbef115-e114-4871-ad13-1e9a8cb48daf">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[DRE:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="400" y="97" width="314" height="23" uuid="dcf2c695-1020-4122-a7e1-47a7f80913a2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="716" y="97" width="94" height="23" uuid="5f246750-1d62-4d52-ad72-51bd9f9d2751"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Turma}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="714" y="97" width="106" height="23" uuid="6e7d0c80-5c2c-4308-ace4-12341981d9ad">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="400" y="97" width="28" height="23" uuid="1cb8f3c1-442c-4341-8130-7248e0b685f7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[UE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="54" y="97" width="104" height="23" uuid="2cfb7666-35dd-41de-8623-e0c283703462"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Dre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="714" y="96" width="46" height="23" uuid="3fb93a1b-1321-47f7-8e5b-6c18df1a3b62">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[TURMA:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement x="428" y="97" width="286" height="23" uuid="03d1b8e2-e15d-4539-8752-32e2d5f10731"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Ue}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="714" y="120" width="106" height="23" uuid="a9b69a8a-8217-427f-8e73-6d4cd18baff4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="20" y="97" width="380" height="23" uuid="7baa604d-8324-48f2-b644-f345924eba9d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="97" width="34" height="23" uuid="fbb3a43f-52cf-46dc-b2a3-e75cc52ebcbe">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[DRE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="54" y="97" width="346" height="23" uuid="c8651d0b-85c9-4e96-b3ab-3bf9029f8658">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Dre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="760" y="96" width="50" height="23" uuid="eda72322-70e6-4893-a348-856727b5618d"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Turma}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="430" y="39" width="380" height="30" uuid="41037f34-ff42-4226-b707-a450f7f2422b"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[ATA FINAL DE RESULTADOS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="750" y="120" width="60" height="23" uuid="62ddcc39-ecb1-44bc-8274-db6dc69bc0e8"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Data}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="714" y="120" width="36" height="23" uuid="3167dde4-8b23-4891-aab2-94de79a07c8f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[DATA:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="590" y="120" width="124" height="23" uuid="30c58ed9-562a-4829-b34b-41fee2f28566">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="660" y="120" width="54" height="23" uuid="d9d3afcb-6bb8-4c18-8109-51c7c62b20d7"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{AnoLetivo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="590" y="120" width="70" height="23" uuid="e74e19f4-f48e-45a1-a8f9-8cf0ab269907">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[ANO LETIVO:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="20" y="120" width="570" height="23" uuid="b4a19bb9-70f4-4b8f-88cf-8e94e382352d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="60" y="120" width="530" height="23" uuid="f99985d0-f269-4968-855a-3be17fff9fcc"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Ciclo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="120" width="40" height="23" uuid="9f5258f9-a87f-43ee-868f-bf9b78362c6b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[CICLO:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="357" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<crosstab columnBreakOffset="200">
+				<reportElement x="20" y="0" width="810" height="80" uuid="df1d0a7d-f225-44d4-82b8-51e4dd2e62e0">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.crosstab.style.header" value="Crosstab 3_CH"/>
+					<property name="com.jaspersoft.studio.crosstab.style.group" value="Crosstab 3_CG"/>
+					<property name="com.jaspersoft.studio.crosstab.style.total" value="Crosstab 3_CT"/>
+					<property name="com.jaspersoft.studio.crosstab.style.detail" value="Crosstab 3_CD"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<crosstabDataset>
+					<dataset resetType="Report">
+						<datasetRun subDataset="Agrupado" uuid="84c4d1e4-3b2f-466f-9791-b0eb04f431d3">
+							<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JsonQLDataSource(new java.io.ByteArrayInputStream( $P{jsonString}.getBytes("UTF-8") ), "RelatorioConselhoAta.Grupos")]]></dataSourceExpression>
+						</datasetRun>
+					</dataset>
+				</crosstabDataset>
+				<crosstabHeaderCell>
+					<cellContents backcolor="#F3F3F3" mode="Opaque" style="Crosstab 3_CD"/>
+				</crosstabHeaderCell>
+				<rowGroup name="CodigoEol" width="30">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[$F{CodigoEol}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents mode="Opaque" style="Crosstab 3_CH">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="30" height="20" backcolor="#FFFFFF" uuid="cf98953b-b463-4ab2-ba4d-8a36af909f75"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{CodigoEol}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents>
+							<staticText>
+								<reportElement x="0" y="0" width="-2147483648" height="-2147483648" uuid="5ac4d28c-9493-4087-92fb-1f45de46244b"/>
+								<text><![CDATA[Total CodigoEol]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="AlunoNome" width="140">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{AlunoNome}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents mode="Opaque" style="Crosstab 3_CH">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="140" height="20" backcolor="#FFFFFF" uuid="b7317716-1128-4354-9c59-e70f662abbd7">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								</reportElement>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AlunoNome}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents>
+							<staticText>
+								<reportElement x="0" y="0" width="-2147483648" height="-2147483648" uuid="2a54b422-1140-42eb-b280-ad5c195523ad"/>
+								<text><![CDATA[Total AlunoNome]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="NomeGrupo" height="20" headerPosition="Stretch">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{NomeGrupo}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab 3_CH">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="70" height="20" backcolor="#F3F3F3" uuid="59c87ab3-c9bb-48d4-b7f5-660e3a0ff9c8"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{NomeGrupo}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents>
+							<staticText>
+								<reportElement x="0" y="0" width="-2147483648" height="-2147483648" uuid="d91fe620-62f2-49e3-a875-0afebb16a104"/>
+								<text><![CDATA[Total NomeGrupo]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="NomeComponente" height="20" headerPosition="Stretch">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{NomeComponente}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab 3_CH">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="70" height="20" backcolor="#F3F3F3" uuid="e271e46c-fe7c-4673-b8f5-64b59e580170">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								</reportElement>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{NomeComponente}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents>
+							<staticText>
+								<reportElement x="0" y="0" width="-2147483648" height="-2147483648" uuid="2b86310a-5263-4c38-a859-aee39926ff09"/>
+								<text><![CDATA[Total NomeComponente]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="Bimestre" height="20">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[$F{Bimestre}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab 3_CH">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="70" height="20" backcolor="#F3F3F3" uuid="fb63e040-5641-4f1f-8a55-d7aae97757b6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{Bimestre}+"º"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents>
+							<staticText>
+								<reportElement x="0" y="0" width="-2147483648" height="-2147483648" uuid="9a06ff94-7daa-47bf-ac11-e138bb4bc0aa"/>
+								<text><![CDATA[Total Bimestre]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="Nota_MEASURE" class="java.lang.Integer">
+					<measureExpression><![CDATA[$F{Nota}]]></measureExpression>
+				</measure>
+				<crosstabCell width="70" height="20">
+					<cellContents mode="Opaque" style="Crosstab 3_CD">
+						<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="70" height="20" uuid="c4b55518-32b1-4979-be78-29b10ae7616f"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" columnTotalGroup="NomeGrupo">
+					<cellContents mode="Opaque" style="Crosstab 3_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="d2d65a5d-1706-4295-820a-505dcb69b1c7"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" columnTotalGroup="NomeComponente">
+					<cellContents mode="Opaque" style="Crosstab 3_CG">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" uuid="41535636-e1b8-4c2e-adcf-ba9ee9ff9ad1"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" columnTotalGroup="Bimestre">
+					<cellContents mode="Opaque" style="Crosstab 3_CG">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" uuid="74568d6e-176b-4af0-954d-2a04294d9525"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="CodigoEol">
+					<cellContents mode="Opaque" style="Crosstab 3_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="fb91dde4-f892-4246-9dfa-2a0bddf5397b"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="CodigoEol" columnTotalGroup="NomeGrupo">
+					<cellContents mode="Opaque" style="Crosstab 3_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="aeb81551-3602-48e4-ad24-d618e4ef08e0"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="CodigoEol" columnTotalGroup="NomeComponente">
+					<cellContents mode="Opaque" style="Crosstab 3_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="6a64b571-0cf2-4fbd-a56e-58729e4704bf"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="CodigoEol" columnTotalGroup="Bimestre">
+					<cellContents mode="Opaque" style="Crosstab 3_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="0f81f3c0-9195-41b6-a413-eefe909fc43e"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="AlunoNome">
+					<cellContents mode="Opaque" style="Crosstab 3_CG">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" uuid="189e00d2-6f3b-4fcc-8bc6-bfad7405215f"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="AlunoNome" columnTotalGroup="NomeGrupo">
+					<cellContents mode="Opaque" style="Crosstab 3_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="52a231f8-330f-44ef-b1ba-4109f033879d"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="AlunoNome" columnTotalGroup="NomeComponente">
+					<cellContents mode="Opaque" style="Crosstab 3_CG">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" uuid="437a7777-6517-4106-971b-84d135e80caf"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="AlunoNome" columnTotalGroup="Bimestre">
+					<cellContents mode="Opaque" style="Crosstab 3_CG">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" uuid="66173099-05f9-49c1-8e21-8e8e672bbca4"/>
+							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="300" height="15" uuid="6be7bf9b-7be6-4ffe-a697-301807f76b79">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[SGP - Sistema de gestão Pedagógica | ata final de resultados]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="654" y="1" width="100" height="30" uuid="14559202-79f8-4090-91ce-6e6c04a4c969"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="754" y="1" width="66" height="30" uuid="3c9a7937-2dc4-4e0b-bd79-f61d349d4d29"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
