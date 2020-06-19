@@ -39,10 +39,9 @@ namespace SME.SR.Data
             var query = FrequenciaAlunoConsultas.FrequenciaGlobal;
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-            {
-                return await conexao.QuerySingleOrDefaultAsync<double>(query, parametros);
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryFirstOrDefaultAsync<double>(query, parametros);
+
         }
 
         public async Task<FrequenciaAluno> ObterPorAlunoBimestreAsync(string codigoAluno, int bimestre, TipoFrequenciaAluno tipoFrequencia, string disciplinaId)

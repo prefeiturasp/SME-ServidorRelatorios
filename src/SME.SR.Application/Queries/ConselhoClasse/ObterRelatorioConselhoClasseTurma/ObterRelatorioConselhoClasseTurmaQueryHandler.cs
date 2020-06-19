@@ -19,7 +19,10 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
 
         public async Task<IEnumerable<RelatorioConselhoClasseBase>> Handle(ObterRelatorioConselhoClasseTurmaQuery request, CancellationToken cancellationToken)
         {
-            var alunos = await ObterAlunosTurma(request.CodigoTurma.ToString());
+            var turma = await mediator.Send(new ObterFechamentoTurmaPorIdQuery() { FechamentoTurmaId = request.FechamentoTurmaId });
+
+
+            var alunos = await ObterAlunosTurma(turma.Turma.CodigoTurma);
 
             var lstRelatorioAlunos = new List<RelatorioConselhoClasseBase>();
             string codigoAluno;
@@ -39,7 +42,7 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
         {
             return await mediator.Send(new ObterAlunosPorTurmaQuery()
             {
-                CodigoTurma = codigoTurma
+                TurmaCodigo = codigoTurma
             });
         }
 

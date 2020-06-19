@@ -4,7 +4,7 @@ namespace SME.SR.Data
 {
     public class GrupoMatriz
     {
-        [JsonProperty("GrupoMatriz")]
+        [JsonProperty("Nome")]
         public string Nome { get; set; }
     }
 }

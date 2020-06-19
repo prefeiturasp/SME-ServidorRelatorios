@@ -1,0 +1,222 @@
+{
+  "RelatorioConselhoAta": {
+    "Cabecalho": {
+      "Dre": "Nome da dre",
+      "Ue": "Nome da UE",
+      "Ciclo": "Alfabetização",
+      "AnoLetivo": "2020",
+      "Turma": "1A",
+      "Data": "01/06/2020"
+    },
+    "Ata": [
+      {
+        "Grupos": [
+          {
+            "Nome": "Base diversificada",
+            "Componentes": [
+              {
+                "Nome": "Lingua portuguesa",
+                "Bimestres": [
+                  {
+                    "Nome": "1º",
+                    "Notas": [
+                      { "Nota": "1" },
+                      { "Nota": "2" },
+                      { "Nota": "3" },
+                      { "Nota": "4" },
+                      { "Nota": "5" }
+                    ]
+                  },
+                  {
+                    "Nome": "2º",
+                    "Notas": [
+                      { "Nota": "6" },
+                      { "Nota": "7" },
+                      { "Nota": "8" },
+                      { "Nota": "9" },
+                      { "Nota": "10" }
+                    ]
+                  },
+                  {
+                    "Nome": "3º",
+                    "Notas": [
+                      { "Nota": "11" },
+                      { "Nota": "12" },
+                      { "Nota": "13" },
+                      { "Nota": "14" },
+                      { "Nota": "15" }
+                    ]
+                  },
+                  {
+                    "Nome": "4º",
+                    "Notas": [
+                      { "Nota": "16" },
+                      { "Nota": "17" },
+                      { "Nota": "18" },
+                      { "Nota": "19" },
+                      { "Nota": "20" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "Nome": "Matemática",
+                "Bimestres": [
+                  {
+                    "Nome": "1º",
+                    "Notas": [
+                      { "Nota": "1" },
+                      { "Nota": "2" },
+                      { "Nota": "3" },
+                      { "Nota": "4" },
+                      { "Nota": "5" }
+                    ]
+                  },
+                  {
+                    "Nome": "2º",
+                    "Notas": [
+                      { "Nota": "6" },
+                      { "Nota": "7" },
+                      { "Nota": "8" },
+                      { "Nota": "9" },
+                      { "Nota": "10" }
+                    ]
+                  },
+                  {
+                    "Nome": "3º",
+                    "Notas": [
+                      { "Nota": "11" },
+                      { "Nota": "12" },
+                      { "Nota": "13" },
+                      { "Nota": "14" },
+                      { "Nota": "15" }
+                    ]
+                  },
+                  {
+                    "Nome": "4º",
+                    "Notas": [
+                      { "Nota": "16" },
+                      { "Nota": "17" },
+                      { "Nota": "18" },
+                      { "Nota": "19" },
+                      { "Nota": "20" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "Nome": "Base Nacional Comum",
+            "Componentes": [
+              {
+                "Nome": "Lingua portuguesa",
+                "Bimestres": [
+                  {
+                    "Nome": "1º",
+                    "Notas": [
+                      { "Nota": "1" },
+                      { "Nota": "2" },
+                      { "Nota": "3" },
+                      { "Nota": "4" },
+                      { "Nota": "5" }
+                    ]
+                  },
+                  {
+                    "Nome": "2º",
+                    "Notas": [
+                      { "Nota": "6" },
+                      { "Nota": "7" },
+                      { "Nota": "8" },
+                      { "Nota": "9" },
+                      { "Nota": "10" }
+                    ]
+                  },
+                  {
+                    "Nome": "3º",
+                    "Notas": [
+                      { "Nota": "11" },
+                      { "Nota": "12" },
+                      { "Nota": "13" },
+                      { "Nota": "14" },
+                      { "Nota": "15" }
+                    ]
+                  },
+                  {
+                    "Nome": "4º",
+                    "Notas": [
+                      { "Nota": "16" },
+                      { "Nota": "17" },
+                      { "Nota": "18" },
+                      { "Nota": "19" },
+                      { "Nota": "20" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "Nome": "Matemática",
+                "Bimestres": [
+                  {
+                    "Nome": "1º",
+                    "Notas": [
+                      { "Nota": "1" },
+                      { "Nota": "2" },
+                      { "Nota": "3" },
+                      { "Nota": "4" },
+                      { "Nota": "5" }
+                    ]
+                  },
+                  {
+                    "Nome": "2º",
+                    "Notas": [
+                      { "Nota": "6" },
+                      { "Nota": "7" },
+                      { "Nota": "8" },
+                      { "Nota": "9" },
+                      { "Nota": "10" }
+                    ]
+                  },
+                  {
+                    "Nome": "3º",
+                    "Notas": [
+                      { "Nota": "11" },
+                      { "Nota": "12" },
+                      { "Nota": "13" },
+                      { "Nota": "14" },
+                      { "Nota": "15" }
+                    ]
+                  },
+                  {
+                    "Nome": "4º",
+                    "Notas": [
+                      { "Nota": "16" },
+                      { "Nota": "17" },
+                      { "Nota": "18" },
+                      { "Nota": "19" },
+                      { "Nota": "20" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "Alunos": [
+          {
+            "Nome": "Antônio",
+            "CodigoEol": "1"
+          },
+          {
+            "Nome": "Silva",
+            "CodigoEol": "2"
+          },
+          {
+            "Nome": "José",
+            "CodigoEol": "3"
+          }
+        ]
+      }
+    ]
+  }
+}

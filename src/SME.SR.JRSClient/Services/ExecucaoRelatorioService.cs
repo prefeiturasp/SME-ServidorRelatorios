@@ -1,4 +1,6 @@
-﻿using Refit;
+﻿using Microsoft.Extensions.Configuration;
+using Refit;
+using Sentry;
 using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.Infra.Dtos.Resposta;
 using SME.SR.JRSClient.Extensions;
@@ -14,11 +16,13 @@ namespace SME.SR.JRSClient.Services
     {
         private readonly HttpClient httpClient;
         private readonly JasperCookieHandler jasperCookieHandler;
+        private readonly IConfiguration configuration;
 
-        public ExecucaoRelatorioService(HttpClient httpClient, Configuracoes configuracoes, JasperCookieHandler jasperCookieHandler) : base(httpClient, configuracoes)
+        public ExecucaoRelatorioService(HttpClient httpClient, Configuracoes configuracoes, JasperCookieHandler jasperCookieHandler, IConfiguration configuration) : base(httpClient, configuracoes)
         {
             this.httpClient = httpClient;
             this.jasperCookieHandler = jasperCookieHandler;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
 
@@ -40,25 +44,25 @@ namespace SME.SR.JRSClient.Services
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(jSessionId))
+                    jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
 
-            
-            if (!string.IsNullOrWhiteSpace(jSessionId))
-                jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
+                SentrySdk.AddBreadcrumb("Obtendo PostExecucaoRelatorioAsync", "6.1 - ExecucaoRelatorioService");
 
-            var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
-            if (retorno.IsSuccessStatusCode)
-            {
-                return retorno.Content;
-            }
-            return default;
+                var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
+                if (retorno.IsSuccessStatusCode)
+                {
+                    SentrySdk.CaptureMessage("6.1 - ExecucaoRelatorioService - Sucesso ao executar envio do relatório");
+                    return retorno.Content;
+                }
+                return default;
 
             }
             catch (Exception ex)
             {
-
+                SentrySdk.CaptureException(ex);
                 throw ex;
             }
-
         }
 
         public async Task<string> InterromperRelatoriosTarefas(Guid requisicaoId)

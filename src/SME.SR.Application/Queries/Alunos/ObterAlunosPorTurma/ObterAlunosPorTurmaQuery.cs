@@ -6,6 +6,6 @@ namespace SME.SR.Application
 {
     public class ObterAlunosPorTurmaQuery : IRequest<IEnumerable<Aluno>>
     {
-        public string CodigoTurma { get; set; } 
+        public string TurmaCodigo { get; set; } 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
+using Sentry;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.Infra.Utilitarios;
@@ -21,8 +22,8 @@ namespace SME.SR.Application
 
         public GerarRelatorioAssincronoCommandHandler(IExecucaoRelatorioService execucaoRelatorioService,
                                                       IServicoFila servicoFila,
-                                                      ILoginService loginService, 
-                                                      IConfiguration  configuration)
+                                                      ILoginService loginService,
+                                                      IConfiguration configuration)
         {
             this.execucaoRelatorioService = execucaoRelatorioService ?? throw new System.ArgumentNullException(nameof(execucaoRelatorioService));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
@@ -31,38 +32,71 @@ namespace SME.SR.Application
         }
         public async Task<bool> Handle(GerarRelatorioAssincronoCommand request, CancellationToken cancellationToken)
         {
-            ParametrosRelatorioDto parametrosDoDto = ObterParametrosRelatorio(request.Dados);
+                       
+                try
+                {
+                    
+                    ParametrosRelatorioDto parametrosDoDto = ObterParametrosRelatorio(request.Dados);
 
-            var post = new ExecucaoRelatorioRequisicaoDto()
-            {
-                UnidadeRelatorioUri = request.CaminhoRelatorio,
-                Async = false,
-                SalvarSnapshot = false,
-                FormatoSaida = request.Formato.Name(),
-                Interativo = false,
-                IgnorarPaginacao = true,
-                Paginas = null,
-                Parametros = parametrosDoDto
-            };
+                    var post = new ExecucaoRelatorioRequisicaoDto()
+                    {
+                        UnidadeRelatorioUri = request.CaminhoRelatorio,
+                        Async = false,
+                        SalvarSnapshot = false,
+                        FormatoSaida = request.Formato.Name(),
+                        Interativo = false,
+                        IgnorarPaginacao = true,
+                        Paginas = null,
+                        Parametros = parametrosDoDto
+                    };
 
-            var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
 
-            var retorno = await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId);
-            var exportacaoId = retorno?.Exports?.FirstOrDefault()?.Id;
-            if (exportacaoId != null)
-            {
-                var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
+                    SentrySdk.CaptureMessage("6.1 - Obtendo jSessionId...");
 
-                servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando, null, request.CodigoCorrelacao));
+                    var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
 
-                return await Task.FromResult(true);
-            }
-            return await Task.FromResult(false);
+                    SentrySdk.CaptureMessage($"6.2 - jSessionId = {jsessionId}");
+
+
+                    SentrySdk.CaptureMessage("6.3 - Solicitando relatório...");
+
+
+                    var retorno = await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId);
+                    var exportacaoId = retorno?.Exports?.FirstOrDefault()?.Id;
+
+                    SentrySdk.CaptureMessage($"6.4 - Exportação Id = {exportacaoId}");
+
+                    if (exportacaoId != null)
+                    {
+                        var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
+
+                        servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando, null, request.CodigoCorrelacao));
+
+                        SentrySdk.CaptureMessage("6.5 - Sucesso na publicação da fila Processando");
+                        
+
+                        return await Task.FromResult(true);
+                    }
+
+                    SentrySdk.CaptureMessage("6.6 - Erro na geração");                    
+
+                    return await Task.FromResult(false);
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                    throw ex;
+                }       
         }
 
         private static ParametrosRelatorioDto ObterParametrosRelatorio(string dados)
         {
-            var dadosParaEnvioArray = new List<string>() { dados };
+            var dadosParaEnvioArray = new List<string>();
+            if (!string.IsNullOrWhiteSpace(dados))
+                dadosParaEnvioArray.Add(dados);
+            else
+                return null;
+
             var parametroDto = new ParametroDto() { Nome = "jsonString", Valor = dadosParaEnvioArray.ToArray() };
             var parametrosDoDto = new ParametrosRelatorioDto();
             var parametrosDto = new List<ParametroDto>();

@@ -5,7 +5,8 @@
         public int? Bimestre { get; set; }
         public long ComponenteCurricularCodigo { get; set; }
         public long? ConceitoId { get; set; }
+        public string Conceito { get; set; }
         public double Nota { get; set; }
-        public double NotaConceito { get => ConceitoId.HasValue ? ConceitoId.Value : Nota; }
+        public string NotaConceito { get => ConceitoId.HasValue ? Conceito : Nota.ToString(); }
     }
 }

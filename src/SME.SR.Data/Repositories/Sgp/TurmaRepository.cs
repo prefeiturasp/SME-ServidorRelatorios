@@ -23,7 +23,7 @@ namespace SME.SR.Data
             var query = TurmaConsultas.DadosAlunos;
             var parametros = new { CodigoTurma = codigoTurma };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
                 return await conexao.QueryAsync<Aluno>(query, parametros);
             }
@@ -37,6 +37,31 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
+            }
+        }
+
+        public async Task<Turma> ObterPorCodigo(string codigoTurma)
+        {
+            var query = TurmaConsultas.TurmaPorCodigo;
+
+            var parametros = new { CodigoTurma = codigoTurma };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<Turma>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<Turma>> ObterPorFiltros(string codigoUe, Modalidade? modalidade, int? anoLetivo, int? semestre)
+        {
+            var query = TurmaConsultas.TurmaPorUe(modalidade, anoLetivo, semestre);
+
+            var parametros = new { CodigoUe = codigoUe, Modalidade = modalidade, 
+                                   AnoLetivo = anoLetivo, Semestre = semestre };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<Turma>(query, parametros);
             }
         }
     }

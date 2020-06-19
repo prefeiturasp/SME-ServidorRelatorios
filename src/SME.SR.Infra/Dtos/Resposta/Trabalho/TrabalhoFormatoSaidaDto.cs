@@ -9,6 +9,6 @@ namespace SME.SR.Infra.Dtos
     public class TrabalhoFormatoSaidaDto
     {
         [JsonProperty("outputFormat"), AliasAs("outputFormat")]
-        public IEnumerable<string>? FormatosSaida { get; set; }
+        public IEnumerable<string> FormatosSaida { get; set; }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +19,7 @@ namespace SME.SR.Application
         }
 
         public async Task<Aluno> Handle(ObterDadosAlunoQuery request, CancellationToken cancellationToken)
-        {
+        {           
             return await _alunoRepository.ObterDados(request.CodigoTurma, request.CodigoAluno);
         }
     }

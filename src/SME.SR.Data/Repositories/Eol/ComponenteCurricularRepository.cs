@@ -42,5 +42,26 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
             return await conexao.QueryAsync<ComponenteCurricularGrupoMatriz>(query);
         }
+
+        public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string turmaCodigo, IEnumerable<long> componentesCurricularesId)
+        {
+            var query = ComponenteCurricularConsultas.BuscarTerritorioDoSaber;
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricularTerritorioSaber>(query);
+            }
+        }
+
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmaEProfessor(string login, string codigoTurma)
+        {
+            var query = ComponenteCurricularConsultas. BuscarPorTurmaEProfessor;
+            var parametros = new { Login = login, CodigoTurma = codigoTurma };
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricular>(query);
+            }
+        }
     }
 }
