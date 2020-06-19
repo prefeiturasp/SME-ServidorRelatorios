@@ -28,7 +28,7 @@ namespace SME.SR.Application
         public async Task<string> Handle(ObterTipoNotaQuery request, CancellationToken cancellationToken)
         {
             var bimestreFechamento = request.PeriodoEscolar != null ? request.PeriodoEscolar.Bimestre : (await ObterPeriodoUltimoBimestre(request.Turma)).Bimestre;
-            PeriodoFechamentoBimestre periodoFechamentoBimestre = await _periodoFechamentoRepository.ObterPeriodoFechamentoTurmaAsync(request.UeId, request.DreId, request.Turma.AnoLetivo, bimestreFechamento, request.PeriodoEscolar.Id);
+            PeriodoFechamentoBimestre periodoFechamentoBimestre = await _periodoFechamentoRepository.ObterPeriodoFechamentoTurmaAsync(request.UeId, request.DreId, request.Turma.AnoLetivo, bimestreFechamento, request.PeriodoEscolar?.Id);
 
             return await ObterTipoNota(request.Turma, periodoFechamentoBimestre);
         }
