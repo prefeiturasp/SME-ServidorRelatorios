@@ -38,7 +38,7 @@ namespace SME.SR.Application
             foreach (var grupoDisciplinasMatriz in lstComponentesComNota.OrderBy(k => k.Key))
             {
                 var lstCompComNota = new List<ComponenteComNotaBimestre>();
-                var compRegenciaComNota = new ComponenteFrequenciaRegenciaBimestre();
+                ComponenteFrequenciaRegenciaBimestre compRegenciaComNota = null;
 
                 foreach (var disciplina in grupoDisciplinasMatriz)
                 {
@@ -57,7 +57,8 @@ namespace SME.SR.Application
                                                                                 request.PeriodoEscolar,
                                                                                 request.Turma,
                                                                                 notasConselhoClasse,
-                                                                                notasFechamento);
+                                                                                notasFechamento,
+                                                                                request.Usuario);
                     else
                         lstCompComNota.Add(ObterNotasFrequenciaComponenteComNotaBimestre(disciplina,
                                                                         frequenciaAluno,
@@ -80,7 +81,7 @@ namespace SME.SR.Application
             return lstGruposMatrizCompNota.AsEnumerable();
         }
 
-        private async Task<ComponenteFrequenciaRegenciaBimestre> ObterNotasFrequenciaRegencia(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento)
+        private async Task<ComponenteFrequenciaRegenciaBimestre> ObterNotasFrequenciaRegencia(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Usuario usuario)
         {
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
             {
@@ -93,7 +94,8 @@ namespace SME.SR.Application
             var componentesRegencia = await _mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
             {
                 Turma = turma,
-                CdComponenteCurricular = disciplina.CodDisciplina
+                CdComponenteCurricular = disciplina.CodDisciplina,
+                Usuario = usuario
             });
 
             foreach (var componenteRegencia in componentesRegencia)

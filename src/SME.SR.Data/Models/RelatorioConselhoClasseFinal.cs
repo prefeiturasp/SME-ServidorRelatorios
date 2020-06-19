@@ -5,10 +5,10 @@ namespace SME.SR.Data
 {
     public class RelatorioConselhoClasseFinal : RelatorioConselhoClasseBase
     {
-        [JsonProperty("listaComponentesComNota")]
+        [JsonProperty("GruposMatrizComponentesComNota")]
         public IEnumerable<GrupoMatrizComponenteComNotaFinal> GruposMatrizComponentesComNota { get; set; }
 
-        [JsonProperty("listaComponenteSemNota")]
+        [JsonProperty("GruposMatrizComponentesSemNota")]
         public IEnumerable<GrupoMatrizComponenteSemNotaFinal> GruposMatrizComponentesSemNota { get; set; }
     }
 }

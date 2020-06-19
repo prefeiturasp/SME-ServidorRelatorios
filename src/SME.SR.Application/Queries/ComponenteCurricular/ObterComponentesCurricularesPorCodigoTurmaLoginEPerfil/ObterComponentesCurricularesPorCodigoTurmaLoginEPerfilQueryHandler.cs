@@ -25,12 +25,14 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery request, CancellationToken cancellationToken)
         {
-            List<Data.ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Login, request.IdPerfil, request.CodigoTurma);
+            List<Data.ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigoTurma);
 
-            var componentesApiEol = await _componenteCurricularRepository.Listar();
+            var componentesApiEol = await _componenteCurricularRepository.ListarApiEol();
             var gruposMatriz = await _componenteCurricularRepository.ListarGruposMatriz();
 
             await AdicionarComponentesTerritorio(request.CodigoTurma, componentesCurriculares, componentesApiEol);
+
+           await AdicionarComponentesPlanejamento(componentesCurriculares, componentesApiEol);
 
             return MapearParaDto(componentesCurriculares.DistinctBy(c => c.Codigo), componentesApiEol, gruposMatriz);
         }
@@ -55,6 +57,48 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 BaseNacional = componenteCurricularEol?.EhBaseNacional ?? false,
                 GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.IdGrupoMatriz)
             };
+        }
+
+        private async Task AdicionarComponentesPlanejamento(List<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
+        {
+            var componentesRegencia = componentesCurriculares.Where(c => c.EhRegencia(componentesApiEol));
+            if (componentesRegencia != null && componentesRegencia.Any())
+            {
+                var idsComponentesPlanejamento = new List<long>();
+                var componentesRegenciaApiEol = await _componenteCurricularRepository.ListarRegencia();
+                foreach (var componenteRegencia in componentesRegencia)
+                {
+                    var componentesPlanejamento = componentesRegenciaApiEol.Where(r => r.Ano.HasValue &&
+                                                                                       r.Ano.Value.ToString() == componenteRegencia.AnoTurma &&
+                                                                                       r.Turno == componenteRegencia.TurnoTurma);
+
+                    if (componentesPlanejamento == null || !componentesPlanejamento.Any())
+                    {
+                        componentesPlanejamento = componentesRegenciaApiEol.Where(r => !r.Ano.HasValue && !r.Turno.HasValue);
+                    }
+                    idsComponentesPlanejamento.AddRange(componentesPlanejamento.Select(c => c.IdComponenteCurricular));
+                }
+                if (idsComponentesPlanejamento.Any())
+                {
+                    componentesCurriculares.RemoveAll(c => c.EhRegencia(componentesApiEol));
+                    var componentes = await ObterPorId(idsComponentesPlanejamento?.ToArray());
+                    if (componentes != null && componentes.Any())
+                        foreach (var componente in componentes)
+                        {
+                            componente.ComponentePlanejamentoRegencia = true;
+                        }
+                    componentesCurriculares.AddRange(componentes);
+                }
+            }
+        }
+
+        private async Task<IEnumerable<Data.ComponenteCurricular>> ObterPorId(long[] ids)
+        {
+            if (ids == null || !ids.Any())
+                return Enumerable.Empty<Data.ComponenteCurricular>();
+
+            var componentes = await _componenteCurricularRepository.ListarComponentes();
+            return componentes.Where(c => ids.Contains(c.Codigo));
         }
 
         private async Task AdicionarComponentesTerritorio(string codigoTurma, List<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularApiEol> componentesApiEol)

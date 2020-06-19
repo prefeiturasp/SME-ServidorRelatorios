@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -27,20 +28,28 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
         }
 
-        public async Task<IEnumerable<ComponenteCurricularApiEol>> Listar()
+        public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarApiEol()
         {
-            var query = ComponenteCurricularConsultas.Listar;
+            var query = ComponenteCurricularConsultas.ListarApiEol;
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
             return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
         }
 
-        public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarComponentesTerritorioSaber(string[] ids)
+        public async Task<IEnumerable<ComponenteCurricularRegenciaApiEol>> ListarRegencia()
+        {
+            var query = ComponenteCurricularConsultas.ListarRegencia;
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
+            return await conexao.QueryAsync<ComponenteCurricularRegenciaApiEol>(query);
+        }
+
+        public async Task<IEnumerable<Data.ComponenteCurricular>> ListarComponentesTerritorioSaber(string[] ids)
         {
             var query = ComponenteCurricularConsultas.BuscarTerritorioAgrupado(ids);
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
+            return await conexao.QueryAsync<ComponenteCurricular>(query);
         }
 
         public async Task<IEnumerable<ComponenteCurricularGrupoMatriz>> ListarGruposMatriz()
@@ -68,17 +77,17 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<ComponenteCurricular>(query);
+                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
             }
         }
 
-        public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarComponentes()
+        public async Task<IEnumerable<ComponenteCurricular>> ListarComponentes()
         {
-            var query = ComponenteCurricularConsultas.BuscarPorIds;
+            var query = ComponenteCurricularConsultas.Listar;
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
+                return await conexao.QueryAsync<ComponenteCurricular>(query);
             }
         }
     }

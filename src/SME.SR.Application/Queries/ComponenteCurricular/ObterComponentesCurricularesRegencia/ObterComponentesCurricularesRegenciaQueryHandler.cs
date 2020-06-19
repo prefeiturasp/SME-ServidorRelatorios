@@ -26,16 +26,15 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
         {
             Turma turma = request.Turma;
 
-            if (request.ProfessorCJ)
-                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.CodigoTurma, turma.CodigoUe, request.CdComponenteCurricular, request.UsuarioRf);
+            if (request.Usuario.EhProfessorCj())
+                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.CodigoTurma, turma.CodigoUe, request.CdComponenteCurricular, request.Usuario.CodigoRf);
             else
             {
                 var componentesCurriculares = await _mediator.Send(new
                     ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery()
                 {
                     CodigoTurma = turma.CodigoTurma,
-                    Login = request.UsuarioRf,
-                    IdPerfil = request.PerfilAtual
+                    Usuario = request.Usuario
                 });
 
 

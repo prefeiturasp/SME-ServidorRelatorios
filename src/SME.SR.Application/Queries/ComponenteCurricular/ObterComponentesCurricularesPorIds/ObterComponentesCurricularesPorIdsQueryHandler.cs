@@ -24,28 +24,28 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             var lstComponentes = await _componenteCurricularRepository.ListarComponentes();
 
             lstComponentes = lstComponentes
-                   .Where(w => request.ComponentesCurricularesIds.Contains(w.IdComponenteCurricular))
+                   .Where(w => request.ComponentesCurricularesIds.Contains(w.Codigo))
                    .ToList();
 
-            lstComponentes = lstComponentes.Concat(await  _componenteCurricularRepository.ListarComponentesTerritorioSaber(request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray()));
+            lstComponentes = lstComponentes.Concat(await _componenteCurricularRepository.ListarComponentesTerritorioSaber(request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray()));
 
             if (lstComponentes != null && lstComponentes.Any())
             {
-                var componentesApiEol = await _componenteCurricularRepository.Listar();
+                var componentesApiEol = await _componenteCurricularRepository.ListarApiEol();
                 var gruposMatriz = await _componenteCurricularRepository.ListarGruposMatriz();
 
                 return lstComponentes.Select(x => new ComponenteCurricularPorTurma
                 {
-                   CodDisciplina = x.IdComponenteCurricular,
-                    CodDisciplinaPai = ObterCodDisciplinaPai(x.IdComponenteCurricular, componentesApiEol),
+                    CodDisciplina = x.Codigo,
+                    CodDisciplinaPai = ObterCodDisciplinaPai(x.Codigo, componentesApiEol),
                     Disciplina = x.Descricao.Trim(),
-                    Regencia = VerificaSeRegencia(x.IdComponenteCurricular, componentesApiEol),
-                    Compartilhada = VerificaSeCompartilhada(x.IdComponenteCurricular, componentesApiEol),
-                    Frequencia = VerificaSeRegistraFrequencia(x.IdComponenteCurricular, componentesApiEol),
-                    LancaNota = VerificarSeLancaNota(x.IdComponenteCurricular, componentesApiEol),
-                    TerritorioSaber = x.EhTerritorio,
-                    BaseNacional = VerificaSeBaseNacional(x.IdComponenteCurricular, componentesApiEol),
-                    GrupoMatriz = ObterGrupoMatriz(x.IdComponenteCurricular, componentesApiEol, gruposMatriz)
+                    Regencia = VerificaSeRegencia(x.Codigo, componentesApiEol),
+                    Compartilhada = VerificaSeCompartilhada(x.Codigo, componentesApiEol),
+                    Frequencia = VerificaSeRegistraFrequencia(x.Codigo, componentesApiEol),
+                    LancaNota = VerificarSeLancaNota(x.Codigo, componentesApiEol),
+                    TerritorioSaber = x.TerritorioSaber,
+                    BaseNacional = VerificaSeBaseNacional(x.Codigo, componentesApiEol),
+                    GrupoMatriz = ObterGrupoMatriz(x.Codigo, componentesApiEol, gruposMatriz)
                 });
             }
 
@@ -95,6 +95,6 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             return disciplinasApiEol.FirstOrDefault(w => w.IdComponenteCurricular == codigoDisciplina)?.IdComponenteCurricularPai;
         }
 
-      
+
     }
 }

@@ -27,5 +27,21 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<PeriodoEscolar>(query, parametros);
             }
         }
+
+        public async Task<PeriodoEscolar> ObterUltimoPeriodoAsync(int anoLetivo, ModalidadeTipoCalendario modalidadeTipoCalendario, int semestre)
+        {
+            var query = PeriodoEscolarConsultas.ObterUltimoPeriodo(anoLetivo, modalidadeTipoCalendario, semestre);
+
+            DateTime dataReferencia = DateTime.MinValue;
+            if (modalidadeTipoCalendario == ModalidadeTipoCalendario.EJA)
+                dataReferencia = new DateTime(anoLetivo, semestre == 1 ? 6 : 7, 1);
+
+            var parametros = new { AnoLetivo = anoLetivo, Modalidade = (int)modalidadeTipoCalendario, DataReferencia = dataReferencia };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<PeriodoEscolar>(query, parametros);
+            }
+        }
     }
 }

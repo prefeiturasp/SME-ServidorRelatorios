@@ -8,7 +8,7 @@ namespace SME.SR.Data
         [JsonProperty("ComponentesComNota")]
         public IEnumerable<ComponenteComNotaBimestre> ComponentesComNota { get; set; }
 
-        [JsonProperty("ComponentesComNotaRegencia")]
+        [JsonProperty("ComponenteComNotaRegencia")]
         public ComponenteFrequenciaRegenciaBimestre ComponenteComNotaRegencia { get; set; }
 
     }

@@ -105,10 +105,10 @@
 						)
 						and grade_ter.cd_componente_curricular in @codigosComponentesCurriculares";
 
-        internal static string BuscarPorIds = @"SELECT 
-                        cd_componente_curricular AS IdComponenteCurricular, 
+        internal static string Listar = @"SELECT 
+                        cd_componente_curricular AS Codigo, 
                         RTRIM(LTRIM(dc_componente_curricular)) AS Descricao,
-                        0 as EhTerritorio,
+                        0 as TerritorioSaber,
                         CASE
                             WHEN cd_componente_curricular IN (508, 511, 1064, 1065, 1104, 1105, 1112, 1113, 1114, 1115, 1117, 1121, 1124, 1125, 1211, 1212, 1213, 1290, 1301) THEN 1
                             ELSE 0
@@ -127,7 +127,7 @@
                     where convert(bigint,concat(stg.cd_turma_escola, grade_ter.cd_territorio_saber, grade_ter.cd_experiencia_pedagogica, FORMAT(grade_ter.dt_inicio, 'MM'), FORMAT(grade_ter.dt_inicio, 'dd'))) IN ({string.Join(',', ids)})";
         } 
 
-        internal static string Listar = @"SELECT IdComponenteCurricular, 
+        internal static string ListarApiEol = @"SELECT IdComponenteCurricular, 
                             IdComponenteCurricularPai, 
                             EhCompartilhada, 
                             EhRegencia, 
@@ -137,6 +137,14 @@
                             EhBaseNacional,
                             IdGrupoMatriz
                     FROM ComponenteCurricular";
+
+        internal static string ListarRegencia = @"
+				SELECT 
+					IdComponenteCurricular
+					,Turno
+					,Ano
+					,Idgrupomatriz 
+				FROM RegenciaComponenteCurricular";
 
         internal static string ListarGruposMatriz = @"select id, nome from componentecurriculargrupomatriz";
     }

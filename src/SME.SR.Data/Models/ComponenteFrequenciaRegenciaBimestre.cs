@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SME.SR.Data
 {
-    public class ComponenteFrequenciaRegenciaBimestre : ComponenteComNota
+    public class ComponenteFrequenciaRegenciaBimestre : ComponenteRegenciaComNota 
     {
         public ComponenteFrequenciaRegenciaBimestre()
         {

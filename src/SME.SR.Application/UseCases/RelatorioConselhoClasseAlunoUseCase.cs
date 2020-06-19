@@ -32,16 +32,10 @@ namespace SME.SR.Application
 
                     var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
 
-
                     SentrySdk.CaptureMessage("4.09 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
                     //SentrySdk.AddBreadcrumb("Obtendo relatório..", "5 - RelatorioConselhoClasseAlunoUseCase");
 
-                    var relatorio = await mediator.Send(new ObterRelatorioConselhoClasseAlunoQuery()
-                    {
-                        CodigoAluno = relatorioQuery.CodigoAluno,
-                        ConselhoClasseId = relatorioQuery.ConselhoClasseId,
-                        FechamentoTurmaId = relatorioQuery.FechamentoTurmaId
-                    });
+                    var relatorio = await mediator.Send(relatorioQuery);
 
 
                     SentrySdk.CaptureMessage("5.1 Obtive relatorio.. - RelatorioConselhoClasseAlunoUseCase");

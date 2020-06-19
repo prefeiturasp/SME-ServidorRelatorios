@@ -12,10 +12,6 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
         public long CdComponenteCurricular { get; set; }
 
-        public bool ProfessorCJ { get; set; }
-
-        public string UsuarioRf { get; set; }
-
-        public Guid PerfilAtual { get; set; }
+        public Usuario Usuario { get; set; }
     }
 }

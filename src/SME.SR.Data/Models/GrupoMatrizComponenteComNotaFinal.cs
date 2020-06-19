@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SME.SR.Data.Models;
 using System.Collections.Generic;
 
 namespace SME.SR.Data
@@ -7,5 +8,8 @@ namespace SME.SR.Data
     {
         [JsonProperty("componentesComNota")]
         public IEnumerable<ComponenteComNotaFinal> ComponentesComNota { get; set; }
+
+        [JsonProperty("ComponenteComNotaRegencia")]
+        public ComponenteFrequenciaRegenciaFinal ComponentesComNotaRegencia { get; set; }
     }
 }

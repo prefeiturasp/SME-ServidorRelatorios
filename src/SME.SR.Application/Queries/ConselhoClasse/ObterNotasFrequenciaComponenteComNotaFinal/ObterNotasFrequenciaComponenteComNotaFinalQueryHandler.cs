@@ -13,13 +13,18 @@ namespace SME.SR.Application
     {
         public async Task<ComponenteComNotaFinal> Handle(ObterNotasFrequenciaComponenteComNotaFinalQuery request, CancellationToken cancellationToken)
         {
+            var notasComponente = ObterNotasComponente(request.ComponenteCurricular, request.PeriodoEscolar, request.NotasFechamentoAluno);
+
             var conselhoClasseComponente = new ComponenteComNotaFinal()
             {
                 Componente = request.ComponenteCurricular.Disciplina,
                 Faltas = request.FrequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = request.FrequenciaAluno?.TotalCompensacoes ?? 0,
                 Frequencia = (request.FrequenciaAluno.TotalAulas > 0 ? request.FrequenciaAluno?.PercentualFrequencia ?? 100 : 100),
-                NotasBimestre = ObterNotasComponente(request.ComponenteCurricular, request.PeriodoEscolar, request.NotasFechamentoAluno),
+                NotaConceitoBimestre1 = notasComponente.FirstOrDefault(n => n.Bimestre == 1)?.NotaConceito,
+                NotaConceitoBimestre2 = notasComponente.FirstOrDefault(n => n.Bimestre == 2)?.NotaConceito,
+                NotaConceitoBimestre3 = notasComponente.FirstOrDefault(n => n.Bimestre == 3)?.NotaConceito,
+                NotaConceitoBimestre4 = notasComponente.FirstOrDefault(n => n.Bimestre == 4)?.NotaConceito,
                 NotaFinal = ObterNotaPosConselho(request.ComponenteCurricular, request.PeriodoEscolar?.Bimestre, request.NotasConselhoClasseAluno, request.NotasFechamentoAluno)
             };
 
