@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConselhoClasse" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5b7b40f2-5361-4f9e-95a6-7f51b83a4bda">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterRegencia.xml"/>
 	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
 	<property name="ireport.jasperserver.user" value="ebufaino"/>
-	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioConselhoClasse/ConselhoClasse_files/main_jrxml"/>
-	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioConselhoClasse/ConselhoClasse"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioConselhoClasse/ConselhoClasseRegencia_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioConselhoClasse/ConselhoClasseRegencia"/>
 	<parameter name="jsonString" class="java.lang.String">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
@@ -257,7 +257,7 @@
 				<textFieldExpression><![CDATA[$F{AlunoNumero}+ " - "+$F{AlunoNome}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="214" y="110" width="183" height="20" uuid="42f520f8-95e5-46f2-98ef-ff89da030af7">
+				<reportElement x="214" y="111" width="183" height="20" uuid="42f520f8-95e5-46f2-98ef-ff89da030af7">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
@@ -295,7 +295,7 @@
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("GruposMatrizComponentesComNota")]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression><![CDATA["ComponenteComNota.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["ComponenteComNotaRegencia.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
 				<reportElement positionType="Float" x="1" y="70" width="554" height="70" isRemoveLineWhenBlank="true" uuid="c843597d-2ccc-4017-94a3-c770952b6959"/>

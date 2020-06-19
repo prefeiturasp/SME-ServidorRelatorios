@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponenteComNotaContainer" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="517d9b31-0633-4a8a-b1c5-e64dfb836c81">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterRegencia.xml"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F3F3F3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#F3F3F3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="DatasetGrupoComponentesComNota" uuid="a8673d0e-7392-485b-9792-fa5e64c11081">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota.Componentes]]>
+		</queryString>
+		<field name="nome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="DatasetComponentes" uuid="b25fa50b-e15e-4782-8182-4ff72a846f32">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota.ComponentesComNota]]>
+		</queryString>
+		<field name="NotaConceito" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceito"/>
+			<fieldDescription><![CDATA[NotaConceito]]></fieldDescription>
+		</field>
+		<field name="NotaPosConselho" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaPosConselho"/>
+			<fieldDescription><![CDATA[NotaPosConselho]]></fieldDescription>
+		</field>
+		<field name="Componente" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="componente"/>
+			<fieldDescription><![CDATA[Componente]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString language="JSON">
+		<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota]]>
+	</queryString>
+	<field name="Faltas" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.json.field.expression" value="Faltas"/>
+		<fieldDescription><![CDATA[Faltas]]></fieldDescription>
+	</field>
+	<field name="AusenciasCompensadas" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.json.field.expression" value="AusenciasCompensadas"/>
+		<fieldDescription><![CDATA[AusenciasCompensadas]]></fieldDescription>
+	</field>
+	<field name="Frequencia" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.json.field.expression" value="Frequencia"/>
+		<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
+	</field>
+	<field name="Aulas" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.json.field.expression" value="Aulas"/>
+		<fieldDescription><![CDATA[Aulas]]></fieldDescription>
+	</field>
+	<field name="Nome" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Nome"/>
+		<fieldDescription><![CDATA[Nome]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="83" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="553" height="23" uuid="ba3aa18c-517d-4771-ac43-4aebd861d1ea">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nome}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement positionType="Float" x="0" y="23" width="310" height="60" uuid="709f5efd-7ce2-45c1-84d3-997b2a1e2f5e">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="DatasetComponentes" uuid="b540b73f-85c9-4353-b986-3a5850bcb98b">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("ComponentesComNota")]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="90" uuid="81d0c585-83d1-44ac-87c8-7fa5e6eb086b">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="b51f24a6-5243-48e1-92f5-2bb4b5b344c5"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[COMPONENTE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="95984bdd-89e4-4212-81a9-34cf15275a71">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="abd89629-bc53-4ceb-a56b-be4967bd3779"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[NOTA/CONCEITO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{NotaConceito} != null ? $F{NotaConceito} : "----"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="d02ca614-2946-4f51-bd5e-fc35b8ad1772">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="30" uuid="20de03bc-4e3b-481f-8162-7e33548d0f55"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[NOTA PÓS-CONSELHO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="130" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{NotaPosConselho} != null ? $F{NotaPosConselho} : "----"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<textField>
+				<reportElement stretchType="ElementGroupBottom" x="310" y="53" width="40" height="30" uuid="3952a781-151b-4e9e-9823-e847ccb3eb38">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Aulas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="310" y="23" width="40" height="30" backcolor="#F3F3F3" uuid="587f874b-02de-436c-bc8d-f20cc5c9b07f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[AULAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="350" y="23" width="50" height="30" backcolor="#F3F3F3" uuid="2dda9699-6019-44a6-9247-ead7715c0f06">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[FALTAS]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="ElementGroupBottom" x="350" y="53" width="50" height="30" uuid="a3769351-045b-4eda-a933-6078859292e5"/>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="400" y="23" width="100" height="30" backcolor="#F3F3F3" uuid="4ab19af3-3b65-4411-a9a9-29e3364a902c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[AUSÊNCIAS COMPENSADAS]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="ElementGroupBottom" x="400" y="53" width="100" height="30" uuid="8cbaea57-2c21-46aa-989f-391adbbb0015"/>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{AusenciasCompensadas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="500" y="23" width="53" height="30" backcolor="#F3F3F3" uuid="2afac4ef-c6df-4154-a839-b441116ff62a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[% FREQ.]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="ElementGroupBottom" x="500" y="53" width="53" height="30" uuid="2aba6ad0-2c9e-4225-b766-d14b0afd71d7"/>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
