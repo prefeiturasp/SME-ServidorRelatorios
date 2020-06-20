@@ -12,21 +12,7 @@ namespace SME.SR.Infra
         public string DescricaoGrupos { get; set; }
 
         [JsonProperty("tipoNota")]
-        public string TipoNota { get; private set; } = "Nota";
-
-        public void SetarTipoNota(string notaConceito)
-        {
-            if (!string.IsNullOrEmpty(notaConceito))
-            {
-                if (double.TryParse(notaConceito, out _))
-                    TipoNota = "Nota";
-                else if (notaConceito.Equals("NF") ||
-                        notaConceito.Equals("F"))
-                    TipoNota = "Sintese";
-                else
-                    TipoNota = "Conceito";
-            }
-        }
+        public string TipoNota { get; set; } = "Nota";
 
         [JsonProperty("cabecalho")]
         public BoletimEscolarCabecalhoDto Cabecalho { get; set; }

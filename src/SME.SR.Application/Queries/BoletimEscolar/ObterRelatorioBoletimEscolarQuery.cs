@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Infra;
 
 namespace SME.SR.Application
@@ -18,5 +19,7 @@ namespace SME.SR.Application
         public Modalidade? Modalidade { get; set; }
 
         public string[] AlunosCodigo { get; set; }
+
+        public Usuario Usuario { get; set; }
     }
 }

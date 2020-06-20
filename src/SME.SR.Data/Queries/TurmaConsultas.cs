@@ -152,7 +152,8 @@ namespace SME.SR.Data
         }
 
         internal static string TurmaPorCodigo = @"select t.turma_id CodigoTurma, 
-			t.nome, t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano_letivo AnoLetivo
+			t.nome, t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, 
+			t.ano_letivo AnoLetivo
         from  turma t
         where t.turma_id = @codigoTurma";
     }

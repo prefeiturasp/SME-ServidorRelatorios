@@ -16,6 +16,9 @@ namespace SME.SR.Infra
         [JsonProperty("descricao")]
         public string Descricao { get; set; }
 
+        [JsonProperty("componenteCurricularRegencia")]
+        public ComponenteCurricularRegenciaDto ComponenteCurricularRegencia { get; set; }
+
         [JsonProperty("componentesCurriculares")]
         public List<ComponenteCurricularDto> ComponentesCurriculares { get; set; }
     }
