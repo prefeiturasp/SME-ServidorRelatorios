@@ -66,13 +66,10 @@ namespace SME.SR.Application
                 relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
                 SentrySdk.AddBreadcrumb("Obtendo a turma..", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                var dreUe = await ObterDreUePorTurma(fechamentoTurma.Turma.CodigoTurma);
+                var turma = await ObterDadosTurma(fechamentoTurma.Turma.CodigoTurma);
 
-                relatorio.Dre = dreUe.DreNome;
-                relatorio.Ue = dreUe.UeNomeRelatorio;
-
-                relatorio.EhEja = fechamentoTurma.Turma.EhEja;
-                relatorio.TipoNota = await ObterTipoNota(fechamentoTurma.PeriodoEscolar, fechamentoTurma.Turma, dreUe.DreId, dreUe.UeId);
+                relatorio.Dre = turma.DreUe.DreNome;
+                relatorio.Ue = turma.DreUe.UeNomeRelatorio;
 
                 SentrySdk.AddBreadcrumb($"Obtendo dados do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 var dadosAluno = await ObterDadosAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
@@ -98,7 +95,7 @@ namespace SME.SR.Application
                         {
                             FechamentoTurmaId = request.FechamentoTurmaId,
                             ConselhoClasseId = request.ConselhoClasseId,
-                            Turma = fechamentoTurma.Turma,
+                            Turma = turma,
                             CodigoAluno = request.CodigoAluno,
                             PeriodoEscolar = fechamentoTurma.PeriodoEscolar,
                             Usuario = request.Usuario
@@ -122,7 +119,7 @@ namespace SME.SR.Application
                         {
                             FechamentoTurmaId = request.FechamentoTurmaId,
                             ConselhoClasseId = request.ConselhoClasseId,
-                            Turma = fechamentoTurma.Turma,
+                            Turma = turma,
                             CodigoAluno = request.CodigoAluno,
                             PeriodoEscolar = fechamentoTurma.PeriodoEscolar,
                             Usuario = request.Usuario
@@ -182,23 +179,11 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<DreUe> ObterDreUePorTurma(string codigoTurma)
+        private async Task<Turma> ObterDadosTurma(string codigoTurma)
         {
-            return await _mediator.Send(new ObterDreUePorTurmaQuery()
+            return await _mediator.Send(new ObterTurmaQuery()
             {
                 CodigoTurma = codigoTurma
-            });
-        }
-
-        private async Task<string> ObterTipoNota(PeriodoEscolar periodoEscolar, Turma turma,
-                                                long dreId, long ueId)
-        {
-            return await _mediator.Send(new ObterTipoNotaQuery()
-            {
-                PeriodoEscolar = periodoEscolar,
-                Turma = turma,
-                DreId = dreId,
-                UeId = ueId
             });
         }
 

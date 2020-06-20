@@ -7,22 +7,25 @@ namespace SME.SR.Data.Models
 {
     public class ComponenteRegenciaComNotaFinal
     {
-        [JsonProperty("nome")]
-        public string Nome { get; set; }
+        [JsonProperty("Componente")]
+        public string Componente { get; set; }
 
-        [JsonProperty("notaFinal")]
+        [JsonProperty("EhEja")]
+        public bool EhEja { get; set; }
+
+        [JsonProperty("NotaFinal")]
         public string NotaFinal { get; set; }
 
-        [JsonProperty("notaConceitoBimestre1")]
+        [JsonProperty("NotaConceitoBimestre1")]
         public string NotaConceitoBimestre1 { get; set; }
 
-        [JsonProperty("notaConceitoBimestre2")]
+        [JsonProperty("NotaConceitoBimestre2")]
         public string NotaConceitoBimestre2 { get; set; }
 
-        [JsonProperty("notaConceitoBimestre3")]
+        [JsonProperty("NotaConceitoBimestre3")]
         public string NotaConceitoBimestre3 { get; set; }
 
-        [JsonProperty("notaConceitoBimestre4")]
+        [JsonProperty("NotaConceitoBimestre4")]
         public string NotaConceitoBimestre4 { get; set; }
     }
 }

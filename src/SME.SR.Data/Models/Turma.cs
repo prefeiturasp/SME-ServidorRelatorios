@@ -11,8 +11,7 @@ namespace SME.SR.Data
         public int Ano { get; set; }
         public string Nome { get; set; }
         public int Semestre { get; set; }
-        public string CodigoUe { get; set; }
-        public string CodigoDre { get; set; }
+        public DreUe DreUe { get; set; }
         public Modalidade ModalidadeCodigo { get; set; }
         public ModalidadeTipoCalendario ModalidadeTipoCalendario
         {
