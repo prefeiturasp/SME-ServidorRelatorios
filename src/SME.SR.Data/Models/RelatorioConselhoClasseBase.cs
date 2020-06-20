@@ -18,12 +18,6 @@ namespace SME.SR.Data
         [JsonProperty("Turma")]
         public string Turma { get; set; }
 
-        [JsonProperty("EhEja")]
-        public bool EhEja { get; set; }
-
-        [JsonProperty("TipoNota")]
-        public string TipoNota { get; set; }
-
         [JsonProperty("Data")]
         public string Data { get; set; }
 

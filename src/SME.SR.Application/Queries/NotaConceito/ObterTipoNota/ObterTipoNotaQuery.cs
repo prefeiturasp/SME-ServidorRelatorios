@@ -8,8 +8,6 @@ namespace SME.SR.Application
 {
    public class ObterTipoNotaQuery :IRequest<string>
     {
-        public long DreId { get; set; }
-        public long UeId { get; set; }
         public PeriodoEscolar PeriodoEscolar { get; set; }
         public Turma Turma { get; set; }
     }
