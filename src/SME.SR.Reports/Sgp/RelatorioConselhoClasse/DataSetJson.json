@@ -136,7 +136,7 @@
 			 "ProfessorRf":"7213000"
 		  },
 		  {
-			 "Anotacao":null,
+			 "Anotacao":"ASDAS",
 			 "Data":"2020-05-04T09:56:00.218293",
 			 "Disciplina":"Educa\u00E7\u00E3o F\u00EDsica",
 			 "DisciplinaId":"6",
@@ -144,36 +144,12 @@
 			 "ProfessorRf":"7442351"
 		  },
 		  {
-			 "Anotacao":null,
-			 "Data":"2020-05-04T10:00:36.341178",
-			 "Disciplina":"Geografia",
-			 "DisciplinaId":"8",
-			 "Professor":"ELIANE VAZ",
-			 "ProfessorRf":"6766714"
-		  },
-		  {
-			 "Anotacao":null,
-			 "Data":"2020-05-04T10:07:56.653391",
-			 "Disciplina":"Ci\u00EAncias",
-			 "DisciplinaId":"89",
-			 "Professor":"JUCIARA TEIXEIRA HOLZMANN VERNIER",
-			 "ProfessorRf":"6517579"
-		  },
-		  {
-			 "Anotacao":null,
-			 "Data":"2020-05-04T10:12:12.864943",
-			 "Disciplina":"Ingl\u00EAs",
-			 "DisciplinaId":"9",
-			 "Professor":"ALYSSON EDUARDO GUARIENTO PASCHOAL PINTO",
-			 "ProfessorRf":"7268173"
-		  },
-		  {
-			 "Anotacao":null,
-			 "Data":"2020-05-04T10:17:01.173715",
-			 "Disciplina":"L\u00EDngua Portuguesa",
-			 "DisciplinaId":"138",
-			 "Professor":"DALVA DOS SANTOS",
-			 "ProfessorRf":"7485433"
+			 "Anotacao":"ASDAS",
+			 "Data":"2020-05-04T09:56:00.218293",
+			 "Disciplina":"Educa\u00E7\u00E3o F\u00EDsica",
+			 "DisciplinaId":"6",
+			 "Professor":"MARCO ANTONIO RUEDA",
+			 "ProfessorRf":"7442351"
 		  }
 	   ]
 	},
@@ -269,7 +245,7 @@
 	   "RecomendacaoFamilia":"\u003Cul\u003E\u003Cli\u003EAcompanhe a frequ\u00EAncia de seus filhos \u00E0s aulas e \u00E0s atividades escolares.\u003C/li\u003E\u003Cli\u003EAcompanhe seu filho na realiza\u00E7\u00E3o das li\u00E7\u00F5es de casa.\u003C/li\u003E\u003Cli\u003EAjude a construir uma escola democr\u00E1tica. Participe do Conselho de Escola.\u003C/li\u003E\u003Cli\u003ECompare\u00E7a \u00E0s reuni\u00F5es da escola. D\u00EA sua opini\u00E3o. Ela \u00E9 muito importante.\u003C/li\u003E\u003Cli\u003EConfira o boletim escolar de seu filho,caso tenha alguma d\u00FAvida procure o professor/coordenador.\u003C/li\u003E\u003Cli\u003EIncentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.\u003C/li\u003E\u003Cli\u003ELeia bilhetes e avisos que a escola mandar e responda quando necess\u00E1rio.\u003C/li\u003E\u003Cli\u003EOriente seu filho a cuidar de seu material escolar.\u003C/li\u003E\u003Cli\u003EPe\u00E7a orienta\u00E7\u00E3o aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.\u003C/li\u003E\u003Cli\u003EProcure visitar a escola de seus filhos sempre que precisar.\u003C/li\u003E\u003Cli\u003EVerifique diariamente os cadernos e livros de seus filhos.\u003C/li\u003E\u003C/ul\u003E",
 	   "AnotacoesAluno":[
 		  {
-			 "Anotacao":null,
+			 "Anotacao":"asdfasdfsa",
 			 "Data":"2020-04-29T18:02:20.310132",
 			 "Disciplina":"Arte",
 			 "DisciplinaId":"139",
@@ -277,7 +253,7 @@
 			 "ProfessorRf":"3135535"
 		  },
 		  {
-			 "Anotacao":null,
+			 "Anotacao":"dafsdfasdf",
 			 "Data":"2020-05-04T09:46:57.624468",
 			 "Disciplina":"Matem\u00E1tica",
 			 "DisciplinaId":"2",
@@ -285,44 +261,12 @@
 			 "ProfessorRf":"7213000"
 		  },
 		  {
-			 "Anotacao":null,
+			 "Anotacao":"asdfasdertrsg",
 			 "Data":"2020-05-04T09:56:00.218293",
 			 "Disciplina":"Educa\u00E7\u00E3o F\u00EDsica",
 			 "DisciplinaId":"6",
 			 "Professor":"MARCO ANTONIO RUEDA",
 			 "ProfessorRf":"7442351"
-		  },
-		  {
-			 "Anotacao":null,
-			 "Data":"2020-05-04T10:00:36.341178",
-			 "Disciplina":"Geografia",
-			 "DisciplinaId":"8",
-			 "Professor":"ELIANE VAZ",
-			 "ProfessorRf":"6766714"
-		  },
-		  {
-			 "Anotacao":null,
-			 "Data":"2020-05-04T10:07:56.653391",
-			 "Disciplina":"Ci\u00EAncias",
-			 "DisciplinaId":"89",
-			 "Professor":"JUCIARA TEIXEIRA HOLZMANN VERNIER",
-			 "ProfessorRf":"6517579"
-		  },
-		  {
-			 "Anotacao":null,
-			 "Data":"2020-05-04T10:12:12.864943",
-			 "Disciplina":"Ingl\u00EAs",
-			 "DisciplinaId":"9",
-			 "Professor":"ALYSSON EDUARDO GUARIENTO PASCHOAL PINTO",
-			 "ProfessorRf":"7268173"
-		  },
-		  {
-			 "Anotacao":null,
-			 "Data":"2020-05-04T10:17:01.173715",
-			 "Disciplina":"L\u00EDngua Portuguesa",
-			 "DisciplinaId":"138",
-			 "Professor":"DALVA DOS SANTOS",
-			 "ProfessorRf":"7485433"
 		  }
 	   ]
 	}

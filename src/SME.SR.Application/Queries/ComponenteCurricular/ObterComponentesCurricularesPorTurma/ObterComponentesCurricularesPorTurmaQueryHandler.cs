@@ -22,7 +22,7 @@ namespace SME.SR.Application
             var componentesDaTurma = await _componenteCurricularRepository.ObterComponentesPorTurma(request.CodigoTurma);
             if (componentesDaTurma != null && componentesDaTurma.Any())
             {
-                var componentesApiEol = await _componenteCurricularRepository.Listar();
+                var componentesApiEol = await _componenteCurricularRepository.ListarApiEol();
                 var gruposMatriz = await _componenteCurricularRepository.ListarGruposMatriz();
 
                 return componentesDaTurma?.Select(c => new ComponenteCurricularPorTurma

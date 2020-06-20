@@ -26,148 +26,152 @@ namespace SME.SR.Application
 
         public async Task<RelatorioConselhoClasseArray> Handle(ObterRelatorioConselhoClasseAlunoQuery request, CancellationToken cancellationToken)
         {
-                try
+            try
+            {
+
+                SentrySdk.AddBreadcrumb("Iniciando obter Dados", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+                SentrySdk.AddBreadcrumb("CONNECTION STRING DO EOL" + variaveisAmbiente.ConnectionStringEol.ToLower().Replace("password", "tchetche"), "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+
+                var fechamentoTurma = await ObterFechamentoTurmaPorId(request.FechamentoTurmaId);
+
+                if (fechamentoTurma == null)
+                    SentrySdk.AddBreadcrumb("Não foi possível obter o fechamento da turma!!!!!", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+                RelatorioConselhoClasseBase relatorio;
+
+                int? bimestre = null;
+
+                var relatorioParaEnviar = new RelatorioConselhoClasseArray();
+
+                if (fechamentoTurma.PeriodoEscolarId.HasValue)
                 {
 
-                    SentrySdk.AddBreadcrumb("Iniciando obter Dados", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                    relatorio = new RelatorioConselhoClasseBimestre();
+                    bimestre = fechamentoTurma.PeriodoEscolar.Bimestre;
+                    relatorio.Bimestre = fechamentoTurma.PeriodoEscolar.Bimestre.ToString();
 
-                    SentrySdk.AddBreadcrumb("CONNECTION STRING DO EOL" + variaveisAmbiente.ConnectionStringEol.ToLower().Replace("password", "tchetche"), "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-
-
-                    var fechamentoTurma = await ObterFechamentoTurmaPorId(request.FechamentoTurmaId);
-
-                    if (fechamentoTurma == null)
-                        SentrySdk.AddBreadcrumb("Não foi possível obter o fechamento da turma!!!!!", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-
-                    RelatorioConselhoClasseBase relatorio;
-
-                    int? bimestre = null;
-
-                    var relatorioParaEnviar = new RelatorioConselhoClasseArray();
-
-                    if (fechamentoTurma.PeriodoEscolarId.HasValue)
-                    {
-
-                        relatorio = new RelatorioConselhoClasseBimestre();
-                        bimestre = fechamentoTurma.PeriodoEscolar.Bimestre;
-                        relatorio.Bimestre = fechamentoTurma.PeriodoEscolar.Bimestre.ToString();
-
-                        SentrySdk.AddBreadcrumb($"Obtive o bimestre {bimestre}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                    }
-                    else
-                    {
-                        relatorio = new RelatorioConselhoClasseFinal();
-                        relatorio.Bimestre = "Final";
-                        SentrySdk.AddBreadcrumb("Obtive o bimestre FINAL", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                    }
-                    
-                    relatorio.Titulo = "Conselho de Classe";
-                    relatorio.Turma = fechamentoTurma.Turma.Nome;
-                    relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
-
-
-                    SentrySdk.AddBreadcrumb("Obtendo a turma..", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                    var dreUe = await ObterDreUePorTurma(fechamentoTurma.Turma.CodigoTurma);
-
-                    relatorio.Dre = dreUe.Dre;
-                    relatorio.Ue = dreUe.Ue;
-
-                    SentrySdk.AddBreadcrumb($"Obtendo dados do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                    var dadosAluno = await ObterDadosAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
-
-                    if (dadosAluno == null)
-                        SentrySdk.AddBreadcrumb("Não foi possível obter os dados do aluno!!!!!!", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-
-                    relatorio.AlunoNome = dadosAluno.NomeAluno;
-                    relatorio.AlunoNumero = Convert.ToInt32(dadosAluno.NumeroAlunoChamada);
-                    relatorio.AlunoDataDeNascimento = dadosAluno.DataNascimento.ToString("dd/MM/yyyy");
-                    relatorio.AlunoCodigoEol = dadosAluno.CodigoAluno.ToString();
-                    relatorio.AlunoSituacao = $"{dadosAluno.SituacaoMatricula} em {dadosAluno.DataSituacao:dd/MM/yyyy}";
-
-                    SentrySdk.AddBreadcrumb($"Obtendo frequencia global do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                    relatorio.AlunoFrequenciaGlobal = await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
-
-                    if (bimestre.HasValue)
-                    {
-                        SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesComNota Com Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-
-                        ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesComNota =
-                            await _mediator.Send(new ObterDadosComponenteComNotaBimestreQuery()
-                            {
-                                FechamentoTurmaId = request.FechamentoTurmaId,
-                                ConselhoClasseId = request.ConselhoClasseId,
-                                Turma = fechamentoTurma.Turma,
-                                CodigoAluno = request.CodigoAluno,
-                                PeriodoEscolar = fechamentoTurma.PeriodoEscolar
-                            });
-
-
-                        SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesSemNota Com Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                        ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesSemNota =
-                            await _mediator.Send(new ObterDadosComponenteSemNotaBimestreQuery()
-                            {
-                                CodigoTurma = fechamentoTurma.Turma.CodigoTurma,
-                                CodigoAluno = request.CodigoAluno,
-                                Bimestre = bimestre
-                            });
-                    }
-                    else
-                    {
-                        SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesComNota Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                        ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesComNota =
-                            await _mediator.Send(new ObterDadosComponenteComNotaFinalQuery()
-                            {
-                                FechamentoTurmaId = request.FechamentoTurmaId,
-                                ConselhoClasseId = request.ConselhoClasseId,
-                                Turma = fechamentoTurma.Turma,
-                                CodigoAluno = request.CodigoAluno,
-                                PeriodoEscolar = fechamentoTurma.PeriodoEscolar
-                            });
-
-                        SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesSemNota Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                        ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesSemNota =
-                            await _mediator.Send(new ObterDadosComponenteSemNotaFinalQuery()
-                            {
-                                CodigoTurma = fechamentoTurma.Turma.CodigoTurma,
-                                CodigoAluno = request.CodigoAluno,
-                                Bimestre = bimestre
-                            });
-                    }
-
-                    SentrySdk.AddBreadcrumb("Obtendo ObterRecomendacoesPorFechamento", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                    var recomendacoes = await ObterRecomendacoesPorFechamento(
-                       request.FechamentoTurmaId,
-                       request.CodigoAluno);
-
-                    relatorio.RecomendacaoAluno = recomendacoes.RecomendacoesAluno;
-                    relatorio.RecomendacaoFamilia = recomendacoes.RecomendacoesFamilia;
-                    relatorio.AnotacoesPedagogicas = recomendacoes.AnotacoesPedagogicas;
-
-
-                    SentrySdk.AddBreadcrumb("Obtendo ObterAnotacoesAluno", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                    var anotacoes = await ObterAnotacoesAluno(
-                       request.FechamentoTurmaId,
-                       request.CodigoAluno
-                    );
-
-                    relatorio.AnotacoesAluno = anotacoes;
-
-                    relatorioParaEnviar.Relatorio.Add(relatorio);
-
-                    SentrySdk.AddBreadcrumb("Relatório serializado -> " + JsonConvert.SerializeObject(relatorioParaEnviar), "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-
-                    SentrySdk.CaptureMessage("4.1 FINALIZOU OK - ObterRelatorioConselhoClasseAlunoQueryHandler");
-
-                    return await Task.FromResult(relatorioParaEnviar);
+                    SentrySdk.AddBreadcrumb($"Obtive o bimestre {bimestre}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 }
-
-                catch (Exception ex)
+                else
                 {
-                    SentrySdk.CaptureMessage("4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler ERRO");
-                    SentrySdk.CaptureException(ex);
-                    throw ex;
+                    relatorio = new RelatorioConselhoClasseFinal();
+                    relatorio.Bimestre = "Final";
+                    SentrySdk.AddBreadcrumb("Obtive o bimestre FINAL", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 }
-            
+
+                relatorio.Titulo = "Conselho de Classe";
+                relatorio.Turma = fechamentoTurma.Turma.NomeRelatorio;
+                relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
+
+                SentrySdk.AddBreadcrumb("Obtendo a turma..", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                var dreUe = await ObterDreUePorTurma(fechamentoTurma.Turma.CodigoTurma);
+
+                relatorio.Dre = dreUe.DreNome;
+                relatorio.Ue = dreUe.UeNomeRelatorio;
+
+                relatorio.EhEja = fechamentoTurma.Turma.EhEja;
+                relatorio.TipoNota = await ObterTipoNota(fechamentoTurma.PeriodoEscolar, fechamentoTurma.Turma, dreUe.DreId, dreUe.UeId);
+
+                SentrySdk.AddBreadcrumb($"Obtendo dados do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                var dadosAluno = await ObterDadosAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
+
+                if (dadosAluno == null)
+                    SentrySdk.AddBreadcrumb("Não foi possível obter os dados do aluno!!!!!!", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+                relatorio.AlunoNome = dadosAluno.NomeRelatorio;
+                relatorio.AlunoNumero = Convert.ToInt32(dadosAluno.NumeroAlunoChamada);
+                relatorio.AlunoDataDeNascimento = dadosAluno.DataNascimento.ToString("dd/MM/yyyy");
+                relatorio.AlunoCodigoEol = dadosAluno.CodigoAluno.ToString();
+                relatorio.AlunoSituacao = dadosAluno.SituacaoRelatorio;
+
+                SentrySdk.AddBreadcrumb($"Obtendo frequencia global do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                relatorio.AlunoFrequenciaGlobal = await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
+
+                if (bimestre.HasValue)
+                {
+                    SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesComNota Com Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+                    ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesComNota =
+                        await _mediator.Send(new ObterDadosComponenteComNotaBimestreQuery()
+                        {
+                            FechamentoTurmaId = request.FechamentoTurmaId,
+                            ConselhoClasseId = request.ConselhoClasseId,
+                            Turma = fechamentoTurma.Turma,
+                            CodigoAluno = request.CodigoAluno,
+                            PeriodoEscolar = fechamentoTurma.PeriodoEscolar,
+                            Usuario = request.Usuario
+                        });
+
+
+                    SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesSemNota Com Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                    ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesSemNota =
+                        await _mediator.Send(new ObterDadosComponenteSemNotaBimestreQuery()
+                        {
+                            CodigoTurma = fechamentoTurma.Turma.CodigoTurma,
+                            CodigoAluno = request.CodigoAluno,
+                            Bimestre = bimestre
+                        });
+                }
+                else
+                {
+                    SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesComNota Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                    ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesComNota =
+                        await _mediator.Send(new ObterDadosComponenteComNotaFinalQuery()
+                        {
+                            FechamentoTurmaId = request.FechamentoTurmaId,
+                            ConselhoClasseId = request.ConselhoClasseId,
+                            Turma = fechamentoTurma.Turma,
+                            CodigoAluno = request.CodigoAluno,
+                            PeriodoEscolar = fechamentoTurma.PeriodoEscolar,
+                            Usuario = request.Usuario
+                        });
+
+                    SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesSemNota Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                    ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesSemNota =
+                        await _mediator.Send(new ObterDadosComponenteSemNotaFinalQuery()
+                        {
+                            CodigoTurma = fechamentoTurma.Turma.CodigoTurma,
+                            CodigoAluno = request.CodigoAluno,
+                            Bimestre = bimestre
+                        });
+                }
+
+                SentrySdk.AddBreadcrumb("Obtendo ObterRecomendacoesPorFechamento", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                var recomendacoes = await ObterRecomendacoesPorFechamento(
+                   request.FechamentoTurmaId,
+                   request.CodigoAluno);
+
+                relatorio.RecomendacaoAluno = recomendacoes.RecomendacoesAluno;
+                relatorio.RecomendacaoFamilia = recomendacoes.RecomendacoesFamilia;
+                relatorio.AnotacoesPedagogicas = recomendacoes.AnotacoesPedagogicas;
+
+
+                SentrySdk.AddBreadcrumb("Obtendo ObterAnotacoesAluno", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+                var anotacoes = await ObterAnotacoesAluno(
+                   request.FechamentoTurmaId,
+                   request.CodigoAluno
+                );
+
+                relatorio.AnotacoesAluno = anotacoes;
+
+                relatorioParaEnviar.Relatorio.Add(relatorio);
+
+                SentrySdk.AddBreadcrumb("Relatório serializado -> " + JsonConvert.SerializeObject(relatorioParaEnviar), "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+                SentrySdk.CaptureMessage("4.1 FINALIZOU OK - ObterRelatorioConselhoClasseAlunoQueryHandler");
+
+                return await Task.FromResult(relatorioParaEnviar);
+            }
+
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureMessage("4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler ERRO");
+                SentrySdk.CaptureException(ex);
+                throw ex;
+            }
+
         }
 
         private async Task<FechamentoTurma> ObterFechamentoTurmaPorId(long fechamentoTurmaId)
@@ -183,6 +187,18 @@ namespace SME.SR.Application
             return await _mediator.Send(new ObterDreUePorTurmaQuery()
             {
                 CodigoTurma = codigoTurma
+            });
+        }
+
+        private async Task<string> ObterTipoNota(PeriodoEscolar periodoEscolar, Turma turma,
+                                                long dreId, long ueId)
+        {
+            return await _mediator.Send(new ObterTipoNotaQuery()
+            {
+                PeriodoEscolar = periodoEscolar,
+                Turma = turma,
+                DreId = dreId,
+                UeId = ueId
             });
         }
 

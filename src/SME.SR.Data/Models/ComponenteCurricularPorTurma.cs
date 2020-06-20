@@ -8,6 +8,7 @@
         public bool Regencia { get; set; }
         public string TipoEscola { get; set; }
         public bool Compartilhada { get; set; }
+        public bool Frequencia { get; set; }
         public bool TerritorioSaber { get; set; }
         public bool LancaNota { get; set; }
         public bool BaseNacional { get; set; }

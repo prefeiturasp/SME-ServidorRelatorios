@@ -140,7 +140,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="90" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{NotaConceito}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{NotaConceito} != null ? $F{NotaConceito} : "----"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -156,7 +156,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="130" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{NotaPosConselho}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{NotaPosConselho} != null ? $F{NotaPosConselho} : "----"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

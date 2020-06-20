@@ -65,11 +65,11 @@
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 					<printWhenExpression><![CDATA[$F{Anotacao} != null]]></printWhenExpression>
 				</reportElement>
-				<box>
+				<box topPadding="0" leftPadding="20" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="20"/>
+					<paragraph leftIndent="0"/>
 				</textElement>
 				<text><![CDATA[ANOTAÇÕES DO ALUNO]]></text>
 			</staticText>

@@ -8,8 +8,7 @@ namespace SME.SR.Application
 {
     public class ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery : IRequest<IEnumerable<ComponenteCurricularPorTurma>>
     {
-        public string Login { get; set; }
-        public Guid IdPerfil { get; set; }
         public string CodigoTurma { get; set; }
+        public Usuario Usuario { get; set; }
     }
 }

@@ -121,8 +121,8 @@ namespace SME.SR.Data
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-        internal static string DadosDreUe = @"select dre.abreviacao Dre,
-	 				concat(ue.ue_id, ' - ', tp.descricao, ' ', ue.nome) Ue
+        internal static string DadosDreUe = @"select dre.id DreId, dre.abreviacao DreNome,
+	 				ue.id UeId, concat(ue.ue_id, ' - ', tp.descricao, ' ', ue.nome) UeNome
 					from  turma t
 					inner join ue on ue.id = t.ue_id 
 					inner join dre on ue.dre_id = dre.id 
@@ -152,7 +152,8 @@ namespace SME.SR.Data
         }
 
         internal static string TurmaPorCodigo = @"select t.turma_id CodigoTurma, 
-			t.nome, t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano_letivo AnoLetivo
+			t.nome, t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, 
+			t.ano_letivo AnoLetivo
         from  turma t
         where t.turma_id = @codigoTurma";
     }
