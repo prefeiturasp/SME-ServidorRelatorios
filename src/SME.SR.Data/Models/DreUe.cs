@@ -2,7 +2,12 @@
 {
     public class DreUe
     {
-        public string Dre { get; set; }
-        public string Ue { get; set; }
+        public long DreId { get; set; }
+        public string DreNome { get; set; }
+        public long UeId { get; set; }
+        public string UeNome { get; set; }
+
+        public string UeNomeRelatorio =>
+            $"UE - {UeNome}";
     }
 }
