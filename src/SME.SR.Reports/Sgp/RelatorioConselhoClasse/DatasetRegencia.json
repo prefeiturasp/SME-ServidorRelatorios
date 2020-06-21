@@ -1,0 +1,132 @@
+{
+  "relatorioConselhoDeClasse": [
+    {
+      "GruposMatrizComponentesComNota": [
+        {
+          "ComponentesComNota": [
+            {
+              "NotaConceito": "9",
+              "NotaPosConselho": "10",
+              "Componente": "MATEMATICA"
+            },
+            {
+              "NotaConceito": "9",
+              "NotaPosConselho": "9",
+              "Componente": "ED. FISICA"
+            }
+          ],
+          "Faltas": 0,
+          "AusenciasCompensadas": 0,
+          "Frequencia": 100,
+          "Aulas": 1,
+          "Nome": "Base Nacional Comum"
+        },
+        {
+          "ComponentesComNota": [
+            {
+              "NotaConceito": "9",
+              "NotaPosConselho": "9",
+              "Componente": "INGLES"
+            }
+          ],
+          "Nome": "Diversificada",
+          "Faltas": 0,
+          "AusenciasCompensadas": 0,
+          "Frequencia": 100,
+          "Aulas": 1
+        }
+      ],
+      "GruposMatrizComponentesSemNota": [
+        {
+          "ComponentesSemNota": [
+            {
+              "Componente": "INFORMATICA - OIE",
+              "Faltas": 0,
+              "Frequencia": 100
+            },
+            {
+              "Componente": "LEITURA - OSL",
+              "Faltas": 0,
+              "Frequencia": 100
+            }
+          ],
+          "Nome": "Enriquecimento Curricular"
+        }
+      ],
+      "Titulo": "Conselho de Classe",
+      "Dre": "DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE",
+      "Ue": "MAXIMO DE MOURA SANTOS, PROF.",
+      "Turma": "8B",
+      "Data": "2020-06-07T21:19:59.7967358-03:00",
+      "AlunoNome": "ANA BEATRIZ THEODOCELLO GOMES",
+      "AlunoNumero": 1,
+      "AlunoDataDeNascimento": "2006-10-13T00:00:00",
+      "AlunoCodigoEol": "4820277",
+      "AlunoSituacao": "Ativo em 09/10/2019",
+      "AlunoFrequenciaGlobal": 85.19,
+      "AlunoParecerConclusivo": null,
+      "Bimestre": "2",
+      "AnotacoesPedagogicas": null,
+      "RecomendacaoAluno": "\u003Cul\u003E\u003Cli\u003EBusque ir al\u00E9m dos conhecimentos trabalhados em sala de aula. Seja curioso.\u003C/li\u003E\u003Cli\u003ECuide de seu material escolar. Ele \u00E9 de sua responsabilidade.\u003C/li\u003E\u003Cli\u003ECuide de suas rela\u00E7\u00F5es pessoais. Busque ajuda e orienta\u00E7\u00E3o de professores,funcion\u00E1rios e gestores sempre que necess\u00E1rio.\u003C/li\u003E\u003Cli\u003EDesenvolva uma rotina de estudo e organiza\u00E7\u00E3o para o cumprimento das tarefas e prazos escolares.\u003C/li\u003E\u003Cli\u003EEsclare\u00E7a suas d\u00FAvidas com os professores sempre que necess\u00E1rio.\u003C/li\u003E\u003Cli\u003EFrequente \u00E0s aulas diariamente. Em caso de aus\u00EAncia,justifique-a.\u003C/li\u003E\u003Cli\u003EFrequente bibliotecas e sites confi\u00E1veis para pesquisa.\u003C/li\u003E\u003Cli\u003ELeia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.\u003C/li\u003E\u003Cli\u003EParticipe das aulas com aten\u00E7\u00E3o,pergunte quando tiver d\u00FAvidas e fa\u00E7a registro das ideias centrais da aula.\u003C/li\u003E\u003Cli\u003EPe\u00E7a permiss\u00E3o para falar e saiba ouvir seus colegas.\u003C/li\u003E\u003Cli\u003EPesquise. Reflita. Questione. Discuta. Escreva.\u003C/li\u003E\u003Cli\u003EProcure desenvolver seus pr\u00F3prios m\u00E9todos de estudo. Use agenda e anote seus compromissos.\u003C/li\u003E\u003Cli\u003EValorize,respeite e coopere com o trabalho de todos no ambiente escolar.\u003C/li\u003E\u003C/ul\u003E",
+      "RecomendacaoFamilia": "\u003Cul\u003E\u003Cli\u003EAcompanhe a frequ\u00EAncia de seus filhos \u00E0s aulas e \u00E0s atividades escolares.\u003C/li\u003E\u003Cli\u003EAcompanhe seu filho na realiza\u00E7\u00E3o das li\u00E7\u00F5es de casa.\u003C/li\u003E\u003Cli\u003EAjude a construir uma escola democr\u00E1tica. Participe do Conselho de Escola.\u003C/li\u003E\u003Cli\u003ECompare\u00E7a \u00E0s reuni\u00F5es da escola. D\u00EA sua opini\u00E3o. Ela \u00E9 muito importante.\u003C/li\u003E\u003Cli\u003EConfira o boletim escolar de seu filho,caso tenha alguma d\u00FAvida procure o professor/coordenador.\u003C/li\u003E\u003Cli\u003EIncentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.\u003C/li\u003E\u003Cli\u003ELeia bilhetes e avisos que a escola mandar e responda quando necess\u00E1rio.\u003C/li\u003E\u003Cli\u003EOriente seu filho a cuidar de seu material escolar.\u003C/li\u003E\u003Cli\u003EPe\u00E7a orienta\u00E7\u00E3o aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.\u003C/li\u003E\u003Cli\u003EProcure visitar a escola de seus filhos sempre que precisar.\u003C/li\u003E\u003Cli\u003EVerifique diariamente os cadernos e livros de seus filhos.\u003C/li\u003E\u003C/ul\u003E",
+      "AnotacoesAluno": [
+        {
+          "Anotacao": "Teste",
+          "Data": "2020-04-29T18:02:20.310132",
+          "Disciplina": "Arte",
+          "DisciplinaId": "139",
+          "Professor": "SADAKO MORITA",
+          "ProfessorRf": "3135535"
+        },
+        {
+          "Anotacao": "Araci",
+          "Data": "2020-05-04T09:46:57.624468",
+          "Disciplina": "Matem\u00E1tica",
+          "DisciplinaId": "2",
+          "Professor": "ARACI NOBUE NAKANE CHAEBO GADUM",
+          "ProfessorRf": "7213000"
+        },
+        {
+          "Anotacao": null,
+          "Data": "2020-05-04T09:56:00.218293",
+          "Disciplina": "Educa\u00E7\u00E3o F\u00EDsica",
+          "DisciplinaId": "6",
+          "Professor": "MARCO ANTONIO RUEDA",
+          "ProfessorRf": "7442351"
+        },
+        {
+          "Anotacao": null,
+          "Data": "2020-05-04T10:00:36.341178",
+          "Disciplina": "Geografia",
+          "DisciplinaId": "8",
+          "Professor": "ELIANE VAZ",
+          "ProfessorRf": "6766714"
+        },
+        {
+          "Anotacao": null,
+          "Data": "2020-05-04T10:07:56.653391",
+          "Disciplina": "Ci\u00EAncias",
+          "DisciplinaId": "89",
+          "Professor": "JUCIARA TEIXEIRA HOLZMANN VERNIER",
+          "ProfessorRf": "6517579"
+        },
+        {
+          "Anotacao": null,
+          "Data": "2020-05-04T10:12:12.864943",
+          "Disciplina": "Ingl\u00EAs",
+          "DisciplinaId": "9",
+          "Professor": "ALYSSON EDUARDO GUARIENTO PASCHOAL PINTO",
+          "ProfessorRf": "7268173"
+        },
+        {
+          "Anotacao": null,
+          "Data": "2020-05-04T10:17:01.173715",
+          "Disciplina": "L\u00EDngua Portuguesa",
+          "DisciplinaId": "138",
+          "Professor": "DALVA DOS SANTOS",
+          "ProfessorRf": "7485433"
+        }
+      ]
+    }
+  ]
+}
