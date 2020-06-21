@@ -6,6 +6,10 @@ namespace SME.SR.Data
 {
     public abstract class RelatorioConselhoClasseBase
     {
+        public RelatorioConselhoClasseBase()
+        {
+            EhBimestreFinal = false;               
+        }
         [JsonProperty("Titulo")]
         public string Titulo { get; set; }
 
@@ -56,5 +60,6 @@ namespace SME.SR.Data
 
         [JsonProperty("AnotacoesAluno")]
         public IEnumerable<FechamentoAlunoAnotacaoConselho> AnotacoesAluno { get; set; }
+        public bool EhBimestreFinal { get; set; }
     }
 }
