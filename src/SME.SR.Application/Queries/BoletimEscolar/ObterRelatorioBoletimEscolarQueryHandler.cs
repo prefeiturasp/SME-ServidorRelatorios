@@ -143,8 +143,8 @@ namespace SME.SR.Application
                 {
                     CodigoEol = dadosAluno.CodigoAluno.ToString(),
                     Aluno = dadosAluno.NomeRelatorio,
-                    NomeDre = dreUe.Dre,
-                    NomeUe = dreUe.Ue,
+                    NomeDre = dreUe.DreNome,
+                    NomeUe = dreUe.UeNome,
                     NomeTurma = dadosTurma?.NomeRelatorio,
                     Data = DateTime.Now.ToString("dd/MM/yyyy")
                 }

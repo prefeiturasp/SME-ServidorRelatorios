@@ -40,6 +40,7 @@
 	</style>
 	<subDataset name="DatasetComponentesSemNota" uuid="3c247fbc-123f-4951-9251-7af37f5417bf">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
+		<parameter name="Nome" class="java.lang.String"/>
 		<queryString language="json">
 			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesSemNota.componentesSemNota]]>
 		</queryString>
@@ -56,13 +57,12 @@
 			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
 		</field>
 	</subDataset>
-	<parameter name="NOME_COLUNA" class="java.lang.String"/>
 	<queryString language="json">
-		<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesSemNota.Nome]]>
+		<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesSemNota]]>
 	</queryString>
 	<field name="Nome" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="relatorioConselhoDeClasse.GruposMatrizComponentesSemNota.Nome"/>
-		<fieldDescription><![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesSemNota.Nome]]></fieldDescription>
+		<fieldDescription><![CDATA[Nome]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -70,7 +70,7 @@
 	<detail>
 		<band height="84" splitType="Stretch">
 			<componentElement>
-				<reportElement positionType="Float" x="0" y="23" width="553" height="61" uuid="7697ad65-6223-4e0f-9502-3e4b44e711a0">
+				<reportElement positionType="Float" x="0" y="23" width="553" height="61" isRemoveLineWhenBlank="true" uuid="7697ad65-6223-4e0f-9502-3e4b44e711a0">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -78,46 +78,61 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DatasetComponentesSemNota" uuid="986f269b-7a6c-4dd2-9015-2afada453c4b">
+					<datasetRun subDataset="DatasetComponentesSemNota" uuid="60c49be2-f62e-4937-8f25-2e969caac497">
+						<datasetParameter name="Nome">
+							<datasetParameterExpression><![CDATA[$F{Nome}]]></datasetParameterExpression>
+						</datasetParameter>
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("ComponentesSemNota")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="90" uuid="81d0c585-83d1-44ac-87c8-7fa5e6eb086b">
-						<jr:columnHeader style="Table_CH" height="30"/>
+					<jr:column width="109" uuid="81d0c585-83d1-44ac-87c8-7fa5e6eb086b">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<textField>
+								<reportElement x="0" y="0" width="109" height="30" uuid="80d11979-7ccd-4eb7-9a99-0f1f47cdf640"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$P{Nome}]]></textFieldExpression>
+							</textField>
+						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="90" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
+								<reportElement x="0" y="0" width="109" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="230" uuid="95984bdd-89e4-4212-81a9-34cf15275a71">
-						<jr:columnHeader style="Table_CH" height="30">
+					<jr:column width="221" uuid="95984bdd-89e4-4212-81a9-34cf15275a71">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<staticText>
-								<reportElement x="0" y="0" width="230" height="30" uuid="abd89629-bc53-4ceb-a56b-be4967bd3779"/>
+								<reportElement x="0" y="0" width="221" height="30" uuid="abd89629-bc53-4ceb-a56b-be4967bd3779"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[FALTAS]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="230" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
+								<reportElement x="0" y="0" width="221" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="233" uuid="d02ca614-2946-4f51-bd5e-fc35b8ad1772">
-						<jr:columnHeader style="Table_CH" height="30">
+					<jr:column width="223" uuid="d02ca614-2946-4f51-bd5e-fc35b8ad1772">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<staticText>
-								<reportElement x="0" y="0" width="233" height="30" uuid="20de03bc-4e3b-481f-8162-7e33548d0f55"/>
+								<reportElement x="0" y="0" width="223" height="30" uuid="20de03bc-4e3b-481f-8162-7e33548d0f55"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[%FREQ.]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="233" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
+								<reportElement x="0" y="0" width="223" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
 							</textField>
@@ -126,7 +141,7 @@
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement x="0" y="0" width="553" height="23" uuid="39f6986e-76c0-4535-ba1a-694339e15618">
+				<reportElement x="0" y="0" width="553" height="23" isRemoveLineWhenBlank="true" uuid="39f6986e-76c0-4535-ba1a-694339e15618">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>

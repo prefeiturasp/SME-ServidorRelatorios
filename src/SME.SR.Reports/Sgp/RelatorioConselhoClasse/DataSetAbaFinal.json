@@ -1,0 +1,366 @@
+{
+   "RelatorioConselhoDeClasse":[
+      {
+         "GruposMatrizComponentesComNota":[
+            {
+               "ComponentesComNota":[
+                  {
+                     "NotaFinal":null,
+                     "NotaConceitoBimestre1":null,
+                     "NotaConceitoBimestre2":null,
+                     "NotaConceitoBimestre3":null,
+                     "NotaConceitoBimestre4":"P",
+                     "Componente":"ED. FISICA",
+                     "Faltas":0,
+                     "AusenciasCompensadas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  },
+                  {                  
+                     "NotaFinal":null,
+                     "NotaConceitoBimestre1":null,
+                     "NotaConceitoBimestre2":null,
+                     "NotaConceitoBimestre3":null,
+                     "NotaConceitoBimestre4":"P",
+                     "Componente":"ARTE",
+                     "Faltas":0,
+                     "AusenciasCompensadas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  }
+               ],
+               "ComponenteComNotaRegencia":{
+                  "Aulas":2,
+				  "TipoNota": "Conceito",
+                  "ComponentesCurriculares":[
+                     {
+                        "Componente":"MATEMATICA",
+                        "NotaFinal":"S",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"NS",
+                        "NotaConceitoBimestre4":"S",
+						"EhEja": false
+                     },
+                     {
+                        "Componente":"HISTORIA",
+                        "NotaFinal":"P",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"P",
+                        "NotaConceitoBimestre4":"P",
+						"EhEja": false
+                     },
+                     {
+                        "Componente":"GEOGRAFIA",
+                        "NotaFinal":"P",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"P",
+                        "NotaConceitoBimestre4":"S",
+						"EhEja": false
+                     },
+                     {
+                        "Componente":"CIENCIAS",
+                        "NotaFinal":"P",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"S",
+                        "NotaConceitoBimestre4":"S",
+						"EhEja": false
+                     },
+                     {
+                        "Componente":"LINGUA PORTUGUESA",
+                        "NotaFinal":"S",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"NS",
+                        "NotaConceitoBimestre4":"NS",
+						"EhEja": false
+                     }
+                  ],
+                  "Faltas":0,
+                  "AusenciasCompensadas":0,
+                  "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+               },
+               "Nome":"Base Nacional Comum"
+            },
+            {
+               "ComponentesComNota":[
+                  {
+                     "NotaFinal":null,
+                     "NotaConceitoBimestre1":null,
+                     "NotaConceitoBimestre2":null,
+                     "NotaConceitoBimestre3":null,
+                     "NotaConceitoBimestre4":"P",
+                     "Componente":"LINGUA INGLESA COMPARTILHADA",
+                     "Faltas":0,
+                     "AusenciasCompensadas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  }
+               ],
+               "ComponenteComNotaRegencia":null,
+               "Nome":"Diversificada"
+            }
+         ],
+         "GruposMatrizComponentesSemNota":[
+            {
+               "ComponentesSemNota":[
+                  {
+                     "Parecer":"Frequente",
+                     "Componente":"INFORMATICA - OIE",
+                     "Faltas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  },
+                  {
+                     "Parecer":"Frequente",
+                     "Componente":"LEITURA - OSL",
+                     "Faltas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  }
+               ],
+               "Nome":"Enriquecimento Curricular"
+            }
+         ],
+         "Titulo":"Conselho de Classe",
+         "Dre":"DRE - JT",
+         "Ue":"UE - 094668 - EMEFM DERVILLE ALLEGRETTI, PROF.",
+         "Turma":"(EF) - 3A",
+         "EhEja":false,
+         "TipoNota":"Conceito",
+         "Data":"19/06/2020",
+         "AlunoNome":"001 - ANA MARIA DOS SANTOS ALMEIDA ",
+         "AlunoNumero":1,
+         "AlunoDataDeNascimento":"08/07/2011",
+         "AlunoCodigoEol":"6073955",
+         "AlunoSituacao":"Ativo em 10/10/2019",
+         "AlunoFrequenciaGlobal":50.0,
+         "AlunoParecerConclusivo":null,
+         "Bimestre":"Final",
+         "AnotacoesPedagogicas":null,
+         "RecomendacaoAluno":"Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso.Cuide de seu material escolar. Ele é de sua responsabilidade.Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário.Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares.Esclareça suas dúvidas com os professores sempre que necessário.Frequente às aulas diariamente. Em caso de ausência,justifique-a.Frequente bibliotecas e sites confiáveis para pesquisa.Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula.Peça permissão para falar e saiba ouvir seus colegas.Pesquise. Reflita. Questione. Discuta. Escreva.Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos.Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
+         "RecomendacaoFamilia":"Acompanhe a frequência de seus filhos às aulas e às atividades escolares.Acompanhe seu filho na realização das lições de casa.Ajude a construir uma escola democrática. Participe do Conselho de Escola.Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante.Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador.Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.Leia bilhetes e avisos que a escola mandar e responda quando necessário.Oriente seu filho a cuidar de seu material escolar.Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.Procure visitar a escola de seus filhos sempre que precisar.Verifique diariamente os cadernos e livros de seus filhos.",
+         "AnotacoesAluno":[
+            {
+               "Anotacao":"Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso.Cuide de seu material escolar. Ele é de sua responsabilidade.Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário.Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares.Esclareça suas dúvidas com os professores sempre que necessário.Frequente às aulas diariamente. Em caso de ausência,justifique-a.Frequente bibliotecas e sites confiáveis para pesquisa.Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula.Peça permissão para falar e saiba ouvir seus colegas.Pesquise. Reflita. Questione. Discuta. Escreva.Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos.Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            },
+            {
+               "Anotacao":"Teste",
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            },
+            {
+               "Anotacao":"Teste",
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            },
+            {
+               "Anotacao":"Teste",
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            },
+            {
+               "Anotacao":"Teste",
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            }
+         ]
+      },
+	  {
+         "GruposMatrizComponentesComNota":[
+            {
+               "ComponentesComNota":[
+                  {
+                     "NotaFinal":null,
+                     "NotaConceitoBimestre1":null,
+                     "NotaConceitoBimestre2":null,
+                     "NotaConceitoBimestre3":null,
+                     "NotaConceitoBimestre4":"P",
+                     "Componente":"ED. FISICA",
+                     "Faltas":0,
+                     "AusenciasCompensadas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  },
+                  {                  
+                     "NotaFinal":null,
+                     "NotaConceitoBimestre1":null,
+                     "NotaConceitoBimestre2":null,
+                     "NotaConceitoBimestre3":null,
+                     "NotaConceitoBimestre4":"P",
+                     "Componente":"ARTE",
+                     "Faltas":0,
+                     "AusenciasCompensadas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  }
+               ],
+               "ComponenteComNotaRegencia":{
+                  "Aulas":2,
+				  "TipoNota": "Conceito",
+                  "ComponentesCurriculares":[
+                     {
+                        "Componente":"MATEMATICA",
+                        "NotaFinal":"S",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"NS",
+                        "NotaConceitoBimestre4":"S",
+						"EhEja": false
+                     },
+                     {
+                        "Componente":"HISTORIA",
+                        "NotaFinal":"P",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"P",
+                        "NotaConceitoBimestre4":"P",
+						"EhEja": false
+                     },
+                     {
+                        "Componente":"GEOGRAFIA",
+                        "NotaFinal":"P",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"P",
+                        "NotaConceitoBimestre4":"S",
+						"EhEja": false
+                     },
+                     {
+                        "Componente":"CIENCIAS",
+                        "NotaFinal":"P",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"S",
+                        "NotaConceitoBimestre4":"S",
+						"EhEja": false
+                     },
+                     {
+                        "Componente":"LINGUA PORTUGUESA",
+                        "NotaFinal":"S",
+                        "NotaConceitoBimestre1":null,
+                        "NotaConceitoBimestre2":"P",
+                        "NotaConceitoBimestre3":"NS",
+                        "NotaConceitoBimestre4":"NS",
+						"EhEja": false
+                     }
+                  ],
+                  "Faltas":0,
+                  "AusenciasCompensadas":0,
+                  "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+               },
+               "Nome":"Base Nacional Comum"
+            },
+            {
+               "ComponentesComNota":[
+                  {
+                     "NotaFinal":null,
+                     "NotaConceitoBimestre1":null,
+                     "NotaConceitoBimestre2":null,
+                     "NotaConceitoBimestre3":null,
+                     "NotaConceitoBimestre4":"P",
+                     "Componente":"LINGUA INGLESA COMPARTILHADA",
+                     "Faltas":0,
+                     "AusenciasCompensadas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  }
+               ],
+               "ComponenteComNotaRegencia":null,
+               "Nome":"Diversificada"
+            }
+         ],
+         "GruposMatrizComponentesSemNota":[
+            {
+               "ComponentesSemNota":[
+                  {
+                     "Parecer":"Frequente",
+                     "Componente":"INFORMATICA - OIE",
+                     "Faltas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  },
+                  {
+                     "Parecer":"Frequente",
+                     "Componente":"LEITURA - OSL",
+                     "Faltas":0,
+                     "Frequencia":100.0, "TipoNota": "Conceito", "EhEja":false
+                  }
+               ],
+               "Nome":"Enriquecimento Curricular"
+            }
+         ],
+         "Titulo":"Conselho de Classe",
+         "Dre":"DRE - JT",
+         "Ue":"UE - 094668 - EMEFM DERVILLE ALLEGRETTI, PROF.",
+         "Turma":"(EF) - 3A",
+         "EhEja":false,
+         "TipoNota":"Conceito",
+         "Data":"19/06/2020",
+         "AlunoNome":"001 - Teste ",
+         "AlunoNumero":1,
+         "AlunoDataDeNascimento":"08/07/2011",
+         "AlunoCodigoEol":"6073955",
+         "AlunoSituacao":"Ativo em 10/10/2019",
+         "AlunoFrequenciaGlobal":50.0,
+         "AlunoParecerConclusivo":null,
+         "Bimestre":"Final",
+         "AnotacoesPedagogicas":null,
+         "RecomendacaoAluno":"Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso.Cuide de seu material escolar. Ele é de sua responsabilidade.Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário.Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares.Esclareça suas dúvidas com os professores sempre que necessário.Frequente às aulas diariamente. Em caso de ausência,justifique-a.Frequente bibliotecas e sites confiáveis para pesquisa.Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula.Peça permissão para falar e saiba ouvir seus colegas.Pesquise. Reflita. Questione. Discuta. Escreva.Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos.Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
+         "RecomendacaoFamilia":"Acompanhe a frequência de seus filhos às aulas e às atividades escolares.Acompanhe seu filho na realização das lições de casa.Ajude a construir uma escola democrática. Participe do Conselho de Escola.Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante.Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador.Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.Leia bilhetes e avisos que a escola mandar e responda quando necessário.Oriente seu filho a cuidar de seu material escolar.Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.Procure visitar a escola de seus filhos sempre que precisar.Verifique diariamente os cadernos e livros de seus filhos.",
+         "AnotacoesAluno":[
+            {
+               "Anotacao":null,
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            },
+            {
+               "Anotacao":null,
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            },
+            {
+               "Anotacao":null,
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            },
+            {
+               "Anotacao":null,
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            },
+            {
+               "Anotacao":null,
+               "Data":"04/30/2020 09:19:14",
+               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
+               "DisciplinaId":"1105",
+               "Professor":"ANA RITA GOMES DOS SANTOS",
+               "ProfessorRf":"6809324"
+            }
+         ]
+      }
+   ]
+}

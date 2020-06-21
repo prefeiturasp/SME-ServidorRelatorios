@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NotasBimestre" printOrder="Horizontal" pageWidth="120" pageHeight="30" columnWidth="120" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fbf6c72b-6b01-4d57-8b72-7504c4e4e0bd">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
+	<subDataset name="DatasetNotasBimestres" uuid="0d05a2e3-2699-41a5-afa5-f04631d74d18">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
+		<queryString language="json">
+			<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota.ComponentesComNota]]>
+		</queryString>
+		<field name="NotaConceito" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="NotaConceito"/>
+			<fieldDescription><![CDATA[NotaConceito]]></fieldDescription>
+		</field>
+		<field name="Bimestre" class="java.lang.Integer">
+			<property name="net.sf.jasperreports.json.field.expression" value="Bimestre"/>
+			<fieldDescription><![CDATA[Bimestre]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString language="json">
+		<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesComNota.ComponentesComNota]]>
+	</queryString>
+	<field name="NotaConceitoBimestre1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="NotaConceitoBimestre1"/>
+		<fieldDescription><![CDATA[NotaConceitoBimestre1]]></fieldDescription>
+	</field>
+	<field name="NotaConceitoBimestre2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="NotaConceitoBimestre2"/>
+		<fieldDescription><![CDATA[NotaConceitoBimestre2]]></fieldDescription>
+	</field>
+	<field name="NotaConceitoBimestre3" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="NotaConceitoBimestre3"/>
+		<fieldDescription><![CDATA[NotaConceitoBimestre3]]></fieldDescription>
+	</field>
+	<field name="NotaConceitoBimestre4" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="NotaConceitoBimestre4"/>
+		<fieldDescription><![CDATA[NotaConceitoBimestre4]]></fieldDescription>
+	</field>
+	<field name="EhEja" class="java.lang.Boolean">
+		<property name="net.sf.jasperreports.json.field.expression" value="EhEja"/>
+		<fieldDescription><![CDATA[EhEja]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout"/>
+			<textField>
+				<reportElement x="0" y="0" width="30" height="30" uuid="7ec85e78-c7cf-4e16-8eaa-6687511a2bf5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[!$F{EhEja}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NotaConceitoBimestre1} != null ?$F{NotaConceitoBimestre1}: "--"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="0" width="30" height="30" uuid="dcb5e097-0efd-44fb-9b3b-2db44bd11a22">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{EhEja}?($F{NotaConceitoBimestre1} != null ?$F{NotaConceitoBimestre1}: "--"):($F{NotaConceitoBimestre2} != null ?$F{NotaConceitoBimestre2}: "--")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="60" y="0" width="30" height="30" uuid="5939c37e-3ac2-4e3c-a427-33866b94bb60">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{EhEja}?($F{NotaConceitoBimestre2} != null ?$F{NotaConceitoBimestre2}: "--"):($F{NotaConceitoBimestre3} != null ?$F{NotaConceitoBimestre3}: "--")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="0" width="30" height="30" uuid="8cdd725b-b5e1-4066-ab7d-f9914e2bec9a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[!$F{EhEja}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NotaConceitoBimestre4} != null ?$F{NotaConceitoBimestre4}: "--"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

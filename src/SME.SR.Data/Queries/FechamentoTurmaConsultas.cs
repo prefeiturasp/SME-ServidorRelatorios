@@ -4,9 +4,9 @@
     {
         internal static string FechamentoTurmaPeriodo = @"select 
                           f.turma_id TurmaId, f.periodo_escolar_id PeriodoEscolarId,
-                          t.turma_id CodigoTurma, t.nome, t.ano_letivo AnoLetivo, 
+                          t.turma_id CodigoTurma, t.nome, t.ano, t.ano_letivo AnoLetivo, 
                           t.modalidade_codigo ModalidadeCodigo, t.Semestre,
-                          pe.bimestre, pe.periodo_inicio PeriodoInicio, pe.periodo_fim PeriodoFim
+                          pe.bimestre, pe.id, pe.periodo_inicio PeriodoInicio, pe.periodo_fim PeriodoFim
                            from fechamento_turma f
                           inner join turma t on t.id = f.turma_id
                            left join periodo_escolar pe on pe.id = f.periodo_escolar_id
@@ -16,7 +16,7 @@
                       f.id, f.turma_id TurmaId, f.periodo_escolar_id PeriodoEscolarId,
                       t.turma_id CodigoTurma, t.nome, t.ano_letivo AnoLetivo, 
                       t.modalidade_codigo ModalidadeCodigo, t.Semestre,
-                      p.bimestre, p.periodo_inicio PeriodoInicio, p.periodo_fim PeriodoFim
+                      p.bimestre, p.id, p.periodo_inicio PeriodoInicio, p.periodo_fim PeriodoFim
                        from fechamento_turma f
                        inner join turma t on t.id = f.turma_id
                        left join periodo_escolar p on p.id = f.periodo_escolar_id
