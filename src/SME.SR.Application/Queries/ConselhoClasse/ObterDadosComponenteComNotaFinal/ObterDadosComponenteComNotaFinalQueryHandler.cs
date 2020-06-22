@@ -60,7 +60,7 @@ namespace SME.SR.Application
                                                                                 notasFechamento,
                                                                                 request.Usuario);
                     else
-                        lstCompComNota.Add(ObterNotasFrequenciaComponenteComNotaFinal(disciplina,
+                        lstCompComNota.Add(await ObterNotasFrequenciaComponenteComNotaFinal(disciplina,
                                                                     frequenciaAluno,
                                                                     request.PeriodoEscolar,
                                                                     request.Turma,
@@ -132,12 +132,14 @@ namespace SME.SR.Application
             };
         }
 
-        private ComponenteComNotaFinal ObterNotasFrequenciaComponenteComNotaFinal(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
+        private async Task<ComponenteComNotaFinal> ObterNotasFrequenciaComponenteComNotaFinal(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
             var notasComponente = ObterNotasComponente(disciplina, periodoEscolar, notasFechamentoAluno);
 
             var conselhoClasseComponente = new ComponenteComNotaFinal()
             {
+                TipoNota = await ObterTipoNota(periodoEscolar, turma),
+                EhEja = turma.EhEja,
                 Componente = disciplina.Disciplina,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
