@@ -72,7 +72,8 @@ namespace SME.SR.Application
                 {
                     Nome = grupoDisciplinasMatriz.Key,
                     ComponentesComNota = lstCompComNota,
-                    ComponenteComNotaRegencia = compRegenciaComNota
+                    ComponenteComNotaRegencia = compRegenciaComNota,
+                    TipoNota = await ObterTipoNota(request.PeriodoEscolar, request.Turma)
                 };
 
                 lstGruposMatrizCompNota.Add(grupoMatriz);
@@ -85,7 +86,6 @@ namespace SME.SR.Application
         {
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
             {
-                TipoNota = await ObterTipoNota(periodoEscolar, turma),
                 Aulas = frequenciaAluno.TotalAulas,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
@@ -124,7 +124,6 @@ namespace SME.SR.Application
             {
                 Componente = disciplina.Disciplina,
                 EhEja = turma.EhEja,
-                TipoNota = await ObterTipoNota(periodoEscolar, turma),
                 Aulas = frequenciaAluno.TotalAulas,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
