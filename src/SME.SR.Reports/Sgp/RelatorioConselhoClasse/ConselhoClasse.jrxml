@@ -83,7 +83,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="179" splitType="Stretch">
+		<band height="179" splitType="Immediate">
 			<image>
 				<reportElement x="1" y="0" width="149" height="60" uuid="69b823fa-cd3c-4dee-b302-4527db1aff91"/>
 				<imageExpression><![CDATA["logo.png"]]></imageExpression>
@@ -177,7 +177,7 @@
 				<textFieldExpression><![CDATA[$F{Bimestre}+"º Bimestre"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="355" y="73" width="75" height="23" uuid="8d5ff2c6-c260-48a8-9b8c-f683e5acecef">
+				<reportElement x="355" y="73" width="95" height="23" uuid="8d5ff2c6-c260-48a8-9b8c-f683e5acecef">
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 				</reportElement>
 				<box padding="3">
@@ -192,7 +192,7 @@
 				<textFieldExpression><![CDATA["TURMA: "+$F{Turma}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="430" y="73" width="124" height="23" uuid="d7454930-0725-41de-b84c-86e390cfdb71">
+				<reportElement x="450" y="73" width="104" height="23" uuid="d7454930-0725-41de-b84c-86e390cfdb71">
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 				</reportElement>
 				<box padding="3">
@@ -338,7 +338,7 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="39" splitType="Stretch">
+		<band height="39" splitType="Immediate">
 			<textField>
 				<reportElement x="523" y="8" width="19" height="23" uuid="353291b1-378c-4252-850c-34cff5c47099">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
