@@ -56,6 +56,6 @@ namespace SME.SR.Data
 
         [JsonProperty("AnotacoesAluno")]
         public IEnumerable<FechamentoAlunoAnotacaoConselho> AnotacoesAluno { get; set; }
-        public bool EhBimestreFinal { get { return string.IsNullOrEmpty(Bimestre); }  }
+        public bool EhBimestreFinal { get; set; }
     }
 }
