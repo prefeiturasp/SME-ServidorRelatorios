@@ -7,8 +7,11 @@ namespace SME.SR.Data
 {
     public class ComponenteRegenciaComNotaBimestre
     {
-        [JsonProperty("Nome")]
-        public string Nome { get; set; }
+        [JsonProperty("Componente")]
+        public string Componente { get; set; }
+
+        [JsonProperty("EhEja")]
+        public bool EhEja { get; set; }
 
         [JsonProperty("NotaConceito")]
         public string NotaConceito { get; set; }

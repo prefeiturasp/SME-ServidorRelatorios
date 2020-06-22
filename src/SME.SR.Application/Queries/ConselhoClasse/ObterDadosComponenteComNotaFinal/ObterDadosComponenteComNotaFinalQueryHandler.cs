@@ -85,6 +85,7 @@ namespace SME.SR.Application
         {
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaFinal()
             {
+                TipoNota = await ObterTipoNota(periodoEscolar, turma),
                 Aulas = frequenciaAluno.TotalAulas,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
@@ -100,19 +101,29 @@ namespace SME.SR.Application
 
             foreach (var componenteRegencia in componentesRegencia)
             {
-                conselhoClasseComponente.ComponentesCurriculares.Add(ObterNotasRegencia(componenteRegencia, periodoEscolar, notasConselhoClasse, notasFechamento));
+                conselhoClasseComponente.ComponentesCurriculares.Add(ObterNotasRegencia(componenteRegencia, periodoEscolar, notasConselhoClasse, notasFechamento, turma));
             }
 
             return conselhoClasseComponente;
         }
 
-        private ComponenteRegenciaComNotaFinal ObterNotasRegencia(ComponenteCurricularPorTurma componenteCurricular, PeriodoEscolar periodoEscolar, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento)
+        private async Task<string> ObterTipoNota(PeriodoEscolar periodoEscolar, Turma turma)
+        {
+            return await _mediator.Send(new ObterTipoNotaQuery()
+            {
+                PeriodoEscolar = periodoEscolar,
+                Turma = turma
+            });
+        }
+
+        private ComponenteRegenciaComNotaFinal ObterNotasRegencia(ComponenteCurricularPorTurma componenteCurricular, PeriodoEscolar periodoEscolar, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Turma turma)
         {
             var notasComponente = ObterNotasComponente(componenteCurricular, periodoEscolar, notasFechamento);
 
             return new ComponenteRegenciaComNotaFinal()
             {
-                Nome = componenteCurricular.Disciplina,
+                Componente = componenteCurricular.Disciplina,
+                EhEja = turma.EhEja,
                 NotaConceitoBimestre1 = notasComponente.FirstOrDefault(n => n.Bimestre == 1)?.NotaConceito,
                 NotaConceitoBimestre2 = notasComponente.FirstOrDefault(n => n.Bimestre == 2)?.NotaConceito,
                 NotaConceitoBimestre3 = notasComponente.FirstOrDefault(n => n.Bimestre == 3)?.NotaConceito,

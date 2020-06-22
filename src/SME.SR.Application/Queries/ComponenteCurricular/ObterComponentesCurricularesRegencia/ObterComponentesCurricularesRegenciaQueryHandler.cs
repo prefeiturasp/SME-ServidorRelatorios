@@ -27,7 +27,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             Turma turma = request.Turma;
 
             if (request.Usuario.EhProfessorCj())
-                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.CodigoTurma, turma.CodigoUe, request.CdComponenteCurricular, request.Usuario.CodigoRf);
+                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.CodigoTurma, turma.DreUe.UeCodigo, request.CdComponenteCurricular, request.Usuario.CodigoRf);
             else
             {
                 var componentesCurriculares = await _mediator.Send(new

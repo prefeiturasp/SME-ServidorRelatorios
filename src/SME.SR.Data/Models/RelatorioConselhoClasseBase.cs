@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace SME.SR.Data
 {
     public abstract class RelatorioConselhoClasseBase
-    {
+    {        
         [JsonProperty("Titulo")]
         public string Titulo { get; set; }
 
@@ -17,12 +17,6 @@ namespace SME.SR.Data
 
         [JsonProperty("Turma")]
         public string Turma { get; set; }
-
-        [JsonProperty("EhEja")]
-        public bool EhEja { get; set; }
-
-        [JsonProperty("TipoNota")]
-        public string TipoNota { get; set; }
 
         [JsonProperty("Data")]
         public string Data { get; set; }
@@ -62,5 +56,6 @@ namespace SME.SR.Data
 
         [JsonProperty("AnotacoesAluno")]
         public IEnumerable<FechamentoAlunoAnotacaoConselho> AnotacoesAluno { get; set; }
+        public bool EhBimestreFinal { get; set; }
     }
 }

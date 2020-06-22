@@ -5,19 +5,19 @@ namespace SME.SR.Data
 {
     public class ComponenteComNotaFinal : ComponenteComNota
     {
-        [JsonProperty("notaFinal")]
+        [JsonProperty("NotaFinal")]
         public string NotaFinal { get; set; }
 
-        [JsonProperty("notaConceitoBimestre1")]
+        [JsonProperty("NotaConceitoBimestre1")]
         public string NotaConceitoBimestre1 { get; set; }
 
-        [JsonProperty("notaConceitoBimestre2")]
+        [JsonProperty("NotaConceitoBimestre2")]
         public string NotaConceitoBimestre2 { get; set; }
 
-        [JsonProperty("notaConceitoBimestre3")]
+        [JsonProperty("NotaConceitoBimestre3")]
         public string NotaConceitoBimestre3 { get; set; }
 
-        [JsonProperty("notaConceitoBimestre4")]
+        [JsonProperty("NotaConceitoBimestre4")]
         public string NotaConceitoBimestre4 { get; set; }
     }
 }

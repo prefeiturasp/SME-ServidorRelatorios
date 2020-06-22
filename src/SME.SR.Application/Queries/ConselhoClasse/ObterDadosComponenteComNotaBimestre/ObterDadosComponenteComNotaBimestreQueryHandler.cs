@@ -60,7 +60,7 @@ namespace SME.SR.Application
                                                                                 notasFechamento,
                                                                                 request.Usuario);
                     else
-                        lstCompComNota.Add(ObterNotasFrequenciaComponenteComNotaBimestre(disciplina,
+                        lstCompComNota.Add(await ObterNotasFrequenciaComponenteComNotaBimestre(disciplina,
                                                                         frequenciaAluno,
                                                                         request.PeriodoEscolar,
                                                                         request.Turma,
@@ -85,6 +85,7 @@ namespace SME.SR.Application
         {
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
             {
+                TipoNota = await ObterTipoNota(periodoEscolar, turma),
                 Aulas = frequenciaAluno.TotalAulas,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
@@ -100,27 +101,30 @@ namespace SME.SR.Application
 
             foreach (var componenteRegencia in componentesRegencia)
             {
-                conselhoClasseComponente.ComponentesCurriculares.Add(ObterNotasRegencia(componenteRegencia, periodoEscolar, notasConselhoClasse, notasFechamento));
+                conselhoClasseComponente.ComponentesCurriculares.Add(ObterNotasRegencia(componenteRegencia, periodoEscolar, notasConselhoClasse, notasFechamento, turma));
             }
 
             return conselhoClasseComponente;
         }
 
-        private ComponenteRegenciaComNotaBimestre ObterNotasRegencia(ComponenteCurricularPorTurma componenteCurricular, PeriodoEscolar periodoEscolar, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento)
+        private ComponenteRegenciaComNotaBimestre ObterNotasRegencia(ComponenteCurricularPorTurma componenteCurricular, PeriodoEscolar periodoEscolar, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Turma turma)
         {
             return new ComponenteRegenciaComNotaBimestre()
             {
-                Nome = componenteCurricular.Disciplina,
+                Componente = componenteCurricular.Disciplina,
+                EhEja = turma.EhEja,
                 NotaConceito = ObterNotasComponente(componenteCurricular, periodoEscolar, notasFechamento).FirstOrDefault()?.NotaConceito,
                 NotaPosConselho = ObterNotaPosConselho(componenteCurricular, periodoEscolar?.Bimestre, notasConselhoClasse, notasFechamento)
             };
         }
 
-        private ComponenteComNotaBimestre ObterNotasFrequenciaComponenteComNotaBimestre(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
+        private async Task<ComponenteComNotaBimestre> ObterNotasFrequenciaComponenteComNotaBimestre(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
             var conselhoClasseComponente = new ComponenteComNotaBimestre()
             {
                 Componente = disciplina.Disciplina,
+                EhEja = turma.EhEja,
+                TipoNota = await ObterTipoNota(periodoEscolar, turma),
                 Aulas = frequenciaAluno.TotalAulas,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
@@ -130,6 +134,15 @@ namespace SME.SR.Application
             };
 
             return conselhoClasseComponente;
+        }
+
+        private async Task<string> ObterTipoNota(PeriodoEscolar periodoEscolar, Turma turma)
+        {
+            return await _mediator.Send(new ObterTipoNotaQuery()
+            {
+                PeriodoEscolar = periodoEscolar,
+                Turma = turma
+            });
         }
 
         private List<NotaBimestre> ObterNotasComponente(ComponenteCurricularPorTurma componenteCurricular, PeriodoEscolar periodoEscolar, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
