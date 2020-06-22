@@ -8,8 +8,5 @@
         public long UeId { get; set; }
         public string UeCodigo { get; set; }
         public string UeNome { get; set; }
-
-        public string UeNomeRelatorio =>
-            $"UE - {UeNome}";
     }
 }
