@@ -296,7 +296,7 @@
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("GruposMatrizComponentesSemNota")]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression><![CDATA["ComponenteSemNota.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["ComponenteSemNotaAbaFinal.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
 				<reportElement positionType="Float" x="0" y="140" width="553" height="76" isRemoveLineWhenBlank="true" uuid="678b78a0-74f1-4c90-9f2d-932e95ca254e"/>
