@@ -25,6 +25,6 @@ namespace SME.SR.Data
             get => ModalidadeCodigo == Modalidade.EJA;
         }
 
-        public string NomeRelatorio => $"({ModalidadeCodigo.GetAttribute<DisplayAttribute>().ShortName}) - {Nome}";
+        public string NomeRelatorio => $"{ModalidadeCodigo.GetAttribute<DisplayAttribute>().ShortName} - {Nome}";
     }
 }

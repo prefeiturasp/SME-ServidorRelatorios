@@ -69,7 +69,7 @@ namespace SME.SR.Application
                 var turma = await ObterDadosTurma(fechamentoTurma.Turma.CodigoTurma);
 
                 relatorio.Dre = turma.DreUe.DreNome;
-                relatorio.Ue = turma.DreUe.UeNomeRelatorio;
+                relatorio.Ue = turma.DreUe.UeNome;
 
                 SentrySdk.AddBreadcrumb($"Obtendo dados do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 var dadosAluno = await ObterDadosAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
