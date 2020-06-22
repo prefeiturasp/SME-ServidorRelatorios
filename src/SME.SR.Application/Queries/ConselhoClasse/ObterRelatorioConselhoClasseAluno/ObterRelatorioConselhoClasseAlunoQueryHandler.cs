@@ -51,12 +51,14 @@ namespace SME.SR.Application
                     relatorio = new RelatorioConselhoClasseBimestre();
                     bimestre = fechamentoTurma.PeriodoEscolar.Bimestre;
                     relatorio.Bimestre = fechamentoTurma.PeriodoEscolar.Bimestre.ToString();
+                    relatorio.EhBimestreFinal = false;
                     SentrySdk.AddBreadcrumb($"Obtive o bimestre {bimestre}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 }
                 else
                 {
                     relatorio = new RelatorioConselhoClasseFinal();
                     relatorio.Bimestre = "Final";
+                    relatorio.EhBimestreFinal = true;
                     SentrySdk.AddBreadcrumb("Obtive o bimestre FINAL", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 }                
                 relatorio.Titulo = "Conselho de Classe";
