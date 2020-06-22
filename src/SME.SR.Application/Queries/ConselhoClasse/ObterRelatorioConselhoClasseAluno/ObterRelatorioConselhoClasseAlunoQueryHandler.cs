@@ -84,7 +84,7 @@ namespace SME.SR.Application
                 relatorio.AlunoSituacao = dadosAluno.SituacaoRelatorio;
 
                 SentrySdk.AddBreadcrumb($"Obtendo frequencia global do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                relatorio.AlunoFrequenciaGlobal = await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
+                relatorio.AlunoFrequenciaGlobal = (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno)).ToString();
 
                 if (bimestre.HasValue)
                 {
