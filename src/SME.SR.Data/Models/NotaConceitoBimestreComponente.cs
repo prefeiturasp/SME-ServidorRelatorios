@@ -7,6 +7,6 @@
         public long? ConceitoId { get; set; }
         public string Conceito { get; set; }
         public double Nota { get; set; }
-        public string NotaConceito { get => ConceitoId.HasValue ? Conceito : Nota.ToString(); }
+        public string NotaConceito { get => ConceitoId.HasValue ? Conceito : Nota.ToString("0.0"); }
     }
 }
