@@ -37,7 +37,7 @@ namespace SME.SR.Data
         public string AlunoSituacao { get; set; }
 
         [JsonProperty("AlunoFrequenciaGlobal")]
-        public double AlunoFrequenciaGlobal { get; set; }
+        public string AlunoFrequenciaGlobal { get; set; }
 
         [JsonProperty("AlunoParecerConclusivo")]
         public string AlunoParecerConclusivo { get; set; }
