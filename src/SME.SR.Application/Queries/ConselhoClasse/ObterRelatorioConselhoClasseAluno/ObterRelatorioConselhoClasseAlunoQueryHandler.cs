@@ -58,9 +58,7 @@ namespace SME.SR.Application
                     relatorio = new RelatorioConselhoClasseFinal();
                     relatorio.Bimestre = "Final";
                     SentrySdk.AddBreadcrumb("Obtive o bimestre FINAL", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                }
-
-                relatorio.EhBimestreFinal = true;
+                }                
                 relatorio.Titulo = "Conselho de Classe";
                 relatorio.Turma = fechamentoTurma.Turma.NomeRelatorio;
                 relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
