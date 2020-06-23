@@ -45,7 +45,7 @@ namespace SME.SR.Application
                         SalvarSnapshot = false,
                         FormatoSaida = request.Formato.Name(),
                         Interativo = false,
-                        IgnorarPaginacao = true,
+                        IgnorarPaginacao = false,
                         Paginas = null,
                         Parametros = parametrosDoDto
                     };

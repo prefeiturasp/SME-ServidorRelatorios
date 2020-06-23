@@ -1,165 +1,194 @@
 {
-   "RelatorioConselhoDeClasse":[
-      {
-         "GruposMatrizComponentesComNota":[
-            {
-               "ComponentesComNota":[
-                  {
-                     "NotaConceito":null,
-                     "NotaPosConselho":null,
-                     "Aulas":0,
-                     "Componente":"ED. FISICA teste teste teste teste teste teste aaa aaa aaa",
-                     "Faltas":0,
-                     "AusenciasCompensadas":0,
-                     "Frequencia":100.0,
-                     "EhEja":false,
-                     "TipoNota":"Conceito"
-                  },
-                  {
-                     "NotaConceito":null,
-                     "NotaPosConselho":null,
-                     "Aulas":0,
-                     "Componente":"ARTE",
-                     "Faltas":0,
-                     "AusenciasCompensadas":0,
-                     "Frequencia":100.0,
-                     "EhEja":false
-                  }
-               ],
-               "ComponenteComNotaRegencia":{
-                  "Aulas":1,
-                  "ComponentesCurriculares":[
-                     {
-                        "Componente":"MATEMATICA",
-                        "EhEja":false,
-                        "NotaConceito":"NS",
-                        "NotaPosConselho":"NS"
-                     },
-                     {
-                        "Componente":"HISTORIA",
-                        "EhEja":false,
-                        "NotaConceito":"P",
-                        "NotaPosConselho":"S"
-                     },
-                     {
-                        "Componente":"GEOGRAFIA",
-                        "EhEja":false,
-                        "NotaConceito":"P",
-                        "NotaPosConselho":"P"
-                     },
-                     {
-                        "Componente":"CIENCIAS",
-                        "EhEja":false,
-                        "NotaConceito":"S",
-                        "NotaPosConselho":"S"
-                     },
-                     {
-                        "Componente":"LINGUA PORTUGUESA",
-                        "EhEja":false,
-                        "NotaConceito":"NS",
-                        "NotaPosConselho":"NS"
-                     }
-                  ],
-                  "Faltas":0,
-                  "AusenciasCompensadas":0,
-                  "Frequencia":100.0
-               },
-               "Nome":"Base Nacional Comum",
-               "TipoNota":"Conceito"
-            },
-            {
-               "ComponentesComNota":[
-                  {
-                     "NotaConceito":null,
-                     "NotaPosConselho":null,
-                     "Aulas":0,
-                     "Componente":"LINGUA INGLESA COMPARTILHADA",
-                     "Faltas":0,
-                     "AusenciasCompensadas":0,
-                     "Frequencia":100.0,
-                     "EhEja":false,
-                     "TipoNota":"Conceito"
-                  }
-               ],
-               "ComponenteComNotaRegencia":null,
-               "Nome":"Diversificada"
-            }
-         ],
-         "GruposMatrizComponentesSemNota":[
-            {
-               "ComponentesSemNota":[
-                  {
-                     "Componente":"INFORMATICA - OIE",
-                     "Faltas":0,
-                     "Frequencia":100.0
-                  },
-                  {
-                     "Componente":"LEITURA - OSL",
-                     "Faltas":0,
-                     "Frequencia":100.0
-                  }
-               ],
-               "Nome":"Enriquecimento Curricular"
-            }
-         ],
-         "Titulo":"Conselho de Classe",
-         "Dre":"DRE - JT",
-         "Ue":"UE - 094668 - EMEFM DERVILLE ALLEGRETTI, PROF.",
-         "Turma":"(EF) - 3A",
-         "Data":"20/06/2020",
-         "AlunoNome":"001 - ANA MARIA DOS SANTOS ALMEIDA ",
-         "AlunoNumero":1,
-         "AlunoDataDeNascimento":"08/07/2011",
-         "AlunoCodigoEol":"6073955",
-         "AlunoSituacao":"Ativo em 10/10/2019",
-         "AlunoFrequenciaGlobal":50.0,
-         "AlunoParecerConclusivo":null,
-         "Bimestre":"3",
-         "AnotacoesPedagogicas":null,
-         "RecomendacaoAluno":"Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso.Cuide de seu material escolar. Ele é de sua responsabilidade.Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário.Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares.Esclareça suas dúvidas com os professores sempre que necessário.Frequente às aulas diariamente. Em caso de ausência,justifique-a.Frequente bibliotecas e sites confiáveis para pesquisa.Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula.Peça permissão para falar e saiba ouvir seus colegas.Pesquise. Reflita. Questione. Discuta. Escreva.Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos.Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
-         "RecomendacaoFamilia":"Acompanhe a frequência de seus filhos às aulas e às atividades escolares.Acompanhe seu filho na realização das lições de casa.Ajude a construir uma escola democrática. Participe do Conselho de Escola.Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante.Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador.Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.Leia bilhetes e avisos que a escola mandar e responda quando necessário.Oriente seu filho a cuidar de seu material escolar.Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.Procure visitar a escola de seus filhos sempre que precisar.Verifique diariamente os cadernos e livros de seus filhos.",
-         "AnotacoesAluno":[
-            {
-               "Anotacao":null,
-               "Data":"04/30/2020 09:14:59",
-               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
-               "DisciplinaId":"1105",
-               "Professor":"ANA RITA GOMES DOS SANTOS",
-               "ProfessorRf":"6809324"
-            },
-            {
-               "Anotacao":null,
-               "Data":"04/30/2020 09:14:59",
-               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
-               "DisciplinaId":"1105",
-               "Professor":"ANA RITA GOMES DOS SANTOS",
-               "ProfessorRf":"6809324"
-            },
-            {
-               "Anotacao":null,
-               "Data":"04/30/2020 09:14:59",
-               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
-               "DisciplinaId":"1105",
-               "Professor":"ANA RITA GOMES DOS SANTOS",
-               "ProfessorRf":"6809324"
-            },
-            {
-               "Anotacao":null,
-               "Data":"04/30/2020 09:14:59",
-               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
-               "DisciplinaId":"1105",
-               "Professor":"ANA RITA GOMES DOS SANTOS",
-               "ProfessorRf":"6809324"
-            },
-            {
-               "Anotacao":null,
-               "Data":"04/30/2020 09:14:59",
-               "Disciplina":"REG CLASSE CICLO ALFAB / INTERD 5HRS",
-               "DisciplinaId":"1105",
-               "Professor":"ANA RITA GOMES DOS SANTOS",
-               "ProfessorRf":"6809324"
-            }
-         ]
-      }
-   ]
+    "RelatorioConselhoDeClasse": [
+        {
+            "GruposMatrizComponentesComNota": [
+                {
+                    "TipoNota": "Nota",
+                    "ComponentesComNota": [
+                        {
+                            "NotaConceito": "9.0",
+                            "NotaPosConselho": "10.0",
+                            "Aulas": 1,
+                            "Componente": "MATEMATICA",
+                            "Faltas": 0,
+                            "AusenciasCompensadas": 0,
+                            "Frequencia": 100.0,
+                            "EhEja": false
+                        },
+                        {
+                            "NotaConceito": "9.0",
+                            "NotaPosConselho": "9.0",
+                            "Aulas": 1,
+                            "Componente": "ED. FISICA",
+                            "Faltas": 0,
+                            "AusenciasCompensadas": 0,
+                            "Frequencia": 100.0,
+                            "EhEja": false
+                        },
+                        {
+                            "NotaConceito": null,
+                            "NotaPosConselho": null,
+                            "Aulas": 0,
+                            "Componente": "HISTORIA",
+                            "Faltas": 0,
+                            "AusenciasCompensadas": 0,
+                            "Frequencia": 100.0,
+                            "EhEja": false
+                        },
+                        {
+                            "NotaConceito": "9.0",
+                            "NotaPosConselho": "9.0",
+                            "Aulas": 1,
+                            "Componente": "GEOGRAFIA",
+                            "Faltas": 0,
+                            "AusenciasCompensadas": 0,
+                            "Frequencia": 100.0,
+                            "EhEja": false
+                        },
+                        {
+                            "NotaConceito": "9.0",
+                            "NotaPosConselho": "9.0",
+                            "Aulas": 1,
+                            "Componente": "CIENCIAS",
+                            "Faltas": 0,
+                            "AusenciasCompensadas": 0,
+                            "Frequencia": 100.0,
+                            "EhEja": false
+                        },
+                        {
+                            "NotaConceito": "9.0",
+                            "NotaPosConselho": "9.0",
+                            "Aulas": 1,
+                            "Componente": "LINGUA PORTUGUESA",
+                            "Faltas": 0,
+                            "AusenciasCompensadas": 0,
+                            "Frequencia": 100.0,
+                            "EhEja": false
+                        },
+                        {
+                            "NotaConceito": "5.5",
+                            "NotaPosConselho": "5.5",
+                            "Aulas": 0,
+                            "Componente": "ARTE",
+                            "Faltas": 0,
+                            "AusenciasCompensadas": 0,
+                            "Frequencia": 100.0,
+                            "EhEja": false
+                        }
+                    ],
+                    "ComponenteComNotaRegencia": null,
+                    "Nome": "Base Nacional Comum"
+                },
+                {
+                    "TipoNota": "Nota",
+                    "ComponentesComNota": [
+                        {
+                            "NotaConceito": "9.0",
+                            "NotaPosConselho": "9.0",
+                            "Aulas": 1,
+                            "Componente": "INGLES",
+                            "Faltas": 0,
+                            "AusenciasCompensadas": 0,
+                            "Frequencia": 100.0,
+                            "EhEja": false
+                        }
+                    ],
+                    "ComponenteComNotaRegencia": null,
+                    "Nome": "Diversificada"
+                }
+            ],
+            "GruposMatrizComponentesSemNota": [
+                {
+                    "ComponentesSemNota": [
+                        {
+                            "Componente": "INFORMATICA - OIE",
+                            "Faltas": 0,
+                            "Frequencia": 100.0
+                        },
+                        {
+                            "Componente": "LEITURA - OSL",
+                            "Faltas": 0,
+                            "Frequencia": 100.0
+                        }
+                    ],
+                    "Nome": "Enriquecimento Curricular"
+                }
+            ],
+            "Titulo": "Conselho de Classe",
+            "Dre": "DRE - JT",
+            "Ue": "094765 - EMEF MAXIMO DE MOURA SANTOS, PROF.",
+            "Turma": "EF - 8B",
+            "Data": "23/06/2020",
+            "AlunoNome": "001 - ANA BEATRIZ THEODOCELLO GOMES ",
+            "AlunoNumero": 1,
+            "AlunoDataDeNascimento": "13/10/2006",
+            "AlunoCodigoEol": "4820277",
+            "AlunoSituacao": "ATIVO EM 09/10/2019",
+            "AlunoFrequenciaGlobal": "85.19",
+            "AlunoParecerConclusivo": null,
+            "Bimestre": "2",
+            "AnotacoesPedagogicas": null,
+            "RecomendacaoAluno": "Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso.Cuide de seu material escolar. Ele é de sua responsabilidade.Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário.Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares.Esclareça suas dúvidas com os professores sempre que necessário.Frequente às aulas diariamente. Em caso de ausência,justifique-a.Frequente bibliotecas e sites confiáveis para pesquisa.Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula.Peça permissão para falar e saiba ouvir seus colegas.Pesquise. Reflita. Questione. Discuta. Escreva.Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos.Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
+            "RecomendacaoFamilia": "Acompanhe a frequência de seus filhos às aulas e às atividades escolares.Acompanhe seu filho na realização das lições de casa.Ajude a construir uma escola democrática. Participe do Conselho de Escola.Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante.Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador.Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.Leia bilhetes e avisos que a escola mandar e responda quando necessário.Oriente seu filho a cuidar de seu material escolar.Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.Procure visitar a escola de seus filhos sempre que precisar.Verifique diariamente os cadernos e livros de seus filhos.",
+            "AnotacoesAluno": [
+                {
+                    "Anotacao": null,
+                    "Data": "29/04/2020",
+                    "Disciplina": "Arte",
+                    "DisciplinaId": "139",
+                    "Professor": "SADAKO MORITA",
+                    "ProfessorRf": "3135535"
+                },
+                {
+                    "Anotacao": null,
+                    "Data": "04/05/2020",
+                    "Disciplina": "Matemática",
+                    "DisciplinaId": "2",
+                    "Professor": "ARACI NOBUE NAKANE CHAEBO GADUM",
+                    "ProfessorRf": "7213000"
+                },
+                {
+                    "Anotacao": null,
+                    "Data": "04/05/2020",
+                    "Disciplina": "Educação Física",
+                    "DisciplinaId": "6",
+                    "Professor": "MARCO ANTONIO RUEDA",
+                    "ProfessorRf": "7442351"
+                },
+                {
+                    "Anotacao": null,
+                    "Data": "04/05/2020",
+                    "Disciplina": "Geografia",
+                    "DisciplinaId": "8",
+                    "Professor": "ELIANE VAZ",
+                    "ProfessorRf": "6766714"
+                },
+                {
+                    "Anotacao": null,
+                    "Data": "04/05/2020",
+                    "Disciplina": "Ciências",
+                    "DisciplinaId": "89",
+                    "Professor": "JUCIARA TEIXEIRA HOLZMANN VERNIER",
+                    "ProfessorRf": "6517579"
+                },
+                {
+                    "Anotacao": null,
+                    "Data": "04/05/2020",
+                    "Disciplina": "Inglês",
+                    "DisciplinaId": "9",
+                    "Professor": "ALYSSON EDUARDO GUARIENTO PASCHOAL PINTO",
+                    "ProfessorRf": "7268173"
+                },
+                {
+                    "Anotacao": null,
+                    "Data": "04/05/2020",
+                    "Disciplina": "Língua Portuguesa",
+                    "DisciplinaId": "138",
+                    "Professor": "DALVA DOS SANTOS",
+                    "ProfessorRf": "7485433"
+                }
+            ],
+            "EhBimestreFinal": false
+        }
+    ]
 }
