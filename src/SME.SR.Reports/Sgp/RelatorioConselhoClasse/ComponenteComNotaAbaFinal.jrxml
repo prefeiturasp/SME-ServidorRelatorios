@@ -154,7 +154,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="109" height="30" uuid="22a70f4e-a4bc-44d5-b620-e5abd8450afa"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
@@ -192,7 +192,7 @@
 							</textField>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="139" height="30" uuid="ae9e7989-081b-4b65-bfd6-01ee543cb1d5"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{NotaFinal} != null?$F{NotaFinal}: "----"]]></textFieldExpression>
@@ -209,7 +209,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="41" height="30" uuid="2e74fb61-4531-4f24-9cdb-06f21c0639d8"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
@@ -226,7 +226,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="89" height="30" uuid="08722a93-fa16-4680-886b-ee9f15598c55"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{AusenciasCompensadas}]]></textFieldExpression>
@@ -244,7 +244,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="55" height="30" uuid="4d5f3172-0543-4f59-a563-3ed75c50fa95"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>

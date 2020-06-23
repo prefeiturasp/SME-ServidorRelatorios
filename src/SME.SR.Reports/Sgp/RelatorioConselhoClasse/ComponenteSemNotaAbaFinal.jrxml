@@ -99,8 +99,9 @@
 							</textField>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="109" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
+								<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
 							</textField>
@@ -117,8 +118,9 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="160" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
+								<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
 							</textField>
@@ -135,8 +137,9 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="160" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
+								<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
 							</textField>
@@ -152,8 +155,9 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="124" height="30" uuid="1d59270c-b03f-44a0-9ac8-96a672256a6f"/>
+								<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Parecer}]]></textFieldExpression>
 							</textField>

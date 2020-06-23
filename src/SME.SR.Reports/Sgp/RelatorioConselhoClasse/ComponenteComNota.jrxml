@@ -134,12 +134,14 @@
 				<textFieldExpression><![CDATA[$F{Nome}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="0" y="52" width="553" height="30" isRemoveLineWhenBlank="true" uuid="709f5efd-7ce2-45c1-84d3-997b2a1e2f5e">
+				<reportElement positionType="Float" x="0" y="53" width="553" height="30" isRemoveLineWhenBlank="true" uuid="709f5efd-7ce2-45c1-84d3-997b2a1e2f5e">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.components.autoresize.next" value="true"/>
+					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DatasetComponentes" uuid="b540b73f-85c9-4353-b986-3a5850bcb98b">
@@ -147,10 +149,16 @@
 					</datasetRun>
 					<jr:column width="109" uuid="81d0c585-83d1-44ac-87c8-7fa5e6eb086b">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="109" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+						<jr:detailCell style="Table_TD" height="30" rowSpan="1">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="109" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								</reportElement>
+								<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="0"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -158,9 +166,12 @@
 					<jr:column width="90" uuid="95984bdd-89e4-4212-81a9-34cf15275a71">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="90" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="90" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
+								<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="0"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{NotaConceito} != null ? $F{NotaConceito} : "----"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -168,9 +179,12 @@
 					<jr:column width="111" uuid="d02ca614-2946-4f51-bd5e-fc35b8ad1772">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="111" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="111" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
+								<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="0"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{NotaPosConselho} != null ? $F{NotaPosConselho} : "----"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -178,9 +192,12 @@
 					<jr:column width="40" uuid="c21ed296-3d75-41c0-a478-d55dd1c60775">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="40" height="30" uuid="191c7138-3fe6-4404-a266-e2c5fec6a01b"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="40" height="30" uuid="191c7138-3fe6-4404-a266-e2c5fec6a01b"/>
+								<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="0"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{Aulas}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -188,9 +205,12 @@
 					<jr:column width="50" uuid="b34caede-bb3b-4f89-b1ea-8db702ca503b">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="50" height="30" uuid="d964abf3-dbee-4783-a4ea-e1aef3b36997"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="50" height="30" uuid="d964abf3-dbee-4783-a4ea-e1aef3b36997"/>
+								<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="0"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -198,9 +218,12 @@
 					<jr:column width="100" uuid="6fc50282-efb5-4775-b65b-868f70958ea0">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="100" height="30" uuid="36c206fd-956c-43fb-9342-04adae4e2518"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="100" height="30" uuid="36c206fd-956c-43fb-9342-04adae4e2518"/>
+								<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="0"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{AusenciasCompensadas}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -208,9 +231,12 @@
 					<jr:column width="53" uuid="2d9b966c-b433-4f4b-85ef-82341348db11">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="53" height="30" uuid="b51dac7e-118c-4616-bb59-c1ee14359338"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="53" height="30" uuid="b51dac7e-118c-4616-bb59-c1ee14359338"/>
+								<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<paragraph leftIndent="0"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -218,7 +244,7 @@
 				</jr:table>
 			</componentElement>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="82" width="553" height="30" isRemoveLineWhenBlank="true" uuid="d1112f51-01dd-4200-bd6b-1d4f64b76d5e">
+				<reportElement positionType="Float" x="0" y="83" width="553" height="30" isRemoveLineWhenBlank="true" uuid="d1112f51-01dd-4200-bd6b-1d4f64b76d5e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">

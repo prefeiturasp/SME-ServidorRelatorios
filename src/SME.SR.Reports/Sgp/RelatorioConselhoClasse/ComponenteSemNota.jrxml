@@ -95,7 +95,7 @@
 							</textField>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="109" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
@@ -113,7 +113,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="221" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
@@ -131,7 +131,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="223" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
