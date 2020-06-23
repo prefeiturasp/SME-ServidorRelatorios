@@ -100,7 +100,7 @@
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="109" height="30" uuid="f5fe58d6-d0f9-4931-b77b-f3194530bc16"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
@@ -110,7 +110,7 @@
 					<jr:column width="90" uuid="baeeca42-c69a-43f7-b2fc-09cf491a7279">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:detailCell style="Table 1_TD" height="30">
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="90" height="30" uuid="a576d85a-ccec-499d-9bc2-f6e63ff396b0"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{NotaConceito}]]></textFieldExpression>
@@ -121,7 +121,7 @@
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<textField>
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="111" height="30" uuid="0ebcf4dc-166a-4182-a5b6-ddce2ea145ef"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{NotaPosConselho}]]></textFieldExpression>
