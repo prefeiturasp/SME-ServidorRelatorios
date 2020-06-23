@@ -241,7 +241,7 @@
 				<textElement verticalAlignment="Middle">
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["FREQUENCIA GLOBAL: "+$F{AlunoFrequenciaGlobal}+"%"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["FREQUÊNCIA GLOBAL: "+$F{AlunoFrequenciaGlobal}+"%"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="410" y="133" width="144" height="22" uuid="510c7c82-ff1b-4ef1-9208-0c7573e6e7aa">
