@@ -24,7 +24,10 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<string>(query, new { turmaCodigo });
+                var ciclo = await conexao.QueryFirstOrDefaultAsync<string>(query, new { turmaCodigo });
+                await conexao.CloseAsync();
+
+                return ciclo;
             }
         }
 
