@@ -13,7 +13,7 @@
 
 		internal static string Recomendacoes = @"select cca.recomendacoes_aluno RecomendacoesAluno, 
 			cca.recomendacoes_familia RecomendacoesFamilia, 
-			cca.anotacoes_pedagogicas RecomendacoesPedagogicas
+			cca.anotacoes_pedagogicas AnotacoesPedagogicas
 			from conselho_classe cc
 			inner join conselho_classe_aluno cca on cca.conselho_classe_id = cc.id 
 			where cc.fechamento_turma_id = @fechamentoTurmaId
