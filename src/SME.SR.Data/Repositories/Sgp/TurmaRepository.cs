@@ -18,6 +18,16 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
+        public async Task<string> ObterCicloAprendizagem(string turmaCodigo)
+        {
+            var query = TurmaConsultas.CicloAprendizagemPorTurma;
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<string>(query, new { turmaCodigo });
+            }
+        }
+
         public async Task<IEnumerable<Aluno>> ObterDadosAlunos(string codigoTurma)
         {
             var query = TurmaConsultas.DadosAlunos;

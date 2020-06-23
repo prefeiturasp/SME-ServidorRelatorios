@@ -155,5 +155,12 @@ namespace SME.SR.Data
 			t.nome, t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano_letivo AnoLetivo
         from  turma t
         where t.turma_id = @codigoTurma";
+
+        internal static string CicloAprendizagemPorTurma = @"select c.descricao
+          from turma t
+         inner join tipo_ciclo_ano a on a.modalidade = t.modalidade_codigo 
+ 							        and a.ano = t.ano
+         inner join tipo_ciclo c on c.id = a.tipo_ciclo_id
+        where t.turma_id = @turmaCodigo ";
     }
 }

@@ -13,5 +13,6 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<Turma>> ObterPorFiltros(string codigoUe, Modalidade? modalidade, int? anoLetivo, int? semestre);
 
         Task<Turma> ObterPorCodigo(string codigoTurma);
+        Task<string> ObterCicloAprendizagem(string turmaCodigo);
     }
 }
