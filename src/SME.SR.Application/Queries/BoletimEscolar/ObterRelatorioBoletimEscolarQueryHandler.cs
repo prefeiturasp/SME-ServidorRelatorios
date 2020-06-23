@@ -124,9 +124,7 @@ namespace SME.SR.Application
             return await _mediator.Send(new ObterTipoNotaQuery()
             {
                 PeriodoEscolar = periodoEscolar,
-                Turma = turma,
-                DreId = dreId,
-                UeId = ueId
+                Turma = turma
             });
         }
 
@@ -216,7 +214,7 @@ namespace SME.SR.Application
                         {
                             var componenteNaRegencia = gruposMatriz.FirstOrDefault(g => g.Descricao == grupoMatriz.Nome).
                                                             ComponenteCurricularRegencia?.ComponentesCurriculares?.
-                                                            FirstOrDefault(cc => cc.Nome == componenteCurricular.Nome);
+                                                            FirstOrDefault(cc => cc.Nome == componenteCurricular.Componente);
 
                             var notaConceito = componenteCurricular.NotaPosConselho ?? componenteCurricular.NotaConceito;
 
@@ -228,7 +226,7 @@ namespace SME.SR.Application
                             {
                                 componenteNaRegencia = new ComponenteCurricularRegenciaNotaDto()
                                 {
-                                    Nome = componenteCurricular.Nome
+                                    Nome = componenteCurricular.Componente
                                 };
 
                                 SetarNotaRegencia(componenteNaRegencia, fechamento.PeriodoEscolar.Bimestre, notaConceito);
@@ -289,7 +287,7 @@ namespace SME.SR.Application
                         {
                             gruposMatriz.FirstOrDefault(c => c.Descricao == grupoMatriz.Nome).
                              ComponenteCurricularRegencia.ComponentesCurriculares.FirstOrDefault(cc =>
-                                                       cc.Nome == componenteCurricular.Nome)
+                                                       cc.Nome == componenteCurricular.Componente)
                                                        .NotaFinal = componenteCurricular.NotaFinal;
                         }
                     }
