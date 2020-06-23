@@ -84,7 +84,7 @@ namespace SME.SR.Application
                 relatorio.AlunoSituacao = dadosAluno.SituacaoRelatorio;
 
                 SentrySdk.AddBreadcrumb($"Obtendo frequencia global do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                relatorio.AlunoFrequenciaGlobal = await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
+                relatorio.AlunoFrequenciaGlobal = (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno)).ToString();
 
                 if (bimestre.HasValue)
                 {
@@ -113,6 +113,9 @@ namespace SME.SR.Application
                 }
                 else
                 {
+                    relatorio.AlunoParecerConclusivo = 
+                        await ObterParecerConclusivoPorAluno(request.CodigoAluno, request.ConselhoClasseId);
+
                     SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesComNota Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                     ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesComNota =
                         await _mediator.Send(new ObterDadosComponenteComNotaFinalQuery()
@@ -169,6 +172,15 @@ namespace SME.SR.Application
                 throw ex;
             }
 
+        }
+
+        private async Task<string> ObterParecerConclusivoPorAluno(string codigoAluno, long conselhoClasseId)
+        {
+            return await _mediator.Send(new ObterParecerConclusivoPorAlunoQuery()
+            {
+                 CodigoAluno = codigoAluno,
+                  ConselhoClasseId = conselhoClasseId
+            }); 
         }
 
         private async Task<FechamentoTurma> ObterFechamentoTurmaPorId(long fechamentoTurmaId)

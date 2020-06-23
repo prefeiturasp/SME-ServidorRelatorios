@@ -8,7 +8,7 @@
                      "NotaConceito":null,
                      "NotaPosConselho":null,
                      "Aulas":0,
-                     "Componente":"ED. FISICA",
+                     "Componente":"ED. FISICA teste teste teste teste teste teste aaa aaa aaa",
                      "Faltas":0,
                      "AusenciasCompensadas":0,
                      "Frequencia":100.0,
@@ -23,8 +23,7 @@
                      "Faltas":0,
                      "AusenciasCompensadas":0,
                      "Frequencia":100.0,
-                     "EhEja":false,
-                     "TipoNota":"Conceito"
+                     "EhEja":false
                   }
                ],
                "ComponenteComNotaRegencia":{
@@ -63,10 +62,10 @@
                   ],
                   "Faltas":0,
                   "AusenciasCompensadas":0,
-                  "Frequencia":100.0,
-                  "TipoNota":"Conceito"
+                  "Frequencia":100.0
                },
-               "Nome":"Base Nacional Comum"
+               "Nome":"Base Nacional Comum",
+               "TipoNota":"Conceito"
             },
             {
                "ComponentesComNota":[

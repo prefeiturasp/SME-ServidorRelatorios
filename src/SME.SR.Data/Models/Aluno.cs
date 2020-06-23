@@ -19,7 +19,7 @@ namespace SME.SR.Data
         public bool PossuiDeficiencia { get; set; }
 
         public string SituacaoRelatorio =>
-            $"{SituacaoMatricula} em {DataSituacao:dd/MM/yyyy}";
+            $"{SituacaoMatricula} em {DataSituacao:dd/MM/yyyy}".ToUpper();
 
         public string NomeRelatorio =>
              $"{NumeroAlunoChamada} - {(NomeSocialAluno ?? NomeAluno)} " +

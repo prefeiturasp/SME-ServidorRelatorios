@@ -40,24 +40,36 @@ namespace SME.SR.Application
                 };
             }
 
-            RemoverTags(recomendacoes);
+            FormatarRecomendacoes(recomendacoes);
 
             return recomendacoes;
         }
 
-        private void RemoverTags(RecomendacaoConselhoClasseAluno recomendacaoConselho)
+        private void FormatarRecomendacoes(RecomendacaoConselhoClasseAluno recomendacaoConselho)
         {
-            if (!string.IsNullOrEmpty(recomendacaoConselho.AnotacoesPedagogicas))
-                recomendacaoConselho.AnotacoesPedagogicas =
-                    Regex.Replace(recomendacaoConselho.AnotacoesPedagogicas, "<.*?>", String.Empty);
+            recomendacaoConselho.AnotacoesPedagogicas =
+               Formatar(recomendacaoConselho.AnotacoesPedagogicas);
 
-            if (!string.IsNullOrEmpty(recomendacaoConselho.RecomendacoesAluno))
-                recomendacaoConselho.RecomendacoesAluno =
-                    Regex.Replace(recomendacaoConselho.RecomendacoesAluno, "<.*?>", String.Empty);
+            recomendacaoConselho.RecomendacoesAluno =
+                Formatar(recomendacaoConselho.RecomendacoesAluno);
 
-            if (!string.IsNullOrEmpty(recomendacaoConselho.RecomendacoesFamilia))
-                recomendacaoConselho.RecomendacoesFamilia =
-                    Regex.Replace(recomendacaoConselho.RecomendacoesFamilia, "<.*?>", String.Empty);
+            recomendacaoConselho.RecomendacoesFamilia =
+                Formatar(recomendacaoConselho.RecomendacoesFamilia);
+        }
+
+        private string Formatar(string recomendacao)
+        {
+            if (!string.IsNullOrEmpty(recomendacao))
+            {
+                string semTags = Regex.Replace(recomendacao, "<.*?>", String.Empty);
+                string adicionarEspaco = Regex.Replace(semTags, @"\.(?! |$)", ". ");
+
+                return adicionarEspaco;
+            }
+            else
+            {
+                return recomendacao;
+            }
         }
 
         private string MontaTextUlLis(IEnumerable<string> textos)

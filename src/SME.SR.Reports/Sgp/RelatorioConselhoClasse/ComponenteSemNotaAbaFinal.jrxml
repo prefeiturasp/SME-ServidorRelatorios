@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponenteSemNota" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6e29602d-685a-4dce-8cab-9d0efd25b538">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SGPDataAdapter.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -56,6 +56,10 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="frequencia"/>
 			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
 		</field>
+		<field name="Parecer" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="parecer"/>
+			<fieldDescription><![CDATA[Parecer]]></fieldDescription>
+		</field>
 	</subDataset>
 	<queryString language="json">
 		<![CDATA[relatorioConselhoDeClasse.GruposMatrizComponentesSemNota]]>
@@ -97,44 +101,65 @@
 						<jr:detailCell style="Table_TD" height="30">
 							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="109" height="30" uuid="ae6eb87b-2b84-4a74-8138-e290341c3b2c"/>
+								<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Componente}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="221" uuid="95984bdd-89e4-4212-81a9-34cf15275a71">
+					<jr:column width="160" uuid="95984bdd-89e4-4212-81a9-34cf15275a71">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<staticText>
-								<reportElement x="0" y="0" width="221" height="30" uuid="abd89629-bc53-4ceb-a56b-be4967bd3779"/>
+								<reportElement x="0" y="0" width="160" height="30" uuid="abd89629-bc53-4ceb-a56b-be4967bd3779"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[FALTAS]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField textAdjust="StretchHeight">
-								<reportElement x="0" y="0" width="221" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
+								<reportElement x="0" y="0" width="160" height="30" uuid="61223072-0797-4e28-8418-d8aa4180cd0d"/>
+								<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Faltas}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="223" uuid="d02ca614-2946-4f51-bd5e-fc35b8ad1772">
+					<jr:column width="160" uuid="d02ca614-2946-4f51-bd5e-fc35b8ad1772">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<staticText>
-								<reportElement x="0" y="0" width="223" height="30" uuid="20de03bc-4e3b-481f-8162-7e33548d0f55"/>
+								<reportElement x="0" y="0" width="160" height="30" uuid="20de03bc-4e3b-481f-8162-7e33548d0f55"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<text><![CDATA[%FREQ.]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField textAdjust="StretchHeight">
-								<reportElement x="0" y="0" width="223" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
+								<reportElement x="0" y="0" width="160" height="30" uuid="adf9641e-08c4-4886-a6ec-4c297f041b87"/>
+								<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="124" uuid="e739c1d9-ccfa-4404-b976-6bee3fcc4a04">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="124" height="30" uuid="ea34b0f0-2df8-4fdf-92de-dc251fbaf6d9"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[PARECER FINAL]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight">
+								<reportElement x="0" y="0" width="124" height="30" uuid="1d59270c-b03f-44a0-9ac8-96a672256a6f"/>
+								<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Parecer}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
