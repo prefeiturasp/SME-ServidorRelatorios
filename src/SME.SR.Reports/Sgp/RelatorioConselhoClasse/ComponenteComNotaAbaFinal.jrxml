@@ -130,7 +130,7 @@
 				<textFieldExpression><![CDATA[$F{Nome}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="0" y="53" width="553" height="30" uuid="dbcc4fab-41ad-4ff4-b2a1-a1b149afd4f4">
+				<reportElement positionType="Float" x="0" y="53" width="553" height="30" isRemoveLineWhenBlank="true" uuid="dbcc4fab-41ad-4ff4-b2a1-a1b149afd4f4">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
