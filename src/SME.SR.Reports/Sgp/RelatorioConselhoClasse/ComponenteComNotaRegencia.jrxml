@@ -113,7 +113,7 @@
 							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="90" height="30" uuid="a576d85a-ccec-499d-9bc2-f6e63ff396b0"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{NotaConceito}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{NotaConceito} != null ? $F{NotaConceito} : "----"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -124,7 +124,7 @@
 							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="111" height="30" uuid="0ebcf4dc-166a-4182-a5b6-ddce2ea145ef"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{NotaPosConselho}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{NotaPosConselho} != null ? $F{NotaPosConselho} : "----"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
