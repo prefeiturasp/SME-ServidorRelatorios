@@ -84,6 +84,16 @@ namespace SME.SR.Application
 
         private async Task<ComponenteFrequenciaRegenciaBimestre> ObterNotasFrequenciaRegencia(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Usuario usuario)
         {
+            var componentesRegencia = await _mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
+            {
+                Turma = turma,
+                CdComponenteCurricular = disciplina.CodDisciplina,
+                Usuario = usuario
+            });
+
+            if (componentesRegencia == null || !componentesRegencia.Any())
+                return null;
+
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
             {
                 Aulas = frequenciaAluno.TotalAulas,
@@ -91,13 +101,6 @@ namespace SME.SR.Application
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
                 Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100)
             };
-
-            var componentesRegencia = await _mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
-            {
-                Turma = turma,
-                CdComponenteCurricular = disciplina.CodDisciplina,
-                Usuario = usuario
-            });
 
             foreach (var componenteRegencia in componentesRegencia)
             {
