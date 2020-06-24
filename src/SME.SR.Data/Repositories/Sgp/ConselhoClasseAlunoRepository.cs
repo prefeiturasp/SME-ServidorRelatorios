@@ -37,5 +37,16 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<RecomendacaoConselhoClasseAluno>(query, parametros);
             }
         }
+
+        public async Task<bool> PossuiConselhoClasseCadastrado(long conselhoClasseId, string codigoAluno)
+        {
+            var query = ConselhoClasseAlunoConsultas.ObterPorConselhoClasseId;
+            var parametros = new { ConselhoClasseId = conselhoClasseId, CodigoAluno = codigoAluno };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QuerySingleOrDefaultAsync<bool>(query, parametros);
+            }
+        }
     }
 }
