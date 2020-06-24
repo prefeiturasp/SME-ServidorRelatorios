@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GrupoComponenteCurricular" pageWidth="285" pageHeight="20" columnWidth="285" leftMargin="0" rightMargin="0" topMargin="20" bottomMargin="0" whenResourceMissingType="Empty" uuid="a5c034ce-158c-4490-8631-ca601ce91413">
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -104,7 +95,7 @@
 	<detail>
 		<band splitType="Stretch">
 			<componentElement>
-				<reportElement positionType="Float" x="0" y="-20" width="285" height="10" uuid="1bbcb7ab-9f0c-4da3-8734-469eafb98ea9">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="-20" width="285" height="8" uuid="1bbcb7ab-9f0c-4da3-8734-469eafb98ea9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.CONTENTS.height" value="px"/>
@@ -114,9 +105,9 @@
 					<datasetRun subDataset="DatasetBoletimGrupos" uuid="1f1327bf-931a-412f-99ce-f3cc4fc9ebcd">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("grupos")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:listContents height="10" width="285">
+					<jr:listContents height="8" width="285">
 						<componentElement>
-							<reportElement stretchType="ContainerHeight" x="25" y="0" width="260" height="10" forecolor="#DADADA" uuid="85ef9b8a-5235-4fae-b884-305f726f7025">
+							<reportElement positionType="Float" stretchType="ContainerHeight" x="25" y="0" width="260" height="8" forecolor="#DADADA" uuid="85ef9b8a-5235-4fae-b884-305f726f7025">
 								<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
 								<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 								<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -141,7 +132,7 @@
 									<jr:detailCell style="Table_TD" height="8">
 										<property name="com.jaspersoft.studio.unit.height" value="px"/>
 										<textField>
-											<reportElement stretchType="ContainerHeight" x="0" y="0" width="63" height="8" forecolor="#42474A" uuid="548239cc-89b5-4850-95bc-85306bdd28a7">
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="63" height="8" forecolor="#42474A" uuid="548239cc-89b5-4850-95bc-85306bdd28a7">
 												<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 												<property name="property.name" value="value"/>
 												<property name="net.sf.jasperreports.export.xls.column.width" value="60"/>
@@ -169,7 +160,7 @@
 									<jr:detailCell style="Table_TD" height="8">
 										<property name="com.jaspersoft.studio.unit.height" value="px"/>
 										<textField>
-											<reportElement x="0" y="0" width="21" height="8" forecolor="#42474A" uuid="ae3a7068-1038-40ef-8a27-c635fe035ef6">
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="21" height="8" forecolor="#42474A" uuid="ae3a7068-1038-40ef-8a27-c635fe035ef6">
 												<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 											</reportElement>
 											<box>
@@ -193,7 +184,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="21" height="8" forecolor="#42474A" uuid="82c78177-d0d6-46c8-b572-eac8d8f5afb3"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="21" height="8" forecolor="#42474A" uuid="82c78177-d0d6-46c8-b572-eac8d8f5afb3"/>
 											<box>
 												<pen lineWidth="0.25"/>
 											</box>
@@ -215,7 +206,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="21" height="8" forecolor="#42474A" uuid="2532b127-1b52-45d9-9b92-37bfe933d7b6">
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="21" height="8" forecolor="#42474A" uuid="2532b127-1b52-45d9-9b92-37bfe933d7b6">
 												<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 											</reportElement>
 											<box>
@@ -239,7 +230,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="20" height="8" forecolor="#42474A" uuid="f596f061-aaae-4bcc-a10c-0ea9f2830798"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="20" height="8" forecolor="#42474A" uuid="f596f061-aaae-4bcc-a10c-0ea9f2830798"/>
 											<box>
 												<pen lineWidth="0.25"/>
 											</box>
@@ -261,7 +252,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="20" height="8" forecolor="#42474A" uuid="88fb7dec-cca6-476e-9082-66445808bed8"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="20" height="8" forecolor="#42474A" uuid="88fb7dec-cca6-476e-9082-66445808bed8"/>
 											<box>
 												<pen lineWidth="0.25"/>
 											</box>
@@ -283,7 +274,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="19" height="8" forecolor="#42474A" uuid="bd7169c7-892c-4795-b36b-66d342bfa0b5">
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="19" height="8" forecolor="#42474A" uuid="bd7169c7-892c-4795-b36b-66d342bfa0b5">
 												<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 											</reportElement>
 											<box>
@@ -307,7 +298,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="19" height="8" forecolor="#42474A" uuid="b4b32de3-3007-43dd-917a-4ddb9b8f0b8c">
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="19" height="8" forecolor="#42474A" uuid="b4b32de3-3007-43dd-917a-4ddb9b8f0b8c">
 												<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 											</reportElement>
 											<box>
@@ -331,7 +322,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="19" height="8" forecolor="#42474A" uuid="dbe69a95-8314-42d3-bba1-02a856cd7921"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="19" height="8" forecolor="#42474A" uuid="dbe69a95-8314-42d3-bba1-02a856cd7921"/>
 											<box>
 												<pen lineWidth="0.25"/>
 											</box>
@@ -353,7 +344,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="19" height="8" forecolor="#42474A" uuid="2a8655c6-8c08-4718-b280-6bad9fe210b7"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="19" height="8" forecolor="#42474A" uuid="2a8655c6-8c08-4718-b280-6bad9fe210b7"/>
 											<box>
 												<pen lineWidth="0.25"/>
 											</box>
@@ -375,7 +366,7 @@
 									<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 									<jr:detailCell style="Table_TD" height="8">
 										<textField>
-											<reportElement x="0" y="0" width="18" height="8" forecolor="#42474A" uuid="dc650183-0a86-4812-9036-f9b0cbb501da">
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="18" height="8" forecolor="#42474A" uuid="dc650183-0a86-4812-9036-f9b0cbb501da">
 												<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 											</reportElement>
 											<box>
@@ -390,8 +381,8 @@
 								</jr:column>
 							</jr:table>
 						</componentElement>
-						<textField textAdjust="StretchHeight">
-							<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="25" height="10" forecolor="#42474A" uuid="407a7e21-be3b-4bda-b0e6-1bac7399d653">
+						<textField textAdjust="ScaleFont">
+							<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="25" height="8" forecolor="#42474A" uuid="407a7e21-be3b-4bda-b0e6-1bac7399d653">
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							</reportElement>
 							<box padding="0">
