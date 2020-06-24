@@ -30,11 +30,24 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
             {
                 codigoAluno = aluno.CodigoAluno.ToString();
 
-                lstRelatorioAlunos.Add(await ObterRelatorioConselhoClasseAluno(request.ConselhoClasseId, request.FechamentoTurmaId,
-                                                                               codigoAluno, request.Usuario));
+                var alunoPossuiConselho = await AlunoPossuiConselhoClasseCadastrado(request.ConselhoClasseId, codigoAluno);
+
+                if (alunoPossuiConselho)
+                    lstRelatorioAlunos.Add(await ObterRelatorioConselhoClasseAluno(request.ConselhoClasseId, request.FechamentoTurmaId,
+                                                                                   codigoAluno, request.Usuario));
             }
 
             return lstRelatorioAlunos;
+        }
+
+        private async Task<bool> AlunoPossuiConselhoClasseCadastrado(long conselhoClasseId,
+                                                                                   string codigoAluno)
+        {
+            return await mediator.Send(new AlunoPossuiConselhoClasseCadastradoQuery()
+            {
+                ConselhoClasseId = conselhoClasseId,
+                CodigoAluno = codigoAluno
+            });
         }
 
         private async Task<IEnumerable<Aluno>> ObterAlunosTurma(string codigoTurma)
