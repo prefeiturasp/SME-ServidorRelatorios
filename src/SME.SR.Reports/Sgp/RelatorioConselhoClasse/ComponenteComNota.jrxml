@@ -118,7 +118,7 @@
 		<band height="113" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="0" y="0" width="553" height="23" uuid="ba3aa18c-517d-4771-ac43-4aebd861d1ea">
+				<reportElement x="0" y="0" width="553" height="23" isPrintWhenDetailOverflows="true" uuid="ba3aa18c-517d-4771-ac43-4aebd861d1ea">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -253,7 +253,7 @@
 				<subreportExpression><![CDATA["ComponenteComNotaRegencia.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="0" y="23" width="109" height="30" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="dbba0b97-c0be-4130-8474-1836cbdeafc4"/>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="23" width="109" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="dbba0b97-c0be-4130-8474-1836cbdeafc4"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
@@ -265,7 +265,7 @@
 				<text><![CDATA[COMPONENTE]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" mode="Opaque" x="109" y="23" width="90" height="30" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="d488ee38-a4b4-4e8d-9882-26c6fc7e1328"/>
+				<reportElement positionType="Float" mode="Opaque" x="109" y="23" width="90" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="d488ee38-a4b4-4e8d-9882-26c6fc7e1328"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
@@ -277,7 +277,7 @@
 				<textFieldExpression><![CDATA[$F{TipoNota}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" mode="Opaque" x="199" y="23" width="111" height="30" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="ce5edf6d-17c5-4110-9e2b-cc15701b8ebf"/>
+				<reportElement positionType="Float" mode="Opaque" x="199" y="23" width="111" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="ce5edf6d-17c5-4110-9e2b-cc15701b8ebf"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
@@ -289,7 +289,7 @@
 				<textFieldExpression><![CDATA[$F{TipoNota}.toUpperCase()+" PÓS-CONSELHO"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="310" y="23" width="40" height="30" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="1723a3c8-7cd6-4080-b153-53e3d55a2cf2"/>
+				<reportElement positionType="Float" mode="Opaque" x="310" y="23" width="40" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="1723a3c8-7cd6-4080-b153-53e3d55a2cf2"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
@@ -301,7 +301,7 @@
 				<text><![CDATA[AULAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="350" y="23" width="50" height="30" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="7ac18991-89a9-409b-be24-f0d10100841e"/>
+				<reportElement positionType="Float" mode="Opaque" x="350" y="23" width="50" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="7ac18991-89a9-409b-be24-f0d10100841e"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
@@ -313,7 +313,7 @@
 				<text><![CDATA[FALTAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="400" y="23" width="100" height="30" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="9ef116cf-5297-4cdb-9b58-0ad600b242a6">
+				<reportElement positionType="Float" mode="Opaque" x="400" y="23" width="100" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="9ef116cf-5297-4cdb-9b58-0ad600b242a6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -327,7 +327,7 @@
 				<text><![CDATA[AUSÊNCIAS COMPENSADAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="500" y="23" width="53" height="30" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="a6fd1417-e99d-48dd-b94a-399854a34cff"/>
+				<reportElement positionType="Float" mode="Opaque" x="500" y="23" width="53" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="a6fd1417-e99d-48dd-b94a-399854a34cff"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>

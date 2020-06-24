@@ -113,7 +113,7 @@
 		<band height="113" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="0" y="0" width="553" height="23" uuid="ba3aa18c-517d-4771-ac43-4aebd861d1ea">
+				<reportElement x="0" y="0" width="553" height="23" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="ba3aa18c-517d-4771-ac43-4aebd861d1ea">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -219,7 +219,7 @@
 				<subreportExpression><![CDATA["ComponenteComNotaRegenciaAbaFinal.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="23" width="109" height="30" backcolor="#F3F3F3" uuid="94c47e34-fc56-4050-8ecd-c6dc21b84631"/>
+				<reportElement mode="Opaque" x="0" y="23" width="109" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="94c47e34-fc56-4050-8ecd-c6dc21b84631"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -227,7 +227,7 @@
 				<text><![CDATA[COMPONENTE]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Opaque" x="109" y="23" width="120" height="30" backcolor="#F3F3F3" uuid="8f8de45a-c8e2-4600-9bda-a4f7e4594d2c"/>
+				<reportElement mode="Opaque" x="109" y="23" width="120" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="8f8de45a-c8e2-4600-9bda-a4f7e4594d2c"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -235,7 +235,7 @@
 				<textFieldExpression><![CDATA[$F{TipoNota}.toUpperCase()+" BIMESTRES"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="229" y="23" width="139" height="30" backcolor="#F3F3F3" uuid="1d7084c9-33af-4de2-83bb-f2ab3bd95465"/>
+				<reportElement mode="Opaque" x="229" y="23" width="139" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="1d7084c9-33af-4de2-83bb-f2ab3bd95465"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -243,7 +243,7 @@
 				<textFieldExpression><![CDATA[$F{TipoNota}.toUpperCase()+" FINAL"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="409" y="23" width="89" height="30" backcolor="#F3F3F3" uuid="dae7b63a-8ae7-41ab-b5a6-d0b5a050f83e"/>
+				<reportElement mode="Opaque" x="409" y="23" width="89" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="dae7b63a-8ae7-41ab-b5a6-d0b5a050f83e"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -251,7 +251,7 @@
 				<text><![CDATA[AUSÊNCIAS COMPENSADAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="368" y="23" width="41" height="30" backcolor="#F3F3F3" uuid="18495d93-267f-4ba6-a6ea-194602956315"/>
+				<reportElement mode="Opaque" x="368" y="23" width="41" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="18495d93-267f-4ba6-a6ea-194602956315"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -259,7 +259,7 @@
 				<text><![CDATA[FALTAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="498" y="23" width="55" height="30" backcolor="#F3F3F3" uuid="eb07d765-5371-45b6-9760-e95b2f72a650"/>
+				<reportElement mode="Opaque" x="498" y="23" width="55" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="eb07d765-5371-45b6-9760-e95b2f72a650"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>

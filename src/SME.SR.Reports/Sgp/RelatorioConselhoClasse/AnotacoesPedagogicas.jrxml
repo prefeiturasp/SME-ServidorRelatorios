@@ -24,7 +24,7 @@
 	<pageHeader>
 		<band height="46" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="1" y="0" width="553" height="23" isRemoveLineWhenBlank="true" uuid="5657e485-c33a-4cb5-a808-eeac37c7fd66">
+				<reportElement positionType="Float" x="1" y="0" width="553" height="23" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="5657e485-c33a-4cb5-a808-eeac37c7fd66">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$F{AnotacoesPedagogicas} != null]]></printWhenExpression>
 				</reportElement>
@@ -41,7 +41,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="1" y="23" width="553" height="23" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" backcolor="#F3F3F3" uuid="518b646d-a229-48c3-8508-db2053773bb2">
+				<reportElement positionType="Float" mode="Opaque" x="1" y="23" width="553" height="23" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="518b646d-a229-48c3-8508-db2053773bb2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.spacingBefore" value="pixel"/>

@@ -124,26 +124,19 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{AlunoNome}]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement x="1" y="132" width="213" height="23" uuid="bad91106-e485-4716-8ab2-80f4fcdb198b"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="4" y="132" width="60" height="23" uuid="02bf9b65-0033-4541-a86b-5908fb79bff9">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[SITUAÇÃO:]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="59" y="133" width="154" height="23" uuid="efcc5fbb-755f-444c-855d-1fe2f60268f3">
+				<reportElement x="1" y="133" width="213" height="22" uuid="efcc5fbb-755f-444c-855d-1fe2f60268f3">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
 				<textElement verticalAlignment="Middle">
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{AlunoSituacao}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["SITUAÇÃO: " + $F{AlunoSituacao}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="1" y="155" width="553" height="23" uuid="6ca0fa39-1506-418a-bc14-2f47047082b2"/>
@@ -154,7 +147,7 @@
 				<textFieldExpression><![CDATA[$F{Bimestre}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="73" width="80" height="23" uuid="cebf5147-d0d7-41f4-8789-92e0271ac266">
+				<reportElement x="0" y="73" width="85" height="23" uuid="cebf5147-d0d7-41f4-8789-92e0271ac266">
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 				</reportElement>
 				<box padding="3">
@@ -170,8 +163,9 @@
 				<textFieldExpression><![CDATA["DRE: "+$F{Dre}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement x="80" y="73" width="275" height="23" uuid="d3f52289-eac4-43e8-8ab0-ef2679d5883a">
+				<reportElement x="85" y="73" width="270" height="23" uuid="d3f52289-eac4-43e8-8ab0-ef2679d5883a">
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box padding="3">
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -233,7 +227,7 @@
 				<textFieldExpression><![CDATA["DATA DE NASCIMENTO: "+$F{AlunoDataDeNascimento}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="213" y="133" width="197" height="22" uuid="a85a0a50-025e-4834-9459-6544fea058b3">
+				<reportElement x="214" y="133" width="196" height="22" uuid="a85a0a50-025e-4834-9459-6544fea058b3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 					<printWhenExpression><![CDATA[$F{AlunoFrequenciaGlobal} != null]]></printWhenExpression>
