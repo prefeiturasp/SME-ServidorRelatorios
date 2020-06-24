@@ -10,9 +10,10 @@ namespace SME.SR.Data
                                                                  periodo_inicio PeriodoInicio
                     from periodo_escolar where tipo_calendario_id = @tipoCalendarioId ";
 
-        internal static string ObterUltimoPeriodo(int anoLetivo, ModalidadeTipoCalendario modalidade, int semestre = 0) {
+        internal static string ObterUltimoPeriodo(ModalidadeTipoCalendario modalidade, int semestre = 0) {
 
-            var query = new StringBuilder(@"select p.* 
+            var query = new StringBuilder(@"select p.bimestre, 
+                        p.periodo_fim PeriodoFim, p.periodo_inicio PeriodoInicio
                             from tipo_calendario t
                          inner join periodo_escolar p on p.tipo_calendario_id = t.id
                           where t.excluido = false and t.situacao

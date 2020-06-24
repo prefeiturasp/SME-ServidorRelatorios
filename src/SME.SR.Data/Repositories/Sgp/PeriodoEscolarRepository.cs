@@ -30,7 +30,7 @@ namespace SME.SR.Data
 
         public async Task<PeriodoEscolar> ObterUltimoPeriodoAsync(int anoLetivo, ModalidadeTipoCalendario modalidadeTipoCalendario, int semestre)
         {
-            var query = PeriodoEscolarConsultas.ObterUltimoPeriodo(anoLetivo, modalidadeTipoCalendario, semestre);
+            var query = PeriodoEscolarConsultas.ObterUltimoPeriodo(modalidadeTipoCalendario, semestre);
 
             DateTime dataReferencia = DateTime.MinValue;
             if (modalidadeTipoCalendario == ModalidadeTipoCalendario.EJA)
