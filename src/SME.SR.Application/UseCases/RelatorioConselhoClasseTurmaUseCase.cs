@@ -40,7 +40,13 @@ namespace SME.SR.Application
                     jsonString = JsonConvert.SerializeObject(new { RelatorioConselhoDeClasse = listFinal });
                 }
 
-                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
+                var urlRelatorio = "";
+
+                if (relatorioAlunos.FirstOrDefault().EhBimestreFinal)
+                    urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal";
+                else urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasse";
+
+                await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
             catch (Exception ex)
             {
