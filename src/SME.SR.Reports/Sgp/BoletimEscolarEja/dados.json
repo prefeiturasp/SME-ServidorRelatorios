@@ -1,1 +1,952 @@
-{ "RelatorioBoletimEscolar": { "boletins": [ { "descricaoGrupos": "GRUPO 01 : Base Nacional comum | GRUPO 02 : Base Nacional comum | GRUPO 03 : Base Nacional comum", "observacoes": "O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas.", "cabecalho": { "nomeDre": "DRE CAMPO LIMPO", "nomeUe": "091847 CEU EMEF PARAISOPOLIS", "nomeTurma": "EM-1A", "aluno": "09 - ÁLVARO RAMOS GRASSI" }, "grupos": [ { "id": "1", "nome": "GRUPO 01", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "2", "nome": "GRUPO 02", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "3", "nome": "GRUPO 03", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] } ] }, { "descricaoGrupos": "GRUPO 01 : Base Nacional comum | GRUPO 02 : Base Nacional comum | GRUPO 03 : Base Nacional comum", "observacoes": "O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas.", "cabecalho": { "nomeDre": "DRE CAMPO LIMPO", "nomeUe": "091847 CEU EMEF PARAISOPOLIS", "nomeTurma": "EM-1A", "aluno": "09 - ÁLVARO RAMOS GRASSI" }, "grupos": [ { "id": "1", "nome": "GRUPO 01", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "2", "nome": "GRUPO 02", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "3", "nome": "GRUPO 03", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] } ] }, { "descricaoGrupos": "GRUPO 01 : Base Nacional comum | GRUPO 02 : Base Nacional comum | GRUPO 03 : Base Nacional comum", "observacoes": "O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas.", "cabecalho": { "nomeDre": "DRE CAMPO LIMPO", "nomeUe": "091847 CEU EMEF PARAISOPOLIS", "nomeTurma": "EM-1A", "aluno": "09 - ÁLVARO RAMOS GRASSI" }, "grupos": [ { "id": "1", "nome": "GRUPO 01", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "2", "nome": "GRUPO 02", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "3", "nome": "GRUPO 03", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] } ] }, { "descricaoGrupos": "GRUPO 01 : Base Nacional comum | GRUPO 02 : Base Nacional comum | GRUPO 03 : Base Nacional comum", "observacoes": "O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas.", "cabecalho": { "nomeDre": "DRE CAMPO LIMPO", "nomeUe": "091847 CEU EMEF PARAISOPOLIS", "nomeTurma": "EM-1A", "aluno": "09 - ÁLVARO RAMOS GRASSI" }, "grupos": [ { "id": "1", "nome": "GRUPO 01", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "2", "nome": "GRUPO 02", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "3", "nome": "GRUPO 03", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] } ] }, { "descricaoGrupos": "GRUPO 01 : Base Nacional comum | GRUPO 02 : Base Nacional comum | GRUPO 03 : Base Nacional comum", "observacoes": "O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas.", "cabecalho": { "nomeDre": "DRE CAMPO LIMPO", "nomeUe": "091847 CEU EMEF PARAISOPOLIS", "nomeTurma": "EM-1A", "aluno": "09 - ÁLVARO RAMOS GRASSI" }, "grupos": [ { "id": "1", "nome": "GRUPO 01", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "2", "nome": "GRUPO 02", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "3", "nome": "GRUPO 03", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] } ] }, { "descricaoGrupos": "GRUPO 01 : Base Nacional comum | GRUPO 02 : Base Nacional comum | GRUPO 03 : Base Nacional comum", "observacoes": "O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas. O aluno teve faltas excessivas.", "cabecalho": { "nomeDre": "DRE CAMPO LIMPO", "nomeUe": "091847 CEU EMEF PARAISOPOLIS", "nomeTurma": "EM-1A", "aluno": "09 - ÁLVARO RAMOS GRASSI" }, "grupos": [ { "id": "1", "nome": "GRUPO 01", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "1", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "2", "nome": "GRUPO 02", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "2", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] }, { "id": "3", "nome": "GRUPO 03", "descricao": "Base Nacional comum", "componentesCurriculares": [ { "nome": "História", "notaBimestre1": "10", "frequenciaBimestre1": "100", "notaBimestre2": "7", "frequenciaBimestre2": "100", "notaBimestre3": "10", "frequenciaBimestre3": "100", "notaBimestre4": "4.5", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Biologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Matemática", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Ingles", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Portugues", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" }, { "nome": "Sociologia", "grupo": "3", "notaBimestre1": "9", "frequenciaBimestre1": "100", "notaBimestre2": "10", "frequenciaBimestre2": "100", "notaBimestre3": "8", "frequenciaBimestre3": "100", "notaBimestre4": "10", "frequenciaBimestre4": "100", "notaFinal": "4.5", "frequenciaFinal": "100" } ] } ] } ] } } 
+{
+    "RelatorioBoletimEscolar": {
+        "boletins": [
+            {
+                "descricaoGrupos": "GRUPO 1: Base Nacional Comum | GRUPO 2: Enriquecimento Curricular",
+                "tipoNota": "Conceito",
+                "cabecalho": {
+                    "nomeDre": "DRE - SA",
+                    "nomeUe": "093181 - EMEFM LINNEU PRESTES, PROF.",
+                    "nomeTurma": "EJA - 1A",
+                    "aluno": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
+                    "codigoEol": "7128291",
+                    "data": "24/06/2020"
+                },
+                "grupos": [
+                    {
+                        "id": 1,
+                        "nome": "GRUPO 1",
+                        "descricao": "Base Nacional Comum",
+                        "componenteCurricularRegencia": {
+                            "frequenciaBimestre1": "100",
+                            "frequenciaBimestre2": "100",
+                            "frequenciaBimestre3": "",
+                            "frequenciaBimestre4": "",
+                            "frequenciaFinal": "100",
+                            "componentesCurriculares": [
+                                {
+                                    "nome": "MATEMATICA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "ED. FISICA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "P",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "HISTORIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "GEOGRAFIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "CIENCIAS",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "LINGUA PORTUGUESA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "NS"
+                                },
+                                {
+                                    "nome": "ARTE",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                }
+                            ]
+                        },
+                        "componentesCurriculares": []
+                    },
+                    {
+                        "id": 2,
+                        "nome": "GRUPO 2",
+                        "descricao": "Enriquecimento Curricular",
+                        "componenteCurricularRegencia": null,
+                        "componentesCurriculares": [
+                            {
+                                "nome": "INFORMATICA - OIE",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            },
+                            {
+                                "nome": "LEITURA - OSL",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            }
+                        ]
+                    }
+                ]
+            },
+			 {
+                "descricaoGrupos": "GRUPO 1: Base Nacional Comum | GRUPO 2: Enriquecimento Curricular",
+                "tipoNota": "Conceito",
+                "cabecalho": {
+                    "nomeDre": "DRE - SA",
+                    "nomeUe": "093181 - EMEFM LINNEU PRESTES, PROF.",
+                    "nomeTurma": "EJA - 1A",
+                    "aluno": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
+                    "codigoEol": "7128291",
+                    "data": "24/06/2020"
+                },
+                "grupos": [
+                    {
+                        "id": 1,
+                        "nome": "GRUPO 1",
+                        "descricao": "Base Nacional Comum",
+                        "componenteCurricularRegencia": {
+                            "frequenciaBimestre1": "100",
+                            "frequenciaBimestre2": "100",
+                            "frequenciaBimestre3": "",
+                            "frequenciaBimestre4": "",
+                            "frequenciaFinal": "100",
+                            "componentesCurriculares": [
+                                {
+                                    "nome": "MATEMATICA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "ED. FISICA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "P",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "HISTORIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "GEOGRAFIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "CIENCIAS",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "LINGUA PORTUGUESA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "NS"
+                                },
+                                {
+                                    "nome": "ARTE",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                }
+                            ]
+                        },
+                        "componentesCurriculares": []
+                    },
+                    {
+                        "id": 2,
+                        "nome": "GRUPO 2",
+                        "descricao": "Enriquecimento Curricular",
+                        "componenteCurricularRegencia": null,
+                        "componentesCurriculares": [
+                            {
+                                "nome": "INFORMATICA - OIE",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            },
+                            {
+                                "nome": "LEITURA - OSL",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            }
+                        ]
+                    }
+                ]
+            }, {
+                "descricaoGrupos": "GRUPO 1: Base Nacional Comum | GRUPO 2: Enriquecimento Curricular",
+                "tipoNota": "Conceito",
+                "cabecalho": {
+                    "nomeDre": "DRE - SA",
+                    "nomeUe": "093181 - EMEFM LINNEU PRESTES, PROF.",
+                    "nomeTurma": "EJA - 1A",
+                    "aluno": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
+                    "codigoEol": "7128291",
+                    "data": "24/06/2020"
+                },
+                "grupos": [
+                    {
+                        "id": 1,
+                        "nome": "GRUPO 1",
+                        "descricao": "Base Nacional Comum",
+                        "componenteCurricularRegencia": {
+                            "frequenciaBimestre1": "100",
+                            "frequenciaBimestre2": "100",
+                            "frequenciaBimestre3": "",
+                            "frequenciaBimestre4": "",
+                            "frequenciaFinal": "100",
+                            "componentesCurriculares": [
+                                {
+                                    "nome": "MATEMATICA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "ED. FISICA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "P",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "HISTORIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "GEOGRAFIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "CIENCIAS",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "LINGUA PORTUGUESA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "NS"
+                                },
+                                {
+                                    "nome": "ARTE",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                }
+                            ]
+                        },
+                        "componentesCurriculares": []
+                    },
+                    {
+                        "id": 2,
+                        "nome": "GRUPO 2",
+                        "descricao": "Enriquecimento Curricular",
+                        "componenteCurricularRegencia": null,
+                        "componentesCurriculares": [
+                            {
+                                "nome": "INFORMATICA - OIE",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            },
+                            {
+                                "nome": "LEITURA - OSL",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            }
+                        ]
+                    }
+                ]
+            }, {
+                "descricaoGrupos": "GRUPO 1: Base Nacional Comum | GRUPO 2: Enriquecimento Curricular",
+                "tipoNota": "Conceito",
+                "cabecalho": {
+                    "nomeDre": "DRE - SA",
+                    "nomeUe": "093181 - EMEFM LINNEU PRESTES, PROF.",
+                    "nomeTurma": "EJA - 1A",
+                    "aluno": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
+                    "codigoEol": "7128291",
+                    "data": "24/06/2020"
+                },
+                "grupos": [
+                    {
+                        "id": 1,
+                        "nome": "GRUPO 1",
+                        "descricao": "Base Nacional Comum",
+                        "componenteCurricularRegencia": {
+                            "frequenciaBimestre1": "100",
+                            "frequenciaBimestre2": "100",
+                            "frequenciaBimestre3": "",
+                            "frequenciaBimestre4": "",
+                            "frequenciaFinal": "100",
+                            "componentesCurriculares": [
+                                {
+                                    "nome": "MATEMATICA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "ED. FISICA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "P",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "HISTORIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "GEOGRAFIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "CIENCIAS",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "LINGUA PORTUGUESA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "NS"
+                                },
+                                {
+                                    "nome": "ARTE",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                }
+                            ]
+                        },
+                        "componentesCurriculares": []
+                    },
+                    {
+                        "id": 2,
+                        "nome": "GRUPO 2",
+                        "descricao": "Enriquecimento Curricular",
+                        "componenteCurricularRegencia": null,
+                        "componentesCurriculares": [
+                            {
+                                "nome": "INFORMATICA - OIE",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            },
+                            {
+                                "nome": "LEITURA - OSL",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            }
+                        ]
+                    }
+                ]
+            }, {
+                "descricaoGrupos": "GRUPO 1: Base Nacional Comum | GRUPO 2: Enriquecimento Curricular",
+                "tipoNota": "Conceito",
+                "cabecalho": {
+                    "nomeDre": "DRE - SA",
+                    "nomeUe": "093181 - EMEFM LINNEU PRESTES, PROF.",
+                    "nomeTurma": "EJA - 1A",
+                    "aluno": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
+                    "codigoEol": "7128291",
+                    "data": "24/06/2020"
+                },
+                "grupos": [
+                    {
+                        "id": 1,
+                        "nome": "GRUPO 1",
+                        "descricao": "Base Nacional Comum",
+                        "componenteCurricularRegencia": {
+                            "frequenciaBimestre1": "100",
+                            "frequenciaBimestre2": "100",
+                            "frequenciaBimestre3": "",
+                            "frequenciaBimestre4": "",
+                            "frequenciaFinal": "100",
+                            "componentesCurriculares": [
+                                {
+                                    "nome": "MATEMATICA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "ED. FISICA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "P",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "HISTORIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "GEOGRAFIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "CIENCIAS",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "LINGUA PORTUGUESA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "NS"
+                                },
+                                {
+                                    "nome": "ARTE",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                }
+                            ]
+                        },
+                        "componentesCurriculares": []
+                    },
+                    {
+                        "id": 2,
+                        "nome": "GRUPO 2",
+                        "descricao": "Enriquecimento Curricular",
+                        "componenteCurricularRegencia": null,
+                        "componentesCurriculares": [
+                            {
+                                "nome": "INFORMATICA - OIE",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            },
+                            {
+                                "nome": "LEITURA - OSL",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            }
+                        ]
+                    }
+                ]
+            }, {
+                "descricaoGrupos": "GRUPO 1: Base Nacional Comum | GRUPO 2: Enriquecimento Curricular",
+                "tipoNota": "Conceito",
+                "cabecalho": {
+                    "nomeDre": "DRE - SA",
+                    "nomeUe": "093181 - EMEFM LINNEU PRESTES, PROF.",
+                    "nomeTurma": "EJA - 1A",
+                    "aluno": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
+                    "codigoEol": "7128291",
+                    "data": "24/06/2020"
+                },
+                "grupos": [
+                    {
+                        "id": 1,
+                        "nome": "GRUPO 1",
+                        "descricao": "Base Nacional Comum",
+                        "componenteCurricularRegencia": {
+                            "frequenciaBimestre1": "100",
+                            "frequenciaBimestre2": "100",
+                            "frequenciaBimestre3": "",
+                            "frequenciaBimestre4": "",
+                            "frequenciaFinal": "100",
+                            "componentesCurriculares": [
+                                {
+                                    "nome": "MATEMATICA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "ED. FISICA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "P",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "HISTORIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "GEOGRAFIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "CIENCIAS",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "LINGUA PORTUGUESA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "NS"
+                                },
+                                {
+                                    "nome": "ARTE",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                }
+                            ]
+                        },
+                        "componentesCurriculares": []
+                    },
+                    {
+                        "id": 2,
+                        "nome": "GRUPO 2",
+                        "descricao": "Enriquecimento Curricular",
+                        "componenteCurricularRegencia": null,
+                        "componentesCurriculares": [
+                            {
+                                "nome": "INFORMATICA - OIE",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            },
+                            {
+                                "nome": "LEITURA - OSL",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            }
+                        ]
+                    }
+                ]
+            }, {
+                "descricaoGrupos": "GRUPO 1: Base Nacional Comum | GRUPO 2: Enriquecimento Curricular",
+                "tipoNota": "Conceito",
+                "cabecalho": {
+                    "nomeDre": "DRE - SA",
+                    "nomeUe": "093181 - EMEFM LINNEU PRESTES, PROF.",
+                    "nomeTurma": "EJA - 1A",
+                    "aluno": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
+                    "codigoEol": "7128291",
+                    "data": "24/06/2020"
+                },
+                "grupos": [
+                    {
+                        "id": 1,
+                        "nome": "GRUPO 1",
+                        "descricao": "Base Nacional Comum",
+                        "componenteCurricularRegencia": {
+                            "frequenciaBimestre1": "100",
+                            "frequenciaBimestre2": "100",
+                            "frequenciaBimestre3": "",
+                            "frequenciaBimestre4": "",
+                            "frequenciaFinal": "100",
+                            "componentesCurriculares": [
+                                {
+                                    "nome": "MATEMATICA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "ED. FISICA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "P",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "HISTORIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "GEOGRAFIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "CIENCIAS",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "LINGUA PORTUGUESA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "NS"
+                                },
+                                {
+                                    "nome": "ARTE",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                }
+                            ]
+                        },
+                        "componentesCurriculares": []
+                    },
+                    {
+                        "id": 2,
+                        "nome": "GRUPO 2",
+                        "descricao": "Enriquecimento Curricular",
+                        "componenteCurricularRegencia": null,
+                        "componentesCurriculares": [
+                            {
+                                "nome": "INFORMATICA - OIE",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            },
+                            {
+                                "nome": "LEITURA - OSL",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            }
+                        ]
+                    }
+                ]
+            }, {
+                "descricaoGrupos": "GRUPO 1: Base Nacional Comum | GRUPO 2: Enriquecimento Curricular",
+                "tipoNota": "Conceito",
+                "cabecalho": {
+                    "nomeDre": "DRE - SA",
+                    "nomeUe": "093181 - EMEFM LINNEU PRESTES, PROF.",
+                    "nomeTurma": "EJA - 1A",
+                    "aluno": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
+                    "codigoEol": "7128291",
+                    "data": "24/06/2020"
+                },
+                "grupos": [
+                    {
+                        "id": 1,
+                        "nome": "GRUPO 1",
+                        "descricao": "Base Nacional Comum",
+                        "componenteCurricularRegencia": {
+                            "frequenciaBimestre1": "100",
+                            "frequenciaBimestre2": "100",
+                            "frequenciaBimestre3": "",
+                            "frequenciaBimestre4": "",
+                            "frequenciaFinal": "100",
+                            "componentesCurriculares": [
+                                {
+                                    "nome": "MATEMATICA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "ED. FISICA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "P",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "HISTORIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "GEOGRAFIA",
+                                    "notaBimestre1": "P",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                },
+                                {
+                                    "nome": "CIENCIAS",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "S",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "S"
+                                },
+                                {
+                                    "nome": "LINGUA PORTUGUESA",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "NS"
+                                },
+                                {
+                                    "nome": "ARTE",
+                                    "notaBimestre1": "S",
+                                    "notaBimestre2": "NS",
+                                    "notaBimestre3": "",
+                                    "notaBimestre4": "",
+                                    "notaFinal": "P"
+                                }
+                            ]
+                        },
+                        "componentesCurriculares": []
+                    },
+                    {
+                        "id": 2,
+                        "nome": "GRUPO 2",
+                        "descricao": "Enriquecimento Curricular",
+                        "componenteCurricularRegencia": null,
+                        "componentesCurriculares": [
+                            {
+                                "nome": "INFORMATICA - OIE",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            },
+                            {
+                                "nome": "LEITURA - OSL",
+                                "notaBimestre1": "",
+                                "frequenciaBimestre1": "100",
+                                "notaBimestre2": "",
+                                "frequenciaBimestre2": "100",
+                                "notaBimestre3": "",
+                                "frequenciaBimestre3": "",
+                                "notaBimestre4": "",
+                                "frequenciaBimestre4": "",
+                                "notaFinal": "F",
+                                "frequenciaFinal": "100"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
