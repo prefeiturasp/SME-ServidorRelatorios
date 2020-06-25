@@ -1,98 +1,685 @@
 {
-    "RelatorioConselhoDeClasse": [
+  "RelatorioConselhoDeClasse": [
+  {
+      "GruposMatrizComponentesComNota": [
         {
-            "GruposMatrizComponentesComNota": [
-                {
-                    "TipoNota": "Conceito",
-                    "ComponentesComNota": [],
-                    "ComponenteComNotaRegencia": {
-                        "Aulas": 0,
-                        "ComponentesCurriculares": [
-                            {
-                                "Componente": "MATEMATICA",
-                                "EhEja": true,
-                                "NotaConceito": null,
-                                "NotaPosConselho": null
-                            },
-                            {
-                                "Componente": "ED. FISICA",
-                                "EhEja": true,
-                                "NotaConceito": "P",
-                                "NotaPosConselho": "P"
-                            },
-                            {
-                                "Componente": "HISTORIA",
-                                "EhEja": true,
-                                "NotaConceito": "S",
-                                "NotaPosConselho": "S"
-                            },
-                            {
-                                "Componente": "GEOGRAFIA",
-                                "EhEja": true,
-                                "NotaConceito": "S",
-                                "NotaPosConselho": "S"
-                            },
-                            {
-                                "Componente": "CIENCIAS",
-                                "EhEja": true,
-                                "NotaConceito": "S",
-                                "NotaPosConselho": "S"
-                            },
-                            {
-                                "Componente": "LINGUA PORTUGUESA",
-                                "EhEja": true,
-                                "NotaConceito": "NS",
-                                "NotaPosConselho": "NS"
-                            },
-                            {
-                                "Componente": "ARTE",
-                                "EhEja": true,
-                                "NotaConceito": "NS",
-                                "NotaPosConselho": "NS"
-                            }
-                        ],
-                        "Faltas": 0,
-                        "AusenciasCompensadas": 0,
-                        "Frequencia": 100.0
-                    },
-                    "Nome": "Base Nacional Comum"
-                }
-            ],
-            "GruposMatrizComponentesSemNota": [
-                {
-                    "ComponentesSemNota": [
-                        {
-                            "Componente": "INFORMATICA - OIE",
-                            "Faltas": 0,
-                            "Frequencia": 100.0
-                        },
-                        {
-                            "Componente": "LEITURA - OSL",
-                            "Faltas": 0,
-                            "Frequencia": 100.0
-                        }
-                    ],
-                    "Nome": "Enriquecimento Curricular"
-                }
-            ],
-            "Titulo": "Conselho de Classe",
-            "Dre": "DRE - SA",
-            "Ue": "093181 - EMEFM LINNEU PRESTES, PROF.",
-            "Turma": "EJA - 1A",
-            "Data": "24/06/2020",
-            "AlunoNome": "001 - ANA RITA ANDRADE FERREIRA DOS SANTOS ",
-            "AlunoNumero": 1,
-            "AlunoDataDeNascimento": "16/01/1959",
-            "AlunoCodigoEol": "7128291",
-            "AlunoSituacao": "ATIVO EM 29/11/2019",
-            "AlunoFrequenciaGlobal": "100",
-            "AlunoParecerConclusivo": null,
-            "Bimestre": "2",
-            "AnotacoesPedagogicas": null,
-            "RecomendacaoAluno": "Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso. Cuide de seu material escolar. Ele é de sua responsabilidade. Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário. Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares. Esclareça suas dúvidas com os professores sempre que necessário. Frequente às aulas diariamente. Em caso de ausência,justifique-a. Frequente bibliotecas e sites confiáveis para pesquisa. Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles. Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula. Peça permissão para falar e saiba ouvir seus colegas. Pesquise. Reflita. Questione. Discuta. Escreva. Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos. Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
-            "RecomendacaoFamilia": "Acompanhase a frequência de seus filhos às aulas e às atividades escolares. Acompanhe seu filho na realização das lições de casa. Ajude a construir uma escola democrática. Participe do Conselho de Escola. Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante. Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador. Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar. Leia bilhetes e avisos que a escola mandar e responda quando necessário. Oriente seu filho a cuidar de seu material escolar. Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho. Procure visitar a escola de seus filhos sempre que precisar. Verifique diariamente os cadernos e livros de seus filhos.",
-            "AnotacoesAluno": [],
-            "EhBimestreFinal": false
+          "TipoNota": "Nota",
+          "ComponentesComNota": [
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "MATEMATICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "ED. FISICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "HISTORIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "GEOGRAFIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "FISICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "QUIMICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "BIOLOGIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "LINGUA PORTUGUESA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "ARTE",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            }
+          ],
+          "ComponenteComNotaRegencia": null,
+          "Nome": "Base Nacional Comum"
+        },
+        {
+          "TipoNota": "Nota",
+          "ComponentesComNota": [
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "INGLES",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "FILOSOFIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "SOCIOLOGIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "CULTURA DOS PAISES DE LINGUA ESPANHOLA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "TECNOLOGIAS PARA APRENDIZAGEM",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "PRODUCAO TEXTUAL",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "INVESTIGACAO CIENTIFICA E PROCESSOS MATEMATICOS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "PRATICAS ESPORTIVAS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "EXPRESSOES CULTURAIS ARTISTICAS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "SALA DE LEITURA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            }
+          ],
+          "ComponenteComNotaRegencia": null,
+          "Nome": "Diversificada"
         }
-    ]
+      ],
+      "GruposMatrizComponentesSemNota": [],
+      "Titulo": "Conselho de Classe",
+      "Dre": "DRE - JT",
+      "Ue": "094668 - EMEFM DERVILLE ALLEGRETTI, PROF.",
+      "Turma": "EM - 1E",
+      "Data": "23/06/2020",
+      "AlunoNome": "013 - GIOVANNA VICTORIA AMARAL CANDIDO BARROS ",
+      "AlunoNumero": 13,
+      "AlunoDataDeNascimento": "27/09/2004",
+      "AlunoCodigoEol": "3208842",
+      "AlunoSituacao": "ATIVO EM 23/01/2020",
+      "AlunoFrequenciaGlobal": "40",
+      "AlunoParecerConclusivo": null,
+      "Bimestre": "4",
+      "AnotacoesPedagogicas": null,
+      "RecomendacaoAluno": "qweqweEsclareça suas dúvidas com os professores sempre que necessário. Frequente às aulas diariamente. Em caso de ausência,justifique-a. Frequente bibliotecas e sites confiáveis para pesquisa. Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles. Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula. Peça permissão para falar e saiba ouvir seus colegas. Pesquise. Reflita. Questione. Discuta. Escreva. Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos. Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
+      "RecomendacaoFamilia": "rtyas e às atividades escolares. Acompanhe seu filho na realização das lições de casa. Ajude a construir uma escola democrática. Participe do Conselho de Escola. Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante. Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador. Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar. Leia bilhetes e avisos que a escola mandar e responda quando necessário. Oriente seu filho a cuidar de seu material escolar. Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho. Procure visitar a escola de seus filhos sempre que precisar. Verifique diariamente os cadernos e livros de seus filhos.",
+      "AnotacoesAluno": [],
+      "EhBimestreFinal": false
+    },
+    {
+      "GruposMatrizComponentesComNota": [
+        {
+          "TipoNota": "Nota",
+          "ComponentesComNota": [
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "MATEMATICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "ED. FISICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "HISTORIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "GEOGRAFIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "FISICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "QUIMICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "BIOLOGIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "LINGUA PORTUGUESA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "ARTE",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            }
+          ],
+          "ComponenteComNotaRegencia": null,
+          "Nome": "Base Nacional Comum"
+        },
+        {
+          "TipoNota": "Nota",
+          "ComponentesComNota": [
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "INGLES",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "FILOSOFIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "SOCIOLOGIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "CULTURA DOS PAISES DE LINGUA ESPANHOLA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "TECNOLOGIAS PARA APRENDIZAGEM",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "PRODUCAO TEXTUAL",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "INVESTIGACAO CIENTIFICA E PROCESSOS MATEMATICOS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "PRATICAS ESPORTIVAS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "EXPRESSOES CULTURAIS ARTISTICAS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "SALA DE LEITURA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            }
+          ],
+          "ComponenteComNotaRegencia": null,
+          "Nome": "Diversificada"
+        }
+      ],
+      "GruposMatrizComponentesSemNota": [],
+      "Titulo": "Conselho de Classe",
+      "Dre": "DRE - JT",
+      "Ue": "094668 - EMEFM DERVILLE ALLEGRETTI, PROF.",
+      "Turma": "EM - 1E",
+      "Data": "23/06/2020",
+      "AlunoNome": "016 - JAQUELINE ALVES SOARES ",
+      "AlunoNumero": 16,
+      "AlunoDataDeNascimento": "02/09/2000",
+      "AlunoCodigoEol": "3543500",
+      "AlunoSituacao": "ATIVO EM 23/01/2020",
+      "AlunoFrequenciaGlobal": "40",
+      "AlunoParecerConclusivo": null,
+      "Bimestre": "4",
+      "AnotacoesPedagogicas": null,
+      "RecomendacaoAluno": "Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso.Cuide de seu material escolar. Ele é de sua responsabilidade.Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário.Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares.Esclareça suas dúvidas com os professores sempre que necessário.Frequente às aulas diariamente. Em caso de ausência,justifique-a.Frequente bibliotecas e sites confiáveis para pesquisa.Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula.Peça permissão para falar e saiba ouvir seus colegas.Pesquise. Reflita. Questione. Discuta. Escreva.Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos.Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
+      "RecomendacaoFamilia": "Acompanhe a frequência de seus filhos às aulas e às atividades escolares.Acompanhe seu filho na realização das lições de casa.Ajude a construir uma escola democrática. Participe do Conselho de Escola.Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante.Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador.Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.Leia bilhetes e avisos que a escola mandar e responda quando necessário.Oriente seu filho a cuidar de seu material escolar.Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.Procure visitar a escola de seus filhos sempre que precisar.Verifique diariamente os cadernos e livros de seus filhos.",
+      "AnotacoesAluno": [],
+      "EhBimestreFinal": false
+    },
+    {
+      "GruposMatrizComponentesComNota": [
+        {
+          "TipoNota": "Nota",
+          "ComponentesComNota": [
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "MATEMATICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "ED. FISICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "HISTORIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "GEOGRAFIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "FISICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "QUIMICA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "BIOLOGIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "LINGUA PORTUGUESA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "ARTE",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            }
+          ],
+          "ComponenteComNotaRegencia": null,
+          "Nome": "Base Nacional Comum"
+        },
+        {
+          "TipoNota": "Nota",
+          "ComponentesComNota": [
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "INGLES",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "FILOSOFIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "SOCIOLOGIA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "CULTURA DOS PAISES DE LINGUA ESPANHOLA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "TECNOLOGIAS PARA APRENDIZAGEM",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "PRODUCAO TEXTUAL",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "INVESTIGACAO CIENTIFICA E PROCESSOS MATEMATICOS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "PRATICAS ESPORTIVAS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "EXPRESSOES CULTURAIS ARTISTICAS",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            },
+            {
+              "NotaConceito": null,
+              "NotaPosConselho": null,
+              "Aulas": 0,
+              "Componente": "SALA DE LEITURA",
+              "Faltas": 0,
+              "AusenciasCompensadas": 0,
+              "Frequencia": 100,
+              "EhEja": false
+            }
+          ],
+          "ComponenteComNotaRegencia": null,
+          "Nome": "Diversificada"
+        }
+      ],
+      "GruposMatrizComponentesSemNota": [],
+      "Titulo": "Conselho de Classe",
+      "Dre": "DRE - JT",
+      "Ue": "094668 - EMEFM DERVILLE ALLEGRETTI, PROF.",
+      "Turma": "EM - 1E",
+      "Data": "23/06/2020",
+      "AlunoNome": " - MAISA CECILIA DA SILVA (Transferido)",
+      "AlunoNumero": 0,
+      "AlunoDataDeNascimento": "14/11/2001",
+      "AlunoCodigoEol": "3584714",
+      "AlunoSituacao": "TRANSFERIDO EM 21/02/2020",
+      "AlunoFrequenciaGlobal": "100",
+      "AlunoParecerConclusivo": null,
+      "Bimestre": "4",
+      "AnotacoesPedagogicas": null,
+      "RecomendacaoAluno": "Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso.Cuide de seu material escolar. Ele é de sua responsabilidade.Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário.Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares.Esclareça suas dúvidas com os professores sempre que necessário.Frequente às aulas diariamente. Em caso de ausência,justifique-a.Frequente bibliotecas e sites confiáveis para pesquisa.Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula.Peça permissão para falar e saiba ouvir seus colegas.Pesquise. Reflita. Questione. Discuta. Escreva.Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos.Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
+      "RecomendacaoFamilia": "Acompanhe a frequência de seus filhos às aulas e às atividades escolares.Acompanhe seu filho na realização das lições de casa.Ajude a construir uma escola democrática. Participe do Conselho de Escola.Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante.Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador.Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.Leia bilhetes e avisos que a escola mandar e responda quando necessário.Oriente seu filho a cuidar de seu material escolar.Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.Procure visitar a escola de seus filhos sempre que precisar.Verifique diariamente os cadernos e livros de seus filhos.",
+      "AnotacoesAluno": [],
+      "EhBimestreFinal": false
+    }
+  ]
 }

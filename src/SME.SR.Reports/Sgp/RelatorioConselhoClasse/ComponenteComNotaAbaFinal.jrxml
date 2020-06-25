@@ -113,9 +113,9 @@
 		<band height="113" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="0" y="0" width="553" height="23" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="ba3aa18c-517d-4771-ac43-4aebd861d1ea">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<reportElement x="0" y="0" width="555" height="23" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="ba3aa18c-517d-4771-ac43-4aebd861d1ea">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
@@ -130,7 +130,7 @@
 				<textFieldExpression><![CDATA[$F{Nome}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="0" y="53" width="553" height="30" isRemoveLineWhenBlank="true" uuid="dbcc4fab-41ad-4ff4-b2a1-a1b149afd4f4">
+				<reportElement positionType="Float" x="0" y="53" width="555" height="30" isRemoveLineWhenBlank="true" uuid="dbcc4fab-41ad-4ff4-b2a1-a1b149afd4f4">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -197,11 +197,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="55" uuid="f1d11c07-d281-4608-8208-ebc7e707dc79">
+					<jr:column width="57" uuid="f1d11c07-d281-4608-8208-ebc7e707dc79">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField textAdjust="StretchHeight">
-								<reportElement x="0" y="0" width="55" height="30" uuid="4d5f3172-0543-4f59-a563-3ed75c50fa95"/>
+								<reportElement x="0" y="0" width="57" height="30" uuid="4d5f3172-0543-4f59-a563-3ed75c50fa95"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
 							</textField>
@@ -259,7 +259,9 @@
 				<text><![CDATA[FALTAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="498" y="23" width="55" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="eb07d765-5371-45b6-9760-e95b2f72a650"/>
+				<reportElement mode="Opaque" x="498" y="23" width="57" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="eb07d765-5371-45b6-9760-e95b2f72a650">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
