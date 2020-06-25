@@ -42,6 +42,16 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<AlunoSituacaoDto>> ObterDadosAlunosSituacao(string turmaCodigo)
+        {
+            var query = TurmaConsultas.DadosAlunosSituacao;
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo });
+            }
+        }
+
         public async Task<DreUe> ObterDreUe(string codigoTurma)
         {
             var query = TurmaConsultas.DadosDreUe;

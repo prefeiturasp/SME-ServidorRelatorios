@@ -14,5 +14,6 @@ namespace SME.SR.Data.Interfaces
 
         Task<Turma> ObterPorCodigo(string codigoTurma);
         Task<string> ObterCicloAprendizagem(string turmaCodigo);
+        Task<IEnumerable<AlunoSituacaoDto>> ObterDadosAlunosSituacao(string turmaCodigo);
     }
 }
