@@ -2,6 +2,7 @@
 {
     public class NotaConceitoBimestreComponente
     {
+        public string AlunoCodigo { get; set; }
         public int? Bimestre { get; set; }
         public long ComponenteCurricularCodigo { get; set; }
         public long? ConceitoId { get; set; }
