@@ -3,6 +3,10 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelatorioBoletim" pageWidth="290" pageHeight="600" columnWidth="290" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7118107b-5099-4b69-bb10-e0b894e57a27">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
 	<property name="net.sf.jasperreports.print.create.bookmarks" value="true"/>
+	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioBoletimEscolar/BoletimEscolar_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioBoletimEscolar/BoletimEscolar"/>
 	<queryString language="jsonql">
 		<![CDATA[grupos]]>
 	</queryString>
@@ -35,10 +39,10 @@
 		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
 	</field>
 	<detail>
-		<band height="160" splitType="Stretch">
+		<band height="158" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="290" height="160" uuid="f9da900b-362d-433c-ae4f-d0ee4a9866e1">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="290" height="158" uuid="f9da900b-362d-433c-ae4f-d0ee4a9866e1">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box padding="0">
@@ -178,9 +182,10 @@
 				</textElement>
 				<text><![CDATA[BOLETIM ESCOLAR]]></text>
 			</staticText>
-			<textField isBlankWhenNull="false">
-				<reportElement x="157" y="33" width="130" height="10" uuid="0b4aec14-a8db-4a6c-95c5-006377135532">
+			<textField textAdjust="ScaleFont" isBlankWhenNull="false">
+				<reportElement x="157" y="33" width="125" height="10" uuid="0b4aec14-a8db-4a6c-95c5-006377135532">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="4"/>
 				<textElement verticalAlignment="Middle">
@@ -198,9 +203,10 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeTurma}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="185" y="43" width="102" height="10" uuid="3bdcae83-ca66-4a13-95f7-e9d7fd57bcce">
+			<textField textAdjust="ScaleFont">
+				<reportElement x="185" y="43" width="100" height="10" uuid="3bdcae83-ca66-4a13-95f7-e9d7fd57bcce">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="4"/>
 				<textElement verticalAlignment="Middle">
@@ -283,7 +289,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeDre}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField textAdjust="ScaleFont" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="222" y="53" width="65" height="10" uuid="452219d4-4ae9-4460-833d-082d5e141bfb">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -391,7 +397,7 @@
 				<text><![CDATA[% Freq.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="10" y="142" width="80" height="10" forecolor="#42474A" uuid="bf78107a-9172-4e6b-bcee-17da939251eb">
+				<reportElement positionType="Float" x="10" y="140" width="80" height="10" forecolor="#42474A" uuid="bf78107a-9172-4e6b-bcee-17da939251eb">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -401,7 +407,7 @@
 				<text><![CDATA[OBSERVAÇÕES:]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="10" y="125" width="270" height="10" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d">
+				<reportElement positionType="Float" x="10" y="123" width="270" height="10" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -413,7 +419,7 @@
 				<textFieldExpression><![CDATA[$F{descricaoGrupos}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="138" width="285" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
+				<reportElement positionType="Float" x="0" y="136" width="285" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
