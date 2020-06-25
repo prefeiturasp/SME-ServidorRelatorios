@@ -39,10 +39,10 @@
 		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
 	</field>
 	<detail>
-		<band height="158" splitType="Stretch">
+		<band height="170" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="290" height="158" uuid="f9da900b-362d-433c-ae4f-d0ee4a9866e1">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="290" height="165" uuid="f9da900b-362d-433c-ae4f-d0ee4a9866e1">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box padding="0">
@@ -419,10 +419,31 @@
 				<textFieldExpression><![CDATA[$F{descricaoGrupos}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="136" width="285" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
+				<reportElement positionType="Float" x="0" y="136" width="290" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="10" y="150" width="270" height="1" uuid="c3f3ea91-8aef-4e41-84f1-8f05560d4b9c">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="10" y="160" width="270" height="1" uuid="180b9cd6-11e0-4bd1-a583-d98dd3748daf">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
