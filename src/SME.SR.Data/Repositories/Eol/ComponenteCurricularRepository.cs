@@ -6,6 +6,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -62,12 +63,14 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string turmaCodigo, IEnumerable<long> componentesCurricularesId)
         {
+       
             var query = ComponenteCurricularConsultas.BuscarTerritorioDoSaber;
+            var parametros = new { CodigosComponentesCurriculares = componentesCurricularesId.ToArray(), CodigoTurma = turmaCodigo };
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<ComponenteCurricularTerritorioSaber>(query);
-            }
+                return await conexao.QueryAsync<ComponenteCurricularTerritorioSaber>(query, parametros);
+            }           
         }
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmaEProfessor(string login, string codigoTurma)
