@@ -115,7 +115,7 @@
             ],
             "GruposMatrizComponentesSemNota": [
                 {
-                    "componentesSemNota": [
+                    "ComponentesSemNota": [
                         {
                             "Parecer": "Frequente",
                             "Componente": "INFORMATICA - OIE",
@@ -148,72 +148,7 @@
             "AnotacoesPedagogicas": null,
             "RecomendacaoAluno": "Busque ir além dos conhecimentos trabalhados em sala de aula. Seja curioso.Cuide de seu material escolar. Ele é de sua responsabilidade.Cuide de suas relações pessoais. Busque ajuda e orientação de professores,funcionários e gestores sempre que necessário.Desenvolva uma rotina de estudo e organização para o cumprimento das tarefas e prazos escolares.Esclareça suas dúvidas com os professores sempre que necessário.Frequente às aulas diariamente. Em caso de ausência,justifique-a.Frequente bibliotecas e sites confiáveis para pesquisa.Leia,releia,converse com seus colegas e outros adultos sobre temas estudados,buscando ampliar seu entendimento sobre eles.Participe das aulas com atenção,pergunte quando tiver dúvidas e faça registro das ideias centrais da aula.Peça permissão para falar e saiba ouvir seus colegas.Pesquise. Reflita. Questione. Discuta. Escreva.Procure desenvolver seus próprios métodos de estudo. Use agenda e anote seus compromissos.Valorize,respeite e coopere com o trabalho de todos no ambiente escolar.",
             "RecomendacaoFamilia": "Acompanhe a frequência de seus filhos às aulas e às atividades escolares.Acompanhe seu filho na realização das lições de casa.Ajude a construir uma escola democrática. Participe do Conselho de Escola.Compareça às reuniões da escola. Dê sua opinião. Ela é muito importante.Confira o boletim escolar de seu filho,caso tenha alguma dúvida procure o professor/coordenador.Incentive seu filho a cumprir prazos,tarefas e regras da Unidade Escolar.Leia bilhetes e avisos que a escola mandar e responda quando necessário.Oriente seu filho a cuidar de seu material escolar.Peça orientação aos professores e coordenadores caso perceba alguma dificuldade no desempenho do seu filho.Procure visitar a escola de seus filhos sempre que precisar.Verifique diariamente os cadernos e livros de seus filhos.",
-            "AnotacoesAluno": [
-                {
-                    "Anotacao": null,
-                    "Data": "29/04/2020",
-                    "Disciplina": "Arte",
-                    "DisciplinaId": "139",
-                    "Professor": "SADAKO MORITA",
-                    "ProfessorRf": "3135535"
-                },
-                {
-                    "Anotacao": null,
-                    "Data": "04/05/2020",
-                    "Disciplina": "Matemática",
-                    "DisciplinaId": "2",
-                    "Professor": "ARACI NOBUE NAKANE CHAEBO GADUM",
-                    "ProfessorRf": "7213000"
-                },
-                {
-                    "Anotacao": null,
-                    "Data": "04/05/2020",
-                    "Disciplina": "Educação Física",
-                    "DisciplinaId": "6",
-                    "Professor": "MARCO ANTONIO RUEDA",
-                    "ProfessorRf": "7442351"
-                },
-                {
-                    "Anotacao": null,
-                    "Data": "04/05/2020",
-                    "Disciplina": "Geografia",
-                    "DisciplinaId": "8",
-                    "Professor": "ELIANE VAZ",
-                    "ProfessorRf": "6766714"
-                },
-                {
-                    "Anotacao": null,
-                    "Data": "04/05/2020",
-                    "Disciplina": "Ciências",
-                    "DisciplinaId": "89",
-                    "Professor": "JUCIARA TEIXEIRA HOLZMANN VERNIER",
-                    "ProfessorRf": "6517579"
-                },
-                {
-                    "Anotacao": null,
-                    "Data": "04/05/2020",
-                    "Disciplina": "Inglês",
-                    "DisciplinaId": "9",
-                    "Professor": "ALYSSON EDUARDO GUARIENTO PASCHOAL PINTO",
-                    "ProfessorRf": "7268173"
-                },
-                {
-                    "Anotacao": null,
-                    "Data": "04/05/2020",
-                    "Disciplina": "Língua Portuguesa",
-                    "DisciplinaId": "138",
-                    "Professor": "DALVA DOS SANTOS",
-                    "ProfessorRf": "7485433"
-                },
-                {
-                    "Anotacao": null,
-                    "Data": "04/05/2020",
-                    "Disciplina": "História",
-                    "DisciplinaId": "7",
-                    "Professor": "VALDIR ZUCCHERATTO",
-                    "ProfessorRf": "6963102"
-                }
-            ],
+            "AnotacoesAluno": null,
             "EhBimestreFinal": true
         }
     ]
