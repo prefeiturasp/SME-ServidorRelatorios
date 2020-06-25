@@ -352,7 +352,7 @@
 				<textFieldExpression><![CDATA["SGP - Sistema de gestão Pedagógica | CONSELHO DE CLASSE  "]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight" evaluationTime="Report">
-				<reportElement positionType="Float" x="540" y="8" width="15" height="23" uuid="cd7c2272-d7ef-4270-86e7-58f87666e263">
+				<reportElement positionType="Float" x="530" y="8" width="24" height="23" uuid="9c5fe508-a24a-4239-88f7-9e58b87d964c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -361,14 +361,14 @@
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="535" y="8" width="5" height="23" uuid="3459936d-d008-4ae5-9aca-7a7a7f4375ce">
+				<reportElement positionType="Float" x="525" y="8" width="5" height="23" uuid="2c2aebed-2cb0-4464-94e0-b664c7131dae">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[/]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="516" y="8" width="19" height="23" uuid="3568c85c-312b-4d0a-abdb-4075f78d9bd5">
+				<reportElement positionType="Float" x="500" y="8" width="25" height="23" uuid="17852eba-ed15-449c-9797-070731450e02">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">

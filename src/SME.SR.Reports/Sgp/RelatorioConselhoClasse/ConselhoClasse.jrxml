@@ -354,7 +354,7 @@
 	<pageFooter>
 		<band height="43" splitType="Immediate">
 			<textField textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="516" y="8" width="19" height="23" uuid="353291b1-378c-4252-850c-34cff5c47099">
+				<reportElement positionType="Float" x="500" y="8" width="25" height="23" uuid="353291b1-378c-4252-850c-34cff5c47099">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -363,7 +363,7 @@
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight" evaluationTime="Report">
-				<reportElement positionType="Float" x="540" y="8" width="15" height="23" uuid="cf407df6-c003-4662-b3ee-d836954705dc">
+				<reportElement positionType="Float" x="530" y="8" width="24" height="23" uuid="cf407df6-c003-4662-b3ee-d836954705dc">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -379,7 +379,7 @@
 				<textFieldExpression><![CDATA["SGP - Sistema de gestão Pedagógica | CONSELHO DE CLASSE  "]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="535" y="8" width="5" height="23" uuid="ad1fa38e-054c-4110-bde5-0fc2c2cba282">
+				<reportElement positionType="Float" x="525" y="8" width="5" height="23" uuid="ad1fa38e-054c-4110-bde5-0fc2c2cba282">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
