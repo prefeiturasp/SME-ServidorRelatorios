@@ -14,7 +14,7 @@ namespace SME.SR.Application
 
         public string TurmaCodigo { get; set; }
 
-        public int? AnoLetivo { get; set; }
+        public int AnoLetivo { get; set; }
 
         public Modalidade? Modalidade { get; set; }
 

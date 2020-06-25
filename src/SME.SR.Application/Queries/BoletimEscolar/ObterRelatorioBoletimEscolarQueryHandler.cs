@@ -71,7 +71,7 @@ namespace SME.SR.Application
             // preenchero relatório para os alunos de cada turma da ue;
             else
             {
-                IEnumerable<Turma> turmas = await ObterTurmasPorFiltro(request.UeCodigo, request.Modalidade, request.AnoLetivo, request.Semestre);
+                IEnumerable<Turma> turmas = await ObterTurmasPorAbrangenciaFiltro(request.UeCodigo, request.Modalidade, request.AnoLetivo, request.Usuario, request.Semestre);
 
                 if (turmas != null && turmas.Any())
                 {
@@ -444,15 +444,19 @@ namespace SME.SR.Application
             return dreUe;
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string codigoUe, Modalidade? modalidade, int? anoLetivo, int? semestre)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorAbrangenciaFiltro(string codigoUe, Modalidade? modalidade, int anoLetivo, Usuario usuario, int? semestre)
         {
+
             IEnumerable<Turma> turmas = await _mediator.Send(
-                new ObterTurmasPorFiltroQuery
+                new ObterTurmasPorAbrangenciaFiltroQuery
                 {
                     CodigoUe = codigoUe,
                     Modalidade = modalidade,
                     Semestre = semestre,
-                    AnoLetivo = anoLetivo
+                    AnoLetivo = anoLetivo,
+                    Login = usuario.Login,
+                    Perfil = usuario.PerfilAtual,
+                    ConsideraHistorico = DateTime.Today.Year > anoLetivo
                 }
              );
 

@@ -155,5 +155,11 @@ namespace SME.SR.Data
 			t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo
         from  turma t
         where t.turma_id = @codigoTurma";
+
+
+
+        internal static string TurmaPorAbrangenciaFiltros = @"select t.* from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) at
+                            inner join turma t 
+                            on t.turma_id  = at.codigo";
     }
 }
