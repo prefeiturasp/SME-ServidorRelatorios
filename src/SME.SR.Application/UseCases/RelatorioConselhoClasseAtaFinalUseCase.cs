@@ -1,10 +1,6 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
-using SME.SR.Application.Interfaces;
-using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static SME.SR.Infra.Enumeradores;
@@ -24,6 +20,12 @@ namespace SME.SR.Application
         {
             try
             {
+                var parametros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
+
+                var cabecalho = await mediator.Send(new ObterAtaFinalCabecalhoQuery(parametros.TurmaCodigo));
+                var alunos = await mediator.Send(new ObterAlunosSituacaoPorTurmaQuery(parametros.TurmaCodigo));
+                var alunosAta = alunos.Select(a => new AlunoSituacaoAtaFinalDto(a));
+
                 await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoAta/ConselhoAta", null, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
             catch (Exception ex)

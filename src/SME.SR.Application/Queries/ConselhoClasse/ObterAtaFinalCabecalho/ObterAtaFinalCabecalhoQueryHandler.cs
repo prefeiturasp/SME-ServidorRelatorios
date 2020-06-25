@@ -24,8 +24,8 @@ namespace SME.SR.Application
 
             return new ConcelhoClasseAtaFinalCabecalhoDto()
             {
-                Dre = dreUe.Dre,
-                Ue = dreUe.Ue,
+                Dre = dreUe?.Dre,
+                Ue = dreUe?.Ue,
                 Ciclo = ciclo,
                 Turma = turma.Nome,
                 AnoLetivo = turma.AnoLetivo,
@@ -39,8 +39,6 @@ namespace SME.SR.Application
         private async Task<DreUe> ObterDreUe(string turmaCodigo)
         {
             var dreUe = await mediator.Send(new ObterDreUePorTurmaQuery(turmaCodigo));
-            if (dreUe == null)
-                throw new Exception("Não localizado DRE/UE da turma informada.");
 
             return dreUe;
         }
