@@ -27,6 +27,8 @@ namespace SME.SR.Application
                 var cabecalho = await mediator.Send(new ObterAtaFinalCabecalhoQuery(parametros.TurmaCodigo));
                 var alunos = await ObterAlunos(parametros.TurmaCodigo);
                 var componentesCurriculares = await ObterComponentesCurriculares(parametros.TurmaCodigo);
+                var notasFinais = await ObterNotasFinaisPorTurmaQuery(parametros.TurmaCodigo);
+
 
                 await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoAta/ConselhoAta", null, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
@@ -34,6 +36,11 @@ namespace SME.SR.Application
             {
                 throw ex;
             }
+        }
+
+        private async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisPorTurmaQuery(string turmaCodigo)
+        {
+            return await mediator.Send(new ObterNotasFinaisPorTurmaQuery(turmaCodigo));
         }
 
         private async Task<IEnumerable<AlunoSituacaoAtaFinalDto>> ObterAlunos(string turmaCodigo)
