@@ -352,7 +352,7 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="47" splitType="Immediate">
+		<band height="43" splitType="Immediate">
 			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="516" y="8" width="19" height="23" uuid="353291b1-378c-4252-850c-34cff5c47099">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -385,10 +385,6 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[/]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="397" y="17" width="100" height="30" uuid="cdafdd9a-75f4-46ae-944c-13caada7014a"/>
-				<textFieldExpression><![CDATA[$V{MASTER_TOTAL_PAGES}]]></textFieldExpression>
-			</textField>
 		</band>
 	</pageFooter>
 </jasperReport>
