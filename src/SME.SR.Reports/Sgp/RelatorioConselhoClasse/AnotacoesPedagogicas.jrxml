@@ -24,8 +24,9 @@
 	<pageHeader>
 		<band height="46" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="1" y="0" width="553" height="23" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="5657e485-c33a-4cb5-a808-eeac37c7fd66">
+				<reportElement positionType="Float" x="1" y="0" width="555" height="23" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="5657e485-c33a-4cb5-a808-eeac37c7fd66">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$F{AnotacoesPedagogicas} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -41,11 +42,12 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="1" y="23" width="553" height="23" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="518b646d-a229-48c3-8508-db2053773bb2">
+				<reportElement positionType="Float" mode="Opaque" x="1" y="23" width="555" height="23" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" backcolor="#F3F3F3" uuid="518b646d-a229-48c3-8508-db2053773bb2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.spacingBefore" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$F{AnotacoesPedagogicas} != null]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="0" leftPadding="20" bottomPadding="0" rightPadding="0">
@@ -65,8 +67,7 @@
 	<detail>
 		<band height="31" splitType="Stretch">
 			<textField textAdjust="StretchHeight" isBlankWhenNull="false">
-				<reportElement positionType="Float" x="1" y="0" width="553" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="78634a8a-fea8-4a6b-b409-b01fc9617949">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<reportElement positionType="Float" x="1" y="0" width="555" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="78634a8a-fea8-4a6b-b409-b01fc9617949">
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 					<printWhenExpression><![CDATA[$F{AnotacoesPedagogicas} != null]]></printWhenExpression>
 				</reportElement>

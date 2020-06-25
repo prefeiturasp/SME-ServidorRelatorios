@@ -24,8 +24,9 @@
 	<pageHeader>
 		<band height="46" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="1" y="0" width="553" height="23" isRemoveLineWhenBlank="true" uuid="2730bd4e-1dba-44a7-aadb-829fe8f26a86">
+				<reportElement positionType="Float" x="0" y="0" width="555" height="23" isRemoveLineWhenBlank="true" uuid="2730bd4e-1dba-44a7-aadb-829fe8f26a86">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$F{RecomendacaoFamilia} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -41,11 +42,12 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="1" y="23" width="553" height="23" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" backcolor="#F3F3F3" uuid="dcb40911-f970-4e97-afcc-66e9a09b32c6">
+				<reportElement positionType="Float" mode="Opaque" x="0" y="23" width="555" height="23" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" backcolor="#F3F3F3" uuid="dcb40911-f970-4e97-afcc-66e9a09b32c6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.spacingBefore" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$F{RecomendacaoFamilia} != null]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="0" leftPadding="20" bottomPadding="0" rightPadding="0">
@@ -65,8 +67,7 @@
 	<detail>
 		<band height="31" splitType="Stretch">
 			<textField textAdjust="StretchHeight" isBlankWhenNull="false">
-				<reportElement positionType="Float" x="1" y="0" width="553" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="7e57ce12-3116-4a2a-b1cb-1ddbfc0e4f21">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="7e57ce12-3116-4a2a-b1cb-1ddbfc0e4f21">
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 					<printWhenExpression><![CDATA[$F{RecomendacaoFamilia} != null]]></printWhenExpression>
 				</reportElement>

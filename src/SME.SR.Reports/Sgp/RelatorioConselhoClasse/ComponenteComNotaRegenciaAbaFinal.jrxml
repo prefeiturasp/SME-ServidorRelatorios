@@ -151,7 +151,8 @@
 				<textFieldExpression><![CDATA[$F{AusenciasCompensadas}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" stretchType="ElementGroupBottom" x="498" y="0" width="55" height="30" isRemoveLineWhenBlank="true" uuid="c07f327b-9827-40a2-8503-9e9117406b72">
+				<reportElement positionType="Float" stretchType="ElementGroupBottom" x="498" y="0" width="57" height="30" isRemoveLineWhenBlank="true" uuid="c07f327b-9827-40a2-8503-9e9117406b72">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$F{Frequencia} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
