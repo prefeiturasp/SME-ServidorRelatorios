@@ -4,6 +4,7 @@ using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Relatorios.ConselhoClasse;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using System.Threading.Tasks;
 
@@ -70,9 +71,9 @@ namespace SME.SR.Workers.SGP.Controllers
         }
         [HttpGet("relatorios/conselhoclasseatafinal")]
         [Action("relatorios/conselhoclasseatafinal", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
-        public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase)
+        public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase, [FromBody] ConselhoClasseAtaFinalDto relatorioModelTeste)
         {
-            await relatorioConselhoClasseAtaFinalUseCase.Executar(request);
+            await relatorioConselhoClasseAtaFinalUseCase.Executar(request, relatorioModelTeste);
             return true;
         }
     }
