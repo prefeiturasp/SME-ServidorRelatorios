@@ -16,6 +16,7 @@ using SME.SR.JRSClient.Extensions;
 using SME.SR.JRSClient.Interfaces;
 using SME.SR.JRSClient.Services;
 using SME.SR.Workers.SGP.Configuracoes;
+using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
 using System;
 using System.Linq;
@@ -47,6 +48,7 @@ namespace SME.SR.Workers.SGP
             services.AddMvc().AddControllersAsServices();
             services.AddRabbitMQ(Configuration);
             services.AddHostedService<RabbitBackgroundListener>();
+            services.AddTransient<ExcecaoMiddleware>();
 
             //TODO: Informa�oes do arquivo de configura��o
 
@@ -66,7 +68,7 @@ namespace SME.SR.Workers.SGP
             })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
-                    return new JasperCookieHandler() { CookieContainer = cookieContainer }; 
+                    return new JasperCookieHandler() { CookieContainer = cookieContainer };
                 });
 
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
@@ -75,7 +77,7 @@ namespace SME.SR.Workers.SGP
 
             // TODO: Criar arquivo especficio para as inje��es
             RegistrarRepositorios(services);
-			RegistrarQueries(services);
+            RegistrarQueries(services);
             RegistrarHandlers(services);
             RegistrarCommands(services);
             RegistrarUseCase(services);
@@ -85,7 +87,7 @@ namespace SME.SR.Workers.SGP
         private void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IExemploRepository, ExemploRepository>();
-			services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
+            services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(IComponenteCurricularRepository), typeof(ComponenteCurricularRepository));
             services.TryAddScoped(typeof(IConselhoClasseRepository), typeof(ConselhoClasseRepository));
@@ -108,7 +110,7 @@ namespace SME.SR.Workers.SGP
         {
             services.AddMediatR(typeof(GerarRelatorioAssincronoCommand).GetTypeInfo().Assembly);
         }
-		
+
         private void RegistrarQueries(IServiceCollection services)
         {
             services.AddMediatR(typeof(ObterAlunosPorTurmaQuery).GetTypeInfo().Assembly);
@@ -130,8 +132,8 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
-		}
-		
+        }
+
         private void RegistrarHandlers(IServiceCollection services)
         {
             services.AddMediatR(typeof(ObterAlunosPorTurmaQueryHandler).GetTypeInfo().Assembly);
@@ -155,8 +157,8 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
 
 
-		}
-		
+        }
+
         private void RegistrarUseCase(IServiceCollection services)
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
@@ -165,6 +167,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
+            services.TryAddScoped<IDownloadPdfRelatorioUseCase, DownloadPdfRelatorioUseCase>();
         }
 
         private void RegistrarServicos(IServiceCollection services)
@@ -174,10 +177,7 @@ namespace SME.SR.Workers.SGP
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseMiddleware<ExcecaoMiddleware>();
 
             app
                 .UseCors(x => x
@@ -185,7 +185,7 @@ namespace SME.SR.Workers.SGP
                     .AllowAnyHeader()
                     .AllowAnyMethod())
                 .UseRouting()
-                .UseAuthorization()                
+                .UseAuthorization()
                 .UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
