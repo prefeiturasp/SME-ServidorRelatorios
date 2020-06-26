@@ -96,7 +96,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="175" splitType="Stretch">
+		<band height="130" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<image>
 				<reportElement x="1" y="0" width="149" height="60" uuid="69b823fa-cd3c-4dee-b302-4527db1aff91"/>
@@ -120,46 +120,6 @@
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Titulo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="233" y="130" width="196" height="22" isRemoveLineWhenBlank="true" uuid="fbb7156c-4bdf-4f62-945a-64700a6b77c3">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<printWhenExpression><![CDATA[$F{AlunoFrequenciaGlobal} != null]]></printWhenExpression>
-				</reportElement>
-				<box>
-					<pen lineWidth="0.75"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA["FREQUÊNCIA GLOBAL: "+$F{AlunoFrequenciaGlobal}+"%"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="429" y="130" width="126" height="22" uuid="c7aa2d46-066a-4b5a-997f-698172fd9a2a">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
-				</reportElement>
-				<box padding="3">
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="0"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{AlunoParecerConclusivo} != null ? $F{AlunoParecerConclusivo} : ""]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="0" y="152" width="555" height="23" isRemoveLineWhenBlank="true" uuid="6ca0fa39-1506-418a-bc14-2f47047082b2"/>
-				<box>
-					<pen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{Bimestre}+"º Bimestre"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="450" y="73" width="105" height="23" isRemoveLineWhenBlank="true" uuid="d7454930-0725-41de-b84c-86e390cfdb71">
@@ -244,20 +204,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA["CÓDIGO EOL: "+$F{AlunoCodigoEol}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="0" y="130" width="233" height="22" isRemoveLineWhenBlank="true" uuid="928016a1-4f20-44a7-81f7-408e883fceea">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
-				</reportElement>
-				<box>
-					<pen lineWidth="0.75"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<textFieldExpression><![CDATA["SITUAÇÃO: " + $F{AlunoSituacao}]]></textFieldExpression>
-			</textField>
 			<textField textAdjust="StretchHeight" isBlankWhenNull="false">
 				<reportElement positionType="Float" x="355" y="73" width="95" height="23" isRemoveLineWhenBlank="true" uuid="70b551ba-632c-48b2-b3be-bf427db9e7f9">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -273,6 +219,64 @@
 			</textField>
 		</band>
 	</pageHeader>
+	<columnHeader>
+		<band height="45">
+			<textField>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="233" height="22" isRemoveLineWhenBlank="true" uuid="928016a1-4f20-44a7-81f7-408e883fceea">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SITUAÇÃO: " + $F{AlunoSituacao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="233" y="0" width="196" height="22" isRemoveLineWhenBlank="true" uuid="fbb7156c-4bdf-4f62-945a-64700a6b77c3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{AlunoFrequenciaGlobal} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FREQUÊNCIA GLOBAL: "+$F{AlunoFrequenciaGlobal}+"%"]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="429" y="0" width="126" height="22" uuid="c7aa2d46-066a-4b5a-997f-698172fd9a2a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AlunoParecerConclusivo} != null ? $F{AlunoParecerConclusivo} : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="22" width="555" height="23" isRemoveLineWhenBlank="true" uuid="6ca0fa39-1506-418a-bc14-2f47047082b2"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Bimestre}+"º Bimestre"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
 	<detail>
 		<band height="120" splitType="Stretch">
 			<subreport>

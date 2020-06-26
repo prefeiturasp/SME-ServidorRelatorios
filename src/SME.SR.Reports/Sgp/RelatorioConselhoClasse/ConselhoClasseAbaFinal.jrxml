@@ -91,7 +91,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="177" splitType="Stretch">
+		<band height="130" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<image>
 				<reportElement x="1" y="0" width="149" height="60" uuid="69b823fa-cd3c-4dee-b302-4527db1aff91"/>
@@ -115,16 +115,6 @@
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Titulo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="152" width="555" height="23" uuid="6ca0fa39-1506-418a-bc14-2f47047082b2">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<box>
-					<pen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{Bimestre}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="0" y="73" width="85" height="23" isRemoveLineWhenBlank="true" uuid="344bd4e3-247d-4220-8fd1-a757c70f853c">
@@ -176,24 +166,21 @@
 				</textElement>
 				<textFieldExpression><![CDATA["DATA: "+$F{Data}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="429" y="107" width="126" height="23" isRemoveLineWhenBlank="true" uuid="ae072bad-10fe-44db-b649-c1bedd5bee04">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="0" y="107" width="233" height="23" isRemoveLineWhenBlank="true" uuid="f653335a-2195-4d39-9470-e507e6f3514e">
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box padding="3">
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<pen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="0"/>
+					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["CÓDIGO EOL: "+$F{AlunoCodigoEol}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{AlunoNome}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="233" y="107" width="196" height="23" isRemoveLineWhenBlank="true" uuid="c59effc2-4344-4776-9304-d271021f5676">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="233" y="107" width="196" height="23" isRemoveLineWhenBlank="true" uuid="03b8a61d-96ce-4b49-917c-8ffc4d077550">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
@@ -209,21 +196,28 @@
 				</textElement>
 				<textFieldExpression><![CDATA["DATA DE NASCIMENTO: "+$F{AlunoDataDeNascimento}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="0" y="107" width="233" height="23" isRemoveLineWhenBlank="true" uuid="93e16b04-1c95-4798-b2a9-f069dc14534b">
-					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			<textField>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="429" y="107" width="126" height="23" isRemoveLineWhenBlank="true" uuid="3823f1a1-69de-41ac-83ef-99bd05b56efe">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 				</reportElement>
 				<box padding="3">
-					<pen lineWidth="0.75"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="5"/>
+					<paragraph leftIndent="0"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{AlunoNome}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["CÓDIGO EOL: "+$F{AlunoCodigoEol}]]></textFieldExpression>
 			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="45">
 			<textField>
-				<reportElement positionType="Float" x="0" y="130" width="233" height="22" isRemoveLineWhenBlank="true" uuid="98365a1a-5ab9-4565-8c10-419fbe35cc81">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="233" height="22" isRemoveLineWhenBlank="true" uuid="5fb3923e-11ff-44b5-b96b-09675ef40fb1">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
@@ -237,7 +231,7 @@
 				<textFieldExpression><![CDATA["SITUAÇÃO: " + $F{AlunoSituacao}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="233" y="130" width="196" height="22" isRemoveLineWhenBlank="true" uuid="3a0fdc6f-b34e-4a2b-9994-71ce54a6304a">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="233" y="0" width="196" height="22" isRemoveLineWhenBlank="true" uuid="a7aab143-aa07-48e3-8199-e837813cce62">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -251,8 +245,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA["FREQUÊNCIA GLOBAL: "+$F{AlunoFrequenciaGlobal}+"%"]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="429" y="130" width="126" height="22" uuid="64e3206f-9fd4-46da-b80b-9b744ee8a102">
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="429" y="0" width="126" height="22" uuid="6b1265f1-6e5c-49b2-ba97-97ffedacd388">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
@@ -268,8 +262,18 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{AlunoParecerConclusivo} != null ? $F{AlunoParecerConclusivo} : ""]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="22" width="555" height="23" uuid="6ca0fa39-1506-418a-bc14-2f47047082b2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Bimestre}]]></textFieldExpression>
+			</textField>
 		</band>
-	</pageHeader>
+	</columnHeader>
 	<detail>
 		<band height="121" splitType="Stretch">
 			<subreport>
