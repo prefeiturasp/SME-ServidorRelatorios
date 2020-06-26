@@ -24,11 +24,12 @@ namespace SME.SR.Application
             {
                 var parametros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
 
-                var cabecalho = await mediator.Send(new ObterAtaFinalCabecalhoQuery(parametros.TurmaCodigo));
+                var turma = await ObterTurma(parametros.TurmaCodigo);
+                var cabecalho = await ObterCabecalho(parametros.TurmaCodigo);
                 var alunos = await ObterAlunos(parametros.TurmaCodigo);
                 var componentesCurriculares = await ObterComponentesCurriculares(parametros.TurmaCodigo);
-                var notasFinais = await ObterNotasFinaisPorTurmaQuery(parametros.TurmaCodigo);
-
+                var notasFinais = await ObterNotasFinaisPorTurma(parametros.TurmaCodigo);
+                var frequenciaAlunos = await ObterFrequenciaComponente(parametros.TurmaCodigo, turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
 
                 await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoAta/ConselhoAta", null, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
@@ -38,7 +39,16 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisPorTurmaQuery(string turmaCodigo)
+        private async Task<ConcelhoClasseAtaFinalCabecalhoDto> ObterCabecalho(string turmaCodigo)
+            => await mediator.Send(new ObterAtaFinalCabecalhoQuery(turmaCodigo));
+
+        private async Task<Turma> ObterTurma(string turmaCodigo)
+            => await mediator.Send(new ObterTurmaQuery(turmaCodigo));
+
+        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string turmaCodigo, ModalidadeTipoCalendario modalidade, int anoLetivo, int semestre)
+            => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmaCodigo, modalidade, anoLetivo, semestre));
+
+        private async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisPorTurma(string turmaCodigo)
         {
             return await mediator.Send(new ObterNotasFinaisPorTurmaQuery(turmaCodigo));
         }
