@@ -177,7 +177,7 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<text><![CDATA[s]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 		</band>
 	</detail>
