@@ -25,6 +25,21 @@
 	                        and bimestre = @bimestre
                             and disciplina_id = @disciplinaId";
 
+        internal static string FrequenciaDisciplinaPorTurma = @"select fa.codigo_aluno as CodigoAluno
+                                , fa.disciplina_id as DisciplinaId
+                                , fa.bimestre 
+                                , fa.total_aulas as TotalAulas
+                                , fa.total_ausencias as TotalAusencias
+                                , fa.total_compensacoes as TotalCompensacoes
+                                , fa.periodo_escolar_id as PeriodoEscolarId
+                                , fa.periodo_inicio as PeriodoInicio
+                                , fa.periodo_fim as PeriodoFim
+                            from frequencia_aluno fa
+                           inner join periodo_escolar pe on pe.id = fa.periodo_escolar_id
+                            where fa.tipo = 1
+                              and fa.turma_id = @turmaCodigo
+                              and pe.tipo_calendario_id = @tipoCalendarioId";
+
         public static string FrequenciaPorAlunoTurmaBimestre(int? bimestre)
         {
             var query = @"select * 
