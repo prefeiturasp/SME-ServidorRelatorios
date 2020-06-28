@@ -9,17 +9,13 @@ namespace SME.SR.Application
 {
     public class ObterFrequenciaComponenteGlobalPorTurmaQuery : IRequest<IEnumerable<FrequenciaAluno>>
     {
-        public ObterFrequenciaComponenteGlobalPorTurmaQuery (string turmaCodigo, ModalidadeTipoCalendario modalidade, int anoLetivo, int semestre)
+        public ObterFrequenciaComponenteGlobalPorTurmaQuery (string turmaCodigo, long tipoCalendarioId)
         {
             TurmaCodigo = turmaCodigo;
-            Modalidade = modalidade;
-            AnoLetivo = anoLetivo;
-            Semestre = semestre;
+            TipoCalendarioId = tipoCalendarioId;
         }
 
         public string TurmaCodigo { get; set; }
-        public ModalidadeTipoCalendario Modalidade { get; set; }
-        public int AnoLetivo { get; set; }
-        public int Semestre { get; set; }
+        public long TipoCalendarioId { get; set; }
     }
 }
