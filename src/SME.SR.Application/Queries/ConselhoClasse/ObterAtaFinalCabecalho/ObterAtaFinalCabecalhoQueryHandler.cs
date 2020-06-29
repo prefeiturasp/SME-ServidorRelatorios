@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterAtaFinalCabecalhoQueryHandler : IRequestHandler<ObterAtaFinalCabecalhoQuery, ConcelhoClasseAtaFinalCabecalhoDto>
+    public class ObterAtaFinalCabecalhoQueryHandler : IRequestHandler<ObterAtaFinalCabecalhoQuery, ConselhoClasseAtaFinalCabecalhoDto>
     {
         private readonly IMediator mediator;
 
@@ -16,13 +16,13 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<ConcelhoClasseAtaFinalCabecalhoDto> Handle(ObterAtaFinalCabecalhoQuery request, CancellationToken cancellationToken)
+        public async Task<ConselhoClasseAtaFinalCabecalhoDto> Handle(ObterAtaFinalCabecalhoQuery request, CancellationToken cancellationToken)
         {
             var turma = await ObterTurma(request.TurmaCodigo);
             var dreUe = await ObterDreUe(request.TurmaCodigo);
             var ciclo = await ObterCiclo(request.TurmaCodigo);
 
-            return new ConcelhoClasseAtaFinalCabecalhoDto()
+            return new ConselhoClasseAtaFinalCabecalhoDto()
             {
                 Dre = dreUe?.Dre,
                 Ue = dreUe?.Ue,

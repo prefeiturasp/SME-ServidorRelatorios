@@ -6,7 +6,7 @@ namespace SME.SR.Infra
 {
     public class AlunoSituacaoDto
     {
-        public int CodigoAluno { get; set; }
+        public long CodigoAluno { get; set; }
         public string NomeAluno { get; set; }
         public SituacaoMatriculaAluno CodigoSituacaoMatricula { get; set; }
         public string SituacaoMatricula { get; set; }

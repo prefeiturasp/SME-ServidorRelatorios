@@ -74,7 +74,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string turmaCodigo, long tipoCalendarioId)
         {
-            var query = FrequenciaAlunoConsultas.FrequenciaDisciplinaPorTurma;
+            var query = FrequenciaAlunoConsultas.FrequenciaDisciplinaGlobalPorTurma;
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {

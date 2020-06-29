@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class ConcelhoClasseAtaFinalCabecalhoDto
+    public class ConselhoClasseAtaFinalCabecalhoDto
     {
         public string Dre { get; set; }
         public string Ue { get; set; }
