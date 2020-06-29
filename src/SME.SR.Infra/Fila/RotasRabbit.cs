@@ -7,8 +7,8 @@
 
 
         public static string FilaWorkerRelatorios => "sme.sr.workers.sgp";
-        public static string FilaClientsSgp => "sme.sr.clients.sgp";
-        
+        public static string FilaClientsSgp => "sme.sgp.clients";
+
         public static string RotaRelatoriosProntosSgp => "relatorios.prontos";
         public static string RotaRelatoriosProcessando => "relatorios.processando";
         

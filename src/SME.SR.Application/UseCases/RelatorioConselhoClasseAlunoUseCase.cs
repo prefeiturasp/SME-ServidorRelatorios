@@ -25,47 +25,28 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
 
-            using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
-            {
-                try
-                {
+            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
 
-                    var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
+            SentrySdk.CaptureMessage("4.09 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
 
-                    SentrySdk.CaptureMessage("4.09 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
-                    
-                    var relatorio = await mediator.Send(relatorioQuery);
+            var relatorio = await mediator.Send(relatorioQuery);
 
-                    SentrySdk.CaptureMessage("5.1 Obtive relatorio.. - RelatorioConselhoClasseAlunoUseCase");
+            SentrySdk.CaptureMessage("5.1 Obtive relatorio.. - RelatorioConselhoClasseAlunoUseCase");
 
-                    var urlRelatorio = "";
+            var urlRelatorio = "";
 
-                    if (relatorio.Relatorio.FirstOrDefault().EhBimestreFinal)
-                        urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal";
-                    else urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasse";
+            if (relatorio.Relatorio.FirstOrDefault().EhBimestreFinal)
+                urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal";
+            else urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasse";
 
-                    var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
+            var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
 
-                    SentrySdk.CaptureMessage("5.2 Serializei relatório.. - RelatorioConselhoClasseAlunoUseCase");
+            SentrySdk.CaptureMessage("5.2 Serializei relatório.. - RelatorioConselhoClasseAlunoUseCase");
 
-                    SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
-                    await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
+            SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
+            await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
 
-                    SentrySdk.CaptureMessage("5 FINAL - RelatorioConselhoClasseAlunoUseCase");
-
-
-                }
-                catch (Exception ex)
-                {
-                    SentrySdk.CaptureException(ex);
-                    throw ex;
-                }
-            }
-
+            SentrySdk.CaptureMessage("5 FINAL - RelatorioConselhoClasseAlunoUseCase");
         }
     }
-
-
-
-
 }
