@@ -1,3 +1,5 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -82,6 +84,9 @@ namespace SME.SR.Workers.SGP
             RegistrarCommands(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
+
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools())); // TODO verificar onde deve ser colocada essa injeção
         }
 
         private void RegistrarRepositorios(IServiceCollection services)
