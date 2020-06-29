@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DinkToPdf.Contracts;
+using MediatR;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra.Dtos.Relatorios.ConselhoClasse;
 using System;
@@ -12,31 +13,48 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 {
     public class GerarRelatorioHtmlParaPdfCommandHandler : IRequestHandler<GerarRelatorioHtmlParaPdfCommand, bool>
     {
-        public GerarRelatorioHtmlParaPdfCommandHandler()
-        {
+        private readonly IConverter converter;
 
+        public GerarRelatorioHtmlParaPdfCommandHandler(IConverter converter)
+        {
+            this.converter = converter;
         }
 
         public async Task<bool> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            List<string> paginasEmHtml = new List<string>();
-
-            foreach (ConselhoClasseAtaFinalPaginaDto modelPagina in request.Paginas)
+            try
             {
-                string html = string.Empty;
+                List<string> paginasEmHtml = new List<string>();
 
-                html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
+                foreach (ConselhoClasseAtaFinalPaginaDto modelPagina in request.Paginas)
+                {
+                    string html = string.Empty;
 
-                html = html.Replace("logo.png", SmeConstants.LogoSme);
+                    html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
 
-                paginasEmHtml.Add(html);
+                    html = html.Replace("logo.png", SmeConstants.LogoSme);
+
+                    paginasEmHtml.Add(html);
+                }
+
+                PdfGenerator pdfGenerator = new PdfGenerator(converter);
+
+                var directory = AppDomain.CurrentDomain.BaseDirectory;
+
+                pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());
+
+                byte[] bytes = pdfGenerator.ConvertToPdf(paginasEmHtml);
+
+                return true;
             }
-
-
-            return true;
+            catch (Exception)
+            {
+                // TODO sentry?
+                return false;
+            }
         }
 
-        private string GerarHtmlRazor(ConselhoClasseAtaFinalPaginaDto model, string nomeDoArquivoDoTemplate)
+        private string GerarHtmlRazor<T>(T model, string nomeDoArquivoDoTemplate)
         {
             string templateBruto = System.IO.File.ReadAllText(nomeDoArquivoDoTemplate);
 
