@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
 using SME.SR.Data;
 using SME.SR.Infra;
@@ -35,8 +36,9 @@ namespace SME.SR.Application
                 var pareceresConclusivos = await ObterPareceresConclusivos(parametros.TurmaCodigo);
 
                 var dadosRelatorio = MontarEstruturaRelatorio(cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos);
-
                 var resultadoPaginado = MontarEstruturaPaginada(dadosRelatorio);
+
+                var jsonDados = JsonConvert.SerializeObject(resultadoPaginado);
 
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorioAtasComColunaFinal.cshtml", resultadoPaginado, request.CodigoCorrelacao));
 
@@ -136,13 +138,13 @@ namespace SME.SR.Application
             var gruposMatrizes = componentesCurriculares.GroupBy(c => c.GrupoMatriz);
 
             MontarEstruturaGruposMatriz(ref relatorio, gruposMatrizes);
-            MontarEstruturaLinhas(ref relatorio, alunos, gruposMatrizes, notasFinais, frequenciaAlunos);
+            MontarEstruturaLinhas(ref relatorio, alunos, gruposMatrizes, notasFinais, frequenciaAlunos, pareceresConclusivos);
             return relatorio;
         }
 
-        private void MontarEstruturaLinhas(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos)
+        private void MontarEstruturaLinhas(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos)
         {
-            foreach(var aluno in alunos)
+            foreach (var aluno in alunos)
             {
                 var linhaDto = new ConselhoClasseAtaFinalLinhaDto()
                 {
@@ -195,10 +197,27 @@ namespace SME.SR.Application
                                                 ++coluna);
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
-                                                $"{frequenciaAluno?.PercentualFrequencia ?? 100} %",
+                                                frequenciaAluno?.PercentualFrequencia.ToString() ?? "100,00",
                                                 ++coluna);
                     }
                 }
+
+                var frequenciaGlobalAluno = frequenciaAlunos
+                                                .GroupBy(c => c.CodigoAluno)
+                                                .Where(c => c.Key == aluno.CodigoAluno.ToString())
+                                                .Select(f => new FrequenciaAluno()
+                                                {
+                                                    TotalAusencias = f.Sum(s => s.TotalAusencias),
+                                                    TotalCompensacoes = f.Sum(s => s.TotalCompensacoes)
+                                                }).FirstOrDefault();
+
+                // Anual
+                linhaDto.AdicionaCelula(0, 0, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
+                linhaDto.AdicionaCelula(0, 0, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);
+                linhaDto.AdicionaCelula(0, 0, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? "0", 3);
+
+                var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
+                linhaDto.AdicionaCelula(0, 0, parecerConclusivo?.ParecerConclusivo ?? "", 4);
 
                 relatorio.Linhas.Add(linhaDto);
             }
