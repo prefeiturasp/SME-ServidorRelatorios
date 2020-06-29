@@ -1,14 +1,14 @@
 ﻿using MediatR;
-using SME.SR.Infra;
+using SME.SR.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SME.SR.Application
 {
-    public class ObterAtaFinalCabecalhoQuery: IRequest<ConselhoClasseAtaFinalCabecalhoDto>
+    public class ObterParecerConclusivoPorTurmaQuery: IRequest<IEnumerable<ConselhoClasseParecerConclusivo>>
     {
-        public ObterAtaFinalCabecalhoQuery(string turmaCodigo)
+        public ObterParecerConclusivoPorTurmaQuery(string turmaCodigo)
         {
             TurmaCodigo = turmaCodigo;
         }

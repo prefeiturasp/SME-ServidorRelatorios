@@ -3,6 +3,7 @@ using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -24,6 +25,16 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QuerySingleOrDefaultAsync<string>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<ConselhoClasseParecerConclusivo>> ObterParecerConclusivoPorTurma(string turmaCodigo)
+        {
+            var query = ConselhoClasseAlunoConsultas.ParecerConclusivoPorTurma;
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<ConselhoClasseParecerConclusivo>(query, new { turmaCodigo });
             }
         }
 

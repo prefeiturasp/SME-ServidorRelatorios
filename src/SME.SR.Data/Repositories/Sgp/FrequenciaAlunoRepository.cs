@@ -71,5 +71,15 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<FrequenciaAluno>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string turmaCodigo, long tipoCalendarioId)
+        {
+            var query = FrequenciaAlunoConsultas.FrequenciaDisciplinaGlobalPorTurma;
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAluno>(query, new { turmaCodigo, tipoCalendarioId });
+            }
+        }
     }
 }
