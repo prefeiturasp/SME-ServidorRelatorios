@@ -41,10 +41,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorio/conselhoclassealuno", typeof(IRelatorioConselhoClasseAlunoUseCase))]
         public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request, IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
         {
-            using (SentrySdk.Init(configuration.GetValue<string>("Sentry:DSN")))
-            {
-                SentrySdk.CaptureMessage("4 - relatorio/conselhoclassealuno");
-            }
+            SentrySdk.CaptureMessage("4 - relatorio/conselhoclassealuno");
             await relatorioConselhoClasseAlunoUseCase.Executar(request);
             return true;
         }
@@ -53,10 +50,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/processando", typeof(IMonitorarStatusRelatorioUseCase))]
         public async Task<bool> RelatoriosProcessando([FromQuery] FiltroRelatorioDto request, [FromServices] IMonitorarStatusRelatorioUseCase monitorarStatusRelatorioUseCase)
         {
-            using (SentrySdk.Init(configuration.GetValue<string>("Sentry:DSN")))
-            {
-                SentrySdk.CaptureMessage("7 - relatorios/processando");
-            }
+            SentrySdk.CaptureMessage("7 - relatorios/processando");
             await monitorarStatusRelatorioUseCase.Executar(request);
             return true;
         }
