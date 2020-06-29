@@ -6,6 +6,6 @@ namespace SME.SR.Application
 {
     public interface IRelatorioConselhoClasseAtaFinalUseCase
     {
-        Task Executar(FiltroRelatorioDto request, ConselhoClasseAtaFinalDto relatorioModelTeste);
+        Task Executar(FiltroRelatorioDto request);
     }
 }

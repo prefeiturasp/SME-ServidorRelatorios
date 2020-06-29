@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace SME.SR.Infra.Dtos.Relatorios.ConselhoClasse
+namespace SME.SR.Infra
 {
     public class ConselhoClasseAtaFinalPaginaDto : ConselhoClasseAtaFinalDto
     {

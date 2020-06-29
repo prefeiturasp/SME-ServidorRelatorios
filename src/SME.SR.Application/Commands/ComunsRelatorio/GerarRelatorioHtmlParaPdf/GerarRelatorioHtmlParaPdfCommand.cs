@@ -1,9 +1,7 @@
 ﻿using MediatR;
-using SME.SR.Infra.Dtos.Relatorios.ConselhoClasse;
+using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 {

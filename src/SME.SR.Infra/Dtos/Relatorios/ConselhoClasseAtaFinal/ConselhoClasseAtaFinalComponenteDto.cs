@@ -9,6 +9,7 @@ namespace SME.SR.Infra
             Colunas = new List<ConselhoClasseAtaFinalColunaDto>();
         }
 
+        public long IdGrupoMatriz { get; set; }
         public long Id { get; set; }
         public string Nome { get; set; }
         public List<ConselhoClasseAtaFinalColunaDto> Colunas { get; set; }
