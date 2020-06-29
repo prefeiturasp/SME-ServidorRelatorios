@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using RazorEngine;
+using RazorEngine.Templating;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
@@ -74,6 +76,20 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase, [FromBody] ConselhoClasseAtaFinalDto relatorioModelTeste)
         {
             await relatorioConselhoClasseAtaFinalUseCase.Executar(request, relatorioModelTeste);
+            return true;
+        }
+
+        [HttpGet("teste")]
+        [Action("relatorios/conselhoclasseatafinal", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
+        public async Task<bool> Teste([FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase)
+        {
+            //await relatorioConselhoClasseAtaFinalUseCase.Executar(null, null);
+           
+            string templateBruto = System.IO.File.ReadAllText("relatorio.cshtml");
+
+            var model = new ConselhoClasseAtaFinalCabecalhoDto() { Dre = "teste" };
+            var result = Engine.Razor.RunCompile(templateBruto, "teste", typeof(ConselhoClasseAtaFinalCabecalhoDto), model);
+
             return true;
         }
     }
