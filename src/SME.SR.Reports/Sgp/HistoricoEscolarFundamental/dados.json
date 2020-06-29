@@ -1,0 +1,19 @@
+{
+  "relatorioHistoricoEscolar": [
+    {
+      "areasConhecimento": [
+        {
+          "componentesCurriculares": [
+            {
+              "nome": "Portugues",
+              "notaPrimeiroAno": "10",
+              "frequenciaPrimeiroAno": "100",
+              "notaSegundoAno": "8",
+              "frequenciaSegundoAno": "80"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
