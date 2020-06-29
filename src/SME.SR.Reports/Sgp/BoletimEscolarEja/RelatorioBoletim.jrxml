@@ -198,7 +198,7 @@
 				<text><![CDATA[BOLETIM ESCOLAR]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement x="130" y="33" width="157" height="10" uuid="0b4aec14-a8db-4a6c-95c5-006377135532">
+				<reportElement x="92" y="33" width="195" height="10" uuid="0b4aec14-a8db-4a6c-95c5-006377135532">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="4">
@@ -210,17 +210,20 @@
 				<textFieldExpression><![CDATA["UE: "+$F{nomeUe}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="26" y="43" width="104" height="10" uuid="cfad6463-110b-445d-bcd2-d5a9e2276f8b">
+				<reportElement x="2" y="43" width="90" height="10" uuid="cfad6463-110b-445d-bcd2-d5a9e2276f8b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<box leftPadding="4"/>
+				<box leftPadding="4">
+					<pen lineWidth="0.25"/>
+				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nomeTurma}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["TURMA: "+$F{nomeTurma}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="130" y="43" width="157" height="10" uuid="3bdcae83-ca66-4a13-95f7-e9d7fd57bcce">
+				<reportElement x="92" y="43" width="195" height="10" uuid="3bdcae83-ca66-4a13-95f7-e9d7fd57bcce">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box leftPadding="4">
@@ -241,44 +244,22 @@
 				</textElement>
 				<text><![CDATA[DATA DE IMPRESSÃO:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="2" y="33" width="128" height="10" uuid="d1b041b7-cfc4-482f-a95b-335675b57138">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<box leftPadding="2">
-					<pen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="6"/>
-				</textElement>
-				<text><![CDATA[DRE:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="2" y="43" width="128" height="10" uuid="8e2857e9-27aa-472f-b8c2-b6108686c091">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<box leftPadding="2">
-					<pen lineWidth="0.25" lineStyle="Solid"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="6"/>
-				</textElement>
-				<text><![CDATA[TURMA:]]></text>
-			</staticText>
 			<image>
 				<reportElement x="2" y="3" width="50" height="20" uuid="7a5e3be6-e96d-41e4-b488-bef84eb92c58"/>
 				<box topPadding="2" leftPadding="4"/>
 				<imageExpression><![CDATA["logo.png"]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="17" y="33" width="113" height="10" uuid="a750a1c2-3b96-4849-8226-a2259e0ca99b"/>
-				<box leftPadding="4"/>
+				<reportElement x="2" y="33" width="90" height="10" uuid="a750a1c2-3b96-4849-8226-a2259e0ca99b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box leftPadding="4">
+					<pen lineWidth="0.25"/>
+				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nomeDre}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["DRE: "+$F{nomeDre}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="222" y="53" width="65" height="10" uuid="452219d4-4ae9-4460-833d-082d5e141bfb">
