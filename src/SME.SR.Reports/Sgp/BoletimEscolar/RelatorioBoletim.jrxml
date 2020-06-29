@@ -39,18 +39,71 @@
 		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
 	</field>
 	<detail>
-		<band height="165" splitType="Stretch">
+		<band height="275" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="290" height="162" uuid="f9da900b-362d-433c-ae4f-d0ee4a9866e1">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="290" height="275" uuid="f9da900b-362d-433c-ae4f-d0ee4a9866e1">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box padding="0">
 					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
+				<line>
+					<reportElement positionType="Float" x="10" y="267" width="270" height="1" uuid="180b9cd6-11e0-4bd1-a583-d98dd3748daf">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement positionType="Float" x="10" y="257" width="270" height="1" uuid="c3f3ea91-8aef-4e41-84f1-8f05560d4b9c">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement positionType="Float" x="10" y="246" width="80" height="10" forecolor="#42474A" uuid="bf78107a-9172-4e6b-bcee-17da939251eb">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Top">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[OBSERVAÇÕES:]]></text>
+				</staticText>
+				<textField textAdjust="StretchHeight">
+					<reportElement positionType="Float" x="10" y="232" width="270" height="10" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Top">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{descricaoGrupos}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" x="0" y="243" width="290" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
 			</frame>
 			<subreport isUsingCache="false" overflowType="Stretch">
-				<reportElement positionType="Float" x="2" y="80" width="285" height="40" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7">
+				<reportElement positionType="Float" x="2" y="80" width="285" height="150" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
@@ -396,59 +449,6 @@
 				</textElement>
 				<text><![CDATA[% Freq.]]></text>
 			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="10" y="137" width="80" height="10" forecolor="#42474A" uuid="bf78107a-9172-4e6b-bcee-17da939251eb">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement verticalAlignment="Top">
-					<font size="6"/>
-				</textElement>
-				<text><![CDATA[OBSERVAÇÕES:]]></text>
-			</staticText>
-			<textField textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="10" y="120" width="270" height="10" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textElement verticalAlignment="Top">
-					<font size="6"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{descricaoGrupos}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement positionType="Float" x="0" y="133" width="290" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" x="10" y="147" width="270" height="1" uuid="c3f3ea91-8aef-4e41-84f1-8f05560d4b9c">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" x="10" y="157" width="270" height="1" uuid="180b9cd6-11e0-4bd1-a583-d98dd3748daf">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
 		</band>
 	</detail>
 </jasperReport>

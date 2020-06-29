@@ -35,10 +35,10 @@
 		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
 	</field>
 	<detail>
-		<band height="160" splitType="Stretch">
+		<band height="277" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="290" height="160" uuid="f9da900b-362d-433c-ae4f-d0ee4a9866e1">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="290" height="277" uuid="f9da900b-362d-433c-ae4f-d0ee4a9866e1">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box padding="0">
@@ -124,9 +124,52 @@
 					</textElement>
 					<text><![CDATA[% Freq.]]></text>
 				</staticText>
+				<line>
+					<reportElement positionType="Float" x="0" y="241" width="290" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement positionType="Float" x="10" y="245" width="80" height="8" forecolor="#42474A" uuid="bf78107a-9172-4e6b-bcee-17da939251eb">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Top">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[OBSERVAÇÕES:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="9" y="259" width="271" height="1" uuid="a04df345-f77c-4d75-93dd-ed736c75cbf0">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</line>
+				<line>
+					<reportElement x="9" y="269" width="271" height="1" uuid="d98e0d6e-6c5d-4f57-a5aa-d16d8b2eb506">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+				</line>
+				<textField textAdjust="StretchHeight">
+					<reportElement positionType="Float" x="2" y="231" width="270" height="10" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Top">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{descricaoGrupos}]]></textFieldExpression>
+				</textField>
 			</frame>
 			<subreport isUsingCache="false" overflowType="Stretch">
-				<reportElement positionType="Float" x="2" y="83" width="285" height="40" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7">
+				<reportElement positionType="Float" x="2" y="83" width="285" height="148" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
@@ -288,38 +331,6 @@
 				</textElement>
 				<text><![CDATA[% Freq.]]></text>
 			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="10" y="142" width="80" height="10" forecolor="#42474A" uuid="bf78107a-9172-4e6b-bcee-17da939251eb">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement verticalAlignment="Top">
-					<font size="6"/>
-				</textElement>
-				<text><![CDATA[OBSERVAÇÕES:]]></text>
-			</staticText>
-			<textField textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="10" y="125" width="270" height="10" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-				</reportElement>
-				<textElement verticalAlignment="Top">
-					<font size="6"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{descricaoGrupos}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement positionType="Float" x="0" y="138" width="285" height="1" uuid="d414126e-4f50-4659-8168-bb024de79f0d">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
 		</band>
 	</detail>
 </jasperReport>
