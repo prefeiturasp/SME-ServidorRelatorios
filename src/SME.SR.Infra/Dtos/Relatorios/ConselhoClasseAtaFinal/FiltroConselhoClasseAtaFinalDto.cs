@@ -6,6 +6,6 @@ namespace SME.SR.Infra
 {
     public class FiltroConselhoClasseAtaFinalDto
     {
-        public string TurmaCodigo { get; set; }
+        public IEnumerable<string> TurmasCodigos { get; set; }
     }
 }

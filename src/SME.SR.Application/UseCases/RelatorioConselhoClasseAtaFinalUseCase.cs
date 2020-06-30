@@ -25,28 +25,37 @@ namespace SME.SR.Application
             {
                 var parametros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
 
-                var turma = await ObterTurma(parametros.TurmaCodigo);
-                var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
+                var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
+                foreach(var turmaCodigo in parametros.TurmasCodigos)
+                {
+                    relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo));
+                }
 
-                var cabecalho = await ObterCabecalho(parametros.TurmaCodigo);
-                var alunos = await ObterAlunos(parametros.TurmaCodigo);
-                var componentesCurriculares = await ObterComponentesCurriculares(parametros.TurmaCodigo);
-                var notasFinais = await ObterNotasFinaisPorTurma(parametros.TurmaCodigo);
-                var frequenciaAlunos = await ObterFrequenciaComponente(parametros.TurmaCodigo, tipoCalendarioId);
-                var pareceresConclusivos = await ObterPareceresConclusivos(parametros.TurmaCodigo);
+                var jsonDados = JsonConvert.SerializeObject(relatoriosTurmas);
 
-                var dadosRelatorio = MontarEstruturaRelatorio(cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos);
-                var resultadoPaginado = MontarEstruturaPaginada(dadosRelatorio);
-
-                var jsonDados = JsonConvert.SerializeObject(resultadoPaginado);
-
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorioAtasComColunaFinal.cshtml", resultadoPaginado, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorioAtasComColunaFinal.cshtml", relatoriosTurmas, request.CodigoCorrelacao));
 
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(string turmaCodigo)
+        {
+            var turma = await ObterTurma(turmaCodigo);
+            var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
+
+            var cabecalho = await ObterCabecalho(turmaCodigo);
+            var alunos = await ObterAlunos(turmaCodigo);
+            var componentesCurriculares = await ObterComponentesCurriculares(turmaCodigo);
+            var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
+            var frequenciaAlunos = await ObterFrequenciaComponente(turmaCodigo, tipoCalendarioId);
+            var pareceresConclusivos = await ObterPareceresConclusivos(turmaCodigo);
+
+            var dadosRelatorio = MontarEstruturaRelatorio(cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos);
+            return MontarEstruturaPaginada(dadosRelatorio);
         }
 
         private List<ConselhoClasseAtaFinalPaginaDto> MontarEstruturaPaginada(ConselhoClasseAtaFinalDto dadosRelatorio)
@@ -144,12 +153,14 @@ namespace SME.SR.Application
 
         private void MontarEstruturaLinhas(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos)
         {
-            foreach (var aluno in alunos)
+            foreach (var aluno in alunos.Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada))
             {
                 var linhaDto = new ConselhoClasseAtaFinalLinhaDto()
                 {
-                    Id = aluno.CodigoAluno,
-                    Nome = aluno.NomeAluno
+                    Id = long.Parse(aluno.NumeroAlunoChamada ?? "0"),
+                    Nome = aluno.NomeAluno,
+                    Situacao = aluno.SituacaoMatricula,
+                    Inativo = aluno.Inativo
                 };
 
                 foreach (var grupoMatriz in gruposMatrizes)

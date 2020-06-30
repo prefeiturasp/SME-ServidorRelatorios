@@ -13,6 +13,8 @@ namespace SME.SR.Infra
 
         public long Id { get; set; }
         public string Nome { get; set; }
+        public string Situacao { get; set; }
+        public bool Inativo { get; set; }
         public List<ConselhoClasseAtaFinalCelulaDto> Celulas { get; set; }
 
         public void AdicionaCelula(long grupoMatriz, long componenteCurricular, string valor, int coluna)
