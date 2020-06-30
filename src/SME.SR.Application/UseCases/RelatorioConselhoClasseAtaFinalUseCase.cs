@@ -183,10 +183,7 @@ namespace SME.SR.Application
                         // Monta colunas frequencia F - CA - %
                         var frequenciaAluno = frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString()
                                                                         && c.DisciplinaId == componente.CodDisciplina.ToString());
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
-                                                componente.CodDisciplina,
-                                                frequenciaAluno?.TotalAulas.ToString() ?? "0",
-                                                ++coluna);
+                        
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
                                                 frequenciaAluno?.TotalAusencias.ToString() ?? "0",
@@ -212,12 +209,12 @@ namespace SME.SR.Application
                                                 }).FirstOrDefault();
 
                 // Anual
-                linhaDto.AdicionaCelula(0, 0, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
-                linhaDto.AdicionaCelula(0, 0, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);
-                linhaDto.AdicionaCelula(0, 0, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? "0", 3);
+                linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
+                linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);
+                linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? "0", 3);
 
                 var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
-                linhaDto.AdicionaCelula(0, 0, parecerConclusivo?.ParecerConclusivo ?? "", 4);
+                linhaDto.AdicionaCelula(99, 99, parecerConclusivo?.ParecerConclusivo ?? "", 4);
 
                 relatorio.Linhas.Add(linhaDto);
             }
