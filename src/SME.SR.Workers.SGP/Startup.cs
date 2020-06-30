@@ -152,7 +152,6 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterTurmaQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmasPorAbrangenciaFiltroQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmasPorFiltroQuery).GetTypeInfo().Assembly);
-        }
             services.AddMediatR(typeof(ObterUePorCodigoQuery).GetTypeInfo().Assembly);
         }
 		
