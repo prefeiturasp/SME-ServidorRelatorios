@@ -51,7 +51,7 @@ namespace SME.SR.Workers.SGP.Services
             _channel.BasicQos(0, 1, false);
         }
 
-        private void HandleMessage(string content)
+        private async Task HandleMessage(string content)
         {
             using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
             {
@@ -76,7 +76,7 @@ namespace SME.SR.Workers.SGP.Services
                                 var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
                                 var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
 
-                                method.Invoke(controller, new object[] { request, useCase });
+                                await method.InvokeAsync(controller, new object[] { request, useCase });
 
                                 _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
                                 return;
@@ -121,15 +121,14 @@ namespace SME.SR.Workers.SGP.Services
         private void OnConsumerShutdown(object sender, ShutdownEventArgs e) { }
         private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e) { }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (ch, ea) =>
+            consumer.Received += async (ch, ea) =>
             {
-                var body = ea.Body.Span;
-                var content = System.Text.Encoding.UTF8.GetString(body);
-                HandleMessage(content);
+                var content = System.Text.Encoding.UTF8.GetString(ea.Body.Span);
+                await HandleMessage(content);
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 
@@ -140,7 +139,6 @@ namespace SME.SR.Workers.SGP.Services
 
             WorkerAttribute worker = GetWorkerAttribute(typeof(WorkerSGPController));
             _channel.BasicConsume(worker.WorkerQueue, false, consumer);
-            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

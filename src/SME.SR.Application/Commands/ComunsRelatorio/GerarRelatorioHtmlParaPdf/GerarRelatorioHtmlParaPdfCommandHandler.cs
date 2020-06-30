@@ -1,6 +1,8 @@
 ﻿using DinkToPdf.Contracts;
 using MediatR;
+using Sentry;
 using SME.SR.HtmlPdf;
+using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -11,44 +13,41 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
     public class GerarRelatorioHtmlParaPdfCommandHandler : IRequestHandler<GerarRelatorioHtmlParaPdfCommand, bool>
     {
         private readonly IConverter converter;
+        private readonly IServicoFila servicoFila;
 
-        public GerarRelatorioHtmlParaPdfCommandHandler(IConverter converter)
+        public GerarRelatorioHtmlParaPdfCommandHandler(IConverter converter,
+                                                       IServicoFila servicoFila)
         {
             this.converter = converter;
+            this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
 
         public async Task<bool> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            try
+            List<string> paginasEmHtml = new List<string>();
+
+            foreach (var modelPagina in request.Paginas)
             {
-                List<string> paginasEmHtml = new List<string>();
+                string html = string.Empty;
 
-                foreach (var modelPagina in request.Paginas)
-                {
-                    string html = string.Empty;
+                html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
 
-                    html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
+                html = html.Replace("logo.png", SmeConstants.LogoSme);
 
-                    html = html.Replace("logo.png", SmeConstants.LogoSme);
-
-                    paginasEmHtml.Add(html);
-                }
-
-                PdfGenerator pdfGenerator = new PdfGenerator(converter);
-
-                var directory = AppDomain.CurrentDomain.BaseDirectory;
-
-                pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());
-
-                byte[] bytes = pdfGenerator.ConvertToPdf(paginasEmHtml);
-
-                return true;
+                paginasEmHtml.Add(html);
             }
-            catch (Exception)
-            {
-                // TODO sentry?
-                return false;
-            }
+
+            PdfGenerator pdfGenerator = new PdfGenerator(converter);
+
+            var directory = AppDomain.CurrentDomain.BaseDirectory;
+
+            pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());
+
+            SentrySdk.AddBreadcrumb($"Indo publicar na fila Prontos..", "8 - MonitorarStatusRelatorioUseCase");
+            servicoFila.PublicaFila(new PublicaFilaDto(null, RotasRabbit.FilaClientsSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
+            SentrySdk.CaptureMessage("8 - MonitorarStatusRelatorioUseCase - Publicado na fila PRONTO OK!");
+
+            return true;
         }
 
         private string GerarHtmlRazor<T>(T model, string nomeDoArquivoDoTemplate)
