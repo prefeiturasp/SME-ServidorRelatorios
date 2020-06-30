@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<Turma>> Handle(ObterTurmasPorFiltroQuery request, CancellationToken cancellationToken)
         {
-            return await _turmaSgpRepository.ObterPorFiltros(request.CodigoUe, request.Modalidade, request.AnoLetivo, request.Semestre); 
+            return await _turmaSgpRepository.ObterPorFiltros(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigoUe, request.Modalidade, request.AnoLetivo, request.Semestre); 
         }
     }
 }

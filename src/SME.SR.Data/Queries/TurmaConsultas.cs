@@ -130,33 +130,22 @@ namespace SME.SR.Data
 				   where t.turma_id = @codigoTurma";
 
 
-		internal static string TurmaPorUe(Modalidade? modalidade, int? anoLetivo, int? semestre)
-        {
-			var query = @"select t.turma_id, t.nome, t.modalidade_codigo 
-					from  turma t
-					inner join ue on ue.id = t.ue_id
-					where ue.ue_id = @codigoUe";
-
-			if (modalidade.HasValue)
-				query += " and t.modalidade_codigo = @modalidade";
-
-			if (anoLetivo.HasValue)
-				query += " and t.ano_letivo = @anoLetivo";
-
-			if (semestre.HasValue)
-				query += " and t.semestre = @anoLetivo";
-
-			// TODO falta adicionar periodoEscolar
-
-			return query;
-        }
+		internal static string TurmaPorUe =
+						 @"select ano,
+	                             anoLetivo,
+	                             codigo,
+	                             codigoModalidade,
+	                             nome,
+	                             semestre,
+	                             qtDuracaoAula,
+	                             tipoTurno
+                            from f_abrangencia_turmas(@login, @perfil, false, @modalidade, @semestre, @codigoUe, @anoLetivo)
+                          order by 5";
 
         internal static string TurmaPorCodigo = @"select t.turma_id CodigoTurma, t.nome, 
 			t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo
         from  turma t
         where t.turma_id = @codigoTurma";
-
-
 
         internal static string TurmaPorAbrangenciaFiltros = @"select t.* from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) at
                             inner join turma t 

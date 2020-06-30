@@ -52,16 +52,18 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<Turma>> ObterPorFiltros(string codigoUe, Modalidade? modalidade, int? anoLetivo, int? semestre)
+        public async Task<IEnumerable<Turma>> ObterPorFiltros(string login, Guid perfil, string codigoUe, Modalidade? modalidade, int? anoLetivo, int? semestre)
         {
-            var query = TurmaConsultas.TurmaPorUe(modalidade, anoLetivo, semestre);
+            var query = TurmaConsultas.TurmaPorUe;
 
             var parametros = new
             {
                 CodigoUe = codigoUe,
                 Modalidade = modalidade,
                 AnoLetivo = anoLetivo,
-                Semestre = semestre
+                Semestre = semestre,
+                Login = login,
+                Perfil = perfil
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
@@ -75,8 +77,8 @@ namespace SME.SR.Data
         {
             try
             {
-                
-                var query = TurmaConsultas.TurmaPorAbrangenciaFiltros;                
+
+                var query = TurmaConsultas.TurmaPorAbrangenciaFiltros;
 
                 var parametros = new
                 {

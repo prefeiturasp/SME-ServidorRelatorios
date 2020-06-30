@@ -5,8 +5,10 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterTurmasPorFiltroQuery : IRequest<IEnumerable<Turma>>
+    public class ObterTurmasRelatorioBoletimQuery : IRequest<IEnumerable<Turma>>
     {
+        public string CodigoTurma { get; set; }
+
         public string CodigoUe { get; set; }
 
         public Modalidade? Modalidade { get; set; }
@@ -14,7 +16,5 @@ namespace SME.SR.Application
         public int? AnoLetivo { get; set; }
 
         public int? Semestre { get; set; }
-
-        public Usuario Usuario { get; set; }
     }
 }
