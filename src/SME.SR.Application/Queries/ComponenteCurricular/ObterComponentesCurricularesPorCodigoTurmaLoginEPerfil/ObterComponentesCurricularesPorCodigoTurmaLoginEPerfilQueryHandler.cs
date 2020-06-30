@@ -6,11 +6,10 @@ using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesPorCodigoTurmaLoginEPerfil
+namespace SME.SR.Application
 {
     public class ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQueryHandler : IRequestHandler<ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
