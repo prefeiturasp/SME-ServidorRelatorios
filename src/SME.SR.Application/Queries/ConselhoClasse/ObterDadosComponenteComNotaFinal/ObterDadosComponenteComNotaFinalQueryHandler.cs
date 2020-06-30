@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesRegencia;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using System.Collections.Generic;

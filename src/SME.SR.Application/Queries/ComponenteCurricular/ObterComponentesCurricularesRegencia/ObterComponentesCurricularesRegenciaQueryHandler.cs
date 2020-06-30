@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesPorIds;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesRegencia
+namespace SME.SR.Application
 {
     public class ObterComponentesCurricularesRegenciaQueryHandler : IRequestHandler<ObterComponentesCurricularesRegenciaQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
