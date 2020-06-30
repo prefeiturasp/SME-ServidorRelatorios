@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Sentry;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
@@ -22,17 +24,19 @@ namespace SME.SR.Workers.SGP.Services
         private readonly IServiceScopeFactory _scopeFactory;
 
         private readonly IConnection _connection;
-
+        private readonly IConfiguration configuration;
         private readonly IModel _channel;
 
         public RabbitBackgroundListener(ILoggerFactory loggerFactory,
                                         IServiceScopeFactory scopeFactory,
                                         IModel channel,
-                                        IConnection connection)
+                                        IConnection connection,
+                                        IConfiguration configuration)
         {
             _logger = loggerFactory.CreateLogger<RabbitBackgroundListener>();
             _scopeFactory = scopeFactory;
             _connection = connection;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _channel = channel;
             InitRabbit();
         }
@@ -49,35 +53,45 @@ namespace SME.SR.Workers.SGP.Services
 
         private void HandleMessage(string content)
         {
-            _logger.LogInformation($"[ INFO ] Messaged received: {content}");
-
-            if (!content.Equals("null"))
+            using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
             {
-                var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
-                MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
-
-                foreach (MethodInfo method in methods)
+                try
                 {
-                    ActionAttribute actionAttribute = GetActionAttribute(method);
-                    if (actionAttribute != null && actionAttribute.Name == request.Action)
+                    _logger.LogInformation($"[ INFO ] Messaged received: {content}");
+
+                    if (!content.Equals("null"))
                     {
-                        _logger.LogInformation($"[ INFO ] Invoking action: {request.Action}");
+                        var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
+                        MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
 
-                        var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
+                        foreach (MethodInfo method in methods)
+                        {
+                            ActionAttribute actionAttribute = GetActionAttribute(method);
+                            if (actionAttribute != null && actionAttribute.Name == request.Action)
+                            {
+                                _logger.LogInformation($"[ INFO ] Invoking action: {request.Action}");
 
-                        var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
-                        var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
+                                var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
 
-                        method.Invoke(controller, new object[] { request, useCase });
+                                var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
+                                var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
 
-                        _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
-                        return;
+                                method.Invoke(controller, new object[] { request, useCase });
+
+                                _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
+                                return;
+                            }
+                        }
+
+                        _logger.LogInformation($"[ INFO ] Method not found to action: {request.Action}");
                     }
-                }
 
-                _logger.LogInformation($"[ INFO ] Method not found to action: {request.Action}");
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                }
             }
-            
         }
 
         private WorkerAttribute GetWorkerAttribute(Type type)

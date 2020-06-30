@@ -2,6 +2,12 @@
 {
     public static class FrequenciaAlunoConsultas
     {
+        private static readonly string CamposFrequencia = @"codigo_aluno CodigoAluno, 
+                            tipo, disciplina_id DisciplinaId, periodo_inicio PeriodoInicio, 
+                            periodo_fim PeriodoFim, bimestre, total_aulas TotalAulas, 
+                            total_ausencias TotalAusencias, total_compensacoes TotalCompensacoes, 
+                            turma_id TurmaId, periodo_escolar_id PeriodoEscolarId";
+
         internal static string FrequenciaGlobal = @"select 
 	    coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal
         from frequencia_aluno fa
@@ -9,7 +15,7 @@
         and codigo_aluno = @codigoAluno
         and fa.turma_id = @codigoTurma";
 
-        internal static string FrequenciaPorAlunoDataDisciplina = @"select *
+        internal static string FrequenciaPorAlunoDataDisciplina = @$"select {CamposFrequencia}
                         from frequencia_aluno
                         where
 	                        codigo_aluno = @codigoAluno
@@ -18,7 +24,7 @@
 	                        and periodo_fim >= @dataAtual
                             and disciplina_id = @disciplinaId";
 
-        internal static string FrequenciaPorAlunoBimestreDisciplina = @"select *
+        internal static string FrequenciaPorAlunoBimestreDisciplina = @$"select {CamposFrequencia}
                         from frequencia_aluno
                         where codigo_aluno = @codigoAluno
 	                        and tipo = @tipoFrequencia
@@ -39,8 +45,7 @@
 
         public static string FrequenciaPorAlunoTurmaBimestre(int? bimestre)
         {
-            var query = @"select * 
-                            from frequencia_aluno fa 
+            var query = @$"select {CamposFrequencia} from frequencia_aluno fa 
                             where fa.codigo_aluno = @codigoAluno
                             and fa.turma_id = @codigoTurma and fa.tipo = 1";
 

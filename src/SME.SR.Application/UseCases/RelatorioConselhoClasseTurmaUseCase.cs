@@ -32,15 +32,21 @@ namespace SME.SR.Application
                 if (relatorioAlunos.FirstOrDefault() is RelatorioConselhoClasseBimestre)
                 {
                     List<RelatorioConselhoClasseBimestre> listBimestre = relatorioAlunos.Cast<RelatorioConselhoClasseBimestre>().ToList();
-                    jsonString = JsonConvert.SerializeObject(new { relatorioConselhoDeClasse = listBimestre });
+                    jsonString = JsonConvert.SerializeObject(new { RelatorioConselhoDeClasse = listBimestre });
                 }
                 else
                 {
                     List<RelatorioConselhoClasseFinal> listFinal = relatorioAlunos.Cast<RelatorioConselhoClasseFinal>().ToList();
-                    jsonString = JsonConvert.SerializeObject(new { relatorioConselhoDeClasse = listFinal });
+                    jsonString = JsonConvert.SerializeObject(new { RelatorioConselhoDeClasse = listFinal });
                 }
 
-                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioConselhoClasse/ConselhoClasse", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
+                var urlRelatorio = "";
+
+                if (relatorioAlunos.FirstOrDefault().EhBimestreFinal)
+                    urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal";
+                else urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasse";
+
+                await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
             }
             catch (Exception ex)
             {

@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<FrequenciaAluno>> Handle(ObterFrequenciaPorDisciplinaBimestresQuery request, CancellationToken cancellationToken)
         {
-            return await _frequenciaRepository.ObterFrequenciaPorDisciplinaBimestres(request.CodigoAluno, request.CodigoTurma, request.Bimestre);
+            return await _frequenciaRepository.ObterFrequenciaPorDisciplinaBimestres(request.CodigoTurma, request.CodigoAluno, request.Bimestre);
         }
     }
 }

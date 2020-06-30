@@ -8,8 +8,10 @@ namespace SME.SR.Data
     {
         public string CodigoTurma { get; set; }
         public int AnoLetivo { get; set; }
+        public int Ano { get; set; }
         public string Nome { get; set; }
         public int Semestre { get; set; }
+        public DreUe DreUe { get; set; }
         public Modalidade ModalidadeCodigo { get; set; }
         public ModalidadeTipoCalendario ModalidadeTipoCalendario
         {
@@ -18,6 +20,11 @@ namespace SME.SR.Data
                 ModalidadeTipoCalendario.FundamentalMedio;
         }
 
-        public string NomeRelatorio => $"({ModalidadeCodigo.GetAttribute<DisplayAttribute>().ShortName}) - {Nome}";
+        public bool EhEja
+        {
+            get => ModalidadeCodigo == Modalidade.EJA;
+        }
+
+        public string NomeRelatorio => $"{ModalidadeCodigo.GetAttribute<DisplayAttribute>().ShortName} - {Nome}";
     }
 }

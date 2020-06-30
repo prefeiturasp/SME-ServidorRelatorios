@@ -24,10 +24,18 @@
 
 		internal static string Recomendacoes = @"select cca.recomendacoes_aluno RecomendacoesAluno, 
 			cca.recomendacoes_familia RecomendacoesFamilia, 
-			cca.anotacoes_pedagogicas RecomendacoesPedagogicas
+			cca.anotacoes_pedagogicas AnotacoesPedagogicas
 			from conselho_classe cc
 			inner join conselho_classe_aluno cca on cca.conselho_classe_id = cc.id 
 			where cc.fechamento_turma_id = @fechamentoTurmaId
 				  and cca.aluno_codigo = @codigoAluno";
+
+		internal static string ObterPorConselhoClasseId = @"SELECT
+				1
+			FROM
+				conselho_classe_aluno cca
+			WHERE
+				cca.aluno_codigo = @codigoAluno and
+				cca.conselho_classe_id = @conselhoClasseId	";
 	}
 }

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConselhoClasse" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5b7b40f2-5361-4f9e-95a6-7f51b83a4bda">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
+	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal"/>
+	<parameter name="jsonString" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JSON_INPUT_STREAM" class="java.io.InputStream" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new java.io.ByteArrayInputStream($P{jsonString}.getBytes("UTF-8"))]]></defaultValueExpression>
+	</parameter>
+	<queryString language="jsonql">
+		<![CDATA[RelatorioConselhoDeClasse]]>
+	</queryString>
+	<field name="Titulo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Titulo"/>
+		<fieldDescription><![CDATA[Titulo]]></fieldDescription>
+	</field>
+	<field name="Dre" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Dre"/>
+		<fieldDescription><![CDATA[Dre]]></fieldDescription>
+	</field>
+	<field name="Ue" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Ue"/>
+		<fieldDescription><![CDATA[Ue]]></fieldDescription>
+	</field>
+	<field name="Turma" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Turma"/>
+		<fieldDescription><![CDATA[Turma]]></fieldDescription>
+	</field>
+	<field name="Data" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Data"/>
+		<fieldDescription><![CDATA[Data]]></fieldDescription>
+	</field>
+	<field name="AlunoNome" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="AlunoNome"/>
+		<fieldDescription><![CDATA[AlunoNome]]></fieldDescription>
+	</field>
+	<field name="AlunoNumero" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="AlunoNumero"/>
+		<fieldDescription><![CDATA[AlunoNumero]]></fieldDescription>
+	</field>
+	<field name="AlunoDataDeNascimento" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="AlunoDataDeNascimento"/>
+		<fieldDescription><![CDATA[AlunoDataDeNascimento]]></fieldDescription>
+	</field>
+	<field name="AlunoCodigoEol" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="AlunoCodigoEol"/>
+		<fieldDescription><![CDATA[AlunoCodigoEol]]></fieldDescription>
+	</field>
+	<field name="AlunoSituacao" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="AlunoSituacao"/>
+		<fieldDescription><![CDATA[AlunoSituacao]]></fieldDescription>
+	</field>
+	<field name="AlunoFrequenciaGlobal" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="AlunoFrequenciaGlobal"/>
+		<fieldDescription><![CDATA[AlunoFrequenciaGlobal]]></fieldDescription>
+	</field>
+	<field name="AlunoParecerConclusivo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="AlunoParecerConclusivo"/>
+		<fieldDescription><![CDATA[AlunoParecerConclusivo]]></fieldDescription>
+	</field>
+	<field name="Bimestre" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Bimestre"/>
+		<fieldDescription><![CDATA[Bimestre]]></fieldDescription>
+	</field>
+	<field name="AnotacoesPedagogicas" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="AnotacoesPedagogicas"/>
+		<fieldDescription><![CDATA[AnotacoesPedagogicas]]></fieldDescription>
+	</field>
+	<field name="RecomendacaoAluno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="RecomendacaoAluno"/>
+		<fieldDescription><![CDATA[RecomendacaoAluno]]></fieldDescription>
+	</field>
+	<field name="RecomendacaoFamilia" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="RecomendacaoFamilia"/>
+		<fieldDescription><![CDATA[RecomendacaoFamilia]]></fieldDescription>
+	</field>
+	<field name="GruposMatrizComponentesSemNota" class="java.lang.Object">
+		<property name="net.sf.jasperreports.json.field.expression" value="GruposMatrizComponentesSemNota"/>
+		<fieldDescription><![CDATA[GruposMatrizComponentesSemNota]]></fieldDescription>
+	</field>
+	<field name="AnotacoesAluno" class="java.lang.Object">
+		<property name="net.sf.jasperreports.json.field.expression" value="AnotacoesAluno"/>
+		<fieldDescription><![CDATA[AnotacoesAluno]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="130" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image>
+				<reportElement x="1" y="0" width="149" height="60" uuid="69b823fa-cd3c-4dee-b302-4527db1aff91"/>
+				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="306" y="0" width="250" height="20" uuid="a2389c7b-03ff-48b1-8c4c-76129daf3e18">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SGP - SISTEMA DE GESTÃO PEDAGÓGICA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="415" y="21" width="140" height="20" uuid="fa78cb5a-039b-4307-a2a7-46a43a04e2f0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Titulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="73" width="85" height="23" isRemoveLineWhenBlank="true" uuid="344bd4e3-247d-4220-8fd1-a757c70f853c">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DRE: "+$F{Dre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement positionType="Float" x="85" y="73" width="270" height="23" isRemoveLineWhenBlank="true" uuid="31324372-77a5-44a6-b501-d0045f7fb5b4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["UE: "+$F{Ue}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="false">
+				<reportElement positionType="Float" x="355" y="73" width="95" height="23" isRemoveLineWhenBlank="true" uuid="07f1c2c6-e416-4ac5-86a6-23b6fc2a1339">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TURMA: "+$F{Turma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="450" y="73" width="105" height="23" isRemoveLineWhenBlank="true" uuid="d46b886d-1d4f-4b4d-9cd5-7fd99b5d68d6">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DATA: "+$F{Data}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="0" y="107" width="233" height="23" isRemoveLineWhenBlank="true" uuid="f653335a-2195-4d39-9470-e507e6f3514e">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AlunoNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="233" y="107" width="196" height="23" isRemoveLineWhenBlank="true" uuid="03b8a61d-96ce-4b49-917c-8ffc4d077550">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DATA DE NASCIMENTO: "+$F{AlunoDataDeNascimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="429" y="107" width="126" height="23" isRemoveLineWhenBlank="true" uuid="3823f1a1-69de-41ac-83ef-99bd05b56efe">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CÓDIGO EOL: "+$F{AlunoCodigoEol}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="45">
+			<textField>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="233" height="22" isRemoveLineWhenBlank="true" uuid="5fb3923e-11ff-44b5-b96b-09675ef40fb1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SITUAÇÃO: " + $F{AlunoSituacao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="233" y="0" width="196" height="22" isRemoveLineWhenBlank="true" uuid="a7aab143-aa07-48e3-8199-e837813cce62">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{AlunoFrequenciaGlobal} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FREQUÊNCIA GLOBAL: "+$F{AlunoFrequenciaGlobal}+"%"]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="429" y="0" width="126" height="22" uuid="6b1265f1-6e5c-49b2-ba97-97ffedacd388">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AlunoParecerConclusivo} != null ? $F{AlunoParecerConclusivo} : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="22" width="555" height="23" uuid="6ca0fa39-1506-418a-bc14-2f47047082b2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{Bimestre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="121" splitType="Stretch">
+			<subreport>
+				<reportElement positionType="Float" x="0" y="-1" width="553" height="30" isRemoveLineWhenBlank="true" uuid="9d73da0f-9cae-4185-93b6-d636c12f8a21"/>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("GruposMatrizComponentesComNota")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["ComponenteComNotaAbaFinal.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="30" width="554" height="30" isRemoveLineWhenBlank="true" uuid="c843597d-2ccc-4017-94a3-c770952b6959">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{GruposMatrizComponentesSemNota} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("GruposMatrizComponentesSemNota")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["ComponenteSemNotaAbaFinal.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="60" width="553" height="30" isRemoveLineWhenBlank="true" uuid="678b78a0-74f1-4c90-9f2d-932e95ca254e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["RecomendacoesAluno.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="90" width="553" height="30" isRemoveLineWhenBlank="true" uuid="aa88153a-b91c-481c-8fae-7baab2cf3c4c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["RecomendacoesFamilia.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<printWhenExpression><![CDATA[$F{AnotacoesPedagogicas} != null]]></printWhenExpression>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="0" width="553" height="30" isRemoveLineWhenBlank="true" uuid="a8d2e999-42b2-4965-a097-cbc7b5cb5dc9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["AnotacoesPedagogicas.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<printWhenExpression><![CDATA[$F{AnotacoesAluno} != null]]></printWhenExpression>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="0" width="553" height="30" isRemoveLineWhenBlank="true" uuid="520fcb07-220d-4e01-81e8-4e3d9581c65e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("AnotacoesAluno")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["AnotacoesAluno.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="8">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<printWhenExpression><![CDATA[$F{AnotacoesPedagogicas} != null || $F{AnotacoesAluno} != null]]></printWhenExpression>
+			<break>
+				<reportElement positionType="Float" x="0" y="4" width="555" height="1" uuid="d70d3c94-3ccc-4a09-92f9-980ea6089591"/>
+			</break>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="39" splitType="Prevent">
+			<textField>
+				<reportElement x="1" y="8" width="318" height="23" uuid="05431bcd-8953-428c-b962-e8bfeeeb09ab">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["SGP - Sistema de gestão Pedagógica | CONSELHO DE CLASSE  "]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" evaluationTime="Report">
+				<reportElement positionType="Float" x="530" y="8" width="24" height="23" uuid="9c5fe508-a24a-4239-88f7-9e58b87d964c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="525" y="8" width="5" height="23" uuid="2c2aebed-2cb0-4464-94e0-b664c7131dae">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[/]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="500" y="8" width="25" height="23" uuid="17852eba-ed15-449c-9797-070731450e02">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

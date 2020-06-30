@@ -79,12 +79,48 @@ namespace SME.SR.Data
         {
             var query = TurmaConsultas.TurmaPorUe(modalidade, anoLetivo, semestre);
 
-            var parametros = new { CodigoUe = codigoUe, Modalidade = modalidade, 
-                                   AnoLetivo = anoLetivo, Semestre = semestre };
+            var parametros = new
+            {
+                CodigoUe = codigoUe,
+                Modalidade = modalidade,
+                AnoLetivo = anoLetivo,
+                Semestre = semestre
+            };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<Turma>(query, parametros);
+            }
+
+
+        }
+        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade? modalidade, int? anoLetivo, string login, Guid perfil, bool consideraHistorico, int? semestre)
+        {
+            try
+            {
+                
+                var query = TurmaConsultas.TurmaPorAbrangenciaFiltros;                
+
+                var parametros = new
+                {
+                    CodigoUe = codigoUe,
+                    Modalidade = (int)modalidade,
+                    AnoLetivo = anoLetivo,
+                    Semestre = semestre,
+                    Login = login,
+                    Perfil = perfil,
+                    ConsideraHistorico = consideraHistorico
+                };
+
+                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+                {
+                    return await conexao.QueryAsync<Turma>(query, parametros);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
         }
     }

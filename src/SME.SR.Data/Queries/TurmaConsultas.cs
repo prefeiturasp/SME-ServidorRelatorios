@@ -240,8 +240,8 @@ namespace SME.SR.Data
 			return query;
         }
 
-        internal static string TurmaPorCodigo = @"select t.turma_id CodigoTurma, 
-			t.nome, t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano_letivo AnoLetivo
+        internal static string TurmaPorCodigo = @"select t.turma_id CodigoTurma, t.nome, 
+			t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo
         from  turma t
         where t.turma_id = @codigoTurma";
 
@@ -251,5 +251,11 @@ namespace SME.SR.Data
  							        and a.ano = t.ano
          inner join tipo_ciclo c on c.id = a.tipo_ciclo_id
         where t.turma_id = @turmaCodigo ";
+
+
+
+        internal static string TurmaPorAbrangenciaFiltros = @"select t.* from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) at
+                            inner join turma t 
+                            on t.turma_id  = at.codigo";
     }
 }

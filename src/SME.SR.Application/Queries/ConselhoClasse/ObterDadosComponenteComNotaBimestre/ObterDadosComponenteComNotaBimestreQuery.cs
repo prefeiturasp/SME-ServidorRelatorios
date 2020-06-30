@@ -11,6 +11,7 @@ namespace SME.SR.Application
         public Turma Turma { get; set; }
         public string CodigoAluno { get; set; }
         public PeriodoEscolar PeriodoEscolar { get; set; }
+        public Usuario Usuario { get; set; }
     }
 }
 

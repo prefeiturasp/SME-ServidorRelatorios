@@ -21,7 +21,6 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
         {
             var turma = await mediator.Send(new ObterFechamentoTurmaPorIdQuery() { FechamentoTurmaId = request.FechamentoTurmaId });
 
-
             var alunos = await ObterAlunosTurma(turma.Turma.CodigoTurma);
 
             var lstRelatorioAlunos = new List<RelatorioConselhoClasseBase>();
@@ -31,11 +30,24 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
             {
                 codigoAluno = aluno.CodigoAluno.ToString();
 
-                lstRelatorioAlunos.Add(await ObterRelatorioConselhoClasseAluno(request.ConselhoClasseId, request.FechamentoTurmaId,
-                                                                               codigoAluno));
+                var alunoPossuiConselho = await AlunoPossuiConselhoClasseCadastrado(request.ConselhoClasseId, codigoAluno);
+
+                if (alunoPossuiConselho)
+                    lstRelatorioAlunos.Add(await ObterRelatorioConselhoClasseAluno(request.ConselhoClasseId, request.FechamentoTurmaId,
+                                                                                   codigoAluno, request.Usuario));
             }
 
             return lstRelatorioAlunos;
+        }
+
+        private async Task<bool> AlunoPossuiConselhoClasseCadastrado(long conselhoClasseId,
+                                                                                   string codigoAluno)
+        {
+            return await mediator.Send(new AlunoPossuiConselhoClasseCadastradoQuery()
+            {
+                ConselhoClasseId = conselhoClasseId,
+                CodigoAluno = codigoAluno
+            });
         }
 
         private async Task<IEnumerable<Aluno>> ObterAlunosTurma(string codigoTurma)
@@ -48,13 +60,15 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
 
         private async Task<RelatorioConselhoClasseBase> ObterRelatorioConselhoClasseAluno(long conselhoClasseId,
                                                                                                 long fechamentoTurmaId,
-                                                                                                string codigoAluno)
+                                                                                                string codigoAluno,
+                                                                                                Usuario usuario)
         {
-         var retorno = await mediator.Send(new ObterRelatorioConselhoClasseAlunoQuery()
+            var retorno = await mediator.Send(new ObterRelatorioConselhoClasseAlunoQuery()
             {
                 CodigoAluno = codigoAluno,
                 ConselhoClasseId = conselhoClasseId,
-                FechamentoTurmaId = fechamentoTurmaId
+                FechamentoTurmaId = fechamentoTurmaId,
+                Usuario = usuario
             });
 
             return retorno.Relatorio.FirstOrDefault();

@@ -43,7 +43,7 @@ namespace SME.SR.Application
                         SalvarSnapshot = false,
                         FormatoSaida = request.Formato.Name(),
                         Interativo = false,
-                        IgnorarPaginacao = true,
+                        IgnorarPaginacao = false,
                         Paginas = null,
                         Parametros = parametrosDoDto
                     };
@@ -89,7 +89,12 @@ namespace SME.SR.Application
 
         private static ParametrosRelatorioDto ObterParametrosRelatorio(string dados)
         {
-            var dadosParaEnvioArray = new List<string>() { dados };
+            var dadosParaEnvioArray = new List<string>();
+            if (!string.IsNullOrWhiteSpace(dados))
+                dadosParaEnvioArray.Add(dados);
+            else
+                return null;
+
             var parametroDto = new ParametroDto() { Nome = "jsonString", Valor = dadosParaEnvioArray.ToArray() };
             var parametrosDoDto = new ParametrosRelatorioDto();
             var parametrosDto = new List<ParametroDto>();

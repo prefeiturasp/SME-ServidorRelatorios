@@ -11,5 +11,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<ConselhoClasseParecerConclusivo>> ObterParecerConclusivoPorTurma(string turmaCodigo);
 
         Task<RecomendacaoConselhoClasseAluno> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno);
+
+        Task<bool> PossuiConselhoClasseCadastrado(long conselhoClasseId, string codigoAluno);
     }
 }
