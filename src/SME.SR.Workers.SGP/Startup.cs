@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
+using SME.SR.Application.Queries.HistoricoEscolar.ObterHistoricoEscolar;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Repositories.Sgp;
@@ -135,7 +136,8 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
-		}
+            services.AddMediatR(typeof(ObterHistoricoEscolarQuery).GetTypeInfo().Assembly);
+        }
 		
         private void RegistrarHandlers(IServiceCollection services)
         {
@@ -158,9 +160,8 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
-
-
-		}
+            services.AddMediatR(typeof(ObterHistoricoEscolarQueryHandler).GetTypeInfo().Assembly);
+        }
 		
         private void RegistrarUseCase(IServiceCollection services)
         {
@@ -170,6 +171,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
+            services.TryAddScoped<IRelatorioHistoricoEscolarUseCase, RelatorioHistoricoEscolarUseCase>();
         }
 
         private void RegistrarServicos(IServiceCollection services)
