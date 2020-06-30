@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
@@ -19,10 +20,13 @@ namespace SME.SR.Application
         {
             var relatorioQuery = request.ObterObjetoFiltro<ObterHistoricoEscolarQueryHandler>();
             var relatorioHistoricoEscolar = await mediator.Send(relatorioQuery);
-
-            string jsonString = "";
-            var urlRelatorio = "";
-            await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
+            var jsonString = "";
+            if (relatorioHistoricoEscolar != null)
+            {
+                jsonString = JsonConvert.SerializeObject(relatorioHistoricoEscolar);
+            }
+            
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using System.Collections.Generic;
 
-namespace SME.SR.Application.Queries.HistoricoEscolar.ObterHistoricoEscolar
+namespace SME.SR.Application
 {
-    public class ObterHistoricoEscolarQuery : IRequest<IEnumerable<Data.HistoricoEscolar>>
+    public class ObterHistoricoEscolarQuery : IRequest<IEnumerable<Data.HistoricoEscolarDTO>>
     {
         public string CodigoTurma { get; set; }
         public string CodigoAluno { get; set; }
