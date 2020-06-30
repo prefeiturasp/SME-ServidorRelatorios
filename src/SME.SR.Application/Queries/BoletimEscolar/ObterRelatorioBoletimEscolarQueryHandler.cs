@@ -21,9 +21,18 @@ namespace SME.SR.Application
 
         public async Task<RelatorioBoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
         {
+            var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
 
             return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
+        }
+
+        private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
+        {
+            return await _mediator.Send(new ObterDrePorCodigoQuery()
+            {
+                DreCodigo = dreCodigo
+            });
         }
 
         private async Task<Ue> ObterUePorCodigo(string ueCodigo)
