@@ -54,7 +54,7 @@ namespace SME.SR.Data
 
         public async Task<DreUe> ObterDreUe(string codigoTurma)
         {
-            var query = TurmaConsultas.DadosDreUe;
+            var query = TurmaConsultas.DadosCompletosDreUe;
             var parametros = new { CodigoTurma = codigoTurma };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))

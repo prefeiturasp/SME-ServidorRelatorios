@@ -24,8 +24,8 @@ namespace SME.SR.Application
 
             return new ConselhoClasseAtaFinalCabecalhoDto()
             {
-                Dre = dreUe?.Dre,
-                Ue = dreUe?.Ue,
+                Dre = dreUe?.DreNome,
+                Ue = dreUe?.UeNome,
                 Ciclo = ciclo,
                 Turma = turma.Nome,
                 AnoLetivo = turma.AnoLetivo,

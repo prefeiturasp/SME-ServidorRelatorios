@@ -1,5 +1,4 @@
 ﻿using SME.SR.Infra;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace SME.SR.Data
 {
@@ -210,8 +209,28 @@ namespace SME.SR.Data
 					SituacaoMatricula,
 					NumeroAlunoChamada";
 
-        internal static string DadosDreUe = @"select dre.abreviacao Dre,
-	 				concat(ue.ue_id, ' - ', tp.descricao, ' ', ue.nome) Ue
+
+
+        internal static string DadosDreUe = @"
+					select 
+						dre.abreviacao Dre,
+	 					concat(ue.ue_id, ' - ', tp.descricao, ' ', ue.nome) Ue
+					from  turma t
+					inner join ue on ue.id = t.ue_id 
+					inner join dre on ue.dre_id = dre.id 
+					inner join tipo_escola tp on ue.tipo_escola = tp.id 
+				   where t.turma_id = @codigoTurma";
+
+
+
+		internal static string DadosCompletosDreUe = @"
+					select
+						dre.id DreId,
+						dre.dre_id DreCodigo,
+						dre.abreviacao DreNome,
+						ue.id UeId,
+						ue.ue_id UeCodigo,
+						concat(ue.ue_id, ' - ', tp.descricao, ' ', ue.nome) UeNome
 					from  turma t
 					inner join ue on ue.id = t.ue_id 
 					inner join dre on ue.dre_id = dre.id 
@@ -221,23 +240,23 @@ namespace SME.SR.Data
 
 		internal static string TurmaPorUe(Modalidade? modalidade, int? anoLetivo, int? semestre)
         {
-			var query = @"select t.turma_id, t.nome, t.modalidade_codigo 
+            var query = @"select t.turma_id, t.nome, t.modalidade_codigo 
 					from  turma t
 					inner join ue on ue.id = t.ue_id
 					where ue.ue_id = @codigoUe";
 
-			if (modalidade.HasValue)
-				query += " and t.modalidade_codigo = @modalidade";
+            if (modalidade.HasValue)
+                query += " and t.modalidade_codigo = @modalidade";
 
-			if (anoLetivo.HasValue)
-				query += " and t.ano_letivo = @anoLetivo";
+            if (anoLetivo.HasValue)
+                query += " and t.ano_letivo = @anoLetivo";
 
-			if (semestre.HasValue)
-				query += " and t.semestre = @anoLetivo";
+            if (semestre.HasValue)
+                query += " and t.semestre = @anoLetivo";
 
-			// TODO falta adicionar periodoEscolar
+            // TODO falta adicionar periodoEscolar
 
-			return query;
+            return query;
         }
 
         internal static string TurmaPorCodigo = @"select t.turma_id CodigoTurma, t.nome, 
