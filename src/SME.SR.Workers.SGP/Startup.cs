@@ -107,6 +107,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped(typeof(IPermissaoRepository), typeof(PermissaoRepository));
             services.TryAddScoped(typeof(ITipoCalendarioRepository), typeof(TipoCalendarioRepository));
             services.TryAddScoped(typeof(ITurmaRepository), typeof(TurmaRepository));
+            services.TryAddScoped(typeof(IUeRepository), typeof(UeRepository));
         }
 
         private void RegistrarCommands(IServiceCollection services)
@@ -135,7 +136,8 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
-		}
+            services.AddMediatR(typeof(ObterUePorCodigoQuery).GetTypeInfo().Assembly);
+        }
 		
         private void RegistrarHandlers(IServiceCollection services)
         {
@@ -158,9 +160,9 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterUePorCodigoQueryHandler).GetTypeInfo().Assembly);
 
-
-		}
+        }
 		
         private void RegistrarUseCase(IServiceCollection services)
         {
