@@ -109,6 +109,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped(typeof(IPermissaoRepository), typeof(PermissaoRepository));
             services.TryAddScoped(typeof(ITipoCalendarioRepository), typeof(TipoCalendarioRepository));
             services.TryAddScoped(typeof(ITurmaRepository), typeof(TurmaRepository));
+            services.TryAddScoped(typeof(IUeRepository), typeof(UeRepository));
         }
 
         private void RegistrarCommands(IServiceCollection services)
@@ -151,6 +152,7 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterTurmaQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmasPorAbrangenciaFiltroQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmasPorFiltroQuery).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterUePorCodigoQuery).GetTypeInfo().Assembly);
         }
 		
         private void RegistrarHandlers(IServiceCollection services)
@@ -188,6 +190,8 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterTurmaQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmasPorAbrangenciaFiltroQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmasPorFiltroQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterUePorCodigoQueryHandler).GetTypeInfo().Assembly);
+
         }
 		
         private void RegistrarUseCase(IServiceCollection services)
