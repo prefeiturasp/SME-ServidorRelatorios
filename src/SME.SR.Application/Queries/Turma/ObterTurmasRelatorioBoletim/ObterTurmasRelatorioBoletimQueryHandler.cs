@@ -21,19 +21,19 @@ namespace SME.SR.Application
         {
             var turmas = Enumerable.Empty<Turma>();
 
-            if (string.IsNullOrEmpty(request.CodigoTurma))
+            if (!string.IsNullOrEmpty(request.CodigoTurma))
             {
                 var turma = await ObterTurmaPorCodigo(request.CodigoTurma);
 
                 if (turma != null)
-                    turmas.Append(turma);
+                    turmas = turmas.Append(turma);
             }
             else
             {
-                var turmasFiltro = await ObterTurmasPorFiltro(request.CodigoUe, request.AnoLetivo, request.Modalidade, request.Semestre);
+                var turmasFiltro = await ObterTurmasPorFiltro(request.CodigoUe, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
 
-                if (turmasFiltro != null && turmas.Any())
-                    turmas.Concat(turmasFiltro);
+                if (turmasFiltro != null && turmasFiltro.Any())
+                    turmas = turmas.Concat(turmasFiltro);
             }
 
             return turmas;
@@ -47,14 +47,17 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string ueCodigo, int? anoLetivo, Modalidade? modalidade, int? semestre)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario)
         {
-            return await mediator.Send(new ObterTurmasPorFiltroQuery()
+            return await mediator.Send(new ObterTurmasPorAbrangenciaFiltroQuery()
             {
                 CodigoUe = ueCodigo,
                 AnoLetivo = anoLetivo,
                 Modalidade = modalidade,
-                Semestre = semestre
+                Semestre = semestre,
+                Login = usuario.Login,
+                Perfil = usuario.PerfilAtual,
+                ConsideraHistorico = false
             });
         }
     }

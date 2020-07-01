@@ -11,10 +11,12 @@ namespace SME.SR.Application
 
         public string CodigoUe { get; set; }
 
-        public Modalidade? Modalidade { get; set; }
+        public Modalidade Modalidade { get; set; }
 
-        public int? AnoLetivo { get; set; }
+        public int AnoLetivo { get; set; }
 
-        public int? Semestre { get; set; }
+        public int Semestre { get; set; }
+
+        public Usuario Usuario { get; set; }
     }
 }

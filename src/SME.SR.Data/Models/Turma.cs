@@ -6,7 +6,7 @@ namespace SME.SR.Data
 {
     public class Turma
     {
-        public string CodigoTurma { get; set; }
+        public string Codigo { get; set; }
         public int AnoLetivo { get; set; }
         public int Ano { get; set; }
         public string Nome { get; set; }

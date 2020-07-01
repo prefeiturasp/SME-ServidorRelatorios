@@ -21,7 +21,7 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
         {
             var turma = await mediator.Send(new ObterFechamentoTurmaPorIdQuery() { FechamentoTurmaId = request.FechamentoTurmaId });
 
-            var alunos = await ObterAlunosTurma(turma.Turma.CodigoTurma);
+            var alunos = await ObterAlunosTurma(turma.Turma.Codigo);
 
             var lstRelatorioAlunos = new List<RelatorioConselhoClasseBase>();
             string codigoAluno;

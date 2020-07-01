@@ -44,7 +44,7 @@ namespace SME.SR.Application
 
                 return new FrequenciaAluno()
                 {
-                    TotalAulas = await _aulaRepository.ObterAulasDadas(request.Turma.CodigoTurma,
+                    TotalAulas = await _aulaRepository.ObterAulasDadas(request.Turma.Codigo,
                                                                     request.ComponenteCurricularCodigo,
                                                                     tipoCalendarioId,
                                                                     request.PeriodoEscolar.Bimestre)
@@ -67,7 +67,7 @@ namespace SME.SR.Application
                     }
                     else
                         // Se não tem ausencia não vai ter registro de frequencia então soma apenas aulas do bimestre
-                        frequenciaAluno.TotalAulas += await _aulaRepository.ObterAulasDadas(request.Turma.CodigoTurma,
+                        frequenciaAluno.TotalAulas += await _aulaRepository.ObterAulasDadas(request.Turma.Codigo,
                                                                                             request.ComponenteCurricularCodigo,
                                                                                             tipoCalendarioId,
                                                                                             periodoEscolarTurma.Bimestre);

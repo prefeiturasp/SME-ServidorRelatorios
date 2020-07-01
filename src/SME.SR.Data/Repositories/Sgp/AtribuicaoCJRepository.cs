@@ -18,7 +18,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade? modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, int? anoLetivo = null)
+        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, int? anoLetivo = null)
         {
             var query = AtribuicaoCJConsultas.ObterPorFiltros(modalidade, turmaId, ueId, componenteCurricularId, 
                 usuarioRf, usuarioNome, substituir, dreCodigo, turmaIds,anoLetivo);
@@ -31,7 +31,7 @@ namespace SME.SR.Data
                     return atribuicaoCJ;
                 }, new
                 {
-                    modalidade = modalidade.HasValue ? (int)modalidade : 0,
+                    modalidade = (int)modalidade,
                     ueId,
                     turmaId,
                     componenteCurricularId,

@@ -7,7 +7,7 @@ namespace SME.SR.Data
 {
     public class AtribuicaoCJConsultas
     {
-        internal static string ObterPorFiltros(Modalidade? modalidade, string turmaId, string ueId, long componenteCurricularId,
+        internal static string ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId,
             string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, int? anoLetivo = null)
         {
 
@@ -22,7 +22,7 @@ namespace SME.SR.Data
             query.AppendLine("on u.rf_codigo = a.professor_rf");
             query.AppendLine("where 1 = 1");
 
-            if (modalidade.HasValue)
+            if (modalidade != default)
                 query.AppendLine("and a.modalidade = @modalidade");
 
             if (!string.IsNullOrEmpty(ueId))
