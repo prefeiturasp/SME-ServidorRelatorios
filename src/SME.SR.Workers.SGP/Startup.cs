@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
@@ -22,6 +22,7 @@ using SME.SR.Workers.SGP.Configuracoes;
 using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -93,7 +94,7 @@ namespace SME.SR.Workers.SGP
         private void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IExemploRepository, ExemploRepository>();
-			services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
+            services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
             services.TryAddScoped(typeof(IAtribuicaoCJRepository), typeof(AtribuicaoCJRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(ICicloRepository), typeof(CicloRepository));
@@ -188,8 +189,20 @@ namespace SME.SR.Workers.SGP
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ExcecaoMiddleware>();
-            app.UseStaticFiles();
+            
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates")),
+                RequestPath = "/templates"
+            });
 
+            //app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates")),
+            //    RequestPath = "/Templates"
+            //});
             app
                 .UseCors(x => x
                     .AllowAnyOrigin()
