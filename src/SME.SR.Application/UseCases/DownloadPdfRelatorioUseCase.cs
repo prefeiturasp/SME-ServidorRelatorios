@@ -1,4 +1,5 @@
-﻿using SME.SR.Infra;
+﻿using Sentry;
+using SME.SR.Infra;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,7 +12,8 @@ namespace SME.SR.Application
         {
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = $"relatorios/{codigoCorrelacao}.pdf";
-           var caminhoArquivo= Path.Combine($"{caminhoBase}", nomeArquivo);
+            var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
+            SentrySdk.AddBreadcrumb($"Caminho arquivo para download: {caminhoArquivo}");
 
             var arquivo = await File.ReadAllBytesAsync(caminhoArquivo);
             if (arquivo != null)

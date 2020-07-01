@@ -59,8 +59,10 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             //TODO TRATRAR EM AMBIENTE DE DESENVOLVIMENTO PARA REMOVER SME.SR.Workers.SGP
             var nomeArquivo = $"SME.SR.Workers.SGP/{nomeDoArquivoDoTemplate}";
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
+            
+            SentrySdk.AddBreadcrumb($"Caminho arquivo cshtml: {caminhoArquivo}");
 
-            string templateBruto = System.IO.File.ReadAllText(caminhoArquivo);
+            string templateBruto = File.ReadAllText(caminhoArquivo);
 
             RazorProcessor processor = new RazorProcessor();
 
