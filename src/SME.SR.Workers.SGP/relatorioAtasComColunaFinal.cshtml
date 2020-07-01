@@ -38,9 +38,9 @@
             margin-bottom: 22px;
         }
 
-            .header-pagina td {
-                text-align: left;
-            }
+        .header-pagina td {
+            text-align: left;
+        }
 
         .campo-dre {
             width: 395px;
@@ -74,7 +74,7 @@
         }
 
         thead {
-            background-color: #f3f3f3;
+            background-color: #dedede;
         }
 
         th {
@@ -85,6 +85,7 @@
         td {
             border: 1px solid #42474a;
             text-align: center;
+            min-width: 13px;
         }
 
         .tabela-alunos tr {
@@ -104,12 +105,12 @@
             font-size: 14px !important;
         }
 
-        .tamanho-30 {
-            width: 30px !important;
+        .tamanho-15 {
+            width: 15px !important;
         }
 
-        .tamanho-175 {
-            width: 175px !important;
+        .tamanho-115 {
+            width: 115px !important;
         }
 
         .alinhar-esquerda {
@@ -133,6 +134,10 @@
         .contador-pagina {
             float: right;
             font-size: 15px;
+        }
+
+        .estudante-inativo {
+          background-color: #f2f2f2;
         }
     </style>
 
@@ -188,8 +193,8 @@
                     }
                 </tr>
                 <tr>
-                    <th class="fonte-10 tamanho-30 alinhar-centro">Nº</th>
-                    <th class="fonte-10 tamanho-175 alinhar-esquerda">Nome</th>
+                    <th class="fonte-10 tamanho-15 alinhar-centro">Nº</th>
+                    <th class="fonte-10 tamanho-115 alinhar-esquerda">Nome</th>
 
                     @foreach (var grupoMatriz in Model.GruposMatriz)
                     {
@@ -213,9 +218,15 @@
             <tbody>
                 @foreach (var linha in Model.Linhas)
                 {
-                    <tr>
+                    <tr class="@(linha.Inativo ? "estudante-inativo" : "")">
                         <td class="alinhar-centro">@linha.Id</td>
-                        <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
+                        @if (linha.Inativo)
+                        {
+                          <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
+                        } else
+                        {
+                          <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
+                        }
                         @foreach (var celula in linha.Celulas)
                         {
                             <td>@celula.Valor</td>
