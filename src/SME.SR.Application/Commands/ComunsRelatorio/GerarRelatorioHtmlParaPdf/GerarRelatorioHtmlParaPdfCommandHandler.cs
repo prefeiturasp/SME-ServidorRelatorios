@@ -56,7 +56,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         {
             //TODO TRATRAR EM AMBIENTE DE DESENVOLVIMENTO PARA REMOVER SME.SR.Workers.SGP
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var nomeArquivo = $"templates/{nomeDoArquivoDoTemplate}";
+            var nomeArquivo = $"wwwroot/templates/{nomeDoArquivoDoTemplate}";
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
             
             SentrySdk.AddBreadcrumb($"Caminho arquivo cshtml: {caminhoArquivo}");
