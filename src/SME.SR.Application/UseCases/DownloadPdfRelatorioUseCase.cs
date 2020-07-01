@@ -10,7 +10,7 @@ namespace SME.SR.Application
         public async Task<byte[]> Executar(Guid codigoCorrelacao)
         {
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var nomeArquivo = $"Relatorios/{codigoCorrelacao}.pdf";
+            var nomeArquivo = $"relatorios/{codigoCorrelacao}.pdf";
            var caminhoArquivo= Path.Combine($"{caminhoBase}", nomeArquivo);
 
             var arquivo = await File.ReadAllBytesAsync(caminhoArquivo);

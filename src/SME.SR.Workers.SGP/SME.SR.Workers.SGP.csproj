@@ -31,5 +31,11 @@
     <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="relatorioAtasComColunaFinal.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 
 </Project>
