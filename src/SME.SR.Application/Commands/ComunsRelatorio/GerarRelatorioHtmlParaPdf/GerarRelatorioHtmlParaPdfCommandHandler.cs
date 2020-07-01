@@ -57,11 +57,11 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             //TODO TRATRAR EM AMBIENTE DE DESENVOLVIMENTO PARA REMOVER SME.SR.Workers.SGP
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = $"templates/{nomeDoArquivoDoTemplate}";
-            //var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
+            var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
             
-            SentrySdk.AddBreadcrumb($"Caminho arquivo cshtml: {nomeArquivo}");
+            SentrySdk.AddBreadcrumb($"Caminho arquivo cshtml: {caminhoArquivo}");
             
-            string templateBruto = File.ReadAllText(nomeArquivo);
+            string templateBruto = File.ReadAllText(caminhoArquivo);
             
             SentrySdk.AddBreadcrumb($"Leu arquivo de template.");
 

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.FileProviders;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
@@ -22,7 +21,6 @@ using SME.SR.Workers.SGP.Configuracoes;
 using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
 using System;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -89,6 +87,8 @@ namespace SME.SR.Workers.SGP
 
 
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools())); // TODO verificar onde deve ser colocada essa injeção
+
+            services.AddDirectoryBrowser();
         }
 
         private void RegistrarRepositorios(IServiceCollection services)
@@ -189,22 +189,10 @@ namespace SME.SR.Workers.SGP
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ExcecaoMiddleware>();
-            
+
             app.UseStaticFiles();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                        Path.Combine(Directory.GetCurrentDirectory(), "relatorios")),
-                RequestPath = "/relatorios"
-            });
-
-            //app.UseDirectoryBrowser(new DirectoryBrowserOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates")),
-            //    RequestPath = "/Templates"
-            //});
+            app.UseFileServer(enableDirectoryBrowsing: true);
 
             app
                 .UseCors(x => x
