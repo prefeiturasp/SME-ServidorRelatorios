@@ -6,6 +6,12 @@ namespace SME.SR.Application
 {
     public class ObterComponentesCurricularesPorTurmaQuery : IRequest<IEnumerable<ComponenteCurricularPorTurma>>
     {
+        public ObterComponentesCurricularesPorTurmaQuery() { }
+        public ObterComponentesCurricularesPorTurmaQuery(string codigoTurma)
+        {
+            CodigoTurma = codigoTurma;
+        }
+
         public string CodigoTurma { get; set; }
     }
 }

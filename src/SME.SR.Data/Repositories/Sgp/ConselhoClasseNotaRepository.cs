@@ -38,5 +38,15 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisPorTurma(string turmaCodigo)
+        {
+            var query = ConselhoClasseNotaConsultas.NotasFinaisFinaisTurma;
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, new { turmaCodigo });
+            }
+        }
     }
 }
