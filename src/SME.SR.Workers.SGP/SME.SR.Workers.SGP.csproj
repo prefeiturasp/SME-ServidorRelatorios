@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="relatorioAtasComColunaFinal.cshtml">
+    <Content Update="wwwroot\templates\relatorioAtasComColunaFinal.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

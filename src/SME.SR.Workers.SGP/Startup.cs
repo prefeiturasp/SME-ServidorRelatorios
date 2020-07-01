@@ -188,6 +188,7 @@ namespace SME.SR.Workers.SGP
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ExcecaoMiddleware>();
+            app.UseStaticFiles();
 
             app
                 .UseCors(x => x
