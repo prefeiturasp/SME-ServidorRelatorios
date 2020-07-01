@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Net;
+using System.Runtime.Serialization;
 
 namespace SME.SR.Infra
 {
+    [Serializable]
     public class NegocioException : Exception
     {
-        public NegocioException(string mensagem, int statusCode = 601) : base(mensagem)
+        public NegocioException(string message) : base(message)
         {
-            StatusCode = statusCode;
         }
 
-        public NegocioException(string mensagem, HttpStatusCode statusCode) : base(mensagem)
+        protected NegocioException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            StatusCode = (int)statusCode;
         }
-
-        public int StatusCode { get; }
     }
 }

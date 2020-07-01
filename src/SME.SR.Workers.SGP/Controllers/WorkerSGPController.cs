@@ -4,6 +4,7 @@ using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Relatorios.ConselhoClasse;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using System.Threading.Tasks;
 
