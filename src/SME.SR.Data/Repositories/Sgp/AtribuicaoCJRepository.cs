@@ -18,10 +18,10 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, int? anoLetivo = null)
+        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, long[] componentesCurricularresId = null, int? anoLetivo = null)
         {
             var query = AtribuicaoCJConsultas.ObterPorFiltros(modalidade, turmaId, ueId, componenteCurricularId, 
-                usuarioRf, usuarioNome, substituir, dreCodigo, turmaIds,anoLetivo);
+                usuarioRf, usuarioNome, substituir, dreCodigo, turmaIds, componentesCurricularresId, anoLetivo);
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -40,6 +40,7 @@ namespace SME.SR.Data
                     substituir,
                     dreCodigo,
                     turmaIds,
+                    componentesCurricularresId,
                     anoLetivo
                 }, splitOn: "id,id"));
             }

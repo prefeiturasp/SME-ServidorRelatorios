@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +21,8 @@ namespace SME.SR.Application
         {
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
-            var turmas = ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
+            var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.UeCodigo, request.Modalidade, request.Usuario);
 
             return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
         }
@@ -53,6 +52,17 @@ namespace SME.SR.Application
                 Modalidade = modalidade,
                 AnoLetivo = anoLetivo,
                 Semestre = semestre,
+                Usuario = usuario
+            });
+        }
+
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade, Usuario usuario)
+        {
+            return await _mediator.Send(new ObterComponentesCurricularesTurmasRelatorioBoletimQuery()
+            {
+                CodigosTurma = turmaCodigo,
+                CodigoUe = codigoUe,
+                Modalidade = modalidade,
                 Usuario = usuario
             });
         }

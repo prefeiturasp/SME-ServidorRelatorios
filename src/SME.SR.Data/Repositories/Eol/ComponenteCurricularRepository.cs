@@ -63,7 +63,6 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string turmaCodigo, IEnumerable<long> componentesCurricularesId)
         {
-       
             var query = ComponenteCurricularConsultas.BuscarTerritorioDoSaber;
             var parametros = new { CodigosComponentesCurriculares = componentesCurricularesId.ToArray(), CodigoTurma = turmaCodigo };
 
@@ -91,6 +90,37 @@ namespace SME.SR.Data
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
                 return await conexao.QueryAsync<ComponenteCurricular>(query);
+            }
+        }
+
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmas(string[] codigosTurma)
+        {
+            var query = ComponenteCurricularConsultas.BuscarPorTurmas;
+            var parametros = new { CodigosTurma = codigosTurma };
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+        }
+
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmasEProfessor(string login, string[] codigosTurma)
+        {
+            var query = ComponenteCurricularConsultas.BuscarPorTurmasEProfessor;
+            var parametros = new { Login = login, CodigosTurma = codigosTurma };
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string[] turmasCodigo, IEnumerable<long> componentesCurricularesId)
+        {
+            var query = ComponenteCurricularConsultas.BuscarTerritorioDoSaberTurmas;
+            var parametros = new { CodigosComponentesCurriculares = componentesCurricularesId.ToArray(), CodigoTurma = turmasCodigo };
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricularTerritorioSaber>(query, parametros);
             }
         }
     }
