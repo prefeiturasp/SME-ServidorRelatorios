@@ -11,6 +11,7 @@ using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -55,13 +56,13 @@ namespace SME.SR.Workers.SGP.Services
         {
             using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
             {
+                var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
                 try
                 {
                     _logger.LogInformation($"[ INFO ] Messaged received: {content}");
 
                     if (!content.Equals("null"))
                     {
-                        var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
                         MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
 
                         foreach (MethodInfo method in methods)
@@ -89,9 +90,20 @@ namespace SME.SR.Workers.SGP.Services
                 }
                 catch (Exception ex)
                 {
+                    NotificarUsuarioRelatorioComErro(request);
                     SentrySdk.CaptureException(ex);
                 }
             }
+        }
+
+        private void NotificarUsuarioRelatorioComErro(FiltroRelatorioDto request)
+        {
+            var mensagemRabbit = new MensagemRabbit(string.Empty, null, request.CodigoCorrelacao, request.UsuarioLogadoRF);
+            var mensagem = JsonConvert.SerializeObject(mensagemRabbit);
+            var body = Encoding.UTF8.GetBytes(mensagem);
+
+            _channel.QueueBind(RotasRabbit.FilaSgp, RotasRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro);
+            _channel.BasicPublish(RotasRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro, null, body);
         }
 
         private WorkerAttribute GetWorkerAttribute(Type type)
