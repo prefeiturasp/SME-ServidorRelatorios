@@ -41,7 +41,7 @@ namespace SME.SR.HtmlPdf
 
                 if (!string.IsNullOrWhiteSpace(caminhoBase))
                 {
-                    doc.GlobalSettings.Out = Path.Combine($"{caminhoBase}relatorios", nomeArquivo);
+                    doc.GlobalSettings.Out = Path.Combine(caminhoBase,$"SME.SR.Workers.SGP/relatorios", nomeArquivo);
                 }
                 else
                 {
