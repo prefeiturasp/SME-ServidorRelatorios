@@ -120,6 +120,7 @@ namespace SME.SR.Workers.SGP
         private void RegistrarQueries(IServiceCollection services)
         {
             services.AddMediatR(typeof(AlunoPossuiConselhoClasseCadastradoQuery).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterAlunosTurmasRelatorioBoletimQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterAlunosPorTurmaQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterAnotacoesAlunoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery).GetTypeInfo().Assembly);
@@ -158,6 +159,7 @@ namespace SME.SR.Workers.SGP
         private void RegistrarHandlers(IServiceCollection services)
         {
             services.AddMediatR(typeof(AlunoPossuiConselhoClasseCadastradoQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterAlunosTurmasRelatorioBoletimQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterAlunosPorTurmaQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterAnotacoesAlunoQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQueryHandler).GetTypeInfo().Assembly);

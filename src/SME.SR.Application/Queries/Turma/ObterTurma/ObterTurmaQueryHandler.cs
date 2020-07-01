@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,9 +17,7 @@ namespace SME.SR.Application
 
         public async Task<Turma> Handle(ObterTurmaQuery request, CancellationToken cancellationToken)
         {
-            var turma = await _turmaSgpRepository.ObterPorCodigo(request.CodigoTurma);
-
-            return turma;
+            return await _turmaSgpRepository.ObterPorCodigo(request.CodigoTurma);
         }
     }
 }
