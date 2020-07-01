@@ -192,12 +192,12 @@ namespace SME.SR.Workers.SGP
             
             app.UseStaticFiles();
 
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates")),
-            //    RequestPath = "/templates"
-            //});
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                        Path.Combine(Directory.GetCurrentDirectory(), "relatorios")),
+                RequestPath = "/relatorios"
+            });
 
             //app.UseDirectoryBrowser(new DirectoryBrowserOptions
             //{

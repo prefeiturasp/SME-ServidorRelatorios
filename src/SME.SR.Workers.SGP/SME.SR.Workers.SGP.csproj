@@ -6,6 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="relatorios\relatorioAtasComColunaFinal.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="relatorios\relatorioAtasComColunaFinal.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Commons\Attributes\" />
     <Folder Include="Commons\Exceptions\" />
   </ItemGroup>
