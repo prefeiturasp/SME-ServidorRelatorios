@@ -36,7 +36,10 @@ namespace SME.SR.Application
                     turmas = turmas.Concat(turmasFiltro);
             }
 
-            return turmas;
+            if (!turmas.Any())
+                throw new NegocioException("Não foi possível localizar as turmas");
+            else
+                return turmas;
         }
 
         private async Task<Turma> ObterTurmaPorCodigo(string codigoTurma)

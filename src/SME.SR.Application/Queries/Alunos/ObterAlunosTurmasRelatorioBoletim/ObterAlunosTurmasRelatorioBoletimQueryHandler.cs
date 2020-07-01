@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -26,7 +27,10 @@ namespace SME.SR.Application
             else
                 alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurma);
 
-            return Enumerable.DefaultIfEmpty(alunos.GroupBy(a => a.CodigoTurma));
+            if (!alunos.Any())
+                throw new NegocioException("Não foi possível localizar os alunos");
+            else
+                return alunos.GroupBy(a => a.CodigoTurma);
         }
     }
 }

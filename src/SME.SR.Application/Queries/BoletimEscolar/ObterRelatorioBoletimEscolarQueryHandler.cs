@@ -22,24 +22,9 @@ namespace SME.SR.Application
         public async Task<RelatorioBoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
         {
             var dre = await ObterDrePorCodigo(request.DreCodigo);
-
-            if (dre == null)
-                throw new Exception("Não foi possível encontrar a Dre");
-
             var ue = await ObterUePorCodigo(request.UeCodigo);
-
-            if (ue == null)
-                throw new NegocioException("Não foi possível encontrar a Ue");
-
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
-
-            if (turmas == null || !turmas.Any())
-                throw new NegocioException("Não foi possível encontrar a/as turmas");
-
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo);
-
-            if (alunosPorTurma == null || !alunosPorTurma.Any())
-                throw new NegocioException("Não foi possível encontrar os alunos");
 
             return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
         }
