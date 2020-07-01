@@ -151,7 +151,7 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmaQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmasPorAbrangenciaFiltroQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmasPorFiltroQuery).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterTurmasRelatorioBoletimQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterUePorCodigoQuery).GetTypeInfo().Assembly);
         }
 		
@@ -189,7 +189,7 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmaQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterTurmasPorAbrangenciaFiltroQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmasPorFiltroQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(ObterTurmasRelatorioBoletimQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterUePorCodigoQueryHandler).GetTypeInfo().Assembly);
 
         }

@@ -5,6 +5,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -48,56 +49,35 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<Turma>(query, parametros);
+                return (await conexao.QueryAsync<Turma, Ue, Dre, Turma>(query, (turma, ue, dre) =>
+                {
+                    turma.Dre = dre;
+                    turma.Ue = ue;
+
+                    return turma;
+                }
+                , parametros, splitOn: "Codigo,Id,Id")).FirstOrDefault();
             }
         }
 
-        public async Task<IEnumerable<Turma>> ObterPorFiltros(string codigoUe, Modalidade? modalidade, int? anoLetivo, int? semestre)
+        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre)
         {
-            var query = TurmaConsultas.TurmaPorUe(modalidade, anoLetivo, semestre);
+            var query = TurmaConsultas.TurmaPorAbrangenciaFiltros;
 
             var parametros = new
             {
                 CodigoUe = codigoUe,
-                Modalidade = modalidade,
+                Modalidade = (int)modalidade,
                 AnoLetivo = anoLetivo,
-                Semestre = semestre
+                Semestre = semestre,
+                Login = login,
+                Perfil = perfil,
+                ConsideraHistorico = consideraHistorico
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<Turma>(query, parametros);
-            }
-
-
-        }
-        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade? modalidade, int? anoLetivo, string login, Guid perfil, bool consideraHistorico, int? semestre)
-        {
-            try
-            {
-                
-                var query = TurmaConsultas.TurmaPorAbrangenciaFiltros;                
-
-                var parametros = new
-                {
-                    CodigoUe = codigoUe,
-                    Modalidade = (int)modalidade,
-                    AnoLetivo = anoLetivo,
-                    Semestre = semestre,
-                    Login = login,
-                    Perfil = perfil,
-                    ConsideraHistorico = consideraHistorico
-                };
-
-                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-                {
-                    return await conexao.QueryAsync<Turma>(query, parametros);
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
             }
         }
     }

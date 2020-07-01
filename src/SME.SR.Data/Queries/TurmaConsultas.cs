@@ -129,37 +129,18 @@ namespace SME.SR.Data
 					inner join tipo_escola tp on ue.tipo_escola = tp.id 
 				   where t.turma_id = @codigoTurma";
 
+		internal static string TurmaPorCodigo = @"select t.turma_id Codigo, t.nome, 
+			t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo,
+			ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
+			dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
+			from  turma t
+			inner join ue on ue.id = t.ue_id 
+			inner join dre on ue.dre_id = dre.id 
+			from  turma t
+			where t.turma_id = @codigoTurma";
 
-		internal static string TurmaPorUe(Modalidade? modalidade, int? anoLetivo, int? semestre)
-        {
-			var query = @"select t.turma_id, t.nome, t.modalidade_codigo 
-					from  turma t
-					inner join ue on ue.id = t.ue_id
-					where ue.ue_id = @codigoUe";
-
-			if (modalidade.HasValue)
-				query += " and t.modalidade_codigo = @modalidade";
-
-			if (anoLetivo.HasValue)
-				query += " and t.ano_letivo = @anoLetivo";
-
-			if (semestre.HasValue)
-				query += " and t.semestre = @anoLetivo";
-
-			// TODO falta adicionar periodoEscolar
-
-			return query;
-        }
-
-        internal static string TurmaPorCodigo = @"select t.turma_id CodigoTurma, t.nome, 
-			t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo
-        from  turma t
-        where t.turma_id = @codigoTurma";
-
-
-
-        internal static string TurmaPorAbrangenciaFiltros = @"select t.* from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) at
-                            inner join turma t 
-                            on t.turma_id  = at.codigo";
+        internal static string TurmaPorAbrangenciaFiltros = @"select ano, anoLetivo, codigo, 
+								codigoModalidade modalidadeCodigo, nome, semestre 
+							from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) ";
     }
 }

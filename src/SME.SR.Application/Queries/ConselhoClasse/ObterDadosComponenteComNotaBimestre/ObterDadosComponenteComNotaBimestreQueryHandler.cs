@@ -19,14 +19,14 @@ namespace SME.SR.Application
         public async Task<IEnumerable<GrupoMatrizComponenteComNotaBimestre>> Handle(ObterDadosComponenteComNotaBimestreQuery request, CancellationToken cancellationToken)
         {
             var notasFechamento = await ObterNotasAlunoBimestre(request.FechamentoTurmaId,
-                                              request.Turma.CodigoTurma,
+                                              request.Turma.Codigo,
                                               request.CodigoAluno,
                                               request.PeriodoEscolar.Bimestre);
 
             var notasConselhoClasse = await ObterNotasConselhoClasseAluno(request.ConselhoClasseId,
                                                                           request.CodigoAluno);
 
-            var disciplinasPorTurma = await ObterComponentesCurricularesPorTurma(request.Turma.CodigoTurma);
+            var disciplinasPorTurma = await ObterComponentesCurricularesPorTurma(request.Turma.Codigo);
 
             var lstComponentesComNota = disciplinasPorTurma.Where(c => c.LancaNota)
                                                         .GroupBy(c => c.GrupoMatriz?.Nome);

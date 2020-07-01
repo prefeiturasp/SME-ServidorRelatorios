@@ -23,6 +23,7 @@ namespace SME.SR.Application
         {
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
+            var turmas = ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
 
             return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
         }
@@ -40,6 +41,19 @@ namespace SME.SR.Application
             return await _mediator.Send(new ObterUePorCodigoQuery()
             {
                 UeCodigo = ueCodigo
+            });
+        }
+
+        private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string turmaCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario)
+        {
+            return await _mediator.Send(new ObterTurmasRelatorioBoletimQuery()
+            {
+                CodigoTurma = turmaCodigo,
+                CodigoUe = ueCodigo,
+                Modalidade = modalidade,
+                AnoLetivo = anoLetivo,
+                Semestre = semestre,
+                Usuario = usuario
             });
         }
     }

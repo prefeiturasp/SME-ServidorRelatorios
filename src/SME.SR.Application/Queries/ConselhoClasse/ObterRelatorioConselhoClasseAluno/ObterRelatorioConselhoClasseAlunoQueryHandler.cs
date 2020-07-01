@@ -66,13 +66,13 @@ namespace SME.SR.Application
                 relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
                 SentrySdk.AddBreadcrumb("Obtendo a turma..", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                var turma = await ObterDadosTurma(fechamentoTurma.Turma.CodigoTurma);
+                var turma = await ObterDadosTurma(fechamentoTurma.Turma.Codigo);
 
-                relatorio.Dre = turma.DreUe.DreNome;
-                relatorio.Ue = turma.DreUe.UeNome;
+                relatorio.Dre = turma.Dre.Nome;
+                relatorio.Ue = turma.Ue.Nome;
 
                 SentrySdk.AddBreadcrumb($"Obtendo dados do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                var dadosAluno = await ObterDadosAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno);
+                var dadosAluno = await ObterDadosAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno);
 
                 if (dadosAluno == null)
                     SentrySdk.AddBreadcrumb("Não foi possível obter os dados do aluno!!!!!!", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
@@ -84,7 +84,7 @@ namespace SME.SR.Application
                 relatorio.AlunoSituacao = dadosAluno.SituacaoRelatorio;
 
                 SentrySdk.AddBreadcrumb($"Obtendo frequencia global do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                relatorio.AlunoFrequenciaGlobal = (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.CodigoTurma, request.CodigoAluno)).ToString();
+                relatorio.AlunoFrequenciaGlobal = (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno)).ToString();
 
                 if (bimestre.HasValue)
                 {
@@ -106,7 +106,7 @@ namespace SME.SR.Application
                     ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesSemNota =
                         await _mediator.Send(new ObterDadosComponenteSemNotaBimestreQuery()
                         {
-                            CodigoTurma = fechamentoTurma.Turma.CodigoTurma,
+                            CodigoTurma = fechamentoTurma.Turma.Codigo,
                             CodigoAluno = request.CodigoAluno,
                             Bimestre = bimestre
                         });
@@ -132,7 +132,7 @@ namespace SME.SR.Application
                     ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesSemNota =
                         await _mediator.Send(new ObterDadosComponenteSemNotaFinalQuery()
                         {
-                            CodigoTurma = fechamentoTurma.Turma.CodigoTurma,
+                            CodigoTurma = fechamentoTurma.Turma.Codigo,
                             CodigoAluno = request.CodigoAluno,
                             Bimestre = bimestre
                         });

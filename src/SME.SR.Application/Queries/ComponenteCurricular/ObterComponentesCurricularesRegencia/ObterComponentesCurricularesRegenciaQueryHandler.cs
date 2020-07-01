@@ -26,13 +26,13 @@ namespace SME.SR.Application
             Turma turma = request.Turma;
 
             if (request.Usuario.EhProfessorCj())
-                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.CodigoTurma, turma.DreUe.UeCodigo, request.CdComponenteCurricular, request.Usuario.CodigoRf);
+                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.Codigo, turma.Ue.Codigo, request.CdComponenteCurricular, request.Usuario.CodigoRf);
             else
             {
                 var componentesCurriculares = await _mediator.Send(new
                     ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery()
                 {
-                    CodigoTurma = turma.CodigoTurma,
+                    CodigoTurma = turma.Codigo,
                     Usuario = request.Usuario
                 });
 
@@ -41,7 +41,7 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCJ(Modalidade? modalidade, string codigoTurma, string ueId, long codigoDisciplina, string rf, bool ignorarDeParaRegencia = false)
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCJ(Modalidade modalidade, string codigoTurma, string ueId, long codigoDisciplina, string rf, bool ignorarDeParaRegencia = false)
         {
             IEnumerable<ComponenteCurricularPorTurma> componentes = null;
             var atribuicoes = await _atribuicaoCJRepository.ObterPorFiltros(modalidade,
