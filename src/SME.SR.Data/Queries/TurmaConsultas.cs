@@ -247,7 +247,15 @@ namespace SME.SR.Data
 			from  turma t
 			where t.turma_id = @codigoTurma";
 
-        internal static string TurmaPorAbrangenciaFiltros = @"select ano, anoLetivo, codigo, 
+
+		internal static string CicloAprendizagemPorTurma = @"select c.descricao
+          from turma t
+         inner join tipo_ciclo_ano a on a.modalidade = t.modalidade_codigo 
+ 							        and a.ano = t.ano
+         inner join tipo_ciclo c on c.id = a.tipo_ciclo_id
+        where t.turma_id = @turmaCodigo ";
+
+		internal static string TurmaPorAbrangenciaFiltros = @"select ano, anoLetivo, codigo, 
 								codigoModalidade modalidadeCodigo, nome, semestre 
 							from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) ";
     }

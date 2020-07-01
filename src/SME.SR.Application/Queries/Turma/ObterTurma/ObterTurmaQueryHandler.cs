@@ -26,8 +26,6 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível localizar a turma.");
             }
 
-            turma.DreUe = await _turmaSgpRepository.ObterDreUe(request.CodigoTurma);
-
             return turma;
         }
     }
