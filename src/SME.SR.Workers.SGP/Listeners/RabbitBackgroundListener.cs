@@ -87,6 +87,10 @@ namespace SME.SR.Workers.SGP.Services
                     }
 
                 }
+                catch (NegocioException ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                }
                 catch (Exception ex)
                 {
                     SentrySdk.CaptureException(ex);

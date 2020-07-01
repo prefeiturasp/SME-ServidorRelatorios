@@ -29,17 +29,17 @@ namespace SME.SR.Application
             var ue = await ObterUePorCodigo(request.UeCodigo);
 
             if (ue == null)
-                throw new Exception("Não foi possível encontrar a Ue");
+                throw new NegocioException("Não foi possível encontrar a Ue");
 
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
 
             if (turmas == null || !turmas.Any())
-                throw new Exception("Não foi possível encontrar a/as turmas");
+                throw new NegocioException("Não foi possível encontrar a/as turmas");
 
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo);
 
             if (alunosPorTurma == null || !alunosPorTurma.Any())
-                throw new Exception("Não foi possível encontrar os alunos");
+                throw new NegocioException("Não foi possível encontrar os alunos");
 
             return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
         }
