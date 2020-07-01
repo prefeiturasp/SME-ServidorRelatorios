@@ -5,6 +5,7 @@ using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,7 +54,13 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         private string GerarHtmlRazor<T>(T model, string nomeDoArquivoDoTemplate)
         {
-            string templateBruto = System.IO.File.ReadAllText($"SME.SR.Workers.SGP/{nomeDoArquivoDoTemplate}");
+            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+
+            //TODO TRATRAR EM AMBIENTE DE DESENVOLVIMENTO PARA REMOVER SME.SR.Workers.SGP
+            var nomeArquivo = $"SME.SR.Workers.SGP/{nomeDoArquivoDoTemplate}";
+            var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
+
+            string templateBruto = System.IO.File.ReadAllText(caminhoArquivo);
 
             RazorProcessor processor = new RazorProcessor();
 
