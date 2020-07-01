@@ -53,7 +53,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         private string GerarHtmlRazor<T>(T model, string nomeDoArquivoDoTemplate)
         {
-            string templateBruto = System.IO.File.ReadAllText(nomeDoArquivoDoTemplate);
+            string templateBruto = System.IO.File.ReadAllText($"SME.SR.Workers.SGP/{nomeDoArquivoDoTemplate}");
 
             RazorProcessor processor = new RazorProcessor();
 
