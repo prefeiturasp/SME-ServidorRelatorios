@@ -40,6 +40,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
             var directory = AppDomain.CurrentDomain.BaseDirectory;
+            SentrySdk.AddBreadcrumb($"Gerando PDF", $"Caminho geração : {directory}");
 
             pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());
 
