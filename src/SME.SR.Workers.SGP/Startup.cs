@@ -190,6 +190,8 @@ namespace SME.SR.Workers.SGP
         {
             app.UseMiddleware<ExcecaoMiddleware>();
             
+            app.UseStaticFiles();
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
@@ -197,12 +199,13 @@ namespace SME.SR.Workers.SGP
                 RequestPath = "/templates"
             });
 
-            //app.UseDirectoryBrowser(new DirectoryBrowserOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates")),
-            //    RequestPath = "/Templates"
-            //});
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates")),
+                RequestPath = "/Templates"
+            });
+
             app
                 .UseCors(x => x
                     .AllowAnyOrigin()
