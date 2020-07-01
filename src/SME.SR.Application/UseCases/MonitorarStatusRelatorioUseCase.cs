@@ -35,7 +35,7 @@ namespace SME.SR.Application
             if (detalhesRelatorio != null && detalhesRelatorio.Pronto)
             {
                 SentrySdk.AddBreadcrumb($"Indo publicar na fila Prontos..", "8 - MonitorarStatusRelatorioUseCase");
-                servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaClientsSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, filtroRelatorioDto.CodigoCorrelacao));
+                servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, filtroRelatorioDto.CodigoCorrelacao));
                 SentrySdk.CaptureMessage("8 - MonitorarStatusRelatorioUseCase - Publicado na fila PRONTO OK!");
             }
             else

@@ -1,3 +1,5 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -5,7 +7,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Application.Queries.Comum.Relatorios;
@@ -18,8 +20,10 @@ using SME.SR.JRSClient.Extensions;
 using SME.SR.JRSClient.Interfaces;
 using SME.SR.JRSClient.Services;
 using SME.SR.Workers.SGP.Configuracoes;
+using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -49,6 +53,7 @@ namespace SME.SR.Workers.SGP
             services.AddMvc().AddControllersAsServices();
             services.AddRabbitMQ(Configuration);
             services.AddHostedService<RabbitBackgroundListener>();
+            services.AddTransient<ExcecaoMiddleware>();
 
             //TODO: Informa�oes do arquivo de configura��o
 
@@ -68,7 +73,7 @@ namespace SME.SR.Workers.SGP
             })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
-                    return new JasperCookieHandler() { CookieContainer = cookieContainer }; 
+                    return new JasperCookieHandler() { CookieContainer = cookieContainer };
                 });
 
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
@@ -77,17 +82,20 @@ namespace SME.SR.Workers.SGP
 
             // TODO: Criar arquivo especficio para as inje��es
             RegistrarRepositorios(services);
-			RegistrarQueries(services);
+            RegistrarQueries(services);
             RegistrarHandlers(services);
             RegistrarCommands(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
+
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools())); // TODO verificar onde deve ser colocada essa injeção
         }
 
         private void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IExemploRepository, ExemploRepository>();
-			services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
+            services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
             services.TryAddScoped(typeof(IAtribuicaoCJRepository), typeof(AtribuicaoCJRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(ICicloRepository), typeof(CicloRepository));
@@ -116,7 +124,7 @@ namespace SME.SR.Workers.SGP
         {
             services.AddMediatR(typeof(GerarRelatorioAssincronoCommand).GetTypeInfo().Assembly);
         }
-		
+
         private void RegistrarQueries(IServiceCollection services)
         {
             services.AddMediatR(typeof(AlunoPossuiConselhoClasseCadastradoQuery).GetTypeInfo().Assembly);
@@ -202,6 +210,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
+            services.TryAddScoped<IDownloadPdfRelatorioUseCase, DownloadPdfRelatorioUseCase>();
         }
 
         private void RegistrarServicos(IServiceCollection services)
@@ -211,10 +220,23 @@ namespace SME.SR.Workers.SGP
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            app.UseMiddleware<ExcecaoMiddleware>();
+            
+            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
             {
-                app.UseDeveloperExceptionPage();
-            }
+                FileProvider = new PhysicalFileProvider(
+                        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates")),
+                RequestPath = "/templates"
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates")),
+                RequestPath = "/Templates"
+            });
 
             app
                 .UseCors(x => x
@@ -222,7 +244,7 @@ namespace SME.SR.Workers.SGP
                     .AllowAnyHeader()
                     .AllowAnyMethod())
                 .UseRouting()
-                .UseAuthorization()                
+                .UseAuthorization()
                 .UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

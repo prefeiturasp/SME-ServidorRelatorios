@@ -19,6 +19,19 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
+        public async Task<string> ObterCicloAprendizagem(string turmaCodigo)
+        {
+            var query = TurmaConsultas.CicloAprendizagemPorTurma;
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                var ciclo = await conexao.QueryFirstOrDefaultAsync<string>(query, new { turmaCodigo });
+                await conexao.CloseAsync();
+
+                return ciclo;
+            }
+        }
+
         public async Task<IEnumerable<Aluno>> ObterDadosAlunos(string codigoTurma)
         {
             var query = TurmaConsultas.DadosAlunos;
@@ -30,9 +43,19 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<AlunoSituacaoDto>> ObterDadosAlunosSituacao(string turmaCodigo)
+        {
+            var query = TurmaConsultas.DadosAlunosSituacao;
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo });
+            }
+        }
+
         public async Task<DreUe> ObterDreUe(string codigoTurma)
         {
-            var query = TurmaConsultas.DadosDreUe;
+            var query = TurmaConsultas.DadosCompletosDreUe;
             var parametros = new { CodigoTurma = codigoTurma };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))

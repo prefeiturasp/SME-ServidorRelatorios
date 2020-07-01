@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -20,6 +21,10 @@ namespace SME.SR.Application
         public async Task<Turma> Handle(ObterTurmaQuery request, CancellationToken cancellationToken)
         {
             var turma = await _turmaSgpRepository.ObterPorCodigo(request.CodigoTurma);
+            if (turma == null)
+            {
+                throw new NegocioException("Não foi possível localizar a turma.");
+            }
 
             return turma;
         }
