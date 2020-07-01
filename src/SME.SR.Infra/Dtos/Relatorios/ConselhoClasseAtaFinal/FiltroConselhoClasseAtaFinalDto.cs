@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Infra
 {

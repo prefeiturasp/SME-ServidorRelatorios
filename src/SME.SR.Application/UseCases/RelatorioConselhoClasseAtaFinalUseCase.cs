@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
 using SME.SR.Data;
 using SME.SR.Infra;
@@ -21,25 +20,15 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
+            var parametros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
+
+            var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
+            foreach (var turmaCodigo in parametros.TurmasCodigos)
             {
-                var parametros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
-
-                var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
-                foreach(var turmaCodigo in parametros.TurmasCodigos)
-                {
-                    relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo));
-                }
-
-                var jsonDados = JsonConvert.SerializeObject(relatoriosTurmas);
-
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorioAtasComColunaFinal.cshtml", relatoriosTurmas, request.CodigoCorrelacao));
-
+                relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo));
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorioAtasComColunaFinal.cshtml", relatoriosTurmas, request.CodigoCorrelacao));
         }
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(string turmaCodigo)
@@ -144,7 +133,7 @@ namespace SME.SR.Application
             var relatorio = new ConselhoClasseAtaFinalDto();
 
             relatorio.Cabecalho = cabecalho;
-            var gruposMatrizes = componentesCurriculares.GroupBy(c => c.GrupoMatriz);
+            var gruposMatrizes = componentesCurriculares.Where(c => c.GrupoMatriz != null).GroupBy(c => c.GrupoMatriz);
 
             MontarEstruturaGruposMatriz(ref relatorio, gruposMatrizes);
             MontarEstruturaLinhas(ref relatorio, alunos, gruposMatrizes, notasFinais, frequenciaAlunos, pareceresConclusivos);
@@ -165,11 +154,11 @@ namespace SME.SR.Application
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
-                    foreach(var componente in grupoMatriz)
+                    foreach (var componente in grupoMatriz)
                     {
                         var coluna = 0;
                         // Monta Colunas notas dos bimestres
-                        for(var bimestre = 1; bimestre <= 4; bimestre++)
+                        for (var bimestre = 1; bimestre <= 4; bimestre++)
                         {
                             var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                     && c.ComponenteCurricularCodigo == componente.CodDisciplina
@@ -194,7 +183,7 @@ namespace SME.SR.Application
                         // Monta colunas frequencia F - CA - %
                         var frequenciaAluno = frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString()
                                                                         && c.DisciplinaId == componente.CodDisciplina.ToString());
-                        
+
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
                                                 frequenciaAluno?.TotalAusencias.ToString() ?? "0",
@@ -233,21 +222,22 @@ namespace SME.SR.Application
 
         private void MontarEstruturaGruposMatriz(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes)
         {
-            foreach(var grupoMatriz in gruposMatrizes)
-            {
-                var grupoMatrizDto = new ConselhoClasseAtaFinalGrupoDto()
+            if (gruposMatrizes != null)
+                foreach (var grupoMatriz in gruposMatrizes)
                 {
-                    Id = grupoMatriz.Key.Id,
-                    Nome = grupoMatriz.Key.Nome
-                };
+                    var grupoMatrizDto = new ConselhoClasseAtaFinalGrupoDto()
+                    {
+                        Id = grupoMatriz.Key.Id,
+                        Nome = grupoMatriz.Key.Nome
+                    };
 
-                foreach (var componenteCurricular in grupoMatriz)
-                {
-                    grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id);
+                    foreach (var componenteCurricular in grupoMatriz)
+                    {
+                        grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id);
+                    }
+
+                    relatorio.GruposMatriz.Add(grupoMatrizDto);
                 }
-
-                relatorio.GruposMatriz.Add(grupoMatrizDto);
-            }
         }
 
         private async Task<long> ObterIdTipoCalendario(ModalidadeTipoCalendario modalidade, int anoLetivo, int semestre)
@@ -272,10 +262,10 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<AlunoSituacaoAtaFinalDto>> ObterAlunos(string turmaCodigo)
         {
-            var alunos = await mediator.Send(new ObterAlunosSituacaoPorTurmaQuery(turmaCodigo)); 
+            var alunos = await mediator.Send(new ObterAlunosSituacaoPorTurmaQuery(turmaCodigo));
             return alunos.Select(a => new AlunoSituacaoAtaFinalDto(a));
         }
-        
+
         private int CalcularPaginasHorizontal(int maximoComponentesPorPagina, int maximoComponentesPorPaginaFinal, int contagemTodasDisciplinas)
         {
             int contagemDisciplinas = contagemTodasDisciplinas;
@@ -312,7 +302,7 @@ namespace SME.SR.Application
 
             return modelPagina.GruposMatriz.FirstOrDefault(x => x.Id == disciplina.IdGrupoMatriz);
         }
-        
+
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(string turmaCodigo)
             => await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery(turmaCodigo));
     }
