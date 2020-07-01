@@ -54,15 +54,16 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         private string GerarHtmlRazor<T>(T model, string nomeDoArquivoDoTemplate)
         {
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-
             //TODO TRATRAR EM AMBIENTE DE DESENVOLVIMENTO PARA REMOVER SME.SR.Workers.SGP
+            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = $"SME.SR.Workers.SGP/{nomeDoArquivoDoTemplate}";
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
             
             SentrySdk.AddBreadcrumb($"Caminho arquivo cshtml: {caminhoArquivo}");
-
+            
             string templateBruto = File.ReadAllText(caminhoArquivo);
+            
+            SentrySdk.AddBreadcrumb($"Leu arquivo de template.");
 
             RazorProcessor processor = new RazorProcessor();
 
