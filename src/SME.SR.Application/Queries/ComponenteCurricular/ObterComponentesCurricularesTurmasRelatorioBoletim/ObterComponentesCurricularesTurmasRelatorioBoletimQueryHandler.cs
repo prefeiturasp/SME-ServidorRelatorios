@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -58,17 +59,19 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                         Usuario = request.Usuario
                     });
 
-                    componentesMapeados = componentesMapeados.Where(cm => cm.Regencia).Select(cm =>
-                    {
-                        cm.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(c => c.Key == cm.CodigoTurma).ToList();
-                        return cm;
-                    });
+                    componentesMapeados = componentesMapeados.Select(cm =>
+                     {
+                         if (cm.Regencia)
+                             cm.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(c => c.Key == cm.CodigoTurma).ToList();
+
+                         return cm;
+                     });
                 }
 
                 return componentesMapeados;
             }
 
-            return Enumerable.Empty<ComponenteCurricularPorTurma>();
+            throw new NegocioException("Não foi possível localizar as disciplinas das tumas");
         }
     }
 }

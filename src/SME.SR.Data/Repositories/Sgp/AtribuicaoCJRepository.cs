@@ -4,7 +4,7 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -20,8 +20,58 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, long[] componentesCurricularresId = null, int? anoLetivo = null)
         {
-            var query = AtribuicaoCJConsultas.ObterPorFiltros(modalidade, turmaId, ueId, componenteCurricularId, 
-                usuarioRf, usuarioNome, substituir, dreCodigo, turmaIds, componentesCurricularresId, anoLetivo);
+            var query = new StringBuilder();
+
+            query.AppendLine("select a.disciplina_id DisciplinaId,");
+            query.AppendLine("a.dre_id DreId, a.ue_id UeId, a.migrado, ");
+            query.AppendLine("t.modalidade_codigo Modalidade, ");
+            query.AppendLine("a.professor_rf professorrf, a.substituir, ");
+            query.AppendLine("t.turma_id Codigo, t.nome, ");
+            query.AppendLine("t.modalidade_codigo ModalidadeCodigo, ");
+            query.AppendLine("t.semestre, t.ano, t.ano_letivo AnoLetivo");
+            query.AppendLine("from");
+            query.AppendLine("atribuicao_cj a");
+            query.AppendLine("inner join turma t");
+            query.AppendLine("on t.turma_id = a.turma_id");
+            query.AppendLine("left join usuario u");
+            query.AppendLine("on u.rf_codigo = a.professor_rf");
+            query.AppendLine("where 1 = 1");
+
+            if (modalidade != default)
+                query.AppendLine("and a.modalidade = @modalidade");
+
+            if (!string.IsNullOrEmpty(ueId))
+                query.AppendLine("and a.ue_id = @ueId");
+
+            if (!string.IsNullOrEmpty(turmaId))
+                query.AppendLine("and a.turma_id = @turmaId");
+
+            if (componenteCurricularId > 0)
+                query.AppendLine("and a.disciplina_id = @componenteCurricularId");
+
+            if (!string.IsNullOrEmpty(usuarioRf))
+                query.AppendLine("and a.professor_rf = @usuarioRf");
+
+            if (!string.IsNullOrEmpty(usuarioNome))
+            {
+                usuarioNome = $"%{usuarioNome.ToUpper()}%";
+                query.AppendLine("and upper(f_unaccent(u.nome)) LIKE @usuarioNome");
+            }
+
+            if (substituir.HasValue)
+                query.AppendLine("and a.substituir = @substituir");
+
+            if (!string.IsNullOrEmpty(dreCodigo))
+                query.AppendLine("and a.dre_id = @dreCodigo");
+
+            if (turmaIds != null)
+                query.AppendLine("and t.turma_id = ANY(@turmaIds)");
+
+            if (componentesCurricularresId != null)
+                query.AppendLine("and a.disciplina_id = ANY(@componentesCurricularresId)");
+
+            if (anoLetivo != null)
+                query.AppendLine("and t.ano_letivo = @anoLetivo");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -42,7 +92,7 @@ namespace SME.SR.Data
                     turmaIds,
                     componentesCurricularresId,
                     anoLetivo
-                }, splitOn: "id,id"));
+                }, splitOn: "DisciplinaId,Codigo"));
             }
         }
     }

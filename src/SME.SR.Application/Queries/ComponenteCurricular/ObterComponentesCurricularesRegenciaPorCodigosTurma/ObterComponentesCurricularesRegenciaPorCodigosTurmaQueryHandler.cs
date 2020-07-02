@@ -71,15 +71,16 @@ namespace SME.SR.Application
 
         private IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>> MapearComponentesPorAtribuicaoCJ(IEnumerable<AtribuicaoCJ> atribuicoesCJ, IEnumerable<ComponenteCurricularPorTurma> componentesEol)
         {
-            var componentesPorAtribuicaoCJ = atribuicoesCJ.Select(a =>
-            {
-                var componente = componentesEol.FirstOrDefault(c => c.CodDisciplina == a.DisciplinaId);
+            var componentesPorAtribuicaoCJ = Enumerable.Empty<ComponenteCurricularPorTurmaRegencia>();
 
-                if (componente != null)
+            foreach (var atribuicao in atribuicoesCJ)
+            {
+                componentesPorAtribuicaoCJ =
+                    componentesPorAtribuicaoCJ.Concat(componentesEol.Select(componente =>
                 {
                     return new ComponenteCurricularPorTurmaRegencia()
                     {
-                        CodigoTurma = a.Turma.Codigo,
+                        CodigoTurma = atribuicao.Turma.Codigo,
                         CodDisciplina = componente.CodDisciplina,
                         CodDisciplinaPai = componente.CodDisciplinaPai,
                         Disciplina = componente.Disciplina,
@@ -91,10 +92,8 @@ namespace SME.SR.Application
                         BaseNacional = componente.BaseNacional,
                         GrupoMatriz = componente.GrupoMatriz
                     };
-                }
-                else
-                    return null;
-            });
+                }));
+            }
 
             return Enumerable.DefaultIfEmpty(componentesPorAtribuicaoCJ.GroupBy(c => c.CodigoTurma));
         }
