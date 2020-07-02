@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.OpenApi.Models;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
@@ -89,6 +90,12 @@ namespace SME.SR.Workers.SGP
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools())); // TODO verificar onde deve ser colocada essa injeção
 
             services.AddDirectoryBrowser();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SME - Servidor de relatórios", Version = "v1" });
+            });
+
         }
 
         private void RegistrarRepositorios(IServiceCollection services)
@@ -188,6 +195,14 @@ namespace SME.SR.Workers.SGP
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SME - Servidor de relatórios");
+            });
+
             app.UseMiddleware<ExcecaoMiddleware>();
 
             app.UseStaticFiles();
