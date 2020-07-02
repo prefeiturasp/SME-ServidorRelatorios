@@ -66,7 +66,14 @@ namespace SME.SR.Data
 
         public async Task<Turma> ObterPorCodigo(string codigoTurma)
         {
-            var query = TurmaConsultas.TurmaPorCodigo;
+            var query = @"select t.turma_id Codigo, t.nome, 
+			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo,
+			                ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
+			                dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
+			                from  turma t
+			                inner join ue on ue.id = t.ue_id 
+			                inner join dre on ue.dre_id = dre.id 
+			                where t.turma_id = @codigoTurma";
 
             var parametros = new { CodigoTurma = codigoTurma };
 
@@ -85,7 +92,9 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre)
         {
-            var query = TurmaConsultas.TurmaPorAbrangenciaFiltros;
+            var query = @"select ano, anoLetivo, codigo, 
+								codigoModalidade modalidadeCodigo, nome, semestre 
+							from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) ";
 
             var parametros = new
             {
