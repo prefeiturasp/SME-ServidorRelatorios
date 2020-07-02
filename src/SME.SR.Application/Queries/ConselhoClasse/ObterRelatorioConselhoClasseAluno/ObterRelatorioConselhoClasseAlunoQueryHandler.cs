@@ -13,14 +13,12 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAlunoQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAlunoQuery, RelatorioConselhoClasseArray>
     {
-        private IMediator _mediator;
-        private readonly IConfiguration configuration;
+        private readonly IMediator mediator;
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        public ObterRelatorioConselhoClasseAlunoQueryHandler(IMediator mediator, IConfiguration configuration, VariaveisAmbiente variaveisAmbiente)
+        public ObterRelatorioConselhoClasseAlunoQueryHandler(IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {
-            this._mediator = mediator;
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
@@ -91,7 +89,7 @@ namespace SME.SR.Application
                     SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesComNota Com Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
 
                     ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesComNota =
-                        await _mediator.Send(new ObterDadosComponenteComNotaBimestreQuery()
+                        await mediator.Send(new ObterDadosComponenteComNotaBimestreQuery()
                         {
                             FechamentoTurmaId = request.FechamentoTurmaId,
                             ConselhoClasseId = request.ConselhoClasseId,
@@ -104,7 +102,7 @@ namespace SME.SR.Application
 
                     SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesSemNota Com Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                     ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesSemNota =
-                        await _mediator.Send(new ObterDadosComponenteSemNotaBimestreQuery()
+                        await mediator.Send(new ObterDadosComponenteSemNotaBimestreQuery()
                         {
                             CodigoTurma = fechamentoTurma.Turma.Codigo,
                             CodigoAluno = request.CodigoAluno,
@@ -118,7 +116,7 @@ namespace SME.SR.Application
 
                     SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesComNota Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                     ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesComNota =
-                        await _mediator.Send(new ObterDadosComponenteComNotaFinalQuery()
+                        await mediator.Send(new ObterDadosComponenteComNotaFinalQuery()
                         {
                             FechamentoTurmaId = request.FechamentoTurmaId,
                             ConselhoClasseId = request.ConselhoClasseId,
@@ -130,7 +128,7 @@ namespace SME.SR.Application
 
                     SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesSemNota Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                     ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesSemNota =
-                        await _mediator.Send(new ObterDadosComponenteSemNotaFinalQuery()
+                        await mediator.Send(new ObterDadosComponenteSemNotaFinalQuery()
                         {
                             CodigoTurma = fechamentoTurma.Turma.Codigo,
                             CodigoAluno = request.CodigoAluno,
@@ -176,7 +174,7 @@ namespace SME.SR.Application
 
         private async Task<string> ObterParecerConclusivoPorAluno(string codigoAluno, long conselhoClasseId)
         {
-            return await _mediator.Send(new ObterParecerConclusivoPorAlunoQuery()
+            return await mediator.Send(new ObterParecerConclusivoPorAlunoQuery()
             {
                  CodigoAluno = codigoAluno,
                   ConselhoClasseId = conselhoClasseId
@@ -185,7 +183,7 @@ namespace SME.SR.Application
 
         private async Task<FechamentoTurma> ObterFechamentoTurmaPorId(long fechamentoTurmaId)
         {
-            return await _mediator.Send(new ObterFechamentoTurmaPorIdQuery()
+            return await mediator.Send(new ObterFechamentoTurmaPorIdQuery()
             {
                 FechamentoTurmaId = fechamentoTurmaId
             });
@@ -193,7 +191,7 @@ namespace SME.SR.Application
 
         private async Task<Turma> ObterDadosTurma(string codigoTurma)
         {
-            return await _mediator.Send(new ObterTurmaQuery()
+            return await mediator.Send(new ObterTurmaQuery()
             {
                 CodigoTurma = codigoTurma
             });
@@ -201,7 +199,7 @@ namespace SME.SR.Application
 
         private async Task<Aluno> ObterDadosAluno(string codigoTurma, string codigoAluno)
         {
-            return await _mediator.Send(new ObterDadosAlunoQuery()
+            return await mediator.Send(new ObterDadosAlunoQuery()
             {
                 CodigoTurma = codigoTurma,
                 CodigoAluno = codigoAluno
@@ -210,7 +208,7 @@ namespace SME.SR.Application
 
         private async Task<double> ObterFrequenciaGlobalPorAluno(string codigoTurma, string codigoAluno)
         {
-            return await _mediator.Send(new ObterFrequenciaGlobalPorAlunoQuery()
+            return await mediator.Send(new ObterFrequenciaGlobalPorAlunoQuery()
             {
                 CodigoTurma = codigoTurma,
                 CodigoAluno = codigoAluno
@@ -219,7 +217,7 @@ namespace SME.SR.Application
 
         private async Task<RecomendacaoConselhoClasseAluno> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno)
         {
-            return await _mediator.Send(new ObterRecomendacoesPorFechamentoQuery()
+            return await mediator.Send(new ObterRecomendacoesPorFechamentoQuery()
             {
                 CodigoAluno = codigoAluno,
                 FechamentoTurmaId = fechamentoTurmaId
@@ -228,7 +226,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<FechamentoAlunoAnotacaoConselho>> ObterAnotacoesAluno(long fechamentoTurmaId, string codigoAluno)
         {
-            return await _mediator.Send(new ObterAnotacoesAlunoQuery()
+            return await mediator.Send(new ObterAnotacoesAlunoQuery()
             {
                 CodigoAluno = codigoAluno,
                 FechamentoTurmaId = fechamentoTurmaId

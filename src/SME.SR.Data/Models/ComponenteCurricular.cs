@@ -9,6 +9,7 @@ namespace SME.SR.Data
         {
             ComponentePlanejamentoRegencia = false;
         }
+        public string CodigoTurma { get; set; }
         public string AnoTurma { get; set; }
         public long Codigo { get; set; }
         public string Descricao { get; set; }

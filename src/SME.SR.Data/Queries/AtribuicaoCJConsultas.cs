@@ -8,7 +8,7 @@ namespace SME.SR.Data
     public class AtribuicaoCJConsultas
     {
         internal static string ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId,
-            string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, int? anoLetivo = null)
+            string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, long[] componentesCurricularresId = null, int? anoLetivo = null)
         {
 
             var query = new StringBuilder();
@@ -51,6 +51,9 @@ namespace SME.SR.Data
 
             if (turmaIds != null)
                 query.AppendLine("and t.turma_id = ANY(@turmaIds)");
+
+            if (componentesCurricularresId != null)
+                query.AppendLine("and a.disciplina_id = ANY(@componentesCurricularresId)");
 
             if (anoLetivo != null)
                 query.AppendLine("and t.ano_letivo = @anoLetivo");
