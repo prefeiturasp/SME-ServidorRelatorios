@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B979D93D-EE6D-4AEC-801C-EEC35ACAC757}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.Api", "src\SME.SR.Api\SME.SR.Api.csproj", "{0097692B-0862-4DCD-B685-3E4EFA3E1284}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{15C295B0-58D5-431E-A163-329A016A0CE7}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -37,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.Data", "src\SME.SR.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.Application", "src\SME.SR.Application\SME.SR.Application.csproj", "{EDE9B625-864A-44DC-A876-0478B57B3E78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.SR.HtmlPdf", "src\SME.SR.HtmlPdf\SME.SR.HtmlPdf.csproj", "{9042A364-A11F-48D8-89B9-37206A11C234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.HtmlPdf", "src\SME.SR.HtmlPdf\SME.SR.HtmlPdf.csproj", "{9042A364-A11F-48D8-89B9-37206A11C234}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +43,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0097692B-0862-4DCD-B685-3E4EFA3E1284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0097692B-0862-4DCD-B685-3E4EFA3E1284}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0097692B-0862-4DCD-B685-3E4EFA3E1284}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0097692B-0862-4DCD-B685-3E4EFA3E1284}.Release|Any CPU.Build.0 = Release|Any CPU
 		{907594C1-9BD4-43A1-AC1C-FF10CDB7311E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{907594C1-9BD4-43A1-AC1C-FF10CDB7311E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{907594C1-9BD4-43A1-AC1C-FF10CDB7311E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -82,7 +76,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0097692B-0862-4DCD-B685-3E4EFA3E1284} = {B979D93D-EE6D-4AEC-801C-EEC35ACAC757}
 		{907594C1-9BD4-43A1-AC1C-FF10CDB7311E} = {B979D93D-EE6D-4AEC-801C-EEC35ACAC757}
 		{591DA308-BE92-4E1D-B567-6706C7A98AE0} = {11C09D14-6A02-4561-A09B-4B0506A58630}
 		{D4F70DF3-C067-4D0D-8496-08C60DF66E88} = {11C09D14-6A02-4561-A09B-4B0506A58630}

@@ -21,4 +21,5 @@ RUN dotnet publish "SME.SR.Workers.SGP.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN apt-get update && apt-get install wget libgdiplus -y
 ENTRYPOINT ["dotnet", "SME.SR.Workers.SGP.dll"]
