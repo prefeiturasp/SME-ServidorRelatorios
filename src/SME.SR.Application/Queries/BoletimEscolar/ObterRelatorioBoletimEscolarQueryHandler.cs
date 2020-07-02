@@ -24,7 +24,14 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
-            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo);
+
+            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
+
+            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo);
+
+            string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
+
+            var notasFrequencia = await ObterAlunosPorTurmasRelatorio(codigosTurma, codigosAlunos);
 
             return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
         }
