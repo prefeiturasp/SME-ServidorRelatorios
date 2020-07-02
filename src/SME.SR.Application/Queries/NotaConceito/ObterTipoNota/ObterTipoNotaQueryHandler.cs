@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace SME.SR.Application
         {
             var periodoEscolarUltimoBimestre = await _periodoEscolarRepository.ObterUltimoPeriodoAsync(turma.AnoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre);
             if (periodoEscolarUltimoBimestre == null)
-                throw new Exception("Não foi possível localizar o período escolar do ultimo bimestre da turma");
+                throw new NegocioException("Não foi possível localizar o período escolar do ultimo bimestre da turma");
 
             return periodoEscolarUltimoBimestre;
         }
@@ -50,7 +51,7 @@ namespace SME.SR.Application
 
             var tipoNota = await ObterNotaTipo(turma, dataReferencia);
             if (tipoNota == null)
-                throw new Exception("Não foi possível identificar o tipo de nota da turma");
+                throw new NegocioException("Não foi possível identificar o tipo de nota da turma");
 
             return tipoNota;
         }
@@ -60,7 +61,7 @@ namespace SME.SR.Application
             var cicloId = await _cicloRepository.ObterCicloIdPorAnoModalidade(turma.Ano, turma.ModalidadeCodigo);
 
             if (cicloId == null)
-                throw new Exception("Não foi encontrado o ciclo da turma informada");
+                throw new NegocioException("Não foi encontrado o ciclo da turma informada");
 
             return await _notaTipoRepository.ObterPorCicloIdDataAvalicacao(cicloId, dataReferencia);
         }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Infra;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,14 @@ namespace SME.SR.Application
         }
         public async Task<Ue> Handle(ObterUePorCodigoQuery request, CancellationToken cancellationToken)
         {
-            return await ueRepository.ObterPorCodigo(request.UeCodigo);
+            var ue = await ueRepository.ObterPorCodigo(request.UeCodigo);
+
+            if (ue == null)
+            {
+                throw new NegocioException("Não foi possível localizar a Ue");
+            }
+
+            return ue;
         }
     }
 }
