@@ -48,7 +48,12 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricularRegenciaApiEol>> ListarRegencia()
         {
-            var query = ComponenteCurricularConsultas.ListarRegencia;
+            var query = @"SELECT 
+                            IdComponenteCurricular
+					        ,Turno
+					        ,Ano
+					        ,Idgrupomatriz
+                        FROM RegenciaComponenteCurricular";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
             return await conexao.QueryAsync<ComponenteCurricularRegenciaApiEol>(query);

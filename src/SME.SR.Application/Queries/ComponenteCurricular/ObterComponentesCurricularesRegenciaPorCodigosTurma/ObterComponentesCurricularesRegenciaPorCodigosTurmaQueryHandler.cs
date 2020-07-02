@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -12,13 +13,13 @@ namespace SME.SR.Application
     public class ObterComponentesCurricularesRegenciaPorCodigosTurmaQueryHandler : IRequestHandler<ObterComponentesCurricularesRegenciaPorCodigosTurmaQuery, IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>>>
     {
         private static readonly long[] IDS_COMPONENTES_REGENCIA = { 2, 7, 8, 89, 138 };
-        private IMediator _mediator;
-        private IAtribuicaoCJRepository _atribuicaoCJRepository;
+        private readonly IMediator mediator;
+        private readonly IAtribuicaoCJRepository atribuicaoCJRepository;
 
         public ObterComponentesCurricularesRegenciaPorCodigosTurmaQueryHandler(IMediator mediator, IAtribuicaoCJRepository atribuicaoCJRepository)
         {
-            this._mediator = mediator;
-            this._atribuicaoCJRepository = atribuicaoCJRepository;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.atribuicaoCJRepository = atribuicaoCJRepository ?? throw new ArgumentNullException(nameof(atribuicaoCJRepository)); 
         }
 
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>>> Handle(ObterComponentesCurricularesRegenciaPorCodigosTurmaQuery request, CancellationToken cancellationToken)
@@ -27,7 +28,7 @@ namespace SME.SR.Application
                 return await ObterComponentesCJ(request.Modalidade, request.CodigosTurma, request.CodigoUe, request.CdComponentesCurriculares, request.Usuario.CodigoRf);
             else
             {
-                var componentesCurriculares = await _mediator.Send(new
+                var componentesCurriculares = await mediator.Send(new
                     ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery()
                 {
                     CodigosTurma = request.CodigosTurma,
@@ -43,7 +44,7 @@ namespace SME.SR.Application
         private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>>> ObterComponentesCJ(Modalidade modalidade, string[] codigosTurma, string ueId, long[] codigosComponentesCurriculares, string rf, bool ignorarDeParaRegencia = false)
         {
             IEnumerable<ComponenteCurricularPorTurmaRegencia> componentes = null;
-            var atribuicoes = await _atribuicaoCJRepository.ObterPorFiltros(modalidade,
+            var atribuicoes = await atribuicaoCJRepository.ObterPorFiltros(modalidade,
                 null,
                 ueId,
                 0,
@@ -56,13 +57,13 @@ namespace SME.SR.Application
             if (atribuicoes == null || !atribuicoes.Any())
                 return null;
 
-            var disciplinasEol = await _mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = atribuicoes.Select(a => a.DisciplinaId).Distinct().ToArray() });
+            var disciplinasEol = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = atribuicoes.Select(a => a.DisciplinaId).Distinct().ToArray() });
 
             var componenteRegencia = disciplinasEol?.FirstOrDefault(c => c.Regencia);
             if (componenteRegencia == null || ignorarDeParaRegencia)
                 return MapearComponentesPorAtribuicaoCJ(atribuicoes, disciplinasEol);
 
-            var componentesRegencia = await _mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = IDS_COMPONENTES_REGENCIA });
+            var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = IDS_COMPONENTES_REGENCIA });
             if (componentesRegencia != null)
                 return MapearComponentesPorAtribuicaoCJ(atribuicoes, componentesRegencia);
 

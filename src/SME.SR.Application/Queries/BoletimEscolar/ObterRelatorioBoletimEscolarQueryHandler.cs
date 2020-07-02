@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -10,11 +11,11 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, RelatorioBoletimEscolarDto>
     {
-        private IMediator _mediator;
+        private readonly IMediator mediator;
 
         public ObterRelatorioBoletimEscolarQueryHandler(IMediator mediator)
         {
-            this._mediator = mediator;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); ;
         }
 
         public async Task<RelatorioBoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
@@ -30,7 +31,7 @@ namespace SME.SR.Application
 
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
         {
-            return await _mediator.Send(new ObterDrePorCodigoQuery()
+            return await mediator.Send(new ObterDrePorCodigoQuery()
             {
                 DreCodigo = dreCodigo
             });
@@ -38,7 +39,7 @@ namespace SME.SR.Application
 
         private async Task<Ue> ObterUePorCodigo(string ueCodigo)
         {
-            return await _mediator.Send(new ObterUePorCodigoQuery()
+            return await mediator.Send(new ObterUePorCodigoQuery()
             {
                 UeCodigo = ueCodigo
             });
@@ -46,7 +47,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string turmaCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario)
         {
-            return await _mediator.Send(new ObterTurmasRelatorioBoletimQuery()
+            return await mediator.Send(new ObterTurmasRelatorioBoletimQuery()
             {
                 CodigoTurma = turmaCodigo,
                 CodigoUe = ueCodigo,
@@ -59,7 +60,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<IGrouping<int, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo)
         {
-            return await _mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
+            return await mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
             {
                 CodigosAlunos = alunosCodigo,
                 CodigosTurma = turmasCodigo
@@ -68,7 +69,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade, Usuario usuario)
         {
-            return await _mediator.Send(new ObterComponentesCurricularesTurmasRelatorioBoletimQuery()
+            return await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioBoletimQuery()
             {
                 CodigosTurma = turmaCodigo,
                 CodigoUe = codigoUe,
