@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
-using SME.SR.Application.Queries.Comum.Relatorios;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Repositories.Sgp;
@@ -82,8 +81,6 @@ namespace SME.SR.Workers.SGP
 
             // TODO: Criar arquivo especficio para as inje��es
             RegistrarRepositorios(services);
-            RegistrarQueries(services);
-            RegistrarHandlers(services);
             RegistrarCommands(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
@@ -123,83 +120,6 @@ namespace SME.SR.Workers.SGP
         private void RegistrarCommands(IServiceCollection services)
         {
             services.AddMediatR(typeof(GerarRelatorioAssincronoCommand).GetTypeInfo().Assembly);
-        }
-
-        private void RegistrarQueries(IServiceCollection services)
-        {
-            services.AddMediatR(typeof(AlunoPossuiConselhoClasseCadastradoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterAlunosPorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterAnotacoesAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorIdsQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesRegenciaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterConselhoClassePorFechamentoTurmaIdQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaFinalQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaFinalQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDetalhesRelatorioQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDrePorCodigoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDreUePorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFechamentosPorCodigoTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaGlobalPorAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaPorDisciplinaBimestresQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasAlunoBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasFrequenciaComponenteComNotaFinalQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParametroSistemaPorTipoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParecerConclusivoPorAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRelatorioBoletimEscolarQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTipoNotaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmasPorAbrangenciaFiltroQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmasRelatorioBoletimQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterUePorCodigoQuery).GetTypeInfo().Assembly);
-        }
-		
-        private void RegistrarHandlers(IServiceCollection services)
-        {
-            services.AddMediatR(typeof(AlunoPossuiConselhoClasseCadastradoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterAlunosPorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterAnotacoesAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorIdsQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesRegenciaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterConselhoClassePorFechamentoTurmaIdQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaFinalQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaFinalQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDetalhesRelatorioQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDrePorCodigoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDreUePorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFechamentosPorCodigoTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaGlobalPorAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaPorDisciplinaBimestresQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasAlunoBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasFrequenciaComponenteComNotaFinalQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParecerConclusivoPorAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRelatorioBoletimEscolarQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTipoNotaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmasPorAbrangenciaFiltroQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterTurmasRelatorioBoletimQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterUePorCodigoQueryHandler).GetTypeInfo().Assembly);
-
         }
 		
         private void RegistrarUseCase(IServiceCollection services)

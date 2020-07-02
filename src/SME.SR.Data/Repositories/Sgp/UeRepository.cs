@@ -17,7 +17,7 @@ namespace SME.SR.Data
 
         public async Task<Ue> ObterPorCodigo(string UeCodigo)
         {
-            var query = UeConsultas.ObterPorCodigo;
+            var query = @"select Id, ue_id Codigo, Nome, tipo_escola TipoEscola from ue where ue_id = @ueCodigo";
             var parametros = new { UeCodigo };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))

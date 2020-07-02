@@ -244,7 +244,6 @@ namespace SME.SR.Data
 			from  turma t
 			inner join ue on ue.id = t.ue_id 
 			inner join dre on ue.dre_id = dre.id 
-			from  turma t
 			where t.turma_id = @codigoTurma";
 
 

@@ -8,6 +8,7 @@ namespace SME.SR.Data
 {
     public class Aluno
     {
+        public int CodigoTurma { get; set; }
         public int CodigoAluno { get; set; }
         public string NomeAluno { get; set; }
         public string NomeSocialAluno { get; set; }
