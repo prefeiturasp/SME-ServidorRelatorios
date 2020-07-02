@@ -220,7 +220,7 @@ namespace SME.SR.Workers.SGP
             {
                 endpoints.MapControllers();
             });
-
+            app.UsePathBase("/worker-relatorios");
         }
     }
 }
