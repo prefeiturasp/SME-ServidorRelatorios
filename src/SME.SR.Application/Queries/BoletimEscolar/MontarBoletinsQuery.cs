@@ -18,6 +18,8 @@ namespace SME.SR.Application
 
         public IEnumerable<IGrouping<string, Aluno>> AlunosPorTuma { get; set; }
 
-        public IEnumerable<IGrouping<string, NotasFrequenciaAlunoBimestre>> NotasFrequencia { get; set; }
+        public IEnumerable<IGrouping<string, NotasAlunoBimestre>> Notas { get; set; }
+
+        public IEnumerable<IGrouping<string, FrequenciaAluno>> Frequencias { get; set; }
     }
 }

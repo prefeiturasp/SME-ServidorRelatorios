@@ -2,7 +2,6 @@
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -19,7 +18,8 @@ namespace SME.SR.Application
             var ue = request.Ue;
             var alunos = request.AlunosPorTuma;
             var componentesCurriculares = request.ComponentesCurricularesPorTurma;
-            var notasFrequencia = request.NotasFrequencia;
+            var notas = request.Notas;
+            var frequencia = request.Frequencias;
 
             var boletinsAlunos = new List<BoletimEscolarAlunoDto>();
 
@@ -33,9 +33,13 @@ namespace SME.SR.Application
 
                 foreach (var aluno in alunos.FirstOrDefault(a => a.Key == turma.Codigo))
                 {
-                    var notasAluno = notasFrequencia.FirstOrDefault(nf => nf.Key == turma.Codigo).Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
+                    boletimEscolarAlunoDto.Cabecalho.CodigoEol = aluno.CodigoAluno.ToString();
+                    boletimEscolarAlunoDto.Cabecalho.Aluno = aluno.NomeRelatorio;
 
-                    SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno);
+                    var notasAluno = notas.FirstOrDefault(nf => nf.Key == turma.Codigo).Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
+                    var frequenciasAluno = frequencia.FirstOrDefault(nf => nf.Key == turma.Codigo).Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
+
+                    SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno);
 
                     boletinsAlunos.Add(boletimEscolarAlunoDto);
                 }
@@ -51,7 +55,8 @@ namespace SME.SR.Application
             {
                 Data = DateTime.Now.ToString("dd/MM/yyyy"),
                 NomeDre = dre.Abreviacao,
-                NomeUe = ue.NomeRelatorio
+                NomeUe = ue.NomeRelatorio,
+                NomeTurma = turma.NomeRelatorio
             };
         }
 
@@ -107,27 +112,30 @@ namespace SME.SR.Application
             return gruposRetorno;
         }
 
-        private void SetarNotasFrequencia(List<GrupoMatrizComponenteCurricularDto> gruposMatriz, IEnumerable<NotasFrequenciaAlunoBimestre> notasFrequencia)
+        private void SetarNotasFrequencia(List<GrupoMatrizComponenteCurricularDto> gruposMatriz, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia)
         {
             foreach (var grupoMatriz in gruposMatriz)
             {
-                if(grupoMatriz.ComponenteCurricularRegencia != null)
+                if (grupoMatriz.ComponenteCurricularRegencia != null)
                 {
-                    var notaFrequenciaRegencia = notasFrequencia.Where(nf => nf.CodigoComponenteCurricular == grupoMatriz.ComponenteCurricularRegencia.Codigo);
+                    var notasRegencia = notas.Where(n => n.CodigoComponenteCurricular == grupoMatriz.ComponenteCurricularRegencia.Codigo);
+                    var frequenciasRegencia = frequencia.Where(f => f.DisciplinaId == grupoMatriz.ComponenteCurricularRegencia.Codigo);
 
-                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre1 = notaFrequenciaRegencia.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 1)?.FrequenciaAluno.PercentualFrequencia;
-                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre2 = notaFrequenciaRegencia.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 2)?.FrequenciaAluno.PercentualFrequencia;
-                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre3 = notaFrequenciaRegencia.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 3)?.FrequenciaAluno.PercentualFrequencia;
-                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre4 = notaFrequenciaRegencia.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 4)?.FrequenciaAluno.PercentualFrequencia;
+                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre1 = frequenciasRegencia.FirstOrDefault(f => f.Bimestre == 1)?.PercentualFrequencia.ToString() ?? "100";
+                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre2 = frequenciasRegencia.FirstOrDefault(f => f.Bimestre == 2)?.PercentualFrequencia.ToString() ?? "100";
+                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre3 = frequenciasRegencia.FirstOrDefault(f => f.Bimestre == 3)?.PercentualFrequencia.ToString() ?? "100";
+                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre4 = frequenciasRegencia.FirstOrDefault(f => f.Bimestre == 4)?.PercentualFrequencia.ToString() ?? "100";
 
                     foreach (var componenteCurricular in grupoMatriz.ComponenteCurricularRegencia.ComponentesCurriculares)
                     {
-                        var notaFrequenciaComponente = notasFrequencia.Where(nf => nf.CodigoComponenteCurricular == componenteCurricular.Codigo);
+                        var notaFrequenciaComponente = notasRegencia.Where(nf => nf.CodigoComponenteCurricular == componenteCurricular.Codigo);
 
                         componenteCurricular.NotaBimestre1 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 1)?.NotaConceito.NotaConceito;
                         componenteCurricular.NotaBimestre2 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 2)?.NotaConceito.NotaConceito;
                         componenteCurricular.NotaBimestre3 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 3)?.NotaConceito.NotaConceito;
                         componenteCurricular.NotaBimestre4 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 4)?.NotaConceito.NotaConceito;
+
+                        componenteCurricular.NotaFinal = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito.NotaConceito;
                     }
                 }
 
@@ -135,17 +143,22 @@ namespace SME.SR.Application
                 {
                     foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                     {
-                        var notaFrequenciaComponente = notasFrequencia.Where(nf => nf.CodigoComponenteCurricular == componenteCurricular.Codigo);
+                        var notasComponente = notas.Where(n => n.CodigoComponenteCurricular == grupoMatriz.ComponenteCurricularRegencia.Codigo);
+                        var frequenciasComponente = frequencia.Where(f => f.DisciplinaId == grupoMatriz.ComponenteCurricularRegencia.Codigo);
 
-                        componenteCurricular.NotaBimestre1 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 1)?.NotaConceito.NotaConceito;
-                        componenteCurricular.NotaBimestre2 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 2)?.NotaConceito.NotaConceito;
-                        componenteCurricular.NotaBimestre3 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 3)?.NotaConceito.NotaConceito;
-                        componenteCurricular.NotaBimestre4 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 4)?.NotaConceito.NotaConceito;
+                        componenteCurricular.NotaBimestre1 = notasComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 1)?.NotaConceito.NotaConceito;
+                        componenteCurricular.NotaBimestre2 = notasComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 2)?.NotaConceito.NotaConceito;
+                        componenteCurricular.NotaBimestre3 = notasComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 3)?.NotaConceito.NotaConceito;
+                        componenteCurricular.NotaBimestre4 = notasComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 4)?.NotaConceito.NotaConceito;
 
-                        componenteCurricular.FrequenciaBimestre1 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 1)?.FrequenciaAluno.PercentualFrequencia;
-                        componenteCurricular.FrequenciaBimestre2 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 2)?.FrequenciaAluno.PercentualFrequencia;
-                        componenteCurricular.FrequenciaBimestre3 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 3)?.FrequenciaAluno.PercentualFrequencia;
-                        componenteCurricular.FrequenciaBimestre4 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 4)?.FrequenciaAluno.PercentualFrequencia;
+                        componenteCurricular.NotaFinal = notasComponente.FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito.NotaConceito;
+
+                        componenteCurricular.FrequenciaBimestre1 = frequenciasComponente.FirstOrDefault(nf => nf.Bimestre == 1)?.PercentualFrequencia.ToString() ?? "100";
+                        componenteCurricular.FrequenciaBimestre2 = frequenciasComponente.FirstOrDefault(nf => nf.Bimestre == 2)?.PercentualFrequencia.ToString() ?? "100";
+                        componenteCurricular.FrequenciaBimestre3 = frequenciasComponente.FirstOrDefault(nf => nf.Bimestre == 3)?.PercentualFrequencia.ToString() ?? "100";
+                        componenteCurricular.FrequenciaBimestre4 = frequenciasComponente.FirstOrDefault(nf => nf.Bimestre == 4)?.PercentualFrequencia.ToString() ?? "100";
+
+                        componenteCurricular.FrequenciaFinal = frequenciasComponente.FirstOrDefault(nf => nf.PeriodoEscolarId == null)?.PercentualFrequencia.ToString() ?? "100";
                     }
                 }
 

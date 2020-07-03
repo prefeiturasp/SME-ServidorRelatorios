@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Data
 {
-    public class NotasFrequenciaAlunoBimestreRepository : INotasFrequenciaAlunoBimestreRepository
+    public class NotaConceitoRepository : INotaConceitoRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        public NotasFrequenciaAlunoBimestreRepository(VariaveisAmbiente variaveisAmbiente)
+        public NotaConceitoRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<NotasFrequenciaAlunoBimestre>> ObterNotasFrequenciaAlunosBimestre(string[] codigosTurma, string[] codigosAluno)
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosTurma, string[] codigosAluno)
         {
 
             var query = @"select distinct * from (
@@ -24,9 +24,7 @@ namespace SME.SR.Data
                                fn.disciplina_id CodigoComponenteCurricular,
                                pe.bimestre, pe.periodo_inicio PeriodoInicio,
                                pe.periodo_fim PeriodoFim, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
-                               coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota, 
-                               fqa.total_aulas TotalAulas, fqa.total_ausencias TotalAusencias, 
-                               fqa.total_compensacoes TotalCompensacoes
+                               coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
                          inner join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
                          inner join turma t on t.id = ft.turma_id 
@@ -40,11 +38,6 @@ namespace SME.SR.Data
                           left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvc on ccn.conceito_id = cvc.id
-                          left join frequencia_aluno fqa on ft.turma_id::varchar = fqa.turma_id and
-				                                       fa.aluno_codigo = fqa.codigo_aluno and 
-					                                   ft.periodo_escolar_id = fqa.periodo_escolar_id and 
-					                                   ftd.disciplina_id::varchar = fqa.disciplina_id and 
-					                                   fqa.tipo = 1
                          where t.turma_id = ANY(@codigosTurma)
                            and fa.aluno_codigo = ANY(@codigosAluno)
                         union all 
@@ -52,9 +45,7 @@ namespace SME.SR.Data
                                fn.disciplina_id CodigoComponenteCurricular,
                                pe.bimestre, pe.periodo_inicio PeriodoInicio,
                                pe.periodo_fim PeriodoFim, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
-                               coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota, 
-                               fqa.total_aulas TotalAulas, fqa.total_ausencias TotalAusencias, 
-                               fqa.total_compensacoes TotalCompensacoes
+                               coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
                           inner join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
                          inner join turma t on t.id = ft.turma_id 
@@ -68,11 +59,6 @@ namespace SME.SR.Data
                           left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
-                          left join frequencia_aluno fqa on ft.turma_id::varchar = fqa.turma_id and
-				                                       cca.aluno_codigo = fqa.codigo_aluno and 
-					                                   ft.periodo_escolar_id = fqa.periodo_escolar_id and 
-					                                   ccn.componente_curricular_codigo::varchar = fqa.disciplina_id and 
-					                                   fqa.tipo = 1
                          where t.turma_id = ANY(@codigosTurma)
                            and cca.aluno_codigo = ANY(@codigosAluno)
                         ) x ";
@@ -85,14 +71,12 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<NotasFrequenciaAlunoBimestre, PeriodoEscolar,
-                                                NotaConceitoBimestreComponente, FrequenciaAluno,
-                                                NotasFrequenciaAlunoBimestre>(query
-                    , (notasFrequenciaAlunoBimestre, periodoEscolar, notaConceito, frequencia) =>
+                return await conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
+                                                NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
+                    , (notasFrequenciaAlunoBimestre, periodoEscolar, notaConceito) =>
                     {
                         notasFrequenciaAlunoBimestre.PeriodoEscolar = periodoEscolar;
                         notasFrequenciaAlunoBimestre.NotaConceito = notaConceito;
-                        notasFrequenciaAlunoBimestre.FrequenciaAluno = frequencia;
 
                         return notasFrequenciaAlunoBimestre;
                     }

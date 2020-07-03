@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace SME.SR.Application
 {
-    public class ObterNotasFrequenciaRelatorioBoletimQuery : IRequest<IEnumerable<IGrouping<string, NotasFrequenciaAlunoBimestre>>>
+   public class ObterFrequenciasRelatorioBoletimQuery : IRequest<IEnumerable<IGrouping<string, FrequenciaAluno>>>
     {
         public string[] CodigosTurma { get; set; }
-        public string[] CodigosAlunos { get; set; }
+        public string[] CodigosAluno { get; set; }
+
     }
 }

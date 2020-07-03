@@ -12,6 +12,12 @@ namespace SME.SR.Data
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
+        private readonly string CamposFrequencia = @"codigo_aluno CodigoAluno, 
+                            tipo, disciplina_id DisciplinaId, periodo_inicio PeriodoInicio, 
+                            periodo_fim PeriodoFim, bimestre, total_aulas TotalAulas, 
+                            total_ausencias TotalAusencias, total_compensacoes TotalCompensacoes, 
+                            turma_id TurmaId, periodo_escolar_id PeriodoEscolarId";
+
         public FrequenciaAlunoRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
@@ -79,6 +85,20 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query, new { turmaCodigo, tipoCalendarioId });
+            }
+        }
+
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosTurma, string[] codigosAluno)
+        {
+            var query = @$"select {CamposFrequencia} from frequencia_aluno fa 
+                            where fa.codigo_aluno = @codigoAluno
+                            and fa.turma_id = @codigoTurma and fa.tipo = 1";
+
+            var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAluno>(query, parametros);
             }
         }
     }
