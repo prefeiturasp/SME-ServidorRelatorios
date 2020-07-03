@@ -35,11 +35,10 @@ namespace SME.SR.Application
                 {
                     var notasAluno = notasFrequencia.FirstOrDefault(nf => nf.Key == turma.Codigo).Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
 
-
+                    SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno);
 
                     boletinsAlunos.Add(boletimEscolarAlunoDto);
                 }
-
             }
 
             return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos));
