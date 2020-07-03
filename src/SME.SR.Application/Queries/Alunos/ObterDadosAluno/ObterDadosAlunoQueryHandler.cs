@@ -1,9 +1,7 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
-using System.Net.Http;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,16 +9,16 @@ namespace SME.SR.Application
 {
     public class ObterDadosAlunoQueryHandler : IRequestHandler<ObterDadosAlunoQuery, Aluno>
     {
-        private IAlunoRepository _alunoRepository;
+        private readonly IAlunoRepository alunoRepository;
 
-        public ObterDadosAlunoQueryHandler(IAlunoRepository turmaEolRepository)
+        public ObterDadosAlunoQueryHandler(IAlunoRepository alunoRepository)
         {
-            this._alunoRepository = turmaEolRepository;
+            this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
         }
 
         public async Task<Aluno> Handle(ObterDadosAlunoQuery request, CancellationToken cancellationToken)
         {           
-            return await _alunoRepository.ObterDados(request.CodigoTurma, request.CodigoAluno);
+            return await alunoRepository.ObterDados(request.CodigoTurma, request.CodigoAluno);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,16 +9,16 @@ namespace SME.SR.Application
 {
     public class ObterDreUePorTurmaQueryHandler : IRequestHandler<ObterDreUePorTurmaQuery, DreUe>
     {
-        private ITurmaRepository _turmaSgpRepository;
+        private readonly ITurmaRepository turmaSgpRepository;
 
         public ObterDreUePorTurmaQueryHandler(ITurmaRepository turmaSgpRepository)
         {
-            this._turmaSgpRepository = turmaSgpRepository;
+            this.turmaSgpRepository = turmaSgpRepository ?? throw new ArgumentNullException(nameof(turmaSgpRepository));
         }
 
         public async Task<DreUe> Handle(ObterDreUePorTurmaQuery request, CancellationToken cancellationToken)
         {
-            return await _turmaSgpRepository.ObterDreUe(request.CodigoTurma);
+            return await turmaSgpRepository.ObterDreUe(request.CodigoTurma);
         }
     }
 }

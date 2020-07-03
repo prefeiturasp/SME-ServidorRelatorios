@@ -4,6 +4,7 @@ namespace SME.SR.Data
 {
     public class ComponenteCurricularTerritorioSaber
     {
+        public string CodigoTurma { get; set; }
         public long CodigoExperienciaPedagogica { get; set; }
         public long CodigoTerritorioSaber { get; set; }
         public string DescricaoTerritorioSaber { get; set; }
