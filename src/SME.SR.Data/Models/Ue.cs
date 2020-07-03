@@ -1,4 +1,6 @@
 ﻿using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
+using System.ComponentModel.DataAnnotations;
 
 namespace SME.SR.Data
 {
@@ -8,5 +10,8 @@ namespace SME.SR.Data
         public string Codigo { get; set; }
         public string Nome { get; set; }
         public TipoEscola TipoEscola { get; set; }
+
+        public string NomeRelatorio =>
+            $"{Codigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
     }
 }

@@ -34,7 +34,9 @@ namespace SME.SR.Application
 
             var notasFrequencia = await ObterNotasFrequenciaAlunos(codigosTurma, codigosAlunos);
 
-            return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
+            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notasFrequencia);
+
+            return new RelatorioBoletimEscolarDto(boletins);
         }
 
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
@@ -66,7 +68,7 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<int, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo)
+        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo)
         {
             return await mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
             {
@@ -75,7 +77,7 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade, Usuario usuario)
+        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade, Usuario usuario)
         {
             return await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioBoletimQuery()
             {
@@ -86,12 +88,26 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<NotasFrequenciaAlunoBimestre>> ObterNotasFrequenciaAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        private async Task<IEnumerable<IGrouping<string, NotasFrequenciaAlunoBimestre>>> ObterNotasFrequenciaAlunos(string[] turmasCodigo, string[] alunosCodigo)
         {
             return await mediator.Send(new ObterNotasFrequenciaRelatorioBoletimQuery()
             {
                 CodigosAlunos = alunosCodigo,
                 CodigosTurma = turmasCodigo
+            });
+        }
+
+        private async Task<BoletimEscolarDto> MontarBoletins(Dre dre, Ue ue, IEnumerable<Turma> turmas, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesPorTurma,
+                                                             IEnumerable<IGrouping<string, Aluno>> alunosPorTurma, IEnumerable<IGrouping<string, NotasFrequenciaAlunoBimestre>> notasFrequenciaAlunos)
+        {
+            return await mediator.Send(new MontarBoletinsQuery()
+            {
+                Dre = dre,
+                Ue = ue,
+                Turmas = turmas,
+                ComponentesCurricularesPorTurma = componentesCurricularesPorTurma,
+                AlunosPorTuma = alunosPorTurma,
+                NotasFrequencia = notasFrequenciaAlunos
             });
         }
     }

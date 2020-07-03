@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SME.SR.Application
 {
-    public class ObterAlunosTurmasRelatorioBoletimQuery : IRequest<IEnumerable<IGrouping<int, Aluno>>>
+    public class ObterAlunosTurmasRelatorioBoletimQuery : IRequest<IEnumerable<IGrouping<string, Aluno>>>
     {
         public string[] CodigosTurma { get; set; }
 
