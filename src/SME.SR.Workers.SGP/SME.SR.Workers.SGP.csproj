@@ -22,6 +22,10 @@
     <PackageReference Include="MediatR.Extensions" Version="0.6.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjectionFixed" Version="5.1.2" />
     <PackageReference Include="Sentry" Version="2.1.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.5.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.5.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.5.1" />
+    <PackageReference Include="Swashbuckle.Core" Version="5.6.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
   </ItemGroup>
 
@@ -29,6 +33,12 @@
     <ProjectReference Include="..\SME.SR.Application\SME.SR.Application.csproj" />
     <ProjectReference Include="..\SME.SR.Data\SME.SR.Data.csproj" />
     <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\templates\relatorioAtasComColunaFinal.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 

@@ -1,9 +1,9 @@
 ﻿using DinkToPdf;
 using DinkToPdf.Contracts;
+using Sentry;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace SME.SR.HtmlPdf
 {
@@ -41,7 +41,8 @@ namespace SME.SR.HtmlPdf
 
                 if (!string.IsNullOrWhiteSpace(caminhoBase))
                 {
-                    doc.GlobalSettings.Out = Path.Combine($"{caminhoBase}Relatorios", nomeArquivo);
+                    SentrySdk.AddBreadcrumb($"Caminho arquivo de relatório: {Path.Combine(caminhoBase, $"relatorios", nomeArquivo)}");
+                    doc.GlobalSettings.Out = Path.Combine(caminhoBase, $"relatorios", nomeArquivo);
                 }
                 else
                 {

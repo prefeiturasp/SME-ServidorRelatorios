@@ -5,6 +5,7 @@ using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,6 +41,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
             var directory = AppDomain.CurrentDomain.BaseDirectory;
+            SentrySdk.AddBreadcrumb($"Gerando PDF", $"Caminho geração : {directory}");
 
             pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());
 
@@ -52,7 +54,16 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         private string GerarHtmlRazor<T>(T model, string nomeDoArquivoDoTemplate)
         {
-            string templateBruto = System.IO.File.ReadAllText(nomeDoArquivoDoTemplate);
+            //TODO TRATRAR EM AMBIENTE DE DESENVOLVIMENTO PARA REMOVER SME.SR.Workers.SGP
+            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+            var nomeArquivo = $"wwwroot/templates/{nomeDoArquivoDoTemplate}";
+            var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
+            
+            SentrySdk.AddBreadcrumb($"Caminho arquivo cshtml: {caminhoArquivo}");
+            
+            string templateBruto = File.ReadAllText(caminhoArquivo);
+            
+            SentrySdk.AddBreadcrumb($"Leu arquivo de template.");
 
             RazorProcessor processor = new RazorProcessor();
 
