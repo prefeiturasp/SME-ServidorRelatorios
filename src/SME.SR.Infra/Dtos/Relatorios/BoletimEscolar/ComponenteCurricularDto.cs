@@ -8,6 +8,9 @@ namespace SME.SR.Infra
 {
     public class ComponenteCurricularDto
     {
+        [JsonIgnore]
+        public string Codigo { get; set; }
+
         [JsonProperty("nome")]
         public string Nome { get; set; }
 
