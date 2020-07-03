@@ -91,8 +91,8 @@ namespace SME.SR.Data
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosTurma, string[] codigosAluno)
         {
             var query = @$"select {CamposFrequencia} from frequencia_aluno fa 
-                            where fa.codigo_aluno = @codigoAluno
-                            and fa.turma_id = @codigoTurma and fa.tipo = 1";
+                            where fa.codigo_aluno = ANY(@codigosAluno)
+                            and fa.turma_id = ANY(@codigosTurma) and fa.tipo = 1";
 
             var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
 

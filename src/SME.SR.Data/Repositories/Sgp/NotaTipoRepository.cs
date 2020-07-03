@@ -31,7 +31,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
         public async Task<IEnumerable<TipoNotaCicloAno>> ObterPorCiclosIdDataAvalicacao(long[] ciclosId, DateTime dataReferencia)
         {
-            var query = @"select nccp.ciclo, ntv.descricao from notas_tipo_valor ntv
+            var query = @"select nccp.ciclo, ntv.descricao TipoNota from notas_tipo_valor ntv
                         inner join notas_conceitos_ciclos_parametos nccp
                         on nccp.tipo_nota = ntv.id
                         where nccp.ciclo = ANY(@ciclosId) and @dataReferencia >= nccp.inicio_vigencia

@@ -37,7 +37,7 @@ namespace SME.SR.Application
                     Usuario = request.Usuario
                 });
 
-                return Enumerable.DefaultIfEmpty(componentesCurriculares.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma));
+                return componentesCurriculares.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma);
             }
         }
 
@@ -67,7 +67,7 @@ namespace SME.SR.Application
             if (componentesRegencia != null)
                 return MapearComponentesPorAtribuicaoCJ(atribuicoes, componentesRegencia);
 
-            return Enumerable.DefaultIfEmpty(componentes.GroupBy(c => c.CodigoTurma));
+            return componentes.GroupBy(c => c.CodigoTurma);
         }
 
         private IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>> MapearComponentesPorAtribuicaoCJ(IEnumerable<AtribuicaoCJ> atribuicoesCJ, IEnumerable<ComponenteCurricularPorTurma> componentesEol)
@@ -96,7 +96,7 @@ namespace SME.SR.Application
                 }));
             }
 
-            return Enumerable.DefaultIfEmpty(componentesPorAtribuicaoCJ.GroupBy(c => c.CodigoTurma));
+            return componentesPorAtribuicaoCJ.GroupBy(c => c.CodigoTurma);
         }
     }
 }

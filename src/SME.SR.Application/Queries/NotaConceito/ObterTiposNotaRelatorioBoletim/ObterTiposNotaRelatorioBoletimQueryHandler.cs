@@ -62,7 +62,7 @@ namespace SME.SR.Application
 
         private async Task<IDictionary<string, string>> ObterNotasTipo(IEnumerable<Turma> turmas, Modalidade modalidade, DateTime dataReferencia)
         {
-            var anos = turmas.Select(t => t.Ano).Distinct();
+            var anos = turmas.Select(t => t.Ano.ToString()).Distinct();
 
             var tipoCiclos = await cicloRepository.ObterCiclosIdPorAnosModalidade(anos.ToArray(), modalidade);
 

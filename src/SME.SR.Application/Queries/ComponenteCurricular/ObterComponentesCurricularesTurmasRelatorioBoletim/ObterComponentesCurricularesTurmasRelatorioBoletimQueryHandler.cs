@@ -40,9 +40,10 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                     Disciplina = c.DescricaoFormatada,
                     GrupoMatriz = c.ObterGrupoMatriz(componentesApiEol, gruposMatriz),
                     LancaNota = c.PodeLancarNota(componentesApiEol),
+                    Frequencia = c.ControlaFrequencia(componentesApiEol),
                     Regencia = c.EhRegencia(componentesApiEol),
                     TerritorioSaber = c.TerritorioSaber,
-                    TipoEscola = c.TipoEscola
+                    TipoEscola = c.TipoEscola,
                 });
 
                 if (componentesMapeados.Any(c => c.Regencia))

@@ -26,7 +26,7 @@ namespace SME.SR.Data
                                pe.periodo_fim PeriodoFim, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
                                coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
-                         inner join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
+                         left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
                          inner join turma t on t.id = ft.turma_id 
                          inner join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
                          inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
@@ -47,7 +47,7 @@ namespace SME.SR.Data
                                pe.periodo_fim PeriodoFim, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
                                coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
-                          inner join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
+                          left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
                          inner join turma t on t.id = ft.turma_id 
                          inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
                          inner join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id
@@ -80,7 +80,7 @@ namespace SME.SR.Data
 
                         return notasFrequenciaAlunoBimestre;
                     }
-                    , parametros, splitOn: "CodigoTurma,Bimestre,ConceitoId, TotalAulas");
+                    , parametros, splitOn: "CodigoTurma,Bimestre,ConceitoId");
             }
         }
     }

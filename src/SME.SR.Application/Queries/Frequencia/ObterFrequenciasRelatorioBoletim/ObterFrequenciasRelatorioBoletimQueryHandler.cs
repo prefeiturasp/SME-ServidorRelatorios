@@ -22,7 +22,7 @@ namespace SME.SR.Application
         {
             var frequencias = await frequenciaRepository.ObterFrequenciasPorTurmasAlunos(request.CodigosTurma, request.CodigosAluno);
 
-            return Enumerable.DefaultIfEmpty(frequencias.GroupBy(f => f.TurmaId));
+            return frequencias.GroupBy(f => f.TurmaId);
         }
     }
 }

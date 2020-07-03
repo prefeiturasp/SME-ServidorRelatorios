@@ -15,6 +15,9 @@ namespace SME.SR.Infra
         [JsonIgnore]
         public string Codigo { get; set; }
 
+        [JsonIgnore]
+        public bool Frequencia { get; set; }
+
         [JsonProperty("frequenciaBimestre1")]
         public string FrequenciaBimestre1 { get; set; }
 
