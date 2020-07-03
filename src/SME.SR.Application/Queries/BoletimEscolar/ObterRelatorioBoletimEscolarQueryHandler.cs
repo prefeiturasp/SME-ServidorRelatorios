@@ -31,7 +31,7 @@ namespace SME.SR.Application
 
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
 
-            var notasFrequencia = await ObterAlunosPorTurmasRelatorio(codigosTurma, codigosAlunos);
+            var notasFrequencia = await ObterNotasFrequenciaAlunos(codigosTurma, codigosAlunos);
 
             return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
         }
@@ -68,6 +68,15 @@ namespace SME.SR.Application
         private async Task<IEnumerable<IGrouping<int, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo)
         {
             return await _mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
+            {
+                CodigosAlunos = alunosCodigo,
+                CodigosTurma = turmasCodigo
+            });
+        }
+
+        private async Task<IEnumerable<NotasFrequenciaAlunoBimestre>> ObterNotasFrequenciaAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        {
+            return await _mediator.Send(new ObterNotasFrequenciaRelatorioBoletimQuery()
             {
                 CodigosAlunos = alunosCodigo,
                 CodigosTurma = turmasCodigo
