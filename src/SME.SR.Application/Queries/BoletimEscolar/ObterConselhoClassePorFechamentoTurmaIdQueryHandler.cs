@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data.Interfaces;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace SME.SR.Application
 
         public ObterConselhoClassePorFechamentoTurmaIdQueryHandler(IConselhoClasseRepository conselhoClasseRepository)
         {
-            this.conselhoClasseRepository = conselhoClasseRepository ?? throw new ArgumentNullException(nameof(turmaRepository));
+            this.conselhoClasseRepository = conselhoClasseRepository ?? throw new ArgumentNullException(nameof(conselhoClasseRepository));
         }
 
         public async Task<long> Handle(ObterConselhoClassePorFechamentoTurmaIdQuery request, CancellationToken cancellationToken)
