@@ -135,7 +135,7 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
-		}
+        }
 		
         private void RegistrarHandlers(IServiceCollection services)
         {
@@ -158,9 +158,7 @@ namespace SME.SR.Workers.SGP
             services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
-
-
-		}
+        }
 		
         private void RegistrarUseCase(IServiceCollection services)
         {
