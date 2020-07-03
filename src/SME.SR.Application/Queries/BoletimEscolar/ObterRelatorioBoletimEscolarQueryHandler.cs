@@ -88,7 +88,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<NotasFrequenciaAlunoBimestre>> ObterNotasFrequenciaAlunos(string[] turmasCodigo, string[] alunosCodigo)
         {
-            return await _mediator.Send(new ObterNotasFrequenciaRelatorioBoletimQuery()
+            return await mediator.Send(new ObterNotasFrequenciaRelatorioBoletimQuery()
             {
                 CodigosAlunos = alunosCodigo,
                 CodigosTurma = turmasCodigo
