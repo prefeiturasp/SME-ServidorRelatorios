@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
-namespace SME.SR.Infra.Dtos.Relatorios.HistoricoEscolar
+namespace SME.SR.Infra
 {
     public class AreaDeConhecimentoDto
     {
-        
-        public string nome { get; set; }
-        public List<ComponenteCurricularDto> componentesCurriculares { get; set; }
+        [JsonProperty("nome")]
+        public string Nome { get; set; }
 
+        [JsonProperty("componentesCurriculares")]
+        public List<ComponenteCurricularDto> ComponentesCurriculares { get; set; }
     }
-
 }

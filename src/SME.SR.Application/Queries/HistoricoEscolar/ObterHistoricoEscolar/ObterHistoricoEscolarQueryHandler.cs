@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.SR.Infra.Dtos.Relatorios.HistoricoEscolar;
+using SME.SR.Infra;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

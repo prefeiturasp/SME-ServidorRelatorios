@@ -1,27 +1,27 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace SME.SR.Infra.Dtos.Relatorios.HistoricoEscolar
+namespace SME.SR.Infra
 {
     public class HistoricoEscolarDTO
     {
         [JsonProperty("nomeDre")]
-        public string nomeDre { get; set; }
+        public string NomeDre { get; set; }
         [JsonProperty("cabecalho")]
-        public CabecalhoDto cabecalho { get; set; }
+        public CabecalhoDto Cabecalho { get; set; }
         [JsonProperty("informacoesAluno")]
-        public InformacoesAlunoDto informacoesAluno { get; set; }
+        public InformacoesAlunoDto InformacoesAluno { get; set; }
         [JsonProperty("ciclos")]
-        public List<CicloDto> ciclos { get; set; }
+        public List<CicloDto> Ciclos { get; set; }
         [JsonProperty("gruposComponentesCurriculares")]
-        public List<GruposComponentesCurricularesDto> gruposComponentesCurriculares { get; set; }
+        public List<GruposComponentesCurricularesDto> GruposComponentesCurriculares { get; set; }
         [JsonProperty("ensinoReligioso")]
-        public EnsinoReligiosoDto ensinoReligioso { get; set; }
+        public EnsinoReligiosoDto EnsinoReligioso { get; set; }
         [JsonProperty("enriquecimentoCurricular")]
-        public List<EnriquecimentoCurricularDto> enriquecimentoCurricular { get; set; }
+        public List<EnriquecimentoCurricularDto> EnriquecimentoCurricular { get; set; }
         [JsonProperty("parecerConclusivo")]
-        public List<ParecerConclusivoDto> parecerConclusivo { get; set; }
+        public List<ParecerConclusivoDto> ParecerConclusivo { get; set; }
         [JsonProperty("legenda")]
-        public LegendaDto legenda { get; set; }
+        public LegendaDto Legenda { get; set; }
     }
 }

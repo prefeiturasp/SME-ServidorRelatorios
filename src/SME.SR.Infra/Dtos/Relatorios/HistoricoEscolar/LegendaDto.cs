@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace SME.SR.Infra.Dtos.Relatorios.HistoricoEscolar
+namespace SME.SR.Infra
 {
-        public class LegendaDto
-        {
+    public class LegendaDto
+    {
         [JsonProperty("texto")]
-        public string texto { get; set; }
+        public string Texto { get; set; }
 
-        }
+    }
 }
