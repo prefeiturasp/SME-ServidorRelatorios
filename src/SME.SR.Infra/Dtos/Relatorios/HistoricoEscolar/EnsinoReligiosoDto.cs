@@ -1,27 +1,26 @@
 ﻿using Newtonsoft.Json;
 
-namespace SME.SR.Infra.Dtos.Relatorios.HistoricoEscolar
+namespace SME.SR.Infra
 {
     public class EnsinoReligiosoDto
     {
         [JsonProperty("notaConceitoPrimeiroAno")]
-        public string notaConceitoPrimeiroAno { get; set; }
+        public string NotaConceitoPrimeiroAno { get; set; }
         [JsonProperty("notaConceitoSegundoAno")]
-        public string notaConceitoSegundoAno { get; set; }
+        public string NotaConceitoSegundoAno { get; set; }
         [JsonProperty("notaConceitoTerceiroAno")]
-        public object notaConceitoTerceiroAno { get; set; }
+        public object NotaConceitoTerceiroAno { get; set; }
         [JsonProperty("notaConceitoQuartoAno")]
-        public string notaConceitoQuartoAno { get; set; }
+        public string NotaConceitoQuartoAno { get; set; }
         [JsonProperty("notaConceitoQuintoAno")]
-        public object notaConceitoQuintoAno { get; set; }
+        public object NotaConceitoQuintoAno { get; set; }
         [JsonProperty("notaConceitoSextoAno")]
-        public object notaConceitoSextoAno { get; set; }
+        public object NotaConceitoSextoAno { get; set; }
         [JsonProperty("notaConceitoSetimoAno")]
-        public string notaConceitoSetimoAno { get; set; }
+        public string NotaConceitoSetimoAno { get; set; }
         [JsonProperty("notaConceitoOitavoAno")]
-        public string notaConceitoOitavoAno { get; set; }
+        public string NotaConceitoOitavoAno { get; set; }
         [JsonProperty("notaConceitoNonoAno")]
-        public string notaConceitoNonoAno { get; set; }
-
+        public string NotaConceitoNonoAno { get; set; }
     }
 }

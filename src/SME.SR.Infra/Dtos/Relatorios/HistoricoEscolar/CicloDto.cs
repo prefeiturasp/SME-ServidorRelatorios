@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace SME.SR.Infra.Dtos.Relatorios.HistoricoEscolar
+namespace SME.SR.Infra
 {
     public class CicloDto
     {
         [JsonProperty("nome")]
-        public string nome { get; set; }
+        public string Nome { get; set; }
         [JsonProperty("anos")]
-        public List<int> anos { get; set; }
+        public List<int> Anos { get; set; }
     }
 }

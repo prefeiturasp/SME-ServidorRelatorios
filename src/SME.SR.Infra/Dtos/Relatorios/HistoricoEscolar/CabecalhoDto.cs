@@ -1,18 +1,18 @@
 ﻿using Newtonsoft.Json;
 
-namespace SME.SR.Infra.Dtos.Relatorios.HistoricoEscolar
+namespace SME.SR.Infra
 {
     public class CabecalhoDto
     {
         [JsonProperty("nomeUe")]
-        public string nomeUe { get; set; }
+        public string NomeUe { get; set; }
         [JsonProperty("endereco")]
-        public string endereco { get; set; }
-        [JsonProperty("atoCriacao")]
-        public string atoCriacao { get; set; }
+        public string Endereco { get; set; }
+        [JsonProperty("toCriacao")]
+        public string AtoCriacao { get; set; }
         [JsonProperty("atoAutorizacao")]
-        public string atoAutorizacao { get; set; }
+        public string AtoAutorizacao { get; set; }
         [JsonProperty("lei")]
-        public string lei { get; set; }
+        public string Lei { get; set; }
     }
 }
