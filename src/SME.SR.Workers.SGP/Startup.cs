@@ -114,6 +114,7 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped(typeof(IFechamentoNotaRepository), typeof(FechamentoNotaRepository));
             services.TryAddScoped(typeof(IFechamentoTurmaRepository), typeof(FechamentoTurmaRepository));
             services.TryAddScoped(typeof(IFrequenciaAlunoRepository), typeof(FrequenciaAlunoRepository));
+            services.TryAddScoped(typeof(INotasFrequenciaAlunoBimestreRepository), typeof(NotasFrequenciaAlunoBimestreRepository));
             services.TryAddScoped(typeof(INotaTipoRepository), typeof(NotaTipoRepository));
             services.TryAddScoped(typeof(IParametroSistemaRepository), typeof(ParametroSistemaRepository));
             services.TryAddScoped(typeof(IPeriodoEscolarRepository), typeof(PeriodoEscolarRepository));

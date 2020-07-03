@@ -23,8 +23,16 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
-            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo);
+
+            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
+
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.UeCodigo, request.Modalidade, request.Usuario);
+
+            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo);
+
+            string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
+
+            var notasFrequencia = await ObterNotasFrequenciaAlunos(codigosTurma, codigosAlunos);
 
             return new RelatorioBoletimEscolarDto(new BoletimEscolarDto());
         }
@@ -75,6 +83,15 @@ namespace SME.SR.Application
                 CodigoUe = codigoUe,
                 Modalidade = modalidade,
                 Usuario = usuario
+            });
+        }
+
+        private async Task<IEnumerable<NotasFrequenciaAlunoBimestre>> ObterNotasFrequenciaAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        {
+            return await mediator.Send(new ObterNotasFrequenciaRelatorioBoletimQuery()
+            {
+                CodigosAlunos = alunosCodigo,
+                CodigosTurma = turmasCodigo
             });
         }
     }
