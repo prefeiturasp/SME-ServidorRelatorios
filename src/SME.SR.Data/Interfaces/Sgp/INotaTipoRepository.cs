@@ -8,5 +8,7 @@ namespace SME.SR.Data
     public interface INotaTipoRepository
     {
         Task<string> ObterPorCicloIdDataAvalicacao(long? cicloId, DateTime dataReferencia);
+
+        Task<IEnumerable<TipoNotaCicloAno>> ObterPorCiclosIdDataAvalicacao(long[] ciclosId, DateTime dataReferencia);
     }
 }

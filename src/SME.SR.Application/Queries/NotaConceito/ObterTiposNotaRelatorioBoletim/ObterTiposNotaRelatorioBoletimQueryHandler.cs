@@ -5,12 +5,13 @@ using SME.SR.Infra;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterTiposNotaRelatorioBoletimQueryHandler : IRequestHandler<ObterTiposNotaRelatorioBoletimQuery, IEnumerable<TipoNotaTurmaPeriodoEscolar>>
+    public class ObterTiposNotaRelatorioBoletimQueryHandler : IRequestHandler<ObterTiposNotaRelatorioBoletimQuery, IDictionary<string, string>>
     {
         private readonly IPeriodoFechamentoRepository periodoFechamentoRepository;
         private readonly ICicloRepository cicloRepository;
@@ -28,43 +29,69 @@ namespace SME.SR.Application
             this.notaTipoRepository = notaTipoRepository ?? throw new ArgumentNullException(nameof(notaTipoRepository));
         }
 
-        public async Task<IEnumerable<TipoNotaTurmaPeriodoEscolar>> Handle(ObterTiposNotaRelatorioBoletimQuery request, CancellationToken cancellationToken)
+        public async Task<IDictionary<string, string>> Handle(ObterTiposNotaRelatorioBoletimQuery request, CancellationToken cancellationToken)
         {
-            var periodoFechamentoBimestre = await periodoFechamentoRepository.ObterPeriodosFechamento(request.UeId, request.DreId, request.AnoLetivo);
+            var bimestreFechamento = (await ObterPeriodoUltimoBimestre(request.AnoLetivo, ObterModalidadeTipoCalendario(request.Modalidade), request.Semestre)).Bimestre;
+            PeriodoFechamentoBimestre periodoFechamentoBimestre = await periodoFechamentoRepository.ObterPeriodoFechamentoTurmaAsync(request.UeId, request.DreId, request.AnoLetivo, bimestreFechamento, null);
 
-            return await ObterTiposNota(request.Turmas, periodoFechamentoBimestre);
+            return await ObterTiposNota(request.Turmas, periodoFechamentoBimestre, request.AnoLetivo, request.Modalidade, request.Semestre);
         }
 
-        private async Task<PeriodoEscolar> ObterPeriodoUltimoBimestre(Turma turma)
+        private async Task<PeriodoEscolar> ObterPeriodoUltimoBimestre(int anoLetivo, ModalidadeTipoCalendario modalidadeTipoCalendario, int semestre)
         {
-            var periodoEscolarUltimoBimestre = await periodoEscolarRepository.ObterUltimoPeriodoAsync(turma.AnoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre);
+            var periodoEscolarUltimoBimestre = await periodoEscolarRepository.ObterUltimoPeriodoAsync(anoLetivo, modalidadeTipoCalendario, semestre);
             if (periodoEscolarUltimoBimestre == null)
                 throw new NegocioException("Não foi possível localizar o período escolar do ultimo bimestre da turma");
 
             return periodoEscolarUltimoBimestre;
         }
 
-        private async Task<IEnumerable<TipoNotaTurmaPeriodoEscolar>> ObterTiposNota(IEnumerable<TipoNotaTurmaPeriodoEscolar> turmas, PeriodoFechamentoBimestre periodoFechamentoBimestre)
+        private async Task<IDictionary<string, string>> ObterTiposNota(IEnumerable<Turma> turmas, PeriodoFechamentoBimestre periodoFechamentoBimestre,
+                                                                                    int anoLetivo, Modalidade modalidade, int semestre)
         {
             var dataReferencia = periodoFechamentoBimestre != null ?
                 periodoFechamentoBimestre.FinalDoFechamento :
-                (await ObterPeriodoUltimoBimestre(turma)).PeriodoFim;
+                (await ObterPeriodoUltimoBimestre(anoLetivo, ObterModalidadeTipoCalendario(modalidade), semestre)).PeriodoFim;
 
-            var tipoNota = await ObterNotaTipo(turma, dataReferencia);
-            if (tipoNota == null)
+            var tiposNota = await ObterNotasTipo(turmas, modalidade, dataReferencia);
+            if (tiposNota == null)
                 throw new NegocioException("Não foi possível identificar o tipo de nota da turma");
 
-            return tipoNota;
+            return tiposNota;
         }
 
-        private async Task<string> ObterNotaTipo(Turma turma, DateTime dataReferencia)
+        private async Task<IDictionary<string, string>> ObterNotasTipo(IEnumerable<Turma> turmas, Modalidade modalidade, DateTime dataReferencia)
         {
-            var cicloId = await cicloRepository.ObterCicloIdPorAnoModalidade(turma.Ano, turma.ModalidadeCodigo);
+            var anos = turmas.Select(t => t.Ano).Distinct();
 
-            if (cicloId == null)
+            var tipoCiclos = await cicloRepository.ObterCiclosIdPorAnosModalidade(anos.ToArray(), modalidade);
+
+            if (tipoCiclos == null)
                 throw new NegocioException("Não foi encontrado o ciclo da turma informada");
 
-            return await notaTipoRepository.ObterPorCicloIdDataAvalicacao(cicloId, dataReferencia);
+            var tiposCicloId = tipoCiclos.Select(t => t.Id);
+
+            var notasTipo = await notaTipoRepository.ObterPorCiclosIdDataAvalicacao(tiposCicloId.ToArray(), dataReferencia);
+
+            notasTipo = notasTipo.Select(nt =>
+            {
+                nt.Ano = tipoCiclos.FirstOrDefault(tp => tp.Id == nt.Ciclo).Ano;
+                return nt;
+            });
+
+            var lstTurmasTipoNota = new Dictionary<string, string>();
+
+            foreach (var turma in turmas)
+                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ano == turma.Ano).TipoNota);
+
+            return lstTurmasTipoNota;
+        }
+
+        private ModalidadeTipoCalendario ObterModalidadeTipoCalendario(Modalidade modalidadeCodigo)
+        {
+            return modalidadeCodigo == Modalidade.EJA ?
+                           ModalidadeTipoCalendario.EJA :
+                           ModalidadeTipoCalendario.FundamentalMedio;
         }
     }
 }

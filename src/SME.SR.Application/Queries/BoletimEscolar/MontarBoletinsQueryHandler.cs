@@ -20,12 +20,15 @@ namespace SME.SR.Application
             var componentesCurriculares = request.ComponentesCurricularesPorTurma;
             var notas = request.Notas;
             var frequencia = request.Frequencias;
+            var tiposNota = request.TiposNota;
 
             var boletinsAlunos = new List<BoletimEscolarAlunoDto>();
 
             foreach (var turma in turmas)
             {
                 var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto();
+
+                boletimEscolarAlunoDto.TipoNota = tiposNota[turma.Codigo];
 
                 boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, turma);
 
