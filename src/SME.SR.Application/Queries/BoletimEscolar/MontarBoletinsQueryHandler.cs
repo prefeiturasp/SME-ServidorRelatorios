@@ -113,10 +113,12 @@ namespace SME.SR.Application
             {
                 if(grupoMatriz.ComponenteCurricularRegencia != null)
                 {
-                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre1 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 1)?.FrequenciaAluno.PercentualFrequencia;
-                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre2 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 2)?.FrequenciaAluno.PercentualFrequencia;
-                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre3 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 3)?.FrequenciaAluno.PercentualFrequencia;
-                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre4 = notaFrequenciaComponente.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 4)?.FrequenciaAluno.PercentualFrequencia;
+                    var notaFrequenciaRegencia = notasFrequencia.Where(nf => nf.CodigoComponenteCurricular == grupoMatriz.ComponenteCurricularRegencia.Codigo);
+
+                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre1 = notaFrequenciaRegencia.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 1)?.FrequenciaAluno.PercentualFrequencia;
+                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre2 = notaFrequenciaRegencia.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 2)?.FrequenciaAluno.PercentualFrequencia;
+                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre3 = notaFrequenciaRegencia.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 3)?.FrequenciaAluno.PercentualFrequencia;
+                    grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre4 = notaFrequenciaRegencia.FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == 4)?.FrequenciaAluno.PercentualFrequencia;
 
                     foreach (var componenteCurricular in grupoMatriz.ComponenteCurricularRegencia.ComponentesCurriculares)
                     {
