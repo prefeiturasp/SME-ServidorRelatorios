@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterTiposNotaRelatorioBoletimQueryHandler : IRequestHandler<ObterTiposNotaRelatorioBoletimQuery, string>
+    public class ObterTiposNotaRelatorioBoletimQueryHandler : IRequestHandler<ObterTiposNotaRelatorioBoletimQuery, IEnumerable<TipoNotaTurmaPeriodoEscolar>>
     {
         private readonly IPeriodoFechamentoRepository periodoFechamentoRepository;
         private readonly ICicloRepository cicloRepository;
@@ -28,11 +28,11 @@ namespace SME.SR.Application
             this.notaTipoRepository = notaTipoRepository ?? throw new ArgumentNullException(nameof(notaTipoRepository));
         }
 
-        public async Task<string> Handle(ObterTiposNotaRelatorioBoletimQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TipoNotaTurmaPeriodoEscolar>> Handle(ObterTiposNotaRelatorioBoletimQuery request, CancellationToken cancellationToken)
         {
             var periodoFechamentoBimestre = await periodoFechamentoRepository.ObterPeriodosFechamento(request.UeId, request.DreId, request.AnoLetivo);
 
-            return await ObterTipoNota(request.Turma, periodoFechamentoBimestre);
+            return await ObterTiposNota(request.Turmas, periodoFechamentoBimestre);
         }
 
         private async Task<PeriodoEscolar> ObterPeriodoUltimoBimestre(Turma turma)
@@ -44,7 +44,7 @@ namespace SME.SR.Application
             return periodoEscolarUltimoBimestre;
         }
 
-        private async Task<string> ObterTipoNota(IEnumerable<Turma> turma, IEnumerable<PeriodoFechamentoBimestre> periodoFechamentoBimestre)
+        private async Task<IEnumerable<TipoNotaTurmaPeriodoEscolar>> ObterTiposNota(IEnumerable<TipoNotaTurmaPeriodoEscolar> turmas, PeriodoFechamentoBimestre periodoFechamentoBimestre)
         {
             var dataReferencia = periodoFechamentoBimestre != null ?
                 periodoFechamentoBimestre.FinalDoFechamento :
