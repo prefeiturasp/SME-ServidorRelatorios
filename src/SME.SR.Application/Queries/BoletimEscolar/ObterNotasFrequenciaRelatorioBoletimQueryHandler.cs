@@ -22,7 +22,7 @@ namespace SME.SR.Application
         {
             var notasFrequencia = await notasFrequenciaRepository.ObterNotasFrequenciaAlunosBimestre(request.CodigosTurma, request.CodigosAlunos);
 
-            if (notasFrequencia == null || notasFrequencia.Any())
+            if (notasFrequencia == null || !notasFrequencia.Any())
                 throw new NegocioException("Não foi possível obter as notas/frequência dos alunos");
 
             return notasFrequencia;
