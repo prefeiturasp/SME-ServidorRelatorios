@@ -303,9 +303,7 @@
 					"notaConceitoNonoAno": "PS"
 				}
 			],
-			"projetosAtividadesComplementares": [
-				
-			],
+			"projetosAtividadesComplementares": null,
 			"parecerConclusivo": [
 				{
 					"notaConceitoPrimeiroAno": "PS",

@@ -4,6 +4,9 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 	<subDataset name="DatasetCiclos" uuid="b4bf5dbc-d30f-4522-a2f6-3ae40a1250af">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<parameter name="TamanhoColuna" class="java.lang.String">
+			<defaultValueExpression><![CDATA["300px"]]></defaultValueExpression>
+		</parameter>
 		<queryString language="json">
 			<![CDATA[]]>
 		</queryString>
@@ -22,39 +25,6 @@
 		<band height="30" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<frame>
-				<reportElement positionType="Float" x="0" y="0" width="100" height="30" uuid="93ace750-0f2b-4eb5-8af0-8bdebb480f46"/>
-				<box>
-					<pen lineWidth="0.75"/>
-				</box>
-				<componentElement>
-					<reportElement positionType="Float" x="0" y="0" width="100" height="30" uuid="816201c7-6e42-444b-a7e1-fb4dc9bf53ea">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical" ignoreWidth="true">
-						<datasetRun subDataset="DatasetCiclos" uuid="25edd816-fd59-40f0-b047-6d0bf390fcce">
-							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></dataSourceExpression>
-						</datasetRun>
-						<jr:listContents height="30" width="100">
-							<textField>
-								<reportElement positionType="Float" x="0" y="0" width="100" height="15" uuid="9ac9aa05-0181-42fa-9cfb-ad803f6fa0d7"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
-							</textField>
-							<subreport>
-								<reportElement positionType="Float" x="0" y="15" width="100" height="15" uuid="846c9725-239a-4001-b55b-740e659073f9"/>
-								<subreportParameter name="REPORT_DATA_SOURCE">
-									<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
-								</subreportParameter>
-								<subreportExpression><![CDATA["Anos.jasper"]]></subreportExpression>
-							</subreport>
-						</jr:listContents>
-					</jr:list>
-				</componentElement>
-			</frame>
 		</band>
 	</detail>
 </jasperReport>
