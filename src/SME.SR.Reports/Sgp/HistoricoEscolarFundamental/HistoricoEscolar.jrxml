@@ -2,6 +2,10 @@
 <!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Principal" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="05587c97-f3c6-4cf2-9a1d-2b32c0508906">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioHistoricoEscolar/HistoricoEscolar_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioHistoricoEscolar/HistoricoEscolar"/>
 	<parameter name="jsonString" class="java.lang.String">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
@@ -253,35 +257,28 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["GruposComponentesCurriculares.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="170" width="555" height="15" uuid="dd66e560-c858-48cc-bdc7-b04f849572ff"/>
-				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("ensinoReligioso")]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportExpression><![CDATA["EnsinoReligioso.jasper"]]></subreportExpression>
-			</subreport>
-			<subreport>
-				<reportElement positionType="Float" x="0" y="185" width="555" height="15" uuid="6566e5af-fe59-4c89-86f5-d3d7ff5951b6"/>
+				<reportElement positionType="Float" x="0" y="170" width="555" height="15" uuid="6566e5af-fe59-4c89-86f5-d3d7ff5951b6"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["EnriquecimentoCurricular.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="200" width="555" height="15" uuid="455f8073-813f-4f58-9fa2-75065981229d"/>
+				<reportElement positionType="Float" x="0" y="185" width="555" height="15" uuid="455f8073-813f-4f58-9fa2-75065981229d"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["ProjetosAtividadesComplementares.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="215" width="555" height="15" uuid="d3e9a8dd-b3ee-4a7c-b9eb-8cc3888097e0"/>
+				<reportElement positionType="Float" x="0" y="200" width="555" height="15" uuid="d3e9a8dd-b3ee-4a7c-b9eb-8cc3888097e0"/>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("parecerConclusivo")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["ParecerConclusivo.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement positionType="Float" x="0" y="230" width="554" height="15" isRemoveLineWhenBlank="true" uuid="c0bd7c5f-87cb-42bd-ba4c-22e608112b06">
+				<reportElement positionType="Float" x="0" y="215" width="554" height="15" isRemoveLineWhenBlank="true" uuid="c0bd7c5f-87cb-42bd-ba4c-22e608112b06">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
