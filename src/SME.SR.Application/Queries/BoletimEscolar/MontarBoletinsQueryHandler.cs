@@ -51,7 +51,6 @@ namespace SME.SR.Application
             }
 
             return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos));
-
         }
 
         private BoletimEscolarCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, Turma turma)
@@ -82,7 +81,7 @@ namespace SME.SR.Application
 
                 foreach (var componente in grupoMatriz)
                 {
-                    if (componente.Regencia)
+                    if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
                     {
                         grupoParaAdd.ComponenteCurricularRegencia = new ComponenteCurricularRegenciaDto()
                         {
@@ -101,7 +100,7 @@ namespace SME.SR.Application
                                 });
                         }
                     }
-                    else
+                    else if (!componente.Regencia)
                     {
                         if (grupoParaAdd.ComponentesCurriculares == null)
                             grupoParaAdd.ComponentesCurriculares = new List<ComponenteCurricularDto>();
