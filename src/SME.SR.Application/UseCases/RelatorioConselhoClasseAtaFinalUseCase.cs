@@ -42,8 +42,9 @@ namespace SME.SR.Application
             var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
             var frequenciaAlunos = await ObterFrequenciaComponente(turmaCodigo, tipoCalendarioId);
             var pareceresConclusivos = await ObterPareceresConclusivos(turmaCodigo);
+            var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
 
-            var dadosRelatorio = MontarEstruturaRelatorio(cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos);
+            var dadosRelatorio = MontarEstruturaRelatorio(cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos, periodosEscolares);
             return MontarEstruturaPaginada(dadosRelatorio);
         }
 
@@ -128,19 +129,19 @@ namespace SME.SR.Application
             return modelsPaginas;
         }
 
-        private ConselhoClasseAtaFinalDto MontarEstruturaRelatorio(ConselhoClasseAtaFinalCabecalhoDto cabecalho, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos)
+        private ConselhoClasseAtaFinalDto MontarEstruturaRelatorio(ConselhoClasseAtaFinalCabecalhoDto cabecalho, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares)
         {
             var relatorio = new ConselhoClasseAtaFinalDto();
 
             relatorio.Cabecalho = cabecalho;
             var gruposMatrizes = componentesCurriculares.Where(c => c.GrupoMatriz != null).GroupBy(c => c.GrupoMatriz);
 
-            MontarEstruturaGruposMatriz(ref relatorio, gruposMatrizes);
-            MontarEstruturaLinhas(ref relatorio, alunos, gruposMatrizes, notasFinais, frequenciaAlunos, pareceresConclusivos);
+            MontarEstruturaGruposMatriz(ref relatorio, gruposMatrizes, periodosEscolares);
+            MontarEstruturaLinhas(ref relatorio, alunos, gruposMatrizes, notasFinais, frequenciaAlunos, pareceresConclusivos, periodosEscolares);
             return relatorio;
         }
 
-        private void MontarEstruturaLinhas(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos)
+        private void MontarEstruturaLinhas(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares)
         {
             foreach (var aluno in alunos.Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada))
             {
@@ -158,7 +159,7 @@ namespace SME.SR.Application
                     {
                         var coluna = 0;
                         // Monta Colunas notas dos bimestres
-                        for (var bimestre = 1; bimestre <= 4; bimestre++)
+                        foreach(var bimestre in periodosEscolares.Select(a => a.Bimestre))
                         {
                             var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                     && c.ComponenteCurricularCodigo == componente.CodDisciplina
@@ -220,7 +221,7 @@ namespace SME.SR.Application
             }
         }
 
-        private void MontarEstruturaGruposMatriz(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes)
+        private void MontarEstruturaGruposMatriz(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<PeriodoEscolar> periodosEscolares)
         {
             if (gruposMatrizes != null)
                 foreach (var grupoMatriz in gruposMatrizes)
@@ -233,7 +234,7 @@ namespace SME.SR.Application
 
                     foreach (var componenteCurricular in grupoMatriz)
                     {
-                        grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id);
+                        grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, periodosEscolares.Select(a => a.Bimestre));
                     }
 
                     relatorio.GruposMatriz.Add(grupoMatrizDto);
@@ -245,6 +246,9 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ConselhoClasseParecerConclusivo>> ObterPareceresConclusivos(string turmaCodigo)
             => await mediator.Send(new ObterParecerConclusivoPorTurmaQuery(turmaCodigo));
+
+        private async Task<IEnumerable<PeriodoEscolar>> ObterPeriodosEscolares(long tipoCalendarioId)
+            => await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
 
         private async Task<ConselhoClasseAtaFinalCabecalhoDto> ObterCabecalho(string turmaCodigo)
             => await mediator.Send(new ObterAtaFinalCabecalhoQuery(turmaCodigo));
