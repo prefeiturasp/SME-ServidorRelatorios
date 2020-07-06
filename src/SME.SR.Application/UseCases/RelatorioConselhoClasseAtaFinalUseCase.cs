@@ -25,20 +25,20 @@ namespace SME.SR.Application
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
             foreach (var turmaCodigo in parametros.TurmasCodigos)
             {
-                relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo));
+                relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario));
             }
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
         }
 
-        private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(string turmaCodigo)
+        private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(string turmaCodigo, string usuarioLogadoRF, string perfilUsuario)
         {
             var turma = await ObterTurma(turmaCodigo);
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
 
             var cabecalho = await ObterCabecalho(turmaCodigo);
             var alunos = await ObterAlunos(turmaCodigo);
-            var componentesCurriculares = await ObterComponentesCurriculares(turmaCodigo);
+            var componentesCurriculares = await ObterComponentesCurriculares(turmaCodigo, usuarioLogadoRF, perfilUsuario);
             var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
             var frequenciaAlunos = await ObterFrequenciaComponente(turmaCodigo, tipoCalendarioId);
             var pareceresConclusivos = await ObterPareceresConclusivos(turmaCodigo);
@@ -159,7 +159,7 @@ namespace SME.SR.Application
                     {
                         var coluna = 0;
                         // Monta Colunas notas dos bimestres
-                        foreach(var bimestre in periodosEscolares.Select(a => a.Bimestre))
+                        foreach (var bimestre in periodosEscolares.Select(a => a.Bimestre))
                         {
                             var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                     && c.ComponenteCurricularCodigo == componente.CodDisciplina
@@ -307,7 +307,7 @@ namespace SME.SR.Application
             return modelPagina.GruposMatriz.FirstOrDefault(x => x.Id == disciplina.IdGrupoMatriz);
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(string turmaCodigo)
-            => await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery(turmaCodigo));
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(string turmaCodigo, string usuarioLogadoRF, string perfilUsuario)
+            => await mediator.Send(new ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery(turmaCodigo, new Usuario() { Login = usuarioLogadoRF, PerfilAtual = new Guid(perfilUsuario) }));
     }
 }
