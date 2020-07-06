@@ -23,7 +23,8 @@ namespace SME.SR.Data
                         select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
                                fn.disciplina_id CodigoComponenteCurricular,
                                pe.bimestre, pe.periodo_inicio PeriodoInicio,
-                               pe.periodo_fim PeriodoFim, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
+                               pe.periodo_fim PeriodoFim, fn.id NotaId,
+                               coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
                                coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
                          left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
@@ -41,10 +42,11 @@ namespace SME.SR.Data
                          where t.turma_id = ANY(@codigosTurma)
                            and fa.aluno_codigo = ANY(@codigosAluno)
                         union all 
-                        select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
-                               fn.disciplina_id CodigoComponenteCurricular,
+                        select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
+                               ccn.componente_curricular_codigo CodigoComponenteCurricular,
                                pe.bimestre, pe.periodo_inicio PeriodoInicio,
-                               pe.periodo_fim PeriodoFim, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
+                               pe.periodo_fim PeriodoFim, ccn.id NotaId,
+                               coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
                                coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
                           left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
@@ -80,7 +82,7 @@ namespace SME.SR.Data
 
                         return notasFrequenciaAlunoBimestre;
                     }
-                    , parametros, splitOn: "CodigoTurma,Bimestre,ConceitoId");
+                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
             }
         }
     }
