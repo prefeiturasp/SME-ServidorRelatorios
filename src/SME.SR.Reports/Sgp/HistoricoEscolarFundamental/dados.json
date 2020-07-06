@@ -10,7 +10,7 @@
 				"lei": "Ensino Fundamental - Lei federal nº9394/96  - Lei Federal nº11274/06"
 			},
 			"informacoesAluno": {
-				"nome": "Adriana dos Santos Donatto",
+				"nome": "Cristina Almeida",
 				"rga": "88855565656",
 				"cidadeNatal": "Blumenau",
 				"estadoNatal": "SC",
@@ -312,7 +312,7 @@
 				}
 			],
 			"legenda": {
-				"texto": "C = Conceito, N = Nota, F = FrequÊncia, P = Preparado, S = Satisfatório, NS = Não satisfatório"
+				"texto": "C = Conceito, N = Nota, F = Frequência, P = Preparado, S = Satisfatório, NS = Não satisfatório"
 			}
 		},
 		{
@@ -538,12 +538,6 @@
 								"frequenciaNonoAno": "100"
 							}
 						]
-					},
-					{
-						"nome": "Fora da rede",
-						"componentesCurriculares": [
-							{}
-						]
 					}						
 				]
 			},
@@ -633,7 +627,7 @@
 				}
 			],
 			"legenda": {
-				"texto": "C = Conceito, N = Nota, F = FrequÊncia, P = Preparado, S = Satisfatório, NS = Não satisfatório"
+				"texto": "C = Conceito, N = Nota, F = Frequência, P = Preparado, S = Satisfatório, NS = Não satisfatório"
 			}
 		}
 	]

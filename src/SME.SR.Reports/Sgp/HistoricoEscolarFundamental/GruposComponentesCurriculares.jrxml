@@ -439,7 +439,7 @@ curriculares]]></text>
 						<pen lineWidth="0.75"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="false"/>
+						<font size="4" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nomeGrupo}.toUpperCase()]]></textFieldExpression>
 				</textField>
