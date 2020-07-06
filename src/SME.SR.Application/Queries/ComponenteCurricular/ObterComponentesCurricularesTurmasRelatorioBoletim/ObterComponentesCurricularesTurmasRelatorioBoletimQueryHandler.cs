@@ -18,8 +18,8 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
         public ObterComponentesCurricularesTurmasRelatorioBoletimQueryHandler(IComponenteCurricularRepository componenteCurricularRepository,
                                                                               IMediator mediator)
         {
-            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository)); 
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); 
+            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesTurmasRelatorioBoletimQuery request, CancellationToken cancellationToken)
@@ -61,13 +61,16 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                         Usuario = request.Usuario
                     });
 
-                    componentesMapeados = componentesMapeados.Select(cm =>
-                     {
-                         if (cm.Regencia)
-                             cm.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(c => c.Key == cm.CodigoTurma).ToList();
+                    if (componentesRegenciaPorTurma.Count() > 0)
+                    {
+                        componentesMapeados = componentesMapeados.Select(cm =>
+                         {
+                             if (cm.Regencia)
+                                 cm.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(c => c.Key == cm.CodigoTurma).ToList();
 
-                         return cm;
-                     });
+                             return cm;
+                         });
+                    }
                 }
 
                 return componentesMapeados.GroupBy(cm => cm.CodigoTurma);
