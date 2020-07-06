@@ -1,19 +1,23 @@
 ﻿using MediatR;
+using SME.SR.Data;
+using SME.SR.Infra;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterEnderecoEAtosDaUeQueryHandler : IRequestHandler<ObterEnderecoEAtosDaUeQuery, string>
+    public class ObterEnderecoEAtosDaUeQueryHandler : IRequestHandler<ObterEnderecoEAtosDaUeQuery, CabecalhoDto>
     {
+        private IObterEnderecoeAtosDaUeRepository obterEnderecoeAtosDaUeRepository;
 
-        public ObterEnderecoEAtosDaUeQueryHandler()
+        public ObterEnderecoEAtosDaUeQueryHandler(IObterEnderecoeAtosDaUeRepository _obterEnderecoeAtosDaUeRepository)
         {
+            obterEnderecoeAtosDaUeRepository = _obterEnderecoeAtosDaUeRepository;
         }
 
-        public async Task<string> Handle(ObterEnderecoEAtosDaUeQuery request, CancellationToken cancellationToken)
+        public async Task<CabecalhoDto> Handle(ObterEnderecoEAtosDaUeQuery request, CancellationToken cancellationToken)
         {
-            return "";
+            return await obterEnderecoeAtosDaUeRepository.ObterEnderecoEAtos(request.UeCodigo);
         }
     }
 }
