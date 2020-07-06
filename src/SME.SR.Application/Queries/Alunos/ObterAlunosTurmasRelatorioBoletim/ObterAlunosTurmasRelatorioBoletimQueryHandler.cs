@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterAlunosTurmasRelatorioBoletimQueryHandler : IRequestHandler<ObterAlunosTurmasRelatorioBoletimQuery, IEnumerable<IGrouping<int, Aluno>>>
+    public class ObterAlunosTurmasRelatorioBoletimQueryHandler : IRequestHandler<ObterAlunosTurmasRelatorioBoletimQuery, IEnumerable<IGrouping<string, Aluno>>>
     {
         private IAlunoRepository alunoRepository;
 
@@ -18,7 +18,7 @@ namespace SME.SR.Application
             this.alunoRepository = alunoRepository;
         }
 
-        public async Task<IEnumerable<IGrouping<int, Aluno>>> Handle(ObterAlunosTurmasRelatorioBoletimQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IGrouping<string, Aluno>>> Handle(ObterAlunosTurmasRelatorioBoletimQuery request, CancellationToken cancellationToken)
         {
             var alunos = Enumerable.Empty<Aluno>();
 
@@ -30,7 +30,7 @@ namespace SME.SR.Application
             if (!alunos.Any())
                 throw new NegocioException("Não foi possível localizar os alunos");
             else
-                return alunos.GroupBy(a => a.CodigoTurma);
+                return alunos.GroupBy(a => a.CodigoTurma.ToString());
         }
     }
 }

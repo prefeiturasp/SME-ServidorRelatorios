@@ -49,6 +49,7 @@ namespace SME.SR.Application
                 Compartilhada = componenteCurricular.EhCompartilhada(componentesApiEol),
                 Disciplina = componenteCurricular.Descricao.Trim(),
                 LancaNota = componenteCurricular.PodeLancarNota(componentesApiEol),
+                Frequencia = componenteCurricular.ControlaFrequencia(componentesApiEol),
                 Regencia = componenteCurricular.EhRegencia(componentesApiEol) || componenteCurricular.ComponentePlanejamentoRegencia,
                 TerritorioSaber = componenteCurricular.TerritorioSaber,
                 BaseNacional = componenteCurricularEol?.EhBaseNacional ?? false,

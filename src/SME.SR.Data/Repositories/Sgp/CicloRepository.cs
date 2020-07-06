@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Npgsql;
+using SME.SR.Data.Models;
 using SME.SR.Data.Queries;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -24,6 +26,20 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QuerySingleOrDefaultAsync<long?>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<TipoCiclo>> ObterCiclosIdPorAnosModalidade(string[] anos, Modalidade modalidadeCodigo)
+        {
+            var query = @"select tc.id, tca.ano from tipo_ciclo tc
+                        inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
+                        where tca.ano = ANY(@anos) and tca.modalidade = @modalidade";
+
+            var parametros = new { Anos = anos, Modalidade = (int)modalidadeCodigo };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<TipoCiclo>(query, parametros);
             }
         }
     }

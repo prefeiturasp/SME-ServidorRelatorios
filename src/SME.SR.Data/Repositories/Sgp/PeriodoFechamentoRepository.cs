@@ -35,5 +35,32 @@ namespace SME.SR.Data.Repositories.Sgp
                 return await conexao.QueryFirstOrDefaultAsync<PeriodoFechamentoBimestre>(query, parametros);
             };
         }
+
+        public async Task<IEnumerable<PeriodoFechamentoBimestre>> ObterPeriodosFechamento(long ueId, long dreId, int anoLetivo)
+        {
+            var query = @"select pfb.id, pfb.periodo_escolar_id PeriodoEscolarId, 
+	                         pfb.periodo_fechamento_id PeriodoFechamentoId,
+	                         pfb.inicio_fechamento InicioDoFechamento,
+	                         pfb.final_fechamento FinalDoFechamento
+                          from periodo_fechamento pf 
+                         inner join periodo_fechamento_bimestre pfb on pfb.periodo_fechamento_id = pf.id
+                         inner join periodo_escolar pe on pe.id = pfb.periodo_escolar_id
+                         inner join tipo_calendario tc on pe.tipo_calendario_id = tc.id 
+                         where pf.ue_id = @ueId
+                           and pf.dre_id = @dreId 
+                           and tc.ano_letivo  = @anoLetivo";
+
+            var parametros = new
+            {
+                UeId = ueId,
+                DreId = dreId,
+                AnoLetivo = anoLetivo
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<PeriodoFechamentoBimestre>(query, parametros);
+            };
+        }
     }
 }

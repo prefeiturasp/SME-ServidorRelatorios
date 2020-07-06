@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesTurmasRelatorioBoletim
 {
-    public class ObterComponentesCurricularesTurmasRelatorioBoletimQueryHandler : IRequestHandler<ObterComponentesCurricularesTurmasRelatorioBoletimQuery, IEnumerable<ComponenteCurricularPorTurma>>
+    public class ObterComponentesCurricularesTurmasRelatorioBoletimQueryHandler : IRequestHandler<ObterComponentesCurricularesTurmasRelatorioBoletimQuery, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>>
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
@@ -22,7 +22,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); 
         }
 
-        public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesTurmasRelatorioBoletimQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesTurmasRelatorioBoletimQuery request, CancellationToken cancellationToken)
         {
             var componentesDasTurmas = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
             if (componentesDasTurmas != null && componentesDasTurmas.Any())
@@ -40,9 +40,10 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                     Disciplina = c.DescricaoFormatada,
                     GrupoMatriz = c.ObterGrupoMatriz(componentesApiEol, gruposMatriz),
                     LancaNota = c.PodeLancarNota(componentesApiEol),
+                    Frequencia = c.ControlaFrequencia(componentesApiEol),
                     Regencia = c.EhRegencia(componentesApiEol),
                     TerritorioSaber = c.TerritorioSaber,
-                    TipoEscola = c.TipoEscola
+                    TipoEscola = c.TipoEscola,
                 });
 
                 if (componentesMapeados.Any(c => c.Regencia))
@@ -69,7 +70,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                      });
                 }
 
-                return componentesMapeados;
+                return componentesMapeados.GroupBy(cm => cm.CodigoTurma);
             }
 
             throw new NegocioException("Não foi possível localizar as disciplinas das tumas");

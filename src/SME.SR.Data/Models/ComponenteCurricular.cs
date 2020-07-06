@@ -33,6 +33,12 @@ namespace SME.SR.Data
                        componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.PermiteLancamentoDeNota));
         }
 
+        public bool ControlaFrequencia(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
+        {
+            return componentesApiEol != null && (!componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo) ||
+                       componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.PermiteRegistroFrequencia));
+        }
+
         public bool EhRegencia(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
         {
             return componentesApiEol != null && componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.EhRegencia);
