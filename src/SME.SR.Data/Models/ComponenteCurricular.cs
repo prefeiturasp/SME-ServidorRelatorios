@@ -9,6 +9,7 @@ namespace SME.SR.Data
         {
             ComponentePlanejamentoRegencia = false;
         }
+        public string CodigoTurma { get; set; }
         public string AnoTurma { get; set; }
         public long Codigo { get; set; }
         public string Descricao { get; set; }
@@ -30,6 +31,12 @@ namespace SME.SR.Data
         {
             return componentesApiEol != null && (!componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo) ||
                        componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.PermiteLancamentoDeNota));
+        }
+
+        public bool ControlaFrequencia(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
+        {
+            return componentesApiEol != null && (!componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo) ||
+                       componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.PermiteRegistroFrequencia));
         }
 
         public bool EhRegencia(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)

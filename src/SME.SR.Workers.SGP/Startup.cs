@@ -80,8 +80,6 @@ namespace SME.SR.Workers.SGP
 
             // TODO: Criar arquivo especficio para as inje��es
             RegistrarRepositorios(services);
-            RegistrarQueries(services);
-            RegistrarHandlers(services);
             RegistrarCommands(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
@@ -110,11 +108,13 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped(typeof(IConselhoClasseAlunoRepository), typeof(ConselhoClasseAlunoRepository));
             services.TryAddScoped(typeof(IConselhoClasseNotaRepository), typeof(ConselhoClasseNotaRepository));
             services.TryAddScoped(typeof(IConselhoClasseRecomendacaoRepository), typeof(ConselhoClasseRecomendacaoRepository));
+            services.TryAddScoped(typeof(IDreRepository), typeof(DreRepository));
             services.TryAddScoped(typeof(IEolRepository), typeof(EolRepository));
             services.TryAddScoped(typeof(IFechamentoAlunoRepository), typeof(FechamentoAlunoRepository));
             services.TryAddScoped(typeof(IFechamentoNotaRepository), typeof(FechamentoNotaRepository));
             services.TryAddScoped(typeof(IFechamentoTurmaRepository), typeof(FechamentoTurmaRepository));
             services.TryAddScoped(typeof(IFrequenciaAlunoRepository), typeof(FrequenciaAlunoRepository));
+            services.TryAddScoped(typeof(INotaConceitoRepository), typeof(NotaConceitoRepository));
             services.TryAddScoped(typeof(INotaTipoRepository), typeof(NotaTipoRepository));
             services.TryAddScoped(typeof(IParametroSistemaRepository), typeof(ParametroSistemaRepository));
             services.TryAddScoped(typeof(IPeriodoEscolarRepository), typeof(PeriodoEscolarRepository));
@@ -122,61 +122,14 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped(typeof(IPermissaoRepository), typeof(PermissaoRepository));
             services.TryAddScoped(typeof(ITipoCalendarioRepository), typeof(TipoCalendarioRepository));
             services.TryAddScoped(typeof(ITurmaRepository), typeof(TurmaRepository));
+            services.TryAddScoped(typeof(IUeRepository), typeof(UeRepository));
         }
 
         private void RegistrarCommands(IServiceCollection services)
         {
             services.AddMediatR(typeof(GerarRelatorioAssincronoCommand).GetTypeInfo().Assembly);
         }
-
-        private void RegistrarQueries(IServiceCollection services)
-        {
-            services.AddMediatR(typeof(ObterAlunosPorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterAnotacoesAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaFinalQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaFinalQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDreUePorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaGlobalPorAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaPorDisciplinaBimestresQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasAlunoBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParametroSistemaPorTipoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParecerConclusivoPorAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
-        }
-
-        private void RegistrarHandlers(IServiceCollection services)
-        {
-            services.AddMediatR(typeof(ObterAlunosPorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterAnotacoesAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaFinalQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaFinalQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDreUePorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaGlobalPorAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaPorDisciplinaBimestresQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasAlunoBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParecerConclusivoPorAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
-
-
-        }
-
+		
         private void RegistrarUseCase(IServiceCollection services)
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();

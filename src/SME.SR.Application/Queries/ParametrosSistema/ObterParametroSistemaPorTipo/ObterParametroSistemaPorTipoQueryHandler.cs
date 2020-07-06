@@ -7,16 +7,16 @@ namespace SME.SR.Application
 {
     public class ObterParametroSistemaPorTipoQueryHandler : IRequestHandler<ObterParametroSistemaPorTipoQuery, string>
     {
-        private IParametroSistemaRepository _parametroSistemaRepository;
+        private readonly IParametroSistemaRepository parametroSistemaRepository;
 
         public ObterParametroSistemaPorTipoQueryHandler(IParametroSistemaRepository parametroSistemaRepository)
         {
-            this._parametroSistemaRepository = parametroSistemaRepository;
+            this.parametroSistemaRepository = parametroSistemaRepository;
         }
 
         public async Task<string> Handle(ObterParametroSistemaPorTipoQuery request, CancellationToken cancellationToken)
         {
-            return await _parametroSistemaRepository.ObterValorPorTipo(request.TipoParametro);
+            return await parametroSistemaRepository.ObterValorPorTipo(request.TipoParametro);
         }
     }
 }

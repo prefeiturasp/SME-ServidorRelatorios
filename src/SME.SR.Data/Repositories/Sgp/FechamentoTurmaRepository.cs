@@ -33,7 +33,7 @@ namespace SME.SR.Data
 
                     return fechamentoTurma;
                 }
-                , parametros, splitOn: "TurmaId,CodigoTurma,Bimestre")).FirstOrDefault();
+                , parametros, splitOn: "TurmaId,Codigo,Bimestre")).FirstOrDefault();
             }
         }
 
@@ -52,7 +52,7 @@ namespace SME.SR.Data
 
                     return fechamentoTurma;
                 }
-                , parametros, splitOn: "id,CodigoTurma,Bimestre"));
+                , parametros, splitOn: "id,Codigo,Bimestre"));
             }
         }
     }
