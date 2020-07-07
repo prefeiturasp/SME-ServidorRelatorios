@@ -6,6 +6,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,17 +38,22 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
                 paginasEmHtml.Add(html);
             }
+            
+            //TODO: FILA PARA RELATORIO SEM DADOS?
+            if (paginasEmHtml.Any())
+            {
 
-            PdfGenerator pdfGenerator = new PdfGenerator(converter);
+                PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
-            var directory = AppDomain.CurrentDomain.BaseDirectory;
-            SentrySdk.AddBreadcrumb($"Gerando PDF", $"Caminho geração : {directory}");
+                var directory = AppDomain.CurrentDomain.BaseDirectory;
+                SentrySdk.AddBreadcrumb($"Gerando PDF", $"Caminho geração : {directory}");
 
-            pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());
+                pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());
 
-            SentrySdk.AddBreadcrumb($"Indo publicar na fila Prontos..", "8 - MonitorarStatusRelatorioUseCase");
-            servicoFila.PublicaFila(new PublicaFilaDto(null, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
-            SentrySdk.CaptureMessage("8 - MonitorarStatusRelatorioUseCase - Publicado na fila PRONTO OK!");
+                SentrySdk.AddBreadcrumb($"Indo publicar na fila Prontos..", "8 - MonitorarStatusRelatorioUseCase");
+                servicoFila.PublicaFila(new PublicaFilaDto(null, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
+                SentrySdk.CaptureMessage("8 - MonitorarStatusRelatorioUseCase - Publicado na fila PRONTO OK!");
+            }
 
             return true;
         }
@@ -58,11 +64,11 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = $"wwwroot/templates/{nomeDoArquivoDoTemplate}";
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
-            
+
             SentrySdk.AddBreadcrumb($"Caminho arquivo cshtml: {caminhoArquivo}");
-            
+
             string templateBruto = File.ReadAllText(caminhoArquivo);
-            
+
             SentrySdk.AddBreadcrumb($"Leu arquivo de template.");
 
             RazorProcessor processor = new RazorProcessor();

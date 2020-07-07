@@ -11,6 +11,7 @@ namespace SME.SR.Workers.SGP.Middlewares
 {
     public class ExcecaoMiddleware : IMiddleware
     {
+
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -27,7 +28,6 @@ namespace SME.SR.Workers.SGP.Middlewares
                 SentrySdk.CaptureException(ex);
             }
         }
-
         private static Task RetornarErro(HttpContext context, string mensagem, int statusCode)
         {
             context.Response.ContentType = "application/json";
