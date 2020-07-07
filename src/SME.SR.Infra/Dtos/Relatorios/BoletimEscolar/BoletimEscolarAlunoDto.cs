@@ -1,15 +1,14 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+using System.Linq;
 
 namespace SME.SR.Infra
 {
     public class BoletimEscolarAlunoDto
     {
         [JsonProperty("descricaoGrupos")]
-        public string DescricaoGrupos { get; set; }
+        public string DescricaoGrupos =>
+            string.Join(" | ", Grupos.Select(x => $"{x.Nome}: {x.Descricao}").ToArray());
 
         [JsonProperty("tipoNota")]
         public string TipoNota { get; set; } = "Nota";

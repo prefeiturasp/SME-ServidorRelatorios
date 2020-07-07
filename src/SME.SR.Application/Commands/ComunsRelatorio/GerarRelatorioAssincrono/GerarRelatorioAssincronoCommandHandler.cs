@@ -31,11 +31,9 @@ namespace SME.SR.Application
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
         public async Task<bool> Handle(GerarRelatorioAssincronoCommand request, CancellationToken cancellationToken)
-        {
-                       
+        {                       
                 try
-                {
-                    
+                {                    
                     ParametrosRelatorioDto parametrosDoDto = ObterParametrosRelatorio(request.Dados);
 
                     var post = new ExecucaoRelatorioRequisicaoDto()
@@ -78,7 +76,7 @@ namespace SME.SR.Application
                         return await Task.FromResult(true);
                     }
 
-                    SentrySdk.CaptureMessage("6.6 - Erro na geração");                    
+                    SentrySdk.CaptureMessage("6.6 - Erro na geração");
 
                     return await Task.FromResult(false);
                 }

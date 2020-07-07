@@ -6,29 +6,28 @@ using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesPorCodigoTurmaLoginEPerfil
+namespace SME.SR.Application
 {
     public class ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQueryHandler : IRequestHandler<ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
-        private IComponenteCurricularRepository _componenteCurricularRepository;
-        private IPermissaoRepository _permissaoRepository;
+        private readonly IComponenteCurricularRepository componenteCurricularRepository;
+        private readonly IPermissaoRepository permissaoRepository;
 
         public ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IPermissaoRepository permissaoRepository)
         {
-            this._componenteCurricularRepository = componenteCurricularRepository;
-            this._permissaoRepository = permissaoRepository;
+            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
+            this.permissaoRepository = permissaoRepository ?? throw new ArgumentNullException(nameof(permissaoRepository));
         }
 
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery request, CancellationToken cancellationToken)
         {
             List<Data.ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigoTurma);
 
-            var componentesApiEol = await _componenteCurricularRepository.ListarApiEol();
-            var gruposMatriz = await _componenteCurricularRepository.ListarGruposMatriz();
+            var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
+            var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
             await AdicionarComponentesTerritorio(request.CodigoTurma, componentesCurriculares, componentesApiEol);
 
@@ -65,7 +64,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             if (componentesRegencia != null && componentesRegencia.Any())
             {
                 var idsComponentesPlanejamento = new List<long>();
-                var componentesRegenciaApiEol = await _componenteCurricularRepository.ListarRegencia();
+                var componentesRegenciaApiEol = await componenteCurricularRepository.ListarRegencia();
                 foreach (var componenteRegencia in componentesRegencia)
                 {
                     var componentesPlanejamento = componentesRegenciaApiEol.Where(r => r.Ano.HasValue &&
@@ -97,7 +96,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             if (ids == null || !ids.Any())
                 return Enumerable.Empty<Data.ComponenteCurricular>();
 
-            var componentes = await _componenteCurricularRepository.ListarComponentes();
+            var componentes = await componenteCurricularRepository.ListarComponentes();
             return componentes.Where(c => ids.Contains(c.Codigo));
         }
 
@@ -110,7 +109,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
                 if (codigoDisciplinasTerritorio != null && codigoDisciplinasTerritorio.Any())
                 {
-                    var territoriosBanco = await _componenteCurricularRepository.ObterComponentesTerritorioDosSaberes(codigoTurma, codigoDisciplinasTerritorio);
+                    var territoriosBanco = await componenteCurricularRepository.ObterComponentesTerritorioDosSaberes(codigoTurma, codigoDisciplinasTerritorio);
                     if (territoriosBanco != null && territoriosBanco.Any())
                     {
                         var tipoEscola = componentesCurriculares.FirstOrDefault().TipoEscola;
@@ -138,18 +137,18 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
         {
             var componentesCurriculares = new List<Data.ComponenteCurricular>();
 
-            var gruposAbrangenciaApiEol = await _permissaoRepository.ObterTodosGrupos();
+            var gruposAbrangenciaApiEol = await permissaoRepository.ObterTodosGrupos();
 
             var grupoAbrangencia = gruposAbrangenciaApiEol.FirstOrDefault(c => c.GrupoID == idPerfil);
             if (grupoAbrangencia != null)
             {
                 if (grupoAbrangencia.Abrangencia == TipoAbrangencia.Professor)
                 {
-                    componentesCurriculares.AddRange(await _componenteCurricularRepository.ObterComponentesPorTurmaEProfessor(login, codigoTurma));
+                    componentesCurriculares.AddRange(await componenteCurricularRepository.ObterComponentesPorTurmaEProfessor(login, codigoTurma));
                 }
                 else
                 {
-                    var componentesDaTurma = await _componenteCurricularRepository.ObterComponentesPorTurma(codigoTurma);
+                    var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurma(codigoTurma);
                     componentesCurriculares.AddRange(componentesDaTurma);
                 }
                 AdicionarComponentesProfessorEmebs(componentesCurriculares);
