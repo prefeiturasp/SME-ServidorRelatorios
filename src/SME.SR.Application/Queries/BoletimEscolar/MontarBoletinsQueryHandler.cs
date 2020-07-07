@@ -183,10 +183,10 @@ namespace SME.SR.Application
                             componenteCurricular.FrequenciaBimestre3 = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == 3)?.PercentualFrequencia.ToString() ?? "100";
                             componenteCurricular.FrequenciaBimestre4 = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == 4)?.PercentualFrequencia.ToString() ?? "100";
 
-                            if (componenteCurricular.Nota)
-                                componenteCurricular.FrequenciaFinal = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null)?.PercentualFrequencia.ToString() ?? "100";
-                            else
-                                componenteCurricular.FrequenciaFinal = ObterSintese(frequenciasComponente, mediasFrequencia, false, false);
+                            componenteCurricular.FrequenciaFinal = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null)?.PercentualFrequencia.ToString() ?? "100";
+
+                            if(!componenteCurricular.Nota)
+                                componenteCurricular.NotaFinal = ObterSintese(frequenciasComponente, mediasFrequencia, false, false);
                         }
                     }
                 }
