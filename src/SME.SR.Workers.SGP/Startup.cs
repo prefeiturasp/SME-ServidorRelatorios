@@ -10,6 +10,7 @@ using SME.SR.IoC;
 using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
 using System.Linq;
+using System.Net;
 
 namespace SME.SR.Workers.SGP
 {
@@ -24,9 +25,6 @@ namespace SME.SR.Workers.SGP
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-               //.AddRazorRuntimeCompilation();
-
             services.AddResponseCompression(options =>
             {
                 options.Providers.Add<GzipCompressionProvider>();
@@ -37,10 +35,7 @@ namespace SME.SR.Workers.SGP
             services.AddMvc().AddControllersAsServices();
             services.AddHostedService<RabbitBackgroundListener>();
             services.AddTransient<ExcecaoMiddleware>();
-            services.RegistrarDependencias(Configuration);
-
-            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-
+            services.RegistrarDependencias(Configuration);            
 
             services.AddDirectoryBrowser();
 
@@ -50,6 +45,27 @@ namespace SME.SR.Workers.SGP
             });
 
         }
+
+        //private void RegistraServicosHttp(IServiceCollection services)
+        //{
+        //    var cookieContainer = new CookieContainer();
+        //    var jasperCookieHandler = new JasperCookieHandler() { CookieContainer = cookieContainer };
+
+        //    services.AddSingleton(jasperCookieHandler);
+
+        //    var basicAuth = $"{Configuration.GetValue<string>("ConfiguracaoJasper:Username")}:{Configuration.GetValue<string>("ConfiguracaoJasper:Password")}".EncodeTo64();
+        //    var jasperUrl = Configuration.GetValue<string>("ConfiguracaoJasper:Hostname");
+
+        //    services.AddHttpClient<GerarRelatorioAssincronoCommandHandler>(c =>
+        //    {
+        //        c.BaseAddress = new Uri(jasperUrl);
+        //        c.DefaultRequestHeaders.Add("Accept", "application/json");
+        //        c.DefaultRequestHeaders.Add("Authorization", $"Basic {basicAuth}");
+        //    }).ConfigurePrimaryHttpMessageHandler(() =>
+        //    {
+        //        return new JasperCookieHandler() { CookieContainer = cookieContainer };
+        //    });
+        //}
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

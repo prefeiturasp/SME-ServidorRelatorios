@@ -39,8 +39,6 @@
   <ItemGroup>
     <Content Update="wwwroot\templates\RelatorioAtasComColunaFinal.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </Content>    
   </ItemGroup>
-
-
-</Project>
+  </Project>

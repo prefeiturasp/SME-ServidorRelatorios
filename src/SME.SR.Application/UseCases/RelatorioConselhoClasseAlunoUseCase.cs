@@ -44,7 +44,7 @@ namespace SME.SR.Application
             SentrySdk.CaptureMessage("5.2 Serializei relatório.. - RelatorioConselhoClasseAlunoUseCase");
 
             SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
-            await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, relatorioSerializado, FormatoEnum.Pdf, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, relatorioSerializado, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
 
             SentrySdk.CaptureMessage("5 FINAL - RelatorioConselhoClasseAlunoUseCase");
         }

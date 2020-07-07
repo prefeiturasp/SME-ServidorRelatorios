@@ -27,7 +27,7 @@ namespace SME.SR.Application
 
             await mediator.Send(new GerarRelatorioAssincronoCommand("/sme/sgp/RelatorioConselhoClasse/ConselhoClasse",
                                                                     dadosRelatorio,
-                                                                    FormatoEnum.Pdf,
+                                                                    TipoFormatoRelatorio.Pdf,
                                                                     request.CodigoCorrelacao));
         }
     }
