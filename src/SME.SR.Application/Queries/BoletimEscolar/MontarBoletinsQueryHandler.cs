@@ -26,18 +26,20 @@ namespace SME.SR.Application
 
             foreach (var turma in turmas)
             {
-                var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
-                {
-                    TipoNota = tiposNota[turma.Codigo],
-                    Cabecalho = ObterCabecalhoInicial(dre, ue, turma),
-                    Grupos = MapearGruposEComponentes(componentesCurriculares.FirstOrDefault(cc => cc.Key == turma.Codigo))
-                };
-
+                var tipoNota = tiposNota[turma.Codigo];
+                var gruposComponentes = MapearGruposEComponentes(componentesCurriculares.FirstOrDefault(cc => cc.Key == turma.Codigo));
                 var notasTurma = notas.FirstOrDefault(nf => nf.Key == turma.Codigo);
                 var frequenciasTurma = frequencia.FirstOrDefault(nf => nf.Key == turma.Codigo);
 
                 foreach (var aluno in alunos.FirstOrDefault(a => a.Key == turma.Codigo))
                 {
+                    var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
+                    {
+                        TipoNota = tipoNota,
+                        Cabecalho = ObterCabecalhoInicial(dre, ue, turma),
+                        Grupos = gruposComponentes
+                    };
+
                     boletimEscolarAlunoDto.Cabecalho.CodigoEol = aluno.CodigoAluno.ToString();
                     boletimEscolarAlunoDto.Cabecalho.Aluno = aluno.NomeRelatorio;
 
