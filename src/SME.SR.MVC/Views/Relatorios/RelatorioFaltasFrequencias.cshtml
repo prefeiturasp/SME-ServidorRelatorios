@@ -1,8 +1,49 @@
-﻿@model SME.SR.Infra.Dtos.Relatorios.ConselhoClasse.ConselhoClasseCabecalhoDto
-@{
-    ViewData["Title"] = "RelatorioConselhoClasseAtaFinal";
-}
-@Model.NomeDre
-<h1>@Model.NomeUe</h1>
+﻿@model SME.SR.Infra.RelatorioFaltasFrequenciaDto
 
+@if (Model.Dres != null)
+    foreach (var dre in Model.Dres)
+    {
+        @dre.Nome
+        <br />
+        @if (dre.Ues != null)
+        {
+            foreach (var ue in dre.Ues)
+            {
+                @ue.Nome
+                <br />
+                if (ue.Anos != null)
+                {
+                    foreach (var ano in ue.Anos)
+                    {
+                        @ano.Nome
+                        <br />
+                        if (ano.Bimestres != null)
+                        {
+                            foreach (var bimestre in ano.Bimestres)
+                            {
+                                @bimestre.Nome
+                                <br />
+                                @if (bimestre.Componentes != null)
+                                {
+                                    foreach (var componente in bimestre.Componentes)
+                                    {
+                                        @componente.Nome
+                                        <br />
+                                        @if (componente.Alunos != null)
+                                        {
+                                            foreach (var aluno in componente.Alunos)
+                                            {
+                                                @string.Format("Turma: {0} | Aluno: {1}",aluno.NomeTurma,aluno.Nome)
+                                                <br />
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 

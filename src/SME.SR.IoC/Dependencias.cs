@@ -97,6 +97,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
             services.TryAddScoped<IDownloadPdfRelatorioUseCase, DownloadPdfRelatorioUseCase>();
+            services.TryAddScoped<IRelatorioFaltasFrequenciaUseCase, RelatorioFaltasFrequenciaUseCase>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
