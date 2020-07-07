@@ -28,7 +28,7 @@ namespace SME.SR.Application
                 relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario));
             }
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtasComColunaFinal.cshtml", relatoriosTurmas, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
         }
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(string turmaCodigo, string usuarioLogadoRF, string perfilUsuario)
