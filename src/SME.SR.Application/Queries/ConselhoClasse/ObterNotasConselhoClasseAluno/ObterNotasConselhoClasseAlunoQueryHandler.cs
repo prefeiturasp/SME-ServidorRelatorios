@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,16 +10,16 @@ namespace SME.SR.Application
 {
     public class ObterNotasConselhoClasseAlunoQueryHandler : IRequestHandler<ObterNotasConselhoClasseAlunoQuery, IEnumerable<NotaConceitoBimestreComponente>>
     {
-        private IConselhoClasseNotaRepository _conselhoClasseNotaRepository;
+        private readonly IConselhoClasseNotaRepository conselhoClasseNotaRepository;
 
         public ObterNotasConselhoClasseAlunoQueryHandler(IConselhoClasseNotaRepository conselhoClasseNotaRepository)
         {
-            this._conselhoClasseNotaRepository = conselhoClasseNotaRepository;
+            this.conselhoClasseNotaRepository = conselhoClasseNotaRepository ?? throw new ArgumentNullException(nameof(conselhoClasseNotaRepository));
         }
 
         public async Task<IEnumerable<NotaConceitoBimestreComponente>> Handle(ObterNotasConselhoClasseAlunoQuery request, CancellationToken cancellationToken)
         {
-            return await _conselhoClasseNotaRepository.ObterNotasAluno(request.ConselhoClasseId, request.CodigoAluno);
+            return await conselhoClasseNotaRepository.ObterNotasAluno(request.ConselhoClasseId, request.CodigoAluno);
         }
     }
 }

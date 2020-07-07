@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesRegencia;
 using SME.SR.Data;
 using SME.SR.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -11,24 +11,24 @@ namespace SME.SR.Application
 {
     public class ObterDadosComponenteComNotaFinalQueryHandler : IRequestHandler<ObterDadosComponenteComNotaFinalQuery, IEnumerable<GrupoMatrizComponenteComNotaFinal>>
     {
-        private IMediator _mediator;
+        private readonly IMediator mediator;
 
         public ObterDadosComponenteComNotaFinalQueryHandler(IMediator mediator)
         {
-            this._mediator = mediator;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); 
         }
 
         public async Task<IEnumerable<GrupoMatrizComponenteComNotaFinal>> Handle(ObterDadosComponenteComNotaFinalQuery request, CancellationToken cancellationToken)
         {
             var notasFechamento = await ObterNotasAlunoBimestre(request.FechamentoTurmaId,
-                                                          request.Turma.CodigoTurma,
+                                                          request.Turma.Codigo,
                                                           request.CodigoAluno,
                                                           request.PeriodoEscolar?.Bimestre);
 
             var notasConselhoClasse = await ObterNotasConselhoClasseAluno(request.ConselhoClasseId,
                                                                           request.CodigoAluno);
 
-            var disciplinasPorTurma = await ObterComponentesCurricularesPorTurma(request.Turma.CodigoTurma);
+            var disciplinasPorTurma = await ObterComponentesCurricularesPorTurma(request.Turma.Codigo);
 
             var lstComponentesComNota = disciplinasPorTurma.Where(c => c.LancaNota)
                                                       .GroupBy(c => c.GrupoMatriz?.Nome);
@@ -43,7 +43,7 @@ namespace SME.SR.Application
                 foreach (var disciplina in grupoDisciplinasMatriz)
                 {
                     // Carrega Frequencia Aluno
-                    var frequenciaAluno = await _mediator.Send(new ObterFrequenciaAlunoQuery()
+                    var frequenciaAluno = await mediator.Send(new ObterFrequenciaAlunoQuery()
                     {
                         Turma = request.Turma,
                         CodigoAluno = request.CodigoAluno,
@@ -92,7 +92,7 @@ namespace SME.SR.Application
                 Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100)
             };
 
-            var componentesRegencia = await _mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
+            var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
             {
                 Turma = turma,
                 CdComponenteCurricular = disciplina.CodDisciplina,
@@ -109,7 +109,7 @@ namespace SME.SR.Application
 
         private async Task<string> ObterTipoNota(PeriodoEscolar periodoEscolar, Turma turma)
         {
-            return await _mediator.Send(new ObterTipoNotaQuery()
+            return await mediator.Send(new ObterTipoNotaQuery()
             {
                 PeriodoEscolar = periodoEscolar,
                 Turma = turma
@@ -210,7 +210,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorTurma(string codigoTurma)
         {
-            return await _mediator.Send(new ObterComponentesCurricularesPorTurmaQuery()
+            return await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery()
             {
                 CodigoTurma = codigoTurma
             });
@@ -221,7 +221,7 @@ namespace SME.SR.Application
                                                                                                 string codigoAluno,
                                                                                                 int? bimestre)
         {
-            return await _mediator.Send(new ObterNotasAlunoBimestreQuery()
+            return await mediator.Send(new ObterNotasAlunoBimestreQuery()
             {
                 FechamentoTurmaId = fechamentoTurmaId,
                 CodigoTurma = codigoTurma,
@@ -233,7 +233,7 @@ namespace SME.SR.Application
         private async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasConselhoClasseAluno(long conselhoClasseId,
                                                                                                       string codigoAluno)
         {
-            return await _mediator.Send(new ObterNotasConselhoClasseAlunoQuery()
+            return await mediator.Send(new ObterNotasConselhoClasseAlunoQuery()
             {
                 ConselhoClasseId = conselhoClasseId,
                 CodigoAluno = codigoAluno

@@ -10,7 +10,7 @@
               left join periodo_escolar pe on pe.id = ft.periodo_escolar_id
              inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
              inner join conselho_classe_aluno cca on cca.conselho_classe_id = cc.id
-             inner join conselho_classe_parecer ccp on ccp.id = cca.conselho_classe_id
+             inner join conselho_classe_parecer ccp on ccp.id = cca.conselho_classe_parecer_id
             where t.turma_id = @turmaCodigo";
 
 		internal static string ParecerConclusivo = @"SELECT
