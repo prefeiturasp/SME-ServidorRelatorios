@@ -1,4 +1,5 @@
 ﻿using Refit;
+using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
 using SME.SR.JRSClient.Grupos;
 using SME.SR.JRSClient.Interfaces;
@@ -17,7 +18,7 @@ namespace SME.SR.JRSClient.Services
         public async Task<Stream> GetRelatorioSincrono(RelatorioSincronoDto Dto)
         {
             if (string.IsNullOrWhiteSpace(Dto.CaminhoRelatorio) || (int)Dto.Formato == 0)
-                throw new Exception("O Caminho do relatorio e o formato devem ser informados");
+                throw new NegocioException("O Caminho do relatorio e o formato devem ser informados");
 
             if(Dto.CaminhoRelatorio.StartsWith("/"))
                 Dto.CaminhoRelatorio = Dto.CaminhoRelatorio.Substring(1);

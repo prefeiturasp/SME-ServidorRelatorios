@@ -66,7 +66,7 @@ namespace SME.SR.Data
         {
             if (Perfis == null || !Perfis.Any())
             {
-                throw new Exception(MENSAGEM_ERRO_USUARIO_SEM_ACESSO);
+                throw new NegocioException(MENSAGEM_ERRO_USUARIO_SEM_ACESSO);
             }
             return PossuiPerfilDre() || PossuiPerfilUe();
         }
@@ -88,7 +88,7 @@ namespace SME.SR.Data
         {
             if (Perfis == null || !Perfis.Any())
             {
-                throw new Exception(MENSAGEM_ERRO_USUARIO_SEM_ACESSO);
+                throw new NegocioException(MENSAGEM_ERRO_USUARIO_SEM_ACESSO);
             }
             return PossuiPerfilSme() || PossuiPerfilDre();
         }
