@@ -20,4 +20,8 @@
     <ProjectReference Include="..\SME.SR.IoC\SME.SR.IoC.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

@@ -8,7 +8,6 @@
   <ItemGroup>
     <Folder Include="Commons\Attributes\" />
     <Folder Include="Commons\Exceptions\" />
-    <Folder Include="wwwroot\templates\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,10 +16,7 @@
     <PackageReference Include="Dapper.Extensions" Version="1.2.1" />
     <PackageReference Include="MediatR" Version="8.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="3.0.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
     <PackageReference Include="RabbitMQ.Client" Version="6.1.0" />
     <PackageReference Include="MediatR.Extensions" Version="0.6.0" />
@@ -41,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Views\Relatorios\RelatorioAtasComColunaFinal.cshtml">
+    <Content Update="wwwroot\templates\RelatorioAtasComColunaFinal.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
