@@ -167,7 +167,9 @@ namespace SME.SR.Application
 
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                     componente.CodDisciplina,
-                                                    notaConceito?.NotaConceito ?? "",
+                                                    componente.LancaNota ? 
+                                                        notaConceito?.NotaConceito ?? "" :
+                                                        notaConceito?.Sintese,
                                                     ++coluna);
                         }
                         // Monta coluna Sintese Final - SF
@@ -177,9 +179,10 @@ namespace SME.SR.Application
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
-                                                notaConceitofinal?.NotaConceito ?? "",
+                                                componente.LancaNota ?
+                                                    notaConceitofinal?.NotaConceito ?? "" :
+                                                    notaConceitofinal?.Sintese,
                                                 ++coluna);
-
 
                         // Monta colunas frequencia F - CA - %
                         var frequenciaAluno = frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString()
