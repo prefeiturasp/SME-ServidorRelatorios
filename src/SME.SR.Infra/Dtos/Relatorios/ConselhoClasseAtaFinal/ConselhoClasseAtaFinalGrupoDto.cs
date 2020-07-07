@@ -16,7 +16,7 @@ namespace SME.SR.Infra
         public int QuantidadeColunas { get; set; }
         public List<ConselhoClasseAtaFinalComponenteDto> ComponentesCurriculares { get; set; }
 
-        public void AdicionarComponente(long codDisciplina, string ComponenteCurricular, long idGrupoMatriz)
+        public void AdicionarComponente(long codDisciplina, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres)
         {
             var componenteCurricularDto = new ConselhoClasseAtaFinalComponenteDto()
             {
@@ -26,12 +26,10 @@ namespace SME.SR.Infra
             };
 
             // Colunas dos Bimestres
-            componenteCurricularDto.AdicionarColuna($"1º");
-            componenteCurricularDto.AdicionarColuna($"2º");
-            componenteCurricularDto.AdicionarColuna($"3º");
-            componenteCurricularDto.AdicionarColuna($"4º");
-            // Colunas de Frequencia
+            foreach(var bimestre in bimestres)
+                componenteCurricularDto.AdicionarColuna($"{bimestre}º");
             componenteCurricularDto.AdicionarColuna("SF");
+            // Colunas de Frequencia
             componenteCurricularDto.AdicionarColuna("F");
             componenteCurricularDto.AdicionarColuna("CA");
             componenteCurricularDto.AdicionarColuna("%");
