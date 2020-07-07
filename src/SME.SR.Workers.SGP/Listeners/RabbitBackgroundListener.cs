@@ -88,6 +88,11 @@ namespace SME.SR.Workers.SGP.Services
                     }
 
                 }
+                catch (NegocioException ex)
+                {
+                    NotificarUsuarioRelatorioComErro(request);
+                    SentrySdk.CaptureException(ex);
+                }
                 catch (Exception ex)
                 {
                     NotificarUsuarioRelatorioComErro(request);

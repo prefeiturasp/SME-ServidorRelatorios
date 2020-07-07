@@ -24,7 +24,6 @@ using SME.SR.Workers.SGP.Services;
 using System;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 
 namespace SME.SR.Workers.SGP
 {
@@ -64,6 +63,15 @@ namespace SME.SR.Workers.SGP
             var usuarioJasper = Configuration.GetValue<string>("ConfiguracaoJasper:Username");
             var senhaJasper = Configuration.GetValue<string>("ConfiguracaoJasper:Password");
 
+            services.AddHttpClient(name: "jasperServer", c =>
+            {
+                c.BaseAddress = new Uri(urlJasper);
+            })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new JasperCookieHandler() { CookieContainer = cookieContainer };
+                });
+
 
             services.AddHttpClient<IExecucaoRelatorioService, ExecucaoRelatorioService>(c =>
             {
@@ -80,11 +88,9 @@ namespace SME.SR.Workers.SGP
 
             // TODO: Criar arquivo especficio para as inje��es
             RegistrarRepositorios(services);
-            RegistrarQueries(services);
-            RegistrarHandlers(services);
-            RegistrarCommands(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
+            RegistraServicosHttp(services);
 
 
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools())); // TODO verificar onde deve ser colocada essa injeção
@@ -124,59 +130,6 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped(typeof(ITurmaRepository), typeof(TurmaRepository));
         }
 
-        private void RegistrarCommands(IServiceCollection services)
-        {
-            services.AddMediatR(typeof(GerarRelatorioAssincronoCommand).GetTypeInfo().Assembly);
-        }
-
-        private void RegistrarQueries(IServiceCollection services)
-        {
-            services.AddMediatR(typeof(ObterAlunosPorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterAnotacoesAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaFinalQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaFinalQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDreUePorTurmaQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaGlobalPorAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaPorDisciplinaBimestresQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasAlunoBimestreQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParametroSistemaPorTipoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParecerConclusivoPorAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQuery).GetTypeInfo().Assembly);
-        }
-
-        private void RegistrarHandlers(IServiceCollection services)
-        {
-            services.AddMediatR(typeof(ObterAlunosPorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterAnotacoesAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterComponentesCurricularesPorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteComNotaFinalQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDadosComponenteSemNotaFinalQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterDreUePorTurmaQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaGlobalPorAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaPorDisciplinaBimestresQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFrequenciaAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasAlunoBimestreQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterNotasConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParecerConclusivoPorAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRecomendacoesPorFechamentoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterRelatorioConselhoClasseAlunoQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterFechamentoTurmaPorIdQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(ObterParametroSistemaPorTipoQueryHandler).GetTypeInfo().Assembly);
-
-
-        }
-
         private void RegistrarUseCase(IServiceCollection services)
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
@@ -185,12 +138,34 @@ namespace SME.SR.Workers.SGP
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
-            services.TryAddScoped<IDownloadPdfRelatorioUseCase, DownloadPdfRelatorioUseCase>();
+            services.TryAddScoped<IDownloadRelatorioUseCase, DownloadRelatorioUseCase>();
+            services.TryAddScoped<IRelatorioFaltasFrequenciasUseCase, RelatorioFaltasFrequenciasUseCase>();
         }
 
         private void RegistrarServicos(IServiceCollection services)
         {
             services.TryAddScoped<IServicoFila, FilaRabbit>();
+        }
+
+        private void RegistraServicosHttp(IServiceCollection services)
+        {
+            var cookieContainer = new CookieContainer();
+            var jasperCookieHandler = new JasperCookieHandler() { CookieContainer = cookieContainer };
+
+            services.AddSingleton(jasperCookieHandler);
+
+            var basicAuth = $"{Configuration.GetValue<string>("ConfiguracaoJasper:Username")}:{Configuration.GetValue<string>("ConfiguracaoJasper:Password")}".EncodeTo64();
+            var jasperUrl = Configuration.GetValue<string>("ConfiguracaoJasper:Hostname");
+
+            services.AddHttpClient<GerarRelatorioAssincronoCommandHandler>(c =>
+            {
+                c.BaseAddress = new Uri(jasperUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+                c.DefaultRequestHeaders.Add("Authorization", $"Basic {basicAuth}");
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new JasperCookieHandler() { CookieContainer = cookieContainer };
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -2,9 +2,7 @@
 
 namespace SME.SR.Infra
 {
-    public static partial class Enumeradores
-    {
-        public enum FormatoEnum
+    public enum TipoFormatoRelatorio
         {
             [Display(Name = "pdf")]
             Pdf = 1,
@@ -29,5 +27,5 @@ namespace SME.SR.Infra
             [Display(Name = "jrprint")]
             Jrprint = 11,
         }
-    }
+    
 }
