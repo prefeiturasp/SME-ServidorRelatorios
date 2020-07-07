@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace SME.SR.Application
         public Ue Ue { get; set; }
 
         public IEnumerable<Turma> Turmas { get; set; }
+
+        public IEnumerable<MediaFrequencia> MediasFrequencia { get; set; }
 
         public IDictionary<string, string> TiposNota { get; set; }
 
