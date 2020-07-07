@@ -99,7 +99,15 @@ namespace SME.SR.Application
 
                     int quantidadeHorizontal = idsDisciplinasDestaPagina.Count();
 
-                    List<ConselhoClasseAtaFinalLinhaDto> linhas = dadosRelatorio.Linhas.Skip((v) * quantidadeDeLinhasPorPagina).Take(quantidadeDeLinhasPorPagina).Select(x => new ConselhoClasseAtaFinalLinhaDto { Id = x.Id, Nome = x.Nome, Celulas = x.Celulas }).ToList();
+                    List<ConselhoClasseAtaFinalLinhaDto> linhas = dadosRelatorio.Linhas.Skip((v) * quantidadeDeLinhasPorPagina).Take(quantidadeDeLinhasPorPagina)
+                        .Select(x => new ConselhoClasseAtaFinalLinhaDto 
+                        { 
+                            Id = x.Id, 
+                            Nome = x.Nome, 
+                            Inativo = x.Inativo,
+                            Situacao = x.Situacao,
+                            Celulas = x.Celulas 
+                        }).ToList();
 
                     foreach (ConselhoClasseAtaFinalLinhaDto linha in linhas)
                     {
@@ -143,85 +151,97 @@ namespace SME.SR.Application
 
         private void MontarEstruturaLinhas(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares)
         {
-            foreach (var aluno in alunos.Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada))
+            // Primmeiro alunos com numero de chamada
+            foreach (var aluno in alunos.Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0).Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada))
             {
-                var linhaDto = new ConselhoClasseAtaFinalLinhaDto()
-                {
-                    Id = long.Parse(aluno.NumeroAlunoChamada ?? "0"),
-                    Nome = aluno.NomeAluno,
-                    Situacao = aluno.SituacaoMatricula,
-                    Inativo = aluno.Inativo
-                };
+                relatorio.Linhas.Add(MontarLinhaAluno(aluno, gruposMatrizes, notasFinais, frequenciaAlunos, pareceresConclusivos, periodosEscolares));
+            }
 
-                foreach (var grupoMatriz in gruposMatrizes)
+            // Depois alunos sem numero ordenados por nome
+            foreach (var aluno in alunos.Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") == 0).Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NomeAluno))
+            {
+                relatorio.Linhas.Add(MontarLinhaAluno(aluno, gruposMatrizes, notasFinais, frequenciaAlunos, pareceresConclusivos, periodosEscolares));
+            }
+        }
+
+        private ConselhoClasseAtaFinalLinhaDto MontarLinhaAluno(AlunoSituacaoAtaFinalDto aluno, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares)
+        {
+            var linhaDto = new ConselhoClasseAtaFinalLinhaDto()
+            {
+                Id = long.Parse(aluno.NumeroAlunoChamada ?? "0"),
+                Nome = aluno.NomeAluno,
+                Situacao = aluno.SituacaoMatricula,
+                Inativo = aluno.Inativo
+            };
+
+            foreach (var grupoMatriz in gruposMatrizes)
+            {
+                foreach (var componente in grupoMatriz)
                 {
-                    foreach (var componente in grupoMatriz)
+                    var coluna = 0;
+                    // Monta Colunas notas dos bimestres
+                    foreach (var bimestre in periodosEscolares.Select(a => a.Bimestre))
                     {
-                        var coluna = 0;
-                        // Monta Colunas notas dos bimestres
-                        foreach (var bimestre in periodosEscolares.Select(a => a.Bimestre))
-                        {
-                            var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                                    && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                    && c.Bimestre == bimestre);
-
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
-                                                    componente.CodDisciplina,
-                                                    componente.LancaNota ? 
-                                                        notaConceito?.NotaConceito ?? "" :
-                                                        notaConceito?.Sintese,
-                                                    ++coluna);
-                        }
-                        // Monta coluna Sintese Final - SF
-                        var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                        var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                && !c.Bimestre.HasValue);
+                                                && c.Bimestre == bimestre);
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
                                                 componente.LancaNota ?
-                                                    notaConceitofinal?.NotaConceito ?? "" :
-                                                    notaConceitofinal?.Sintese,
-                                                ++coluna);
-
-                        // Monta colunas frequencia F - CA - %
-                        var frequenciaAluno = frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString()
-                                                                        && c.DisciplinaId == componente.CodDisciplina.ToString());
-
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
-                                                componente.CodDisciplina,
-                                                frequenciaAluno?.TotalAusencias.ToString() ?? "0",
-                                                ++coluna);
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
-                                                componente.CodDisciplina,
-                                                frequenciaAluno?.TotalCompensacoes.ToString() ?? "0",
-                                                ++coluna);
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
-                                                componente.CodDisciplina,
-                                                frequenciaAluno?.PercentualFrequencia.ToString() ?? "100,00",
+                                                    notaConceito?.NotaConceito ?? "" :
+                                                    notaConceito?.Sintese,
                                                 ++coluna);
                     }
+                    // Monta coluna Sintese Final - SF
+                    var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                            && !c.Bimestre.HasValue);
+
+                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
+                                            componente.CodDisciplina,
+                                            componente.LancaNota ?
+                                                notaConceitofinal?.NotaConceito ?? "" :
+                                                notaConceitofinal?.Sintese,
+                                            ++coluna);
+
+                    // Monta colunas frequencia F - CA - %
+                    var frequenciaAluno = frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString()
+                                                                    && c.DisciplinaId == componente.CodDisciplina.ToString());
+
+                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
+                                            componente.CodDisciplina,
+                                            frequenciaAluno?.TotalAusencias.ToString() ?? "0",
+                                            ++coluna);
+                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
+                                            componente.CodDisciplina,
+                                            frequenciaAluno?.TotalCompensacoes.ToString() ?? "0",
+                                            ++coluna);
+                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
+                                            componente.CodDisciplina,
+                                            frequenciaAluno?.PercentualFrequencia.ToString() ?? "100,00",
+                                            ++coluna);
                 }
-
-                var frequenciaGlobalAluno = frequenciaAlunos
-                                                .GroupBy(c => c.CodigoAluno)
-                                                .Where(c => c.Key == aluno.CodigoAluno.ToString())
-                                                .Select(f => new FrequenciaAluno()
-                                                {
-                                                    TotalAusencias = f.Sum(s => s.TotalAusencias),
-                                                    TotalCompensacoes = f.Sum(s => s.TotalCompensacoes)
-                                                }).FirstOrDefault();
-
-                // Anual
-                linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
-                linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);
-                linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? "0", 3);
-
-                var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
-                linhaDto.AdicionaCelula(99, 99, parecerConclusivo?.ParecerConclusivo ?? "", 4);
-
-                relatorio.Linhas.Add(linhaDto);
             }
+
+            var frequenciaGlobalAluno = frequenciaAlunos
+                                            .GroupBy(c => c.CodigoAluno)
+                                            .Where(c => c.Key == aluno.CodigoAluno.ToString())
+                                            .Select(f => new FrequenciaAluno()
+                                            {
+                                                TotalAusencias = f.Sum(s => s.TotalAusencias),
+                                                TotalCompensacoes = f.Sum(s => s.TotalCompensacoes)
+                                            }).FirstOrDefault();
+
+            // Anual
+            linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
+            linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);
+            linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? "0", 3);
+
+            var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
+            linhaDto.AdicionaCelula(99, 99, parecerConclusivo?.ParecerConclusivo ?? "", 4);
+
+            return linhaDto;
         }
 
         private void MontarEstruturaGruposMatriz(ref ConselhoClasseAtaFinalDto relatorio, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<PeriodoEscolar> periodosEscolares)
