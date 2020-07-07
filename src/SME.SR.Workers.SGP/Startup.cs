@@ -35,41 +35,7 @@ namespace SME.SR.Workers.SGP
             services.AddMvc().AddControllersAsServices();
             services.AddHostedService<RabbitBackgroundListener>();
             services.AddTransient<ExcecaoMiddleware>();
-            services.RegistrarDependencias(Configuration);
-
-            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-
-            services.AddHttpClient(name: "jasperServer", c =>
-            {
-                c.BaseAddress = new Uri(urlJasper);
-            })
-                .ConfigurePrimaryHttpMessageHandler(() =>
-                {
-                    return new JasperCookieHandler() { CookieContainer = cookieContainer };
-                });
-
-
-            services.AddHttpClient<IExecucaoRelatorioService, ExecucaoRelatorioService>(c =>
-            {
-                c.BaseAddress = new Uri(urlJasper);
-            })
-                .ConfigurePrimaryHttpMessageHandler(() =>
-                {
-                    return new JasperCookieHandler() { CookieContainer = cookieContainer };
-                });
-
-            services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
-
-            services.AddSingleton(new VariaveisAmbiente());
-
-            // TODO: Criar arquivo especficio para as inje��es
-            RegistrarRepositorios(services);
-            RegistrarUseCase(services);
-            RegistrarServicos(services);
-            RegistraServicosHttp(services);
-
-
-            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools())); // TODO verificar onde deve ser colocada essa injeção
+            services.RegistrarDependencias(Configuration);            
 
             services.AddDirectoryBrowser();
 
@@ -80,26 +46,26 @@ namespace SME.SR.Workers.SGP
 
         }
 
-        private void RegistraServicosHttp(IServiceCollection services)
-        {
-            var cookieContainer = new CookieContainer();
-            var jasperCookieHandler = new JasperCookieHandler() { CookieContainer = cookieContainer };
+        //private void RegistraServicosHttp(IServiceCollection services)
+        //{
+        //    var cookieContainer = new CookieContainer();
+        //    var jasperCookieHandler = new JasperCookieHandler() { CookieContainer = cookieContainer };
 
-            services.AddSingleton(jasperCookieHandler);
+        //    services.AddSingleton(jasperCookieHandler);
 
-            var basicAuth = $"{Configuration.GetValue<string>("ConfiguracaoJasper:Username")}:{Configuration.GetValue<string>("ConfiguracaoJasper:Password")}".EncodeTo64();
-            var jasperUrl = Configuration.GetValue<string>("ConfiguracaoJasper:Hostname");
+        //    var basicAuth = $"{Configuration.GetValue<string>("ConfiguracaoJasper:Username")}:{Configuration.GetValue<string>("ConfiguracaoJasper:Password")}".EncodeTo64();
+        //    var jasperUrl = Configuration.GetValue<string>("ConfiguracaoJasper:Hostname");
 
-            services.AddHttpClient<GerarRelatorioAssincronoCommandHandler>(c =>
-            {
-                c.BaseAddress = new Uri(jasperUrl);
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-                c.DefaultRequestHeaders.Add("Authorization", $"Basic {basicAuth}");
-            }).ConfigurePrimaryHttpMessageHandler(() =>
-            {
-                return new JasperCookieHandler() { CookieContainer = cookieContainer };
-            });
-        }
+        //    services.AddHttpClient<GerarRelatorioAssincronoCommandHandler>(c =>
+        //    {
+        //        c.BaseAddress = new Uri(jasperUrl);
+        //        c.DefaultRequestHeaders.Add("Accept", "application/json");
+        //        c.DefaultRequestHeaders.Add("Authorization", $"Basic {basicAuth}");
+        //    }).ConfigurePrimaryHttpMessageHandler(() =>
+        //    {
+        //        return new JasperCookieHandler() { CookieContainer = cookieContainer };
+        //    });
+        //}
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
