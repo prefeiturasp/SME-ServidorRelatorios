@@ -3,7 +3,7 @@
 @if (Model.Dres != null)
     foreach (var dre in Model.Dres)
     {
-        @dre.Nome
+        @dre.Codigo
         <br />
         @if (dre.Ues != null)
         {
@@ -19,10 +19,11 @@
                         <br />
                         if (ano.Bimestres != null)
                         {
-                            foreach (var bimestre in ano.Bimestres)
+                            @foreach (var bimestre in ano.Bimestres)
                             {
                                 @bimestre.Nome
                                 <br />
+
                                 @if (bimestre.Componentes != null)
                                 {
                                     foreach (var componente in bimestre.Componentes)
@@ -33,12 +34,13 @@
                                         {
                                             foreach (var aluno in componente.Alunos)
                                             {
-                                                @string.Format("Turma: {0} | Aluno: {1}",aluno.NomeTurma,aluno.Nome)
+                                                @string.Format("Turma: {0} | Aluno: {1}", aluno.Numero, aluno.Nome)
                                                 <br />
                                             }
                                         }
                                     }
                                 }
+                                <div style="page-break-before:always" />
                             }
                         }
                     }
