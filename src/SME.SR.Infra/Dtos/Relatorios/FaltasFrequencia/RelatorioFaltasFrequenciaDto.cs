@@ -8,7 +8,8 @@ namespace SME.SR.Infra
         {
             Dres = new List<RelatorioFaltaFrequenciaDreDto>();
         }
-
+        public bool ExibeFaltas { get; set; }
+        public bool ExibeFrequencia { get; set; }
         public List<RelatorioFaltaFrequenciaDreDto> Dres { get; set; }
     }
 }
