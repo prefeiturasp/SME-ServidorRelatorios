@@ -5,7 +5,6 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,23 +14,23 @@ namespace SME.SR.Application
 {
     public class ObterRecomendacoesPorFechamentoQueryHandler : IRequestHandler<ObterRecomendacoesPorFechamentoQuery, RecomendacaoConselhoClasseAluno>
     {
-        private IConselhoClasseAlunoRepository _conselhoClasseAlunoRepository;
-        private IConselhoClasseRecomendacaoRepository _conselhoClasseRecomendacaoRepository;
+        private IConselhoClasseAlunoRepository conselhoClasseAlunoRepository;
+        private IConselhoClasseRecomendacaoRepository conselhoClasseRecomendacaoRepository;
 
         public ObterRecomendacoesPorFechamentoQueryHandler(IConselhoClasseAlunoRepository conselhoClasseAlunoRepository,
                                                            IConselhoClasseRecomendacaoRepository conselhoClasseRecomendacaoRepository)
         {
-            this._conselhoClasseAlunoRepository = conselhoClasseAlunoRepository;
-            this._conselhoClasseRecomendacaoRepository = conselhoClasseRecomendacaoRepository;
+            this.conselhoClasseAlunoRepository = conselhoClasseAlunoRepository ?? throw new ArgumentNullException(nameof(conselhoClasseAlunoRepository));
+            this.conselhoClasseRecomendacaoRepository = conselhoClasseRecomendacaoRepository ?? throw new ArgumentNullException(nameof(conselhoClasseRecomendacaoRepository));
         }
 
         public async Task<RecomendacaoConselhoClasseAluno> Handle(ObterRecomendacoesPorFechamentoQuery request, CancellationToken cancellationToken)
         {
-            var recomendacoes = await _conselhoClasseAlunoRepository.ObterRecomendacoesPorFechamento(request.FechamentoTurmaId, request.CodigoAluno);
+            var recomendacoes = await conselhoClasseAlunoRepository.ObterRecomendacoesPorFechamento(request.FechamentoTurmaId, request.CodigoAluno);
 
             if (recomendacoes == null || string.IsNullOrEmpty(recomendacoes.RecomendacoesAluno) || string.IsNullOrEmpty(recomendacoes.RecomendacoesFamilia))
             {
-                var recomendacoesGeral = await _conselhoClasseRecomendacaoRepository.ObterTodos();
+                var recomendacoesGeral = await conselhoClasseRecomendacaoRepository.ObterTodos();
 
                 return new RecomendacaoConselhoClasseAluno
                 {

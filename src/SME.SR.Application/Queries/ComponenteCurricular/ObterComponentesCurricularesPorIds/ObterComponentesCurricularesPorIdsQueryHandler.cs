@@ -4,35 +4,34 @@ using SME.SR.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurricularesPorIds
+namespace SME.SR.Application
 {
     public class ObterComponentesCurricularesPorIdsQueryHandler : IRequestHandler<ObterComponentesCurricularesPorIdsQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
-        private IComponenteCurricularRepository _componenteCurricularRepository;
+        private readonly IComponenteCurricularRepository componenteCurricularRepository;
 
         public ObterComponentesCurricularesPorIdsQueryHandler(IComponenteCurricularRepository componenteCurricularRepository)
         {
-            this._componenteCurricularRepository = componenteCurricularRepository;
+            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
         }
 
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesPorIdsQuery request, CancellationToken cancellationToken)
         {
-            var lstComponentes = await _componenteCurricularRepository.ListarComponentes();
+            var lstComponentes = await componenteCurricularRepository.ListarComponentes();
 
             lstComponentes = lstComponentes
                    .Where(w => request.ComponentesCurricularesIds.Contains(w.Codigo))
                    .ToList();
 
-            lstComponentes = lstComponentes.Concat(await _componenteCurricularRepository.ListarComponentesTerritorioSaber(request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray()));
+            lstComponentes = lstComponentes.Concat(await componenteCurricularRepository.ListarComponentesTerritorioSaber(request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray()));
 
             if (lstComponentes != null && lstComponentes.Any())
             {
-                var componentesApiEol = await _componenteCurricularRepository.ListarApiEol();
-                var gruposMatriz = await _componenteCurricularRepository.ListarGruposMatriz();
+                var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
+                var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
                 return lstComponentes.Select(x => new ComponenteCurricularPorTurma
                 {

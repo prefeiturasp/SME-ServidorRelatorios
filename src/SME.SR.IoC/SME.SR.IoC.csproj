@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SME.SR.Application\SME.SR.Application.csproj" />
+    <ProjectReference Include="..\SME.SR.Data\SME.SR.Data.csproj" />
+    <ProjectReference Include="..\SME.SR.Infra\SME.SR.Infra.csproj" />
+    <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
+  </ItemGroup>
+
+</Project>
