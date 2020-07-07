@@ -133,7 +133,7 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="notaFinal"/>
 			<fieldDescription><![CDATA[notaFinal]]></fieldDescription>
 		</field>
-		<field name="frequenciaFinal" class="java.lang.Integer">
+		<field name="frequenciaFinal" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaFinal"/>
 			<fieldDescription><![CDATA[frequenciaFinal]]></fieldDescription>
 		</field>
@@ -149,7 +149,7 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre2"/>
 		<fieldDescription><![CDATA[componenteCurricularRegencia.frequenciaBimestre2]]></fieldDescription>
 	</field>
-	<field name="frequenciaFinal" class="java.lang.Integer">
+	<field name="frequenciaFinal" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="frequenciaFinal"/>
 		<fieldDescription><![CDATA[componenteCurricularRegencia.frequenciaFinal]]></fieldDescription>
 	</field>
