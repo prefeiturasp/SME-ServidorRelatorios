@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace SME.SR.Application
             var dadosAlunosHistorico = await _alunoRepository.ObterDadosAlunoHistoricoEscolar(request.CodigosAluno);
 
             if (dadosAlunosHistorico == null || dadosAlunosHistorico.Any())
-                throw new Exception("Não foram encontrados os dados dos alunos informados!");
+                throw new NegocioException("Não foram encontrados os dados dos alunos informados!");
 
             return dadosAlunosHistorico;
         }
