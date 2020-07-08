@@ -11,6 +11,6 @@ namespace SME.SR.Data
         public string RG { get; set; }
         public string ExpedicaoOrgaoEmissor { get; set; }
         public string ExpedicaoUF { get; set; }
-        public DateTime ExpedicaoData { get; set; }
+        public DateTime ExpedicaoData { get; set; }        
     }
 }

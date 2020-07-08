@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Infra
+﻿using SME.SR.Infra;
+
+namespace SME.SR.Data
 {
     public class FiltroHistoricoEscolarDto
     {
@@ -9,6 +11,8 @@
         public string TurmaCodigo { get ; set; }
         public string[] AlunosCodigo { get; set; }
         public bool ImprimirDadosResponsaveis { get; set; }
-        public bool PreencherDataImpressao { get; set; }        
+        public bool PreencherDataImpressao { get; set; }
+        public int Semestre { get; set; }
+        public Usuario Usuario { get; set; }
     }
 }

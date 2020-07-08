@@ -117,13 +117,16 @@ namespace SME.SR.Data
         {
             var query = @"select distinct 
 	                        ft.turma_id as TurmaCodigo,
-	                        cca.aluno_codigo as AlunoCodigo
+	                        cca.aluno_codigo as AlunoCodigo,
+	                        t.ano 
                         from
 	                        fechamento_turma ft
                         inner join conselho_classe cc on
 	                        cc.fechamento_turma_id = ft.id
                         inner join conselho_classe_aluno cca on
 	                        cca.conselho_classe_id = cc.id
+	                     inner join turma t 
+	                     	on ft.turma_id = t.id
                         where
 	                        cca.aluno_codigo = any(@codigoAlunos) 
 	                        and cca.conselho_classe_parecer_id  = any(@codigoPareceresConclusivos)";

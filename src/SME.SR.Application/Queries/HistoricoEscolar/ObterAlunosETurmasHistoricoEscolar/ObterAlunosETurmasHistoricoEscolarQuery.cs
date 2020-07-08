@@ -1,12 +1,13 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterNotasEFrequenciasDosAlunosQuery : IRequest<IEnumerable<AlunoTurmasNotasFrequenciasDto>>
+    public class ObterAlunosETurmasHistoricoEscolarQuery : IRequest<IEnumerable<AlunoTurmasHistoricoEscolarDto>>
     {
-        public ObterNotasEFrequenciasDosAlunosQuery(long codigoTurma, long[] codigoAlunos)
+        public ObterAlunosETurmasHistoricoEscolarQuery(long codigoTurma, long[] codigoAlunos)
         {
             CodigoTurma = codigoTurma;
             CodigoAlunos = codigoAlunos;
