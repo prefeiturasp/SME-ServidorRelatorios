@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelatorioBoletim" pageWidth="290" pageHeight="600" columnWidth="290" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7118107b-5099-4b69-bb10-e0b894e57a27">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
 	<property name="net.sf.jasperreports.print.create.bookmarks" value="true"/>
@@ -155,18 +155,6 @@
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 				</line>
-				<textField textAdjust="StretchHeight">
-					<reportElement positionType="Float" x="2" y="231" width="270" height="10" forecolor="#42474A" uuid="ed9aa558-a846-4814-a8ef-7a223cc0f63d">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					</reportElement>
-					<textElement verticalAlignment="Top">
-						<font size="6"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{descricaoGrupos}]]></textFieldExpression>
-				</textField>
 			</frame>
 			<subreport isUsingCache="false" overflowType="Stretch">
 				<reportElement positionType="Float" x="2" y="83" width="285" height="148" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7">
