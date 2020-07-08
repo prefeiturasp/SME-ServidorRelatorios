@@ -5,6 +5,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -22,27 +23,43 @@ namespace SME.SR.Application
         {
             var parametros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
 
+            var mensagensErro = new StringBuilder();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
             foreach (var turmaCodigo in parametros.TurmasCodigos)
             {
-                relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario));
+                try
+                {
+                    relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario));
+                }
+                catch (Exception e)
+                {
+                    mensagensErro.AppendLine($"Erro na carga de cados da turma [{turmaCodigo}]: {e.Message}");
+                    throw;
+                }            
             }
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
+            if (relatoriosTurmas.Any())
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
+
+            if (mensagensErro.Length > 0)
+                throw new NegocioException(mensagensErro.ToString());
         }
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(string turmaCodigo, string usuarioLogadoRF, string perfilUsuario)
         {
+            var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
+            if (notasFinais == null || !notasFinais.Any())
+                throw new NegocioException($"Turma não possui conselho de classe");
+
             var turma = await ObterTurma(turmaCodigo);
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
 
             var cabecalho = await ObterCabecalho(turmaCodigo);
             var alunos = await ObterAlunos(turmaCodigo);
             var componentesCurriculares = await ObterComponentesCurriculares(turmaCodigo, usuarioLogadoRF, perfilUsuario);
-            var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
-            var frequenciaAlunos = await ObterFrequenciaComponente(turmaCodigo, tipoCalendarioId);
-            var pareceresConclusivos = await ObterPareceresConclusivos(turmaCodigo);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
+            var frequenciaAlunos = await ObterFrequenciaComponente(turmaCodigo, tipoCalendarioId, periodosEscolares);
+            var pareceresConclusivos = await ObterPareceresConclusivos(turmaCodigo);
 
             var dadosRelatorio = MontarEstruturaRelatorio(turma.ModalidadeCodigo, cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos, periodosEscolares);
             return MontarEstruturaPaginada(dadosRelatorio);
@@ -281,8 +298,8 @@ namespace SME.SR.Application
         private async Task<Turma> ObterTurma(string turmaCodigo)
             => await mediator.Send(new ObterTurmaQuery(turmaCodigo));
 
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string turmaCodigo, long tipoCalendarioId)
-            => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmaCodigo, tipoCalendarioId));
+        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string turmaCodigo, long tipoCalendarioId, IEnumerable<PeriodoEscolar> periodosEscolares)
+            => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmaCodigo, tipoCalendarioId, periodosEscolares.Select(a => a.Bimestre)));
 
         private async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisPorTurma(string turmaCodigo)
         {
