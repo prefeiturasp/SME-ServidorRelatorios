@@ -188,7 +188,14 @@
                     {
                         foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                         {
-                            <th colspan="8">@componenteCurricular.Nome</th>
+                            if (Model.EhEJA)
+                            {
+                                <th colspan="6">@componenteCurricular.Nome</th>
+                            }
+                            else
+                            {
+                                <th colspan="8">@componenteCurricular.Nome</th>
+                            }
                         }
                     }
                 </tr>

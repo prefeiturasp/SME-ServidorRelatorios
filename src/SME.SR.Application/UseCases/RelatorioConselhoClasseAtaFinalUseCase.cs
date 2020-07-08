@@ -44,7 +44,7 @@ namespace SME.SR.Application
             var pareceresConclusivos = await ObterPareceresConclusivos(turmaCodigo);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
 
-            var dadosRelatorio = MontarEstruturaRelatorio(cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos, periodosEscolares);
+            var dadosRelatorio = MontarEstruturaRelatorio(turma.ModalidadeCodigo, cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos, periodosEscolares);
             return MontarEstruturaPaginada(dadosRelatorio);
         }
 
@@ -74,6 +74,7 @@ namespace SME.SR.Application
 
                     ConselhoClasseAtaFinalPaginaDto modelPagina = new ConselhoClasseAtaFinalPaginaDto
                     {
+                        EhEJA = dadosRelatorio.EhEJA,
                         Cabecalho = dadosRelatorio.Cabecalho,
                         NumeroPagina = contPagina++,
                         FinalHorizontal = ehPaginaFinal,
@@ -137,9 +138,10 @@ namespace SME.SR.Application
             return modelsPaginas;
         }
 
-        private ConselhoClasseAtaFinalDto MontarEstruturaRelatorio(ConselhoClasseAtaFinalCabecalhoDto cabecalho, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares)
+        private ConselhoClasseAtaFinalDto MontarEstruturaRelatorio(Modalidade modalidadeCodigo, ConselhoClasseAtaFinalCabecalhoDto cabecalho, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares)
         {
             var relatorio = new ConselhoClasseAtaFinalDto();
+            relatorio.EhEJA = modalidadeCodigo == Modalidade.EJA;
 
             relatorio.Cabecalho = cabecalho;
             var gruposMatrizes = componentesCurriculares.Where(c => c.GrupoMatriz != null).GroupBy(c => c.GrupoMatriz);
