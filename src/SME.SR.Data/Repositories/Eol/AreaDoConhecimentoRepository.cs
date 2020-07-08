@@ -17,44 +17,20 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AreaDoConhecimento>> ObterAreasDoConhecimentoPorComponentesCurriculares(string[] codigosComponentesCurriculares)
+        public async Task<IEnumerable<AreaDoConhecimento>> ObterAreasDoConhecimentoPorComponentesCurriculares(long[] codigosComponentesCurriculares)
         {
             try
             {
-
-
-                var query = @"select cac.id, cac.nome, cc.idcomponentecurricular from componentecurricularareadoconhecimento cac 
-                          inner join componentecurricular cc on cac.id = cc.idareadoconhecimento
+                var query = @"select cac.id, cac.nome, cc.idcomponentecurricular CodigoComponenteCurricular from componentecurricular cc
+                          left join componentecurricularareadoconhecimento cac on cac.id = cc.idareadoconhecimento
                           where cc.idcomponentecurricular = ANY(@CodigosComponentesCurriculares)  ";
 
                 var parametros = new { CodigosComponentesCurriculares = codigosComponentesCurriculares };
 
                 using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
                 {
-                    var listaAreas = new Dictionary<long, AreaDoConhecimento>();
-
-                    return (await conexao.QueryAsync<AreaDoConhecimento, long, AreaDoConhecimento>(query,
-                               (areaDoConhecimento, idcomponentecurricular) =>
-                               {
-                                   AreaDoConhecimento areaDoConhecimentoObj;
-
-                                   if (!listaAreas.TryGetValue(areaDoConhecimento.Id, out areaDoConhecimentoObj))
-                                   {
-                                       areaDoConhecimentoObj = areaDoConhecimento;
-                                       areaDoConhecimentoObj.ComponentesCurricularesId = new List<long>();
-                                       listaAreas.Add(areaDoConhecimentoObj.Id, areaDoConhecimentoObj);
-                                   }
-
-                                   areaDoConhecimentoObj.ComponentesCurricularesId =
-                                        areaDoConhecimentoObj.ComponentesCurricularesId.Append(idcomponentecurricular);
-
-                                   return areaDoConhecimentoObj;
-                               },
-                               parametros, splitOn: "id, idcomponentecurricular"))
-                           .Distinct()
-                           .ToList();
+                    return await conexao.QueryAsync<AreaDoConhecimento>(query, parametros);
                 }
-
             }
             catch (Exception ex)
             {

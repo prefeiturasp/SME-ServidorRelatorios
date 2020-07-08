@@ -96,12 +96,10 @@ namespace SME.SR.Application
         private async Task<IEnumerable<AreaDoConhecimento>> ObterAreasConhecimento(IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares)
         {
             //TODO: MELHORAR CODIGO
-            var listaCodigosComponentes = new List<string>();
-            foreach (var componenteTurma in componentesCurriculares)
-            {
-                listaCodigosComponentes.AddRange(componenteTurma.Select( a => a.CodDisciplina.ToString()));
-            }
+            var listaCodigosComponentes = new List<long>();
 
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Select(a => a.CodDisciplina).Distinct());
+            
             return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.ToArray()));
         }
 
