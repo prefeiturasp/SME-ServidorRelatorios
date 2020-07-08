@@ -80,7 +80,17 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string turmaCodigo, long tipoCalendarioId)
         {
-            var query = FrequenciaAlunoConsultas.FrequenciaDisciplinaGlobalPorTurma;
+            var query = @"select fa.codigo_aluno as CodigoAluno
+                                , fa.disciplina_id as DisciplinaId
+                                , pe.bimestre
+                                , fa.total_aulas as TotalAulas
+                                , fa.total_ausencias as TotalAusencias
+                                , fa.total_compensacoes as TotalCompensacoes
+                            from frequencia_aluno fa
+                           inner join periodo_escolar pe on pe.id = fa.periodo_escolar_id
+                            where fa.tipo = 1
+                              and fa.turma_id = @turmaCodigo
+                              and pe.tipo_calendario_id = @tipoCalendarioId ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
