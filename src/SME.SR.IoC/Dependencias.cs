@@ -69,6 +69,7 @@ namespace SME.SR.IoC
         private static void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IExemploRepository, ExemploRepository>();
+            services.TryAddScoped(typeof(IAreaDoConhecimentoRepository), typeof(AreaDoConhecimentoRepository));
             services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
             services.TryAddScoped(typeof(IAtribuicaoCJRepository), typeof(AtribuicaoCJRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
