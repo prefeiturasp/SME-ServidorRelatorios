@@ -1,20 +1,22 @@
 ﻿using MediatR;
-using SME.SR.Data;
+using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterPareceresConclusivosQuery : IRequest<long[]>
+    public class ObterPareceresConclusivosPorTipoAprovacaoQuery : IRequest<IEnumerable<long>>
     {
-        public ObterPareceresConclusivosQuery(bool aprovada, bool frequencia, bool conselho)
+        public ObterPareceresConclusivosPorTipoAprovacaoQuery(bool aprovada, bool frequencia, bool conselho, bool nota)
         {
             Aprovada = aprovada;
             Frequencia = frequencia;
             Conselho = conselho;
+            Nota = nota;
         }
 
         public bool Aprovada { get; set; }
         public bool Frequencia { get; set; }
         public bool Conselho { get; set; }
+        public bool Nota { get; set; }
 
 
     }

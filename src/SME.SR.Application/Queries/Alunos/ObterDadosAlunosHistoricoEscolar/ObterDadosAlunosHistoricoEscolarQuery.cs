@@ -6,6 +6,6 @@ namespace SME.SR.Application
 {
     public class ObterDadosAlunosHistoricoEscolarQuery : IRequest<IEnumerable<AlunoHistoricoEscolar>>
     {
-        public string[] CodigosAluno { get; set; }
+        public long[] CodigosAluno { get; set; }
     }
 }

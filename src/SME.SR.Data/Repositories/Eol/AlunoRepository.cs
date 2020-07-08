@@ -28,7 +28,7 @@ namespace SME.SR.Data
             }
         }
 
-		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(string[] codigosAlunos)
+		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(long[] codigosAlunos)
 		{
 			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
