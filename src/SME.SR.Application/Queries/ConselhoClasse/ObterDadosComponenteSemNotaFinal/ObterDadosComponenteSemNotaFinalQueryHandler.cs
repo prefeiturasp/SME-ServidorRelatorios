@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -10,11 +11,11 @@ namespace SME.SR.Application
 {
     public class ObterDadosComponenteSemNotaFinalQueryHandler : IRequestHandler<ObterDadosComponenteSemNotaFinalQuery, IEnumerable<GrupoMatrizComponenteSemNotaFinal>>
     {
-        private IMediator _mediator;
+        private IMediator mediator;
 
         public ObterDadosComponenteSemNotaFinalQueryHandler(IMediator mediator)
         {
-            this._mediator = mediator;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<IEnumerable<GrupoMatrizComponenteSemNotaFinal>> Handle(ObterDadosComponenteSemNotaFinalQuery request, CancellationToken cancellationToken)
@@ -24,7 +25,7 @@ namespace SME.SR.Application
             var lstComponentesSemNota = disciplinasPorTurma.Where(x => !x.LancaNota && x.GrupoMatriz != null)
                                               .GroupBy(c => new { c.GrupoMatriz?.Id, c.GrupoMatriz?.Nome });
 
-            var frequenciaAluno = await _mediator.Send(new ObterFrequenciaPorDisciplinaBimestresQuery()
+            var frequenciaAluno = await mediator.Send(new ObterFrequenciaPorDisciplinaBimestresQuery()
             {
                 CodigoTurma = request.CodigoTurma,
                 CodigoAluno = request.CodigoAluno,
@@ -75,12 +76,12 @@ namespace SME.SR.Application
         private async Task<double> ObterFrequenciaMediaPorComponenteCurricular(bool ehRegencia, bool lancaNota)
         {
             if (ehRegencia || !lancaNota)
-                return double.Parse(await _mediator.Send(new ObterParametroSistemaPorTipoQuery()
+                return double.Parse(await mediator.Send(new ObterParametroSistemaPorTipoQuery()
                 {
                     TipoParametro = TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse
                 }));
             else
-                return double.Parse(await _mediator.Send(new ObterParametroSistemaPorTipoQuery()
+                return double.Parse(await mediator.Send(new ObterParametroSistemaPorTipoQuery()
                 {
                     TipoParametro = TipoParametroSistema.CompensacaoAusenciaPercentualFund2
                 }));
@@ -88,7 +89,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorTurma(string codigoTurma)
         {
-            return await _mediator.Send(new ObterComponentesCurricularesPorTurmaQuery()
+            return await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery()
             {
                 CodigoTurma = codigoTurma
             });

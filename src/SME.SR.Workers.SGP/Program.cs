@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Authentication;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP
 {
@@ -28,7 +23,6 @@ namespace SME.SR.Workers.SGP
                            config.AddEnvironmentVariables();
                        })
                     .UseStartup<Startup>();
-                    
             });
     }
 }

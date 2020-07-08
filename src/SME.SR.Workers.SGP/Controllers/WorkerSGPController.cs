@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
@@ -15,11 +14,10 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-        private readonly IConfiguration configuration;
 
-        public WorkerSGPController(IConfiguration configuration)
+        public WorkerSGPController()
         {
-            this.configuration = configuration;
+
         }
         [HttpGet("relatorios/alunos")]
         [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
@@ -67,6 +65,13 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase)
         {
             await relatorioConselhoClasseAtaFinalUseCase.Executar(request);
+            return true;
+        }
+        [HttpGet("relatorios/faltasfrequencias")]
+        [Action("relatorios/faltasfrequencias", typeof(IRelatorioFaltasFrequenciasUseCase))]
+        public async Task<bool> RelatorioFaltasFrequencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
+        {
+            await relatorioFaltasFrequenciasUseCase.Executar(request);
             return true;
         }
         [HttpGet("relatorios/historicoescolarfundamental")]
