@@ -40,9 +40,9 @@ namespace SME.SR.Application
             var alunos = await ObterAlunos(turmaCodigo);
             var componentesCurriculares = await ObterComponentesCurriculares(turmaCodigo, usuarioLogadoRF, perfilUsuario);
             var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
-            var frequenciaAlunos = await ObterFrequenciaComponente(turmaCodigo, tipoCalendarioId);
-            var pareceresConclusivos = await ObterPareceresConclusivos(turmaCodigo);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
+            var frequenciaAlunos = await ObterFrequenciaComponente(turmaCodigo, tipoCalendarioId, periodosEscolares);
+            var pareceresConclusivos = await ObterPareceresConclusivos(turmaCodigo);
 
             var dadosRelatorio = MontarEstruturaRelatorio(cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, pareceresConclusivos, periodosEscolares);
             return MontarEstruturaPaginada(dadosRelatorio);
@@ -279,8 +279,8 @@ namespace SME.SR.Application
         private async Task<Turma> ObterTurma(string turmaCodigo)
             => await mediator.Send(new ObterTurmaQuery(turmaCodigo));
 
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string turmaCodigo, long tipoCalendarioId)
-            => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmaCodigo, tipoCalendarioId));
+        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string turmaCodigo, long tipoCalendarioId, IEnumerable<PeriodoEscolar> periodosEscolares)
+            => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmaCodigo, tipoCalendarioId, periodosEscolares.Select(a => a.Bimestre)));
 
         private async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisPorTurma(string turmaCodigo)
         {
