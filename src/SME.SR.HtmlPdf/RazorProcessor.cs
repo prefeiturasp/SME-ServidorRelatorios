@@ -8,7 +8,7 @@ namespace SME.SR.HtmlPdf
     {
         public string ProcessarTemplate<T>(T model, string template, string nomeTemplate)
         {
-            var result = Engine.Razor.RunCompile(template, nomeTemplate, typeof(T), model);
+            var result = Engine.Razor.RunCompile(template, nomeTemplate, null, model);
 
             return result;
         }
