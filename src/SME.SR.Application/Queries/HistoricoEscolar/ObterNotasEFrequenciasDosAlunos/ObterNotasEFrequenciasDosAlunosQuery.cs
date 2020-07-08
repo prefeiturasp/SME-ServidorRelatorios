@@ -6,7 +6,7 @@ namespace SME.SR.Application
 {
     public class ObterNotasEFrequenciasDosAlunosQuery : IRequest<IEnumerable<HistoricoEscolarDTO>>
     {
-        public string CodigoTurma { get; set; }
-        public string[] CodigoAlunos { get; set; }
+        public long CodigoTurma { get; set; }
+        public long[] CodigoAlunos { get; set; }
     }
 }
