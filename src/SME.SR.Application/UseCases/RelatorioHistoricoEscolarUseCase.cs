@@ -40,10 +40,13 @@ namespace SME.SR.Application
 
         private static void MontaCabecalhoComBaseNoEnderecoEAtosDaUe(CabecalhoDto cabecalho, IEnumerable<EnderecoEAtosDaUeDto> enderecosEAtos)
         {
-            cabecalho.NomeUe = enderecosEAtos?.FirstOrDefault().NomeUe;
-            cabecalho.Endereco = enderecosEAtos?.FirstOrDefault().Endereco;
-            cabecalho.AtoCriacao = enderecosEAtos?.FirstOrDefault(teste => teste.TipoOcorrencia == "1").Ato;
-            cabecalho.AtoAutorizacao = enderecosEAtos?.FirstOrDefault(teste => teste.TipoOcorrencia == "7").Ato;
+            if (enderecosEAtos.Any()) 
+            {
+                cabecalho.NomeUe = enderecosEAtos?.FirstOrDefault()?.NomeUe;
+                cabecalho.Endereco = enderecosEAtos?.FirstOrDefault()?.Endereco;
+                cabecalho.AtoCriacao = enderecosEAtos?.FirstOrDefault(teste => teste.TipoOcorrencia == "1")?.Ato;
+                cabecalho.AtoAutorizacao = enderecosEAtos?.FirstOrDefault(teste => teste.TipoOcorrencia == "7")?.Ato;
+            }
         }
     }
 }

@@ -69,8 +69,8 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioConselhoClasseAtaFinalUseCase.Executar(request);
             return true;
         }
-        [HttpGet("relatorios/historicoescolar")]
-        [Action("relatorios/historicoescolar", typeof(IRelatorioHistoricoEscolarUseCase))]
+        [HttpGet("relatorios/historicoescolarfundamental")]
+        [Action("relatorios/historicoescolarfundamental", typeof(IRelatorioHistoricoEscolarUseCase))]
         public async Task<bool> RelatorioHistoricoEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioHistoricoEscolarUseCase relatorioHistoricoEscolarUseCase)
         {
             await relatorioHistoricoEscolarUseCase.Executar(request);
