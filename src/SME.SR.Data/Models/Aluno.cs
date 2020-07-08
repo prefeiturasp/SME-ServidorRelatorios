@@ -8,6 +8,13 @@ namespace SME.SR.Data
 {
     public class Aluno
     {
+        public string ObterNomeFinal()
+        {
+            if (string.IsNullOrEmpty(NomeSocialAluno))
+                return NomeAluno;
+            else return NomeSocialAluno;
+        }
+
         public int CodigoTurma { get; set; }
         public int CodigoAluno { get; set; }
         public string NomeAluno { get; set; }

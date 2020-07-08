@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Application
 {
@@ -20,7 +19,6 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            CabecalhoDto cabecalho = new CabecalhoDto();
             var relatorioQuery = request.ObterObjetoFiltro<ObterHistoricoEscolarQueryHandler>();
             var relatorioHistoricoEscolar = await mediator.Send(relatorioQuery);
 

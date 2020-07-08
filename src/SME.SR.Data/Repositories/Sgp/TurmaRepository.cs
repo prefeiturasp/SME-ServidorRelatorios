@@ -112,5 +112,27 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<Turma>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[]codigoPareceresConclusivos)
+        {
+            var query = @"select distinct 
+	                        ft.turma_id as TurmaCodigo,
+	                        cca.aluno_codigo as AlunoCodigo
+                        from
+	                        fechamento_turma ft
+                        inner join conselho_classe cc on
+	                        cc.fechamento_turma_id = ft.id
+                        inner join conselho_classe_aluno cca on
+	                        cca.conselho_classe_id = cc.id
+                        where
+	                        cca.aluno_codigo = any(@codigoAlunos) 
+	                        and cca.conselho_classe_parecer_id  = any(@codigoPareceresConclusivos)";
+
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos, codigoPareceresConclusivos });
+
+        }
     }
 }
