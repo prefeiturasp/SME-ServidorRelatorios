@@ -8,7 +8,7 @@ namespace SME.SR.Infra
         public string NomeUe { get; set; }
         [JsonProperty("endereco")]
         public string Endereco { get; set; }
-        [JsonProperty("toCriacao")]
+        [JsonProperty("atoCriacao")]
         public string AtoCriacao { get; set; }
         [JsonProperty("atoAutorizacao")]
         public string AtoAutorizacao { get; set; }
