@@ -84,7 +84,7 @@
 					</datasetRun>
 					<jr:listContents height="8" width="285">
 						<subreport>
-							<reportElement x="0" y="0" width="285" height="8" isRemoveLineWhenBlank="true" uuid="96c92950-1897-43d4-bc75-46f23fb84859"/>
+							<reportElement positionType="Float" x="0" y="0" width="285" height="8" isRemoveLineWhenBlank="true" uuid="96c92950-1897-43d4-bc75-46f23fb84859"/>
 							<subreportParameter name="REPORT_DATA_SOURCE">
 								<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 							</subreportParameter>
