@@ -4,7 +4,7 @@
     {
         internal static string FechamentoTurmaPeriodo = @"select 
                           f.turma_id TurmaId, f.periodo_escolar_id PeriodoEscolarId,
-                          t.turma_id CodigoTurma, t.nome, t.ano, t.ano_letivo AnoLetivo, 
+                          t.turma_id Codigo, t.nome, t.ano, t.ano_letivo AnoLetivo, 
                           t.modalidade_codigo ModalidadeCodigo, t.Semestre,
                           pe.bimestre, pe.id, pe.periodo_inicio PeriodoInicio, pe.periodo_fim PeriodoFim
                            from fechamento_turma f
@@ -14,7 +14,7 @@
 
         internal static string FechamentosTurmaPorCodigoTurma = @"select
                       f.id, f.turma_id TurmaId, f.periodo_escolar_id PeriodoEscolarId,
-                      t.turma_id CodigoTurma, t.nome, t.ano_letivo AnoLetivo, 
+                      t.turma_id Codigo, t.nome, t.ano_letivo AnoLetivo, 
                       t.modalidade_codigo ModalidadeCodigo, t.Semestre,
                       p.bimestre, p.id, p.periodo_inicio PeriodoInicio, p.periodo_fim PeriodoFim
                        from fechamento_turma f

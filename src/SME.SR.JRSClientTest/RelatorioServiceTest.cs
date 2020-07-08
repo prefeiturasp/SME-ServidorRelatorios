@@ -3,7 +3,6 @@ using SME.SR.Infra.Dtos;
 using SME.SR.JRSClient.Services;
 using System.IO;
 using Xunit;
-using SME.SR.Infra;
 
 namespace SME.SR.JRSClientTest
 {
@@ -23,7 +22,7 @@ namespace SME.SR.JRSClientTest
             Stream relatorio = relatorioService.GetRelatorioSincrono(new RelatorioSincronoDto
             {
                 CaminhoRelatorio = "/testes/jrsclient/abstract_book_cover.jrxml/abstract_book_cover.jrxml",
-                Formato = Enumeradores.FormatoEnum.Pdf
+                Formato = TipoFormatoRelatorio.Pdf
             }).Result;
             Assert.NotNull(relatorio);
         }

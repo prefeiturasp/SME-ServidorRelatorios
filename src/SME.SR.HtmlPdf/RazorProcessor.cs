@@ -1,5 +1,6 @@
 ﻿using RazorEngine;
 using RazorEngine.Templating;
+using Microsoft.AspNetCore.Razor.Language;
 
 namespace SME.SR.HtmlPdf
 {

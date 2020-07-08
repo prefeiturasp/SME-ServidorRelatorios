@@ -3,7 +3,6 @@ using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,16 +11,16 @@ namespace SME.SR.Application
 {
     public class ObterAnotacoesAlunoQueryHandler : IRequestHandler<ObterAnotacoesAlunoQuery, IEnumerable<FechamentoAlunoAnotacaoConselho>>
     {
-        private IFechamentoAlunoRepository _fechamentoAlunoRepository;
+        private readonly IFechamentoAlunoRepository fechamentoAlunoRepository;
 
         public ObterAnotacoesAlunoQueryHandler(IFechamentoAlunoRepository fechamentoAlunoRepository)
         {
-            this._fechamentoAlunoRepository = fechamentoAlunoRepository;
+            this.fechamentoAlunoRepository = fechamentoAlunoRepository ?? throw new ArgumentNullException(nameof(fechamentoAlunoRepository));
         }
 
         public async Task<IEnumerable<FechamentoAlunoAnotacaoConselho>> Handle(ObterAnotacoesAlunoQuery request, CancellationToken cancellationToken)
         {
-            var anotacoesConselho = await _fechamentoAlunoRepository.ObterAnotacoesTurmaAlunoBimestreAsync(request.CodigoAluno, request.FechamentoTurmaId);
+            var anotacoesConselho = await fechamentoAlunoRepository.ObterAnotacoesTurmaAlunoBimestreAsync(request.CodigoAluno, request.FechamentoTurmaId);
 
             RemoverTags(anotacoesConselho);
 
