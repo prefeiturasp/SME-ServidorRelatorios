@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace SME.SR.Application
             var notas = request.Notas;
             var frequencia = request.Frequencias;
             var tiposNota = request.TiposNota;
+            var mediasFrequencia = request.MediasFrequencia;
 
             var boletinsAlunos = new List<BoletimEscolarAlunoDto>();
 
@@ -46,7 +48,7 @@ namespace SME.SR.Application
                     var notasAluno = notasTurma.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
                     var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
 
-                    SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno);
+                    SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno, mediasFrequencia);
 
                     boletinsAlunos.Add(boletimEscolarAlunoDto);
                 }
@@ -124,7 +126,7 @@ namespace SME.SR.Application
             return gruposRetorno;
         }
 
-        private void SetarNotasFrequencia(List<GrupoMatrizComponenteCurricularDto> gruposMatriz, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia)
+        private void SetarNotasFrequencia(List<GrupoMatrizComponenteCurricularDto> gruposMatriz, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
         {
             foreach (var grupoMatriz in gruposMatriz)
             {
@@ -182,11 +184,36 @@ namespace SME.SR.Application
                             componenteCurricular.FrequenciaBimestre4 = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == 4)?.PercentualFrequencia.ToString() ?? "100";
 
                             componenteCurricular.FrequenciaFinal = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null)?.PercentualFrequencia.ToString() ?? "100";
+
+                            if(!componenteCurricular.Nota)
+                                componenteCurricular.NotaFinal = ObterSintese(frequenciasComponente, mediasFrequencia, false, false);
                         }
                     }
                 }
-
             }
+        }
+
+        private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
+        {
+            var percentualFrequencia = ObterPercentualDeFrequencia(frequenciasComponente);
+
+            var sintese = percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ?
+                          "F" : "NF";
+
+            return sintese;
+        }
+
+        private double ObterPercentualDeFrequencia(IEnumerable<FrequenciaAluno> frequenciaDisciplina)
+        {
+            return frequenciaDisciplina != null && frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : 100;
+        }
+
+        private double ObterFrequenciaMedia(IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
+        {
+            if (regencia || !lancaNota)
+                return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse).Media;
+            else
+                return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualFund2).Media;
         }
     }
 }

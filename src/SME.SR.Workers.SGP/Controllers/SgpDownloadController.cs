@@ -10,9 +10,14 @@ namespace SME.SR.Workers.SGP.Controllers
     public class SgpDownloadController : Controller
     {
         [HttpGet("pdf/{correlacaoId}")]
-        public async Task<IActionResult> DownloadPdf(Guid correlacaoId, [FromServices] IDownloadPdfRelatorioUseCase downloadPdfRelatorioUseCase)
+        public async Task<IActionResult> DownloadPdf(Guid correlacaoId, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId), "application/pdf", $"{correlacaoId}.pdf");
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf"), "application/pdf", $"{correlacaoId}.pdf");
+        }
+        [HttpGet("xlsx/{correlacaoId}")]
+        public async Task<IActionResult> DownloadExcel(Guid correlacaoId, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
+        {
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".xlsx"), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{correlacaoId}.xlsx");
         }
     }
 }

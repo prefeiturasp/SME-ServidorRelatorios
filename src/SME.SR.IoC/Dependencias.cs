@@ -47,6 +47,15 @@ namespace SME.SR.IoC
                     return new JasperCookieHandler() { CookieContainer = cookieContainer };
                 });
 
+            services.AddHttpClient(name: "jasperServer", c =>
+            {
+                c.BaseAddress = new Uri(urlJasper);
+            })
+      .ConfigurePrimaryHttpMessageHandler(() =>
+      {
+          return new JasperCookieHandler() { CookieContainer = cookieContainer };
+      });
+
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
@@ -54,10 +63,8 @@ namespace SME.SR.IoC
             services.AddSingleton(new VariaveisAmbiente());
             RegistrarRepositorios(services);
             RegistrarUseCase(services);
-            RegistrarServicos(services);
+            RegistrarServicos(services);            
         }
-
-
 
         private static void RegistrarRepositorios(IServiceCollection services)
         {
@@ -96,7 +103,8 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
-            services.TryAddScoped<IDownloadPdfRelatorioUseCase, DownloadPdfRelatorioUseCase>();
+            services.TryAddScoped<IDownloadRelatorioUseCase, DownloadRelatorioUseCase>();
+            services.TryAddScoped<IRelatorioFaltasFrequenciasUseCase, RelatorioFaltasFrequenciasUseCase>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
