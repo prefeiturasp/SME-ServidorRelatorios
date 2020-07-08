@@ -28,7 +28,7 @@ namespace SME.SR.Application
                 relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario));
             }
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
         }
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(string turmaCodigo, string usuarioLogadoRF, string perfilUsuario)
@@ -333,6 +333,8 @@ namespace SME.SR.Application
         }
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(string turmaCodigo, string usuarioLogadoRF, string perfilUsuario)
-            => await mediator.Send(new ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery(turmaCodigo, new Usuario() { Login = usuarioLogadoRF, PerfilAtual = new Guid(perfilUsuario) }));
+        {
+            return await mediator.Send(new ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery(turmaCodigo, new Usuario() { Login = usuarioLogadoRF, PerfilAtual = new Guid(perfilUsuario) }));
+        }
     }
 }

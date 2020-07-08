@@ -33,10 +33,11 @@
     <ProjectReference Include="..\SME.SR.Application\SME.SR.Application.csproj" />
     <ProjectReference Include="..\SME.SR.Data\SME.SR.Data.csproj" />
     <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
+    <ProjectReference Include="..\SME.SR.IoC\SME.SR.IoC.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\templates\relatorioAtasComColunaFinal.html">
+    <Content Update="wwwroot\templates\RelatorioAtasComColunaFinal.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
