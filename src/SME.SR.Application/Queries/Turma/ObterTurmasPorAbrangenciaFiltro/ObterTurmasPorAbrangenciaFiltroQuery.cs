@@ -10,13 +10,16 @@ namespace SME.SR.Application
     {
         public string CodigoUe { get; set; }
 
-        public Modalidade? Modalidade { get; set; }
+        public Modalidade Modalidade { get; set; }
 
         public int AnoLetivo { get; set; }
 
-        public int? Semestre { get; set; }
+        public int Semestre { get; set; }
+
         public string Login { get; set; }
+
         public Guid Perfil { get; set; }
+
         public bool ConsideraHistorico { get; set; }
     }
 }

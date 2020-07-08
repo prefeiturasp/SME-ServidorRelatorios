@@ -1,7 +1,10 @@
-﻿namespace SME.SR.Data
+﻿using System.Collections.Generic;
+
+namespace SME.SR.Data
 {
     public class ComponenteCurricularPorTurma
     {
+        public string CodigoTurma { get; set; }
         public long CodDisciplina { get; set; }
         public long? CodDisciplinaPai { get; set; }
         public string Disciplina { get; set; }
@@ -13,5 +16,6 @@
         public bool LancaNota { get; set; }
         public bool BaseNacional { get; set; }
         public ComponenteCurricularGrupoMatriz GrupoMatriz { get; set; }
+        public IEnumerable<ComponenteCurricularPorTurmaRegencia> ComponentesCurricularesRegencia { get; set; }
     }
 }

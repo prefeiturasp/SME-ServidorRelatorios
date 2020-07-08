@@ -7,7 +7,11 @@ namespace SME.SR.Data.Interfaces
     {
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmaEProfessor(string login, string codigoTurma);
 
+        Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmasEProfessor(string login, string[] codigosTurma);
+
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurma(string codigoTurma);
+
+        Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmas(string[] codigosTurma);
 
         Task<IEnumerable<ComponenteCurricular>> ListarComponentes();
 
@@ -20,5 +24,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<ComponenteCurricularGrupoMatriz>> ListarGruposMatriz();
 
         Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string turmaCodigo, IEnumerable<long> componentesCurricularesId);
+
+        Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string[] turmasCodigo, IEnumerable<long> componentesCurricularesId);
     }
 }

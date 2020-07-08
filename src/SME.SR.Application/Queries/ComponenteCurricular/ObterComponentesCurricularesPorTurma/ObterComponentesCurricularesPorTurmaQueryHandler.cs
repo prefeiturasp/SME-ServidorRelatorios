@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -10,20 +11,20 @@ namespace SME.SR.Application
 {
     public class ObterComponentesCurricularesPorTurmaQueryHandler : IRequestHandler<ObterComponentesCurricularesPorTurmaQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
-        private IComponenteCurricularRepository _componenteCurricularRepository;
+        private readonly IComponenteCurricularRepository componenteCurricularRepository;
 
         public ObterComponentesCurricularesPorTurmaQueryHandler(IComponenteCurricularRepository componenteCurricularRepository)
         {
-            this._componenteCurricularRepository = componenteCurricularRepository;
+            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
         }
 
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            var componentesDaTurma = await _componenteCurricularRepository.ObterComponentesPorTurma(request.CodigoTurma);
+            var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurma(request.CodigoTurma);
             if (componentesDaTurma != null && componentesDaTurma.Any())
             {
-                var componentesApiEol = await _componenteCurricularRepository.ListarApiEol();
-                var gruposMatriz = await _componenteCurricularRepository.ListarGruposMatriz();
+                var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
+                var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
                 return componentesDaTurma?.Select(c => new ComponenteCurricularPorTurma
                 {
