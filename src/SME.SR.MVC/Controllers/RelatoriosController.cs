@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -31,7 +33,7 @@ namespace SME.SR.MVC.Controllers
             {
                 Codigo = "123",
                 Nome = "Nome da dre 123",
-                Ues= new List<RelatorioFaltaFrequenciaUeDto>
+                Ues = new List<RelatorioFaltaFrequenciaUeDto>
                 {
                     new RelatorioFaltaFrequenciaUeDto
                     {
@@ -57,7 +59,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -65,7 +67,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -73,7 +75,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -81,7 +83,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -96,7 +98,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -104,7 +106,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -112,7 +114,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -120,7 +122,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -142,7 +144,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -150,7 +152,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -158,7 +160,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -166,7 +168,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -181,7 +183,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -189,7 +191,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -197,7 +199,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -205,7 +207,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -227,7 +229,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -235,7 +237,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -243,7 +245,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -251,7 +253,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -266,7 +268,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -274,7 +276,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -282,7 +284,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -290,7 +292,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -312,7 +314,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -320,7 +322,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -328,7 +330,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -336,7 +338,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -351,7 +353,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -359,7 +361,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -367,7 +369,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -375,7 +377,7 @@ namespace SME.SR.MVC.Controllers
                                                     new RelatorioFaltaFrequenciaAlunoDto
                                                     {
                                                         Nome="José da silva",
-                                                        Faltas=10,
+                                                        Faltas="10",
                                                         Frequencia=50,
                                                         NomeTurma="1A",
                                                         Numero="1"
@@ -392,6 +394,7 @@ namespace SME.SR.MVC.Controllers
                     }
                 }
             });
+
             return View(model);
         }
     }

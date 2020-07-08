@@ -1,0 +1,51 @@
+﻿@model SME.SR.Infra.RelatorioFaltasFrequenciaDto
+
+@if (Model.Dres != null)
+    foreach (var dre in Model.Dres)
+    {
+        @dre.Codigo
+        <br />
+        @if (dre.Ues != null)
+        {
+            foreach (var ue in dre.Ues)
+            {
+                @ue.Nome
+                <br />
+                if (ue.Anos != null)
+                {
+                    foreach (var ano in ue.Anos)
+                    {
+                        @ano.Nome
+                        <br />
+                        if (ano.Bimestres != null)
+                        {
+                            @foreach (var bimestre in ano.Bimestres)
+                            {
+                                @bimestre.Nome
+                                <br />
+
+                                @if (bimestre.Componentes != null)
+                                {
+                                    foreach (var componente in bimestre.Componentes)
+                                    {
+                                        @componente.Nome
+                                        <br />
+                                        @if (componente.Alunos != null)
+                                        {
+                                            foreach (var aluno in componente.Alunos)
+                                            {
+                                                @string.Format("Turma: {0} | Aluno: {1}", aluno.Numero, aluno.Nome)
+                                                <br />
+                                            }
+                                        }
+                                    }
+                                }
+                                <div style="page-break-before:always" />
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+

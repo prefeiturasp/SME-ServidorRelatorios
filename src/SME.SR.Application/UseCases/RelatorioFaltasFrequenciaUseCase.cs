@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
+using System;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -17,6 +18,8 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaQuery());
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFaltasFrequencias.cshtml", dadosRelatorio, Guid.NewGuid()));
+
         }
     }
 }

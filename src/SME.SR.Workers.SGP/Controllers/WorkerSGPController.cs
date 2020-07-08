@@ -74,7 +74,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorios/faltas-frequencia")]
         [Action("relatorios/faltas-frequencia", typeof(IRelatorioFaltasFrequenciaUseCase))]
-        public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciaUseCase relatorioFaltasFrequenciaUseCase)
+        public async Task<bool> RelatorioFaltasFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciaUseCase relatorioFaltasFrequenciaUseCase)
         {
             await relatorioFaltasFrequenciaUseCase.Executar(request);
             return true;
