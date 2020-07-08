@@ -1,9 +1,10 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Realtório Atas de Conselho</title>
+    <title>Relatório Atas de Conselho</title>
 </head>
 <body class="body-rel-atas">
     <style>
@@ -38,16 +39,16 @@
             margin-bottom: 22px;
         }
 
-        .header-pagina td {
-            text-align: left;
-        }
+            .header-pagina td {
+                text-align: left;
+            }
 
         .campo-dre {
-            width: 395px;
+            width: 345px;
         }
 
         .campo-ue {
-            width: 485px;
+            width: 353px;
         }
 
         .campo-turma {
@@ -137,7 +138,7 @@
         }
 
         .estudante-inativo {
-          background-color: #f2f2f2;
+            background-color: #f2f2f2;
         }
     </style>
 
@@ -175,28 +176,28 @@
                     <th rowspan="2" colspan="2"></th>
                     @foreach (var grupoMatriz in Model.GruposMatriz)
                     {
-                        <th colspan="@grupoMatriz.QuantidadeColunas">@grupoMatriz.Nome</th>
+                    <th colspan="@grupoMatriz.QuantidadeColunas">@grupoMatriz.Nome</th>
                     }
                     @if (Model.FinalHorizontal)
                     {
-                        <th rowspan="2" colspan="4">Anual</th>
+                    <th rowspan="2" colspan="4">Anual</th>
                     }
                 </tr>
                 <tr class="fonte-10">
 
                     @foreach (var grupoMatriz in Model.GruposMatriz)
                     {
-                        foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
-                        {
-                            if (Model.EhEJA)
-                            {
-                                <th colspan="6">@componenteCurricular.Nome</th>
-                            }
-                            else
-                            {
-                                <th colspan="8">@componenteCurricular.Nome</th>
-                            }
-                        }
+                    foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
+                    {
+                    if (Model.EhEJA)
+                    {
+                    <th colspan="6">@componenteCurricular.Nome</th>
+                    }
+                    else
+                    {
+                    <th colspan="8">@componenteCurricular.Nome</th>
+                    }
+                    }
                     }
                 </tr>
                 <tr>
@@ -205,47 +206,47 @@
 
                     @foreach (var grupoMatriz in Model.GruposMatriz)
                     {
-                        foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
-                        {
-                            foreach (var coluna in componenteCurricular.Colunas)
-                            {
-                                <th>@coluna.Nome</th>
-                            }
-                        }
+                    foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
+                    {
+                    foreach (var coluna in componenteCurricular.Colunas)
+                    {
+                    <th>@coluna.Nome</th>
+                    }
+                    }
                     }
                     @if (Model.FinalHorizontal)
                     {
-                        <th>F</th>
-                        <th>CA</th>
-                        <th>%</th>
-                        <th>Parecer conclusivo</th>
+                    <th>F</th>
+                    <th>CA</th>
+                    <th>%</th>
+                    <th>Parecer conclusivo</th>
                     }
                 </tr>
             </thead>
             <tbody>
                 @foreach (var linha in Model.Linhas)
                 {
-                    <tr class="@(linha.Inativo ? "estudante-inativo" : "")">
-                        <td class="alinhar-centro">@linha.Id</td>
-                        @if (linha.Inativo)
-                        {
-                          <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
-                        } else
-                        {
-                          <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
-                        }
-                        @foreach (var celula in linha.Celulas)
-                        {
-                            <td>@celula.Valor</td>
-                        }
-                    </tr>
+                <tr class="@(linha.Inativo ? " estudante-inativo" : "" )">
+                    <td class="alinhar-centro">@linha.Id</td>
+                    @if (linha.Inativo)
+                    {
+                    <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
+                    } else
+                    {
+                    <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
+                    }
+                    @foreach (var celula in linha.Celulas)
+                    {
+                    <td>@celula.Valor</td>
+                    }
+                </tr>
                 }
             </tbody>
         </table>
-        <footer class="rodape-rel-atas">            
+        <footer class="rodape-rel-atas">
             <div class="titulo-sgp-rodape">
                 SGP - SISTEMA DE GESTÃO PEDAGÓGICA | ATA FINAL DE RESULTADOS
-            </div>           
+            </div>
             <div class="contador-pagina">@Model.NumeroPagina / @Model.TotalPaginas</div>
         </footer>
     </div>
