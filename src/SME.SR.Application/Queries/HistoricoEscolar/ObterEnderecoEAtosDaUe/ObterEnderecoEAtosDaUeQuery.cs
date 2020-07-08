@@ -6,6 +6,11 @@ namespace SME.SR.Application
 {
     public class ObterEnderecoEAtosDaUeQuery : IRequest<IEnumerable<EnderecoEAtosDaUeDto>>
     {
-        public string UeCodigo { get; set; }
+        public ObterEnderecoEAtosDaUeQuery(string ueCodigo)
+        {
+            UeCodigo = ueCodigo;
+        }
+
+        public string UeCodigo { get; private set; }
     }
 }

@@ -18,11 +18,15 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoEAtos(string ueCodigo)
         {
+            try
+            {
+
+            
             var query = @"SELECT DISTINCT
 	                        CONCAT(RTRIM(LTRIM(tpe.sg_tp_escola)), ' - ', RTRIM(LTRIM(vcue.nm_unidade_educacao))) AS nomeUe,
 	                        CONCAT(tl.dc_tp_logradouro, ' ', vcue.nm_logradouro, ', ', vcue.cd_nr_endereco, ', ', vcue.nm_bairro, ', ', vcue.cd_cep, ' SÃO PAULO - SP') as endereco,
-	                        CONCAT(hu.nr_ato, ' - ', convert(varchar, hu.dt_publicacao_dom, 103)) as atos,
-	                        tp_ocorrencia_historica as tipo_ocorrencia
+	                        LTRIM(CONCAT(hu.nr_ato, ' - ', convert(varchar, hu.dt_publicacao_dom, 103))) as atos,
+	                        tp_ocorrencia_historica as tipoOcorrencia
                         FROM
                         historico_unidade hu 
                         INNER JOIN v_cadastro_unidade_educacao vcue ON
@@ -35,15 +39,22 @@ namespace SME.SR.Data
 	                        tpe.tp_escola = esc.tp_escola
                         WHERE
 	                        tp_ocorrencia_historica in (1, 7)
-	                        amd hu.cd_unidade_educacao = @codigoUe";
+	                        and hu.cd_unidade_educacao = @ueCodigo";
 
-            using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                conn.Open();
-                var enderecosEAtos = await conn.QueryAsync<IEnumerable<EnderecoEAtosDaUeDto>>(query, new { ueCodigo });
-                conn.Close();
-                return (IEnumerable<EnderecoEAtosDaUeDto>) enderecosEAtos;
+            using var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            conn.Open();
+            var retorno =  await conn.QueryAsync<EnderecoEAtosDaUeDto>(query, new { ueCodigo });
+            conn.Close();
+            return retorno;
+
+
             }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
         }
     }
 }

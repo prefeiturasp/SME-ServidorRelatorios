@@ -9,7 +9,7 @@ namespace SME.SR.Infra
         [JsonProperty("endereco")]
         public string Endereco { get; set; }
         [JsonProperty("ato")]
-        public string Ato { get; set; }
+        public string Atos { get; set; }
         [JsonProperty("tipoOcorrencia")]
         public string TipoOcorrencia { get; set; }
         

@@ -23,7 +23,7 @@ namespace SME.SR.Application
         {
             var dadosAlunosHistorico = await _alunoRepository.ObterDadosAlunoHistoricoEscolar(request.CodigosAluno);
 
-            if (dadosAlunosHistorico == null || dadosAlunosHistorico.Any())
+            if (dadosAlunosHistorico == null || !dadosAlunosHistorico.Any())
                 throw new NegocioException("Não foram encontrados os dados dos alunos informados!");
 
             return dadosAlunosHistorico;
