@@ -6,6 +6,6 @@ namespace SME.SR.Data
 {
     public interface IAreaDoConhecimentoRepository
     {
-        Task<IEnumerable<AreaDoConhecimento>> ObterAreasDoConhecimentoPorComponentesCurriculares(string[] codigosComponentesCurriculares);
+        Task<IEnumerable<AreaDoConhecimento>> ObterAreasDoConhecimentoPorComponentesCurriculares(long[] codigosComponentesCurriculares);
     }
 }

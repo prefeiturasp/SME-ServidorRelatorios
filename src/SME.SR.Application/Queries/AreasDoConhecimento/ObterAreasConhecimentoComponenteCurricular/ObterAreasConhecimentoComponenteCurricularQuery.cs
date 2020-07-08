@@ -6,11 +6,11 @@ namespace SME.SR.Application
 {
     public class ObterAreasConhecimentoComponenteCurricularQuery : IRequest<IEnumerable<AreaDoConhecimento>>
     {
-        public ObterAreasConhecimentoComponenteCurricularQuery(string[] codigosComponenteCurricular)
+        public ObterAreasConhecimentoComponenteCurricularQuery(long[] codigosComponenteCurricular)
         {
             CodigosComponenteCurricular = codigosComponenteCurricular;
         }
 
-        public string[] CodigosComponenteCurricular { get; set; }
+        public long[] CodigosComponenteCurricular { get; set; }
     }
 }
