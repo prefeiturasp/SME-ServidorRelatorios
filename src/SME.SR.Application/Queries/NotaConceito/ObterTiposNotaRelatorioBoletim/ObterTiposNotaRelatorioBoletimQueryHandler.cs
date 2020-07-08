@@ -64,7 +64,7 @@ namespace SME.SR.Application
         {
             var anos = turmas.Select(t => t.Ano.ToString()).Distinct();
 
-            var tipoCiclos = await cicloRepository.ObterCiclosIdPorAnosModalidade(anos.ToArray(), modalidade);
+            var tipoCiclos = await cicloRepository.ObterCiclosPorAnosModalidade(anos.ToArray(), modalidade);
 
             if (tipoCiclos == null)
                 throw new NegocioException("Não foi encontrado o ciclo da turma informada");
