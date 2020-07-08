@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Relatório Atas de Conselho</title>
+    <title>Realtório Atas de Conselho</title>
 </head>
 <body class="body-rel-atas">
     <style>
@@ -43,11 +43,11 @@
         }
 
         .campo-dre {
-            width: 345px;
+            width: 395px;
         }
 
         .campo-ue {
-            width: 353px;
+            width: 485px;
         }
 
         .campo-turma {
@@ -188,7 +188,14 @@
                     {
                         foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                         {
-                            <th colspan="8">@componenteCurricular.Nome</th>
+                            if (Model.EhEJA)
+                            {
+                                <th colspan="6">@componenteCurricular.Nome</th>
+                            }
+                            else
+                            {
+                                <th colspan="8">@componenteCurricular.Nome</th>
+                            }
                         }
                     }
                 </tr>
