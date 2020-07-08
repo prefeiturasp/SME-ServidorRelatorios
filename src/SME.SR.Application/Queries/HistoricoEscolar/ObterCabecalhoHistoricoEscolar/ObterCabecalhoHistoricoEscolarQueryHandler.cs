@@ -8,18 +8,18 @@ namespace SME.SR.Application
 {
     public class ObterCabecalhoHistoricoEscolarQueryHandler : IRequestHandler<ObterCabecalhoHistoricoEscolarQuery, CabecalhoDto>
     {
-        private IObterCabecalhoHistoricoEscolarRepository obterCabecalhoHistoricoEscolarRepository;
+        private readonly IObterCabecalhoHistoricoEscolarRepository ObterCabecalhoHistoricoEscolarRepository;
 
-        public ObterCabecalhoHistoricoEscolarQueryHandler(IObterCabecalhoHistoricoEscolarRepository _obterCabecalhoHistoricoEscolarRepository)
+        public ObterCabecalhoHistoricoEscolarQueryHandler(IObterCabecalhoHistoricoEscolarRepository obterCabecalhoHistoricoEscolarRepository)
         {
-            obterCabecalhoHistoricoEscolarRepository = _obterCabecalhoHistoricoEscolarRepository;
+            ObterCabecalhoHistoricoEscolarRepository = obterCabecalhoHistoricoEscolarRepository;
         }
 
         public async Task<CabecalhoDto> Handle(ObterCabecalhoHistoricoEscolarQuery request, CancellationToken cancellationToken)
         {
             CabecalhoDto cabecalhoDto = new CabecalhoDto();
 
-            cabecalhoDto = await obterCabecalhoHistoricoEscolarRepository.ObterCabecalhoHistoricoEscolar(request.AnoLetivo, request.DreCodigo, request.UeCodigo);
+            cabecalhoDto = await ObterCabecalhoHistoricoEscolarRepository.ObterCabecalhoHistoricoEscolar(request.AnoLetivo, request.DreCodigo, request.UeCodigo);
 
             return cabecalhoDto;
         }

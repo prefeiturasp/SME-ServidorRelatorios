@@ -28,9 +28,9 @@ namespace SME.SR.Data
             }
         }
 
-		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(long[] codigosAlunos)
-		{
-			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(long[] codigosAlunos)
+        {
+            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -96,7 +96,7 @@ namespace SME.SR.Data
 						--INNER JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						--INNER JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE aluno.cd_aluno in (@codigosAluno)
+						WHERE aluno.cd_aluno in @codigosAluno
 						UNION 
 						SELECT  aluno.cd_aluno CodigoAluno,
 						aluno.nm_aluno NomeAluno,
@@ -142,29 +142,25 @@ namespace SME.SR.Data
 						--INNER JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						--INNER JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE aluno.cd_aluno in (@codigosAluno)
+						WHERE aluno.cd_aluno in @codigosAluno
 						and mte.dt_situacao_aluno =                    
 							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							where
-								matr2.cd_aluno in (@codigosAluno)
+								matr2.cd_aluno in @codigosAluno
 							and matr2.cd_aluno = matr.cd_aluno
 						)
 						AND NOT EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND matr3.cd_aluno in (@codigosAluno)) 
-
+							AND matr3.cd_aluno in @codigosAluno) 
 					SELECT
 					CodigoAluno,
 					NomeAluno,
 					NomeSocialAluno,
-					DataNascimento,
-					CodigoSituacaoMatricula,
-					SituacaoMatricula,
-					MAX(DataSituacao) DataSituacao ,
-					NumeroAlunoChamada,
+					DataNascimento,					
+					MAX(DataSituacao) DataSituacao ,					
 					--CidadeNatal,
 					EstadoNatal,
 					Nacionalidade,
@@ -178,10 +174,7 @@ namespace SME.SR.Data
 					CodigoAluno,
 					NomeAluno,
 					NomeSocialAluno,
-					DataNascimento,
-					CodigoSituacaoMatricula,
-					SituacaoMatricula,
-					NumeroAlunoChamada,
+					DataNascimento,					
 					--CidadeNatal,
 					EstadoNatal,
 					Nacionalidade,
@@ -191,15 +184,14 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia";
 
-			var parametros = new { CodigosAluno = codigosAlunos };
+            var parametros = new { CodigosAluno = codigosAlunos };
 
-			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-			{
-				return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
-			}
-		}
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
 
-		public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
+        }
+
+        public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
         {
             var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia

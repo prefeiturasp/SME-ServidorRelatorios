@@ -9,16 +9,16 @@ namespace SME.SR.Application
 {
     public class ObterEnderecoEAtosDaUeQueryHandler : IRequestHandler<ObterEnderecoEAtosDaUeQuery, IEnumerable<EnderecoEAtosDaUeDto>>
     {
-        private IObterEnderecoeAtosDaUeRepository obterEnderecoeAtosDaUeRepository;
+        private readonly IObterEnderecoeAtosDaUeRepository ObterEnderecoeAtosDaUeRepository;
 
-        public ObterEnderecoEAtosDaUeQueryHandler(IObterEnderecoeAtosDaUeRepository _obterEnderecoeAtosDaUeRepository)
+        public ObterEnderecoEAtosDaUeQueryHandler(IObterEnderecoeAtosDaUeRepository obterEnderecoeAtosDaUeRepository)
         {
-            obterEnderecoeAtosDaUeRepository = _obterEnderecoeAtosDaUeRepository;
+            ObterEnderecoeAtosDaUeRepository = obterEnderecoeAtosDaUeRepository;
         }
 
         public async Task<IEnumerable<EnderecoEAtosDaUeDto>> Handle(ObterEnderecoEAtosDaUeQuery request, CancellationToken cancellationToken)
         {
-            return await obterEnderecoeAtosDaUeRepository.ObterEnderecoEAtos(request.UeCodigo);
+            return await ObterEnderecoeAtosDaUeRepository.ObterEnderecoEAtos(request.UeCodigo);
         }
     }
 }
