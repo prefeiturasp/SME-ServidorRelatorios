@@ -4,8 +4,6 @@ namespace SME.SR.Infra
 {
     public class InformacoesAlunoDto
     {
-        [JsonIgnore]
-        public string Codigo { get; set; }
         [JsonProperty("nome")]
         public string Nome { get; set; }
         [JsonProperty("rga")]

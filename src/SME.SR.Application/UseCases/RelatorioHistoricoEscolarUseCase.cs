@@ -38,7 +38,9 @@ namespace SME.SR.Application
                     if (!turmas.Any(a => a.Codigo == turma.Codigo))
                         turmas.Add(turma);
                 }                
-            }            
+            }
+
+            var alunosCodigo = alunosTurmas.Select(a => a.Aluno.Codigo);
 
             var turmasCodigo = turmas.Select(a => a.Codigo).Distinct();
 
@@ -54,8 +56,8 @@ namespace SME.SR.Application
 
             var tipoNotas = await ObterTiposNotaRelatorio(filtros.AnoLetivo, dre.Id, ue.Id, filtros.Semestre, filtros.Modalidade, turmas);
 
-            var notas = await ObterNotasAlunos(turmasCodigo.ToArray(), new string[0]);
-            var frequencias = await ObterFrequenciasAlunos(turmasCodigo.ToArray(), new string[0]);
+            var notas = await ObterNotasAlunos(turmasCodigo.ToArray(), alunosCodigo.ToArray());
+            var frequencias = await ObterFrequenciasAlunos(turmasCodigo.ToArray(), alunosCodigo.ToArray());
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
