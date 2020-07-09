@@ -118,7 +118,10 @@ namespace SME.SR.Application
         private async Task<IEnumerable<AlunoTurmasHistoricoEscolarDto>> MontarAlunosTurmas(FiltroHistoricoEscolarDto filtros)
         {
 
-            var alunosCodigos = filtros.AlunosCodigo.Select(long.Parse).ToArray();
+            long[] alunosCodigos;
+            if (!filtros.AlunosCodigo.Any(a => a is null))
+                alunosCodigos = filtros.AlunosCodigo.Select(long.Parse).ToArray();
+            else alunosCodigos = new long[0];
 
             var turmaCodigo = string.IsNullOrEmpty(filtros.TurmaCodigo) ? 0 : long.Parse(filtros.TurmaCodigo);
 
