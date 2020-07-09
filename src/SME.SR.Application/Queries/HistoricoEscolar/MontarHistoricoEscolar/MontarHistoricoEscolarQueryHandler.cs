@@ -68,22 +68,22 @@ namespace SME.SR.Application
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
                 var componentesPorGrupoMatriz = componentesCurricularesDaTurma.GroupBy(cc => cc.GrupoMatriz);
+                var areasConhecimento = areasDoConhecimentos.Where(a => componentesCurricularesDaTurma.Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)).GroupBy(g => new { g.Nome, g.Id });
 
                 gruposComponentes.AddRange(componentesPorGrupoMatriz.Select(gp => new GruposComponentesCurricularesDto
                 {
                     Nome = gp.Key.Nome,
-                    AreasDeConhecimento = areasDoConhecimentos.Where(ac => gp.Select(c => c.CodDisciplina)
-                                          .Contains(ac.CodigoComponenteCurricular)).Select(ac => new AreaDeConhecimentoDto()
-                                          {
-                                              Nome = ac.Nome,
-                                              ComponentesCurriculares = gp.Select(cc => new ComponenteCurricularHistoricoEscolarDto()
-                                              {
-                                                  Nome = cc.Disciplina,
-                                                  Codigo = cc.CodDisciplina.ToString(),
-                                                  Frequencia = cc.Frequencia,
-                                                  Nota = cc.LancaNota
-                                              }).ToList()
-                                          }).ToList()
+                    AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
+                    {
+                        Nome = ac.Key.Nome,
+                        ComponentesCurriculares = componentesCurricularesDaTurma.Where(c => ac.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)).Select(cc => new ComponenteCurricularHistoricoEscolarDto()
+                        {
+                            Nome = cc.Disciplina,
+                            Codigo = cc.CodDisciplina.ToString(),
+                            Frequencia = cc.Frequencia,
+                            Nota = cc.LancaNota
+                        }).ToList()
+                    }).ToList()
                 }));
             }
 
@@ -114,6 +114,8 @@ namespace SME.SR.Application
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
+                var componentesPorGrupoMatriz = componentesCurricularesDaTurma.GroupBy(cc => cc.GrupoMatriz);
+
                 projetos.AddRange(componentesCurricularesDaTurma.Select(gp => new ProjetosAtividadesComplementaresDto
                 {
                     Codigo = gp.CodDisciplina.ToString(),
@@ -129,29 +131,29 @@ namespace SME.SR.Application
         private BaseNacionalComumDto ObterBaseNacionalComum(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
                                                             IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
         {
-            BaseNacionalComumDto enriquecimentos = null;
+            BaseNacionalComumDto baseNacional = null;
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
-                enriquecimentos = new BaseNacionalComumDto()
-                {
-                    AreasDeConhecimento = areasDoConhecimentos.Where(ac => componentesCurricularesDaTurma.Select(c => c.CodDisciplina)
-                                            .Contains(ac.CodigoComponenteCurricular)).Select(ac => new AreaDeConhecimentoDto()
-                                            {
-                                                Nome = ac.Nome,
-                                                ComponentesCurriculares = componentesCurricularesDaTurma.Select(cc => new ComponenteCurricularHistoricoEscolarDto()
-                                                {
-                                                    Nome = cc.Disciplina,
-                                                    Codigo = cc.CodDisciplina.ToString(),
-                                                    Frequencia = cc.Frequencia,
-                                                    Nota = cc.LancaNota
-                                                }).ToList()
-                                            }).ToList()
+                var areasConhecimento = areasDoConhecimentos.Where(a => componentesCurricularesDaTurma.Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)).GroupBy(g => new { g.Nome, g.Id });
 
+                baseNacional = new BaseNacionalComumDto()
+                {
+                    AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
+                    {
+                        Nome = ac.Key.Nome,
+                        ComponentesCurriculares = componentesCurricularesDaTurma.Where(c => ac.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)).Select(cc => new ComponenteCurricularHistoricoEscolarDto()
+                        {
+                            Nome = cc.Disciplina,
+                            Codigo = cc.CodDisciplina.ToString(),
+                            Frequencia = cc.Frequencia,
+                            Nota = cc.LancaNota
+                        }).ToList()
+                    }).ToList()
                 };
             }
 
-            return enriquecimentos;
+            return baseNacional;
         }
 
         private void SetarNotasFrequencia(Turma[] turmas, HistoricoEscolarDTO historicoEscolarDTO, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
