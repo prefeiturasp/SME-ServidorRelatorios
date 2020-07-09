@@ -9,6 +9,6 @@ namespace SME.SR.Infra
         public string Nome { get; set; }
 
         [JsonProperty("componentesCurriculares")]
-        public List<ComponenteCurricularDto> ComponentesCurriculares { get; set; }
+        public List<ComponenteCurricularHistoricoEscolarDto> ComponentesCurriculares { get; set; }
     }
 }

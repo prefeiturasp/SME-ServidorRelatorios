@@ -4,8 +4,13 @@ namespace SME.SR.Infra
 {
     public class EnriquecimentoCurricularDto
     {
+        public string Codigo { get; set; }
         [JsonProperty("nome")]
         public string Nome { get; set; }
+        [JsonIgnore]
+        public bool Nota { get; set; }
+        [JsonIgnore]
+        public bool Frequencia { get; set; }
         [JsonProperty("notaConceitoPrimeiroAno")]
         public string NotaConceitoPrimeiroAno { get; set; }
         [JsonProperty("notaConceitoSegundoAno")]
