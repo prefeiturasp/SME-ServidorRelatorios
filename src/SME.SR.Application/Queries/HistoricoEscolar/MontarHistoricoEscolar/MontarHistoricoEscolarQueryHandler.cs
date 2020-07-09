@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using MediatR;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RazorEngine.Compilation.ImpromptuInterface;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
@@ -49,7 +50,7 @@ namespace SME.SR.Application
                     ProjetosAtividadesComplementares = projetosDto
                 };
 
-                var notasAluno = request.Notas.Where(n => aluno.Turmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo);
+                var notasAluno = request.Notas.Where(n => aluno.Turmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null);
                 var frequenciasAluno = request.Frequencias.Where(f => aluno.Turmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo);
 
                 SetarNotasFrequencia(aluno.Turmas.ToArray(), historicoDto, notasAluno, frequenciasAluno, request.MediasFrequencia);
@@ -68,22 +69,22 @@ namespace SME.SR.Application
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
                 var componentesPorGrupoMatriz = componentesCurricularesDaTurma.GroupBy(cc => cc.GrupoMatriz);
+                var areasConhecimento = areasDoConhecimentos.Where(a => componentesCurricularesDaTurma.Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)).GroupBy(g => new { g.Nome, g.Id });
 
                 gruposComponentes.AddRange(componentesPorGrupoMatriz.Select(gp => new GruposComponentesCurricularesDto
                 {
                     Nome = gp.Key.Nome,
-                    AreasDeConhecimento = areasDoConhecimentos.Where(ac => gp.Select(c => c.CodDisciplina)
-                                          .Contains(ac.CodigoComponenteCurricular)).Select(ac => new AreaDeConhecimentoDto()
-                                          {
-                                              Nome = ac.Nome,
-                                              ComponentesCurriculares = gp.Select(cc => new ComponenteCurricularHistoricoEscolarDto()
-                                              {
-                                                  Nome = cc.Disciplina,
-                                                  Codigo = cc.CodDisciplina.ToString(),
-                                                  Frequencia = cc.Frequencia,
-                                                  Nota = cc.LancaNota
-                                              }).ToList()
-                                          }).ToList()
+                    AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
+                    {
+                        Nome = ac.Key.Nome,
+                        ComponentesCurriculares = componentesCurricularesDaTurma.Where(c => ac.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)).Select(cc => new ComponenteCurricularHistoricoEscolarDto()
+                        {
+                            Nome = cc.Disciplina,
+                            Codigo = cc.CodDisciplina.ToString(),
+                            Frequencia = cc.Frequencia,
+                            Nota = cc.LancaNota
+                        }).ToList()
+                    }).ToList()
                 }));
             }
 
@@ -114,6 +115,8 @@ namespace SME.SR.Application
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
+                var componentesPorGrupoMatriz = componentesCurricularesDaTurma.GroupBy(cc => cc.GrupoMatriz);
+
                 projetos.AddRange(componentesCurricularesDaTurma.Select(gp => new ProjetosAtividadesComplementaresDto
                 {
                     Codigo = gp.CodDisciplina.ToString(),
@@ -129,389 +132,300 @@ namespace SME.SR.Application
         private BaseNacionalComumDto ObterBaseNacionalComum(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
                                                             IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
         {
-            BaseNacionalComumDto enriquecimentos = null;
+            BaseNacionalComumDto baseNacional = null;
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
-                enriquecimentos = new BaseNacionalComumDto()
-                {
-                    AreasDeConhecimento = areasDoConhecimentos.Where(ac => componentesCurricularesDaTurma.Select(c => c.CodDisciplina)
-                                            .Contains(ac.CodigoComponenteCurricular)).Select(ac => new AreaDeConhecimentoDto()
-                                            {
-                                                Nome = ac.Nome,
-                                                ComponentesCurriculares = componentesCurricularesDaTurma.Select(cc => new ComponenteCurricularHistoricoEscolarDto()
-                                                {
-                                                    Nome = cc.Disciplina,
-                                                    Codigo = cc.CodDisciplina.ToString(),
-                                                    Frequencia = cc.Frequencia,
-                                                    Nota = cc.LancaNota
-                                                }).ToList()
-                                            }).ToList()
+                var areasConhecimento = areasDoConhecimentos.Where(a => componentesCurricularesDaTurma.Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)).GroupBy(g => new { g.Nome, g.Id });
 
+                baseNacional = new BaseNacionalComumDto()
+                {
+                    AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
+                    {
+                        Nome = ac.Key.Nome,
+                        ComponentesCurriculares = componentesCurricularesDaTurma.Where(c => ac.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)).Select(cc => new ComponenteCurricularHistoricoEscolarDto()
+                        {
+                            Nome = cc.Disciplina,
+                            Codigo = cc.CodDisciplina.ToString(),
+                            Frequencia = cc.Frequencia,
+                            Nota = cc.LancaNota
+                        }).ToList()
+                    }).ToList()
                 };
             }
 
-            return enriquecimentos;
+            return baseNacional;
         }
 
         private void SetarNotasFrequencia(Turma[] turmas, HistoricoEscolarDTO historicoEscolarDTO, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
         {
-            Turma turma1Ano = turmas.FirstOrDefault(t => t.Ano == 1);
-            Turma turma2Ano = turmas.FirstOrDefault(t => t.Ano == 2);
-            Turma turma3Ano = turmas.FirstOrDefault(t => t.Ano == 3);
-            Turma turma4Ano = turmas.FirstOrDefault(t => t.Ano == 4);
-            Turma turma5Ano = turmas.FirstOrDefault(t => t.Ano == 5);
-            Turma turma6Ano = turmas.FirstOrDefault(t => t.Ano == 6);
-            Turma turma7Ano = turmas.FirstOrDefault(t => t.Ano == 7);
-            Turma turma8Ano = turmas.FirstOrDefault(t => t.Ano == 8);
-            Turma turma9Ano = turmas.FirstOrDefault(t => t.Ano == 9);
+            foreach (var turma in turmas)
+            {
+                //Base Conhecimento
+                if (historicoEscolarDTO.BaseNacionalComum != null)
+                    historicoEscolarDTO.
+                        BaseNacionalComum.AreasDeConhecimento.ForEach(ac =>
+                            ac.ComponentesCurriculares.ForEach(cc =>
+                            {
+                                var notaComponente = notas?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma.Codigo)?.NotaConceito?.NotaConceito;
+                                var frequenciaComponente = frequencia?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma.Codigo)?.PercentualFrequencia.ToString() ?? "100";
 
-            //Base Conhecimento
-            if (historicoEscolarDTO.BaseNacionalComum != null)
-                historicoEscolarDTO.
-                    BaseNacionalComum.AreasDeConhecimento.Select(ac =>
-                        ac.ComponentesCurriculares.Select(cc =>
+                                if (cc.Nota)
+                                {
+                                    if (turma.Ano == 1)
+                                        cc.NotaConceitoPrimeiroAno = notaComponente;
+                                    else if (turma.Ano == 2)
+                                        cc.NotaConceitoSegundoAno = notaComponente;
+                                    else if (turma.Ano == 3)
+                                        cc.NotaConceitoTerceiroAno = notaComponente;
+                                    else if (turma.Ano == 4)
+                                        cc.NotaConceitoQuartoAno = notaComponente;
+                                    else if (turma.Ano == 5)
+                                        cc.NotaConceitoQuintoAno = notaComponente;
+                                    else if (turma.Ano == 6)
+                                        cc.NotaConceitoSextoAno = notaComponente;
+                                    else if (turma.Ano == 7)
+                                        cc.NotaConceitoSetimoAno = notaComponente;
+                                    else if (turma.Ano == 8)
+                                        cc.NotaConceitoOitavoAno = notaComponente;
+                                    else
+                                        cc.NotaConceitoNonoAno = notaComponente;
+                                }
+                                else
+                                {
+                                    var frequenciasPorTurmaBimestre = frequencia?.Where(nf => nf.PeriodoEscolarId != null && nf.TurmaId == turma.Codigo);
+
+                                    if (turma.Ano == 1)
+                                        cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                    else if (turma.Ano == 2)
+                                        cc.NotaConceitoSegundoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                    else if (turma.Ano == 3)
+                                        cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                    else if (turma.Ano == 4)
+                                        cc.NotaConceitoQuartoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                    else if (turma.Ano == 5)
+                                        cc.NotaConceitoQuintoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                    else if (turma.Ano == 6)
+                                        cc.NotaConceitoSextoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                    else if (turma.Ano == 7)
+                                        cc.NotaConceitoSetimoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                    else if (turma.Ano == 8)
+                                        cc.NotaConceitoOitavoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                    else
+                                        cc.NotaConceitoNonoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                }
+
+                                if (cc.Frequencia)
+                                {
+
+                                    if (turma.Ano == 1)
+                                        cc.FrequenciaPrimeiroAno = notaComponente;
+                                    else if (turma.Ano == 2)
+                                        cc.FrequenciaSegundoAno = notaComponente;
+                                    else if (turma.Ano == 3)
+                                        cc.FrequenciaTerceiroAno = notaComponente;
+                                    else if (turma.Ano == 4)
+                                        cc.FrequenciaQuartoAno = notaComponente;
+                                    else if (turma.Ano == 5)
+                                        cc.FrequenciaQuintoAno = notaComponente;
+                                    else if (turma.Ano == 6)
+                                        cc.FrequenciaSextoAno = notaComponente;
+                                    else if (turma.Ano == 7)
+                                        cc.FrequenciaSetimoAno = notaComponente;
+                                    else if (turma.Ano == 8)
+                                        cc.FrequenciaOitavoAno = notaComponente;
+                                    else if (turma.Ano == 9)
+                                        cc.FrequenciaNonoAno = notaComponente;
+                                }
+                            }));
+
+                //Diversificada
+                if (historicoEscolarDTO.GruposComponentesCurriculares != null && historicoEscolarDTO.GruposComponentesCurriculares.Any())
+                    historicoEscolarDTO.
+                    GruposComponentesCurriculares.ForEach(gc => gc.
+                        AreasDeConhecimento.ForEach(ac =>
+                        ac.ComponentesCurriculares.ForEach(cc =>
                         {
-                            var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == cc.Codigo);
-                            var frequenciasComponente = frequencia?.Where(f => f.DisciplinaId == cc.Codigo);
+                            var notaComponente = notas?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma.Codigo)?.NotaConceito?.NotaConceito;
+                            var frequenciaComponente = frequencia?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma.Codigo)?.PercentualFrequencia.ToString() ?? "100";
 
                             if (cc.Nota)
                             {
-                                if (turma1Ano != null)
-                                    cc.NotaConceitoPrimeiroAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma1Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                                if (turma2Ano != null)
-                                    cc.NotaConceitoSegundoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma2Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                                if (turma3Ano != null)
-                                    cc.NotaConceitoTerceiroAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma3Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                                if (turma4Ano != null)
-                                    cc.NotaConceitoQuartoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma4Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                                if (turma5Ano != null)
-                                    cc.NotaConceitoQuintoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma5Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                                if (turma6Ano != null)
-                                    cc.NotaConceitoSextoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma6Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                                if (turma7Ano != null)
-                                    cc.NotaConceitoSetimoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma7Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                                if (turma8Ano != null)
-                                    cc.NotaConceitoOitavoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma8Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                                if (turma9Ano != null)
-                                    cc.NotaConceitoNonoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma9Ano.Codigo)?.NotaConceito?.NotaConceito;
+                                if (turma.Ano == 1)
+                                    cc.NotaConceitoPrimeiroAno = notaComponente;
+                                else if (turma.Ano == 2)
+                                    cc.NotaConceitoSegundoAno = notaComponente;
+                                else if (turma.Ano == 3)
+                                    cc.NotaConceitoTerceiroAno = notaComponente;
+                                else if (turma.Ano == 4)
+                                    cc.NotaConceitoQuartoAno = notaComponente;
+                                else if (turma.Ano == 5)
+                                    cc.NotaConceitoQuintoAno = notaComponente;
+                                else if (turma.Ano == 6)
+                                    cc.NotaConceitoSextoAno = notaComponente;
+                                else if (turma.Ano == 7)
+                                    cc.NotaConceitoSetimoAno = notaComponente;
+                                else if (turma.Ano == 8)
+                                    cc.NotaConceitoOitavoAno = notaComponente;
+                                else
+                                    cc.NotaConceitoNonoAno = notaComponente;
                             }
                             else
                             {
-                                if (turma1Ano != null)
-                                    cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma1Ano.Codigo), mediasFrequencia, false, false);
+                                var frequenciasPorTurmaBimestre = frequencia?.Where(nf => nf.PeriodoEscolarId != null && nf.TurmaId == turma.Codigo);
 
-                                if (turma2Ano != null)
-                                    cc.NotaConceitoSegundoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma2Ano.Codigo), mediasFrequencia, false, false);
-
-                                if (turma3Ano != null)
-                                    cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma3Ano.Codigo), mediasFrequencia, false, false);
-
-                                if (turma4Ano != null)
-                                    cc.NotaConceitoQuartoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma4Ano.Codigo), mediasFrequencia, false, false);
-
-                                if (turma5Ano != null)
-                                    cc.NotaConceitoQuintoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma5Ano.Codigo), mediasFrequencia, false, false);
-
-                                if (turma6Ano != null)
-                                    cc.NotaConceitoSextoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma6Ano.Codigo), mediasFrequencia, false, false);
-
-                                if (turma7Ano != null)
-                                    cc.NotaConceitoSetimoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma7Ano.Codigo), mediasFrequencia, false, false);
-
-                                if (turma8Ano != null)
-                                    cc.NotaConceitoOitavoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma8Ano.Codigo), mediasFrequencia, false, false);
-
-                                if (turma9Ano != null)
-                                    cc.NotaConceitoNonoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma9Ano.Codigo), mediasFrequencia, false, false);
+                                if (turma.Ano == 1)
+                                    cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                else if (turma.Ano == 2)
+                                    cc.NotaConceitoSegundoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                else if (turma.Ano == 3)
+                                    cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                else if (turma.Ano == 4)
+                                    cc.NotaConceitoQuartoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                else if (turma.Ano == 5)
+                                    cc.NotaConceitoQuintoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                else if (turma.Ano == 6)
+                                    cc.NotaConceitoSextoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                else if (turma.Ano == 7)
+                                    cc.NotaConceitoSetimoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                else if (turma.Ano == 8)
+                                    cc.NotaConceitoOitavoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                                else
+                                    cc.NotaConceitoNonoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
                             }
 
                             if (cc.Frequencia)
                             {
-                                if (turma1Ano != null)
-                                    cc.FrequenciaPrimeiroAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma1Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
 
-                                if (turma2Ano != null)
-                                    cc.FrequenciaSegundoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma2Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                                if (turma3Ano != null)
-                                    cc.FrequenciaTerceiroAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma3Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                                if (turma4Ano != null)
-                                    cc.FrequenciaQuartoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma4Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                                if (turma5Ano != null)
-                                    cc.FrequenciaQuintoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma5Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                                if (turma6Ano != null)
-                                    cc.FrequenciaSextoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma6Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                                if (turma7Ano != null)
-                                    cc.FrequenciaSetimoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma7Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                                if (turma8Ano != null)
-                                    cc.FrequenciaOitavoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma8Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                                if (turma9Ano != null)
-                                    cc.FrequenciaNonoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma9Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
+                                if (turma.Ano == 1)
+                                    cc.FrequenciaPrimeiroAno = notaComponente;
+                                else if (turma.Ano == 2)
+                                    cc.FrequenciaSegundoAno = notaComponente;
+                                else if (turma.Ano == 3)
+                                    cc.FrequenciaTerceiroAno = notaComponente;
+                                else if (turma.Ano == 4)
+                                    cc.FrequenciaQuartoAno = notaComponente;
+                                else if (turma.Ano == 5)
+                                    cc.FrequenciaQuintoAno = notaComponente;
+                                else if (turma.Ano == 6)
+                                    cc.FrequenciaSextoAno = notaComponente;
+                                else if (turma.Ano == 7)
+                                    cc.FrequenciaSetimoAno = notaComponente;
+                                else if (turma.Ano == 8)
+                                    cc.FrequenciaOitavoAno = notaComponente;
+                                else if (turma.Ano == 9)
+                                    cc.FrequenciaNonoAno = notaComponente;
                             }
+                        })));
 
-                            return cc;
-
-                        }));
-
-            //Diversificada
-            if (historicoEscolarDTO.GruposComponentesCurriculares != null && historicoEscolarDTO.GruposComponentesCurriculares.Any())
-                historicoEscolarDTO.
-                GruposComponentesCurriculares.Select(gc => gc.
-                    AreasDeConhecimento.Select(ac =>
-                    ac.ComponentesCurriculares.Select(cc =>
+                //Enriquecimento Curricular
+                if (historicoEscolarDTO.EnriquecimentoCurricular != null && historicoEscolarDTO.EnriquecimentoCurricular.Any())
+                    historicoEscolarDTO.
+                    EnriquecimentoCurricular.ForEach(cc =>
                     {
-                        var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == cc.Codigo);
-                        var frequenciasComponente = frequencia?.Where(f => f.DisciplinaId == cc.Codigo);
+                        var notaComponente = notas?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma.Codigo)?.NotaConceito?.NotaConceito;
+                        var frequenciaComponente = frequencia?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma.Codigo)?.PercentualFrequencia.ToString() ?? "100";
 
                         if (cc.Nota)
                         {
-                            if (turma1Ano != null)
-                                cc.NotaConceitoPrimeiroAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma1Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma2Ano != null)
-                                cc.NotaConceitoSegundoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma2Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma3Ano != null)
-                                cc.NotaConceitoTerceiroAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma3Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma4Ano != null)
-                                cc.NotaConceitoQuartoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma4Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma5Ano != null)
-                                cc.NotaConceitoQuintoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma5Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma6Ano != null)
-                                cc.NotaConceitoSextoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma6Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma7Ano != null)
-                                cc.NotaConceitoSetimoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma7Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma8Ano != null)
-                                cc.NotaConceitoOitavoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma8Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma9Ano != null)
-                                cc.NotaConceitoNonoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma9Ano.Codigo)?.NotaConceito?.NotaConceito;
+                            if (turma.Ano == 1)
+                                cc.NotaConceitoPrimeiroAno = notaComponente;
+                            else if (turma.Ano == 2)
+                                cc.NotaConceitoSegundoAno = notaComponente;
+                            else if (turma.Ano == 3)
+                                cc.NotaConceitoTerceiroAno = notaComponente;
+                            else if (turma.Ano == 4)
+                                cc.NotaConceitoQuartoAno = notaComponente;
+                            else if (turma.Ano == 5)
+                                cc.NotaConceitoQuintoAno = notaComponente;
+                            else if (turma.Ano == 6)
+                                cc.NotaConceitoSextoAno = notaComponente;
+                            else if (turma.Ano == 7)
+                                cc.NotaConceitoSetimoAno = notaComponente;
+                            else if (turma.Ano == 8)
+                                cc.NotaConceitoOitavoAno = notaComponente;
+                            else
+                                cc.NotaConceitoNonoAno = notaComponente;
                         }
                         else
                         {
-                            if (turma1Ano != null)
-                                cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma1Ano.Codigo), mediasFrequencia, false, false);
+                            var frequenciasPorTurmaBimestre = frequencia?.Where(nf => nf.PeriodoEscolarId != null && nf.TurmaId == turma.Codigo);
 
-                            if (turma2Ano != null)
-                                cc.NotaConceitoSegundoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma2Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma3Ano != null)
-                                cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma3Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma4Ano != null)
-                                cc.NotaConceitoQuartoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma4Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma5Ano != null)
-                                cc.NotaConceitoQuintoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma5Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma6Ano != null)
-                                cc.NotaConceitoSextoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma6Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma7Ano != null)
-                                cc.NotaConceitoSetimoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma7Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma8Ano != null)
-                                cc.NotaConceitoOitavoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma8Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma9Ano != null)
-                                cc.NotaConceitoNonoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma9Ano.Codigo), mediasFrequencia, false, false);
+                            if (turma.Ano == 1)
+                                cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                            else if (turma.Ano == 2)
+                                cc.NotaConceitoSegundoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                            else if (turma.Ano == 3)
+                                cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                            else if (turma.Ano == 4)
+                                cc.NotaConceitoQuartoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                            else if (turma.Ano == 5)
+                                cc.NotaConceitoQuintoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                            else if (turma.Ano == 6)
+                                cc.NotaConceitoSextoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                            else if (turma.Ano == 7)
+                                cc.NotaConceitoSetimoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                            else if (turma.Ano == 8)
+                                cc.NotaConceitoOitavoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                            else
+                                cc.NotaConceitoNonoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
                         }
-
-                        if (cc.Frequencia)
-                        {
-                            if (turma1Ano != null)
-                                cc.FrequenciaPrimeiroAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma1Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                            if (turma2Ano != null)
-                                cc.FrequenciaSegundoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma2Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                            if (turma3Ano != null)
-                                cc.FrequenciaTerceiroAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma3Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                            if (turma4Ano != null)
-                                cc.FrequenciaQuartoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma4Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                            if (turma5Ano != null)
-                                cc.FrequenciaQuintoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma5Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                            if (turma6Ano != null)
-                                cc.FrequenciaSextoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma6Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                            if (turma7Ano != null)
-                                cc.FrequenciaSetimoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma7Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                            if (turma8Ano != null)
-                                cc.FrequenciaOitavoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma8Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-
-                            if (turma9Ano != null)
-                                cc.FrequenciaNonoAno = frequenciasComponente?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma9Ano.Codigo)?.PercentualFrequencia.ToString() ?? "100";
-                        }
-
-                        return cc;
-
-                    })));
-
-            //Enriquecimento Curricular
-            if (historicoEscolarDTO.EnriquecimentoCurricular != null && historicoEscolarDTO.EnriquecimentoCurricular.Any())
-                historicoEscolarDTO.
-                EnriquecimentoCurricular.Select(e =>
-                    {
-                        var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == e.Codigo);
-                        var frequenciasComponente = frequencia?.Where(f => f.DisciplinaId == e.Codigo);
-
-                        if (e.Nota)
-                        {
-                            if (turma1Ano != null)
-                                e.NotaConceitoPrimeiroAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma1Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma2Ano != null)
-                                e.NotaConceitoSegundoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma2Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma3Ano != null)
-                                e.NotaConceitoTerceiroAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma3Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma4Ano != null)
-                                e.NotaConceitoQuartoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma4Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma5Ano != null)
-                                e.NotaConceitoQuintoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma5Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma6Ano != null)
-                                e.NotaConceitoSextoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma6Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma7Ano != null)
-                                e.NotaConceitoSetimoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma7Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma8Ano != null)
-                                e.NotaConceitoOitavoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma8Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                            if (turma9Ano != null)
-                                e.NotaConceitoNonoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma9Ano.Codigo)?.NotaConceito?.NotaConceito;
-                        }
-                        else
-                        {
-                            if (turma1Ano != null)
-                                e.NotaConceitoPrimeiroAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma1Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma2Ano != null)
-                                e.NotaConceitoSegundoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma2Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma3Ano != null)
-                                e.NotaConceitoTerceiroAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma3Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma4Ano != null)
-                                e.NotaConceitoQuartoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma4Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma5Ano != null)
-                                e.NotaConceitoQuintoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma5Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma6Ano != null)
-                                e.NotaConceitoSextoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma6Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma7Ano != null)
-                                e.NotaConceitoSetimoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma7Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma8Ano != null)
-                                e.NotaConceitoOitavoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma8Ano.Codigo), mediasFrequencia, false, false);
-
-                            if (turma9Ano != null)
-                                e.NotaConceitoNonoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma9Ano.Codigo), mediasFrequencia, false, false);
-                        }
-
-                        return e;
-
                     });
 
-            //Projetos
-            if (historicoEscolarDTO.ProjetosAtividadesComplementares != null && historicoEscolarDTO.ProjetosAtividadesComplementares.Any())
-                historicoEscolarDTO.ProjetosAtividadesComplementares
-                 .Select(p =>
-                 {
-                     var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == p.Codigo);
-                     var frequenciasComponente = frequencia?.Where(f => f.DisciplinaId == p.Codigo);
-
-                     if (p.Nota)
+                //Projetos
+                if (historicoEscolarDTO.ProjetosAtividadesComplementares != null && historicoEscolarDTO.ProjetosAtividadesComplementares.Any())
+                    historicoEscolarDTO.ProjetosAtividadesComplementares
+                     .ForEach(cc =>
                      {
-                         if (turma1Ano != null)
-                             p.NotaConceitoPrimeiroAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma1Ano.Codigo)?.NotaConceito?.NotaConceito;
+                         var notaComponente = notas?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma.Codigo)?.NotaConceito?.NotaConceito;
+                         var frequenciaComponente = frequencia?.FirstOrDefault(nf => nf.PeriodoEscolarId == null && nf.TurmaId == turma.Codigo)?.PercentualFrequencia.ToString() ?? "100";
 
-                         if (turma2Ano != null)
-                             p.NotaConceitoSegundoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma2Ano.Codigo)?.NotaConceito?.NotaConceito;
+                         if (cc.Nota)
+                         {
+                             if (turma.Ano == 1)
+                                 cc.NotaConceitoPrimeiroAno = notaComponente;
+                             else if (turma.Ano == 2)
+                                 cc.NotaConceitoSegundoAno = notaComponente;
+                             else if (turma.Ano == 3)
+                                 cc.NotaConceitoTerceiroAno = notaComponente;
+                             else if (turma.Ano == 4)
+                                 cc.NotaConceitoQuartoAno = notaComponente;
+                             else if (turma.Ano == 5)
+                                 cc.NotaConceitoQuintoAno = notaComponente;
+                             else if (turma.Ano == 6)
+                                 cc.NotaConceitoSextoAno = notaComponente;
+                             else if (turma.Ano == 7)
+                                 cc.NotaConceitoSetimoAno = notaComponente;
+                             else if (turma.Ano == 8)
+                                 cc.NotaConceitoOitavoAno = notaComponente;
+                             else
+                                 cc.NotaConceitoNonoAno = notaComponente;
+                         }
+                         else
+                         {
+                             var frequenciasPorTurmaBimestre = frequencia?.Where(nf => nf.PeriodoEscolarId != null && nf.TurmaId == turma.Codigo);
 
-                         if (turma3Ano != null)
-                             p.NotaConceitoTerceiroAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma3Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                         if (turma4Ano != null)
-                             p.NotaConceitoQuartoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma4Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                         if (turma5Ano != null)
-                             p.NotaConceitoQuintoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma5Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                         if (turma6Ano != null)
-                             p.NotaConceitoSextoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma6Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                         if (turma7Ano != null)
-                             p.NotaConceitoSetimoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma7Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                         if (turma8Ano != null)
-                             p.NotaConceitoOitavoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma8Ano.Codigo)?.NotaConceito?.NotaConceito;
-
-                         if (turma9Ano != null)
-                             p.NotaConceitoNonoAno = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null && nf.CodigoTurma == turma9Ano.Codigo)?.NotaConceito?.NotaConceito;
-                     }
-                     else
-                     {
-                         if (turma1Ano != null)
-                             p.NotaConceitoPrimeiroAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma1Ano.Codigo), mediasFrequencia, false, false);
-
-                         if (turma2Ano != null)
-                             p.NotaConceitoSegundoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma2Ano.Codigo), mediasFrequencia, false, false);
-
-                         if (turma3Ano != null)
-                             p.NotaConceitoTerceiroAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma3Ano.Codigo), mediasFrequencia, false, false);
-
-                         if (turma4Ano != null)
-                             p.NotaConceitoQuartoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma4Ano.Codigo), mediasFrequencia, false, false);
-
-                         if (turma5Ano != null)
-                             p.NotaConceitoQuintoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma5Ano.Codigo), mediasFrequencia, false, false);
-
-                         if (turma6Ano != null)
-                             p.NotaConceitoSextoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma6Ano.Codigo), mediasFrequencia, false, false);
-
-                         if (turma7Ano != null)
-                             p.NotaConceitoSetimoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma7Ano.Codigo), mediasFrequencia, false, false);
-
-                         if (turma8Ano != null)
-                             p.NotaConceitoOitavoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma8Ano.Codigo), mediasFrequencia, false, false);
-
-                         if (turma9Ano != null)
-                             p.NotaConceitoNonoAno = ObterSintese(frequenciasComponente.Where(fc => fc.TurmaId == turma9Ano.Codigo), mediasFrequencia, false, false);
-                     }
-
-                     return p;
-
-                 });
+                             if (turma.Ano == 1)
+                                 cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                             else if (turma.Ano == 2)
+                                 cc.NotaConceitoSegundoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                             else if (turma.Ano == 3)
+                                 cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                             else if (turma.Ano == 4)
+                                 cc.NotaConceitoQuartoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                             else if (turma.Ano == 5)
+                                 cc.NotaConceitoQuintoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                             else if (turma.Ano == 6)
+                                 cc.NotaConceitoSextoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                             else if (turma.Ano == 7)
+                                 cc.NotaConceitoSetimoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                             else if (turma.Ano == 8)
+                                 cc.NotaConceitoOitavoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                             else
+                                 cc.NotaConceitoNonoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
+                         }
+                     });
+            }
 
         }
 
