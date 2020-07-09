@@ -6,8 +6,7 @@ namespace SME.SR.Infra
     {
         [JsonProperty("nome")]
         public string Nome { get; set; }
-        [JsonProperty("tipoNota")]
-        public string TipoNota { get; set; }
+
         [JsonProperty("notaConceitoPrimeiroAno")]
         public string NotaConceitoPrimeiroAno { get; set; }
         [JsonProperty("frequenciaPrimeiroAno")]

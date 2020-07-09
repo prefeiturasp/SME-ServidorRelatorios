@@ -17,6 +17,9 @@ namespace SME.SR.Infra
         [JsonProperty("baseNacionalComum")]
         public BaseNacionalComumDto BaseNacionalComum { get; set; }
 
+        [JsonProperty("tipoNota")]
+        public string TipoNota { get; set; }
+
         [JsonProperty("gruposComponentesCurriculares")]
         public List<GruposComponentesCurricularesDto> GruposComponentesCurriculares { get; set; }
         [JsonProperty("ensinoReligioso")]
