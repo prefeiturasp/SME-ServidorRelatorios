@@ -44,7 +44,7 @@ namespace SME.SR.Infra
         [JsonProperty("NotaConceitoQuintoAno")]
         public string NotaConceitoQuintoAno { get; set; }
 
-        [JsonProperty("FrequenciaQuartoAno")]
+        [JsonProperty("FrequenciaQuintoAno")]
         public string FrequenciaQuintoAno { get; set; }
 
         [JsonProperty("NotaConceitoSextoAno")]
