@@ -29,6 +29,14 @@ namespace SME.SR.MVC.Controllers
         {
             var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaQuery());
             //mock
+            model.Dre = "DR JT";
+            model.Ue = "UE EMEF MÁXIMO DE MOURA";
+            model.Ano = "9";
+            model.Bimestre = "2º";
+            model.ComponenteCurricular = "Matemática";
+            model.Usuario = "ADMIN";
+            model.RF = "123123123";
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
             model.Dres.Add(new RelatorioFaltaFrequenciaDreDto
             {
                 Codigo = "123",
@@ -48,7 +56,7 @@ namespace SME.SR.MVC.Controllers
                                 {
                                     new RelatorioFaltaFrequenciaBimestreDto
                                     {
-                                        Nome="1º Bimestre",
+                                        Nome="1º",
                                         Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
                                         {
                                             new RelatorioFaltaFrequenciaComponenteDto
@@ -92,7 +100,7 @@ namespace SME.SR.MVC.Controllers
                                             },
                                             new RelatorioFaltaFrequenciaComponenteDto
                                             {
-                                                Nome="Português",
+                                                Nome="Português 01",
                                                 Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
                                                 {
                                                     new RelatorioFaltaFrequenciaAlunoDto
@@ -128,12 +136,168 @@ namespace SME.SR.MVC.Controllers
                                                         Numero="1"
                                                     }
                                                 }
-                                            }
+                                            },
+                                            new RelatorioFaltaFrequenciaComponenteDto
+                                            {
+                                                Nome="Português 02",
+                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+                                                {
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    }
+                                                }
+                                            },
+                                             new RelatorioFaltaFrequenciaComponenteDto
+                                            {
+                                                Nome="Português 03",
+                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+                                                {
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    }
+                                                }
+                                            },
+                                            new RelatorioFaltaFrequenciaComponenteDto
+                                            {
+                                                Nome="Português 04",
+                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+                                                {
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    }
+                                                }
+                                            },
+                                            new RelatorioFaltaFrequenciaComponenteDto
+                                            {
+                                                Nome="Português 05",
+                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+                                                {
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    },
+                                                    new RelatorioFaltaFrequenciaAlunoDto
+                                                    {
+                                                        Nome="José da silva",
+                                                        Faltas="10",
+                                                        Frequencia=50,
+                                                        NomeTurma="1A",
+                                                        Numero="1"
+                                                    }
+                                                }
+                                            },
                                         }
                                     },
                                     new RelatorioFaltaFrequenciaBimestreDto
                                     {
-                                        Nome="2º Bimestre",
+                                        Nome="2º",
                                         Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
                                         {
                                             new RelatorioFaltaFrequenciaComponenteDto
@@ -218,7 +382,7 @@ namespace SME.SR.MVC.Controllers
                                     },
                                         new RelatorioFaltaFrequenciaBimestreDto
                                     {
-                                        Nome="3º Bimestre",
+                                        Nome="3º",
                                         Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
                                         {
                                             new RelatorioFaltaFrequenciaComponenteDto
@@ -303,7 +467,7 @@ namespace SME.SR.MVC.Controllers
                                     },
                                             new RelatorioFaltaFrequenciaBimestreDto
                                     {
-                                        Nome="3º Bimestre",
+                                        Nome="4º",
                                         Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
                                         {
                                             new RelatorioFaltaFrequenciaComponenteDto
@@ -394,7 +558,6 @@ namespace SME.SR.MVC.Controllers
                     }
                 }
             });
-
             return View(model);
         }
     }
