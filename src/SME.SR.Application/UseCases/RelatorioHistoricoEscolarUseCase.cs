@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Data;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -29,8 +31,6 @@ namespace SME.SR.Application
 
             var turmas = new List<Turma>();
 
-
-
             foreach (var aluno in alunosTurmas)
             {
                 foreach (var turma in aluno.Turmas)
@@ -38,13 +38,6 @@ namespace SME.SR.Application
                     if (!turmas.Any(a => a.Codigo == turma.Codigo))
                         turmas.Add(turma);
                 }                
-            }
-
-            //TODO: MELHORAR CODIGO
-            var listaCodigosAlunos = new List<string>();
-            foreach (var alunoTurma in alunosTurmas)
-            {
-                listaCodigosAlunos.AddRange(alunoTurma.Turmas.Select(a => a.ToString()));
             }
 
             var turmasCodigo = turmas.Select(a => a.Codigo).Distinct();
@@ -61,18 +54,21 @@ namespace SME.SR.Application
 
             var tipoNotas = await ObterTiposNotaRelatorio(filtros.AnoLetivo, dre.Id, ue.Id, filtros.Semestre, filtros.Modalidade, turmas);
 
-            var resultadoFinal = mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, turmasCodigo.ToArray(), cabecalho));
+            var notas = await ObterNotasAlunos(turmasCodigo.ToArray(), new string[0]);
+            var frequencias = await ObterFrequenciasAlunos(turmasCodigo.ToArray(), new string[0]);
 
-            //Obter componentesCurriculares das turmas
+            var mediasFrequencia = await ObterMediasFrequencia();
 
-            //var jsonString = "";
+            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas, frequencias, turmasCodigo.ToArray(), cabecalho));
 
-            //if (relatorioHistoricoEscolar != null)
-            //{
-            //    jsonString = JsonConvert.SerializeObject(relatorioHistoricoEscolar);
-            //}
+            var jsonString = "";
 
-            //  await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+            if (resultadoFinal != null)
+            {
+                jsonString = JsonConvert.SerializeObject(resultadoFinal);
+            }
+
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
         }
 
         private async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoAtoUe(string ueCodigo)
@@ -159,6 +155,29 @@ namespace SME.SR.Application
                 Modalidade = modalidade,
                 Usuario = usuario
             });
+        }
+
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        {
+            return await mediator.Send(new ObterNotasRelatorioBoletimQuery()
+            {
+                CodigosAlunos = alunosCodigo,
+                CodigosTurma = turmasCodigo
+            });
+        }
+
+        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        {
+            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery()
+            {
+                CodigosAluno = alunosCodigo,
+                CodigosTurma = turmasCodigo
+            });
+        }
+
+        private async Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia()
+        {
+            return await mediator.Send(new ObterParametrosMediaFrequenciaQuery());
         }
     }
 }
