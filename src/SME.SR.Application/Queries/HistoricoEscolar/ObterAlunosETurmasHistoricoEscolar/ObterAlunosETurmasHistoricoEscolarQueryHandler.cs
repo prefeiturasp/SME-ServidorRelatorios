@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -41,7 +40,7 @@ namespace SME.SR.Application
                 foreach (var item in informacoesDosAlunos)
                 {
                     var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
-                    
+
                     var turmasdoAluno = turmasDosAlunos.Where(a => a.AlunoCodigo == item.CodigoAluno);
                     foreach (var turmaDoAluno in turmasdoAluno)
                     {
@@ -69,14 +68,14 @@ namespace SME.SR.Application
 
                     //TODO: Fazer a Query Acima já buscar essas informações
                     IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray());
-                    
+
                     foreach (var item in informacoesDosAlunos)
                     {
                         var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
                         alunoTurmasNotasFrequenciasDto.Turmas.Add(turma);
                         retorno.Add(alunoTurmasNotasFrequenciasDto);
                     }
-                }                 
+                }
 
             }
 
