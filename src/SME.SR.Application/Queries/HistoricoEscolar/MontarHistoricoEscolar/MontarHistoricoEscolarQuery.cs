@@ -8,14 +8,18 @@ namespace SME.SR.Application
 {
     public class MontarHistoricoEscolarQuery : IRequest<HistoricoEscolarDTO>
     {
-        public MontarHistoricoEscolarQuery(IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas, IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas, string[] turmasCodigo)
+        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas, IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas, string[] turmasCodigo)
         {
+            Dre = dre;
+            Ue = ue;
             AreasConhecimento = areasConhecimento;
             ComponentesCurricularesTurmas = componentesCurricularesTurmas;
             AlunosTurmas = alunosTurmas;
             TurmasCodigo = turmasCodigo;
         }
 
+        public Dre Dre { get; set; }
+        public Ue Ue { get; set; }
         public IEnumerable<AreaDoConhecimento> AreasConhecimento { get; set; }
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }

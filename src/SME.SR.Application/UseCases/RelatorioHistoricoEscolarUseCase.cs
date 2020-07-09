@@ -21,7 +21,7 @@ namespace SME.SR.Application
         {
 
             var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
-                        
+
             var cabecalho = await MontarCabecalho(filtros);
 
             //Obter Alunos e Turmas
@@ -32,7 +32,7 @@ namespace SME.SR.Application
             foreach (var turma in alunosTurmas)
             {
                 turmas.AddRange(turma.Turmas);
-            }            
+            }
 
             //TODO: MELHORAR CODIGO
             var listaCodigosAlunos = new List<string>();
@@ -41,19 +41,21 @@ namespace SME.SR.Application
                 listaCodigosAlunos.AddRange(alunoTurma.Turmas.Select(a => a.ToString()));
             }
 
-            var turmasCodigo = turmas.Select( a => a.Codigo).Distinct();
+            var turmasCodigo = turmas.Select(a => a.Codigo).Distinct();
 
-            var componentesCurriculares = await  ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
-            
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
+
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
 
-            var dre = ObterDrePorCodigo(filtros.DreCodigo);
+            var dre = await ObterDrePorCodigo(filtros.DreCodigo);
 
-            var ue = ObterUePorCodigo(filtros.UeCodigo);
+            var ue = await ObterUePorCodigo(filtros.UeCodigo);
+
+            var enderecoAtoUe = await ObterEnderecoAtoUe(filtros.UeCodigo);
 
             var tipoNotas = await ObterTiposNotaRelatorio(filtros.AnoLetivo, dre.Id, ue.Id, filtros.Semestre, filtros.Modalidade, turmas);
 
-            //var resultadoFinal = mediator.Send(new MontarHistoricoEscolarQuery(areasDoConhecimento, componentesCurriculares, alunosTurmas, turmasCodigo));
+            var resultadoFinal = mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, turmasCodigo.ToArray()));
 
             //Obter componentesCurriculares das turmas
 
@@ -66,6 +68,12 @@ namespace SME.SR.Application
 
             //  await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
         }
+
+        private async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoAtoUe(string ueCodigo)
+        {
+            return await mediator.Send(new ObterEnderecoEAtosDaUeQuery(ueCodigo));
+        }
+
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
         {
             return await mediator.Send(new ObterDrePorCodigoQuery()
@@ -99,7 +107,7 @@ namespace SME.SR.Application
             var listaCodigosComponentes = new List<long>();
 
             listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Select(a => a.CodDisciplina).Distinct());
-            
+
             return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.ToArray()));
         }
 
@@ -110,7 +118,7 @@ namespace SME.SR.Application
 
             var turmaCodigo = string.IsNullOrEmpty(filtros.TurmaCodigo) ? 0 : long.Parse(filtros.TurmaCodigo);
 
-            return await mediator.Send(new ObterAlunosETurmasHistoricoEscolarQuery(turmaCodigo, alunosCodigos));            
+            return await mediator.Send(new ObterAlunosETurmasHistoricoEscolarQuery(turmaCodigo, alunosCodigos));
         }
 
         private async Task<CabecalhoDto> MontarCabecalho(FiltroHistoricoEscolarDto filtros)
