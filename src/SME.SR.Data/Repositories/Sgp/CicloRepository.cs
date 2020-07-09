@@ -29,9 +29,9 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<TipoCiclo>> ObterCiclosIdPorAnosModalidade(string[] anos, Modalidade modalidadeCodigo)
+        public async Task<IEnumerable<TipoCiclo>> ObterCiclosPorAnosModalidade(string[] anos, Modalidade modalidadeCodigo)
         {
-            var query = @"select tc.id, tca.ano from tipo_ciclo tc
+            var query = @"select tc.id, tc.descricao, tca.ano from tipo_ciclo tc
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
                         where tca.ano = ANY(@anos) and tca.modalidade = @modalidade";
 

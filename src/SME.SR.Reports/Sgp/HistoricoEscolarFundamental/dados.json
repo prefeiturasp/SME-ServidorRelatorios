@@ -1,0 +1,634 @@
+{
+	"relatorioHistoricoEscolar": [
+		{
+			"nomeDre": "DIRETORIA REGIONAL DE EDUCAÇÃO JACANA/TREMEMBE",
+			"cabecalho": {
+				"nomeUe": "091847 CEU EMEF PARAISOPOLIS",
+				"endereco": "",
+				"atoCriacao": "",
+				"atoAutorizacao": "",
+				"lei": "Ensino Fundamental - Lei federal nº9394/96  - Lei Federal nº11274/06"
+			},
+			"informacoesAluno": {
+				"nome": "Cristina Almeida",
+				"rga": "88855565656",
+				"cidadeNatal": "Blumenau",
+				"estadoNatal": "SC",
+				"nacionalidade": "Brasileiro",
+				"nascimento": "12/07/1999",
+				"rg": "127871324",
+				"expedicao": "12/08/2010",
+				"orgaoExpeditor": "SESP-SC",
+				"estado": "SC"
+			},
+			"tipoNota": "C",
+			"ciclos": [
+				{
+					"nome": "Ciclo de Alfabetização",
+					"anos": [
+						{"ano":1},
+						{"ano":2}
+					]
+				},
+				{
+					"nome": "Ciclo de Interdisciplinar",
+					"anos": [
+						{"ano":3},
+						{"ano":4},
+						{"ano":5},
+						{"ano":6}
+					]
+				},
+				{
+					"nome": "Ciclo de Autoral",
+					"anos": [
+						{"ano":7},
+						{"ano":8},
+						{"ano":9}
+					]
+				}
+			],
+			"baseNacionalComum":{
+				"areasDeConhecimento": [
+					{
+						"nome": "Linguagens",
+						"componentesCurriculares": [
+							{
+								"nome": "LINGUA PORTUGUESA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							},
+							{
+								"nome": "ARTE",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							},
+							{
+								"nome": "ED. FÍSICA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							}
+						]
+					},
+					{
+						"nome": "MATEMÁTICA",
+						"componentesCurriculares": [
+							{
+								"nome": "MATEMÁTICA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							}
+						]
+					},
+					{
+						"nome": "Ciências Humanas",
+						"componentesCurriculares": [
+							{
+								"nome": "GEOGRAFIA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							},
+							{
+								"nome": "HISTORIA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							}
+						]
+					},
+					{
+						"nome": "Ciências da Natureza",
+						"componentesCurriculares": [
+							{
+								"nome": "CIÊNCIAS",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							}
+						]
+					}						
+				]
+			},
+			"gruposComponentesCurriculares": [
+				{
+				"nome": "Parte Diversificada",
+					"areasDeConhecimento": [
+						{
+							"nome": "Linguagem estr. moderna",
+							"componentesCurriculares": [
+								{
+									"nome": "INGLES",
+									"tipoNota": "C",
+									"notaConceitoPrimeiroAno": "PS",
+									"frequenciaPrimeiroAno": "100",
+									"notaConceitoSegundoAno": "PS",
+									"frequenciaSegundoAno": "100",
+									"notaConceitoTerceiroAno": null,
+									"frequenciaTerceiroAno": null,
+									"notaConceitoQuartoAno": "S",
+									"frequenciaQuartoAno": "85.6",
+									"notaConceitoQuintoAno": null,
+									"frequenciaQuintoAno": null,
+									"notaConceitoSextoAno": null,
+									"frequenciaSextoAno": null,
+									"notaConceitoSetimoAno": "PS",
+									"frequenciaSetimoAno": "100",
+									"notaConceitoOitavoAno": "PS",
+									"frequenciaOitavoAno": "100",
+									"notaConceitoNonoAno": "PS",
+									"frequenciaNonoAno": "100"
+								}
+							]
+						}
+					]
+				}
+			],
+			"ensinoReligioso": {
+				"notaConceitoPrimeiroAno": "PS",
+				"notaConceitoSegundoAno": "PS",
+				"notaConceitoTerceiroAno": null,
+				"notaConceitoQuartoAno": "S",
+				"notaConceitoQuintoAno": null,
+				"notaConceitoSextoAno": null,
+				"notaConceitoSetimoAno": "PS",
+				"notaConceitoOitavoAno": "PS",
+				"notaConceitoNonoAno": "PS"
+			},
+			"enriquecimentoCurricular": [
+				{
+					"nome": "Informática Educativa",
+					"notaConceitoPrimeiroAno": "PS",
+					"notaConceitoSegundoAno": "PS",
+					"notaConceitoTerceiroAno": null,
+					"notaConceitoQuartoAno": "S",
+					"notaConceitoQuintoAno": null,
+					"notaConceitoSextoAno": null,
+					"notaConceitoSetimoAno": "PS",
+					"notaConceitoOitavoAno": "PS",
+					"notaConceitoNonoAno": "PS"
+				},
+				{
+					"nome": "Sala de leitura",
+					"notaConceitoPrimeiroAno": "PS",
+					"notaConceitoSegundoAno": "PS",
+					"notaConceitoTerceiroAno": null,
+					"notaConceitoQuartoAno": "S",
+					"notaConceitoQuintoAno": null,
+					"notaConceitoSextoAno": null,
+					"notaConceitoSetimoAno": "PS",
+					"notaConceitoOitavoAno": "PS",
+					"notaConceitoNonoAno": "PS"
+				}
+			],
+			"projetosAtividadesComplementares": null,
+			"parecerConclusivo": [
+				{
+					"notaConceitoPrimeiroAno": "PS",
+					"notaConceitoSegundoAno": "PS",
+					"notaConceitoTerceiroAno": null,
+					"notaConceitoQuartoAno": "S",
+					"notaConceitoQuintoAno": null,
+					"notaConceitoSextoAno": null,
+					"notaConceitoSetimoAno": "PS",
+					"notaConceitoOitavoAno": "PS",
+					"notaConceitoNonoAno": "PS"
+				}
+			],
+			"legenda": {
+				"texto": "C = Conceito, N = Nota, F = Frequência, P = Preparado, S = Satisfatório, NS = Não satisfatório"
+			}
+		},
+		{
+			"nomeDre": "DIRETORIA REGIONAL DE EDUCAÇÃO JACANA/TREMEMBE",
+			"cabecalho": {
+				"nomeUe": "091847 CEU EMEF PARAISOPOLIS",
+				"endereco": "",
+				"atoCriacao": "",
+				"atoAutorizacao": "",
+				"lei": "Ensino Fundamental - Lei federal nº9394/96  - Lei Federal nº11274/06"
+			},
+			"informacoesAluno": {
+				"nome": "Adriana dos Santos Donatto",
+				"rga": "88855565656",
+				"cidadeNatal": "Blumenau",
+				"estadoNatal": "SC",
+				"nacionalidade": "Brasileiro",
+				"nascimento": "12/07/1999",
+				"rg": "127871324",
+				"expedicao": "12/08/2010",
+				"orgaoExpeditor": "SESP-SC",
+				"estado": "SC"
+			},
+			"tipoNota": "C",
+			"ciclos": [
+				{
+					"nome": "Ciclo de Alfabetização",
+					"anos": [
+						{"ano":1},
+						{"ano":2}
+					]
+				},
+				{
+					"nome": "Ciclo de Interdisciplinar",
+					"anos": [
+						{"ano":3},
+						{"ano":4},
+						{"ano":5},
+						{"ano":6}
+					]
+				},
+				{
+					"nome": "Ciclo de Autoral",
+					"anos": [
+						{"ano":7},
+						{"ano":8},
+						{"ano":9}
+					]
+				}
+			],
+			"baseNacionalComum":{
+				"areasDeConhecimento": [
+					{
+						"nome": "Linguagens",
+						"componentesCurriculares": [
+							{
+								"nome": "LINGUA PORTUGUESA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							},
+							{
+								"nome": "ARTE",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							},
+							{
+								"nome": "ED. FÍSICA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							}
+						]
+					},
+					{
+						"nome": "MATEMÁTICA",
+						"componentesCurriculares": [
+							{
+								"nome": "MATEMÁTICA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							}
+						]
+					},
+					{
+						"nome": "Ciências Humanas",
+						"componentesCurriculares": [
+							{
+								"nome": "GEOGRAFIA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							},
+							{
+								"nome": "HISTORIA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							}
+						]
+					},
+					{
+						"nome": "Ciências da Natureza",
+						"componentesCurriculares": [
+							{
+								"nome": "CIÊNCIAS",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "PS",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "PS",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null,
+								"notaConceitoQuartoAno": "S",
+								"frequenciaQuartoAno": "85.6",
+								"notaConceitoQuintoAno": null,
+								"frequenciaQuintoAno": null,
+								"notaConceitoSextoAno": null,
+								"frequenciaSextoAno": null,
+								"notaConceitoSetimoAno": "PS",
+								"frequenciaSetimoAno": "100",
+								"notaConceitoOitavoAno": "PS",
+								"frequenciaOitavoAno": "100",
+								"notaConceitoNonoAno": "PS",
+								"frequenciaNonoAno": "100"
+							}
+						]
+					}						
+				]
+			},
+			"gruposComponentesCurriculares": [
+				{
+				"nome": "Parte Diversificada",
+					"areasDeConhecimento": [
+						{
+							"nome": "Linguagem estr. moderna",
+							"componentesCurriculares": [
+								{
+									"nome": "INGLES",
+									"tipoNota": "C",
+									"notaConceitoPrimeiroAno": "PS",
+									"frequenciaPrimeiroAno": "100",
+									"notaConceitoSegundoAno": "PS",
+									"frequenciaSegundoAno": "100",
+									"notaConceitoTerceiroAno": null,
+									"frequenciaTerceiroAno": null,
+									"notaConceitoQuartoAno": "S",
+									"frequenciaQuartoAno": "85.6",
+									"notaConceitoQuintoAno": null,
+									"frequenciaQuintoAno": null,
+									"notaConceitoSextoAno": null,
+									"frequenciaSextoAno": null,
+									"notaConceitoSetimoAno": "PS",
+									"frequenciaSetimoAno": "100",
+									"notaConceitoOitavoAno": "PS",
+									"frequenciaOitavoAno": "100",
+									"notaConceitoNonoAno": "PS",
+									"frequenciaNonoAno": "100"
+								}
+							]
+						}
+					]
+				}
+			],
+			"ensinoReligioso": {
+				"notaConceitoPrimeiroAno": "PS",
+				"notaConceitoSegundoAno": "PS",
+				"notaConceitoTerceiroAno": null,
+				"notaConceitoQuartoAno": "S",
+				"notaConceitoQuintoAno": null,
+				"notaConceitoSextoAno": null,
+				"notaConceitoSetimoAno": "PS",
+				"notaConceitoOitavoAno": "PS",
+				"notaConceitoNonoAno": "PS"
+			},
+			"enriquecimentoCurricular": [
+				{
+					"nome": "Informática Educativa",
+					"notaConceitoPrimeiroAno": "PS",
+					"notaConceitoSegundoAno": "PS",
+					"notaConceitoTerceiroAno": null,
+					"notaConceitoQuartoAno": "S",
+					"notaConceitoQuintoAno": null,
+					"notaConceitoSextoAno": null,
+					"notaConceitoSetimoAno": "PS",
+					"notaConceitoOitavoAno": "PS",
+					"notaConceitoNonoAno": "PS"
+				},
+				{
+					"nome": "Sala de leitura",
+					"notaConceitoPrimeiroAno": "PS",
+					"notaConceitoSegundoAno": "PS",
+					"notaConceitoTerceiroAno": null,
+					"notaConceitoQuartoAno": "S",
+					"notaConceitoQuintoAno": null,
+					"notaConceitoSextoAno": null,
+					"notaConceitoSetimoAno": "PS",
+					"notaConceitoOitavoAno": "PS",
+					"notaConceitoNonoAno": "PS"
+				}
+			],
+			"projetosAtividadesComplementares": null,
+			"parecerConclusivo": [
+				{
+					"notaConceitoPrimeiroAno": "PS",
+					"notaConceitoSegundoAno": "PS",
+					"notaConceitoTerceiroAno": null,
+					"notaConceitoQuartoAno": "S",
+					"notaConceitoQuintoAno": null,
+					"notaConceitoSextoAno": null,
+					"notaConceitoSetimoAno": "PS",
+					"notaConceitoOitavoAno": "PS",
+					"notaConceitoNonoAno": "PS"
+				}
+			],
+			"legenda": {
+				"texto": "C = Conceito, N = Nota, F = Frequência, P = Preparado, S = Satisfatório, NS = Não satisfatório"
+			}
+		}
+	]
+}

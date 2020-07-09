@@ -112,5 +112,65 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<Turma>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[]codigoPareceresConclusivos)
+        {
+            var query = @"select distinct 
+	                        ft.turma_id as TurmaCodigo,
+	                        cca.aluno_codigo as AlunoCodigo,
+	                        t.ano 
+                        from
+	                        fechamento_turma ft
+                        inner join conselho_classe cc on
+	                        cc.fechamento_turma_id = ft.id
+                        inner join conselho_classe_aluno cca on
+	                        cca.conselho_classe_id = cc.id
+	                     inner join turma t 
+	                     	on ft.turma_id = t.id
+                        where
+	                        cca.aluno_codigo = any(@codigoAlunos) 
+	                        and cca.conselho_classe_parecer_id  = any(@codigoPareceresConclusivos)";
+
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos, codigoPareceresConclusivos });
+
+        }
+        public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaParecerConclusivo(long turmaCodigo, long[] codigoPareceresConclusivos)
+        {
+            try
+            {
+
+     
+            var query = @"select distinct 
+	                        ft.turma_id as TurmaCodigo,
+	                        cca.aluno_codigo as AlunoCodigo,
+	                        t.ano
+                        from
+	                        fechamento_turma ft
+                        inner join conselho_classe cc on
+	                        cc.fechamento_turma_id = ft.id
+                        inner join conselho_classe_aluno cca on
+	                        cca.conselho_classe_id = cc.id
+	                     inner join turma t 
+	                     	on ft.turma_id = t.id
+                        where
+	                       t.turma_id = @turmaCodigo
+	                       and cca.conselho_classe_parecer_id = any(@codigoPareceresConclusivos)";
+
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { turmaCodigo = turmaCodigo.ToString(), codigoPareceresConclusivos });
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
     }
 }

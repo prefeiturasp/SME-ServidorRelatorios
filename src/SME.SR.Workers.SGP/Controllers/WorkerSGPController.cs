@@ -74,5 +74,12 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioFaltasFrequenciasUseCase.Executar(request);
             return true;
         }
+        [HttpGet("relatorios/historicoescolarfundamental")]
+        [Action("relatorios/historicoescolarfundamental", typeof(IRelatorioHistoricoEscolarUseCase))]
+        public async Task<bool> RelatorioHistoricoEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioHistoricoEscolarUseCase relatorioHistoricoEscolarUseCase)
+        {
+            await relatorioHistoricoEscolarUseCase.Executar(request);
+            return true;
+        }
     }
 }

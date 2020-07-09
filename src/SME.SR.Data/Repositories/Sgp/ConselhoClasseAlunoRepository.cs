@@ -16,7 +16,6 @@ namespace SME.SR.Data
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-
         public async Task<string> ObterParecerConclusivo(long conselhoClasseId, string codigoAluno)
         {
             var query = ConselhoClasseAlunoConsultas.ParecerConclusivo;
@@ -27,6 +26,7 @@ namespace SME.SR.Data
                 return await conexao.QuerySingleOrDefaultAsync<string>(query, parametros);
             }
         }
+
 
         public async Task<IEnumerable<ConselhoClasseParecerConclusivo>> ObterParecerConclusivoPorTurma(string turmaCodigo)
         {
