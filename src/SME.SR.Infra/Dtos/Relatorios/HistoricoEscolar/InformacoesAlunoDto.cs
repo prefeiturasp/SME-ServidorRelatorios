@@ -26,5 +26,7 @@ namespace SME.SR.Infra
         public string OrgaoExpeditor { get; set; }
         [JsonProperty("estado")]
         public string Estado { get; set; }
+
+        public string Codigo { get; set; }
     }
 }

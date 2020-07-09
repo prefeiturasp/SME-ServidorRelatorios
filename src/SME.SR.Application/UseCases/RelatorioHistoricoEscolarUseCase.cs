@@ -38,7 +38,7 @@ namespace SME.SR.Application
                     if (!turmas.Any(a => a.Codigo == turma.Codigo))
                         turmas.Add(turma);
                 }                
-            }
+            }            
 
             var turmasCodigo = turmas.Select(a => a.Codigo).Distinct();
 
