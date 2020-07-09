@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,31 +24,35 @@ namespace SME.SR.Application
         {
             var listaRetorno = new List<HistoricoEscolarDTO>();
 
-            foreach (var turmaCodigo in request.TurmasCodigo)
+            foreach (var aluno in request.AlunosTurmas)
             {
-                var componentesDaTurma = request.ComponentesCurricularesTurmas.FirstOrDefault(cc => cc.Key == turmaCodigo);
+                var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => aluno.Turmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).Distinct();
+                var componentesPorGrupoMatriz = componentesDaTurma.GroupBy(cc => cc.GrupoMatriz);
 
-                var listaComponentesDaTurma = ObterGruposComponentesCurriculares(componentesDaTurma, request.AreasConhecimento);
-                var notasTurma = request.Notas.FirstOrDefault(nf => nf.Key == turmaCodigo);
-                var frequenciasTurma = request.Frequencias.FirstOrDefault(nf => nf.Key == turmaCodigo);
+                var baseNacionalComum = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 1)?.Select(b => b);
+                var componentesDiversificados = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 2)?.Select(d => d);
+                var enriquecimentos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 3)?.Select(e => e);
+                var projetos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 4)?.Select(p => p);
 
-                foreach (var aluno in request.AlunosTurmas.Where(a => a.Turmas.Select(t => t.Codigo).Contains(turmaCodigo)))
+                var listaComponentesDaTurma = ObterGruposComponentesCurriculares(componentesDiversificados, request.AreasConhecimento);
+                var listaBaseNacional = ObterGruposComponentesCurriculares(componentesDiversificados, request.AreasConhecimento);
+                var listaEnriquecimento = ObterEnriquecimentos(enriquecimentos);
+                var listaProjetos = ObterGruposComponentesCurriculares(componentesDiversificados, request.AreasConhecimento);
+
+                var historicoDto = new HistoricoEscolarDTO()
                 {
-                    var historicoDto = new HistoricoEscolarDTO()
-                    {
-                        NomeDre = request.Dre.Nome,
-                        Cabecalho = request.Cabecalho,
-                        InformacoesAluno = aluno.Aluno,
-                        GruposComponentesCurriculares = listaComponentesDaTurma
-                    };
+                    NomeDre = request.Dre.Nome,
+                    Cabecalho = request.Cabecalho,
+                    InformacoesAluno = aluno.Aluno,
+                    GruposComponentesCurriculares = listaComponentesDaTurma
+                };
 
-                    var notasAluno = notasTurma.Where(t => t.CodigoAluno == aluno.Aluno.Codigo.ToString());
-                    var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.Aluno.Codigo.ToString());
+                var notasAluno = request.Notas.Where(n => aluno.Turmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo);
+                var frequenciasAluno = request.Frequencias.Where(f => aluno.Turmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo);
 
-                    SetarNotasFrequencia(turmaCodigo, historicoDto.GruposComponentesCurriculares, notasAluno, frequenciasAluno, request.MediasFrequencia);
+                SetarNotasFrequencia(aluno.Turmas.ToArray(), historicoDto.GruposComponentesCurriculares, notasAluno, frequenciasAluno, request.MediasFrequencia);
 
-                    listaRetorno.Add(historicoDto);
-                }
+                listaRetorno.Add(historicoDto);
             }
 
             return await Task.FromResult(listaRetorno);
@@ -80,7 +85,18 @@ namespace SME.SR.Application
             return gruposComponentes;
         }
 
-        private void SetarNotasFrequencia(string codigoTurma, List<GruposComponentesCurricularesDto> gruposMatriz, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
+        private List<EnriquecimentoCurricularDto> ObterEnriquecimentos(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma)
+        {
+            var enriquecimentos = new List<EnriquecimentoCurricularDto>();
+
+            enriquecimentos.AddRange(componentesCurricularesDaTurma.Select(gp => new EnriquecimentoCurricularDto
+            {
+            }));
+
+            return enriquecimentos;
+        }
+
+        private void SetarNotasFrequencia(Turma[] turmas, List<GruposComponentesCurricularesDto> gruposMatriz, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
         {
             gruposMatriz.Select(gm =>
                 gm.AreasDeConhecimento.Select(ac =>
