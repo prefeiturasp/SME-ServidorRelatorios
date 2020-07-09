@@ -1,0 +1,166 @@
+{
+	"relatorioHistoricoEscolar": [
+		{
+			"nomeDre": "DIRETORIA REGIONAL DE EDUCAÇÃO JACANA/TREMEMBE",
+			"cabecalho": {
+				"nomeUe": "091847 CEU EMEF PARAISOPOLIS",
+				"endereco": "",
+				"atoCriacao": "",
+				"atoAutorizacao": "",
+				"lei": "Ensino Fundamental - Lei federal nº9394/96  - Lei Federal nº11274/06"
+			},
+			"informacoesAluno": {
+				"nome": "Cristina Almeida",
+				"rga": "88855565656",
+				"cidadeNatal": "Blumenau",
+				"estadoNatal": "SC",
+				"nacionalidade": "Brasileiro",
+				"nascimento": "12/07/1999",
+				"rg": "127871324",
+				"expedicao": "12/08/2010",
+				"orgaoExpeditor": "SESP-SC",
+				"estado": "SC"
+			},
+			"tipoNota": "N",
+			"baseNacionalComum":{
+				"areasDeConhecimento": [
+					{
+						"nome": "Linguagens",
+						"componentesCurriculares": [
+							{
+								"nome": "LINGUA PORTUGUESA",
+								"notaConceitoPrimeiroAno": "7",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "7",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null
+							},
+							{
+								"nome": "ARTE",
+								"notaConceitoPrimeiroAno": "7",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "7",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null
+							},
+							{
+								"nome": "ED. FÍSICA",
+								"notaConceitoPrimeiroAno": "7",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "7",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null
+							}
+						]
+					},
+					{
+						"nome": "MATEMÁTICA",
+						"componentesCurriculares": [
+							{
+								"nome": "MATEMÁTICA",
+								"notaConceitoPrimeiroAno": "7",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "7",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null
+							}
+						]
+					},
+					{
+						"nome": "Ciências Humanas",
+						"componentesCurriculares": [
+							{
+								"nome": "GEOGRAFIA",
+								"tipoNota": "C",
+								"notaConceitoPrimeiroAno": "7",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "7",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null
+							},
+							{
+								"nome": "HISTORIA",
+								"notaConceitoPrimeiroAno": "7",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "7",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null
+							}
+						]
+					},
+					{
+						"nome": "Ciências da Natureza",
+						"componentesCurriculares": [
+							{
+								"nome": "CIÊNCIAS",
+								"notaConceitoPrimeiroAno": "7",
+								"frequenciaPrimeiroAno": "100",
+								"notaConceitoSegundoAno": "7",
+								"frequenciaSegundoAno": "100",
+								"notaConceitoTerceiroAno": null,
+								"frequenciaTerceiroAno": null
+							}
+						]
+					}						
+				]
+			},
+			"gruposComponentesCurriculares": [
+				{
+				"nome": "Parte Diversificada",
+					"areasDeConhecimento": [
+						{
+							"nome": "Linguagem estr. moderna",
+							"componentesCurriculares": [
+								{
+									"nome": "INGLES",
+									"notaConceitoPrimeiroAno": "7",
+									"frequenciaPrimeiroAno": "100",
+									"notaConceitoSegundoAno": "7",
+									"frequenciaSegundoAno": "100",
+									"notaConceitoTerceiroAno": null,
+									"frequenciaTerceiroAno": null
+								}
+							]
+						}
+					]
+				}
+			],
+			"ensinoReligioso": {
+				"notaConceitoPrimeiroAno": "7",
+				"notaConceitoSegundoAno": "7",
+				"notaConceitoTerceiroAno": null
+			},
+			"enriquecimentoCurricular": [
+				{
+					"nome": "Informática Educativa",
+					"notaConceitoPrimeiroAno": "7",
+					"notaConceitoSegundoAno": "7",
+					"notaConceitoTerceiroAno": null
+				},
+				{
+					"nome": "Sala de leitura",
+					"notaConceitoPrimeiroAno": "7",
+					"notaConceitoSegundoAno": "7",
+					"notaConceitoTerceiroAno": null
+				}
+			],
+			"projetosAtividadesComplementares": null,
+			"parecerConclusivo": [
+				{
+					"notaConceitoPrimeiroAno": "7",
+					"notaConceitoSegundoAno": "7",
+					"notaConceitoTerceiroAno": null
+				}
+			],
+			"legenda": {
+				"texto": "C = Conceito, N = Nota, F = Frequência, P = Preparado, S = Satisfatório, NS = Não satisfatório"
+			}
+		}
+	]
+}
