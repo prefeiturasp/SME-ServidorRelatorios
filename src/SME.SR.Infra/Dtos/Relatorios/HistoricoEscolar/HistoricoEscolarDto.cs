@@ -13,6 +13,10 @@ namespace SME.SR.Infra
         public InformacoesAlunoDto InformacoesAluno { get; set; }
         [JsonProperty("ciclos")]
         public List<CicloDto> Ciclos { get; set; }
+
+        [JsonProperty("baseNacionalComum")]
+        public BaseNacionalComumDto BaseNacionalComum { get; set; }
+
         [JsonProperty("gruposComponentesCurriculares")]
         public List<GruposComponentesCurricularesDto> GruposComponentesCurriculares { get; set; }
         [JsonProperty("ensinoReligioso")]
