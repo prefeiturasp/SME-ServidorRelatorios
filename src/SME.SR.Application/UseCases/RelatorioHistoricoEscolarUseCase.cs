@@ -29,8 +29,6 @@ namespace SME.SR.Application
 
             var turmas = new List<Turma>();
 
-
-
             foreach (var aluno in alunosTurmas)
             {
                 foreach (var turma in aluno.Turmas)
@@ -38,14 +36,7 @@ namespace SME.SR.Application
                     if (!turmas.Any(a => a.Codigo == turma.Codigo))
                         turmas.Add(turma);
                 }                
-            }
-
-            //TODO: MELHORAR CODIGO
-            var listaCodigosAlunos = new List<string>();
-            foreach (var alunoTurma in alunosTurmas)
-            {
-                listaCodigosAlunos.AddRange(alunoTurma.Turmas.Select(a => a.ToString()));
-            }
+            }            
 
             var turmasCodigo = turmas.Select(a => a.Codigo).Distinct();
 

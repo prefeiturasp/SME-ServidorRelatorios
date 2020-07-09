@@ -23,17 +23,17 @@ namespace SME.SR.Application
 
             var retorno = new List<AlunoTurmasHistoricoEscolarDto>();
 
+            var pareceresConclusivosIds = await mediator.Send(new ObterPareceresConclusivosPorTipoAprovacaoQuery(true));
+            if (!pareceresConclusivosIds.Any())
+                throw new NegocioException("Não foi possível localizar os pareceres conclusivos.");
+
             if (request.CodigoAlunos.Any())
             {
-                var pareceresConclusivosCodigos = await mediator.Send(new ObterPareceresConclusivosPorTipoAprovacaoQuery(true));
-                if (!pareceresConclusivosCodigos.Any())
-                    throw new NegocioException("Não foi possível localizar os pareceres conclusivos.");
-
                 //Obter informações dos alunos
                 IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(request.CodigoAlunos);
 
                 //Obter as turmas dos Alunos
-                var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigoAlunos, pareceresConclusivosCodigos.ToArray()));
+                var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigoAlunos, pareceresConclusivosIds.ToArray()));
                 if (!turmasDosAlunos.Any())
                     throw new NegocioException("Não foi possíve obter as turmas do(s) aluno(s)");
 
@@ -62,12 +62,13 @@ namespace SME.SR.Application
                     if (turma == null)
                         throw new NegocioException("Não foi possível obter a turma.");
 
-                    var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = request.CodigoTurma.ToString() });
-                    if (!alunosDaTurma.Any())
-                        throw new NegocioException("Não foi possível obter os alunos da turma.");
+                    var alunosPromovidosCodigos = await mediator.Send(new ObterAlunosPorTurmaParecerConclusivoQuery(request.CodigoTurma, pareceresConclusivosIds.ToArray()));
+
+                    if (!alunosPromovidosCodigos.Any())
+                        throw new NegocioException("Não foram encontrados alunos promovidos para esta turma.");
 
                     //TODO: Fazer a Query Acima já buscar essas informações
-                    IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosDaTurma.Select(a => (long)a.CodigoAluno).ToArray());
+                    IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray());
                     
                     foreach (var item in informacoesDosAlunos)
                     {
@@ -105,6 +106,7 @@ namespace SME.SR.Application
             informacoesAlunoDto.OrgaoExpeditor = item.ExpedicaoOrgaoEmissor;
             informacoesAlunoDto.Rg = item.RG;
             informacoesAlunoDto.Rga = string.Empty;
+            informacoesAlunoDto.Codigo = item.CodigoAluno.ToString();
 
             return informacoesAlunoDto;
         }
