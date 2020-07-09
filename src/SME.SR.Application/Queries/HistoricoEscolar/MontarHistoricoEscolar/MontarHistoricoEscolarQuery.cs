@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace SME.SR.Application
 {
-    public class MontarHistoricoEscolarQuery : IRequest<HistoricoEscolarDTO>
+    public class MontarHistoricoEscolarQuery : IRequest<IEnumerable<HistoricoEscolarDTO>>
     {
-        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas, IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas, string[] turmasCodigo)
+        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas, IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas, string[] turmasCodigo, CabecalhoDto cabecalho)
         {
             Dre = dre;
             Ue = ue;
@@ -16,6 +16,7 @@ namespace SME.SR.Application
             ComponentesCurricularesTurmas = componentesCurricularesTurmas;
             AlunosTurmas = alunosTurmas;
             TurmasCodigo = turmasCodigo;
+            Cabecalho = cabecalho;
         }
 
         public Dre Dre { get; set; }
@@ -24,5 +25,7 @@ namespace SME.SR.Application
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }
         public string[] TurmasCodigo { get; set; }
+
+        public CabecalhoDto Cabecalho { get; set; }        
     }
 }

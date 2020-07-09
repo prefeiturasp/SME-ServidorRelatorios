@@ -17,7 +17,7 @@ namespace SME.SR.Application
         }
         public async Task<IEnumerable<long>> Handle(ObterPareceresConclusivosPorTipoAprovacaoQuery request, CancellationToken cancellationToken)
         {
-            return await conselhoClasseRepository.ObterPareceresConclusivosPorTipoAprovacao(request.Aprovada, request.Frequencia, request.Conselho, request.Nota);
+            return await conselhoClasseRepository.ObterPareceresConclusivosPorTipoAprovacao(request.Aprovado);
             
         }
     }

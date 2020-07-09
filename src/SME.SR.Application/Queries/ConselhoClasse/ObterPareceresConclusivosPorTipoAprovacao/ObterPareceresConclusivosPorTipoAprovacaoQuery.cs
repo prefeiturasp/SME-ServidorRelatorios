@@ -5,15 +5,12 @@ namespace SME.SR.Application
 {
     public class ObterPareceresConclusivosPorTipoAprovacaoQuery : IRequest<IEnumerable<long>>
     {
-        public ObterPareceresConclusivosPorTipoAprovacaoQuery(bool aprovada, bool frequencia, bool conselho, bool nota)
+        public ObterPareceresConclusivosPorTipoAprovacaoQuery(bool aprovado)
         {
-            Aprovada = aprovada;
-            Frequencia = frequencia;
-            Conselho = conselho;
-            Nota = nota;
+            Aprovado = aprovado;            
         }
 
-        public bool Aprovada { get; set; }
+        public bool Aprovado { get; set; }
         public bool Frequencia { get; set; }
         public bool Conselho { get; set; }
         public bool Nota { get; set; }

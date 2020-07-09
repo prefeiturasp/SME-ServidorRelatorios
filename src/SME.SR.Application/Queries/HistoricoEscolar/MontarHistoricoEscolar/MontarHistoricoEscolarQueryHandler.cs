@@ -9,41 +9,51 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class MontarHistoricoEscolarQueryHandler : IRequestHandler<MontarHistoricoEscolarQuery, HistoricoEscolarDTO>
+    public class MontarHistoricoEscolarQueryHandler : IRequestHandler<MontarHistoricoEscolarQuery, IEnumerable<HistoricoEscolarDTO>>
     {
         public MontarHistoricoEscolarQueryHandler()
         {
 
         }
 
-        public async Task<HistoricoEscolarDTO> Handle(MontarHistoricoEscolarQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<HistoricoEscolarDTO>> Handle(MontarHistoricoEscolarQuery request, CancellationToken cancellationToken)
         {
-            var retorno = new HistoricoEscolarDTO();
+            var listaRetorno = new List<HistoricoEscolarDTO>();
 
-            foreach (var turmaCodigo in request.TurmasCodigo)
+
+            foreach (var aluno in request.AlunosTurmas)
             {
-                retorno.NomeDre = request.Dre.Nome;
-                retorno.Cabecalho = ObterCabecalho(request.Ue);
+                var historicoEscolar = new HistoricoEscolarDTO();
+                historicoEscolar.Cabecalho = request.Cabecalho;
+                historicoEscolar.InformacoesAluno = aluno.Aluno;
+                historicoEscolar.NomeDre = request.Dre.Nome;
+                
+                //historicoEscolar.ParecerConclusivo = 
 
-                var componentesDaTurma = request.ComponentesCurricularesTurmas.FirstOrDefault(cc => cc.Key == turmaCodigo);
-
-                retorno.GruposComponentesCurriculares = ObterGruposComponentesCurriculares(componentesDaTurma, request.AreasConhecimento);
-
-                foreach (var aluno in request.AlunosTurmas.Where(a => a.Turmas.Select(t => t.Codigo).Contains(turmaCodigo)))
-                {
-                }
+                //listaRetorno.Add(historicoEscolar);
             }
+            
 
-            return retorno;
+            //foreach (var turmaCodigo in request.TurmasCodigo)
+            //{
+            
+                 
 
-        }
+            //    var componentesDaTurma = request.ComponentesCurricularesTurmas.FirstOrDefault(cc => cc.Key == turmaCodigo);
 
-        private CabecalhoDto ObterCabecalho(Ue ue)
-        {
-            return new CabecalhoDto()
-            {
-                NomeUe = ue.NomeRelatorio,
-            };
+            //    listaRetorno.GruposComponentesCurriculares = ObterGruposComponentesCurriculares(componentesDaTurma, request.AreasConhecimento);
+
+            //    foreach (var aluno in request.AlunosTurmas.Where(a => a.Turmas.Select(t => t.Codigo).Contains(turmaCodigo)))
+            //    {
+                    
+
+
+
+            //    }
+            //}
+
+            return listaRetorno;
+
         }
 
         private List<GruposComponentesCurricularesDto> ObterGruposComponentesCurriculares(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,

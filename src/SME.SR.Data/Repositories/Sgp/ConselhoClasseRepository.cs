@@ -28,16 +28,13 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<long>(query, parametros);
             }
         }
-        public async Task<IEnumerable<long>> ObterPareceresConclusivosPorTipoAprovacao(bool aprovado, bool frequencia, bool conselho, bool nota)
+        public async Task<IEnumerable<long>> ObterPareceresConclusivosPorTipoAprovacao(bool aprovado)
         {
             var query = @"select id from conselho_classe_parecer ccp 
                             where 
-                            ccp.aprovado  = @aprovado
-                            and ccp.conselho  = @conselho
-                            and ccp.nota = @nota
-                            and ccp.frequencia  = @frequencia";
+                            ccp.aprovado  = @aprovado";
 
-            var parametros = new { aprovado, frequencia, conselho, nota };
+            var parametros = new { aprovado };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 

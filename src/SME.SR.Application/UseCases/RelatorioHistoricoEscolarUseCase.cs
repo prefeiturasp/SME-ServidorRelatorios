@@ -29,9 +29,15 @@ namespace SME.SR.Application
 
             var turmas = new List<Turma>();
 
-            foreach (var turma in alunosTurmas)
+
+
+            foreach (var aluno in alunosTurmas)
             {
-                turmas.AddRange(turma.Turmas);
+                foreach (var turma in aluno.Turmas)
+                {
+                    if (!turmas.Any(a => a.Codigo == turma.Codigo))
+                        turmas.Add(turma);
+                }                
             }
 
             //TODO: MELHORAR CODIGO
@@ -55,7 +61,7 @@ namespace SME.SR.Application
 
             var tipoNotas = await ObterTiposNotaRelatorio(filtros.AnoLetivo, dre.Id, ue.Id, filtros.Semestre, filtros.Modalidade, turmas);
 
-            var resultadoFinal = mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, turmasCodigo.ToArray()));
+            var resultadoFinal = mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, turmasCodigo.ToArray(), cabecalho));
 
             //Obter componentesCurriculares das turmas
 

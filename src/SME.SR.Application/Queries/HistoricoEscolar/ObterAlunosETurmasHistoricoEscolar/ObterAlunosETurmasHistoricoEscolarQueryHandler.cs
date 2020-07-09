@@ -25,7 +25,7 @@ namespace SME.SR.Application
 
             if (request.CodigoAlunos.Any())
             {
-                var pareceresConclusivosCodigos = await mediator.Send(new ObterPareceresConclusivosPorTipoAprovacaoQuery(true, true, false, false));
+                var pareceresConclusivosCodigos = await mediator.Send(new ObterPareceresConclusivosPorTipoAprovacaoQuery(true));
                 if (!pareceresConclusivosCodigos.Any())
                     throw new NegocioException("Não foi possível localizar os pareceres conclusivos.");
 
@@ -54,7 +54,7 @@ namespace SME.SR.Application
             }
             else
             {
-                //Obter os alunos da turma
+                //Obter os alunos da turma 
                 if (request.CodigoTurma != 0)
                 {
 
