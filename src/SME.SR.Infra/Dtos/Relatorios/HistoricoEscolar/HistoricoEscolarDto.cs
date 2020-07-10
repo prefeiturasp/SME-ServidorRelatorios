@@ -25,10 +25,10 @@ namespace SME.SR.Infra
         [JsonProperty("ensinoReligioso")]
         public EnsinoReligiosoDto EnsinoReligioso { get; set; }
         [JsonProperty("enriquecimentoCurricular")]
-        public List<EnriquecimentoCurricularDto> EnriquecimentoCurricular { get; set; }
+        public List<ComponenteCurricularHistoricoEscolarDto> EnriquecimentoCurricular { get; set; }
 
         [JsonProperty("projetosAtividadesComplementares")]
-        public List<ProjetosAtividadesComplementaresDto> ProjetosAtividadesComplementares { get; set; }
+        public List<ComponenteCurricularHistoricoEscolarDto> ProjetosAtividadesComplementares { get; set; }
 
         [JsonProperty("parecerConclusivo")]
         public List<ParecerConclusivoDto> ParecerConclusivo { get; set; }
