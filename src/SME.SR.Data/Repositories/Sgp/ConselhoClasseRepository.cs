@@ -28,5 +28,18 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<long>(query, parametros);
             }
         }
+        public async Task<IEnumerable<long>> ObterPareceresConclusivosPorTipoAprovacao(bool aprovado)
+        {
+            var query = @"select id from conselho_classe_parecer ccp 
+                            where 
+                            ccp.aprovado  = @aprovado";
+
+            var parametros = new { aprovado };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryAsync<long>(query, parametros);
+
+        }
     }
 }

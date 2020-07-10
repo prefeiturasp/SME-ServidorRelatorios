@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SME.SR.Application;
 using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
@@ -27,7 +28,7 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("faltas-frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
-            var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaQuery());
+            var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(new ObterRelatorioFaltasFrequenciasQuery()));
             //mock
             model.Dre = "DR JT";
             model.Ue = "UE EMEF MÁXIMO DE MOURA";

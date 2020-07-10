@@ -9,6 +9,6 @@ namespace SME.SR.Data
     {
         Task<long?> ObterCicloIdPorAnoModalidade(string ano, Modalidade modalidadeCodigo);
 
-        Task<IEnumerable<TipoCiclo>> ObterCiclosIdPorAnosModalidade(string[] anos, Modalidade modalidadeCodigo);
+        Task<IEnumerable<TipoCiclo>> ObterCiclosPorAnosModalidade(string[] anos, Modalidade modalidadeCodigo);
     }
 }

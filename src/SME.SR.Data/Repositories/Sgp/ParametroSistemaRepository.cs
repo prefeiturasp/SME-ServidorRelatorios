@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -14,6 +16,19 @@ namespace SME.SR.Data
         public ParametroSistemaRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
+        }
+
+        public async Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia()
+        {
+            var query = @"select 
+                         valor Media, tipo from parametros_sistema
+                         where ativo and tipo = ANY(@tipos) ";
+            var parametros = new { Tipos = new int[] { (int)TipoParametroSistema.CompensacaoAusenciaPercentualFund2, (int)TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse } };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<MediaFrequencia>(query, parametros);
+            }
         }
 
         public async Task<string> ObterValorPorTipo(TipoParametroSistema tipo)

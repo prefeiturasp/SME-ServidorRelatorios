@@ -26,9 +26,9 @@ namespace SME.SR.Workers.SGP
             var jsonString = JsonConvert.SerializeObject(relatorio, UtilJson.ObterConfigConverterNulosEmVazio());
 
             if (relatorioQuery.Modalidade == Modalidade.EJA)
-                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
             else
-                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolar/BoletimEscolar", jsonString, FormatoEnum.Pdf, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolar/BoletimEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
         }
     }
 }

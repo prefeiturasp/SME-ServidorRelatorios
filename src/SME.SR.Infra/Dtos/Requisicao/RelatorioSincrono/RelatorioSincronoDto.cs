@@ -12,7 +12,7 @@ namespace SME.SR.Infra.Dtos
             }
         }
                 
-        public FormatoEnum Formato { get; set; }
+        public TipoFormatoRelatorio Formato { get; set; }
 
         public string CaminhoRelatorio { get; set; }
 

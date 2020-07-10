@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,8 @@ namespace SME.SR.Application
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.UeCodigo, request.Modalidade, request.Usuario);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
 
+            var mediasFrequencia = await ObterMediasFrequencia();
+
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo);
 
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
@@ -36,7 +39,7 @@ namespace SME.SR.Application
             var notas = await ObterNotasAlunos(codigosTurma, codigosAlunos);
             var frequencias = await ObterFrequenciasAlunos(codigosTurma, codigosAlunos);
 
-            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, frequencias, tiposNota);
+            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, frequencias, tiposNota, mediasFrequencia);
 
             return new RelatorioBoletimEscolarDto(boletins);
         }
@@ -123,7 +126,8 @@ namespace SME.SR.Application
 
         private async Task<BoletimEscolarDto> MontarBoletins(Dre dre, Ue ue, IEnumerable<Turma> turmas, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesPorTurma,
                                                              IEnumerable<IGrouping<string, Aluno>> alunosPorTurma, IEnumerable<IGrouping<string, NotasAlunoBimestre>> notasAlunos,
-                                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos, IDictionary<string, string> tiposNota)
+                                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos, IDictionary<string, string> tiposNota,
+                                                             IEnumerable<MediaFrequencia> mediasFrequencias)
         {
             return await mediator.Send(new MontarBoletinsQuery()
             {
@@ -134,8 +138,14 @@ namespace SME.SR.Application
                 AlunosPorTuma = alunosPorTurma,
                 Notas = notasAlunos,
                 Frequencias = frequenciasAlunos,
-                TiposNota = tiposNota
+                TiposNota = tiposNota,
+                MediasFrequencia = mediasFrequencias
             });
+        }
+
+        private async Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia()
+        {
+            return await mediator.Send(new ObterParametrosMediaFrequenciaQuery());
         }
     }
 }
