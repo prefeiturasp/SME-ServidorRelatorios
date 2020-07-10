@@ -25,7 +25,6 @@ namespace SME.SR.Workers.SGP
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-               //.AddRazorRuntimeCompilation();
 
             services.AddResponseCompression(options =>
             {
@@ -38,7 +37,6 @@ namespace SME.SR.Workers.SGP
             services.AddHostedService<RabbitBackgroundListener>();
             services.AddTransient<ExcecaoMiddleware>();
             services.RegistrarDependencias(Configuration);
-
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 

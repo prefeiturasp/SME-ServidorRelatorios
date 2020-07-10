@@ -37,7 +37,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="wwwroot\templates\cabecalho.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\templates\RelatorioAtasComColunaFinal.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\templates\footer.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\templates\RelatorioFaltasFrequencias.cshtml">
