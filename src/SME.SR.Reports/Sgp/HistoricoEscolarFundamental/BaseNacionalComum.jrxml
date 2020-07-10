@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.11.0  -->
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GruposComponentesCurriculares" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5d2933ca-ec6b-486f-ae0f-46d83956946e">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -88,10 +88,6 @@
 		<property name="net.sf.jasperreports.jsonql.field.expression" value="nome"/>
 		<fieldDescription><![CDATA[nome]]></fieldDescription>
 	</field>
-	<field name="tipoNota" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota"/>
-		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
-	</field>
 	<field name="nomeGrupo" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="gruposComponentesCurriculares.nome"/>
 		<fieldDescription><![CDATA[gruposComponentesCurriculares.nome]]></fieldDescription>
@@ -136,11 +132,47 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="legenda"/>
 		<fieldDescription><![CDATA[legenda]]></fieldDescription>
 	</field>
+	<field name="primeiroAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.primeiroAno"/>
+		<fieldDescription><![CDATA[tipoNota.primeiroAno]]></fieldDescription>
+	</field>
+	<field name="segundoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.segundoAno"/>
+		<fieldDescription><![CDATA[tipoNota.segundoAno]]></fieldDescription>
+	</field>
+	<field name="terceiroAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.terceiroAno"/>
+		<fieldDescription><![CDATA[tipoNota.terceiroAno]]></fieldDescription>
+	</field>
+	<field name="quartoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.quartoAno"/>
+		<fieldDescription><![CDATA[tipoNota.quartoAno]]></fieldDescription>
+	</field>
+	<field name="quintoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.quintoAno"/>
+		<fieldDescription><![CDATA[tipoNota.quintoAno]]></fieldDescription>
+	</field>
+	<field name="oitavoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.oitavoAno"/>
+		<fieldDescription><![CDATA[tipoNota.oitavoAno]]></fieldDescription>
+	</field>
+	<field name="sextoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.sextoAno"/>
+		<fieldDescription><![CDATA[tipoNota.sextoAno]]></fieldDescription>
+	</field>
+	<field name="setimoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.setimoAno"/>
+		<fieldDescription><![CDATA[tipoNota.setimoAno]]></fieldDescription>
+	</field>
+	<field name="nonoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.nonoAno"/>
+		<fieldDescription><![CDATA[tipoNota.nonoAno]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="90" splitType="Stretch">
+		<band height="75" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<frame>
 				<reportElement positionType="Float" x="0" y="0" width="555" height="75" uuid="62872e79-6a35-4fc7-a62e-6a3967ff670d">
@@ -204,7 +236,7 @@ curriculares]]></text>
 								<subreportParameter name="REPORT_DATA_SOURCE">
 									<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
 								</subreportParameter>
-								<subreportExpression><![CDATA["repo:ComponentesCurriculares.jrxml"]]></subreportExpression>
+								<subreportExpression><![CDATA["ComponentesCurriculares.jasper"]]></subreportExpression>
 							</subreport>
 						</jr:listContents>
 					</jr:list>
@@ -232,7 +264,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{primeiroAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="215" y="45" width="20" height="15" uuid="f42c5731-7614-4fb7-957b-9e95c4baef5f"/>
@@ -264,7 +296,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{segundoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="295" y="45" width="20" height="15" uuid="11cbd2e5-ab63-4ba0-be97-1a9cdcfe16e5"/>
@@ -286,7 +318,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{terceiroAno}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="315" y="45" width="20" height="15" uuid="c4b1e579-001b-4fe9-8144-25efd437d982">
@@ -298,7 +330,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{quartoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="335" y="45" width="20" height="15" uuid="8c8c1a60-417f-42b0-bbc6-8826b43ffac3"/>
@@ -320,7 +352,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{quintoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="375" y="45" width="20" height="15" uuid="b5447e77-4362-462e-bf54-76a0ea9473a2"/>
@@ -342,7 +374,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{sextoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="415" y="45" width="20" height="15" uuid="6e688312-ff0c-4875-890a-03392a84e12c"/>
@@ -364,7 +396,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{setimoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="455" y="45" width="20" height="15" uuid="1c1a7a8d-d335-4a76-920e-505c80642626"/>
@@ -386,7 +418,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{oitavoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="495" y="45" width="20" height="15" uuid="3af01ea9-3be0-47c5-87d0-05d9b5bea188"/>
@@ -408,7 +440,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{nonoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="535" y="45" width="20" height="15" uuid="07b34787-53a8-4f6d-8783-1d53676cd3f6"/>
@@ -425,57 +457,8 @@ curriculares]]></text>
 					<subreportParameter name="REPORT_DATA_SOURCE">
 						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 					</subreportParameter>
-					<subreportExpression><![CDATA["repo:Ciclos.jrxml"]]></subreportExpression>
+					<subreportExpression><![CDATA["Ciclos.jasper"]]></subreportExpression>
 				</subreport>
-			</frame>
-			<frame>
-				<reportElement positionType="Float" x="0" y="75" width="555" height="15" uuid="7671af48-5c34-45a5-a8e2-a42edf113b15">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textField textAdjust="ScaleFont">
-					<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="30" height="15" backcolor="#F3F3F3" uuid="6a03ef2a-a330-4b38-b1e2-8dc7361ac16a"/>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="4" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{nomeGrupo}.toUpperCase()]]></textFieldExpression>
-				</textField>
-				<componentElement>
-					<reportElement positionType="Float" x="30" y="0" width="525" height="15" uuid="3ec789bf-d400-4c37-a914-bdb6bef107fe">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</reportElement>
-					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
-						<datasetRun subDataset="DatasetComponentesBaseNacional" uuid="b7467d85-a17d-44d2-b68e-b2ba1f550e81">
-							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("gruposComponentesCurriculares.areasDeConhecimento")]]></dataSourceExpression>
-						</datasetRun>
-						<jr:listContents height="15" width="525">
-							<textField textAdjust="StretchHeight">
-								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="82" height="15" uuid="98bb4d58-063d-4be6-b764-decd44ff647f">
-									<property name="com.jaspersoft.studio.unit.height" value="px"/>
-									<property name="com.jaspersoft.studio.unit.width" value="px"/>
-								</reportElement>
-								<box leftPadding="5">
-									<pen lineWidth="0.75"/>
-								</box>
-								<textElement verticalAlignment="Middle">
-									<font size="6" isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
-							</textField>
-							<subreport>
-								<reportElement x="82" y="0" width="330" height="15" uuid="34de2097-f18f-43bf-a4a0-551d3dc8ba59"/>
-								<subreportParameter name="REPORT_DATA_SOURCE">
-									<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
-								</subreportParameter>
-								<subreportExpression><![CDATA["repo:ComponentesCurriculares.jrxml"]]></subreportExpression>
-							</subreport>
-						</jr:listContents>
-					</jr:list>
-				</componentElement>
 			</frame>
 			<staticText>
 				<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="30" height="75" backcolor="#F3F3F3" uuid="148c2d5e-3f8c-4ffe-a78c-79dcbaf91d69"/>
