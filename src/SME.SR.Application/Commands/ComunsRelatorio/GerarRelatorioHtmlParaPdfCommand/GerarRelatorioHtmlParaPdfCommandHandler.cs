@@ -27,9 +27,9 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         public async Task<bool> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            var html = await htmlHelper.RenderRazorViewToString($"../wwwroot/templates/{request.NomeTemplate}", request.Model);
+            var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
             html = html.Replace("logo.png", SmeConstants.LogoSme);
-            
+
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
 
