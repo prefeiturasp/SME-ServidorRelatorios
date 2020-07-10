@@ -112,5 +112,24 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<Turma>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorAno(int anoLetivo, string[] anosEscolares)
+        {
+            var query = @"select t.turma_id Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where ano_letivo = @anoLetivo 
+                         and ano = ANY(@anosEscolares)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<Turma>(query, new { anoLetivo, anosEscolares });
+            }
+
+        }
     }
 }

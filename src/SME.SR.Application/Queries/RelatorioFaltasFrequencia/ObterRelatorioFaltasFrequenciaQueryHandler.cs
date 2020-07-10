@@ -2,6 +2,7 @@
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,8 +10,17 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 {
     public class ObterRelatorioFaltasFrequenciaQueryHandler : IRequestHandler<ObterRelatorioFaltasFrequenciaQuery, RelatorioFaltasFrequenciaDto>
     {
+        private readonly IMediator mediator;
+
+        public ObterRelatorioFaltasFrequenciaQueryHandler(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
+
         public async Task<RelatorioFaltasFrequenciaDto> Handle(ObterRelatorioFaltasFrequenciaQuery request, CancellationToken cancellationToken)
         {
+            var alunos = await ObterAlunosPorAno(request.AnoLetivo, request.AnosEscolares);
+
             var model = new RelatorioFaltasFrequenciaDto();
             //mock
             model.Dre = "DR JT";
@@ -544,6 +554,17 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             });
             
             return await Task.FromResult(model);
+        }
+
+        private async Task<IEnumerable<RelatorioFaltaFrequenciaAlunoDto>> ObterAlunosPorAno(int anoLetivo, IEnumerable<string> anosEscolares)
+        {
+            var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(anoLetivo, anosEscolares));
+            return alunos.Select(a => new RelatorioFaltaFrequenciaAlunoDto()
+            {
+                Nome = a.Nome,
+                NomeTurma = a.Turma,
+                Numero = a.NumeroChamada
+            });
         }
     }
 }
