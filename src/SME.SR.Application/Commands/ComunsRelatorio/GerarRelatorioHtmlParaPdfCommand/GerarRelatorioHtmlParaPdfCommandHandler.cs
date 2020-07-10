@@ -14,17 +14,22 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
     {
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
+        private readonly IHtmlHelper htmlHelper;
 
         public GerarRelatorioHtmlParaPdfCommandCommandHandler(IConverter converter,
-                                                              IServicoFila servicoFila)
+                                                              IServicoFila servicoFila,
+                                                              IHtmlHelper htmlHelper)
         {
             this.converter = converter;
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
+            this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
         }
 
         public async Task<bool> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            var html = GerarHtmlRazor(request.Model, request.NomeTemplate);
+            var html = await htmlHelper.RenderRazorViewToString($"../wwwroot/templates/{request.NomeTemplate}", request.Model);
+            html = html.Replace("logo.png", SmeConstants.LogoSme);
+            
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
 
@@ -34,23 +39,6 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             servicoFila.PublicaFila(new PublicaFilaDto(null, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
 
             return true;
-        }
-
-        private string GerarHtmlRazor(object model, string nomeDoArquivoDoTemplate)
-        {
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var nomeArquivo = $"wwwroot/templates/{nomeDoArquivoDoTemplate}";
-            var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
-
-            var templateBruto = File.ReadAllLines(caminhoArquivo);
-
-            var html = string.Join("", templateBruto.Skip(templateBruto.Count(c => c.Contains("@model"))));
-
-            RazorProcessor processor = new RazorProcessor();
-
-            string templateProcessado = processor.ProcessarTemplate(model, html, nomeDoArquivoDoTemplate);
-
-            return templateProcessado;
         }
     }
 }
