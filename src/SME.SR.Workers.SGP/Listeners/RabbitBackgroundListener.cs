@@ -90,20 +90,20 @@ namespace SME.SR.Workers.SGP.Services
                 }
                 catch (NegocioException ex)
                 {
-                    NotificarUsuarioRelatorioComErro(request);
+                    NotificarUsuarioRelatorioComErro(request, ex.Message);
                     SentrySdk.CaptureException(ex);
                 }
                 catch (Exception ex)
                 {
-                    NotificarUsuarioRelatorioComErro(request);
+                    NotificarUsuarioRelatorioComErro(request, "Erro não identificado, por favor tente novamente.");
                     SentrySdk.CaptureException(ex);
                 }
             }
         }
 
-        private void NotificarUsuarioRelatorioComErro(FiltroRelatorioDto request)
+        private void NotificarUsuarioRelatorioComErro(FiltroRelatorioDto request, string erro)
         {
-            var mensagemRabbit = new MensagemRabbit(string.Empty, null, request.CodigoCorrelacao, request.UsuarioLogadoRF);
+            var mensagemRabbit = new MensagemRabbit(string.Empty, new RetornoWorkerDto(erro), request.CodigoCorrelacao, request.UsuarioLogadoRF);
             var mensagem = JsonConvert.SerializeObject(mensagemRabbit);
             var body = Encoding.UTF8.GetBytes(mensagem);
 
