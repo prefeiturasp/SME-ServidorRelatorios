@@ -35,7 +35,7 @@ namespace SME.SR.Application
                 {
                     mensagensErro.AppendLine($"Erro na carga de cados da turma [{turmaCodigo}]: {e.Message}");
                     throw;
-                }            
+                }
             }
 
             if (relatoriosTurmas.Any())
