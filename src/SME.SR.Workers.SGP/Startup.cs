@@ -46,27 +46,6 @@ namespace SME.SR.Workers.SGP
 
         }
 
-        //private void RegistraServicosHttp(IServiceCollection services)
-        //{
-        //    var cookieContainer = new CookieContainer();
-        //    var jasperCookieHandler = new JasperCookieHandler() { CookieContainer = cookieContainer };
-
-        //    services.AddSingleton(jasperCookieHandler);
-
-        //    var basicAuth = $"{Configuration.GetValue<string>("ConfiguracaoJasper:Username")}:{Configuration.GetValue<string>("ConfiguracaoJasper:Password")}".EncodeTo64();
-        //    var jasperUrl = Configuration.GetValue<string>("ConfiguracaoJasper:Hostname");
-
-        //    services.AddHttpClient<GerarRelatorioAssincronoCommandHandler>(c =>
-        //    {
-        //        c.BaseAddress = new Uri(jasperUrl);
-        //        c.DefaultRequestHeaders.Add("Accept", "application/json");
-        //        c.DefaultRequestHeaders.Add("Authorization", $"Basic {basicAuth}");
-        //    }).ConfigurePrimaryHttpMessageHandler(() =>
-        //    {
-        //        return new JasperCookieHandler() { CookieContainer = cookieContainer };
-        //    });
-        //}
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
