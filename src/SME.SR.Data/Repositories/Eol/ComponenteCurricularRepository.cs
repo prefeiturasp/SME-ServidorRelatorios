@@ -124,6 +124,10 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmas(string[] codigosTurma)
         {
+            try
+            {
+
+            
             var query = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
                                         cc.cd_componente_curricular) as Codigo,
                                     iif(pcc.dc_componente_curricular is not null, pcc.dc_componente_curricular,
@@ -165,6 +169,13 @@ namespace SME.SR.Data
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
             return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmasEProfessor(string login, string[] codigosTurma)

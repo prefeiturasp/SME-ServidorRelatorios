@@ -64,7 +64,7 @@ namespace SME.SR.Application
         {
             var anos = turmas.Select(t => t.Ano.ToString()).Distinct();
 
-            var tipoCiclos = await cicloRepository.ObterCiclosIdPorAnosModalidade(anos.ToArray(), modalidade);
+            var tipoCiclos = await cicloRepository.ObterCiclosPorAnosModalidade(anos.ToArray(), modalidade);
 
             if (tipoCiclos == null)
                 throw new NegocioException("Não foi encontrado o ciclo da turma informada");
@@ -82,7 +82,7 @@ namespace SME.SR.Application
             var lstTurmasTipoNota = new Dictionary<string, string>();
 
             foreach (var turma in turmas)
-                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ano == turma.Ano).TipoNota);
+                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ano.ToString() == turma.Ano).TipoNota);
 
             return lstTurmasTipoNota;
         }

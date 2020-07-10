@@ -12,6 +12,7 @@ namespace SME.SR.Infra
             Linhas = new List<ConselhoClasseAtaFinalLinhaDto>();
         }
 
+        public bool EhEJA { get; set; }
         public ConselhoClasseAtaFinalCabecalhoDto Cabecalho { get; set; }
         public List<ConselhoClasseAtaFinalGrupoDto> GruposMatriz { get; set; }
         public List<ConselhoClasseAtaFinalLinhaDto> Linhas { get; set; }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
@@ -15,11 +14,10 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-        private readonly IConfiguration configuration;
 
-        public WorkerSGPController(IConfiguration configuration)
+        public WorkerSGPController()
         {
-            this.configuration = configuration;
+
         }
         [HttpGet("relatorios/alunos")]
         [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
@@ -72,10 +70,18 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/faltas-frequencia")]
-        [Action("relatorios/faltas-frequencia", typeof(IRelatorioFaltasFrequenciaUseCase))]
-        public async Task<bool> RelatorioFaltasFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciaUseCase relatorioFaltasFrequenciaUseCase)
+        [Action("relatorios/faltas-frequencia", typeof(IRelatorioFaltasFrequenciasUseCase))]
+        public async Task<bool> RelatorioFaltasFrequencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
         {
-            await relatorioFaltasFrequenciaUseCase.Executar(request);
+            await relatorioFaltasFrequenciasUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/historicoescolarfundamental")]
+        [Action("relatorios/historicoescolarfundamental", typeof(IRelatorioHistoricoEscolarUseCase))]
+        public async Task<bool> RelatorioHistoricoEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioHistoricoEscolarUseCase relatorioHistoricoEscolarUseCase)
+        {
+            await relatorioHistoricoEscolarUseCase.Executar(request);
             return true;
         }
     }
