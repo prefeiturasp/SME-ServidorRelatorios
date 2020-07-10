@@ -17,6 +17,34 @@ namespace SME.SR.HtmlPdf
             this.converter = converter;
         }
 
+        public void Converter(string html, string nomeArquivo)
+        {
+            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+            var footer = Path.Combine(caminhoBase, "wwwroot/templates/footer.html");
+
+            nomeArquivo = String.Format("{0}.pdf", nomeArquivo);
+
+            var doc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A4,
+                    Margins = new MarginSettings() { Top = 5, Bottom = 5, Left = 5, Right = 5 },
+                    Out=nomeArquivo
+                }
+            };
+
+
+            doc.Objects.Add(new ObjectSettings()
+            {
+                HtmlContent = html,
+                WebSettings = { DefaultEncoding = "utf-8" },
+            });
+            
+            converter.Convert(doc);
+        }
+
         public void ConvertToPdf(List<string> paginas, string nomeArquivo)
         {
             ConvertToPdf(paginas, null, nomeArquivo);

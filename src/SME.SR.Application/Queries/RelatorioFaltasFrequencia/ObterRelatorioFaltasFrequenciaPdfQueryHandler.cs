@@ -1,34 +1,27 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using SME.SR.Application;
-using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
-using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.MVC.Controllers
+namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 {
-    public class RelatoriosController : Controller
+    public class ObterRelatorioFaltasFrequenciaPdfQueryHandler : IRequestHandler<ObterRelatorioFaltasFrequenciaPdfQuery, RelatorioFaltasFrequenciaDto>
     {
-        private readonly ILogger<RelatoriosController> _logger;
+        private readonly IMediator mediator;
 
-        public RelatoriosController(ILogger<RelatoriosController> logger)
+        public ObterRelatorioFaltasFrequenciaPdfQueryHandler(IMediator mediator)
         {
-            _logger = logger;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public IActionResult Index()
+        public async Task<RelatorioFaltasFrequenciaDto> Handle(ObterRelatorioFaltasFrequenciaPdfQuery request, CancellationToken cancellationToken)
         {
-            return View();
-        }
+            var alunos = await ObterAlunosPorAno(request.Filtro.AnoLetivo, request.Filtro.AnosEscolares);
 
-        [HttpGet("faltas-frequencia")]
-        public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
-        {
-            var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(new ObterRelatorioFaltasFrequenciasQuery()));
+            var model = new RelatorioFaltasFrequenciaDto();
             //mock
             model.Dre = "DR JT";
             model.Ue = "UE EMEF MÁXIMO DE MOURA";
@@ -559,7 +552,19 @@ namespace SME.SR.MVC.Controllers
                     }
                 }
             });
-            return View(model);
+            
+            return await Task.FromResult(model);
+        }
+
+        private async Task<IEnumerable<RelatorioFaltaFrequenciaAlunoDto>> ObterAlunosPorAno(int anoLetivo, IEnumerable<string> anosEscolares)
+        {
+            var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(anoLetivo, anosEscolares));
+            return alunos.Select(a => new RelatorioFaltaFrequenciaAlunoDto()
+            {
+                Nome = a.Nome,
+                NomeTurma = a.Turma,
+                Numero = a.NumeroChamada
+            });
         }
     }
 }

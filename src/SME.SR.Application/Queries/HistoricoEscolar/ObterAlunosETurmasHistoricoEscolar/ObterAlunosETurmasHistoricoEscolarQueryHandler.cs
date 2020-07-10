@@ -44,12 +44,11 @@ namespace SME.SR.Application
                     var turmasdoAluno = turmasDosAlunos.Where(a => a.AlunoCodigo == item.CodigoAluno);
                     foreach (var turmaDoAluno in turmasdoAluno)
                     {
-                        alunoTurmasNotasFrequenciasDto.Turmas.Add(new Turma() { Ano = turmaDoAluno.Ano, Codigo = turmaDoAluno.TurmaCodigo });
+                        alunoTurmasNotasFrequenciasDto.Turmas.Add(new Turma() { Ano = turmaDoAluno.Ano.ToString(), Codigo = turmaDoAluno.TurmaCodigo });
                     }
 
                     retorno.Add(alunoTurmasNotasFrequenciasDto);
                 }
-
             }
             else
             {

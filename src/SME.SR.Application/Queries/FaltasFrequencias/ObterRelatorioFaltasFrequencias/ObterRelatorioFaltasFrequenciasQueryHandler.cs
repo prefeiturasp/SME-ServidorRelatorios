@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SR.Infra;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,8 +7,6 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioFaltasFrequenciasQueryHandler : IRequestHandler<ObterRelatorioFaltasFrequenciasQuery, RelatorioFaltasFrequenciasDto>
     {
-
-
         public ObterRelatorioFaltasFrequenciasQueryHandler()
         {
 
@@ -19,7 +16,5 @@ namespace SME.SR.Application
         {
             return await Task.FromResult(new RelatorioFaltasFrequenciasDto());
         }
-
-
     }
 }

@@ -1,10 +1,10 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
+using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Application
 {
@@ -37,6 +37,8 @@ namespace SME.SR.Application
                         await mediator.Send(new GerarExcelGenericoCommand(dadosExcel.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
                         break;
                     case TipoFormatoRelatorio.Pdf:
+                        await GerarRelatorioPdf(mediator, relatorioFiltros);
+                        break;
                     case TipoFormatoRelatorio.Rtf:
                     case TipoFormatoRelatorio.Html:
                     case TipoFormatoRelatorio.Xls:
@@ -47,7 +49,7 @@ namespace SME.SR.Application
                     case TipoFormatoRelatorio.Ods:
                     case TipoFormatoRelatorio.Jrprint:
                     default:
-                        throw new NegocioException($"Não foi possível exportar este relátorio para o formato {relatorioFiltros.TipoFormatoRelatorio.ToString()}");
+                        throw new NegocioException($"Não foi possível exportar este relátorio para o formato {relatorioFiltros.TipoFormatoRelatorio}");
                 }
 
 
@@ -56,6 +58,13 @@ namespace SME.SR.Application
             {
                 throw ex;
             }
+        }
+
+        private async Task GerarRelatorioPdf(IMediator mediator, ObterRelatorioFaltasFrequenciasQuery obterRelatorioFaltasFrequenciasQuery)
+        {
+            var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(obterRelatorioFaltasFrequenciasQuery));
+            var dadosJson = JsonConvert.SerializeObject(dadosRelatorio);
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFaltasFrequencias", dadosRelatorio, Guid.NewGuid()));
         }
     }
 }

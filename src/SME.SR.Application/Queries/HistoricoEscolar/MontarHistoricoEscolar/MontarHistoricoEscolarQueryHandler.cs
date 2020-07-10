@@ -1,11 +1,7 @@
-﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using MediatR;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RazorEngine.Compilation.ImpromptuInterface;
+﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -172,21 +168,21 @@ namespace SME.SR.Application
 
                                 if (cc.Nota)
                                 {
-                                    if (turma.Ano == 1)
+                                    if (turma.Ano == "1")
                                         cc.NotaConceitoPrimeiroAno = notaComponente;
-                                    else if (turma.Ano == 2)
+                                    else if (turma.Ano == "2")
                                         cc.NotaConceitoSegundoAno = notaComponente;
-                                    else if (turma.Ano == 3)
+                                    else if (turma.Ano == "3")
                                         cc.NotaConceitoTerceiroAno = notaComponente;
-                                    else if (turma.Ano == 4)
+                                    else if (turma.Ano == "4")
                                         cc.NotaConceitoQuartoAno = notaComponente;
-                                    else if (turma.Ano == 5)
+                                    else if (turma.Ano == "5")
                                         cc.NotaConceitoQuintoAno = notaComponente;
-                                    else if (turma.Ano == 6)
+                                    else if (turma.Ano == "6")
                                         cc.NotaConceitoSextoAno = notaComponente;
-                                    else if (turma.Ano == 7)
+                                    else if (turma.Ano == "7")
                                         cc.NotaConceitoSetimoAno = notaComponente;
-                                    else if (turma.Ano == 8)
+                                    else if (turma.Ano == "8")
                                         cc.NotaConceitoOitavoAno = notaComponente;
                                     else
                                         cc.NotaConceitoNonoAno = notaComponente;
@@ -195,21 +191,21 @@ namespace SME.SR.Application
                                 {
                                     var frequenciasPorTurmaBimestre = frequencia?.Where(nf => nf.PeriodoEscolarId != null && nf.TurmaId == turma.Codigo);
 
-                                    if (turma.Ano == 1)
+                                    if (turma.Ano == "1")
                                         cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                    else if (turma.Ano == 2)
+                                    else if (turma.Ano == "2")
                                         cc.NotaConceitoSegundoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                    else if (turma.Ano == 3)
+                                    else if (turma.Ano == "3")
                                         cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                    else if (turma.Ano == 4)
+                                    else if (turma.Ano == "4")
                                         cc.NotaConceitoQuartoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                    else if (turma.Ano == 5)
+                                    else if (turma.Ano == "5")
                                         cc.NotaConceitoQuintoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                    else if (turma.Ano == 6)
+                                    else if (turma.Ano == "6")
                                         cc.NotaConceitoSextoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                    else if (turma.Ano == 7)
+                                    else if (turma.Ano == "7")
                                         cc.NotaConceitoSetimoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                    else if (turma.Ano == 8)
+                                    else if (turma.Ano == "8")
                                         cc.NotaConceitoOitavoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
                                     else
                                         cc.NotaConceitoNonoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
@@ -218,23 +214,23 @@ namespace SME.SR.Application
                                 if (cc.Frequencia)
                                 {
 
-                                    if (turma.Ano == 1)
+                                    if (turma.Ano == "1")
                                         cc.FrequenciaPrimeiroAno = notaComponente;
-                                    else if (turma.Ano == 2)
+                                    else if (turma.Ano == "2")
                                         cc.FrequenciaSegundoAno = notaComponente;
-                                    else if (turma.Ano == 3)
+                                    else if (turma.Ano == "3")
                                         cc.FrequenciaTerceiroAno = notaComponente;
-                                    else if (turma.Ano == 4)
+                                    else if (turma.Ano == "4")
                                         cc.FrequenciaQuartoAno = notaComponente;
-                                    else if (turma.Ano == 5)
+                                    else if (turma.Ano == "5")
                                         cc.FrequenciaQuintoAno = notaComponente;
-                                    else if (turma.Ano == 6)
+                                    else if (turma.Ano == "6")
                                         cc.FrequenciaSextoAno = notaComponente;
-                                    else if (turma.Ano == 7)
+                                    else if (turma.Ano == "7")
                                         cc.FrequenciaSetimoAno = notaComponente;
-                                    else if (turma.Ano == 8)
+                                    else if (turma.Ano == "8")
                                         cc.FrequenciaOitavoAno = notaComponente;
-                                    else if (turma.Ano == 9)
+                                    else if (turma.Ano == "9")
                                         cc.FrequenciaNonoAno = notaComponente;
                                 }
                             }));
@@ -251,21 +247,21 @@ namespace SME.SR.Application
 
                             if (cc.Nota)
                             {
-                                if (turma.Ano == 1)
+                                if (turma.Ano == "1")
                                     cc.NotaConceitoPrimeiroAno = notaComponente;
-                                else if (turma.Ano == 2)
+                                else if (turma.Ano == "2")
                                     cc.NotaConceitoSegundoAno = notaComponente;
-                                else if (turma.Ano == 3)
+                                else if (turma.Ano == "3")
                                     cc.NotaConceitoTerceiroAno = notaComponente;
-                                else if (turma.Ano == 4)
+                                else if (turma.Ano == "4")
                                     cc.NotaConceitoQuartoAno = notaComponente;
-                                else if (turma.Ano == 5)
+                                else if (turma.Ano == "5")
                                     cc.NotaConceitoQuintoAno = notaComponente;
-                                else if (turma.Ano == 6)
+                                else if (turma.Ano == "6")
                                     cc.NotaConceitoSextoAno = notaComponente;
-                                else if (turma.Ano == 7)
+                                else if (turma.Ano == "7")
                                     cc.NotaConceitoSetimoAno = notaComponente;
-                                else if (turma.Ano == 8)
+                                else if (turma.Ano == "8")
                                     cc.NotaConceitoOitavoAno = notaComponente;
                                 else
                                     cc.NotaConceitoNonoAno = notaComponente;
@@ -274,21 +270,21 @@ namespace SME.SR.Application
                             {
                                 var frequenciasPorTurmaBimestre = frequencia?.Where(nf => nf.PeriodoEscolarId != null && nf.TurmaId == turma.Codigo);
 
-                                if (turma.Ano == 1)
+                                if (turma.Ano == "1")
                                     cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                else if (turma.Ano == 2)
+                                else if (turma.Ano == "2")
                                     cc.NotaConceitoSegundoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                else if (turma.Ano == 3)
+                                else if (turma.Ano == "3")
                                     cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                else if (turma.Ano == 4)
+                                else if (turma.Ano == "4")
                                     cc.NotaConceitoQuartoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                else if (turma.Ano == 5)
+                                else if (turma.Ano == "5")
                                     cc.NotaConceitoQuintoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                else if (turma.Ano == 6)
+                                else if (turma.Ano == "6")
                                     cc.NotaConceitoSextoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                else if (turma.Ano == 7)
+                                else if (turma.Ano == "7")
                                     cc.NotaConceitoSetimoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                                else if (turma.Ano == 8)
+                                else if (turma.Ano == "8")
                                     cc.NotaConceitoOitavoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
                                 else
                                     cc.NotaConceitoNonoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
@@ -297,23 +293,23 @@ namespace SME.SR.Application
                             if (cc.Frequencia)
                             {
 
-                                if (turma.Ano == 1)
+                                if (turma.Ano == "1")
                                     cc.FrequenciaPrimeiroAno = notaComponente;
-                                else if (turma.Ano == 2)
+                                else if (turma.Ano == "2")
                                     cc.FrequenciaSegundoAno = notaComponente;
-                                else if (turma.Ano == 3)
+                                else if (turma.Ano == "3")
                                     cc.FrequenciaTerceiroAno = notaComponente;
-                                else if (turma.Ano == 4)
+                                else if (turma.Ano == "4")
                                     cc.FrequenciaQuartoAno = notaComponente;
-                                else if (turma.Ano == 5)
+                                else if (turma.Ano == "5")
                                     cc.FrequenciaQuintoAno = notaComponente;
-                                else if (turma.Ano == 6)
+                                else if (turma.Ano == "6")
                                     cc.FrequenciaSextoAno = notaComponente;
-                                else if (turma.Ano == 7)
+                                else if (turma.Ano == "7")
                                     cc.FrequenciaSetimoAno = notaComponente;
-                                else if (turma.Ano == 8)
+                                else if (turma.Ano == "8")
                                     cc.FrequenciaOitavoAno = notaComponente;
-                                else if (turma.Ano == 9)
+                                else if (turma.Ano == "9")
                                     cc.FrequenciaNonoAno = notaComponente;
                             }
                         })));
@@ -328,21 +324,21 @@ namespace SME.SR.Application
 
                         if (cc.Nota)
                         {
-                            if (turma.Ano == 1)
+                            if (turma.Ano == "1")
                                 cc.NotaConceitoPrimeiroAno = notaComponente;
-                            else if (turma.Ano == 2)
+                            else if (turma.Ano == "2")
                                 cc.NotaConceitoSegundoAno = notaComponente;
-                            else if (turma.Ano == 3)
+                            else if (turma.Ano == "3")
                                 cc.NotaConceitoTerceiroAno = notaComponente;
-                            else if (turma.Ano == 4)
+                            else if (turma.Ano == "4")
                                 cc.NotaConceitoQuartoAno = notaComponente;
-                            else if (turma.Ano == 5)
+                            else if (turma.Ano == "5")
                                 cc.NotaConceitoQuintoAno = notaComponente;
-                            else if (turma.Ano == 6)
+                            else if (turma.Ano == "6")
                                 cc.NotaConceitoSextoAno = notaComponente;
-                            else if (turma.Ano == 7)
+                            else if (turma.Ano == "7")
                                 cc.NotaConceitoSetimoAno = notaComponente;
-                            else if (turma.Ano == 8)
+                            else if (turma.Ano == "8")
                                 cc.NotaConceitoOitavoAno = notaComponente;
                             else
                                 cc.NotaConceitoNonoAno = notaComponente;
@@ -351,21 +347,21 @@ namespace SME.SR.Application
                         {
                             var frequenciasPorTurmaBimestre = frequencia?.Where(nf => nf.PeriodoEscolarId != null && nf.TurmaId == turma.Codigo);
 
-                            if (turma.Ano == 1)
+                            if (turma.Ano == "1")
                                 cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                            else if (turma.Ano == 2)
+                            else if (turma.Ano == "2")
                                 cc.NotaConceitoSegundoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                            else if (turma.Ano == 3)
+                            else if (turma.Ano == "3")
                                 cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                            else if (turma.Ano == 4)
+                            else if (turma.Ano == "4")
                                 cc.NotaConceitoQuartoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                            else if (turma.Ano == 5)
+                            else if (turma.Ano == "5")
                                 cc.NotaConceitoQuintoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                            else if (turma.Ano == 6)
+                            else if (turma.Ano == "6")
                                 cc.NotaConceitoSextoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                            else if (turma.Ano == 7)
+                            else if (turma.Ano == "7")
                                 cc.NotaConceitoSetimoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                            else if (turma.Ano == 8)
+                            else if (turma.Ano == "8")
                                 cc.NotaConceitoOitavoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
                             else
                                 cc.NotaConceitoNonoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
@@ -382,21 +378,21 @@ namespace SME.SR.Application
 
                          if (cc.Nota)
                          {
-                             if (turma.Ano == 1)
+                             if (turma.Ano == "1")
                                  cc.NotaConceitoPrimeiroAno = notaComponente;
-                             else if (turma.Ano == 2)
+                             else if (turma.Ano == "2")
                                  cc.NotaConceitoSegundoAno = notaComponente;
-                             else if (turma.Ano == 3)
+                             else if (turma.Ano == "3")
                                  cc.NotaConceitoTerceiroAno = notaComponente;
-                             else if (turma.Ano == 4)
+                             else if (turma.Ano == "4")
                                  cc.NotaConceitoQuartoAno = notaComponente;
-                             else if (turma.Ano == 5)
+                             else if (turma.Ano == "5")
                                  cc.NotaConceitoQuintoAno = notaComponente;
-                             else if (turma.Ano == 6)
+                             else if (turma.Ano == "6")
                                  cc.NotaConceitoSextoAno = notaComponente;
-                             else if (turma.Ano == 7)
+                             else if (turma.Ano == "7")
                                  cc.NotaConceitoSetimoAno = notaComponente;
-                             else if (turma.Ano == 8)
+                             else if (turma.Ano == "8")
                                  cc.NotaConceitoOitavoAno = notaComponente;
                              else
                                  cc.NotaConceitoNonoAno = notaComponente;
@@ -405,21 +401,21 @@ namespace SME.SR.Application
                          {
                              var frequenciasPorTurmaBimestre = frequencia?.Where(nf => nf.PeriodoEscolarId != null && nf.TurmaId == turma.Codigo);
 
-                             if (turma.Ano == 1)
+                             if (turma.Ano == "1")
                                  cc.NotaConceitoPrimeiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                             else if (turma.Ano == 2)
+                             else if (turma.Ano == "2")
                                  cc.NotaConceitoSegundoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                             else if (turma.Ano == 3)
+                             else if (turma.Ano == "3")
                                  cc.NotaConceitoTerceiroAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                             else if (turma.Ano == 4)
+                             else if (turma.Ano == "4")
                                  cc.NotaConceitoQuartoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                             else if (turma.Ano == 5)
+                             else if (turma.Ano == "5")
                                  cc.NotaConceitoQuintoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                             else if (turma.Ano == 6)
+                             else if (turma.Ano == "6")
                                  cc.NotaConceitoSextoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                             else if (turma.Ano == 7)
+                             else if (turma.Ano == "7")
                                  cc.NotaConceitoSetimoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
-                             else if (turma.Ano == 8)
+                             else if (turma.Ano == "8")
                                  cc.NotaConceitoOitavoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
                              else
                                  cc.NotaConceitoNonoAno = ObterSintese(frequenciasPorTurmaBimestre, mediasFrequencia, false, false);
