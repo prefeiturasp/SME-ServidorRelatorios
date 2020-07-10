@@ -7,7 +7,8 @@ namespace SME.SR.Application
     {
         public GerarRelatorioHtmlParaPdfCommand(string nomeTemplate, object model, Guid codigoCorrelacao)
         {
-            NomeTemplate = nomeTemplate;
+            if (!string.IsNullOrWhiteSpace(nomeTemplate))
+                NomeTemplate = nomeTemplate.Replace(".cshtml", "");
             Model = model;
             CodigoCorrelacao = codigoCorrelacao;
         }

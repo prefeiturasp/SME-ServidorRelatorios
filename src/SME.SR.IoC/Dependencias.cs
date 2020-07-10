@@ -10,6 +10,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Repositories.Sgp;
+using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.JRSClient;
 using SME.SR.JRSClient.Extensions;
@@ -49,7 +50,7 @@ namespace SME.SR.IoC
 
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-
+            services.AddScoped<IHtmlHelper, HtmlHelper>();
 
             services.AddSingleton(new VariaveisAmbiente());
             RegistrarRepositorios(services);
