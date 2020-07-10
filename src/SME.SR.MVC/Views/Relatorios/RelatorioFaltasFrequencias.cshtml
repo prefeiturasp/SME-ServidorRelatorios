@@ -2,9 +2,9 @@
 
 @functions 
 {
-    Microsoft.AspNetCore.Html.IHtmlContent QuebrarPagina() 
+    Microsoft.AspNetCore.Html.IHtmlContent QuebrarPagina()
     {
-      var str = $@"<footer class='rodape-rel-faltas-frequencia'>
+        var str = $@"<footer class='rodape-rel-faltas-frequencia'>
                 <div class='titulo-sgp-rodape'>
                   SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
                 </div>
@@ -14,14 +14,11 @@
 
         return Html.Raw(str);
     }
-}
 
-@functions 
-{
-    Microsoft.AspNetCore.Html.IHtmlContent Cabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data) 
+    Microsoft.AspNetCore.Html.IHtmlContent Cabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data)
     {
-      var str = 
-         $@"<div>
+        var str =
+           $@"<div>
                 <img class='img-logo-sgp' src='logo.png' alt='Logo SGP' />
             </div>
             <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
@@ -73,17 +70,13 @@
 <body class="body-rel-faltas-frequencia">
   <style>
     .body-rel-faltas-frequencia {
-      margin: 1cm auto;
+      margin: 0.5cm auto;
       font-family: Roboto, sans-serif;
       width: 21cm;
       min-height: 29.7cm;
       background: white;
       color: #42474a;
-    }
-
-    .margin-rel-faltas-frequencia {
-      margin: 30px;
-    }
+    } 
 
     .titulo-sgp {
       text-align: right;
@@ -200,8 +193,7 @@
   </style>
 
 
-  <div class="margin-rel-faltas-frequencia">
-
+  <div>
 
     @if (Model.Dres != null)
       foreach (var dre in Model.Dres)
