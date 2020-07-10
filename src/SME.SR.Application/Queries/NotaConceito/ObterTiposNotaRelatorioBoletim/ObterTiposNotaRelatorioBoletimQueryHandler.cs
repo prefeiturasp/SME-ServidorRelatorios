@@ -82,7 +82,7 @@ namespace SME.SR.Application
             var lstTurmasTipoNota = new Dictionary<string, string>();
 
             foreach (var turma in turmas)
-                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ano == turma.Ano).TipoNota);
+                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ano.ToString() == turma.Ano).TipoNota);
 
             return lstTurmasTipoNota;
         }

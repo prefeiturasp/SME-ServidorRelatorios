@@ -18,10 +18,10 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<long?> ObterCicloIdPorAnoModalidade(int ano, Modalidade modalidadeCodigo)
+        public async Task<long?> ObterCicloIdPorAnoModalidade(string ano, Modalidade modalidadeCodigo)
         {
             var query = CicloConsultas.ObterPorAnoModalidade;
-            var parametros = new { Ano = ano.ToString(), Modalidade = (int)modalidadeCodigo };
+            var parametros = new { Ano = ano, Modalidade = (int)modalidadeCodigo };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {

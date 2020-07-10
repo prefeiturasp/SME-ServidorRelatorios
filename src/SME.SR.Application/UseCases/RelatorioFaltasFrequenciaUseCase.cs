@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
@@ -17,7 +18,10 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaQuery());
+            var query = request.ObterObjetoFiltro<ObterRelatorioFaltasFrequenciaQuery>();
+
+            var dadosRelatorio = await mediator.Send(query);
+            var dadosJson = JsonConvert.SerializeObject(dadosRelatorio);
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFaltasFrequencias.cshtml", dadosRelatorio, Guid.NewGuid()));
 
         }
