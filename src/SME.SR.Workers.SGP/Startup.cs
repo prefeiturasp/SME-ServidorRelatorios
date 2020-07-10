@@ -79,11 +79,7 @@ namespace SME.SR.Workers.SGP
 
             app.UseMiddleware<ExcecaoMiddleware>();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                ServeUnknownFileTypes = true,
-                DefaultContentType = "text/html"
-            });
+            app.UseStaticFiles();
 
             app.UseFileServer(enableDirectoryBrowsing: true);
 
