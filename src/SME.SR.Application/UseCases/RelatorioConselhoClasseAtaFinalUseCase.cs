@@ -39,7 +39,7 @@ namespace SME.SR.Application
             }
 
             if (relatoriosTurmas.Any())
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
 
             if (mensagensErro.Length > 0)
                 throw new NegocioException(mensagensErro.ToString());
