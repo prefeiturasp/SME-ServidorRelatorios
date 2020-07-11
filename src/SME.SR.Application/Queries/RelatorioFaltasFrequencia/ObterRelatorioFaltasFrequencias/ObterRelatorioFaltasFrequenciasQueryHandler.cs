@@ -22,12 +22,12 @@ namespace SME.SR.Application
         {
             var turmas = await mediator.Send(new ObterTurmasPorAnoQuery(request.AnoLetivo, request.AnosEscolares));
             var alunos = await ObterAlunosPorAno(turmas);
-            var faltasFrequencias = await ObterFaltasEFrequencias(turmas.Select(a => a.Codigo), request.Bimestres, request.ComponentesCurriculares);
+            var faltasFrequencias = await ObterFaltasEFrequencias(turmas, request.Bimestres, request.ComponentesCurriculares);
 
             return await Task.FromResult(new RelatorioFaltasFrequenciasDto());
         }
 
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFaltasEFrequencias(IEnumerable<string> turmasCodigos, IEnumerable<int> bimestresFiltro, IEnumerable<long> componentesCurriculares)
+        private async Task<IEnumerable<FrequenciaAluno>> ObterFaltasEFrequencias(IEnumerable<Turma> turmas, IEnumerable<int> bimestresFiltro, IEnumerable<long> componentesCurriculares)
         {
             var faltasFrequenciasAlunos = new List<FrequenciaAluno>();
 
@@ -36,13 +36,13 @@ namespace SME.SR.Application
             if (bimestres != null && bimestres.Any())
             {
 
-                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoPorComponentesBimestresETurmasQuery(turmasCodigos, bimestres, componentesCurriculares)));
+                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoPorComponentesBimestresETurmasQuery(turmas.Select(a => a.Codigo), bimestres, componentesCurriculares)));
             }
 
             // Verifica se foi solicitado bimestre final
             if (bimestresFiltro.Any(c => c == 0))
             {
-                // TODO task 19236 query de faltas/frequencia anual
+                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery(turmas, componentesCurriculares)));
             }
 
             return faltasFrequenciasAlunos;
