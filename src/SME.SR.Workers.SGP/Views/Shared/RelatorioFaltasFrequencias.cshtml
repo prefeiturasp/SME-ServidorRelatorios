@@ -1,22 +1,91 @@
-﻿@model SME.SR.Infra.RelatorioFaltasFrequenciaDto
+﻿﻿@model SME.SR.Infra.RelatorioFaltasFrequenciaDto
 
-@functions 
-{
-    Microsoft.AspNetCore.Html.IHtmlContent QuebrarPagina()
+@{ 
+    int paginaAtual = 0;
+    string totalPaginas = "999";
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 46;
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarComponente(string componenteNome, bool removerBorderTop = false)
     {
+       // Contar
+       contadorQuebrarPagina = contadorQuebrarPagina + 2;
+      var stiloBorderTop = removerBorderTop ? "border-top: none;" : "";
+      var str = $@"<table class='tabela-alunos'>
+                        <tbody>
+                            <tr>
+                                <td style='border-bottom: none;{stiloBorderTop}'></td>
+                            </tr>
+                        </tbody>
+                     </table>
+                     <table class='tabela-alunos'>
+                        <thead>
+                            <tr>
+                                <th>{componenteNome}</th>
+                            </tr>
+                        </thead>
+                     </table>
+                     <table class='tabela-alunos'>
+                        <tbody>
+                            <tr>
+                                <td colspan='4' style='border-bottom: none; border-top: none;'></td>
+                            </tr>
+                        </tbody>
+                     </table>";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent AbrirTabelaAluno()
+    {     
+      // Contar
+       contadorQuebrarPagina = contadorQuebrarPagina + 2;
+        var str = $@"<table class='tabela-alunos'>
+                         <thead>
+                            <tr>
+                                <th style='width: 10%;'>Nº</th>
+                                <th style='width: 70%;' class='alinhar-esquerda'>NOME</th>
+                                <th style='width: 10%;'>FALTAS</th>
+                                <th style='width: 10%;'>FREQ. %</th>
+                            </tr>
+                          </thead>
+                          <tbody>";
+        return Html.Raw(str);
+    }  
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string alunoNome, string alunoFaltas, double alunoFreq)
+    {   
+        // Contar
+        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        var str = $@"<tr>
+                        <td>{alunoNumero}</td>
+                        <td class='alinhar-esquerda'>{alunoNome}</td>
+                        <td>{alunoFaltas}</td>
+                        <td>{alunoFreq}</td>
+                     </tr>";
+        return Html.Raw(str);
+    } 
+    
+    Microsoft.AspNetCore.Html.IHtmlContent FecharTabelaAluno()
+    {       
+        var str = $@"</tbody></table>";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
+    {
+       paginaAtual++;
         var str = $@"<footer class='rodape-rel-faltas-frequencia'>
                 <div class='titulo-sgp-rodape'>
                   SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
                 </div>
-                <div class='contador-pagina'>1/3</div>
+                <div class='contador-pagina'>{@paginaAtual}/{@totalPaginas}</div>
              </footer>
              <div style='page-break-before:always' />";
-
         return Html.Raw(str);
     }
 
-    Microsoft.AspNetCore.Html.IHtmlContent Cabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data)
-    {
+    Microsoft.AspNetCore.Html.IHtmlContent MontarCabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data)
+    {        
         var str =
            $@"<div>
                 <img class='img-logo-sgp' src='logo.png' alt='Logo SGP' />
@@ -58,6 +127,8 @@
 
         return Html.Raw(str);
     }
+
+
 }
 
 <!DOCTYPE html>
@@ -70,17 +141,13 @@
 <body class="body-rel-faltas-frequencia">
   <style>
     .body-rel-faltas-frequencia {
-      margin: 1cm auto;
+      margin: 0.5cm auto;
       font-family: Roboto, sans-serif;
       width: 21cm;
       min-height: 29.7cm;
       background: white;
       color: #42474a;
-    }
-
-    .margin-rel-faltas-frequencia {
-      margin: 30px;
-    }
+    } 
 
     .titulo-sgp {
       text-align: right;
@@ -197,8 +264,7 @@
   </style>
 
 
-  <div class="margin-rel-faltas-frequencia">
-
+  <div>
 
     @if (Model.Dres != null)
       foreach (var dre in Model.Dres)
@@ -214,8 +280,8 @@
                 if (ano.Bimestres != null)
                 {
                   @foreach (var bimestre in ano.Bimestres)
-                  {
-                   @Cabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                  {                  
+                   @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
 
                     @if (bimestre.Componentes != null)
                     {
@@ -238,62 +304,60 @@
                           </tr>     
                         </thead>      
                       </table>
+                      
+                      // CONTAR
+                      contadorQuebrarPagina = contadorQuebrarPagina + 5;
+                      var terminouListaAluno = false;
                       foreach (var componente in bimestre.Componentes)
                       {
-                        @if(componente.Nome == "Português 04") {
-                            @QuebrarPagina()
-                            @Cabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                        
+                        if ((contadorQuebrarPagina + 6) > contadorMaximoLinhasPorPagina)
+                        {
+                          @MontarQuebrarPagina();
+                          @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                          contadorQuebrarPagina = 0;
+                          @MontarComponente(componente.Nome)
+                        } else
+                        {
+                          @MontarComponente(componente.Nome, !terminouListaAluno)
                         }
-                        <table class="tabela-alunos">              
-                          <tbody>
-                            <tr>
-                              <td style="border-bottom: none;"></td>
-                            </tr>
-                          </tbody>
-                        </table>
 
-                        <table class="tabela-alunos">
-                          <thead>
-                            <tr>
-                              <th>@componente.Nome</th>
-                            </tr>
-                          </thead>
-                        </table>
+                        terminouListaAluno = false;                       
 
                         @if (componente.Alunos != null)
-                        {
-                        <table class="tabela-alunos">              
-                          <tbody>
-                            <tr>
-                              <td colspan="4" style="border-bottom: none; border-top: none;"></td>
-                            </tr>
-                          </tbody>
-                        </table>  
-                          <table class="tabela-alunos">
-                            <thead>
-                              <tr>
-                                <th style="width: 10%;">Nº</th>
-                                <th style="width: 70%;" class="alinhar-esquerda">NOME</th>
-                                <th style="width: 10%;">FALTAS</th>
-                                <th style="width: 10%;">FREQ. %</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              @foreach (var aluno in componente.Alunos)
-                              {      
-                                <tr>
-                                  <td>@aluno.Numero</td>
-                                  <td class="alinhar-esquerda">@aluno.Nome</td>
-                                  <td>@aluno.Faltas</td>
-                                  <td>@aluno.Frequencia</td>
-                                </tr>
-                              }                          
-                            </tbody>
-                          </table>
+                        {                          
+
+                          @AbrirTabelaAluno()                          
+                          for (int i = 0; i < componente.Alunos.Count; i++)
+                          {
+                            var aluno = componente.Alunos[i];               
+                            @MontarLinhaAluno(aluno.Numero, aluno.Nome, aluno.Faltas, aluno.Frequencia)
+                            
+                            var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
+
+                            terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Alunos.Count == i + 1;
+
+                            @if(atigiuLimiteDadosPorPagina) {
+                                @FecharTabelaAluno()
+                                @MontarQuebrarPagina();
+                                contadorQuebrarPagina = 0;
+                                @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                                if (!terminouListaAluno)
+                                {
+                                  @MontarComponente(componente.Nome)
+                                  @AbrirTabelaAluno()
+                                }
+                             }
+                          }
+                          if (!terminouListaAluno)
+                          {
+                            @FecharTabelaAluno()
+                          }
                         }
                       }
                     }
-                    @QuebrarPagina()
+                    contadorQuebrarPagina = 0;
+                    @MontarQuebrarPagina();
                   }
                 }
               }
@@ -301,6 +365,7 @@
           }
         }
       }
+
   </div>
 </body>
 </html>
