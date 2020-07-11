@@ -19,8 +19,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         public async Task<RelatorioFaltasFrequenciaDto> Handle(ObterRelatorioFaltasFrequenciaPdfQuery request, CancellationToken cancellationToken)
         {
-            var alunos = await ObterAlunosPorAno(request.Filtro.AnoLetivo, request.Filtro.AnosEscolares);
-
             var model = new RelatorioFaltasFrequenciaDto();
             //mock
             model.Dre = "DR JT";
@@ -4357,17 +4355,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             };           
             
             return await Task.FromResult(model);
-        }
-
-        private async Task<IEnumerable<RelatorioFaltaFrequenciaAlunoDto>> ObterAlunosPorAno(int anoLetivo, IEnumerable<string> anosEscolares)
-        {
-            var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(anoLetivo, anosEscolares));
-            return alunos.Select(a => new RelatorioFaltaFrequenciaAlunoDto()
-            {
-                Nome = a.Nome,
-                NomeTurma = a.Turma,
-                Numero = a.NumeroChamada
-            });
         }
     }
 }

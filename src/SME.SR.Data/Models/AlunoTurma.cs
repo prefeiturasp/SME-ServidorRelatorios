@@ -8,7 +8,7 @@ namespace SME.SR.Data
     {
         public string NumeroChamada { get; set; }
         public string Nome { get; set; }
-        public string Turma { get; set; }
+        public string TurmaCodigo { get; set; }
 
     }
 }
