@@ -1,142 +1,142 @@
 ﻿@model SME.SR.Infra.RelatorioFaltasFrequenciaDto
 
 @{
-    int paginaAtual = 0;
-    string totalPaginas = "999";
-    int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+  int paginaAtual = 0;
+  string totalPaginas = "999";
+  int contadorQuebrarPagina = 0;
+  int contadorMaximoLinhasPorPagina = 46;
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarComponente(string componenteNome, bool removerBorderTop = false)
+  Microsoft.AspNetCore.Html.IHtmlContent MontarComponente(string componenteNome, bool removerBorderTop = false)
+  {
+    // Contar
+    contadorQuebrarPagina = contadorQuebrarPagina + 2;
+    var stiloBorderTop = removerBorderTop ? "border-top: none;" : "";
+    var str = $@"<table class='tabela-alunos'>
+            <tbody>
+                <tr>
+                    <td style='border-bottom: none;{stiloBorderTop}'></td>
+                </tr>
+            </tbody>
+         </table>
+         <table class='tabela-alunos'>
+            <thead>
+                <tr>
+                    <th>{componenteNome}</th>
+                </tr>
+            </thead>
+         </table>
+         <table class='tabela-alunos'>
+            <tbody>
+                <tr>
+                    <td colspan='4' style='border-bottom: none; border-top: none;'></td>
+                </tr>
+            </tbody>
+         </table>";
+    return Html.Raw(str);
+  }
+
+  Microsoft.AspNetCore.Html.IHtmlContent AbrirTabelaAluno()
+  {
+    // Contar
+    contadorQuebrarPagina = contadorQuebrarPagina + 2;
+    var colunaFaltas = Model.ExibeFaltas ? "<th style='width: 10%;'>FALTAS</th>" : "";
+    var colunaFrequencia = Model.ExibeFrequencia ? "<th style='width: 10%;'>FREQ. %</th>" : "";
+    var str = $@"<table class='tabela-alunos'>
+             <thead>
+                <tr>
+                    <th style='width: 10%;'>Nº</th>
+                    <th style='width: 70%;' class='alinhar-esquerda'>NOME</th>
+                    {colunaFaltas}
+                    {colunaFrequencia}
+                </tr>
+              </thead>
+              <tbody>";
+    return Html.Raw(str);
+  }
+
+  Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string alunoNome, string alunoFaltas, double alunoFreq)
+  {
+    // Contar
+    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    var str = $@"<tr>
+            <td>{alunoNumero}</td>
+            <td class='alinhar-esquerda'>{alunoNome}</td>";
+    if (Model.ExibeFaltas)
     {
-      // Contar
-      contadorQuebrarPagina = contadorQuebrarPagina + 2;
-      var stiloBorderTop = removerBorderTop ? "border-top: none;" : "";
-      var str = $@"<table class='tabela-alunos'>
-                <tbody>
-                    <tr>
-                        <td style='border-bottom: none;{stiloBorderTop}'></td>
-                    </tr>
-                </tbody>
-             </table>
-             <table class='tabela-alunos'>
-                <thead>
-                    <tr>
-                        <th>{componenteNome}</th>
-                    </tr>
-                </thead>
-             </table>
-             <table class='tabela-alunos'>
-                <tbody>
-                    <tr>
-                        <td colspan='4' style='border-bottom: none; border-top: none;'></td>
-                    </tr>
-                </tbody>
-             </table>";
-      return Html.Raw(str);
+      str = str + $@"<td>{alunoFaltas}</td>";
     }
 
-    Microsoft.AspNetCore.Html.IHtmlContent AbrirTabelaAluno()
+    if (Model.ExibeFrequencia)
     {
-      // Contar
-      contadorQuebrarPagina = contadorQuebrarPagina + 2;
-      var colunaFaltas = Model.ExibeFaltas ? "<th style='width: 10%;'>FALTAS</th>" : "";
-      var colunaFrequencia = Model.ExibeFrequencia ? "<th style='width: 10%;'>FREQ. %</th>" : "";
-      var str = $@"<table class='tabela-alunos'>
-                 <thead>
-                    <tr>
-                        <th style='width: 10%;'>Nº</th>
-                        <th style='width: 70%;' class='alinhar-esquerda'>NOME</th>
-                        {colunaFaltas}
-                        {colunaFrequencia}                        
-                    </tr>
-                  </thead>
-                  <tbody>";
-      return Html.Raw(str);
-    }
+      str = str + $@"<td>{alunoFaltas}</td>";
+    };
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string alunoNome, string alunoFaltas, double alunoFreq)
-    {
-      // Contar
-      contadorQuebrarPagina = contadorQuebrarPagina + 1;
-      var str = $@"<tr>
-                <td>{alunoNumero}</td>
-                <td class='alinhar-esquerda'>{alunoNome}</td>";
-      if (Model.ExibeFaltas)
-      {
-        str = str + $@"<td>{alunoFaltas}</td>";
-      }
+    str = str + @"</tr>";
 
-      if (Model.ExibeFrequencia)
-      {
-        str = str + $@"<td>{alunoFaltas}</td>";
-      };
+    return Html.Raw(str);
+  }
 
-      str = str + @"</tr>";
+  Microsoft.AspNetCore.Html.IHtmlContent FecharTabelaAluno()
+  {
+    var str = $@"</tbody></table>";
+    return Html.Raw(str);
+  }
 
-      return Html.Raw(str);
-    }
-
-    Microsoft.AspNetCore.Html.IHtmlContent FecharTabelaAluno()
-    {
-      var str = $@"</tbody></table>";
-      return Html.Raw(str);
-    }
-
-    Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
-    {
-      paginaAtual++;
-      var str = $@"<footer class='rodape-rel-faltas-frequencia'>
-        <div class='titulo-sgp-rodape'>
-          SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
-        </div>
-        <div class='contador-pagina'>{@paginaAtual}/{@totalPaginas}</div>
-     </footer>
-     <div style='page-break-before:always' />";
-      return Html.Raw(str);
-    }
-
-    Microsoft.AspNetCore.Html.IHtmlContent MontarCabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data)
-    {
-      var str =
-         $@"<div>
-        <img class='img-logo-sgp' src='logo.png' alt='Logo SGP' />
+  Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
+  {
+    paginaAtual++;
+    var str = $@"<footer class='rodape-rel-faltas-frequencia'>
+    <div class='titulo-sgp-rodape'>
+      SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
     </div>
-    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-    <div class='titulo-faltas-frequencia'>FALTAS</div>
-    <div class='fonte-14 header-pagina'>
-      <table>
-        <tbody>
-          <tr>
-            <td class='campo-dre'>DRE: {dre}</td>
-            <td class='campo-ue'>UE: {ue}</td>
-            <td class='campo-ano'>ANO: {ano}</td>
-          </tr>
-        </tbody>
-      </table>
-      <table>
-        <tbody>
-          <tr>
-            <td class='campo-bimestre'>BIMESTRE: {bimestre}</td>
-            <td class='campo-componente-curricular'>
-              COMPONENTE CURRICULAR: {componenteCurricular}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <table>
-        <tbody>
-          <tr>
-            <td class='campo-usuario'>USUÁRIO: {usuario}</td>
-            <td class='campo-rf-data'>RF: {rf}</td>
-            <td class='campo-rf-data'>DATA: {data}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
- ";
+    <div class='contador-pagina'>{@paginaAtual}/{@totalPaginas}</div>
+ </footer>
+ <div style='page-break-before:always' />";
+    return Html.Raw(str);
+  }
 
-      return Html.Raw(str);
-    }
+  Microsoft.AspNetCore.Html.IHtmlContent MontarCabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data)
+  {
+    var str =
+       $@"<div>
+    <img class='img-logo-sgp' src='logo.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-faltas-frequencia'>FALTAS</div>
+<div class='fonte-14 header-pagina'>
+  <table>
+    <tbody>
+      <tr>
+        <td class='campo-dre'>DRE: {dre}</td>
+        <td class='campo-ue'>UE: {ue}</td>
+        <td class='campo-ano'>ANO: {ano}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td class='campo-bimestre'>BIMESTRE: {bimestre}</td>
+        <td class='campo-componente-curricular'>
+          COMPONENTE CURRICULAR: {componenteCurricular}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td class='campo-usuario'>USUÁRIO: {usuario}</td>
+        <td class='campo-rf-data'>RF: {rf}</td>
+        <td class='campo-rf-data'>DATA: {data}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+";
+
+    return Html.Raw(str);
+  }
 
 
 }

@@ -18,6 +18,7 @@ namespace SME.SR.Infra
         public string Usuario{ get; set; }
         public string RF{ get; set; }
         public string Data{ get; set; }
+        public string Modalidade { get; set; }
         public List<RelatorioFaltaFrequenciaDreDto> Dres { get; set; }
     }
 }
