@@ -30,12 +30,15 @@ namespace SME.SR.MVC.Controllers
         {
             var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(new ObterRelatorioFaltasFrequenciasQuery()));
             //mock
+            model.ExibeFaltas = false;
+            model.ExibeFrequencia = true;
             model.Dre = "DRE 01";
             model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
             model.Ano = "001";
             model.Bimestre = "1º";
             model.ComponenteCurricular = "Matemática";
             model.Usuario = "ADMIN";
+            model.Modalidade = "Funcamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
             model.Dres.Add(new RelatorioFaltaFrequenciaDreDto
