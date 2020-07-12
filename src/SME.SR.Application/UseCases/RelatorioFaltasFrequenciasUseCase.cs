@@ -21,17 +21,12 @@ namespace SME.SR.Application
         {
             try
             {
-                var relatorioFiltros = request.ObterObjetoFiltro<ObterRelatorioFaltasFrequenciasQuery>();
-
-                var relatorioFaltasFrequencias = await mediator.Send(relatorioFiltros);
-
-                if (relatorioFaltasFrequencias == null)
-                    throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
+                var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFaltasFrequenciasDto>();
 
                 switch (relatorioFiltros.TipoFormatoRelatorio)
                 {
                     case TipoFormatoRelatorio.Xlsx:
-                        var dadosExcel = await mediator.Send(new ObterRelatorioFaltasFrequenciasExcelQuery() { RelatorioFaltasFrequencias = relatorioFaltasFrequencias });
+                        var dadosExcel = await mediator.Send(new ObterRelatorioFaltasFrequenciasExcelQuery() { RelatorioFaltasFrequencias = relatorioFiltros });
                         if (dadosExcel == null)
                             throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
                         await mediator.Send(new GerarExcelGenericoCommand(dadosExcel.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
@@ -60,9 +55,9 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task GerarRelatorioPdf(IMediator mediator, ObterRelatorioFaltasFrequenciasQuery obterRelatorioFaltasFrequenciasQuery)
+        private async Task GerarRelatorioPdf(IMediator mediator, FiltroRelatorioFaltasFrequenciasDto filtro)
         {
-            var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(obterRelatorioFaltasFrequenciasQuery));
+            var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(filtro));
             var dadosJson = JsonConvert.SerializeObject(dadosRelatorio);
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFaltasFrequencias", dadosRelatorio, Guid.NewGuid()));
         }

@@ -6,6 +6,6 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioFaltasFrequenciasExcelQuery : IRequest<IEnumerable<RelatorioFaltasFrequenciasExcelDto>>
     {
-        public RelatorioFaltasFrequenciasDto RelatorioFaltasFrequencias { get; set; }
+        public FiltroRelatorioFaltasFrequenciasDto RelatorioFaltasFrequencias { get; set; }
     }
 }
