@@ -38,7 +38,7 @@ namespace SME.SR.MVC.Controllers
             model.Bimestre = "1º";
             model.ComponenteCurricular = "Matemática";
             model.Usuario = "ADMIN";
-            model.Modalidade = "Funcamental";
+            model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
             model.Dres.Add(new RelatorioFaltaFrequenciaDreDto
