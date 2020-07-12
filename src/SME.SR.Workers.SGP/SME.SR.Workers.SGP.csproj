@@ -40,7 +40,7 @@
     <Content Update="Views\Relatorios\RelatorioAtasComColunaFinal.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Views\Shared\RelatorioFaltasFrequencias.cshtml">
+    <Content Update="Views\Relatorios\RelatorioFaltasFrequencias.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\templates\RelatorioAtasComColunaFinal.html">
