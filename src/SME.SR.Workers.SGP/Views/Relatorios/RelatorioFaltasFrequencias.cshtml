@@ -45,7 +45,8 @@
              <thead>
                 <tr>
                     <th style='width: 10%;'>Nº</th>
-                    <th style='width: 70%;' class='alinhar-esquerda'>NOME</th>
+                    <th style='width: 10%;'>Turma</th>
+                    <th style='width: 60%;' class='alinhar-esquerda'>NOME</th>
                     {colunaFaltas}
                     {colunaFrequencia}
                 </tr>
@@ -54,12 +55,13 @@
     return Html.Raw(str);
   }
 
-  Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string alunoNome, string alunoFaltas, double alunoFreq)
+  Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string nomeTurma, string alunoNome, string alunoFaltas, double alunoFreq)
   {
     // Contar
     contadorQuebrarPagina = contadorQuebrarPagina + 1;
     var str = $@"<tr>
             <td>{alunoNumero}</td>
+            <td>{nomeTurma}</td>
             <td class='alinhar-esquerda'>{alunoNome}</td>";
     if (Model.ExibeFaltas)
     {
@@ -342,7 +344,7 @@
                           for (int i = 0; i < componente.Alunos.Count; i++)
                           {
                             var aluno = componente.Alunos[i];
-                            @MontarLinhaAluno(aluno.Numero, aluno.Nome, aluno.Faltas, aluno.Frequencia)
+                            @MontarLinhaAluno(aluno.Numero, aluno.NomeTurma, aluno.Nome, aluno.Faltas, aluno.Frequencia)
 
                             var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
