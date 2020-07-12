@@ -27,6 +27,8 @@ namespace SME.SR.Application
                 var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseTurmaQuery>();
                 var relatorioAlunos = await mediator.Send(relatorioQuery);
 
+                relatorioAlunos = relatorioAlunos.OrderBy(a => a.AlunoNome);
+
                 string jsonString;
 
                 if (relatorioAlunos.FirstOrDefault() is RelatorioConselhoClasseBimestre)
