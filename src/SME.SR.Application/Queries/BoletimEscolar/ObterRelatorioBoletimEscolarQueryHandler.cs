@@ -24,7 +24,7 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
-
+            turmas = turmas.OrderBy(a => a.Nome);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.UeCodigo, request.Modalidade, request.Usuario);
@@ -33,6 +33,8 @@ namespace SME.SR.Application
             var mediasFrequencia = await ObterMediasFrequencia();
 
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo);
+
+            alunosPorTurma = alunosPorTurma.OrderBy(a => a.Key);
 
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
 

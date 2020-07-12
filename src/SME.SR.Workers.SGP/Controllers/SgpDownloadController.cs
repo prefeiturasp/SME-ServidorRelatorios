@@ -9,15 +9,15 @@ namespace SME.SR.Workers.SGP.Controllers
     [ApiController]
     public class SgpDownloadController : Controller
     {
-        [HttpGet("pdf/{correlacaoId}")]
-        public async Task<IActionResult> DownloadPdf(Guid correlacaoId, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
+        [HttpGet("pdf/{relatorionome}/{correlacaoId}")]
+        public async Task<IActionResult> DownloadPdf(Guid correlacaoId, string relatorioNome, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf"), "application/pdf", $"{correlacaoId}.pdf");
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf"), "application/pdf", $"{relatorioNome}");
         }
-        [HttpGet("xlsx/{correlacaoId}")]
-        public async Task<IActionResult> DownloadExcel(Guid correlacaoId, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
+        [HttpGet("xlsx/{relatorionome}/{correlacaoId}")]
+        public async Task<IActionResult> DownloadExcel(Guid correlacaoId, string relatorioNome, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".xlsx"), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{correlacaoId}.xlsx");
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".xlsx"), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{relatorioNome}");
         }
     }
 }
