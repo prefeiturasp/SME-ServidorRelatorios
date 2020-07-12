@@ -1,10 +1,8 @@
-﻿using MediatR;
-using SME.SR.Infra;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace SME.SR.Application
+namespace SME.SR.Infra
 {
-    public class ObterRelatorioFaltasFrequenciasQuery : IRequest<FiltroRelatorioFaltasFrequenciasDto>
+    public class FiltroRelatorioFaltasFrequenciasDto
     {
         public int AnoLetivo { get; set; }
         public string CodigoDre { get; set; }

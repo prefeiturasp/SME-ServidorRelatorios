@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioFaltasFrequenciasQueryHandler : IRequestHandler<ObterRelatorioFaltasFrequenciasQuery, RelatorioFaltasFrequenciasDto>
+    public class ObterRelatorioFaltasFrequenciasQueryHandler : IRequestHandler<ObterRelatorioFaltasFrequenciasQuery, FiltroRelatorioFaltasFrequenciasDto>
     {
         private readonly IMediator mediator;
 
@@ -18,13 +18,13 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<RelatorioFaltasFrequenciasDto> Handle(ObterRelatorioFaltasFrequenciasQuery request, CancellationToken cancellationToken)
+        public async Task<FiltroRelatorioFaltasFrequenciasDto> Handle(ObterRelatorioFaltasFrequenciasQuery request, CancellationToken cancellationToken)
         {
             var turmas = await mediator.Send(new ObterTurmasPorAnoQuery(request.AnoLetivo, request.AnosEscolares));
             var alunos = await ObterAlunosPorAno(turmas);
             var faltasFrequencias = await ObterFaltasEFrequencias(turmas, request.Bimestres, request.ComponentesCurriculares);
 
-            return await Task.FromResult(new RelatorioFaltasFrequenciasDto());
+            return await Task.FromResult(new FiltroRelatorioFaltasFrequenciasDto());
         }
 
         private async Task<IEnumerable<FrequenciaAluno>> ObterFaltasEFrequencias(IEnumerable<Turma> turmas, IEnumerable<int> bimestresFiltro, IEnumerable<long> componentesCurriculares)
