@@ -19,9 +19,6 @@ namespace SME.SR.HtmlPdf
 
         public void Converter(string html, string nomeArquivo)
         {
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var footer = Path.Combine(caminhoBase, "wwwroot/templates/footer.html");
-
             nomeArquivo = String.Format("{0}.pdf", nomeArquivo);
 
             var doc = new HtmlToPdfDocument()
@@ -31,7 +28,7 @@ namespace SME.SR.HtmlPdf
                     Orientation = Orientation.Portrait,
                     PaperSize = PaperKind.A4,
                     Margins = new MarginSettings() { Top = 5, Bottom = 5, Left = 5, Right = 5 },
-                    Out=nomeArquivo
+                    Out=nomeArquivo,
                 }
             };
 
@@ -40,8 +37,9 @@ namespace SME.SR.HtmlPdf
             {
                 HtmlContent = html,
                 WebSettings = { DefaultEncoding = "utf-8" },
+                PagesCount = true,
+                FooterSettings = { FontSize = 9, Right = "[page] / [toPage]",  }
             });
-            
             converter.Convert(doc);
         }
 
