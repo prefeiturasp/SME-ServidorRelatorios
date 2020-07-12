@@ -30,8 +30,8 @@ namespace SME.SR.MVC.Controllers
         {
             var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(new ObterRelatorioFaltasFrequenciasQuery()));
             //mock
-            model.ExibeFaltas = false;
-            model.ExibeFrequencia = true;
+            model.ExibeFaltas = true;
+            model.ExibeFrequencia = false;
             model.Dre = "DRE 01";
             model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
             model.Ano = "001";
