@@ -32,7 +32,7 @@ namespace SME.SR.Application
                         await mediator.Send(new GerarExcelGenericoCommand(dadosExcel.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
                         break;
                     case TipoFormatoRelatorio.Pdf:
-                        await GerarRelatorioPdf(mediator, relatorioFiltros);
+                        await GerarRelatorioPdf(mediator, relatorioFiltros, request.CodigoCorrelacao);
                         break;
                     case TipoFormatoRelatorio.Rtf:
                     case TipoFormatoRelatorio.Html:
@@ -55,11 +55,11 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task GerarRelatorioPdf(IMediator mediator, FiltroRelatorioFaltasFrequenciasDto filtro)
+        private async Task GerarRelatorioPdf(IMediator mediator, FiltroRelatorioFaltasFrequenciasDto filtro, Guid codigoCorrelacao)
         {
             var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(filtro));
             var dadosJson = JsonConvert.SerializeObject(dadosRelatorio);
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFaltasFrequencias", dadosRelatorio, Guid.NewGuid()));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFaltasFrequencias", dadosRelatorio, codigoCorrelacao));
         }
     }
 }
