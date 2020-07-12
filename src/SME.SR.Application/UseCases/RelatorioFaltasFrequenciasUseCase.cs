@@ -19,44 +19,36 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
+
+            var relatorioFiltros = request.ObterObjetoFiltro<ObterRelatorioFaltasFrequenciasQuery>();
+
+            var relatorioFaltasFrequencias = await mediator.Send(relatorioFiltros);
+
+            if (relatorioFaltasFrequencias == null)
+                throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
+
+            switch (relatorioFiltros.TipoFormatoRelatorio)
             {
-                var relatorioFiltros = request.ObterObjetoFiltro<ObterRelatorioFaltasFrequenciasQuery>();
-
-                var relatorioFaltasFrequencias = await mediator.Send(relatorioFiltros);
-
-                if (relatorioFaltasFrequencias == null)
-                    throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
-
-                switch (relatorioFiltros.TipoFormatoRelatorio)
-                {
-                    case TipoFormatoRelatorio.Xlsx:
-                        var dadosExcel = await mediator.Send(new ObterRelatorioFaltasFrequenciasExcelQuery() { RelatorioFaltasFrequencias = relatorioFaltasFrequencias });
-                        if (dadosExcel == null)
-                            throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
-                        await mediator.Send(new GerarExcelGenericoCommand(dadosExcel.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
-                        break;
-                    case TipoFormatoRelatorio.Pdf:
-                        await GerarRelatorioPdf(mediator, relatorioFiltros);
-                        break;
-                    case TipoFormatoRelatorio.Rtf:
-                    case TipoFormatoRelatorio.Html:
-                    case TipoFormatoRelatorio.Xls:
-                    case TipoFormatoRelatorio.Csv:
-                    case TipoFormatoRelatorio.Xml:
-                    case TipoFormatoRelatorio.Docx:
-                    case TipoFormatoRelatorio.Odt:
-                    case TipoFormatoRelatorio.Ods:
-                    case TipoFormatoRelatorio.Jrprint:
-                    default:
-                        throw new NegocioException($"Não foi possível exportar este relátorio para o formato {relatorioFiltros.TipoFormatoRelatorio}");
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                case TipoFormatoRelatorio.Xlsx:
+                    var dadosExcel = await mediator.Send(new ObterRelatorioFaltasFrequenciasExcelQuery() { RelatorioFaltasFrequencias = relatorioFaltasFrequencias });
+                    if (dadosExcel == null)
+                        throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
+                    await mediator.Send(new GerarExcelGenericoCommand(dadosExcel.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
+                    break;
+                case TipoFormatoRelatorio.Pdf:
+                    await GerarRelatorioPdf(mediator, relatorioFiltros);
+                    break;
+                case TipoFormatoRelatorio.Rtf:
+                case TipoFormatoRelatorio.Html:
+                case TipoFormatoRelatorio.Xls:
+                case TipoFormatoRelatorio.Csv:
+                case TipoFormatoRelatorio.Xml:
+                case TipoFormatoRelatorio.Docx:
+                case TipoFormatoRelatorio.Odt:
+                case TipoFormatoRelatorio.Ods:
+                case TipoFormatoRelatorio.Jrprint:
+                default:
+                    throw new NegocioException($"Não foi possível exportar este relátorio para o formato {relatorioFiltros.TipoFormatoRelatorio}");
             }
         }
 
