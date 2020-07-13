@@ -136,6 +136,18 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="legenda"/>
 		<fieldDescription><![CDATA[legenda]]></fieldDescription>
 	</field>
+	<field name="primeiroAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.primeiroAno"/>
+		<fieldDescription><![CDATA[tipoNota.primeiroAno]]></fieldDescription>
+	</field>
+	<field name="segundoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.segundoAno"/>
+		<fieldDescription><![CDATA[tipoNota.segundoAno]]></fieldDescription>
+	</field>
+	<field name="terceiroAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.terceiroAno"/>
+		<fieldDescription><![CDATA[tipoNota.terceiroAno]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -232,7 +244,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{primeiroAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="255" y="45" width="60" height="15" uuid="f42c5731-7614-4fb7-957b-9e95c4baef5f">
@@ -269,7 +281,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{segundoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="495" y="45" width="60" height="15" uuid="11cbd2e5-ab63-4ba0-be97-1a9cdcfe16e5">
@@ -294,7 +306,7 @@ curriculares]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{terceiroAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="435" y="30" width="120" height="15" uuid="1b58e272-e426-4979-9a8d-53e5a35303f1">

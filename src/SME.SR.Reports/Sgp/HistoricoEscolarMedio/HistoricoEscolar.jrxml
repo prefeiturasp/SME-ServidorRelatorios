@@ -277,11 +277,11 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["ProjetosAtividadesComplementares.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="200" width="555" height="15" uuid="d3e9a8dd-b3ee-4a7c-b9eb-8cc3888097e0">
+				<reportElement positionType="Float" x="0" y="200" width="555" height="15" isRemoveLineWhenBlank="true" uuid="d3e9a8dd-b3ee-4a7c-b9eb-8cc3888097e0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("parecerConclusivo")]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("pareceresConclusivos")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["ParecerConclusivo.jasper"]]></subreportExpression>
 			</subreport>
