@@ -110,9 +110,10 @@ namespace SME.SR.Application
             //TODO: MELHORAR CODIGO
             var listaCodigosComponentes = new List<long>();
 
-            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Select(a => a.CodDisciplina).Distinct());
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => cc.Regencia).SelectMany(a => a.ComponentesCurricularesRegencia).Select(cc => cc.CodDisciplina));
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => !cc.Regencia).Select(a => a.CodDisciplina));
 
-            return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.ToArray()));
+            return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.Distinct().ToArray()));
         }
 
         private async Task<IEnumerable<AlunoTurmasHistoricoEscolarDto>> MontarAlunosTurmas(FiltroHistoricoEscolarDto filtros)

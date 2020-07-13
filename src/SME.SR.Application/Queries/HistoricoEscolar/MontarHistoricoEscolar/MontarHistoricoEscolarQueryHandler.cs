@@ -178,10 +178,11 @@ namespace SME.SR.Application
         private IEnumerable<IGrouping<(string Nome, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
                                                                                                              IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
         {
-            var areasConhecimento = areasDoConhecimentos.Where(a => componentesCurricularesDaTurma.Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular) ||
+
+            var areasConhecimento = areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Where(cc => !cc.Regencia).Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)) ||
                                                                     (componentesCurricularesDaTurma.Any(cc => cc.Regencia) &&
-                                                                     componentesCurricularesDaTurma.SelectMany(cc => cc.ComponentesCurricularesRegencia).
-                                                                     Select(r => r.CodDisciplina).Contains(a.CodigoComponenteCurricular))).GroupBy(g => (g.Nome, g.Id));
+                                                                     componentesCurricularesDaTurma.Where(cc => cc.Regencia).SelectMany(cc => cc.ComponentesCurricularesRegencia).
+                                                                     Select(r => r.CodDisciplina).Contains(a.CodigoComponenteCurricular)))).GroupBy(g => (g.Nome, g.Id));
 
             return areasConhecimento;
         }
