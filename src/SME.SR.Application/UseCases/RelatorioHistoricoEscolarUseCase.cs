@@ -61,7 +61,7 @@ namespace SME.SR.Application
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
-            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas, frequencias, turmasCodigo.ToArray(), cabecalho));
+            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas, frequencias, tipoNotas, turmasCodigo.ToArray(), cabecalho));
 
             var jsonString = "";
 

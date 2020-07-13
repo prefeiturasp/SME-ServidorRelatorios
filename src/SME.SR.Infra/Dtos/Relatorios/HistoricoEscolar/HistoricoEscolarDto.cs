@@ -13,13 +13,10 @@ namespace SME.SR.Infra
         public InformacoesAlunoDto InformacoesAluno { get; set; }
         [JsonProperty("ciclos")]
         public List<CicloDto> Ciclos { get; set; }
-
+        [JsonProperty("tipoNota")]
+        public TiposNotaDto TipoNota { get; set; }
         [JsonProperty("baseNacionalComum")]
         public BaseNacionalComumDto BaseNacionalComum { get; set; }
-
-        [JsonProperty("tipoNota")]
-        public string TipoNota { get; set; }
-
         [JsonProperty("gruposComponentesCurriculares")]
         public List<GruposComponentesCurricularesDto> GruposComponentesCurriculares { get; set; }
         [JsonProperty("ensinoReligioso")]
@@ -30,9 +27,11 @@ namespace SME.SR.Infra
         [JsonProperty("projetosAtividadesComplementares")]
         public List<ComponenteCurricularHistoricoEscolarDto> ProjetosAtividadesComplementares { get; set; }
 
-        [JsonProperty("parecerConclusivo")]
-        public List<ParecerConclusivoDto> ParecerConclusivo { get; set; }
+        [JsonProperty("pareceresConclusivos")]
+        public ParecerConclusivoDto ParecerConclusivo { get; set; }
+
         [JsonProperty("legenda")]
         public LegendaDto Legenda { get; set; }
+        public Modalidade Modalidade { get; set; }
     }
 }

@@ -30,20 +30,23 @@ namespace SME.SR.Application
                     var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).Distinct();
                     var componentesPorGrupoMatriz = componentesDaTurma.GroupBy(cc => cc.GrupoMatriz);
 
+                    //Obter grupo matriz
                     var baseNacionalComum = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 1)?.Select(b => b);
                     var diversificados = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 2)?.Select(d => d);
                     var enriquecimentos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 3)?.Select(e => e);
                     var projetos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 4)?.Select(p => p);
+                    //
 
                     var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null);
                     var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo);
 
                     var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
                     var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento);
-                    var enriquecimentoDto = MontarComponentes(agrupamentoTurmas, enriquecimentos,
-                                                    notasAluno, frequenciasAluno, request.MediasFrequencia)?.ToList();
-                    var projetosDto = MontarComponentes(agrupamentoTurmas, projetos,
-                                                    notasAluno, frequenciasAluno, request.MediasFrequencia)?.ToList();
+                    var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia)?.ToList();
+                    var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia)?.ToList();
+
+                    var tiposNotaDto = MapearTiposNota(agrupamentoTurmas, request.TiposNota);
+                    var pareceresDto = MapearPareceres(agrupamentoTurmas, notasAluno);
 
                     var historicoDto = new HistoricoEscolarDTO()
                     {
@@ -53,7 +56,10 @@ namespace SME.SR.Application
                         GruposComponentesCurriculares = diversificadosDto,
                         BaseNacionalComum = baseNacionalDto,
                         EnriquecimentoCurricular = enriquecimentoDto,
-                        ProjetosAtividadesComplementares = projetosDto
+                        ProjetosAtividadesComplementares = projetosDto,
+                        Modalidade = agrupamentoTurmas.Key,
+                        TipoNota = tiposNotaDto,
+                        ParecerConclusivo = pareceresDto
                     };
 
                     listaRetorno.Add(historicoDto);
@@ -61,6 +67,54 @@ namespace SME.SR.Application
             }
 
             return await Task.FromResult(listaRetorno);
+        }
+
+        private TiposNotaDto MapearTiposNota(IEnumerable<Turma> turmas, IDictionary<string,string> tiposNota)
+        {
+            return new TiposNotaDto()
+            {
+                PrimeiroAno = turmas.FirstOrDefault(f => f.Ano == 1) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 1).Codigo] : null,
+                SegundoAno = turmas.FirstOrDefault(f => f.Ano == 2) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 2).Codigo] : null,
+                TerceiroAno = turmas.FirstOrDefault(f => f.Ano == 3) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 3).Codigo] : null,
+                QuartoAno = turmas.FirstOrDefault(f => f.Ano == 4) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 4).Codigo] : null,
+                QuintoAno = turmas.FirstOrDefault(f => f.Ano == 5) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 5).Codigo] : null,
+                SextoAno = turmas.FirstOrDefault(f => f.Ano == 6) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 6).Codigo] : null,
+                SetimoAno = turmas.FirstOrDefault(f => f.Ano == 7) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 7).Codigo] : null,
+                OitavoAno = turmas.FirstOrDefault(f => f.Ano == 8) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 8).Codigo] : null,
+                NonoAno = turmas.FirstOrDefault(f => f.Ano == 9) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 9).Codigo] : null
+            };
+        }
+
+        private ParecerConclusivoDto MapearPareceres(IEnumerable<Turma> turmas, IEnumerable<NotasAlunoBimestre> notas)
+        {
+            ParecerConclusivoDto parecerConclusivoDto = new ParecerConclusivoDto();
+
+            foreach (var turma in turmas)
+            {
+                if(notas.Any(n => n.CodigoTurma == turma.Codigo))
+                {
+                    if (turma.Ano == 1)
+                        parecerConclusivoDto.PrimeiroAno = "Promovido";
+                    else if (turma.Ano == 2)
+                        parecerConclusivoDto.SegundoAno = "Promovido";
+                    else if (turma.Ano == 3)
+                        parecerConclusivoDto.TerceiroAno = "Promovido";
+                    else if (turma.Ano == 4)
+                        parecerConclusivoDto.QuartoAno = "Promovido";
+                    else if (turma.Ano == 5)
+                        parecerConclusivoDto.QuintoAno = "Promovido";
+                    else if (turma.Ano == 6)
+                        parecerConclusivoDto.SextoAno = "Promovido";
+                    else if (turma.Ano == 7)
+                        parecerConclusivoDto.SetimoAno = "Promovido";
+                    else if (turma.Ano == 8)
+                        parecerConclusivoDto.OitavoAno = "Promovido";
+                    else if (turma.Ano == 9)
+                        parecerConclusivoDto.NonoAno = "Promovido";
+                }
+            }
+
+            return parecerConclusivoDto;
         }
 
         private List<GruposComponentesCurricularesDto> ObterGruposDiversificado(IEnumerable<Turma> turmas,
@@ -83,7 +137,7 @@ namespace SME.SR.Application
                     AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
                     {
                         Nome = ac.Key.Nome,
-                        ComponentesCurriculares = MontarComponentes(turmas,
+                        ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
                                                 componentesCurricularesDaTurma.Where(c => ac.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)),
                                                 notasAlunos, frequencias, mediasFrequencia)?.ToList()
                     }).ToList()
@@ -111,7 +165,7 @@ namespace SME.SR.Application
                     AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
                     {
                         Nome = ac.Key.Nome,
-                        ComponentesCurriculares = MontarComponentes(turmas,
+                        ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
                                                 componentesCurricularesDaTurma.Where(c => ac.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)),
                                                 notasAlunos, frequencias, mediasFrequencia)?.ToList()
                     }).ToList()
@@ -132,7 +186,7 @@ namespace SME.SR.Application
             return areasConhecimento;
         }
 
-        private IEnumerable<ComponenteCurricularHistoricoEscolarDto> MontarComponentes(IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
+        private IEnumerable<ComponenteCurricularHistoricoEscolarDto> MontarComponentesNotasFrequencia(IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
         {
             List<ComponenteCurricularHistoricoEscolarDto> componentes = null;
 

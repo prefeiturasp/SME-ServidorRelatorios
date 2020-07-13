@@ -66,7 +66,6 @@ namespace SME.SR.Application
                     if (!alunosPromovidosCodigos.Any())
                         throw new NegocioException("Não foram encontrados alunos promovidos para esta turma.");
 
-                    //TODO: Fazer a Query Acima já buscar essas informações
                     IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray());
 
                     foreach (var item in informacoesDosAlunos)
