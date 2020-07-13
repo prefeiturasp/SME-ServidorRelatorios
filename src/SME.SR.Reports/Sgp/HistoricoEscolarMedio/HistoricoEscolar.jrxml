@@ -4,8 +4,8 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
 	<property name="ireport.jasperserver.user" value="ebufaino"/>
-	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar_files/main_jrxml"/>
-	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar"/>
 	<parameter name="jsonString" class="java.lang.String">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
