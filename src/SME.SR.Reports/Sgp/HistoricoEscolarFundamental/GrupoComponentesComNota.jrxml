@@ -71,7 +71,7 @@
 							<textElement verticalAlignment="Middle">
 								<font size="6" isBold="true"/>
 							</textElement>
-							<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+							<textFieldExpression><![CDATA[$F{nome} != null? $F{nome} : ""]]></textFieldExpression>
 						</textField>
 						<subreport>
 							<reportElement x="82" y="0" width="330" height="15" uuid="366e145e-d1ea-4523-8506-22fa93080826"/>
