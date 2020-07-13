@@ -73,15 +73,15 @@ namespace SME.SR.Application
         {
             return new TiposNotaDto()
             {
-                PrimeiroAno = turmas.FirstOrDefault(f => f.Ano == 1) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 1).Codigo] : null,
-                SegundoAno = turmas.FirstOrDefault(f => f.Ano == 2) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 2).Codigo] : null,
-                TerceiroAno = turmas.FirstOrDefault(f => f.Ano == 3) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 3).Codigo] : null,
-                QuartoAno = turmas.FirstOrDefault(f => f.Ano == 4) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 4).Codigo] : null,
-                QuintoAno = turmas.FirstOrDefault(f => f.Ano == 5) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 5).Codigo] : null,
-                SextoAno = turmas.FirstOrDefault(f => f.Ano == 6) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 6).Codigo] : null,
-                SetimoAno = turmas.FirstOrDefault(f => f.Ano == 7) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 7).Codigo] : null,
-                OitavoAno = turmas.FirstOrDefault(f => f.Ano == 8) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 8).Codigo] : null,
-                NonoAno = turmas.FirstOrDefault(f => f.Ano == 9) != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == 9).Codigo] : null
+                PrimeiroAno = turmas.FirstOrDefault(f => f.Ano == "1") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "1").Codigo] : null,
+                SegundoAno = turmas.FirstOrDefault(f => f.Ano == "2") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "2").Codigo] : null,
+                TerceiroAno = turmas.FirstOrDefault(f => f.Ano == "3") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "3").Codigo] : null,
+                QuartoAno = turmas.FirstOrDefault(f => f.Ano == "4") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "4").Codigo] : null,
+                QuintoAno = turmas.FirstOrDefault(f => f.Ano == "5") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "5").Codigo] : null,
+                SextoAno = turmas.FirstOrDefault(f => f.Ano == "6") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "6").Codigo] : null,
+                SetimoAno = turmas.FirstOrDefault(f => f.Ano == "7") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "7").Codigo] : null,
+                OitavoAno = turmas.FirstOrDefault(f => f.Ano == "8") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "8").Codigo] : null,
+                NonoAno = turmas.FirstOrDefault(f => f.Ano == "9") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "9").Codigo] : null
             };
         }
 
@@ -93,23 +93,23 @@ namespace SME.SR.Application
             {
                 if (notas.Any(n => n.CodigoTurma == turma.Codigo))
                 {
-                    if (turma.Ano == 1)
+                    if (turma.Ano == "1")
                         parecerConclusivoDto.PrimeiroAno = "Promovido";
-                    else if (turma.Ano == 2)
+                    else if (turma.Ano == "2")
                         parecerConclusivoDto.SegundoAno = "Promovido";
-                    else if (turma.Ano == 3)
+                    else if (turma.Ano == "3")
                         parecerConclusivoDto.TerceiroAno = "Promovido";
-                    else if (turma.Ano == 4)
+                    else if (turma.Ano == "4")
                         parecerConclusivoDto.QuartoAno = "Promovido";
-                    else if (turma.Ano == 5)
+                    else if (turma.Ano == "5")
                         parecerConclusivoDto.QuintoAno = "Promovido";
-                    else if (turma.Ano == 6)
+                    else if (turma.Ano == "6")
                         parecerConclusivoDto.SextoAno = "Promovido";
-                    else if (turma.Ano == 7)
+                    else if (turma.Ano == "7")
                         parecerConclusivoDto.SetimoAno = "Promovido";
-                    else if (turma.Ano == 8)
+                    else if (turma.Ano == "8")
                         parecerConclusivoDto.OitavoAno = "Promovido";
-                    else if (turma.Ano == 9)
+                    else if (turma.Ano == "9")
                         parecerConclusivoDto.NonoAno = "Promovido";
                 }
             }
@@ -215,24 +215,24 @@ namespace SME.SR.Application
                             Nome = componenteCurricular.Disciplina,
                             Frequencia = componenteCurricular.Frequencia,
                             Nota = componenteCurricular.LancaNota,
-                            FrequenciaPrimeiroAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaSegundoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaTerceiroAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 3), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaQuartoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 4), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaQuintoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 5), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaSextoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 6), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaSetimoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 7), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaOitavoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 8), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaNonoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 9), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            NotaConceitoPrimeiroAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoSegundoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoTerceiroAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 3), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoQuartoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 4), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoQuintoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 5), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoSextoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 6), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoSetimoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 7), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoOitavoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 8), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoNonoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 9), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            FrequenciaPrimeiroAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            FrequenciaSegundoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            FrequenciaTerceiroAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            FrequenciaQuartoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            FrequenciaQuintoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "5"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            FrequenciaSextoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "6"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            FrequenciaSetimoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "7"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            FrequenciaOitavoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "8"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            FrequenciaNonoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "9"), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                            NotaConceitoPrimeiroAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            NotaConceitoSegundoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            NotaConceitoTerceiroAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            NotaConceitoQuartoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            NotaConceitoQuintoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "5"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            NotaConceitoSextoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "6"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            NotaConceitoSetimoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "7"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            NotaConceitoOitavoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "8"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            NotaConceitoNonoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "9"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
                         });
                     }
                 }
@@ -266,15 +266,15 @@ namespace SME.SR.Application
         {
             var componentes = new List<ComponenteCurricularHistoricoEscolarDto>();
 
-            var frequenciaAno1 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 1), codigoComponenteRegencia, frequencia);
-            var frequenciaAno2 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 3), codigoComponenteRegencia, frequencia);
-            var frequenciaAno3 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 2), codigoComponenteRegencia, frequencia);
-            var frequenciaAno4 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 4), codigoComponenteRegencia, frequencia);
-            var frequenciaAno5 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 5), codigoComponenteRegencia, frequencia);
-            var frequenciaAno6 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 6), codigoComponenteRegencia, frequencia);
-            var frequenciaAno7 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 7), codigoComponenteRegencia, frequencia);
-            var frequenciaAno8 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 8), codigoComponenteRegencia, frequencia);
-            var frequenciaAno9 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 9), codigoComponenteRegencia, frequencia);
+            var frequenciaAno1 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1"), codigoComponenteRegencia, frequencia);
+            var frequenciaAno2 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2"), codigoComponenteRegencia, frequencia);
+            var frequenciaAno3 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3"), codigoComponenteRegencia, frequencia);
+            var frequenciaAno4 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4"), codigoComponenteRegencia, frequencia);
+            var frequenciaAno5 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "5"), codigoComponenteRegencia, frequencia);
+            var frequenciaAno6 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "6"), codigoComponenteRegencia, frequencia);
+            var frequenciaAno7 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "7"), codigoComponenteRegencia, frequencia);
+            var frequenciaAno8 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "8"), codigoComponenteRegencia, frequencia);
+            var frequenciaAno9 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "9"), codigoComponenteRegencia, frequencia);
 
             foreach (var componenteCurricular in componentesRegencia)
             {
@@ -293,15 +293,15 @@ namespace SME.SR.Application
                     FrequenciaSetimoAno = frequenciaAno7,
                     FrequenciaOitavoAno = frequenciaAno8,
                     FrequenciaNonoAno = frequenciaAno9,
-                    NotaConceitoPrimeiroAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    NotaConceitoSegundoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    NotaConceitoTerceiroAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 3), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    NotaConceitoQuartoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 4), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    NotaConceitoQuintoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 5), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    NotaConceitoSextoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 6), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    NotaConceitoSetimoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 7), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    NotaConceitoOitavoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 8), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    NotaConceitoNonoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == 9), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoPrimeiroAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoSegundoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoTerceiroAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoQuartoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoQuintoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "5"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoSextoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "6"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoSetimoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "7"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoOitavoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "8"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                    NotaConceitoNonoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "9"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
                 });
             }
 
