@@ -9,14 +9,14 @@ namespace SME.SR.Application
 {
     public class MontarHistoricoEscolarQuery : IRequest<IEnumerable<HistoricoEscolarDTO>>
     {
-        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento, 
-                                            IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas, 
-                                            IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas,
-                                            IEnumerable<MediaFrequencia> mediasFrequencia,
-                                            IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
-                                            IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
-                                            IDictionary<string, string> tiposNota,
-                                            string[] turmasCodigo, CabecalhoDto cabecalho)
+        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento,
+                                                 IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas,
+                                                 IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas,
+                                                 IEnumerable<MediaFrequencia> mediasFrequencia,
+                                                 IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
+                                                 IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
+                                                 IDictionary<string, string> tiposNota,
+                                                 string[] turmasCodigo, CabecalhoDto cabecalho)
         {
             Dre = dre;
             Ue = ue;

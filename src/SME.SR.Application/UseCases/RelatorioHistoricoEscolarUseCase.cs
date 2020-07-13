@@ -36,7 +36,7 @@ namespace SME.SR.Application
                 {
                     if (!turmas.Any(a => a.Codigo == turma.Codigo))
                         turmas.Add(turma);
-                }                
+                }
             }
 
             var alunosCodigo = alunosTurmas.Select(a => a.Aluno.Codigo);
@@ -60,26 +60,47 @@ namespace SME.SR.Application
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
-            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas, frequencias, turmasCodigo.ToArray(), cabecalho));
-            
-            // TODO: separar as 2 listas e verificar se é necessário gerar e enviar para outra fila 
-            bool deveEnviarHistoricoEscolarMedio = true;
-            Guid codigoCorrelacaoMedio;
-            if (deveEnviarHistoricoEscolarMedio)
+            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
+                frequencias, tipoNotas, turmasCodigo.ToArray(), cabecalho));
+
+
+            var resultadoFinalFundamental = resultadoFinal.Where(a => a.Modalidade == Modalidade.Fundamental);
+            var resultadoFinalMedio = resultadoFinal.Where(a => a.Modalidade == Modalidade.Medio);
+
+            if (resultadoFinalFundamental.Any() || resultadoFinalMedio.Any())
             {
-                codigoCorrelacaoMedio = await mediator.Send(new GerarCodigoCorrelacaoSGPCommand(request.CodigoCorrelacao));
+                if (resultadoFinalFundamental.Any() && resultadoFinalMedio.Any())
+                {
+                    await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
+
+                    await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
+
+                } else if (resultadoFinalFundamental.Any())
+                {
+                    await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
+                } else if (resultadoFinalMedio.Any())
+                {
+                    await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
+                }
             }
+            else
+                throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
 
 
-            var jsonString = "";
+        }
 
-            if (resultadoFinal != null)
-            {
-                jsonString = JsonConvert.SerializeObject(resultadoFinal);
-            }
+        private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
+        {
+            var codigoCorrelacao = await mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio));
 
-            //TODO: Caso precise enviar para Fundamental e médio, enviar cada lista separada;
-            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalMedio });
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao));
+        }
+
+        private async Task EnviaRelatorioFundamental(IEnumerable<HistoricoEscolarDTO> resultadoFinalFundamental, Guid codigoCorrelacao)
+        {
+            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalFundamental });
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao));
         }
 
         private async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoAtoUe(string ueCodigo)
