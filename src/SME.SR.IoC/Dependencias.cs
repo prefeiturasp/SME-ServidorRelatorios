@@ -95,9 +95,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(INotaConceitoRepository), typeof(NotaConceitoRepository));
             services.TryAddScoped(typeof(IUeRepository), typeof(UeRepository));
             services.TryAddScoped(typeof(IObterCabecalhoHistoricoEscolarRepository), typeof(ObterCabecalhoHistoricoEscolarRepository));
-            services.TryAddScoped(typeof(IObterEnderecoeAtosDaUeRepository), typeof(ObterEnderecoeAtosDaUeRepository));           
-
-
+            services.TryAddScoped(typeof(IObterEnderecoeAtosDaUeRepository), typeof(ObterEnderecoeAtosDaUeRepository));
+            services.TryAddScoped(typeof(IConceitoValoresRepository), typeof(ConceitoValoresRepository));
         }
 
         private static void RegistrarUseCase(IServiceCollection services)
