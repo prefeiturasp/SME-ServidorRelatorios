@@ -34,7 +34,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                                                                           filtro.CodigoUe,
                                                                                           filtro.Modalidade,
                                                                                           filtro.AnosEscolares,
-                                                                                          filtro.ComponentesCurriculares,
+                                                                                          filtro.ComponentesCurriculares.Select(c=>c.ToString()),
                                                                                           filtro.Bimestres);
 
             if (dres != null)
@@ -50,7 +50,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                 var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(codigosTurmas));
 
-                var frequencias = await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery());
+                var frequencias = ObterFaltasEFrequencias(codigosTurmas, filtro.Bimestres, filtro.ComponentesCurriculares);
 
                 foreach (var dre in dres)
                 {
@@ -114,7 +114,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             // Verifica se foi solicitado bimestre final
             if (bimestresFiltro.Any(c => c == 0))
             {
-                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery(turmas, componentesCurriculares)));
+                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery(null, componentesCurriculares)));
             }
 
             return faltasFrequenciasAlunos;
