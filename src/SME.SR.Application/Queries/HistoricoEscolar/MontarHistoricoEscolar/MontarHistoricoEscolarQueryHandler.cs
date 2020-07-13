@@ -42,8 +42,8 @@ namespace SME.SR.Application
 
                     var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
                     var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento);
-                    var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia)?.ToList();
-                    var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia)?.ToList();
+                    var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
+                    var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
 
                     var tiposNotaDto = MapearTiposNota(agrupamentoTurmas, request.TiposNota);
                     var pareceresDto = MapearPareceres(agrupamentoTurmas, notasAluno);
@@ -69,7 +69,7 @@ namespace SME.SR.Application
             return await Task.FromResult(listaRetorno);
         }
 
-        private TiposNotaDto MapearTiposNota(IEnumerable<Turma> turmas, IDictionary<string,string> tiposNota)
+        private TiposNotaDto MapearTiposNota(IEnumerable<Turma> turmas, IDictionary<string, string> tiposNota)
         {
             return new TiposNotaDto()
             {
@@ -91,7 +91,7 @@ namespace SME.SR.Application
 
             foreach (var turma in turmas)
             {
-                if(notas.Any(n => n.CodigoTurma == turma.Codigo))
+                if (notas.Any(n => n.CodigoTurma == turma.Codigo))
                 {
                     if (turma.Ano == 1)
                         parecerConclusivoDto.PrimeiroAno = "Promovido";
@@ -138,8 +138,8 @@ namespace SME.SR.Application
                     {
                         Nome = ac.Key.Nome,
                         ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
-                                                componentesCurricularesDaTurma.Where(c => ac.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)),
-                                                notasAlunos, frequencias, mediasFrequencia)?.ToList()
+                                                ObterComponentesDasAreasDeConhecimento(componentesCurricularesDaTurma, ac),
+                                                notasAlunos, frequencias, mediasFrequencia, ac)?.ToList()
                     }).ToList()
                 }));
             }
@@ -166,8 +166,8 @@ namespace SME.SR.Application
                     {
                         Nome = ac.Key.Nome,
                         ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
-                                                componentesCurricularesDaTurma.Where(c => ac.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)),
-                                                notasAlunos, frequencias, mediasFrequencia)?.ToList()
+                                                ObterComponentesDasAreasDeConhecimento(componentesCurricularesDaTurma, ac),
+                                                notasAlunos, frequencias, mediasFrequencia, ac)?.ToList()
                     }).ToList()
                 };
             }
@@ -175,19 +175,25 @@ namespace SME.SR.Application
             return baseNacional;
         }
 
+        private IEnumerable<ComponenteCurricularPorTurma> ObterComponentesDasAreasDeConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
+                                                                                                IEnumerable<AreaDoConhecimento> areaDoConhecimento)
+        {
+            return componentesCurricularesDaTurma.Where(c => (!c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)) ||
+                                                            (c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Any(cr =>
+                                                            c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr))));
+        }
+
         private IEnumerable<IGrouping<(string Nome, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
                                                                                                              IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
         {
 
-            var areasConhecimento = areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Where(cc => !cc.Regencia).Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)) ||
+            return areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Where(cc => !cc.Regencia).Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)) ||
                                                                     (componentesCurricularesDaTurma.Any(cc => cc.Regencia) &&
                                                                      componentesCurricularesDaTurma.Where(cc => cc.Regencia).SelectMany(cc => cc.ComponentesCurricularesRegencia).
                                                                      Select(r => r.CodDisciplina).Contains(a.CodigoComponenteCurricular)))).GroupBy(g => (g.Nome, g.Id));
-
-            return areasConhecimento;
         }
 
-        private IEnumerable<ComponenteCurricularHistoricoEscolarDto> MontarComponentesNotasFrequencia(IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
+        private IEnumerable<ComponenteCurricularHistoricoEscolarDto> MontarComponentesNotasFrequencia(IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
         {
             List<ComponenteCurricularHistoricoEscolarDto> componentes = null;
 
@@ -199,7 +205,7 @@ namespace SME.SR.Application
                 {
                     if (componenteCurricular.Regencia)
                     {
-                        componentes.AddRange(MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(), turmas, componenteCurricular.ComponentesCurricularesRegencia, notas, frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()), mediasFrequencia));
+                        componentes.AddRange(MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(), turmas, componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)), notas, frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()), mediasFrequencia));
                     }
                     else
                     {
