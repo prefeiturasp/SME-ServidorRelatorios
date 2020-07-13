@@ -8,7 +8,8 @@ namespace SME.SR.Infra
         {
             Alunos = new List<RelatorioFaltaFrequenciaAlunoDto>();
         }
-        public string Nome { get; set; }
+        public string NomeComponente { get; set; }
+        public long CodigoComponente { get; set; }
         public List<RelatorioFaltaFrequenciaAlunoDto> Alunos { get; set; }
     }
 }

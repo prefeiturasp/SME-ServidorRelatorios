@@ -41,1030 +41,1031 @@ namespace SME.SR.MVC.Controllers
             model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            model.Dres.Add(new RelatorioFaltaFrequenciaDreDto
-            {
-                Codigo = "123",
-                Nome = "DRE 01",
-                Ues = new List<RelatorioFaltaFrequenciaUeDto>
-                {
-                    new RelatorioFaltaFrequenciaUeDto
-                    {
-                        Nome="UE 01",
-                        Codigo="456",
-                        Anos= new List<RelatorioFaltaFrequenciaAnoDto>
-                        {
-                            new RelatorioFaltaFrequenciaAnoDto
-                            {
-                                Nome="1º ano",
-                                Bimestres= new List<RelatorioFaltaFrequenciaBimestreDto>
-                                {
-                                    new RelatorioFaltaFrequenciaBimestreDto
-                                    {
-                                        Nome="1º Bim",
-                                        Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-                                        {
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Matemática",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 01",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 02",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                             new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 03",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 04",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 05",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                        }
-                                    },
-                                    new RelatorioFaltaFrequenciaBimestreDto
-                                    {
-                                        Nome="2º Bim",
-                                        Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-                                        {
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Matemática",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                        new RelatorioFaltaFrequenciaBimestreDto
-                                    {
-                                        Nome="3º Bim",
-                                        Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-                                        {
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Matemática",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                            new RelatorioFaltaFrequenciaBimestreDto
-                                    {
-                                        Nome="4º Bim",
-                                        Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-                                        {
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Matemática",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+            //model.Dres.Add(new RelatorioFaltaFrequenciaDreDto
+            //{
+            //    CodigoDre = "123",
+            //    NomeDre = "DRE 01",
+            //    Ues = new List<RelatorioFaltaFrequenciaUeDto>
+            //    {
+            //        new RelatorioFaltaFrequenciaUeDto
+            //        {
+            //            NomeUe="UE 01",
+            //            CodigoUe="456",
+            //            Anos= new List<RelatorioFaltaFrequenciaAnoDto>
+            //            {
+            //                new RelatorioFaltaFrequenciaAnoDto
+            //                {
+            //                    NomeAno="1º ano",
+            //                    Bimestres= new List<RelatorioFaltaFrequenciaBimestreDto>
+            //                    {
+            //                        new RelatorioFaltaFrequenciaBimestreDto
+            //                        {
+            //                            NomeBimestre="1º Bim",
+            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
+            //                            {
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Matemática",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 01",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 02",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                 new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 03",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 04",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 05",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                            }
+            //                        },
+            //                        new RelatorioFaltaFrequenciaBimestreDto
+            //                        {
+            //                            NomeBimestre="2º Bim",
+            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
+            //                            {
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Matemática",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                }
+            //                            }
+            //                        },
+            //                            new RelatorioFaltaFrequenciaBimestreDto
+            //                        {
+            //                            NomeBimestre="3º Bim",
+            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
+            //                            {
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Matemática",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                }
+            //                            }
+            //                        },
+            //                                new RelatorioFaltaFrequenciaBimestreDto
+            //                        {
+            //                            NomeBimestre="4º Bim",
+            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
+            //                            {
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Matemática",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                }
+            //                            }
+            //                        }
 
-                                }
-                            },
-                            new RelatorioFaltaFrequenciaAnoDto
-                            {
-                                Nome="2º ano",
-                                Bimestres= new List<RelatorioFaltaFrequenciaBimestreDto>
-                                {
-                                    new RelatorioFaltaFrequenciaBimestreDto
-                                    {
-                                        Nome="1º Bim",
-                                        Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-                                        {
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Matemática",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 01",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 02",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                             new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 03",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 04",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português 05",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                        }
-                                    },
-                                    new RelatorioFaltaFrequenciaBimestreDto
-                                    {
-                                        Nome="2º Bim",
-                                        Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-                                        {
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Matemática",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                        new RelatorioFaltaFrequenciaBimestreDto
-                                    {
-                                        Nome="3º Bim",
-                                        Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-                                        {
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Matemática",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                            new RelatorioFaltaFrequenciaBimestreDto
-                                    {
-                                        Nome="4º Bim",
-                                        Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-                                        {
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Matemática",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            },
-                                            new RelatorioFaltaFrequenciaComponenteDto
-                                            {
-                                                Nome="Português",
-                                                Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-                                                {
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    },
-                                                    new RelatorioFaltaFrequenciaAlunoDto
-                                                    {
-                                                        Nome="José da silva",
-                                                        Faltas="10",
-                                                        Frequencia=50,
-                                                        NomeTurma="1A",
-                                                        Numero="1"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+            //                    }
+            //                },
+            //                new RelatorioFaltaFrequenciaAnoDto
+            //                {
+            //                    NomeAno="2º ano",
+            //                    Bimestres= new List<RelatorioFaltaFrequenciaBimestreDto>
+            //                    {
+            //                        new RelatorioFaltaFrequenciaBimestreDto
+            //                        {
+            //                            NomeBimestre="1º Bim",
+            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
+            //                            {
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Matemática",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 01",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 02",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                 new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 03",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 04",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português 05",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                            }
+            //                        },
+            //                        new RelatorioFaltaFrequenciaBimestreDto
+            //                        {
+            //                            NomeBimestre="2º Bim",
+            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
+            //                            {
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Matemática",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                }
+            //                            }
+            //                        },
+            //                            new RelatorioFaltaFrequenciaBimestreDto
+            //                        {
+            //                            NomeBimestre="3º Bim",
+            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
+            //                            {
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Matemática",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                }
+            //                            }
+            //                        },
+            //                                new RelatorioFaltaFrequenciaBimestreDto
+            //                        {
+            //                            NomeBimestre="4º Bim",
+            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
+            //                            {
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Matemática",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                },
+            //                                new RelatorioFaltaFrequenciaComponenteDto
+            //                                {
+            //                                    NomeComponente="Português",
+            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
+            //                                    {
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        },
+            //                                        new RelatorioFaltaFrequenciaAlunoDto
+            //                                        {
+            //                                            NomeAluno="José da silva",
+            //                                            Faltas="10",
+            //                                            Frequencia=50,
+            //                                            NomeTurma="1A",
+            //                                            Numero="1"
+            //                                        }
+            //                                    }
+            //                                }
+            //                            }
+            //                        }
 
-                                }
-                            },
-                        }
-                    }
-                }
-            });
+            //                    }
+            //                },
+            //            }
+            //        }
+            //    }
+            //});
+            
             return View(model);
         }
     }

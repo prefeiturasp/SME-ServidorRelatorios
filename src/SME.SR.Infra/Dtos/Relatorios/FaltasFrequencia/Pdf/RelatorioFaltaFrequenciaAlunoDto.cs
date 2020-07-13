@@ -1,13 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
     public class RelatorioFaltaFrequenciaAlunoDto
     {
-        public string Numero { get; set; }
-        public string Nome { get; set; }
+        public string NumeroChamada { get; set; }
+        public int CodigoAluno { get; set; }
+        public string NomeAluno { get; set; }
         public string NomeTurma { get; set; }
-        public string Faltas { get; set; }
-        public double Frequencia { get; set; }
+        public string CodigoTurma { get; set; }
+        public int TotalAusencias { get; set; }
+        public int TotalCompensacoes { get; set; }
+        public int TotalAulas { get; set; }
+        public int NumeroFaltasNaoCompensadas { get => TotalAusencias - TotalCompensacoes; }
+        public double Frequencia
+        {
+            get
+            {
+                if (TotalAulas == 0)
+                    return 0;
+
+                var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
+
+                return Math.Round(porcentagem, 2);
+            }
+        }
     }
 }
+

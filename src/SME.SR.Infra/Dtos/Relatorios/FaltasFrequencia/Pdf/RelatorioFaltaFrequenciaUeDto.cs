@@ -8,8 +8,8 @@ namespace SME.SR.Infra
         {
             Anos = new List<RelatorioFaltaFrequenciaAnoDto>();
         }
-        public string Codigo { get; set; }
-        public string Nome { get; set; }
+        public string CodigoUe { get; set; }
+        public string NomeUe { get; set; }
         public List<RelatorioFaltaFrequenciaAnoDto> Anos { get; set; }
     }
 }

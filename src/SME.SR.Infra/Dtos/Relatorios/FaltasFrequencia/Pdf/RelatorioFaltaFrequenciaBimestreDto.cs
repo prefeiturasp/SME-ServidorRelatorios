@@ -8,7 +8,7 @@ namespace SME.SR.Infra
         {
             Componentes = new List<RelatorioFaltaFrequenciaComponenteDto>();
         }
-        public string Nome { get; set; }
+        public string NomeBimestre { get; set; }
         public List<RelatorioFaltaFrequenciaComponenteDto> Componentes { get; set; }
     }
 }

@@ -53,9 +53,9 @@ namespace SME.SR.Application
             var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(turmas.Select(a => a.Codigo)));
             return alunos.Select(a => new RelatorioFaltaFrequenciaAlunoDto()
             {
-                Nome = a.Nome,
+                NomeAluno = a.Nome,
                 NomeTurma = turmas.First(t => t.Codigo == t.Codigo).Nome,
-                Numero = a.NumeroChamada
+                NumeroChamada = a.NumeroChamada
             });
         }
     }

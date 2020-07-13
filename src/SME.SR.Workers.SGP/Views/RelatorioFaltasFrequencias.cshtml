@@ -54,7 +54,7 @@
     return Html.Raw(str);
   }
 
-  Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string nomeTurma, string alunoNome, string alunoFaltas, double alunoFreq)
+  Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string nomeTurma, string alunoNome, int alunoFaltas, double alunoFreq)
   {
     // Contar
     contadorQuebrarPagina = contadorQuebrarPagina + 1;
@@ -298,19 +298,19 @@
                       <table class="tabela-alunos">
                         <thead>
                           <tr>
-                            <th>@dre.Nome</th>
+                            <th>@dre.NomeDre</th>
                           </tr>
                           <tr>
-                            <th>@ue.Nome</th>
+                            <th>@ue.NomeUe</th>
                           </tr>
                           <tr>
                             <th>@Model.Modalidade</th>
                           </tr>
                           <tr>
-                            <th>@ano.Nome</th>
+                            <th>@ano.NomeAno</th>
                           </tr>
                           <tr>
-                            <th>@bimestre.Nome</th>
+                            <th>@bimestre.NomeBimestre</th>
                           </tr>
                         </thead>
                       </table>
@@ -326,11 +326,11 @@
                           @MontarQuebrarPagina();
                           @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
                           contadorQuebrarPagina = 0;
-                          @MontarComponente(componente.Nome)
+                          @MontarComponente(componente.NomeComponente)
                         }
                         else
                         {
-                          @MontarComponente(componente.Nome, !terminouListaAluno)
+                          @MontarComponente(componente.NomeComponente, !terminouListaAluno)
                         }
 
                         terminouListaAluno = false;
@@ -342,7 +342,7 @@
                           for (int i = 0; i < componente.Alunos.Count; i++)
                           {
                             var aluno = componente.Alunos[i];
-                            @MontarLinhaAluno(aluno.Numero, aluno.NomeTurma, aluno.Nome, aluno.Faltas, aluno.Frequencia)
+                            @MontarLinhaAluno(aluno.NumeroChamada, aluno.NomeTurma, aluno.NomeAluno, aluno.TotalAusencias, aluno.Frequencia)
 
                             var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
@@ -356,7 +356,7 @@
                               @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
                               if (!terminouListaAluno)
                               {
-                                @MontarComponente(componente.Nome)
+                                @MontarComponente(componente.NomeComponente)
                                 @AbrirTabelaAluno()
                               }
                             }
