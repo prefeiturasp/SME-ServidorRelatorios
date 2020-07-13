@@ -113,7 +113,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[]codigoPareceresConclusivos)
+        public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[] codigoPareceresConclusivos)
         {
             var query = @"select distinct 
 	                        ft.turma_id as TurmaCodigo,
@@ -137,13 +137,14 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos, codigoPareceresConclusivos });
 
         }
+
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaParecerConclusivo(long turmaCodigo, long[] codigoPareceresConclusivos)
         {
             try
             {
 
-     
-            var query = @"select distinct 
+
+                var query = @"select distinct 
 	                        ft.turma_id as TurmaCodigo,
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        t.ano
@@ -160,15 +161,34 @@ namespace SME.SR.Data
 	                       and cca.conselho_classe_parecer_id = any(@codigoPareceresConclusivos)";
 
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { turmaCodigo = turmaCodigo.ToString(), codigoPareceresConclusivos });
+                return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { turmaCodigo = turmaCodigo.ToString(), codigoPareceresConclusivos });
 
             }
             catch (Exception ex)
             {
 
                 throw ex;
+            }
+
+        }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorAno(int anoLetivo, string[] anosEscolares)
+        {
+            var query = @"select t.turma_id Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where ano_letivo = @anoLetivo 
+                         and ano = ANY(@anosEscolares)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<Turma>(query, new { anoLetivo, anosEscolares });
             }
 
         }

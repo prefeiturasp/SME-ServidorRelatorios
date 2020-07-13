@@ -8,7 +8,7 @@ namespace SME.SR.Data
     {
         public string Codigo { get; set; }
         public int AnoLetivo { get; set; }
-        public int Ano { get; set; }
+        public string Ano { get; set; }
         public string Nome { get; set; }
         public int Semestre { get; set; }
         public Dre Dre { get; set; }

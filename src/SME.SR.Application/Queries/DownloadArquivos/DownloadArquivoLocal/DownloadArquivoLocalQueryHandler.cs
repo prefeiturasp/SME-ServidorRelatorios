@@ -22,6 +22,8 @@ namespace SME.SR.Application.Commands.RetornarRelatorioPronto
             SentrySdk.AddBreadcrumb($"Caminho arquivo para download: {caminhoArquivo}");
 
             var arquivo = await File.ReadAllBytesAsync(caminhoArquivo);
+
+
             if (arquivo != null)
                 return arquivo;
 

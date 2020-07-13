@@ -1,0 +1,306 @@
+﻿@model SME.SR.Infra.RelatorioFaltasFrequenciaDto
+
+@functions 
+{
+    Microsoft.AspNetCore.Html.IHtmlContent QuebrarPagina()
+    {
+        var str = $@"<footer class='rodape-rel-faltas-frequencia'>
+                <div class='titulo-sgp-rodape'>
+                  SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
+                </div>
+                <div class='contador-pagina'>1/3</div>
+             </footer>
+             <div style='page-break-before:always' />";
+
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent Cabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data)
+    {
+        var str =
+           $@"<div>
+                <img class='img-logo-sgp' src='logo.png' alt='Logo SGP' />
+            </div>
+            <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+            <div class='titulo-faltas-frequencia'>FALTAS</div>
+
+            <div class='fonte-14 header-pagina'>
+              <table>
+                <tbody>
+                  <tr>
+                    <td class='campo-dre'>DRE: {dre}</td>
+                    <td class='campo-ue'>UE: {ue}</td>
+                    <td class='campo-ano'>ANO: {ano}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table>
+                <tbody>
+                  <tr>
+                    <td class='campo-bimestre'>BIMESTRE: {bimestre}</td>
+                    <td class='campo-componente-curricular'>
+                      COMPONENTE CURRICULAR: {componenteCurricular}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table>
+                <tbody>
+                  <tr>
+                    <td class='campo-usuario'>USUÁRIO: {usuario}</td>
+                    <td class='campo-rf-data'>RF: {rf}</td>
+                    <td class='campo-rf-data'>DATA: {data}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+         ";
+
+        return Html.Raw(str);
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatório Faltas e Frequência</title>
+</head>
+<body class="body-rel-faltas-frequencia">
+  <style>
+    .body-rel-faltas-frequencia {
+      margin: 1cm auto;
+      font-family: Roboto, sans-serif;
+      width: 21cm;
+      min-height: 29.7cm;
+      background: white;
+      color: #42474a;
+    }
+
+    .margin-rel-faltas-frequencia {
+      margin: 30px;
+    }
+
+    .titulo-sgp {
+      text-align: right;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .titulo-faltas-frequencia {
+      text-align: right;
+      font-size: 14.5px;
+      margin-top: 7px;
+    }
+
+    .img-logo-sgp {
+      height: 64px;
+      float: left;
+    }
+
+    .header-pagina {
+      margin-top: 33px;
+      margin-bottom: 22px;
+    }
+
+      .header-pagina td {
+        text-align: left;
+      }
+
+    .campo-dre {
+      width: 25%;
+    }
+
+    .campo-ue {
+      width: 60%
+    }
+
+    .campo-ano {
+      width: 15%
+    }
+
+    .campo-bimestre {
+      width: 20%;
+      border-top: none;
+    }
+
+    .campo-componente-curricular {
+      width: 80%;
+      border-top: none;
+    }
+
+    .campo-usuario {
+      width: 60%;
+      border-top: none;
+    }
+
+    .campo-rf-data {
+      width: 20%;
+      border-top: none;
+    }
+
+    table {
+      display: table;
+      width: 100%;
+      border-color: #42474a;
+      empty-cells: show;
+      border: none;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background-color: #f3f3f3;
+    }
+
+    th {
+      border: 1px solid #42474a;
+      font-weight: normal;
+    }
+
+    td {
+      border: 1px solid #42474a;
+      text-align: center;
+    }
+
+    .tabela-alunos tr {
+      font-size: 12px;
+      height: 24px;
+    }
+
+    .mt-25 {
+      margin-top: 25px;
+    }
+
+    .fonte-14 {
+      font-size: 14px !important;
+    }
+
+    .alinhar-esquerda {
+      text-align: left;
+    }
+
+    .rodape-rel-faltas-frequencia {
+      margin-top: 10px;
+      font-size: 9px;
+      font-weight: bold;
+    }
+
+    .titulo-sgp-rodape {
+      float: left;
+    }
+
+    .contador-pagina {
+      float: right;
+      font-size: 15px;
+    }
+  </style>
+
+
+  <div class="margin-rel-faltas-frequencia">
+
+
+    @if (Model.Dres != null)
+      foreach (var dre in Model.Dres)
+      {        
+        @if (dre.Ues != null)
+        {
+          foreach (var ue in dre.Ues)
+          {
+            if (ue.Anos != null)
+            {
+              foreach (var ano in ue.Anos)
+              {                
+                if (ano.Bimestres != null)
+                {
+                  @foreach (var bimestre in ano.Bimestres)
+                  {
+                   @Cabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+
+                    @if (bimestre.Componentes != null)
+                    {
+                      <table class="tabela-alunos">
+                        <thead>
+                          <tr>
+                            <th>@dre.Nome</th>
+                          </tr>
+                          <tr>
+                            <th>@ue.Nome</th>
+                          </tr>
+                          <tr>
+                            <th>EJA</th>
+                          </tr>
+                          <tr>
+                            <th>@ano.Nome</th>
+                          </tr>
+                          <tr>
+                            <th>@bimestre.Nome</th>
+                          </tr>     
+                        </thead>      
+                      </table>
+                      foreach (var componente in bimestre.Componentes)
+                      {
+                        @if(componente.Nome == "Português 04") {
+                            @QuebrarPagina()
+                            @Cabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                        }
+                        <table class="tabela-alunos">              
+                          <tbody>
+                            <tr>
+                              <td style="border-bottom: none;"></td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <table class="tabela-alunos">
+                          <thead>
+                            <tr>
+                              <th>@componente.Nome</th>
+                            </tr>
+                          </thead>
+                        </table>
+
+                        @if (componente.Alunos != null)
+                        {
+                        <table class="tabela-alunos">              
+                          <tbody>
+                            <tr>
+                              <td colspan="4" style="border-bottom: none; border-top: none;"></td>
+                            </tr>
+                          </tbody>
+                        </table>  
+                          <table class="tabela-alunos">
+                            <thead>
+                              <tr>
+                                <th style="width: 10%;">Nº</th>
+                                <th style="width: 70%;" class="alinhar-esquerda">NOME</th>
+                                <th style="width: 10%;">FALTAS</th>
+                                <th style="width: 10%;">FREQ. %</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @foreach (var aluno in componente.Alunos)
+                              {      
+                                <tr>
+                                  <td>@aluno.Numero</td>
+                                  <td class="alinhar-esquerda">@aluno.Nome</td>
+                                  <td>@aluno.Faltas</td>
+                                  <td>@aluno.Frequencia</td>
+                                </tr>
+                              }                          
+                            </tbody>
+                          </table>
+                        }
+                      }
+                    }
+                    @QuebrarPagina()
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+  </div>
+</body>
+</html>
