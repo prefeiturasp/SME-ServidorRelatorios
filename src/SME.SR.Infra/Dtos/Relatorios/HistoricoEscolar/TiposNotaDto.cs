@@ -2,7 +2,7 @@
 
 namespace SME.SR.Infra
 {
-    public class ParecerConclusivoDto
+   public class TiposNotaDto
     {
         [JsonProperty("primeiroAno")]
         public string PrimeiroAno { get; set; }
@@ -30,6 +30,5 @@ namespace SME.SR.Infra
 
         [JsonProperty("nonoAno")]
         public string NonoAno { get; set; }
-
     }
 }

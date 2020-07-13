@@ -61,7 +61,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                         Usuario = request.Usuario
                     });
 
-                    if (componentesRegenciaPorTurma.Count() > 0)
+                    if (componentesRegenciaPorTurma != null &&  componentesRegenciaPorTurma.Any())
                     {
                         componentesMapeados = componentesMapeados.Select(cm =>
                          {
