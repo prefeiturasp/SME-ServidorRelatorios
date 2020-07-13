@@ -50,7 +50,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                 var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(codigosTurmas));
 
-                var frequencias = ObterFaltasEFrequencias(codigosTurmas, filtro.Bimestres, filtro.ComponentesCurriculares);
+                var frequencias = await ObterFaltasEFrequencias(codigosTurmas, request.Filtro.Bimestres, request.Filtro.ComponentesCurriculares, request.Filtro.Modalidade, request.Filtro.AnoLetivo, request.Filtro.Semestre);
 
                 foreach (var dre in dres)
                 {
@@ -100,7 +100,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
         }
 
 
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFaltasEFrequencias(IEnumerable<string> turmas, IEnumerable<int> bimestresFiltro, IEnumerable<long> componentesCurriculares)
+        private async Task<IEnumerable<FrequenciaAluno>> ObterFaltasEFrequencias(IEnumerable<string> turmas, IEnumerable<int> bimestresFiltro, IEnumerable<long> componentesCurriculares, Modalidade modalidade, int anoLetivo, int semestre)
         {
             var faltasFrequenciasAlunos = new List<FrequenciaAluno>();
             
@@ -114,7 +114,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             // Verifica se foi solicitado bimestre final
             if (bimestresFiltro.Any(c => c == 0))
             {
-                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery(null, componentesCurriculares)));
+                var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo,
+                                                                                                                 modalidade == Modalidade.EJA ? ModalidadeTipoCalendario.EJA : ModalidadeTipoCalendario.FundamentalMedio,
+                                                                                                                 semestre)); ;
+
+                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery(turmas, componentesCurriculares, modalidade, tipoCalendarioId)));
             }
 
             return faltasFrequenciasAlunos;
