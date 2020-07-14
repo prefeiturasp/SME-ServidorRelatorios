@@ -5,7 +5,11 @@ namespace SME.SR.Infra
     public class LegendaDto
     {
         [JsonProperty("texto")]
-        public string Texto { get; set; }
+        public string Texto { get; private set; }
 
+        public LegendaDto(string texto)
+        {
+            Texto = texto;
+        }
     }
 }

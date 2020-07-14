@@ -29,6 +29,7 @@ namespace SME.SR.Application
             Frequencias = frequencias;
             MediasFrequencia = mediasFrequencia;
             TiposNota = tiposNota;
+            Legenda = legenda;
         }
 
         public Dre Dre { get; set; }
@@ -42,5 +43,6 @@ namespace SME.SR.Application
         public IEnumerable<TipoNotaCicloAno> TiposNota { get; set; }
         public string[] TurmasCodigo { get; set; }
         public CabecalhoDto Cabecalho { get; set; }
+        public LegendaDto Legenda { get; set; }
     }
 }
