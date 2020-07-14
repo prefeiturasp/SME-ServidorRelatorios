@@ -26,7 +26,6 @@ namespace SME.SR.Application
 
             var cabecalho = await MontarCabecalho(filtros);
 
-            //Obter Alunos e Turmas
             var alunosTurmas = await MontarAlunosTurmas(filtros);
 
             var turmas = new List<Turma>();
@@ -61,7 +60,16 @@ namespace SME.SR.Application
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
-            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas, frequencias, tipoNotas, turmasCodigo.ToArray(), cabecalho));
+            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas, frequencias, turmasCodigo.ToArray(), cabecalho));
+            
+            // TODO: separar as 2 listas e verificar se é necessário gerar e enviar para outra fila 
+            bool deveEnviarHistoricoEscolarMedio = true;
+            Guid codigoCorrelacaoMedio;
+            if (deveEnviarHistoricoEscolarMedio)
+            {
+                codigoCorrelacaoMedio = await mediator.Send(new GerarCodigoCorrelacaoSGPCommand(request.CodigoCorrelacao));
+            }
+
 
             var jsonString = "";
 
@@ -70,6 +78,7 @@ namespace SME.SR.Application
                 jsonString = JsonConvert.SerializeObject(resultadoFinal);
             }
 
+            //TODO: Caso precise enviar para Fundamental e médio, enviar cada lista separada;
             await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
         }
 
