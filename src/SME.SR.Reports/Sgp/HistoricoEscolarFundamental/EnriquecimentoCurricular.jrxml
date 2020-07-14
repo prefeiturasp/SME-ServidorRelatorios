@@ -45,7 +45,7 @@
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("enriquecimentoCurricular")]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression><![CDATA["GrupoSomenteComNotas.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["ComponentesCurriculares.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
