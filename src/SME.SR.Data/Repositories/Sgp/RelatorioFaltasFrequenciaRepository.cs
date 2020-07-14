@@ -33,6 +33,7 @@ namespace SME.SR.Data
 	                u.ue_id as CodigoUe,
 	                u.nome as NomeUe,
                     t.ano as NomeAno,
+                    fa.bimestre Numero, 
                     fa.bimestre NomeBimestre, 
                     fa.disciplina_id CodigoComponente,
 	                fa.codigo_aluno as CodigoAluno,
@@ -65,13 +66,18 @@ namespace SME.SR.Data
 
             if (componentesCurriculares != null && componentesCurriculares.Any())
                 query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
+            else query.AppendLine("and fa.disciplina_id is not null and fa.disciplina_id <> ''");
 
-            if (bimestres != null && bimestres.Any())
+            if (bimestres != null && bimestres.Any(c => c != 0))
                 query.AppendLine("and bimestre = any(@bimestres)");
+
+            query.AppendLine("order by t.ano, fa.bimestre");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 var dres = new List<RelatorioFaltaFrequenciaDreDto>();
+
+                var arrayComponentes = componentesCurriculares = componentesCurriculares.Any() ? componentesCurriculares.ToArray() : new string[0] { };
 
                 await conexao.QueryAsync(query.ToString(), (Func<RelatorioFaltaFrequenciaDreDto, RelatorioFaltaFrequenciaUeDto, RelatorioFaltaFrequenciaAnoDto, RelatorioFaltaFrequenciaBimestreDto, RelatorioFaltaFrequenciaComponenteDto, RelatorioFaltaFrequenciaAlunoDto, RelatorioFaltaFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
                 {
@@ -83,7 +89,17 @@ namespace SME.SR.Data
                     componente.Alunos.Add(aluno);
 
                     return dre;
-                }), splitOn: "CodigoDre, CodigoUe, NomeAno,NomeBimestre, CodigoComponente,CodigoAluno", param: new { anoLetivo, dreId, ueId, modalidade, anosEscolares, componentesCurriculares, bimestres });
+                }), splitOn: "CodigoDre, CodigoUe, NomeAno,NomeBimestre, CodigoComponente,CodigoAluno",
+                param: new
+                {
+                    anoLetivo,
+                    dreId,
+                    ueId,
+                    modalidade,
+                    anosEscolares = anosEscolares.ToArray(),
+                    componentesCurriculares = arrayComponentes,
+                    bimestres = bimestres.ToArray()
+                });
 
                 return dres;
             };

@@ -42,7 +42,7 @@ namespace SME.SR.Application
             // Verifica se foi solicitado bimestre final
             if (bimestresFiltro.Any(c => c == 0))
             {
-                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery(turmas, componentesCurriculares)));
+                //faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery(turmas, componentesCurriculares)));
             }
 
             return faltasFrequenciasAlunos;

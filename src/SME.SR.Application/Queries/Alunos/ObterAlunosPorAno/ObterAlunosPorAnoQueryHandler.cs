@@ -28,7 +28,7 @@ namespace SME.SR.Application
                 Nome = a.NomeAluno,
                 NumeroChamada = a.NumeroAlunoChamada,
                 CodigoAluno = a.CodigoAluno,
-                TurmaCodigo = a.CodigoTurma.ToString()
+                TurmaCodigo = a.CodigoTurma.ToString(),
             });
         }
     }
