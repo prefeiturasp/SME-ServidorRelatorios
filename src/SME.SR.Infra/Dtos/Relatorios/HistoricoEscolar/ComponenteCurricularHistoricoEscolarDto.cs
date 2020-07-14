@@ -1,5 +1,7 @@
 ﻿
 using Newtonsoft.Json;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -17,58 +19,58 @@ namespace SME.SR.Infra
         [JsonProperty("nome")]
         public string Nome { get; set; }
 
-        [JsonProperty("NotaConceitoPrimeiroAno")]
+        [JsonProperty("notaConceitoPrimeiroAno")]
         public string NotaConceitoPrimeiroAno { get; set; }
 
-        [JsonProperty("FrequenciaPrimeiroAno")]
+        [JsonProperty("frequenciaPrimeiroAno")]
         public string FrequenciaPrimeiroAno { get; set; }
 
-        [JsonProperty("NotaConceitoSegundoAno")]
+        [JsonProperty("notaConceitoSegundoAno")]
         public string NotaConceitoSegundoAno { get; set; }
 
-        [JsonProperty("FrequenciaSegundoAno")]
+        [JsonProperty("frequenciaSegundoAno")]
         public string FrequenciaSegundoAno { get; set; }
 
-        [JsonProperty("NotaConceitoTerceiroAno")]
+        [JsonProperty("notaConceitoTerceiroAno")]
         public string NotaConceitoTerceiroAno { get; set; }
 
-        [JsonProperty("FrequenciaTerceiroAno")]
+        [JsonProperty("frequenciaTerceiroAno")]
         public string FrequenciaTerceiroAno { get; set; }
 
-        [JsonProperty("NotaConceitoQuartoAno")]
+        [JsonProperty("notaConceitoQuartoAno")]
         public string NotaConceitoQuartoAno { get; set; }
 
-        [JsonProperty("FrequenciaQuartoAno")]
+        [JsonProperty("frequenciaQuartoAno")]
         public string FrequenciaQuartoAno { get; set; }
 
-        [JsonProperty("NotaConceitoQuintoAno")]
+        [JsonProperty("notaConceitoQuintoAno")]
         public string NotaConceitoQuintoAno { get; set; }
 
-        [JsonProperty("FrequenciaQuintoAno")]
+        [JsonProperty("frequenciaQuintoAno")]
         public string FrequenciaQuintoAno { get; set; }
 
-        [JsonProperty("NotaConceitoSextoAno")]
+        [JsonProperty("notaConceitoSextoAno")]
         public string NotaConceitoSextoAno { get; set; }
 
-        [JsonProperty("FrequenciaSextoAno")]
+        [JsonProperty("frequenciaSextoAno")]
         public string FrequenciaSextoAno { get; set; }
 
-        [JsonProperty("NotaConceitoSetimoAno")]
+        [JsonProperty("notaConceitoSetimoAno")]
         public string NotaConceitoSetimoAno { get; set; }
 
-        [JsonProperty("FrequenciaSetimoAno")]
+        [JsonProperty("frequenciaSetimoAno")]
         public string FrequenciaSetimoAno { get; set; }
 
-        [JsonProperty("NotaConceitoOitavoAno")]
+        [JsonProperty("notaConceitoOitavoAno")]
         public string NotaConceitoOitavoAno { get; set; }
 
-        [JsonProperty("FrequenciaOitavoAno")]
+        [JsonProperty("frequenciaOitavoAno")]
         public string FrequenciaOitavoAno { get; set; }
 
-        [JsonProperty("NotaConceitoNonoAno")]
+        [JsonProperty("notaConceitoNonoAno")]
         public string NotaConceitoNonoAno { get; set; }
 
-        [JsonProperty("FrequenciaNonoAno")]
+        [JsonProperty("frequenciaNonoAno")]
         public string FrequenciaNonoAno { get; set; }
     }
 }
