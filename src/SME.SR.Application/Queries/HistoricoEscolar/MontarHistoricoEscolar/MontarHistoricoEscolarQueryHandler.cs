@@ -45,7 +45,7 @@ namespace SME.SR.Application
                     var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
                     var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
 
-                    var tiposNotaDto = MapearTiposNota(agrupamentoTurmas, request.TiposNota);
+                    var tiposNotaDto = MapearTiposNota(agrupamentoTurmas.Key, request.TiposNota);
                     var pareceresDto = MapearPareceres(agrupamentoTurmas, notasAluno);
 
                     var historicoDto = new HistoricoEscolarDTO()
@@ -69,19 +69,19 @@ namespace SME.SR.Application
             return await Task.FromResult(listaRetorno);
         }
 
-        private TiposNotaDto MapearTiposNota(IEnumerable<Turma> turmas, IDictionary<string, string> tiposNota)
+        private TiposNotaDto MapearTiposNota(Modalidade modalidade, IEnumerable<TipoNotaCicloAno> tiposNota)
         {
             return new TiposNotaDto()
             {
-                PrimeiroAno = turmas.FirstOrDefault(f => f.Ano == "1") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "1").Codigo] : null,
-                SegundoAno = turmas.FirstOrDefault(f => f.Ano == "2") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "2").Codigo] : null,
-                TerceiroAno = turmas.FirstOrDefault(f => f.Ano == "3") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "3").Codigo] : null,
-                QuartoAno = turmas.FirstOrDefault(f => f.Ano == "4") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "4").Codigo] : null,
-                QuintoAno = turmas.FirstOrDefault(f => f.Ano == "5") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "5").Codigo] : null,
-                SextoAno = turmas.FirstOrDefault(f => f.Ano == "6") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "6").Codigo] : null,
-                SetimoAno = turmas.FirstOrDefault(f => f.Ano == "7") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "7").Codigo] : null,
-                OitavoAno = turmas.FirstOrDefault(f => f.Ano == "8") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "8").Codigo] : null,
-                NonoAno = turmas.FirstOrDefault(f => f.Ano == "9") != null ? tiposNota[turmas.FirstOrDefault(f => f.Ano == "9").Codigo] : null
+                PrimeiroAno = tiposNota.FirstOrDefault(t => t.Ano == 1 && t.Modalidade == modalidade)?.TipoNota,
+                SegundoAno = tiposNota.FirstOrDefault(t => t.Ano == 2 && t.Modalidade == modalidade)?.TipoNota,
+                TerceiroAno = tiposNota.FirstOrDefault(t => t.Ano == 3 && t.Modalidade == modalidade)?.TipoNota,
+                QuartoAno = tiposNota.FirstOrDefault(t => t.Ano == 4 && t.Modalidade == modalidade)?.TipoNota,
+                QuintoAno = tiposNota.FirstOrDefault(t => t.Ano == 5 && t.Modalidade == modalidade)?.TipoNota,
+                SextoAno = tiposNota.FirstOrDefault(t => t.Ano == 6 && t.Modalidade == modalidade)?.TipoNota,
+                SetimoAno = tiposNota.FirstOrDefault(t => t.Ano == 7 && t.Modalidade == modalidade)?.TipoNota,
+                OitavoAno = tiposNota.FirstOrDefault(t => t.Ano == 8 && t.Modalidade == modalidade)?.TipoNota,
+                NonoAno = tiposNota.FirstOrDefault(t => t.Ano == 9 && t.Modalidade == modalidade)?.TipoNota,
             };
         }
 
