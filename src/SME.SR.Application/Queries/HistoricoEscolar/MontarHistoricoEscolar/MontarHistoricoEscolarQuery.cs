@@ -9,14 +9,14 @@ namespace SME.SR.Application
 {
     public class MontarHistoricoEscolarQuery : IRequest<IEnumerable<HistoricoEscolarDTO>>
     {
-        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento,
-                                                 IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas,
-                                                 IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas,
-                                                 IEnumerable<MediaFrequencia> mediasFrequencia,
-                                                 IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
-                                                 IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
-                                                 IDictionary<string, string> tiposNota,
-                                                 string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda)
+        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento, 
+                                            IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas, 
+                                            IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas,
+                                            IEnumerable<MediaFrequencia> mediasFrequencia,
+                                            IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
+                                            IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
+                                            IEnumerable<TipoNotaCicloAno> tiposNota,
+                                            string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda)
         {
             Dre = dre;
             Ue = ue;
@@ -40,7 +40,7 @@ namespace SME.SR.Application
         public IEnumerable<AreaDoConhecimento> AreasConhecimento { get; set; }
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }
-        public IDictionary<string, string> TiposNota { get; set; }
+        public IEnumerable<TipoNotaCicloAno> TiposNota { get; set; }
         public string[] TurmasCodigo { get; set; }
         public CabecalhoDto Cabecalho { get; set; }
         public LegendaDto Legenda { get; set; }

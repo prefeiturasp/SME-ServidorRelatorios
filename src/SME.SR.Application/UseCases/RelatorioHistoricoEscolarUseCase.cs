@@ -56,7 +56,7 @@ namespace SME.SR.Application
 
             var enderecoAtoUe = await ObterEnderecoAtoUe(filtros.UeCodigo);
 
-            var tipoNotas = await ObterTiposNotaRelatorio(filtros.AnoLetivo, dre.Id, ue.Id, filtros.Semestre, filtros.Modalidade, turmas);
+            var tipoNotas = await ObterTiposNotaRelatorio();
 
             var notas = await ObterNotasAlunos(turmasCodigo.ToArray(), alunosCodigo.ToArray());
             var frequencias = await ObterFrequenciasAlunos(turmasCodigo.ToArray(), alunosCodigo.ToArray());
@@ -125,17 +125,9 @@ namespace SME.SR.Application
                 UeCodigo = ueCodigo
             });
         }
-        private async Task<IDictionary<string, string>> ObterTiposNotaRelatorio(int anoLetivo, long dreId, long ueId, int semestre, Modalidade modalidade, IEnumerable<Turma> turmas)
+        private async Task<IEnumerable<TipoNotaCicloAno>> ObterTiposNotaRelatorio()
         {
-            return await mediator.Send(new ObterTiposNotaRelatorioBoletimQuery()
-            {
-                AnoLetivo = anoLetivo,
-                DreId = dreId,
-                UeId = ueId,
-                Semestre = semestre,
-                Modalidade = modalidade,
-                Turmas = turmas
-            });
+            return await mediator.Send(new ObterTiposNotaRelatorioHistoricoEscolarQuery());
         }
         private async Task<IEnumerable<AreaDoConhecimento>> ObterAreasConhecimento(IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares)
         {
