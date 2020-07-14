@@ -39,7 +39,7 @@ namespace SME.SR.Application
                 {
                     if (!turmas.Any(a => a.Codigo == turma.Codigo))
                         turmas.Add(turma);
-                }                
+                }
             }
 
             var alunosCodigo = alunosTurmas.Select(a => a.Aluno.Codigo);
@@ -63,18 +63,46 @@ namespace SME.SR.Application
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
-            
+            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
+                frequencias, tipoNotas, turmasCodigo.ToArray(), cabecalho, legenda));
 
-            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas, frequencias, turmasCodigo.ToArray(), cabecalho, legenda));
+            var resultadoFinalFundamental = resultadoFinal.Where(a => a.Modalidade == Modalidade.Fundamental);
+            var resultadoFinalMedio = resultadoFinal.Where(a => a.Modalidade == Modalidade.Medio);
 
-            var jsonString = "";
-
-            if (resultadoFinal != null)
+            if (resultadoFinalFundamental.Any() || resultadoFinalMedio.Any())
             {
-                jsonString = JsonConvert.SerializeObject(resultadoFinal);
-            }
+                if (resultadoFinalFundamental.Any() && resultadoFinalMedio.Any())
+                {
+                    await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
 
-            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+                    await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
+
+                } else if (resultadoFinalFundamental.Any())
+                {
+                    await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
+                } else if (resultadoFinalMedio.Any())
+                {
+                    await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
+                }
+            }
+            else
+                throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+
+
+        }
+
+        private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
+        {
+            var codigoCorrelacao = await mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio));
+
+            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalMedio });
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao));
+        }
+
+        private async Task EnviaRelatorioFundamental(IEnumerable<HistoricoEscolarDTO> resultadoFinalFundamental, Guid codigoCorrelacao)
+        {
+            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalFundamental });
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao));
         }
 
         private async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoAtoUe(string ueCodigo)
@@ -114,15 +142,19 @@ namespace SME.SR.Application
             //TODO: MELHORAR CODIGO
             var listaCodigosComponentes = new List<long>();
 
-            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Select(a => a.CodDisciplina).Distinct());
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => cc.Regencia).SelectMany(a => a.ComponentesCurricularesRegencia).Select(cc => cc.CodDisciplina));
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => !cc.Regencia).Select(a => a.CodDisciplina));
 
-            return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.ToArray()));
+            return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.Distinct().ToArray()));
         }
 
         private async Task<IEnumerable<AlunoTurmasHistoricoEscolarDto>> MontarAlunosTurmas(FiltroHistoricoEscolarDto filtros)
         {
 
-            var alunosCodigos = filtros.AlunosCodigo.Select(long.Parse).ToArray();
+            long[] alunosCodigos;
+            if (!filtros.AlunosCodigo.Any(a => a is null))
+                alunosCodigos = filtros.AlunosCodigo.Select(long.Parse).ToArray();
+            else alunosCodigos = new long[0];
 
             var turmaCodigo = string.IsNullOrEmpty(filtros.TurmaCodigo) ? 0 : long.Parse(filtros.TurmaCodigo);
 

@@ -44,12 +44,11 @@ namespace SME.SR.Application
                     var turmasdoAluno = turmasDosAlunos.Where(a => a.AlunoCodigo == item.CodigoAluno);
                     foreach (var turmaDoAluno in turmasdoAluno)
                     {
-                        alunoTurmasNotasFrequenciasDto.Turmas.Add(new Turma() { Ano = turmaDoAluno.Ano, Codigo = turmaDoAluno.TurmaCodigo });
+                        alunoTurmasNotasFrequenciasDto.Turmas.Add(new Turma() { Ano = turmaDoAluno.Ano.ToString(), Codigo = turmaDoAluno.TurmaCodigo });
                     }
 
                     retorno.Add(alunoTurmasNotasFrequenciasDto);
                 }
-
             }
             else
             {
@@ -66,7 +65,6 @@ namespace SME.SR.Application
                     if (!alunosPromovidosCodigos.Any())
                         throw new NegocioException("Não foram encontrados alunos promovidos para esta turma.");
 
-                    //TODO: Fazer a Query Acima já buscar essas informações
                     IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray());
 
                     foreach (var item in informacoesDosAlunos)

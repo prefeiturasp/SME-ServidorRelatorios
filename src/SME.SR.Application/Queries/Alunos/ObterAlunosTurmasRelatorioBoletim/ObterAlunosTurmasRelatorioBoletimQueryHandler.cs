@@ -30,7 +30,7 @@ namespace SME.SR.Application
             if (!alunos.Any())
                 throw new NegocioException("Não foi possível localizar os alunos");
             else
-                return alunos.GroupBy(a => a.CodigoTurma.ToString());
+                return alunos.OrderBy( a => a.ObterNomeFinal()).GroupBy(a => a.CodigoTurma.ToString());
         }
     }
 }
