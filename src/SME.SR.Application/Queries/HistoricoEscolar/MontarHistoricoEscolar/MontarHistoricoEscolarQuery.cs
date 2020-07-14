@@ -16,7 +16,7 @@ namespace SME.SR.Application
                                             IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
                                             IEnumerable<TipoNotaCicloAno> tiposNota,
-                                            string[] turmasCodigo, CabecalhoDto cabecalho)
+                                            string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda)
         {
             Dre = dre;
             Ue = ue;
