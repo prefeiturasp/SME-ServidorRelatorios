@@ -256,10 +256,10 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression><![CDATA["GruposComponentesCurriculares.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["BaseNacionalComum.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="170" width="555" height="15" uuid="6566e5af-fe59-4c89-86f5-d3d7ff5951b6">
+				<reportElement positionType="Float" x="0" y="185" width="555" height="15" uuid="6566e5af-fe59-4c89-86f5-d3d7ff5951b6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
@@ -268,7 +268,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["EnriquecimentoCurricular.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="185" width="555" height="15" uuid="455f8073-813f-4f58-9fa2-75065981229d">
+				<reportElement positionType="Float" x="0" y="200" width="555" height="15" uuid="455f8073-813f-4f58-9fa2-75065981229d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
@@ -277,24 +277,34 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["ProjetosAtividadesComplementares.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="200" width="555" height="15" uuid="d3e9a8dd-b3ee-4a7c-b9eb-8cc3888097e0">
+				<reportElement positionType="Float" x="0" y="215" width="555" height="15" isRemoveLineWhenBlank="true" uuid="d3e9a8dd-b3ee-4a7c-b9eb-8cc3888097e0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("parecerConclusivo")]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("pareceresConclusivos")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["ParecerConclusivo.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement positionType="Float" x="0" y="215" width="555" height="15" isRemoveLineWhenBlank="true" uuid="c0bd7c5f-87cb-42bd-ba4c-22e608112b06">
+				<reportElement positionType="Float" x="0" y="230" width="555" height="15" isRemoveLineWhenBlank="true" uuid="c0bd7c5f-87cb-42bd-ba4c-22e608112b06">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{legenda} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{legenda}]]></textFieldExpression>
 			</textField>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="170" width="555" height="15" uuid="e88e521a-1d65-491b-a7dc-bc3315b22f32">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["GrupoComponentesComNota.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 	<pageFooter>
