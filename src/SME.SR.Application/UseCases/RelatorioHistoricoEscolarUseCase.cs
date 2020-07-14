@@ -6,7 +6,9 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Math;
 
 namespace SME.SR.Application
 {
@@ -21,8 +23,9 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-
             var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
+
+            var legenda = new LegendaDto(await ObterLegenda());
 
             var cabecalho = await MontarCabecalho(filtros);
 
@@ -61,8 +64,7 @@ namespace SME.SR.Application
             var mediasFrequencia = await ObterMediasFrequencia();
 
             var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                frequencias, tipoNotas, turmasCodigo.ToArray(), cabecalho));
-
+                frequencias, tipoNotas, turmasCodigo.ToArray(), cabecalho, legenda));
 
             var resultadoFinalFundamental = resultadoFinal.Where(a => a.Modalidade == Modalidade.Fundamental);
             var resultadoFinalMedio = resultadoFinal.Where(a => a.Modalidade == Modalidade.Medio);
@@ -214,6 +216,19 @@ namespace SME.SR.Application
         private async Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia()
         {
             return await mediator.Send(new ObterParametrosMediaFrequenciaQuery());
+        }
+
+        private async Task<string> ObterLegenda()
+        {
+            var sb = new StringBuilder();
+            var legendas = await mediator.Send(new ObterLegendaQuery());
+            foreach (var conceito in legendas)
+            {
+                sb.Append($"{conceito.Valor} = {conceito.Descricao}, ");
+            }
+
+            var resultado = sb.ToString().Replace("\t", "");
+            return resultado.Substring(0, resultado.Length-2);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace SME.SR.Application
                                                  IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
                                                  IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
                                                  IDictionary<string, string> tiposNota,
-                                                 string[] turmasCodigo, CabecalhoDto cabecalho)
+                                                 string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda)
         {
             Dre = dre;
             Ue = ue;
@@ -29,6 +29,7 @@ namespace SME.SR.Application
             Frequencias = frequencias;
             MediasFrequencia = mediasFrequencia;
             TiposNota = tiposNota;
+            Legenda = legenda;
         }
 
         public Dre Dre { get; set; }
@@ -42,5 +43,6 @@ namespace SME.SR.Application
         public IDictionary<string, string> TiposNota { get; set; }
         public string[] TurmasCodigo { get; set; }
         public CabecalhoDto Cabecalho { get; set; }
+        public LegendaDto Legenda { get; set; }
     }
 }
