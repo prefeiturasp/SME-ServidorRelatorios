@@ -59,13 +59,14 @@ namespace SME.SR.Application
                         ProjetosAtividadesComplementares = projetosDto,
                         Modalidade = agrupamentoTurmas.Key,
                         TipoNota = tiposNotaDto,
-                        ParecerConclusivo = pareceresDto
+                        ParecerConclusivo = pareceresDto,
+                        Legenda = request.Legenda
                     };
 
                     listaRetorno.Add(historicoDto);
                 }
             }
-
+            
             return await Task.FromResult(listaRetorno);
         }
 
