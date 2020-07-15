@@ -185,7 +185,13 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Dres = dres.ToList();
             model.Dre = selecionouTodasDres ? "Todas" : dres.FirstOrDefault().NomeDre;
             model.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
-            model.Ano = filtro.AnosEscolares.Count() > 1 ? string.Empty : filtro.AnosEscolares.FirstOrDefault();
+            model.Ano = filtro.AnosEscolares.Count() > 1 ?
+                filtro.AnosEscolares.Any(c => c == "-99") ?
+                        "Todos"
+                    :
+                        string.Empty 
+                :
+                    $"{filtro.AnosEscolares.FirstOrDefault()} Ano";
 
             DefinirNomeBimestre(model, filtro);
             DefinirNomeComponente(model, filtro, componentes);
