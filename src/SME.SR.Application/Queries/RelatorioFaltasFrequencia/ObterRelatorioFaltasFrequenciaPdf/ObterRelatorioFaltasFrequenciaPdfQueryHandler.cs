@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -94,7 +95,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
                                 var alunosSemFrequenciaNaTurma = alunos
-                                    .Where(a=> turmasccc.Contains(a.TurmaCodigo))
+                                    .Where(a=> a.Ativo)
+                                    .Where(a=>turmasccc.Contains(a.TurmaCodigo))
                                     .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
 
                                 if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())

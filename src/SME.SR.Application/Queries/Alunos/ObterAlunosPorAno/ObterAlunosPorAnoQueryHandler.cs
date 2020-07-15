@@ -29,7 +29,8 @@ namespace SME.SR.Application
                 NumeroChamada = a.NumeroAlunoChamada,
                 CodigoAluno = a.CodigoAluno,
                 TurmaCodigo = a.CodigoTurma.ToString(),
-                NomeFinal = a.ObterNomeFinal()
+                NomeFinal = a.ObterNomeFinal(),
+                SituacaoMatricula= a.CodigoSituacaoMatricula
             });
         }
     }
