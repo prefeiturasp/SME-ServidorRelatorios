@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using MediatR;
+﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -64,10 +63,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             var deveAdicionarFinal = filtro.Bimestres.Any(c => c == 0);
             var mostrarSomenteFinal = deveAdicionarFinal && filtro.Bimestres.Count() == 1;
 
-            Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao = new Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>>();
-            operacao.Add(CondicoesRelatorioFaltasFrequencia.Igual, (valor, valorFiltro) => valor == valorFiltro);
-            operacao.Add(CondicoesRelatorioFaltasFrequencia.Maior, (valor, valorFiltro) => valor > valorFiltro);
-            operacao.Add(CondicoesRelatorioFaltasFrequencia.Menor, (valor, valorFiltro) => valor < valorFiltro);
+
 
             foreach (var dre in dres)
             {
@@ -75,8 +71,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 {
                     foreach (var ano in ue.Anos)
                     {
-                        var faltasFrequenciaFinal = new List<RelatorioFaltaFrequenciaBimestreDto>();
-
                         foreach (var bimestre in ano.Bimestres)
                         {
                             bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre";
@@ -86,7 +80,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 if (componenteAtual != null)
                                     componente.NomeComponente = componenteAtual.Descricao;
 
-                                IEnumerable<AlunoTurma> alunosSemFrequenciaNaTurma;
 
                                 for (int a = 0; a < componente.Alunos.Count; a++)
                                 {
@@ -98,25 +91,9 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         aluno.NumeroChamada = alunoAtual.NumeroChamada;
                                     }
                                 }
-
-                                alunosSemFrequenciaNaTurma = alunos.Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno && c.CodigoTurma == a.TurmaCodigo));
-                                if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
-                                {
-                                    componente.Alunos.AddRange(alunosSemFrequenciaNaTurma.Select(c => new RelatorioFaltaFrequenciaAlunoDto
-                                    {
-                                        CodigoAluno = c.CodigoAluno,
-                                        NomeTurma = turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo)?.Nome,
-                                        NomeAluno = c.NomeFinal,
-                                        NumeroChamada = c.NumeroChamada,
-                                        TotalAusencias = 0,
-                                        TotalCompensacoes = 0,
-                                        TotalAulas = componente.Alunos.FirstOrDefault().TotalAulas
-                                    }));
-                                }
-                                OrdenarAlunos(filtro, operacao, componente);
                             }
-                            bimestre.Componentes.RemoveAll(c => !c.Alunos.Any());
                         }
+
                         if (deveAdicionarFinal)
                         {
                             var final = new RelatorioFaltaFrequenciaBimestreDto
@@ -124,6 +101,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 NomeBimestre = "Final",
                             };
 
+                            var componentesFinal = ano.Bimestres.SelectMany(c => c.Componentes).DistinctBy(c => c.CodigoComponente).ToList();
+                            await AjustarBimestresSemFaltas(filtro.AnoLetivo, filtro.Semestre, componentesFinal, filtro.Modalidade, ano.Bimestres);
                             foreach (var bimestre in ano.Bimestres.ToList())
                             {
                                 for (int c = 0; c < bimestre.Componentes.Count; c++)
@@ -160,20 +139,17 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         alunoAtual.NomeTurma = aluno.NomeTurma;
                                         alunoAtual.NumeroChamada = aluno.NumeroChamada;
                                     }
-
-                                    OrdenarAlunos(filtro, operacao, componenteAtual);
                                 }
 
                             }
                             ano.Bimestres.Add(final);
                         }
-                        ano.Bimestres.RemoveAll(c => !c.Componentes.Any());
                         if (mostrarSomenteFinal)
                             ano.Bimestres.RemoveAll(c => c.NomeBimestre != "Final");
+
+                        ano.Bimestres = ano.Bimestres.OrderBy(c => c.NomeBimestre).ToList();
                     }
-                    ue.Anos.RemoveAll(c => !c.Bimestres.Any());
                 }
-                dre.Ues.RemoveAll(c => !c.Anos.Any());
             }
 
             DefinirCabecalho(request, model, filtro, dres, componentes);
@@ -183,7 +159,38 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
             }
 
+            FiltrarFaltasFrequencia(model.Dres, filtro);
             return await Task.FromResult(model);
+        }
+
+        private void FiltrarFaltasFrequencia(List<RelatorioFaltaFrequenciaDreDto> dres, FiltroRelatorioFaltasFrequenciasDto filtro)
+        {
+            Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao = new Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>>();
+            operacao.Add(CondicoesRelatorioFaltasFrequencia.Igual, (valor, valorFiltro) => valor == valorFiltro);
+            operacao.Add(CondicoesRelatorioFaltasFrequencia.Maior, (valor, valorFiltro) => valor > valorFiltro);
+            operacao.Add(CondicoesRelatorioFaltasFrequencia.Menor, (valor, valorFiltro) => valor < valorFiltro);
+
+            foreach (var dre in dres)
+            {
+                foreach (var ue in dre.Ues)
+                {
+                    foreach (var ano in ue.Anos)
+                    {
+                        foreach (var bimestre in ano.Bimestres)
+                        {
+                            foreach (var componente in bimestre.Componentes)
+                            {
+                                OrdenarAlunos(filtro, operacao, componente);
+                            }
+                            bimestre.Componentes.RemoveAll(c => !c.Alunos.Any());
+                        }
+                        ano.Bimestres.RemoveAll(c => !c.Componentes.Any());
+                    }
+                    ue.Anos.RemoveAll(c => !c.Bimestres.Any());
+                }
+                dre.Ues.RemoveAll(c => !c.Anos.Any());
+            }
+            dres.RemoveAll(c => !c.Ues.Any());
         }
 
         private static void DefinirCabecalho(ObterRelatorioFaltasFrequenciaPdfQuery request, RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro, IEnumerable<RelatorioFaltaFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
@@ -266,28 +273,51 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                  .ToList();
         }
 
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFaltasEFrequencias(IEnumerable<string> turmas, IEnumerable<int> bimestresFiltro, IEnumerable<long> componentesCurriculares, Modalidade modalidade, int anoLetivo, int semestre)
+        private async Task AjustarBimestresSemFaltas(int anoLetivo, int semestre, List<RelatorioFaltaFrequenciaComponenteDto> componentes, Modalidade modalidade, List<RelatorioFaltaFrequenciaBimestreDto> bimestres)
         {
-            var faltasFrequenciasAlunos = new List<FrequenciaAluno>();
+            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo,
+                                                                                                        modalidade == Modalidade.EJA ? ModalidadeTipoCalendario.EJA : ModalidadeTipoCalendario.FundamentalMedio,
+                                                                                                        semestre));
 
-            // Obter bimestres diferentes de "Final"
-            var bimestres = bimestresFiltro.Where(c => c != 0);
-            if (bimestres != null && bimestres.Any())
+            for (int numeroBimestre = 1; numeroBimestre <= (modalidade == Modalidade.EJA ? 2 : 4); numeroBimestre++)
             {
-                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoPorComponentesBimestresETurmasQuery(turmas, bimestres, componentesCurriculares)));
+                var bimestreAtual = bimestres.FirstOrDefault(c => c.Numero == numeroBimestre.ToString());
+                if (bimestreAtual == null)
+                {
+                    bimestreAtual = new RelatorioFaltaFrequenciaBimestreDto
+                    {
+                        Componentes = componentes.Select(c => new RelatorioFaltaFrequenciaComponenteDto
+                        {
+                            Alunos = c.Alunos.Select(a => new RelatorioFaltaFrequenciaAlunoDto
+                            {
+                                CodigoAluno = a.CodigoAluno,
+                                CodigoTurma = a.CodigoTurma,
+                                NomeAluno = a.NomeAluno,
+                                NomeTurma = a.NomeTurma,
+                                NumeroChamada = a.NumeroChamada,
+                                TotalAulas = 0,
+                                TotalAusencias = 0,
+                                TotalCompensacoes = 0
+                            }).ToList(),
+                            CodigoComponente = c.CodigoComponente,
+                            NomeComponente = c.NomeComponente
+                        }).ToList(),
+                        Numero = numeroBimestre.ToString(),
+                        NomeBimestre = $"{numeroBimestre}° Bimestre"
+                    };
+
+                    foreach (var componente in bimestreAtual.Componentes)
+                    {
+                        foreach (var aluno in componente.Alunos)
+                        {
+                            aluno.TotalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(aluno.CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
+                            aluno.TotalAusencias = 0;
+                            aluno.TotalCompensacoes = 0;
+                        }
+                    }
+                    bimestres.Add(bimestreAtual);
+                }
             }
-
-            // Verifica se foi solicitado bimestre final
-            if (bimestresFiltro.Any(c => c == 0))
-            {
-                var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo,
-                                                                                                                 modalidade == Modalidade.EJA ? ModalidadeTipoCalendario.EJA : ModalidadeTipoCalendario.FundamentalMedio,
-                                                                                                                 semestre)); ;
-
-                faltasFrequenciasAlunos.AddRange(await mediator.Send(new ObterFrequenciaAlunoGlobalPorComponetnesBimestresETurmasQuery(turmas, componentesCurriculares, modalidade, tipoCalendarioId)));
-            }
-
-            return faltasFrequenciasAlunos;
         }
     }
 }
