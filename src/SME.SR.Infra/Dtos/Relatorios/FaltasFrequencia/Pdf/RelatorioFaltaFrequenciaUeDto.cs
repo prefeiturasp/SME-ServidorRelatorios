@@ -10,6 +10,7 @@ namespace SME.SR.Infra
         }
         public string CodigoUe { get; set; }
         public string NomeUe { get; set; }
+        public TipoEscola TipoUe { get; set; }
         public List<RelatorioFaltaFrequenciaAnoDto> Anos { get; set; }
     }
 }

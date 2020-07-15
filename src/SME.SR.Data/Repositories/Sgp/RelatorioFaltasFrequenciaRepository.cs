@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace SME.SR.Data
 	                d.abreviacao as NomeDre,
 	                d.dre_id as CodigoDre,
 	                u.ue_id as CodigoUe,
+	                u.tipo_escola as TipoUe,
 	                u.nome as NomeUe,
                     t.ano as NomeAno,
                     fa.bimestre Numero, 
@@ -54,12 +56,11 @@ namespace SME.SR.Data
 	                not fa.excluido and t.ano_letivo = @anoLetivo
                     and t.modalidade_codigo = @modalidade ");
 
-            if (!string.IsNullOrWhiteSpace(dreId))
-            {
+            if (!string.IsNullOrWhiteSpace(dreId) && dreId != "-99")
                 query.AppendLine("and d.dre_id = @dreId");
-                if (!string.IsNullOrWhiteSpace(ueId))
-                    query.AppendLine("and u.ue_id = @ueId");
-            }
+
+            if (!string.IsNullOrWhiteSpace(ueId) && ueId != "-99")
+                query.AppendLine("and u.ue_id = @ueId");
 
             if (anosEscolares != null && anosEscolares.Any())
                 query.AppendLine("and t.ano = any(@anosEscolares)");
@@ -141,7 +142,12 @@ namespace SME.SR.Data
             if (ueSelecionada != null)
                 ue = ueSelecionada;
             else
+            {
+                ue.NomeUe = $"{ue.TipoUe.ShortName()} {ue.NomeUe}";
                 dre.Ues.Add(ue);
+            }
+
+
             return ue;
         }
 
