@@ -35,8 +35,8 @@ namespace SME.SR.Data
 	                u.tipo_escola as TipoUe,
 	                u.nome as NomeUe,
                     t.ano as NomeAno,
-                    fa.bimestre Numero, 
                     fa.bimestre NomeBimestre, 
+                    fa.bimestre Numero, 
                     fa.disciplina_id CodigoComponente,
 	                fa.codigo_aluno as CodigoAluno,
 	                fa.total_ausencias as TotalAusencias,
@@ -62,10 +62,10 @@ namespace SME.SR.Data
             if (!string.IsNullOrWhiteSpace(ueId) && ueId != "-99")
                 query.AppendLine("and u.ue_id = @ueId");
 
-            if (anosEscolares != null && anosEscolares.Any())
+            if (anosEscolares != null && anosEscolares.Any(c => c != "-99"))
                 query.AppendLine("and t.ano = any(@anosEscolares)");
 
-            if (componentesCurriculares != null && componentesCurriculares.Any())
+            if (componentesCurriculares != null && componentesCurriculares.Any(c => c != "-99"))
                 query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
             else query.AppendLine("and fa.disciplina_id is not null and fa.disciplina_id <> ''");
 
