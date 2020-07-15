@@ -116,7 +116,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[] codigoPareceresConclusivos)
         {
             var query = @"select distinct 
-	                        ft.turma_id as TurmaCodigo,
+	                        t.turma_id as TurmaCodigo,
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        t.ano 
                         from
