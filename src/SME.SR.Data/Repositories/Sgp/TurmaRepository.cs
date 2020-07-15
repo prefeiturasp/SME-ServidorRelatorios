@@ -134,7 +134,9 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos, codigoPareceresConclusivos });
+            var codigos = codigoAlunos.Select(a => a.ToString()).ToArray();
+
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigos, codigoPareceresConclusivos });
 
         }
 
