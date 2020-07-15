@@ -21,5 +21,10 @@ namespace SME.SR.Application
         public Guid Perfil { get; set; }
 
         public bool ConsideraHistorico { get; set; }
+
+        public bool? PossuiFechamento { get; set; }
+
+        public bool? SomenteEscolarizadas { get; set; }
     }
 }
+

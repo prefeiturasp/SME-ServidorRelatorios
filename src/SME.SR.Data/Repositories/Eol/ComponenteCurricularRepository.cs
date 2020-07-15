@@ -126,9 +126,7 @@ namespace SME.SR.Data
         {
             try
             {
-
-            
-            var query = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
+                var query = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
                                         cc.cd_componente_curricular) as Codigo,
                                     iif(pcc.dc_componente_curricular is not null, pcc.dc_componente_curricular,
                                         cc.dc_componente_curricular) as Descricao,
@@ -165,15 +163,15 @@ namespace SME.SR.Data
                     where te.cd_turma_escola in @codigosTurma
                       and te.st_turma_escola in ('O', 'A', 'C')";
 
-            var parametros = new { CodigosTurma = codigosTurma };
+                var parametros = new { CodigosTurma = codigosTurma };
 
-            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+                string codigosTurmas = string.Join(',', codigosTurma);
 
+                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }

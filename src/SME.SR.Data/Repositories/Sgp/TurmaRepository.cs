@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -90,11 +91,22 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre)
+        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre, bool? possuiFechamento = null, bool? somenteEscolarizada = null)
         {
-            var query = @"select ano, anoLetivo, codigo, 
+            StringBuilder query = new StringBuilder();
+            query.Append(@"select ano, anoLetivo, codigo, 
 								codigoModalidade modalidadeCodigo, nome, semestre 
-							from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) ";
+							from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo)
+                            where 1=1    ");
+
+
+            if (possuiFechamento.HasValue)
+                query.Append(@" and codigo in (select t.turma_id from fechamento_turma ft
+                                 inner join turma t on ft.turma_id = t.id
+                                 where not ft.excluido)");
+
+            if (somenteEscolarizada.HasValue && somenteEscolarizada.Value)
+                query.Append(" and ano != '0'");
 
             var parametros = new
             {
@@ -109,7 +121,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<Turma>(query, parametros);
+                return await conexao.QueryAsync<Turma>(query.ToString(), parametros);
             }
         }
 

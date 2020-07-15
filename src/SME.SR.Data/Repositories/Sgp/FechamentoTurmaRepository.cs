@@ -37,22 +37,19 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FechamentoTurma>> ObterTurmaPeriodoFechamentoPorId(string codigoTurma)
+        public async Task<IEnumerable<FechamentoTurma>> ObterFechamentosPorCodigosTurma(string[] codigosTurma)
         {
-            var query = FechamentoTurmaConsultas.FechamentosTurmaPorCodigoTurma;
-            var parametros = new { TurmaCodigo = codigoTurma };
+            var query = @"select f.id, t.turma_id TurmaId
+                       from fechamento_turma f
+                       inner join turma t on t.id = f.turma_id
+                       where not f.excluido  
+                       and t.turma_id = ANY(@turmasCodigo)";
+
+            var parametros = new { TurmasCodigo = codigosTurma };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return (await conexao.QueryAsync<FechamentoTurma, Turma, PeriodoEscolar, FechamentoTurma>(query
-                , (fechamentoTurma, turma, periodoEscolar) =>
-                {
-                    fechamentoTurma.Turma = turma;
-                    fechamentoTurma.PeriodoEscolar = periodoEscolar;
-
-                    return fechamentoTurma;
-                }
-                , parametros, splitOn: "id,Codigo,Bimestre"));
+                return (await conexao.QueryAsync<FechamentoTurma>(query, parametros));
             }
         }
     }

@@ -52,8 +52,8 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
                     var componentesRegenciaPorTurma = await mediator.Send(new ObterComponentesCurricularesRegenciaPorCodigosTurmaQuery()
                     {
-                        CodigosTurma = componentesRegentes.Select(r => r.CodigoTurma).ToArray(),
-                        CdComponentesCurriculares = componentesRegentes.Select(r => r.CodDisciplina).ToArray(),
+                        CodigosTurma = componentesRegentes.Select(r => r.CodigoTurma).Distinct().ToArray(),
+                        CdComponentesCurriculares = componentesRegentes.Select(r => r.CodDisciplina).Distinct().ToArray(),
                         CodigoUe = request.CodigoUe,
                         Modalidade = request.Modalidade,
                         ComponentesCurricularesApiEol = componentesApiEol,
@@ -63,13 +63,8 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
                     if (componentesRegenciaPorTurma.Count() > 0)
                     {
-                        componentesMapeados = componentesMapeados.Select(cm =>
-                         {
-                             if (cm.Regencia)
-                                 cm.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(c => c.Key == cm.CodigoTurma).ToList();
-
-                             return cm;
-                         });
+                        foreach (var componentesRegencia in componentesMapeados.Where(cm => cm.Regencia))
+                            componentesRegencia.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(c => c.Key == componentesRegencia.CodigoTurma).ToList();
                     }
                 }
 

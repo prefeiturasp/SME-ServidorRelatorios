@@ -73,16 +73,10 @@ namespace SME.SR.Application
 
             var notasTipo = await notaTipoRepository.ObterPorCiclosIdDataAvalicacao(tiposCicloId.ToArray(), dataReferencia);
 
-            notasTipo = notasTipo.Select(nt =>
-            {
-                nt.Ano = tipoCiclos.FirstOrDefault(tp => tp.Id == nt.Ciclo).Ano;
-                return nt;
-            });
-
             var lstTurmasTipoNota = new Dictionary<string, string>();
 
             foreach (var turma in turmas)
-                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ano.ToString() == turma.Ano).TipoNota);
+                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ciclo == tipoCiclos.FirstOrDefault(tp => tp.Ano.ToString() == turma.Ano).Id).TipoNota);
 
             return lstTurmasTipoNota;
         }

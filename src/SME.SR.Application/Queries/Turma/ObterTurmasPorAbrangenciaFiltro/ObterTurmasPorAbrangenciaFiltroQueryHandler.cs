@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +21,12 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<Turma>> Handle(ObterTurmasPorAbrangenciaFiltroQuery request, CancellationToken cancellationToken)
         {
-            return await turmaSgpRepository.ObterPorAbrangenciaFiltros(request.CodigoUe, request.Modalidade, request.AnoLetivo, request.Login, request.Perfil, request.ConsideraHistorico, request.Semestre);
+            var turmas = await turmaSgpRepository.ObterPorAbrangenciaFiltros(request.CodigoUe, request.Modalidade, request.AnoLetivo, request.Login, request.Perfil, request.ConsideraHistorico, request.Semestre, request.PossuiFechamento, request.SomenteEscolarizadas);
+
+            if (turmas == null || !turmas.Any())
+                throw new NegocioException("Não foi possível encontrar as turmas da abrangência.");
+
+            return turmas;
         }
     }
 }
