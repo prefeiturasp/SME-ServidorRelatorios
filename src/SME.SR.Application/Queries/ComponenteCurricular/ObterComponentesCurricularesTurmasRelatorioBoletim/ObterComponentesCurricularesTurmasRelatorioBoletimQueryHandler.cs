@@ -61,10 +61,16 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                         Usuario = request.Usuario
                     });
 
-                    if (componentesRegenciaPorTurma.Count() > 0)
+                    if (componentesRegenciaPorTurma != null && componentesRegenciaPorTurma.Any())
                     {
-                        foreach (var componentesRegencia in componentesMapeados.Where(cm => cm.Regencia))
-                            componentesRegencia.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(c => c.Key == componentesRegencia.CodigoTurma).ToList();
+                        componentesMapeados = componentesMapeados.Select(c =>
+                        {
+                            if (c.Regencia)
+                                c.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(r => r.Key == c.CodigoTurma).ToList();
+
+                            return c;
+
+                        }).ToList();
                     }
                 }
 

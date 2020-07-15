@@ -2,7 +2,6 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,17 +88,15 @@ namespace SME.SR.Application
                             var componentesParaInserir = componentes.Where(c => componentesPorTurma.Value.Contains(c.Codigo))
                                                                     .Select(x =>
                                                                     {
-                                                                        x.CodigoTurma = componentesPorTurma.Key;
-                                                                        x.ComponentePlanejamentoRegencia = true;
-                                                                        return x;
+                                                                        var retorno = (ComponenteCurricular)x.Clone();
+                                                                        retorno.CodigoTurma = componentesPorTurma.Key;
+                                                                        retorno.ComponentePlanejamentoRegencia = true;
+                                                                        return retorno;
                                                                     });
 
-                            componentesCurriculares.AddRange(componentesParaInserir);
+                            componentesCurriculares.AddRange(componentesParaInserir);                           
                         }
                     }
-
-                    var teste = componentesCurriculares.Where(t => t.ComponentePlanejamentoRegencia);
-                    var agrupamento = teste.GroupBy(t => t.CodigoTurma);
                 }
             }
 
