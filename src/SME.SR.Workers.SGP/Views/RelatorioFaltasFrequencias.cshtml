@@ -313,13 +313,16 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                                             <th>@ue.NomeUe</th>
                                                         </tr>
                                                     }
-                                                        <tr>
-                                                            <th>@string.Format("{0}º Ano", ano.NomeAno)</th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>@ano.Bimestres[b].NomeBimestre</th>
-                                                        </tr>
-                                                    </thead>
+                                                    <tr>
+                                                        <th>@Model.Modalidade</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>@string.Format("{0}º Ano", ano.NomeAno)</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>@ano.Bimestres[b].NomeBimestre</th>
+                                                    </tr>
+                                                </thead>
                                             </table>
 
                                             // CONTAR

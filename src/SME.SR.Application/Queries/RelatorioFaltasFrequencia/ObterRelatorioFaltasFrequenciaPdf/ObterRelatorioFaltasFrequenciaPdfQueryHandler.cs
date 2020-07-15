@@ -3,6 +3,7 @@ using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,15 +110,15 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     }));
                                 }
 
-
-                                componente.Alunos = (from a in componente.Alunos
-                                                     where
-                                                     ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos) ?
-                                                        operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.ValorCondicao)
-                                                     :
-                                                        operacao[filtro.Condicao](a.Frequencia, filtro.ValorCondicao))
-                                                     orderby string.IsNullOrWhiteSpace(a.NumeroChamada), a.NumeroChamada
-                                                     select a).ToList();
+                                if (!deveAdicionarFinal)
+                                    componente.Alunos = (from a in componente.Alunos
+                                                         where
+                                                         ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos) ?
+                                                            operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.ValorCondicao)
+                                                         :
+                                                            operacao[filtro.Condicao](a.Frequencia, filtro.ValorCondicao))
+                                                         orderby string.IsNullOrWhiteSpace(a.NumeroChamada), a.NumeroChamada
+                                                         select a).ToList();
                             }
                         }
                         if (deveAdicionarFinal)
@@ -202,7 +203,12 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
             model.ExibeFaltas = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos;
             model.ExibeFrequencia = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Frequencia || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos;
-
+            
+            var semestreEja = "";
+            if (filtro.Modalidade == Modalidade.EJA)
+                semestreEja = $"{filtro.Semestre} Semestre";
+            
+            model.Modalidade = $"{filtro.Modalidade.Name()}{semestreEja}";
 
             return await Task.FromResult(model);
         }
