@@ -117,6 +117,7 @@ namespace SME.SR.Data
         {
             var query = @"select distinct 
 	                        t.turma_id as TurmaCodigo,
+                            t.modalidade_codigo Modalidade,
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        t.ano 
                         from
