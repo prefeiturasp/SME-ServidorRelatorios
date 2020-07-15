@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace SME.SR.Infra
+﻿namespace SME.SR.Infra
 {
-    public class RelatorioCabecalhoPendenciaFechamentoDto
+    public class RelatorioFechamentoPendenciaCabecalhoDto
     {
         public string NomeDre { get; set; }
         public string NomeUe { get; set; }
@@ -13,6 +11,6 @@ namespace SME.SR.Infra
         public string Bimestre { get; set; }
         public string NomeProfessor { get; set; }
         public string NumeroRf { get; set; }
-        public DateTime Data { get; set; }
+        public string Data { get; set; }
     }
 }
