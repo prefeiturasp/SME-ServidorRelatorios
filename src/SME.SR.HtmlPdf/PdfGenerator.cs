@@ -28,11 +28,9 @@ namespace SME.SR.HtmlPdf
                     Orientation = Orientation.Portrait,
                     PaperSize = PaperKind.A4,
                     Margins = new MarginSettings() { Top = 5, Bottom = 5, Left = 5, Right = 5 },
-                    Out=nomeArquivo,
+                    Out=nomeArquivo
                 }
             };
-
-
             doc.Objects.Add(new ObjectSettings()
             {
                 HtmlContent = html,
@@ -40,6 +38,7 @@ namespace SME.SR.HtmlPdf
                 PagesCount = true,
                 FooterSettings = { FontSize = 9, Right = "[page] / [toPage]",  }
             });
+
             converter.Convert(doc);
         }
 

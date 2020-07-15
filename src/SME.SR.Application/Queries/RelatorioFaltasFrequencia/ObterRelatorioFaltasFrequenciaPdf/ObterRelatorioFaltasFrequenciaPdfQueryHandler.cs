@@ -115,6 +115,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 }
                                 OrdenarAlunos(filtro, operacao, componente);
                             }
+                            bimestre.Componentes.RemoveAll(c => !c.Alunos.Any());
                         }
                         if (deveAdicionarFinal)
                         {
@@ -166,13 +167,21 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                             }
                             ano.Bimestres.Add(final);
                         }
+                        ano.Bimestres.RemoveAll(c => !c.Componentes.Any());
                         if (mostrarSomenteFinal)
                             ano.Bimestres.RemoveAll(c => c.NomeBimestre != "Final");
                     }
+                    ue.Anos.RemoveAll(c => !c.Bimestres.Any());
                 }
+                dre.Ues.RemoveAll(c => !c.Anos.Any());
             }
 
             DefinirCabecalho(request, model, filtro, dres, componentes);
+
+            if (model.Dres == null || !model.Dres.Any())
+            {
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
+            }
 
             return await Task.FromResult(model);
         }
@@ -183,13 +192,14 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             var selecionouTodasUes = string.IsNullOrWhiteSpace(filtro.CodigoUe) || filtro.CodigoUe == "-99";
 
             model.Dres = dres.ToList();
+            model.Dres.RemoveAll(c => !c.Ues.Any());
             model.Dre = selecionouTodasDres ? "Todas" : dres.FirstOrDefault().NomeDre;
             model.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
             model.Ano = filtro.AnosEscolares.Count() > 1 ?
                 filtro.AnosEscolares.Any(c => c == "-99") ?
                         "Todos"
                     :
-                        string.Empty 
+                        string.Empty
                 :
                     $"{filtro.AnosEscolares.FirstOrDefault()} Ano";
 
