@@ -45,7 +45,7 @@ namespace SME.SR.Application
                     boletimEscolarAlunoDto.Cabecalho.CodigoEol = aluno.CodigoAluno.ToString();
                     boletimEscolarAlunoDto.Cabecalho.Aluno = aluno.NomeRelatorio;
 
-                    var notasAluno = notasTurma.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
+                    var notasAluno = notasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
                     var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
 
                     SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno, mediasFrequencia);

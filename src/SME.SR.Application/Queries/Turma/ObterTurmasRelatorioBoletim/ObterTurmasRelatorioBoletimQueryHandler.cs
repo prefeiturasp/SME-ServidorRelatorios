@@ -39,7 +39,15 @@ namespace SME.SR.Application
             if (!turmas.Any())
                 throw new NegocioException("Não foi possível localizar as turmas");
             else
-                return turmas;
+                return turmas.OrderBy(a => a.Nome);
+        }
+
+        private async Task<IEnumerable<FechamentoTurma>> ObterFechamentosPorCodigosTurma(string[] codigosTurma)
+        {
+            return await mediator.Send(new ObterFechamentosPorCodigosTurmaQuery()
+            {
+                CodigosTurma = codigosTurma
+            });
         }
 
         private async Task<Turma> ObterTurmaPorCodigo(string codigoTurma)
@@ -60,7 +68,9 @@ namespace SME.SR.Application
                 Semestre = semestre,
                 Login = usuario.Login,
                 Perfil = usuario.PerfilAtual,
-                ConsideraHistorico = false
+                ConsideraHistorico = false,
+                PossuiFechamento = true,
+                SomenteEscolarizadas = true
             });
         }
     }

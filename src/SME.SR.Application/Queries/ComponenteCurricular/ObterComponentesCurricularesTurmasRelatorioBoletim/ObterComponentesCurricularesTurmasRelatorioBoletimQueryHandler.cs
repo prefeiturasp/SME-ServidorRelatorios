@@ -52,8 +52,8 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
                     var componentesRegenciaPorTurma = await mediator.Send(new ObterComponentesCurricularesRegenciaPorCodigosTurmaQuery()
                     {
-                        CodigosTurma = componentesRegentes.Select(r => r.CodigoTurma).ToArray(),
-                        CdComponentesCurriculares = componentesRegentes.Select(r => r.CodDisciplina).ToArray(),
+                        CodigosTurma = componentesRegentes.Select(r => r.CodigoTurma).Distinct().ToArray(),
+                        CdComponentesCurriculares = componentesRegentes.Select(r => r.CodDisciplina).Distinct().ToArray(),
                         CodigoUe = request.CodigoUe,
                         Modalidade = request.Modalidade,
                         ComponentesCurricularesApiEol = componentesApiEol,
@@ -61,15 +61,16 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                         Usuario = request.Usuario
                     });
 
-                    if (componentesRegenciaPorTurma != null &&  componentesRegenciaPorTurma.Any())
+                    if (componentesRegenciaPorTurma != null && componentesRegenciaPorTurma.Any())
                     {
-                        componentesMapeados = componentesMapeados.Select(cm =>
-                         {
-                             if (cm.Regencia)
-                                 cm.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(c => c.Key == cm.CodigoTurma).ToList();
+                        componentesMapeados = componentesMapeados.Select(c =>
+                        {
+                            if (c.Regencia)
+                                c.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(r => r.Key == c.CodigoTurma).ToList();
 
-                             return cm;
-                         });
+                            return c;
+
+                        }).ToList();
                     }
                 }
 
