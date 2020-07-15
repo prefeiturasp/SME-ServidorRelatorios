@@ -91,6 +91,26 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         aluno.NumeroChamada = alunoAtual.NumeroChamada;
                                     }
                                 }
+
+                                var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
+                                var alunosSemFrequenciaNaTurma = alunos
+                                    .Where(a=> turmasccc.Contains(a.TurmaCodigo))
+                                    .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
+
+                                if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
+                                {
+                                    var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFaltaFrequenciaAlunoDto
+                                    {
+                                        CodigoAluno = c.CodigoAluno,
+                                        NomeTurma = turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo)?.Nome,
+                                        NomeAluno = c.NomeFinal,
+                                        NumeroChamada = c.NumeroChamada,
+                                        TotalAusencias = 0,
+                                        TotalCompensacoes = 0,
+                                        TotalAulas = componente.Alunos.FirstOrDefault()?.TotalAulas ?? 0
+                                    }).ToList();
+                                    componente.Alunos.AddRange(sem);
+                                }
                             }
                         }
 
