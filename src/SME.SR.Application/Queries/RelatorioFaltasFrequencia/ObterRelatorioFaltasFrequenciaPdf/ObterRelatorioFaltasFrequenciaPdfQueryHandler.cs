@@ -57,6 +57,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(codigosTurmas));
 
+            var turmas = await mediator.Send(new ObterTurmasPorAnoQuery(filtro.AnoLetivo, filtro.AnosEscolares));
+            if (turmas == null || !turmas.Any())
+                throw new NegocioException("Turmas não localizadas para os anos informados.");
+
             var deveAdicionarFinal = filtro.Bimestres.Any(c => c == 0);
             var mostrarSomenteFinal = deveAdicionarFinal && filtro.Bimestres.Count() == 1;
 
@@ -84,13 +88,13 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 IEnumerable<AlunoTurma> alunosSemFrequenciaNaTurma;
 
-
-                                foreach (var aluno in componente.Alunos)
+                                for (int a = 0; a < componente.Alunos.Count; a++)
                                 {
+                                    var aluno = componente.Alunos[a];
                                     var alunoAtual = alunos.SingleOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
                                     if (alunoAtual != null)
                                     {
-                                        aluno.NomeAluno = alunoAtual.Nome;
+                                        aluno.NomeAluno = alunoAtual.NomeFinal;
                                         aluno.NumeroChamada = alunoAtual.NumeroChamada;
                                     }
                                 }
@@ -101,24 +105,15 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     componente.Alunos.AddRange(alunosSemFrequenciaNaTurma.Select(c => new RelatorioFaltaFrequenciaAlunoDto
                                     {
                                         CodigoAluno = c.CodigoAluno,
-                                        NomeTurma = componente.Alunos.FirstOrDefault(a => a.CodigoTurma == c.TurmaCodigo)?.NomeTurma,
-                                        NomeAluno = c.Nome,
+                                        NomeTurma = turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo)?.Nome,
+                                        NomeAluno = c.NomeFinal,
                                         NumeroChamada = c.NumeroChamada,
                                         TotalAusencias = 0,
                                         TotalCompensacoes = 0,
                                         TotalAulas = componente.Alunos.FirstOrDefault().TotalAulas
                                     }));
                                 }
-
-                                if (!deveAdicionarFinal)
-                                    componente.Alunos = (from a in componente.Alunos
-                                                         where
-                                                         ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos) ?
-                                                            operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.ValorCondicao)
-                                                         :
-                                                            operacao[filtro.Condicao](a.Frequencia, filtro.ValorCondicao))
-                                                         orderby string.IsNullOrWhiteSpace(a.NumeroChamada), a.NumeroChamada
-                                                         select a).ToList();
+                                OrdenarAlunos(filtro, operacao, componente);
                             }
                         }
                         if (deveAdicionarFinal)
@@ -165,14 +160,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         alunoAtual.NumeroChamada = aluno.NumeroChamada;
                                     }
 
-                                    componenteAtual.Alunos = (from a in componenteAtual.Alunos
-                                                              where
-                                                              ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos) ?
-                                                                 operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.ValorCondicao)
-                                                              :
-                                                                 operacao[filtro.Condicao](a.Frequencia, filtro.ValorCondicao))
-                                                              orderby string.IsNullOrWhiteSpace(a.NumeroChamada), a.NumeroChamada
-                                                              select a).ToList();
+                                    OrdenarAlunos(filtro, operacao, componenteAtual);
                                 }
 
                             }
@@ -184,6 +172,13 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 }
             }
 
+            DefinirCabecalho(request, model, filtro, dres, componentes);
+
+            return await Task.FromResult(model);
+        }
+
+        private static void DefinirCabecalho(ObterRelatorioFaltasFrequenciaPdfQuery request, RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro, IEnumerable<RelatorioFaltaFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
+        {
             var selecionouTodasDres = string.IsNullOrWhiteSpace(filtro.CodigoDre) || filtro.CodigoDre == "-99";
             var selecionouTodasUes = string.IsNullOrWhiteSpace(filtro.CodigoUe) || filtro.CodigoUe == "-99";
 
@@ -192,25 +187,67 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
             model.Ano = filtro.AnosEscolares.Count() > 1 ? string.Empty : filtro.AnosEscolares.FirstOrDefault();
 
-            model.Bimestre = filtro.Bimestres.Count() > 1 ? string.Empty : filtro.Bimestres.FirstOrDefault() == 0 ? "Todos" : $"{filtro.Bimestres.FirstOrDefault()}º Bimestre";
-
-            var selecionouTodosComponentes = filtro.ComponentesCurriculares.Any(c => c == "-99");
-
-            model.ComponenteCurricular = selecionouTodosComponentes ? "Todos" : string.Empty;
+            DefinirNomeBimestre(model, filtro);
+            DefinirNomeComponente(model, filtro, componentes);
 
             model.Usuario = request.Filtro.NomeUsuario;
             model.RF = request.Filtro.CodigoRf;
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
             model.ExibeFaltas = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos;
             model.ExibeFrequencia = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Frequencia || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos;
-            
+
             var semestreEja = "";
             if (filtro.Modalidade == Modalidade.EJA)
                 semestreEja = $"{filtro.Semestre} Semestre";
-            
-            model.Modalidade = $"{filtro.Modalidade.Name()}{semestreEja}";
 
-            return await Task.FromResult(model);
+            model.Modalidade = $"{filtro.Modalidade.Name()}{semestreEja}";
+        }
+
+        private static void DefinirNomeComponente(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)
+        {
+            var selecionouTodosComponentes = filtro.ComponentesCurriculares.Any(c => c == "-99");
+            var primeiroComponente = filtro.ComponentesCurriculares.FirstOrDefault();
+
+            model.ComponenteCurricular = selecionouTodosComponentes ?
+                "Todos"
+                :
+                filtro.ComponentesCurriculares.Count() == 1 ?
+                componentes.FirstOrDefault(c => c.Codigo.ToString() == primeiroComponente).Descricao
+                :
+                string.Empty;
+        }
+
+        private static void DefinirNomeBimestre(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro)
+        {
+            var selecionouTodosBimestres = filtro.Bimestres.Any(c => c == -99);
+            var selecionouBimestreFinal = filtro.Bimestres.Any(c => c == 0);
+
+
+            model.Bimestre = selecionouTodosBimestres ?
+                "Todos"
+                :
+                filtro.Bimestres.Count() > 1 ?
+                string.Empty
+                :
+                selecionouBimestreFinal ?
+                "Final"
+                :
+                $"{filtro.Bimestres.FirstOrDefault()}º Bimestre";
+        }
+
+        private static void OrdenarAlunos(FiltroRelatorioFaltasFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFaltaFrequenciaComponenteDto componente)
+        {
+            componente.Alunos = (from a in componente.Alunos
+                                 where
+                                 ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos) ?
+                                    operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.ValorCondicao)
+                                 :
+                                    operacao[filtro.Condicao](a.Frequencia, filtro.ValorCondicao))
+                                 select a)
+                                 .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
+                                 .ThenBy(c => c.NomeTurma)
+                                 .ThenBy(c => c.NomeAluno)
+                                 .ToList();
         }
 
         private async Task<IEnumerable<FrequenciaAluno>> ObterFaltasEFrequencias(IEnumerable<string> turmas, IEnumerable<int> bimestresFiltro, IEnumerable<long> componentesCurriculares, Modalidade modalidade, int anoLetivo, int semestre)
