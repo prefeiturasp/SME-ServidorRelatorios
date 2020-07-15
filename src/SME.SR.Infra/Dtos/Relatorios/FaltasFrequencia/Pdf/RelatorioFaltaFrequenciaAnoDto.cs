@@ -8,7 +8,7 @@ namespace SME.SR.Infra
         {
             Bimestres = new List<RelatorioFaltaFrequenciaBimestreDto>();
         }
-        public string Nome { get; set; }
+        public string NomeAno { get; set; }
         public List<RelatorioFaltaFrequenciaBimestreDto> Bimestres { get; set; }
     }
 }

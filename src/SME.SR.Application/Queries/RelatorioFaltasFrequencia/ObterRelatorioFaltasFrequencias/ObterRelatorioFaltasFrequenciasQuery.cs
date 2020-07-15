@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioFaltasFrequenciasQuery : IRequest<RelatorioFaltasFrequenciasDto>
+    public class ObterRelatorioFaltasFrequenciasQuery : IRequest<FiltroRelatorioFaltasFrequenciasDto>
     {
         public int AnoLetivo { get; set; }
         public string CodigoDre { get; set; }

@@ -2,13 +2,11 @@
 
 namespace SME.SR.Workers.SGP.Controllers
 {
-    [Route("relatorios")]
     public class RelatoriosController : Controller
     {
-        [Route("faltas")]
-        public IActionResult Index()
+        public IActionResult RelatorioFaltasFrequencias()
         {
-            return View("RelatorioFaltas");
+            return View();
         }
     }
 }
