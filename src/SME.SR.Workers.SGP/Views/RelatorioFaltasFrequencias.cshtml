@@ -116,7 +116,7 @@ SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
 <table>
 <tbody>
 <tr>
-<td class='campo-bimestre'>BIMESTRE: {bimestre}</td>
+<td class='campo-bimestre'>BIMESTRE: {bimestre == 0 ? bimestre : bimestre}</td>
 <td class='campo-componente-curricular'>
 COMPONENTE CURRICULAR: {componenteCurricular}
 </td>
@@ -328,10 +328,13 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                     }
-                                                    <tr>
-                                                        <th>@bimestre.NomeBimestre</th>
-                                                    </tr>
-                                                    @{contadorQuebrarPagina = contadorQuebrarPagina + 1;}
+                                                    @if (Model.Bimestre != "Todos")
+                                                    {
+                                                        <tr>
+                                                            <th>@bimestre.NomeBimestre</th>
+                                                        </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                                    }
                                                 </thead>
                                             </table>
 
