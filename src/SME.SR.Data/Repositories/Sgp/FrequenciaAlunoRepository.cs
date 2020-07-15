@@ -4,6 +4,8 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -109,6 +111,27 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorComponentesBimestresTurmas(string[] componentesCurriculares, int[] bimestres, string[] turmasCodigos)
+        {
+            var query = new StringBuilder(@"select * 
+                                         from frequencia_aluno fa 
+                                        where 1=1 ");
+
+            if (componentesCurriculares.Any())
+                query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
+
+            if (bimestres.Any())
+                query.AppendLine("and bimestre = any(@bimestres)");
+
+            if (turmasCodigos.Any())
+                query.AppendLine("and turma_id = any(@turmasCodigos)");
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAluno>(query.ToString(), new { componentesCurriculares, bimestres, turmasCodigos});
             }
         }
     }
