@@ -170,27 +170,33 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             operacao.Add(CondicoesRelatorioFaltasFrequencia.Maior, (valor, valorFiltro) => valor > valorFiltro);
             operacao.Add(CondicoesRelatorioFaltasFrequencia.Menor, (valor, valorFiltro) => valor < valorFiltro);
 
-            foreach (var dre in dres)
+            if (dres != null)
             {
-                foreach (var ue in dre.Ues)
+                dres = dres.OrderBy(c => c.NomeDre).ToList();
+                foreach (var dre in dres)
                 {
-                    foreach (var ano in ue.Anos)
+                    if (dre.Ues != null)
+                        dre.Ues = dre.Ues.OrderBy(c => c.NomeUe).ToList();
+                    foreach (var ue in dre.Ues)
                     {
-                        foreach (var bimestre in ano.Bimestres)
+                        foreach (var ano in ue.Anos)
                         {
-                            foreach (var componente in bimestre.Componentes)
+                            foreach (var bimestre in ano.Bimestres)
                             {
-                                OrdenarAlunos(filtro, operacao, componente);
+                                foreach (var componente in bimestre.Componentes)
+                                {
+                                    OrdenarAlunos(filtro, operacao, componente);
+                                }
+                                bimestre.Componentes.RemoveAll(c => !c.Alunos.Any());
                             }
-                            bimestre.Componentes.RemoveAll(c => !c.Alunos.Any());
+                            ano.Bimestres.RemoveAll(c => !c.Componentes.Any());
                         }
-                        ano.Bimestres.RemoveAll(c => !c.Componentes.Any());
+                        ue.Anos.RemoveAll(c => !c.Bimestres.Any());
                     }
-                    ue.Anos.RemoveAll(c => !c.Bimestres.Any());
+                    dre.Ues.RemoveAll(c => !c.Anos.Any());
                 }
-                dre.Ues.RemoveAll(c => !c.Anos.Any());
+                dres.RemoveAll(c => !c.Ues.Any());
             }
-            dres.RemoveAll(c => !c.Ues.Any());
         }
 
         private static void DefinirCabecalho(ObterRelatorioFaltasFrequenciaPdfQuery request, RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro, IEnumerable<RelatorioFaltaFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
