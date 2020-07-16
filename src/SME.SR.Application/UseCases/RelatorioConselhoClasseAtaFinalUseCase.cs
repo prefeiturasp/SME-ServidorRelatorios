@@ -46,7 +46,6 @@ namespace SME.SR.Application
                 catch (Exception e)
                 {
                     mensagensErro.AppendLine($"Erro na carga de cados da turma [{turmaCodigo}]: {e.Message}");
-                    throw;
                 }
             }
 
