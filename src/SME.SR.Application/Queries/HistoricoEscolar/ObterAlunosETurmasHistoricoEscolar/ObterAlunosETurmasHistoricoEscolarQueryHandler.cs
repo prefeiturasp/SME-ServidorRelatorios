@@ -106,7 +106,7 @@ namespace SME.SR.Application
             informacoesAlunoDto.Nome = item.ObterNomeFinal();
             informacoesAlunoDto.OrgaoExpeditor = item.ExpedicaoOrgaoEmissor;
             informacoesAlunoDto.Rg = item.RG;
-            informacoesAlunoDto.Rga = string.Empty;
+            informacoesAlunoDto.Rga = item.CodigoAluno.ToString();
             informacoesAlunoDto.Codigo = item.CodigoAluno.ToString();
 
             return informacoesAlunoDto;
