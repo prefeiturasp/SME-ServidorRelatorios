@@ -17,19 +17,28 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<int> ObterAulasDadas(string codigoTurma, string disciplinaId, long tipoCalendarioId, int bimestre)
+        public async Task<int> ObterAulasDadas(string codigoTurma, string componenteCurricularCodigo, long tipoCalendarioId, int bimestre)
         {
-            var query = AulaConsultas.AulasCumpridas;
+            var query = @"select sum(a.quantidade) 
+                          from aula a 
+                         inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id
+ 						                    and a.data_aula between p.periodo_inicio and p.periodo_fim
+                         inner join registro_frequencia rf on rf.aula_id = a.id
+                          where a.tipo_calendario_id = @tipoCalendarioId
+                            and a.turma_id = @codigoTurma 
+                            and a.disciplina_id = @disciplinaId 
+                            and p.bimestre = @bimestre ";
+
             var parametros = new { 
                 CodigoTurma = codigoTurma, 
-                DisciplinaId = disciplinaId,
+                DisciplinaId = componenteCurricularCodigo,
                 TipoCalendarioId = tipoCalendarioId,
                 Bimestre = bimestre
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QuerySingleOrDefaultAsync<int>(query, parametros);
+                return await conexao.QueryFirstOrDefaultAsync<int?>(query, parametros) ?? 0;
             }
         }
     }

@@ -18,10 +18,10 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<long?> ObterCicloIdPorAnoModalidade(int ano, Modalidade modalidadeCodigo)
+        public async Task<long?> ObterCicloIdPorAnoModalidade(string ano, Modalidade modalidadeCodigo)
         {
             var query = CicloConsultas.ObterPorAnoModalidade;
-            var parametros = new { Ano = ano.ToString(), Modalidade = (int)modalidadeCodigo };
+            var parametros = new { Ano = ano, Modalidade = (int)modalidadeCodigo };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -29,9 +29,9 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<TipoCiclo>> ObterCiclosIdPorAnosModalidade(string[] anos, Modalidade modalidadeCodigo)
+        public async Task<IEnumerable<TipoCiclo>> ObterCiclosPorAnosModalidade(string[] anos, Modalidade modalidadeCodigo)
         {
-            var query = @"select tc.id, tca.ano from tipo_ciclo tc
+            var query = @"select tc.id, tc.descricao, tca.ano from tipo_ciclo tc
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
                         where tca.ano = ANY(@anos) and tca.modalidade = @modalidade";
 

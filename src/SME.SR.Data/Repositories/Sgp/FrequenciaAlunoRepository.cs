@@ -4,6 +4,8 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -80,7 +82,17 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string turmaCodigo, long tipoCalendarioId)
         {
-            var query = FrequenciaAlunoConsultas.FrequenciaDisciplinaGlobalPorTurma;
+            var query = @"select fa.codigo_aluno as CodigoAluno
+                                , fa.disciplina_id as DisciplinaId
+                                , pe.bimestre
+                                , fa.total_aulas as TotalAulas
+                                , fa.total_ausencias as TotalAusencias
+                                , fa.total_compensacoes as TotalCompensacoes
+                            from frequencia_aluno fa
+                           inner join periodo_escolar pe on pe.id = fa.periodo_escolar_id
+                            where fa.tipo = 1
+                              and fa.turma_id = @turmaCodigo
+                              and pe.tipo_calendario_id = @tipoCalendarioId ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -99,6 +111,27 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorComponentesBimestresTurmas(string[] componentesCurriculares, int[] bimestres, string[] turmasCodigos)
+        {
+            var query = new StringBuilder(@"select * 
+                                         from frequencia_aluno fa 
+                                        where 1=1 ");
+
+            if (componentesCurriculares.Any())
+                query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
+
+            if (bimestres.Any())
+                query.AppendLine("and bimestre = any(@bimestres)");
+
+            if (turmasCodigos.Any())
+                query.AppendLine("and turma_id = any(@turmasCodigos)");
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAluno>(query.ToString(), new { componentesCurriculares, bimestres, turmasCodigos});
             }
         }
     }

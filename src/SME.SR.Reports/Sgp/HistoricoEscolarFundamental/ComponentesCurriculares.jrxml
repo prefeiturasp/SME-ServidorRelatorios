@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponentesCurriculares" pageWidth="595" pageHeight="15" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e3ee2222-29b6-4b72-be8e-6d46728ffeab">
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="DatasetComponentesCurriculares" uuid="76c94686-59de-4a56-be64-5efeec9b9222">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[relatorioHistoricoEscolar.baseNacionalComum.areasDeConhecimento.componentesCurriculares]]>
+		</queryString>
+		<field name="nome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+		<field name="notaConceitoPrimeiroAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoPrimeiroAno"/>
+			<fieldDescription><![CDATA[notaConceitoPrimeiroAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaPrimeiroAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaPrimeiroAno"/>
+			<fieldDescription><![CDATA[frequenciaPrimeiroAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoSegundoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoSegundoAno"/>
+			<fieldDescription><![CDATA[notaConceitoSegundoAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaSegundoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaSegundoAno"/>
+			<fieldDescription><![CDATA[frequenciaSegundoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoTerceiroAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoTerceiroAno"/>
+			<fieldDescription><![CDATA[notaConceitoTerceiroAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaTerceiroAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaTerceiroAno"/>
+			<fieldDescription><![CDATA[frequenciaTerceiroAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoQaurtoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoQaurtoAno"/>
+			<fieldDescription><![CDATA[notaConceitoQaurtoAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaQuartoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaQuartoAno"/>
+			<fieldDescription><![CDATA[frequenciaQuartoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoQuintoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoQuintoAno"/>
+			<fieldDescription><![CDATA[notaConceitoQuintoAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaQuintoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaQuintoAno"/>
+			<fieldDescription><![CDATA[frequenciaQuintoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoSextoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoSextoAno"/>
+			<fieldDescription><![CDATA[notaConceitoSextoAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaSextoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaSextoAno"/>
+			<fieldDescription><![CDATA[frequenciaSextoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoSetimoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoSetimoAno"/>
+			<fieldDescription><![CDATA[notaConceitoSetimoAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaSetimoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaSetimoAno"/>
+			<fieldDescription><![CDATA[frequenciaSetimoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoOitavoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoOitavoAno"/>
+			<fieldDescription><![CDATA[notaConceitoOitavoAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaOitavoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaOitavoAno"/>
+			<fieldDescription><![CDATA[frequenciaOitavoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoNonoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoNonoAno"/>
+			<fieldDescription><![CDATA[notaConceitoNonoAno]]></fieldDescription>
+		</field>
+		<field name="frequenciaNonoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaNonoAno"/>
+			<fieldDescription><![CDATA[frequenciaNonoAno]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="595" height="15" uuid="e74d500d-6392-448c-ae9d-02274358915c">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="DatasetComponentesCurriculares" uuid="f2671c16-3f0e-4be4-a475-3b122ec19f2b">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="83" uuid="064220a8-725b-4c92-b904-4b966edeeae9">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement x="0" y="0" width="83" height="15" uuid="4946bac3-0379-4af6-9cd4-f7952517d4c1"/>
+								<box leftPadding="5">
+									<pen lineWidth="0.75"/>
+								</box>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nome} != null ? $F{nome}: ""]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="cc617125-fc1a-4367-985d-9881fddbf38c">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="b10b1c00-89cd-4339-8526-62a55b874e1b"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoPrimeiroAno}!= null ? $F{notaConceitoPrimeiroAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="41e13c87-9d53-4379-9f8c-6aca7886442b">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="58527a1a-84cf-47ee-817a-4a23c6a26c0a"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaPrimeiroAno}!= null ? $F{frequenciaPrimeiroAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="1e104a07-a4ef-4d01-beab-0927a3677dcc">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="2e3f92d2-4691-41a9-8c2c-938f923d8f3a"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoSegundoAno} != null ? $F{notaConceitoSegundoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="a56b2eb7-a33f-45dc-ab4e-26647d251e80">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="58ae82c1-cc0c-43ca-9df3-04358ab1266b"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaSegundoAno} != null ? $F{frequenciaSegundoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="1ebf8d8f-3dde-4d9a-9dcb-6d7fee60afb4">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="d4fc03b7-4a52-4370-a9de-57f4285ba62b"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoTerceiroAno} != null ? $F{notaConceitoTerceiroAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="8295e087-ce1d-4434-90ea-174ea4fcc4e6">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="017cca45-ce73-41a7-be02-db945ba2af49"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaTerceiroAno} != null ? $F{frequenciaTerceiroAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="4072b66e-de47-480b-b406-f5964bdf78db">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="a3b3c0f9-d9bb-46c0-80a8-bb501451df6d"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoQaurtoAno} != null ? $F{notaConceitoQaurtoAno}: "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="83389691-3922-4240-9cb4-13faefa0d1ba">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="fe96ab1b-2e28-4e89-b708-2335b87e8e4f"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaQuartoAno} != null ? $F{frequenciaQuartoAno}: "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="0ee35f4d-6efc-4ff5-b12a-beacbc969bf7">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="c210d00a-0396-4e8c-9def-0939cb7a44f2"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoQuintoAno} != null  ? $F{notaConceitoQuintoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="668c6c26-f5d4-49dc-9b41-230d60b3a487">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="75707f12-c597-471c-85a9-e5132f2401ef"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaQuintoAno} != null ? $F{frequenciaQuintoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="451ae1bc-7a2b-4fe5-96d5-99d0fb5b19d4">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="9bc0caad-f2c8-4bc1-892f-13763e802dd6"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoSextoAno} != null ? $F{notaConceitoSextoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="3913948c-045e-4f90-ba50-32a10767aeb5">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="9995a762-ced0-4b01-a6af-84b029bafd41"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaSextoAno} != null ? $F{frequenciaSextoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="5eab26f4-77a7-450c-b374-e1b8d0867aa6">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="c3bc01d7-9fe1-47ea-affb-1b4ccfd6e0e7"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoSetimoAno} != null ? $F{notaConceitoSetimoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="f47fc25c-4716-4fe4-ae17-cdbda773e692">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="72fc4daa-438e-46dc-a6d2-6338ddf90a78"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaSetimoAno} != null ?$F{frequenciaSetimoAno}: "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="0e1a2a2d-cb16-4cbd-97ee-4770270cd692">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="b76c91f3-e4e2-4968-a26b-902aa01d5b34"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoOitavoAno} != null ? $F{notaConceitoOitavoAno} :"-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="2d8e953d-4421-4c6a-be9f-cc37138c7d7b">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="49f1f8b9-b4c4-4e6f-9543-d09ba283e4b3"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaOitavoAno} != null ? $F{frequenciaOitavoAno}: "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="8917d62e-ff02-4556-8a91-2d4e44c3aa0a">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="8dc9b90f-2c16-4c3c-9d3d-67395fc133cf"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaConceitoNonoAno}!= null ? $F{notaConceitoNonoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="ac0cb6ac-234e-4b7e-aeef-734f5738f74e">
+						<jr:detailCell style="Table_TD" height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="15" uuid="a8d32e94-2fc4-4b7f-97d7-840f983173c9"/>
+								<box>
+									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{frequenciaNonoAno}!= null ? $F{frequenciaNonoAno} : "-"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

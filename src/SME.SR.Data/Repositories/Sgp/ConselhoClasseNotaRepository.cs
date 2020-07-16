@@ -114,7 +114,7 @@ namespace SME.SR.Data
                   left join sintese_valores sv on sv.id = fn.sintese_id
                  where t.turma_id = @turmaCodigo
                 union all 
-                select fa.aluno_codigo as AlunoCodigo
+                select cca.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
                 	, ccn.componente_curricular_codigo as ComponenteCurricularCodigo
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId

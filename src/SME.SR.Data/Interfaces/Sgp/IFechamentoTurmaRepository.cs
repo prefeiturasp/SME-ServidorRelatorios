@@ -7,6 +7,6 @@ namespace SME.SR.Data.Interfaces
     {
         Task<FechamentoTurma> ObterTurmaPeriodoFechamentoPorId(long fechamentoTurmaId);
 
-        Task<IEnumerable<FechamentoTurma>> ObterTurmaPeriodoFechamentoPorId(string codigoTurma);
+        Task<IEnumerable<FechamentoTurma>> ObterFechamentosPorCodigosTurma(string[] codigoTurma);
     }
 }

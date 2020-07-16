@@ -10,6 +10,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Repositories.Sgp;
+using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.JRSClient;
 using SME.SR.JRSClient.Extensions;
@@ -51,24 +52,25 @@ namespace SME.SR.IoC
             {
                 c.BaseAddress = new Uri(urlJasper);
             })
-      .ConfigurePrimaryHttpMessageHandler(() =>
-      {
-          return new JasperCookieHandler() { CookieContainer = cookieContainer };
-      });
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new JasperCookieHandler() { CookieContainer = cookieContainer };
+                });
 
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-
+            services.AddScoped<IHtmlHelper, HtmlHelper>();
 
             services.AddSingleton(new VariaveisAmbiente());
             RegistrarRepositorios(services);
             RegistrarUseCase(services);
-            RegistrarServicos(services);            
+            RegistrarServicos(services);
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IExemploRepository, ExemploRepository>();
+            services.TryAddScoped(typeof(IAreaDoConhecimentoRepository), typeof(AreaDoConhecimentoRepository));
             services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
             services.TryAddScoped(typeof(IAtribuicaoCJRepository), typeof(AtribuicaoCJRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
@@ -93,6 +95,10 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IDreRepository), typeof(DreRepository));
             services.TryAddScoped(typeof(INotaConceitoRepository), typeof(NotaConceitoRepository));
             services.TryAddScoped(typeof(IUeRepository), typeof(UeRepository));
+            services.TryAddScoped(typeof(IObterCabecalhoHistoricoEscolarRepository), typeof(ObterCabecalhoHistoricoEscolarRepository));
+            services.TryAddScoped(typeof(IObterEnderecoeAtosDaUeRepository), typeof(ObterEnderecoeAtosDaUeRepository));
+            services.TryAddScoped(typeof(IRelatorioFaltasFrequenciaRepository), typeof(RelatorioFaltasFrequenciaRepository));
+            services.TryAddScoped(typeof(IConceitoValoresRepository), typeof(ConceitoValoresRepository));
         }
 
         private static void RegistrarUseCase(IServiceCollection services)
@@ -105,6 +111,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
             services.TryAddScoped<IDownloadRelatorioUseCase, DownloadRelatorioUseCase>();
             services.TryAddScoped<IRelatorioFaltasFrequenciasUseCase, RelatorioFaltasFrequenciasUseCase>();
+            services.TryAddScoped<IRelatorioHistoricoEscolarUseCase, RelatorioHistoricoEscolarUseCase>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)

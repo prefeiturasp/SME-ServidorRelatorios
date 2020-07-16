@@ -60,6 +60,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioBoletimEscolarUseCase.Executar(request);
             return true;
         }
+
         [HttpGet("relatorios/conselhoclasseatafinal")]
         [Action("relatorios/conselhoclasseatafinal", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
         public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase)
@@ -67,11 +68,20 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioConselhoClasseAtaFinalUseCase.Executar(request);
             return true;
         }
-        [HttpGet("relatorios/faltasfrequencias")]
-        [Action("relatorios/faltasfrequencias", typeof(IRelatorioFaltasFrequenciasUseCase))]
-        public async Task<bool> RelatorioFaltasFrequencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
+
+        [HttpPost("relatorios/faltas-frequencia")]
+        [Action("relatorios/faltas-frequencia", typeof(IRelatorioFaltasFrequenciasUseCase))]
+        public async Task<bool> RelatorioFaltasFrequencias([FromBody] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
         {
             await relatorioFaltasFrequenciasUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/historicoescolarfundamental")]
+        [Action("relatorios/historicoescolarfundamental", typeof(IRelatorioHistoricoEscolarUseCase))]
+        public async Task<bool> RelatorioHistoricoEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioHistoricoEscolarUseCase relatorioHistoricoEscolarUseCase)
+        {
+            await relatorioHistoricoEscolarUseCase.Executar(request);
             return true;
         }
     }
