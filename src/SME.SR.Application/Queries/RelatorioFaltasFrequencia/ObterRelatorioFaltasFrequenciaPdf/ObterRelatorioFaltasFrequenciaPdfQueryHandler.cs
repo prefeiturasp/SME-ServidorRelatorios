@@ -183,12 +183,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             {
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
             }
-
-            FiltrarFaltasFrequencia(model.Dres, filtro);
+            model.Dres = FiltrarFaltasFrequencia(model.Dres, filtro);
             return await Task.FromResult(model);
         }
 
-        private void FiltrarFaltasFrequencia(List<RelatorioFaltaFrequenciaDreDto> dres, FiltroRelatorioFaltasFrequenciasDto filtro)
+        private List<RelatorioFaltaFrequenciaDreDto> FiltrarFaltasFrequencia(List<RelatorioFaltaFrequenciaDreDto> dres, FiltroRelatorioFaltasFrequenciasDto filtro)
         {
             Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao = new Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>>();
             operacao.Add(CondicoesRelatorioFaltasFrequencia.Igual, (valor, valorFiltro) => valor == valorFiltro);
@@ -197,7 +196,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             if (dres != null)
             {
-                dres = dres.OrderBy(c => c.NomeDre).ToList();
                 foreach (var dre in dres)
                 {
                     if (dre.Ues != null)
@@ -221,7 +219,9 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                     dre.Ues.RemoveAll(c => !c.Anos.Any());
                 }
                 dres.RemoveAll(c => !c.Ues.Any());
+                dres = dres.OrderBy(c => c.NomeDre).ToList();
             }
+            return dres;
         }
 
         private static void DefinirCabecalho(ObterRelatorioFaltasFrequenciaPdfQuery request, RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro, IEnumerable<RelatorioFaltaFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
@@ -287,7 +287,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 selecionouBimestreFinal ?
                 "Final"
                 :
-                $"{filtro.Bimestres.FirstOrDefault()}º Bimestre";
+                filtro.Bimestres.FirstOrDefault().ToString();
         }
 
         private static void OrdenarAlunos(FiltroRelatorioFaltasFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFaltaFrequenciaComponenteDto componente)
