@@ -198,12 +198,34 @@ namespace SME.SR.Data
                             , t.ano
                             , t.ano_letivo AnoLetivo
                         from turma t
-                       where ano_letivo = @anoLetivo 
-                         and ano = ANY(@anosEscolares)";
+                       where ano_letivo = @anoLetivo
+                             and ano = ANY(@anosEscolares)";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<Turma>(query, new { anoLetivo, anosEscolares });
+            }
+
+        }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorAnoEModalidade(int anoLetivo, string[] anosEscolares, Modalidade modalidade)
+        {
+            var query = new StringBuilder(@"select t.turma_id Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where ano_letivo = @anoLetivo
+                       and modalidade_codigo = @modalidade ");
+
+            if (anosEscolares != null && anosEscolares.Any(c => c != "-99"))
+                query.AppendLine("and ano = ANY(@anosEscolares)");
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<Turma>(query.ToString(), new { anoLetivo, anosEscolares, modalidade });
             }
 
         }
