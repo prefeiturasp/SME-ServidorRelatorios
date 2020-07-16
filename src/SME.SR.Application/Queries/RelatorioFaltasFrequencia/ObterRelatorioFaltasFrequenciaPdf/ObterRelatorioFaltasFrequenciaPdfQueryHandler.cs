@@ -17,14 +17,17 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
         private readonly IRelatorioFaltasFrequenciaRepository relatorioFaltasFrequenciaRepository;
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
+        private readonly ITurmaRepository turmaRepository;
 
         public ObterRelatorioFaltasFrequenciaPdfQueryHandler(IRelatorioFaltasFrequenciaRepository relatorioFaltasFrequenciaRepository,
                                                              IComponenteCurricularRepository componenteCurricularRepository,
-                                                             IMediator mediator)
+                                                             IMediator mediator,
+                                                             ITurmaRepository turmaRepository)
         {
             this.relatorioFaltasFrequenciaRepository = relatorioFaltasFrequenciaRepository ?? throw new ArgumentNullException(nameof(relatorioFaltasFrequenciaRepository));
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.turmaRepository = turmaRepository ?? throw new ArgumentNullException(nameof(turmaRepository));
         }
 
         public async Task<RelatorioFaltasFrequenciaDto> Handle(ObterRelatorioFaltasFrequenciaPdfQuery request, CancellationToken cancellationToken)
@@ -57,7 +60,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(codigosTurmas));
 
-            var turmas = await mediator.Send(new ObterTurmasPorAnoQuery(filtro.AnoLetivo, filtro.AnosEscolares));
+            var turmas = await turmaRepository.ObterTurmasPorAnoEModalidade(filtro.AnoLetivo, filtro.AnosEscolares.ToArray(), filtro.Modalidade);
             if (turmas == null || !turmas.Any())
                 throw new NegocioException("Turmas não localizadas para os anos informados.");
 
@@ -95,8 +98,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
                                 var alunosSemFrequenciaNaTurma = alunos
-                                    .Where(a=> a.Ativo)
-                                    .Where(a=>turmasccc.Contains(a.TurmaCodigo))
+                                    .Where(a => a.Ativo)
+                                    .Where(a => turmasccc.Contains(a.TurmaCodigo))
                                     .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
 
                                 if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
@@ -230,11 +233,13 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Dres.RemoveAll(c => !c.Ues.Any());
             model.Dre = selecionouTodasDres ? "Todas" : dres.FirstOrDefault().NomeDre;
             model.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
-            model.Ano = filtro.AnosEscolares.Count() > 1 ?
-                filtro.AnosEscolares.Any(c => c == "-99") ?
-                        "Todos"
-                    :
-                        string.Empty
+
+            var selecionouTodosAnos = filtro.AnosEscolares.Any(c => c == "-99");
+            model.Ano = selecionouTodosAnos && !(filtro.Modalidade == Modalidade.EJA) ?
+                "Todos"
+                :
+                    filtro.AnosEscolares.Count() > 1 ?
+                    string.Empty
                 :
                     $"{filtro.AnosEscolares.FirstOrDefault()} Ano";
 
@@ -251,7 +256,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             if (filtro.Modalidade == Modalidade.EJA)
                 semestreEja = $"{filtro.Semestre} Semestre";
 
-            model.Modalidade = $"{filtro.Modalidade.Name()}{semestreEja}";
+            model.Modalidade = $"{filtro.Modalidade.Name()} {semestreEja}";
         }
 
         private static void DefinirNomeComponente(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)
@@ -272,7 +277,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
         {
             var selecionouTodosBimestres = filtro.Bimestres.Any(c => c == -99);
             var selecionouBimestreFinal = filtro.Bimestres.Any(c => c == 0);
-
 
             model.Bimestre = selecionouTodosBimestres ?
                 "Todos"
@@ -314,36 +318,34 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 {
                     bimestreAtual = new RelatorioFaltaFrequenciaBimestreDto
                     {
-                        Componentes = componentes.Select(c => new RelatorioFaltaFrequenciaComponenteDto
-                        {
-                            Alunos = c.Alunos.Select(a => new RelatorioFaltaFrequenciaAlunoDto
-                            {
-                                CodigoAluno = a.CodigoAluno,
-                                CodigoTurma = a.CodigoTurma,
-                                NomeAluno = a.NomeAluno,
-                                NomeTurma = a.NomeTurma,
-                                NumeroChamada = a.NumeroChamada,
-                                TotalAulas = 0,
-                                TotalAusencias = 0,
-                                TotalCompensacoes = 0
-                            }).ToList(),
-                            CodigoComponente = c.CodigoComponente,
-                            NomeComponente = c.NomeComponente
-                        }).ToList(),
                         Numero = numeroBimestre.ToString(),
                         NomeBimestre = $"{numeroBimestre}° Bimestre"
                     };
 
-                    foreach (var componente in bimestreAtual.Componentes)
+                    foreach (var componente in componentes)
                     {
+                        var novoComponente = new RelatorioFaltaFrequenciaComponenteDto();
+                        novoComponente.CodigoComponente = componente.CodigoComponente;
+                        novoComponente.NomeComponente = componente.NomeComponente;
                         foreach (var aluno in componente.Alunos)
                         {
-                            aluno.TotalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(aluno.CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
-                            aluno.TotalAusencias = 0;
-                            aluno.TotalCompensacoes = 0;
+                            var novoAluno = new RelatorioFaltaFrequenciaAlunoDto();
+                            novoAluno.TotalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(aluno.CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
+                            novoAluno.TotalAusencias = 0;
+                            novoAluno.TotalCompensacoes = 0;
+                            novoAluno.NomeAluno = aluno.NomeAluno;
+                            novoAluno.NomeTurma = aluno.NomeTurma;
+                            novoAluno.NumeroChamada = aluno.NumeroChamada;
+                            novoAluno.CodigoAluno = aluno.CodigoAluno;
+
+                            if (novoAluno.TotalAulas > 0)
+                                novoComponente.Alunos.Add(novoAluno);
                         }
+                        if (novoComponente.Alunos.Any())
+                            bimestreAtual.Componentes.Add(novoComponente);
                     }
-                    bimestres.Add(bimestreAtual);
+                    if (bimestreAtual.Componentes.Any())
+                        bimestres.Add(bimestreAtual);
                 }
             }
         }
