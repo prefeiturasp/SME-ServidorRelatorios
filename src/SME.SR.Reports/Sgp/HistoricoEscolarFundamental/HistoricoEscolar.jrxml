@@ -89,7 +89,7 @@
 				<imageExpression><![CDATA["logo.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="167" y="0" width="220" height="26" uuid="000cbf02-76a2-468b-b530-48d49e06fe8b">
+				<reportElement x="147" y="0" width="260" height="26" uuid="000cbf02-76a2-468b-b530-48d49e06fe8b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
