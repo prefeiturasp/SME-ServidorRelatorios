@@ -318,36 +318,34 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 {
                     bimestreAtual = new RelatorioFaltaFrequenciaBimestreDto
                     {
-                        Componentes = componentes.Select(c => new RelatorioFaltaFrequenciaComponenteDto
-                        {
-                            Alunos = c.Alunos.Select(a => new RelatorioFaltaFrequenciaAlunoDto
-                            {
-                                CodigoAluno = a.CodigoAluno,
-                                CodigoTurma = a.CodigoTurma,
-                                NomeAluno = a.NomeAluno,
-                                NomeTurma = a.NomeTurma,
-                                NumeroChamada = a.NumeroChamada,
-                                TotalAulas = 0,
-                                TotalAusencias = 0,
-                                TotalCompensacoes = 0
-                            }).ToList(),
-                            CodigoComponente = c.CodigoComponente,
-                            NomeComponente = c.NomeComponente
-                        }).ToList(),
                         Numero = numeroBimestre.ToString(),
                         NomeBimestre = $"{numeroBimestre}° Bimestre"
                     };
 
-                    foreach (var componente in bimestreAtual.Componentes)
+                    foreach (var componente in componentes)
                     {
+                        var novoComponente = new RelatorioFaltaFrequenciaComponenteDto();
+                        novoComponente.CodigoComponente = componente.CodigoComponente;
+                        novoComponente.NomeComponente = componente.NomeComponente;
                         foreach (var aluno in componente.Alunos)
                         {
-                            aluno.TotalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(aluno.CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
-                            aluno.TotalAusencias = 0;
-                            aluno.TotalCompensacoes = 0;
+                            var novoAluno = new RelatorioFaltaFrequenciaAlunoDto();
+                            novoAluno.TotalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(aluno.CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
+                            novoAluno.TotalAusencias = 0;
+                            novoAluno.TotalCompensacoes = 0;
+                            novoAluno.NomeAluno = aluno.NomeAluno;
+                            novoAluno.NomeTurma = aluno.NomeTurma;
+                            novoAluno.NumeroChamada = aluno.NumeroChamada;
+                            novoAluno.CodigoAluno = aluno.CodigoAluno;
+
+                            if (novoAluno.TotalAulas > 0)
+                                novoComponente.Alunos.Add(novoAluno);
                         }
+                        if (novoComponente.Alunos.Any())
+                            bimestreAtual.Componentes.Add(novoComponente);
                     }
-                    bimestres.Add(bimestreAtual);
+                    if (bimestreAtual.Componentes.Any())
+                        bimestres.Add(bimestreAtual);
                 }
             }
         }
