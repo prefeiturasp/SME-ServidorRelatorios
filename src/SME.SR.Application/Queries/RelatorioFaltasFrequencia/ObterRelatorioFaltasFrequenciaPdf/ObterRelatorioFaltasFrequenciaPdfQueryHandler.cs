@@ -236,13 +236,14 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
 
             var selecionouTodosAnos = filtro.AnosEscolares.Any(c => c == "-99");
+            var ano = filtro.AnosEscolares.FirstOrDefault();
             model.Ano = selecionouTodosAnos && !(filtro.Modalidade == Modalidade.EJA) ?
                 "Todos"
                 :
                     filtro.AnosEscolares.Count() > 1 ?
                     string.Empty
                 :
-                    $"{filtro.AnosEscolares.FirstOrDefault()}";
+                    ano == "-99" ? "Todos" : ano;
 
             DefinirNomeBimestre(model, filtro);
             DefinirNomeComponente(model, filtro, componentes);

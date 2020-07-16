@@ -49,7 +49,6 @@ namespace SME.SR.Application
         private async Task GerarRelatorioPdf(IMediator mediator, FiltroRelatorioFaltasFrequenciasDto filtro, Guid codigoCorrelacao)
         {
             var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(filtro));
-            var dadosJson = JsonConvert.SerializeObject(dadosRelatorio);
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFaltasFrequencias", dadosRelatorio, codigoCorrelacao));
         }
     }
