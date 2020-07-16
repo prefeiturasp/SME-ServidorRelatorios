@@ -211,6 +211,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     OrdenarAlunos(filtro, operacao, componente);
                                 }
                                 bimestre.Componentes.RemoveAll(c => !c.Alunos.Any());
+                                bimestre.Componentes = bimestre.Componentes.OrderBy(c => c.NomeComponente).ToList();
                             }
                             ano.Bimestres.RemoveAll(c => !c.Componentes.Any());
                         }
@@ -241,7 +242,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                     filtro.AnosEscolares.Count() > 1 ?
                     string.Empty
                 :
-                    $"{filtro.AnosEscolares.FirstOrDefault()} Ano";
+                    $"{filtro.AnosEscolares.FirstOrDefault()}";
 
             DefinirNomeBimestre(model, filtro);
             DefinirNomeComponente(model, filtro, componentes);
