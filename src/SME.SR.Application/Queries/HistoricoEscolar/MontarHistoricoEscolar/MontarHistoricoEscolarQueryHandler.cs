@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace SME.SR.Application
 
                 foreach (var agrupamentoTurmas in alunoTurmasPorModalidade)
                 {
-                    var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).Distinct();
+                    var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).DistinctBy(d => d.CodDisciplina);
                     var componentesPorGrupoMatriz = componentesDaTurma.Where(gm => gm.GrupoMatriz != null).GroupBy(cc => cc.GrupoMatriz);
 
                     //Obter grupo matriz
