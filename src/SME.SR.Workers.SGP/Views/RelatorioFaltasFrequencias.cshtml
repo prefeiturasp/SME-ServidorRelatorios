@@ -320,7 +320,7 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                                         <th>@Model.Modalidade</th>
                                                     </tr>
                                                     @{contadorQuebrarPagina = contadorQuebrarPagina + 1;}
-                                                    @if (Model.Ano == "Todos")
+                                                    @if (Model.Ano == "Todos" || ue.Anos.Count > 1)
                                                     {
                                                         <tr>
                                                             <th>@string.Format("{0}º Ano", ano.NomeAno)</th>
