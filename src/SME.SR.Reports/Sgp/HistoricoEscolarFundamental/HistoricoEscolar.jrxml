@@ -79,6 +79,14 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="legenda.texto"/>
 		<fieldDescription><![CDATA[legenda.texto]]></fieldDescription>
 	</field>
+	<field name="projetosAtividadesComplementares" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="projetosAtividadesComplementares"/>
+		<fieldDescription><![CDATA[projetosAtividadesComplementares]]></fieldDescription>
+	</field>
+	<field name="enriquecimentoCurricular" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="enriquecimentoCurricular"/>
+		<fieldDescription><![CDATA[enriquecimentoCurricular]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -260,8 +268,9 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["BaseNacionalComum.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="112" width="555" height="15" uuid="6566e5af-fe59-4c89-86f5-d3d7ff5951b6">
+				<reportElement positionType="Float" x="0" y="112" width="555" height="15" isRemoveLineWhenBlank="true" uuid="6566e5af-fe59-4c89-86f5-d3d7ff5951b6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{enriquecimentoCurricular} != null]]></printWhenExpression>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
@@ -269,8 +278,9 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["EnriquecimentoCurricular.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="127" width="555" height="15" uuid="455f8073-813f-4f58-9fa2-75065981229d">
+				<reportElement positionType="Float" x="0" y="127" width="555" height="15" isRemoveLineWhenBlank="true" uuid="455f8073-813f-4f58-9fa2-75065981229d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{projetosAtividadesComplementares} != null]]></printWhenExpression>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
@@ -298,7 +308,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA[$F{legenda}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="97" width="555" height="15" uuid="e88e521a-1d65-491b-a7dc-bc3315b22f32">
+				<reportElement positionType="Float" x="0" y="97" width="555" height="15" isRemoveLineWhenBlank="true" uuid="e88e521a-1d65-491b-a7dc-bc3315b22f32">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
