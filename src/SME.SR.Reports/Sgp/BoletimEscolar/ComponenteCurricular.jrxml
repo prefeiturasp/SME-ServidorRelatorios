@@ -81,8 +81,8 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DatasetBoletim" uuid="c67c21b4-27c5-4821-9bdb-b20ecac4a9eb">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></dataSourceExpression>
+					<datasetRun subDataset="DatasetBoletim" uuid="9b42f0ba-e02c-42e8-93ad-95ad37700bd4">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="88" uuid="93ca2197-afe2-48e9-acb2-04acf039ffdc">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
