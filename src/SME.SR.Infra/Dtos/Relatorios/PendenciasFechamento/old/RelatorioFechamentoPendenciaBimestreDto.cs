@@ -2,7 +2,7 @@
 
 namespace SME.SR.Infra
 {
-    public class RelatorioFechamentoPendenciaBimestreDto
+    public class RelatorioFechamentoPendenciaBimestreDto1
     {
         public string Bimestre { get; set; }
 

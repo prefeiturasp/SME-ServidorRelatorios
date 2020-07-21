@@ -1,6 +1,6 @@
 ﻿namespace SME.SR.Infra
 {
-    public class RelatorioFechamentoPendenciaDto
+    public class RelatorioFechamentoPendenciaDto1
     {
         public string NomeComponenteCurricular { get; set; }
         public string DescricaoPendencia { get; set; }
