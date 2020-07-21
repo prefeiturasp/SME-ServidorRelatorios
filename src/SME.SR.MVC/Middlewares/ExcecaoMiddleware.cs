@@ -36,14 +36,16 @@ namespace SME.SR.MVC
             {
                 case NegocioException negocioException:
                     context.HttpContext.Response.ContentType = "application/json";
-                    var json = new
+                    var erros = new
                     {
                         Mensagens = new List<string> { negocioException.Message },
                     };
-
+                    var json = JsonConvert.SerializeObject(erros);
                     context.Result = new ObjectResult(JsonConvert.SerializeObject(json));
+                    Console.WriteLine(json);
                     break;
                 default:
+                    Console.WriteLine(context.Exception.Message);
                     context.Result = new ObjectResult("Ocorreu um erro interno.");
                     break;
             }

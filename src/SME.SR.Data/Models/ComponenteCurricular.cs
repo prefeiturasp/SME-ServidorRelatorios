@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SME.SR.Data
 {
-    public class ComponenteCurricular
+    public class ComponenteCurricular : ICloneable
     {
         public ComponenteCurricular()
         {
@@ -57,6 +58,11 @@ namespace SME.SR.Data
                 return null;
 
             return gruposMatriz?.FirstOrDefault(x => componente.IdGrupoMatriz == x.Id);
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -90,11 +91,22 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre)
+        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre, bool? possuiFechamento = null, bool? somenteEscolarizada = null)
         {
-            var query = @"select ano, anoLetivo, codigo, 
+            StringBuilder query = new StringBuilder();
+            query.Append(@"select ano, anoLetivo, codigo, 
 								codigoModalidade modalidadeCodigo, nome, semestre 
-							from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo) ";
+							from f_abrangencia_turmas(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo)
+                            where 1=1    ");
+
+
+            if (possuiFechamento.HasValue)
+                query.Append(@" and codigo in (select t.turma_id from fechamento_turma ft
+                                 inner join turma t on ft.turma_id = t.id
+                                 where not ft.excluido)");
+
+            if (somenteEscolarizada.HasValue && somenteEscolarizada.Value)
+                query.Append(" and ano != '0'");
 
             var parametros = new
             {
@@ -109,14 +121,15 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<Turma>(query, parametros);
+                return await conexao.QueryAsync<Turma>(query.ToString(), parametros);
             }
         }
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[] codigoPareceresConclusivos)
         {
             var query = @"select distinct 
-	                        ft.turma_id as TurmaCodigo,
+	                        t.turma_id as TurmaCodigo,
+                            t.modalidade_codigo Modalidade,
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        t.ano 
                         from
@@ -134,7 +147,9 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos, codigoPareceresConclusivos });
+            var codigos = codigoAlunos.Select(a => a.ToString()).ToArray();
+
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigos, codigoPareceresConclusivos });
 
         }
 
@@ -183,12 +198,34 @@ namespace SME.SR.Data
                             , t.ano
                             , t.ano_letivo AnoLetivo
                         from turma t
-                       where ano_letivo = @anoLetivo 
-                         and ano = ANY(@anosEscolares)";
+                       where ano_letivo = @anoLetivo
+                             and ano = ANY(@anosEscolares)";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<Turma>(query, new { anoLetivo, anosEscolares });
+            }
+
+        }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorAnoEModalidade(int anoLetivo, string[] anosEscolares, Modalidade modalidade)
+        {
+            var query = new StringBuilder(@"select t.turma_id Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where ano_letivo = @anoLetivo
+                       and modalidade_codigo = @modalidade ");
+
+            if (anosEscolares != null && anosEscolares.Any(c => c != "-99"))
+                query.AppendLine("and ano = ANY(@anosEscolares)");
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<Turma>(query.ToString(), new { anoLetivo, anosEscolares, modalidade });
             }
 
         }

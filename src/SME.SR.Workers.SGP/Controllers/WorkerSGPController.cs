@@ -69,9 +69,9 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet("relatorios/faltas-frequencia")]
+        [HttpPost("relatorios/faltas-frequencia")]
         [Action("relatorios/faltas-frequencia", typeof(IRelatorioFaltasFrequenciasUseCase))]
-        public async Task<bool> RelatorioFaltasFrequencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
+        public async Task<bool> RelatorioFaltasFrequencias([FromBody] FiltroRelatorioDto request, [FromServices] IRelatorioFaltasFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
         {
             await relatorioFaltasFrequenciasUseCase.Executar(request);
             return true;

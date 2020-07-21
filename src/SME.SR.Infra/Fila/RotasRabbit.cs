@@ -1,6 +1,7 @@
 ﻿namespace SME.SR.Infra
 {
     //TODO: USAR VARIAVEIS DE AMBIENT?
+    //TODO: Camada compartilhada entre projetos, virar um pacote NPM?
     public static class RotasRabbit
     {
         public static string ExchangeListenerWorkerRelatorios => "sme.sr.workers.relatorios";
@@ -13,5 +14,6 @@
         public static string RotaRelatoriosProntosSgp => "relatorios.prontos";
         public static string RotaRelatoriosProcessando => "relatorios.processando";
         public static string RotaRelatorioComErro => "relatorios.erro";
+        public static string RotaRelatorioCorrelacaoCopiar => "relatorios.correlacao.copiar";
     }
 }

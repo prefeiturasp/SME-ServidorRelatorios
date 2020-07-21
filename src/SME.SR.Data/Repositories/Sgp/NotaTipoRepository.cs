@@ -3,7 +3,6 @@ using Npgsql;
 using SME.SR.Data.Queries;
 using SME.SR.Infra;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,6 +15,22 @@ namespace SME.SR.Data.Repositories.Sgp
         public NotaTipoRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
+        }
+
+        public async Task<IEnumerable<TipoNotaCicloAno>> Listar()
+        {
+            var query = @"SELECT nccp.ciclo, tca.ano, tca.modalidade, CASE ntv.descricao 
+                                WHEN 'Nota' THEN 'N'
+                                ELSE 'C'
+                            end TipoNota FROM notas_conceitos_ciclos_parametos nccp
+                            inner join tipo_ciclo_ano tca on nccp.ciclo = tca.tipo_ciclo_id 
+                            inner join tipo_ciclo tc on tca.tipo_ciclo_id = tc.id 
+                            inner join notas_tipo_valor ntv on nccp.tipo_nota = ntv.id ";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<TipoNotaCicloAno>(query);
+            };
         }
 
         public async Task<string> ObterPorCicloIdDataAvalicacao(long? cicloId, DateTime dataReferencia)

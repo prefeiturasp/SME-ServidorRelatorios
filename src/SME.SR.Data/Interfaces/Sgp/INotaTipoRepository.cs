@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -10,5 +9,7 @@ namespace SME.SR.Data
         Task<string> ObterPorCicloIdDataAvalicacao(long? cicloId, DateTime dataReferencia);
 
         Task<IEnumerable<TipoNotaCicloAno>> ObterPorCiclosIdDataAvalicacao(long[] ciclosId, DateTime dataReferencia);
+
+        Task<IEnumerable<TipoNotaCicloAno>> Listar();
     }
 }

@@ -2,7 +2,6 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +29,7 @@ namespace SME.SR.Application
 
             await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurricularesApiEol);
 
-            return MapearParaDto(componentesCurriculares.DistinctBy(c => new { c.CodigoTurma, c.Codigo }), request.ComponentesCurricularesApiEol, request.GruposMatriz);
+            return MapearParaDto(componentesCurriculares, request.ComponentesCurricularesApiEol, request.GruposMatriz);
         }
         private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularApiEol> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
@@ -89,16 +88,18 @@ namespace SME.SR.Application
                             var componentesParaInserir = componentes.Where(c => componentesPorTurma.Value.Contains(c.Codigo))
                                                                     .Select(x =>
                                                                     {
-                                                                        x.CodigoTurma = componentesPorTurma.Key;
-                                                                        x.ComponentePlanejamentoRegencia = true;
-                                                                        return x;
+                                                                        var retorno = (ComponenteCurricular)x.Clone();
+                                                                        retorno.CodigoTurma = componentesPorTurma.Key;
+                                                                        retorno.ComponentePlanejamentoRegencia = true;
+                                                                        return retorno;
                                                                     });
 
-                            componentesCurriculares.AddRange(componentesParaInserir);
+                            componentesCurriculares.AddRange(componentesParaInserir);                           
                         }
                     }
                 }
             }
+
         }
 
         private async Task<IEnumerable<Data.ComponenteCurricular>> ObterPorId(long[] ids)
@@ -115,7 +116,7 @@ namespace SME.SR.Application
             var componentesTerritorioApiEol = componentesApiEol?.Where(x => x.EhTerritorio)?.ToList();
             if (componentesTerritorioApiEol != null && componentesTerritorioApiEol.Any())
             {
-                var codigoDisciplinasTerritorio = componentesCurriculares.Where(x => componentesTerritorioApiEol.Any(z => x.Codigo == z.IdComponenteCurricular)).Select(t => t.Codigo);
+                var codigoDisciplinasTerritorio = componentesCurriculares.Where(x => componentesTerritorioApiEol.Any(z => x.Codigo == z.IdComponenteCurricular))?.Select(t => t.Codigo)?.Distinct();
 
                 if (codigoDisciplinasTerritorio != null && codigoDisciplinasTerritorio.Any())
                 {
@@ -126,7 +127,7 @@ namespace SME.SR.Application
 
                         foreach (var territorio in territoriosBanco.GroupBy(t => t.CodigoTurma))
                         {
-                            componentesCurriculares.RemoveAll(c => territorio.Any(x => x.CodigoComponenteCurricular == c.Codigo && x.CodigoTurma == territorio.Key));
+                            componentesCurriculares.RemoveAll(c => territoriosBanco.Any(x => x.CodigoComponenteCurricular == c.Codigo && c.CodigoTurma == territorio.Key));
 
                             var territorios = territorio.GroupBy(c => new { c.CodigoTerritorioSaber, c.CodigoExperienciaPedagogica, c.DataInicio });
 

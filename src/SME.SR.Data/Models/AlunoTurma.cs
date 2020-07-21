@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 
 namespace SME.SR.Data
 {
@@ -8,7 +7,14 @@ namespace SME.SR.Data
     {
         public string NumeroChamada { get; set; }
         public string Nome { get; set; }
-        public string Turma { get; set; }
-
+        public string TurmaCodigo { get; set; }
+        public int CodigoAluno { get; set; }
+        public string NomeFinal { get; set; }
+        public SituacaoMatriculaAluno SituacaoMatricula { get; set; }
+        public bool Ativo => SituacaoMatricula.EhUmDosValores(SituacaoMatriculaAluno.Ativo,
+                                                              SituacaoMatriculaAluno.Concluido,
+                                                              SituacaoMatriculaAluno.PendenteRematricula,
+                                                              SituacaoMatriculaAluno.Rematriculado,
+                                                              SituacaoMatriculaAluno.SemContinuidade);
     }
 }

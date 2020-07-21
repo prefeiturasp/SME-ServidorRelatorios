@@ -28,6 +28,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         public async Task<bool> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
             var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
+            html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
             html = html.Replace("logo.png", SmeConstants.LogoSme);
 
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
@@ -36,7 +37,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
             pdfGenerator.Converter(html, nomeArquivo);
 
-            servicoFila.PublicaFila(new PublicaFilaDto(null, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
+            servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
 
             return true;
         }
