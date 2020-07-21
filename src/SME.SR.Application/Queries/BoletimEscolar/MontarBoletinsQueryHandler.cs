@@ -28,25 +28,26 @@ namespace SME.SR.Application
 
             foreach (var turma in turmas)
             {
-                var tipoNota = tiposNota[turma.Codigo];
-                var gruposComponentes = MapearGruposEComponentes(componentesCurriculares.FirstOrDefault(cc => cc.Key == turma.Codigo));
+                var tipoNota = tiposNota[turma.Codigo];              
                 var notasTurma = notas.FirstOrDefault(nf => nf.Key == turma.Codigo);
                 var frequenciasTurma = frequencia.FirstOrDefault(nf => nf.Key == turma.Codigo);
 
                 foreach (var aluno in alunos.FirstOrDefault(a => a.Key == turma.Codigo))
                 {
+                    var grupoComponentesDoAluno = MapearGruposEComponentes(componentesCurriculares.FirstOrDefault(cc => cc.Key == turma.Codigo)); 
+
                     var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
                     {
                         TipoNota = tipoNota,
                         Cabecalho = ObterCabecalhoInicial(dre, ue, turma),
-                        Grupos = gruposComponentes
+                        Grupos = grupoComponentesDoAluno
                     };
 
                     boletimEscolarAlunoDto.Cabecalho.CodigoEol = aluno.CodigoAluno.ToString();
                     boletimEscolarAlunoDto.Cabecalho.Aluno = aluno.NomeRelatorio;
 
-                    var notasAluno = notasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
-                    var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString());
+                    var notasAluno = notasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString()).ToList();
+                    var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString()).ToList();
 
                     SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno, mediasFrequencia);
 
@@ -70,7 +71,7 @@ namespace SME.SR.Application
 
         private List<GrupoMatrizComponenteCurricularDto> MapearGruposEComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma)
         {
-            var gruposMatrizes = componentesCurricularesPorTurma.GroupBy(cc => cc.GrupoMatriz);
+            var gruposMatrizes = componentesCurricularesPorTurma.GroupBy(cc => cc.GrupoMatriz).ToList();
 
             var gruposRetorno = new List<GrupoMatrizComponenteCurricularDto>();
 
