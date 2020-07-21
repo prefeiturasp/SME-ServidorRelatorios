@@ -144,7 +144,7 @@ namespace SME.SR.Workers.SGP.Services
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (ch, ea) =>
             {
-                var content = System.Text.Encoding.UTF8.GetString(ea.Body.Span);
+                var content = Encoding.UTF8.GetString(ea.Body.Span);
                 await HandleMessage(content);
                 _channel.BasicAck(ea.DeliveryTag, false);
             };

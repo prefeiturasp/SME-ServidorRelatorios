@@ -46,14 +46,12 @@ namespace SME.SR.Application
                 catch (Exception e)
                 {
                     mensagensErro.AppendLine($"Erro na carga de cados da turma [{turmaCodigo}]: {e.Message}");
-                    throw;
                 }
             }
 
             if (relatoriosTurmas.Any())
-                await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao));
-
-            if (mensagensErro.Length > 0)
+                await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
+            else if (mensagensErro.Length > 0)
                 throw new NegocioException(mensagensErro.ToString());
         }
 

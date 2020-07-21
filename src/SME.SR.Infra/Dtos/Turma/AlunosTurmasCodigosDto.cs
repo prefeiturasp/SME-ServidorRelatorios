@@ -8,6 +8,7 @@ namespace SME.SR.Infra
     {
         public long AlunoCodigo { get; set; }
         public string TurmaCodigo { get; set; }
+        public Modalidade Modalidade { get; set; }
         public int Ano { get; set; }
     }
 }

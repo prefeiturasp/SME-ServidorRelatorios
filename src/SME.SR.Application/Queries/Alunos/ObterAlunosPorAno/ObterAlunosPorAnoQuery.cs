@@ -8,13 +8,11 @@ namespace SME.SR.Application
 {
     public class ObterAlunosPorAnoQuery: IRequest<IEnumerable<AlunoTurma>>
     {
-        public ObterAlunosPorAnoQuery(int anoLetivo, IEnumerable<string> anosEscolares)
+        public ObterAlunosPorAnoQuery(IEnumerable<string> turmasCodigos)
         {
-            AnoLetivo = anoLetivo;
-            AnosEscolares = anosEscolares;
+            TurmasCodigos = turmasCodigos;
         }
 
-        public int AnoLetivo { get; set; }
-        public IEnumerable<string> AnosEscolares { get; set; }
+        public IEnumerable<string> TurmasCodigos { get; set; }
     }
 }
