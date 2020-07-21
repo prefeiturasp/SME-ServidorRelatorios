@@ -25,62 +25,74 @@
         return Html.Raw(str);
     }
 
-    //    Microsoft.AspNetCore.Html.IHtmlContent AbrirTabelaAluno()
-    //    {
-    //        // Contar
-    //        contadorQuebrarPagina = contadorQuebrarPagina + 2;
-    //        var colunaFaltas = Model.ExibeFaltas ? "<th style='width: 10%;'>FALTAS</th>" : "";
-    //        var colunaFrequencia = Model.ExibeFrequencia ? "<th style='width: 10%;'>FREQ. %</th>" : "";
-    //        var str = $@"
-    //        <table class='tabela-alunos'>
-    //        <tbody>
-    //            <tr>
-    //                <td colspan='4' style='border-bottom: none; border-top: none;'></td>
-    //            </tr>
-    //        </tbody>
-    //        </table>
-    //        <table class='tabela-alunos'>
-    //        <thead>
-    //        <tr>
-    //        <th style='width: 10%;'>Nº</th>
-    //        <th style='width: 10%;'>Turma</th>
-    //        <th style='width: 60%;' class='alinhar-esquerda'>NOME</th>
-    //        {colunaFaltas}
-    //        {colunaFrequencia}
-    //        </tr>
-    //        </thead>
-    //        <tbody>";
-    //        return Html.Raw(str);
-    //    }
+    Microsoft.AspNetCore.Html.IHtmlContent AbrirTabelaPendencia()
+    {
+        // Contar
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+        //var linhaDetalhes = Model.ExibeFaltas ? "<th style='width: 10%;'>FALTAS</th>" : "";
 
-    //    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string nomeTurma, string alunoNome, int alunoFaltas, double alunoFreq)
-    //    {
-    //        // Contar
-    //        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-    //        var str = $@"<tr>
-    //<td>{alunoNumero}</td>
-    //<td>{nomeTurma}</td>
-    //<td class='alinhar-esquerda'>{alunoNome}</td>";
-    //        if (Model.ExibeFaltas)
-    //        {
-    //            str = str + $@"<td>{alunoFaltas}</td>";
-    //        }
+        var str = $@"
+            <table class='tabela-alunos'>
+            <tbody>
+                <tr>
+                    <td colspan='4' style='border-bottom: none; border-top: none;'></td>
+                </tr>
+            </tbody>
+            </table>
 
-    //        if (Model.ExibeFrequencia)
-    //        {
-    //            str = str + $@"<td>{alunoFreq}</td>";
-    //        };
+ <table class='tabela-alunos'>
+            <thead>
+                <th style='width: 100%;'>Nº</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan='4' style='border-bottom: none; border-top: none;'></td>
+                </tr>
+            </tbody>
+            </table>
+    
 
-    //        str = str + @"</tr>";
+            <table class='tabela-alunos'>
+            <thead>
+            <tr>
+            <th style='width: 10%;'>Nº</th>
+            <th style='width: 10%;'>Turma</th>
+            <th style='width: 60%;' class='alinhar-esquerda'>NOME</th>          
+            </tr>
+            </thead>
+            <tbody>";
+        return Html.Raw(str);
+    }
 
-    //        return Html.Raw(str);
-    //    }
+    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string alunoNumero, string nomeTurma, string alunoNome, int alunoFaltas, double alunoFreq)
+    {
+        // Contar
+        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        var str = $@"<tr>
+    <td>{alunoNumero}</td>
+    <td>{nomeTurma}</td>
+    <td class='alinhar-esquerda'>{alunoNome}</td>";
+        
+        //if (Model.)
+        //{
+        //    str = str + $@"<td>{alunoFaltas}</td>";
+        //}
 
-    //    Microsoft.AspNetCore.Html.IHtmlContent FecharTabelaAluno()
-    //    {
-    //        var str = $@"</tbody></table>";
-    //        return Html.Raw(str);
-    //    }
+        //if (Model.ExibeFrequencia)
+        //{
+        //    str = str + $@"<td>{alunoFreq}</td>";
+        //};
+
+        str = str + @"</tr>";
+
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent FecharTabelaPendencia()
+    {
+        var str = $@"</tbody></table>";
+        return Html.Raw(str);
+    }
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
@@ -361,37 +373,37 @@ COMPONENTE CURRICULAR: {componenteCurricular}
 
                                                         terminouListaAluno = false;
 
-                                                        @*@if (componente.Alunos != null)
+                                                        @if (componente.Pendencias != null)
                                                         {
                                                             var stiloBorderTop = terminouListaAluno ? "border-top: none;" : "";
-                                                            @AbrirTabelaAluno()
-                                                            for (int i = 0; i < componente.Alunos.Count; i++)
+                                                            @AbrirTabelaPendencia()
+                                                            for (int i = 0; i < componente.Pendencias.Count; i++)
                                                             {
-                                                                var aluno = componente.Alunos[i];
-                                                                @MontarLinhaAluno(aluno.NumeroChamada, aluno.NomeTurma, aluno.NomeAluno, aluno.NumeroFaltasNaoCompensadas, aluno.Frequencia)
+                                                                var aluno = componente.Pendencias[i];
+                                                                @MontarLinhaPendencia("a", "b", "c", 1, 1)
 
                                                                 var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
-                                                                terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Alunos.Count == i + 1;
+                                                                terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Pendencias.Count == i + 1;
 
                                                                 @if (atigiuLimiteDadosPorPagina)
                                                                 {
-                                                                    @FecharTabelaAluno()
+                                                                    @FecharTabelaPendencia()
                                                                     @MontarQuebrarPagina();
                                                                     contadorQuebrarPagina = 0;
                                                                     @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
                                                                     if (!terminouListaAluno)
                                                                     {
                                                                         @MontarComponente(componente.NomeComponente)
-                                                                        @AbrirTabelaAluno()
+                                                                        @AbrirTabelaPendencia()
                                                                     }
                                                                 }
                                                             }
                                                             if (!terminouListaAluno)
                                                             {
-                                                                @FecharTabelaAluno()
+                                                                @FecharTabelaPendencia()
                                                             }
-                                                        }*@
+                                                        }
                                                     }
                                                 }
                                         if (((d + 1 != Model.Dres.Count) ||

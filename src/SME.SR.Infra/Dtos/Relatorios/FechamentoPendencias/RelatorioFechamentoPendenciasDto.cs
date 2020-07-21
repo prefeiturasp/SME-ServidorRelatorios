@@ -8,8 +8,7 @@ namespace SME.SR.Infra
         {
             Dres = new List<RelatorioFechamentoPendenciasDreDto>();
         }
-        public bool ExibeFaltas { get; set; }
-        public bool ExibeFrequencia { get; set; }
+        public bool ExibeDetalhamento { get; set; }        
         public string Dre { get; set; }
         public string Ue{ get; set; }
         public string Ano{ get; set; }

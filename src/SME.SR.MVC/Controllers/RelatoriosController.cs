@@ -1075,8 +1075,8 @@ namespace SME.SR.MVC.Controllers
             model.Ano = "2020";
             model.Bimestre = "1";
 
-            model.ExibeFaltas = true;
-            model.ExibeFrequencia = false;
+            //model.ExibeFaltas = true;
+            //model.ExibeFrequencia = false;
             model.Dre = "DRE 01";
             model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
             model.Ano = "001";
