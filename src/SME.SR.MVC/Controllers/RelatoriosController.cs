@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SME.SR.Application;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
@@ -1064,7 +1063,7 @@ namespace SME.SR.MVC.Controllers
             //        }
             //    }
             //});
-            
+
             return View(model);
         }
 
@@ -1073,24 +1072,71 @@ namespace SME.SR.MVC.Controllers
         {
 
             var model = new RelatorioFechamentoPendenciasDto();
-            model.Cabecalho = new RelatorioFechamentoPendenciaCabecalhoDto()
-            {
-                AnoLetivo = "2020",
-                Bimestre = "1",
-                Data = DateTime.Today.ToString("dd/MM/yyyy"),
-                Modalidade = Modalidade.Fundamental.ToString(),
-                NomeComponenteCurricular = "Matemática",
-                NomeDre = "Nome da Dre",
-                NomeProfessor = "Girafalles",
-                NomeUe = "Nome da UE",
-                NumeroRf = "0014",
-                Turma = "123"
-            };
-            model.Bimestres.Add(new RelatorioFechamentoPendenciaBimestreDto() { 
-             
-            
-            });
+            model.Ano = "2020";
+            model.Bimestre = "1";
 
+            model.ExibeFaltas = true;
+            model.ExibeFrequencia = false;
+            model.Dre = "DRE 01";
+            model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
+            model.Ano = "001";
+            model.Bimestre = "1º";
+            model.ComponenteCurricular = "Matemática";
+            model.Usuario = "ADMIN";
+            //model.Modalidade = "Fundamental";
+            model.RF = "123123123";
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            model.Dres.Add(new RelatorioFechamentoPendenciasDreDto
+            {
+                Codigo = "123",
+                Nome = "DRE 01",
+                Ues = new List<RelatorioFechamentoPendenciasUeDto>
+                {
+                    new RelatorioFechamentoPendenciasUeDto
+                    {
+                        Nome="UE 01",
+                        Codigo="456",
+                        Anos= new List<RelatorioFechamentoPendenciasAnoDto>
+                        {
+                            new RelatorioFechamentoPendenciasAnoDto
+                            {
+                                 Nome ="1º ano",
+                                Bimestres= new List<RelatorioFechamentoPendenciasBimestreDto>
+                                {
+                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    {
+                                         Nome="1º Bim",
+                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         {
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "001",
+                                                     NomeComponente = "Matemática",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+                                                      }
+                                               }
+                                         }
+                                    }
+
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+            });
 
 
             return View("RelatorioFechamentoPendencia", model);

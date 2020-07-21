@@ -1,8 +1,12 @@
-﻿namespace SME.SR.Infra
+﻿
+namespace SME.SR.Infra
 {
-    public class RelatorioFechamentoPendenciaDto1
+    public class RelatorioFechamentoPendenciasPendenciaDto
     {
-        public string NomeComponenteCurricular { get; set; }
+        public RelatorioFechamentoPendenciasPendenciaDto()
+        {
+            
+        }        
         public string DescricaoPendencia { get; set; }
         public string DetalhamentoPendencia { get; set; }
         public string Situacao { get; set; }
@@ -10,6 +14,6 @@
         public string CodigoUsuarioRf { get; set; }
         public string NomeUsuarioAprovacao { get; set; }
         public string CodigoUsuarioAprovacaoRf { get; set; }
-        
+
     }
 }

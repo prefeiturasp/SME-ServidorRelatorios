@@ -6,7 +6,7 @@ namespace SME.SR.Infra
     {
         public RelatorioFechamentoPendenciasDto()
         {
-            Dres = new List<RelatorioFaltaFrequenciaDreDto>();
+            Dres = new List<RelatorioFechamentoPendenciasDreDto>();
         }
         public bool ExibeFaltas { get; set; }
         public bool ExibeFrequencia { get; set; }
@@ -18,6 +18,6 @@ namespace SME.SR.Infra
         public string Usuario{ get; set; }
         public string RF{ get; set; }
         public string Data{ get; set; }
-        public List<RelatorioFaltaFrequenciaDreDto> Dres { get; set; }
+        public List<RelatorioFechamentoPendenciasDreDto> Dres { get; set; }
     }
 }
