@@ -61,9 +61,9 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaTerceiroAno"/>
 			<fieldDescription><![CDATA[frequenciaTerceiroAno]]></fieldDescription>
 		</field>
-		<field name="notaConceitoQaurtoAno" class="java.lang.String">
-			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoQaurtoAno"/>
-			<fieldDescription><![CDATA[notaConceitoQaurtoAno]]></fieldDescription>
+		<field name="notaConceitoQuartoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoQuartoAno"/>
+			<fieldDescription><![CDATA[notaConceitoQuartoAno]]></fieldDescription>
 		</field>
 		<field name="frequenciaQuartoAno" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaQuartoAno"/>
@@ -276,7 +276,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoQaurtoAno} != null ? $F{notaConceitoQaurtoAno}: "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoQuartoAno} != null ? $F{notaConceitoQuartoAno}: "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
