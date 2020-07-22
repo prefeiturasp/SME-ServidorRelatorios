@@ -42,48 +42,61 @@
 
  <table class='tabela-alunos'>
             <thead>
-                <th style='width: 100%;'>Nº</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan='4' style='border-bottom: none; border-top: none;'></td>
-                </tr>
-            </tbody>
-            </table>
-    
-
-            <table class='tabela-alunos'>
-            <thead>
-            <tr>
-            <th style='width: 10%;'>Nº</th>
-            <th style='width: 10%;'>Turma</th>
-            <th style='width: 60%;' class='alinhar-esquerda'>NOME</th>          
-            </tr>
-            </thead>
-            <tbody>";
+                <th style='width: 100%;'>DESCRIÇÃO DA PENDÊNCIA</th>
+            </thead>";
         return Html.Raw(str);
     }
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string alunoNumero, string nomeTurma, string alunoNome, int alunoFaltas, double alunoFreq)
+    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string descricao, string detalhamento, bool mostraDetalhe, string usuario, string aprovador, string usuarioRf, string aprovadorRf)
     {
         // Contar
         contadorQuebrarPagina = contadorQuebrarPagina + 1;
-        var str = $@"<tr>
-    <td>{alunoNumero}</td>
-    <td>{nomeTurma}</td>
-    <td class='alinhar-esquerda'>{alunoNome}</td>";
+        var str = $@"
+        <table class='tabela-alunos'>
+            <thead>
+                <th style='width: 100%;'>DESCRIÇÃO DA PENDÊNCIA</th>     
+           </thead>
+            <tbody>
+                <tr>
+                    <td colspan='4' style='border-bottom: none; border-top: none;'>{descricao}</td>
+                </tr>
+           </tbody>";
         
-        //if (Model.)
-        //{
-        //    str = str + $@"<td>{alunoFaltas}</td>";
-        //}
+        if (mostraDetalhe)
+        {
+            str = str + $@"<table class='tabela-alunos'>
+            <thead>
+                <th style='width: 100%;'>DETALHE DA PENDÊNCIA</th>     
+           </thead>
+            <tbody>
+                <tr>
+                    <td colspan='4' style='border-bottom: none; border-top: none;'>{detalhamento}</td>
+                </tr>
+           </tbody>
+        </table>";
+        }
 
-        //if (Model.ExibeFrequencia)
-        //{
-        //    str = str + $@"<td>{alunoFreq}</td>";
-        //};
+           str = str + $@"<table class='tabela-alunos'>
+            <thead>
+                <th style='width: 10%;'>Situação:</th>     
+                <th style='width: 10%;'>Cancelada</th>     
+                <th style='width: 10%;' class='thLimpo'>Usuário:</th>     
+                <th style='width: 30%;' class='thLimpo'>{usuario}</th>     
+                <th style='width: 10%;' class='thLimpo'>Aprovação:</th>     
+                <th style='width: 30%;' class='thLimpo'>{aprovador}</th>     
+           </thead>
+            <tbody>
+                <tr>
+                    <td colspan='2' style='border-bottom: none; border-top: none;'></td>
+                    <td colspan='1' style='border-bottom: none; border-top: none;'>RF:</td>
+                    <td colspan='1' style='border-bottom: none; border-top: none;'>{usuarioRf}</td>
+                    <td colspan='1' style='border-bottom: none; border-top: none;'>RF:</td>
+                    <td colspan='1' style='border-bottom: none; border-top: none;'>{aprovadorRf}</td>
 
-        str = str + @"</tr>";
+                </tr>
+           </tbody>
+        </table>";
+
 
         return Html.Raw(str);
     }
@@ -106,38 +119,50 @@ SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
         return Html.Raw(str);
     }
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarCabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data)
+    Microsoft.AspNetCore.Html.IHtmlContent MontarCabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data, string modalidade, string semestre, string turma)
     {
         var str =
            $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-faltas-frequencia'>FALTAS</div>
+<div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
 <div class='fonte-14 header-pagina'>
-<table>
+<table class='tblTopo'>
 <tbody>
 <tr>
-<td class='campo-dre'>DRE: {dre}</td>
-<td class='campo-ue'>UE: {ue}</td>
-<td class='campo-ano'>ANO: {ano}</td>
+<td  width='40%' >DRE: {dre}</td>
+<td width='40%' >UE: {ue}</td>
+<td  width='20%' >ANO LETIVO: {ano}</td>
 </tr>
 </tbody>
 </table>
+
 <table>
 <tbody>
 <tr>
-<td class='campo-bimestre'>BIMESTRE: {bimestre}</td>
+<td class='campo-bimestre'>MODALIDADE: {modalidade}</td>
+<td class='campo-bimestre'>SEMESTRE: {semestre}</td>
+<td class='campo-bimestre'>TURMA: {turma}</td>
+
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
 <td class='campo-componente-curricular'>
 COMPONENTE CURRICULAR: {componenteCurricular}
 </td>
+<td class='campo-bimestre'>BIMESTRE: {bimestre}</td>
 </tr>
 </tbody>
 </table>
 <table>
 <tbody>
 <tr>
-<td class='campo-usuario'>USUÁRIO: {usuario}</td>
+<td class='campo-usuario'>PROFESSOR: {usuario}</td>
 <td class='campo-rf-data'>RF: {rf}</td>
 <td class='campo-rf-data'>DATA: {data}</td>
 </tr>
@@ -161,6 +186,11 @@ COMPONENTE CURRICULAR: {componenteCurricular}
 </head>
 <body class="body-rel-faltas-frequencia">
     <style>
+          tblTopo th, td {
+      padding: 3px 0px 3px 15px;
+      text-align: left;
+    }
+            
         .body-rel-faltas-frequencia {
             margin: 0.5cm auto;
             font-family: Roboto, sans-serif;
@@ -282,143 +312,122 @@ COMPONENTE CURRICULAR: {componenteCurricular}
             float: right;
             font-size: 15px;
         }
+
+        .thLimpo {
+            background-color:#ffffff;
+        }
     </style>
 
 
     <div>
+        @{
+            var ehUltimoRegistro = true;
 
-        @if (Model.Dres != null)
-        {
-            for (int d = 0; d < Model.Dres.Count; d++)
+            @MontarCabecalho(Model.DreNome, Model.UeNome, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data, Model.Modalidade, Model.Semestre, Model.TurmaNome)
+
+
+            for (int a = 0; a < Model.Dre.Ue.Turmas.Count; a++)
             {
-                var dre = Model.Dres[d];
-                @if (Model.Dres[d].Ues != null)
+
+                @if (Model.Dre.Ue.Turmas[a].Bimestres != null)
                 {
-                    for (int u = 0; u < Model.Dres[d].Ues.Count; u++)
+
+                    foreach (var bimestre in Model.Dre.Ue.Turmas[a].Bimestres)
                     {
-                        var ue = Model.Dres[d].Ues[u];
-                        if (ue.Anos != null)
+
+                        if (String.IsNullOrEmpty(Model.TurmaNome))
                         {
-                            for (int a = 0; a < ue.Anos.Count; a++)
+                            var turma = Model.Dre.Ue.Turmas[a];
+                            <table class="tabela-alunos">
+                                <thead>
+
+                                    <tr>
+                                        <th>@turma.Nome</th>
+                                    </tr>
+                                    <tr>
+                                        <th height="5px" class="thLimpo" style="border-bottom:0"></th>
+                                    </tr>
+
+                                </thead>
+                            </table>
+                        }
+
+                        @if (bimestre.Componentes != null)
+                        {
+                            if (string.IsNullOrEmpty(Model.Bimestre))
                             {
-                                var ano = ue.Anos[a];
-                                if (ano.Bimestres != null)
+                                <table class="tabela-alunos">
+                                    <thead>
+                                        <tr>
+                                            <th>@bimestre.Nome</th>
+                                        </tr>
+                                        <tr>
+                                            <th height="5px" class="thLimpo" style="border-bottom:0"></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            }
+
+                            for (int c = 0; c < bimestre.Componentes.Count; c++)
+                            {
+                                var componente = bimestre.Componentes[c];
+
+                                if (string.IsNullOrEmpty(Model.ComponenteCurricular))
                                 {
-                                    for (int b = 0; b < ano.Bimestres.Count; b++)
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th style="border-bottom:0">@componente.NomeComponente</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                }
+
+                                if (componente.Pendencias != null)
+                                {
+
+                                    for (int i = 0; i < componente.Pendencias.Count; i++)
                                     {
-                                        var bimestre = ano.Bimestres[b];
+                                        var pendencia = componente.Pendencias[i];
+                                        @MontarLinhaPendencia(pendencia.DescricaoPendencia, pendencia.DetalhamentoPendencia, Model.ExibeDetalhamento, pendencia.NomeUsuario, pendencia.NomeUsuarioAprovacao , pendencia.CodigoUsuarioRf, pendencia.CodigoUsuarioAprovacaoRf)
 
-                                        @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                                        @*var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
-                                        @if (bimestre.Componentes != null)
+                                        @if (atigiuLimiteDadosPorPagina)
                                         {
-                                            <table class="tabela-alunos">
-                                                <thead>
-                                                    @if (Model.Dre == "Todas")
-                                                    {
-                                                        <tr>
-                                                            <th>@dre.Nome</th>
-                                                        </tr>
-                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                                    }
-                                                    @if (Model.Ue == "Todas")
-                                                    {
-                                                        <tr>
-                                                            <th>@ue.Nome</th>
-                                                        </tr>
-                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                                    }
-                                                    @*<tr>
-                                                        <th>@Model.Modalidade</th>
-                                                    </tr>*@
-                                                    @{contadorQuebrarPagina = contadorQuebrarPagina + 1;}
-                                                    @if (Model.Ano == "Todos")
-                                                    {
-                                                        <tr>
-                                                            <th>@string.Format("{0}º Ano", ano.Nome)</th>
-                                                        </tr>
-                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                                    }
-                                                    @if (Model.Bimestre == "Todos")
-                                                    {
-                                                        <tr>
-                                                            <th>@bimestre.Nome</th>
-                                                        </tr>
-                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                                    }
-                                                </thead>
-                                            </table>
-
-                                            // CONTAR
-                                            //contadorQuebrarPagina = contadorQuebrarPagina + 5;
-                                            var terminouListaAluno = false;
-                                            // foreach (var componente in ano.Bimestres[b].Componentes)
-                                            for (int c = 0; c < ano.Bimestres[b].Componentes.Count; c++)
-                                            {
-                                                var componente = ano.Bimestres[b].Componentes[c];
-
-                                                if ((contadorQuebrarPagina + 6) > contadorMaximoLinhasPorPagina)
-                                                {
-                                                    @MontarQuebrarPagina();
-                                                    @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
-                                                    contadorQuebrarPagina = 0;
-                                                    if (Model.ComponenteCurricular == "Todos")
-                                                        @MontarComponente(componente.NomeComponente)
-                                                    }
-                                                    else
-                                                    {
-                                                        if (Model.ComponenteCurricular == "Todos")
-                                                            @MontarComponente(componente.NomeComponente, !terminouListaAluno)
-                                                        }
-
-                                                        terminouListaAluno = false;
-
-                                                        @if (componente.Pendencias != null)
-                                                        {
-                                                            var stiloBorderTop = terminouListaAluno ? "border-top: none;" : "";
-                                                            @AbrirTabelaPendencia()
-                                                            for (int i = 0; i < componente.Pendencias.Count; i++)
-                                                            {
-                                                                var aluno = componente.Pendencias[i];
-                                                                @MontarLinhaPendencia("a", "b", "c", 1, 1)
-
-                                                                var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
-
-                                                                terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Pendencias.Count == i + 1;
-
-                                                                @if (atigiuLimiteDadosPorPagina)
-                                                                {
-                                                                    @FecharTabelaPendencia()
-                                                                    @MontarQuebrarPagina();
-                                                                    contadorQuebrarPagina = 0;
-                                                                    @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
-                                                                    if (!terminouListaAluno)
-                                                                    {
-                                                                        @MontarComponente(componente.NomeComponente)
-                                                                        @AbrirTabelaPendencia()
-                                                                    }
-                                                                }
-                                                            }
-                                                            if (!terminouListaAluno)
-                                                            {
-                                                                @FecharTabelaPendencia()
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                        if (((d + 1 != Model.Dres.Count) ||
-                                             (u + 1 != dre.Ues.Count) ||
-                                             (a + 1 != ue.Anos.Count) ||
-                                             (b + 1 != ano.Bimestres.Count)))
-                                        {
+                                            // @FecharTabelaPendencia()
                                             @MontarQuebrarPagina();
                                             contadorQuebrarPagina = 0;
-                                        }
+                                            @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                                        }*@
                                     }
+
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th height="5px" class="thLimpo" style="border-bottom:0"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+
+
+
                                 }
+
+
                             }
+
+
+
                         }
+
+
+
                     }
+
+
+
+
                 }
             }
         }

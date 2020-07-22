@@ -2,13 +2,14 @@
 
 namespace SME.SR.Infra
 {
-    public class RelatorioFechamentoPendenciasAnoDto
+    public class RelatorioFechamentoPendenciasTurmaDto
     {
-        public RelatorioFechamentoPendenciasAnoDto()
+        public RelatorioFechamentoPendenciasTurmaDto()
         {
             Bimestres = new List<RelatorioFechamentoPendenciasBimestreDto>();
         }
         public string Nome { get; set; }
         public List<RelatorioFechamentoPendenciasBimestreDto> Bimestres { get; set; }
+
     }
 }
