@@ -243,7 +243,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="172" splitType="Stretch">
+		<band height="174" splitType="Stretch">
 			<textField textAdjust="StretchHeight">
 				<reportElement mode="Opaque" x="0" y="0" width="555" height="22" backcolor="#F3F3F3" uuid="16e02bde-f672-481c-ae42-5b22c9c2a999">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -316,6 +316,9 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				</subreportParameter>
 				<subreportExpression><![CDATA["GrupoComponentesComNota.jasper"]]></subreportExpression>
 			</subreport>
+			<break>
+				<reportElement x="0" y="173" width="554" height="1" uuid="b7de463f-22db-478d-b840-73763b159cb7"/>
+			</break>
 		</band>
 	</detail>
 	<pageFooter>
