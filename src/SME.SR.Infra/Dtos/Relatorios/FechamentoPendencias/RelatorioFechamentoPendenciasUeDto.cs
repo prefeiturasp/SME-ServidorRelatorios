@@ -6,10 +6,10 @@ namespace SME.SR.Infra
     {
         public RelatorioFechamentoPendenciasUeDto()
         {
-            Anos = new List<RelatorioFechamentoPendenciasAnoDto>();
+            Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>();
         }
         public string Codigo { get; set; }
         public string Nome { get; set; }
-        public List<RelatorioFechamentoPendenciasAnoDto> Anos { get; set; }
+        public List<RelatorioFechamentoPendenciasTurmaDto> Turmas { get; set; }
     }
 }

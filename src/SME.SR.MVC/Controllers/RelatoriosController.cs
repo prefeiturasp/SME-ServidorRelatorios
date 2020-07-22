@@ -1070,42 +1070,43 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("fechamentos-pendencias")]
         public IActionResult RelatorioFechamentoPendencia([FromServices] IMediator mediator)
         {
+            RelatorioFechamentoPendenciasDto model = Gera1PendenciaBasica();
 
+            return View("RelatorioFechamentoPendencia", model);
+        }
+
+        private static RelatorioFechamentoPendenciasDto Gera1PendenciaBasica()
+        {
             var model = new RelatorioFechamentoPendenciasDto();
-            model.Ano = "2020";
-            model.Bimestre = "1";
 
-            //model.ExibeFaltas = true;
-            //model.ExibeFrequencia = false;
-            model.Dre = "DRE 01";
-            model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
-            model.Ano = "001";
+            model.DreNome = "DRE 001";
+            model.UeNome = "UE 001";
+            model.TurmaNome = "1F - 01";
+            model.Ano = "1987";
             model.Bimestre = "1º";
             model.ComponenteCurricular = "Matemática";
             model.Usuario = "ADMIN";
+            model.Modalidade = "Fundamental";
+            model.Semestre = "1";
             //model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            model.Dres.Add(new RelatorioFechamentoPendenciasDreDto
+            model.Dre = new RelatorioFechamentoPendenciasDreDto
             {
                 Codigo = "123",
                 Nome = "DRE 01",
-                Ues = new List<RelatorioFechamentoPendenciasUeDto>
+                Ue = new RelatorioFechamentoPendenciasUeDto
                 {
-                    new RelatorioFechamentoPendenciasUeDto
-                    {
-                        Nome="UE 01",
-                        Codigo="456",
-                        Anos= new List<RelatorioFechamentoPendenciasAnoDto>
-                        {
-                            new RelatorioFechamentoPendenciasAnoDto
-                            {
-                                 Nome ="1º ano",
-                                Bimestres= new List<RelatorioFechamentoPendenciasBimestreDto>
+                    Nome = "UE 01",
+                    Codigo = "456",
+                    Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>() {
+                         new RelatorioFechamentoPendenciasTurmaDto() {
+                          Nome = "Turma de Teste",
+                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
                                 {
                                     new RelatorioFechamentoPendenciasBimestreDto
                                     {
-                                         Nome="1º Bim",
+                                         Nome="1º BIMESTRE",
                                          Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
                                          {
                                                new RelatorioFechamentoPendenciasComponenteDto()
@@ -1122,25 +1123,38 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuario = "nome do usuário",
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
                                                            }
+
 
                                                       }
                                                }
                                          }
                                     }
-
-
-                                }
-                            }
-
                         }
-                    }
+                         }
+                        }
+
                 }
-            });
-
-
-            return View("RelatorioFechamentoPendencia", model);
+            };
+            return model;
         }
-
     }
 }
