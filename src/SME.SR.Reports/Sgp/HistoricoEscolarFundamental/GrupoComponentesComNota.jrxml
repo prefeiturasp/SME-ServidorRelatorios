@@ -39,7 +39,8 @@
 		<band height="15" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField textAdjust="ScaleFont">
-				<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="30" height="15" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="9171e360-030b-46c3-bb5b-31c12471c650">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="35" height="15" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="9171e360-030b-46c3-bb5b-31c12471c650">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$F{nomeGrupo}!=null]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -51,7 +52,7 @@
 				<textFieldExpression><![CDATA[$F{nomeGrupo}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="30" y="0" width="525" height="15" isRemoveLineWhenBlank="true" uuid="f5a63079-cc0c-43a0-8a20-ae53f8cd6c3d">
+				<reportElement positionType="Float" x="35" y="0" width="525" height="15" isRemoveLineWhenBlank="true" uuid="f5a63079-cc0c-43a0-8a20-ae53f8cd6c3d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -61,7 +62,7 @@
 					</datasetRun>
 					<jr:listContents height="15" width="525">
 						<textField textAdjust="StretchHeight">
-							<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="82" height="15" uuid="24bcf828-356a-4053-9217-ca3350bdaff9">
+							<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="80" height="15" uuid="24bcf828-356a-4053-9217-ca3350bdaff9">
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							</reportElement>
@@ -74,7 +75,7 @@
 							<textFieldExpression><![CDATA[$F{nome} != null? $F{nome} : ""]]></textFieldExpression>
 						</textField>
 						<subreport>
-							<reportElement x="82" y="0" width="330" height="15" uuid="366e145e-d1ea-4523-8506-22fa93080826"/>
+							<reportElement x="80" y="0" width="330" height="15" uuid="366e145e-d1ea-4523-8506-22fa93080826"/>
 							<subreportParameter name="REPORT_DATA_SOURCE">
 								<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
 							</subreportParameter>
