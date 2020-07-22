@@ -321,15 +321,19 @@ COMPONENTE CURRICULAR: {componenteCurricular}
 
     <div>
         @{
+            var ehUltimoRegistro = true;
+
+            @MontarCabecalho(Model.DreNome, Model.UeNome, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data, Model.Modalidade, Model.Semestre, Model.TurmaNome)
+
+
             for (int a = 0; a < Model.Dre.Ue.Turmas.Count; a++)
             {
+
                 @if (Model.Dre.Ue.Turmas[a].Bimestres != null)
                 {
 
                     foreach (var bimestre in Model.Dre.Ue.Turmas[a].Bimestres)
                     {
-
-                        @MontarCabecalho(Model.DreNome, Model.UeNome, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data, Model.Modalidade, Model.Semestre, Model.TurmaNome )
 
                         if (String.IsNullOrEmpty(Model.TurmaNome))
                         {
@@ -373,8 +377,8 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                     <table class="tabela-alunos">
                                         <thead>
                                             <tr>
-                                                <th  style="border-bottom:0">@componente.NomeComponente</th>
-                                            </tr>                                            
+                                                <th style="border-bottom:0">@componente.NomeComponente</th>
+                                            </tr>
                                         </thead>
                                     </table>
                                 }
@@ -387,18 +391,24 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                         var pendencia = componente.Pendencias[i];
                                         @MontarLinhaPendencia(pendencia.DescricaoPendencia, pendencia.DetalhamentoPendencia, Model.ExibeDetalhamento)
 
-                                        @*var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;                                        
+                                        @*var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
                                         @if (atigiuLimiteDadosPorPagina)
                                         {
                                             // @FecharTabelaPendencia()
                                             @MontarQuebrarPagina();
                                             contadorQuebrarPagina = 0;
-                                            @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)                                            
+                                            @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
                                         }*@
                                     }
 
-
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th height="5px" class="thLimpo" style="border-bottom:0"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
 
 
 
