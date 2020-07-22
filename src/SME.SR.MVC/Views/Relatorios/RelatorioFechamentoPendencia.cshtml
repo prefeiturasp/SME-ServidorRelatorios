@@ -47,7 +47,7 @@
         return Html.Raw(str);
     }
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string descricao, string detalhamento, bool mostraDetalhe)
+    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string descricao, string detalhamento, bool mostraDetalhe, string usuario, string aprovador, string usuarioRf, string aprovadorRf)
     {
         // Contar
         contadorQuebrarPagina = contadorQuebrarPagina + 1;
@@ -81,17 +81,17 @@
                 <th style='width: 10%;'>Situação:</th>     
                 <th style='width: 10%;'>Cancelada</th>     
                 <th style='width: 10%;' class='thLimpo'>Usuário:</th>     
-                <th style='width: 30%;' class='thLimpo'>Profesor bla bla bla bla bla bla bla bla</th>     
+                <th style='width: 30%;' class='thLimpo'>{usuario}</th>     
                 <th style='width: 10%;' class='thLimpo'>Aprovação:</th>     
-                <th style='width: 30%;' class='thLimpo'>Profesor bla bla bla bla bla bla bla bla</th>     
+                <th style='width: 30%;' class='thLimpo'>{aprovador}</th>     
            </thead>
             <tbody>
                 <tr>
                     <td colspan='2' style='border-bottom: none; border-top: none;'></td>
                     <td colspan='1' style='border-bottom: none; border-top: none;'>RF:</td>
-                    <td colspan='1' style='border-bottom: none; border-top: none;'>7777710</td>
+                    <td colspan='1' style='border-bottom: none; border-top: none;'>{usuarioRf}</td>
                     <td colspan='1' style='border-bottom: none; border-top: none;'>RF:</td>
-                    <td colspan='1' style='border-bottom: none; border-top: none;'>7777710</td>
+                    <td colspan='1' style='border-bottom: none; border-top: none;'>{aprovadorRf}</td>
 
                 </tr>
            </tbody>
@@ -389,7 +389,7 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                     for (int i = 0; i < componente.Pendencias.Count; i++)
                                     {
                                         var pendencia = componente.Pendencias[i];
-                                        @MontarLinhaPendencia(pendencia.DescricaoPendencia, pendencia.DetalhamentoPendencia, Model.ExibeDetalhamento)
+                                        @MontarLinhaPendencia(pendencia.DescricaoPendencia, pendencia.DetalhamentoPendencia, Model.ExibeDetalhamento, pendencia.NomeUsuario, pendencia.NomeUsuarioAprovacao , pendencia.CodigoUsuarioRf, pendencia.CodigoUsuarioAprovacaoRf)
 
                                         @*var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
