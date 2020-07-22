@@ -260,7 +260,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["GruposComponentesCurriculares.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="112" width="555" height="15" uuid="6566e5af-fe59-4c89-86f5-d3d7ff5951b6">
+				<reportElement positionType="Float" x="0" y="112" width="555" height="15" isRemoveLineWhenBlank="true" uuid="6566e5af-fe59-4c89-86f5-d3d7ff5951b6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
@@ -269,7 +269,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["EnriquecimentoCurricular.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="127" width="555" height="15" uuid="455f8073-813f-4f58-9fa2-75065981229d">
+				<reportElement positionType="Float" x="0" y="127" width="555" height="15" isRemoveLineWhenBlank="true" uuid="455f8073-813f-4f58-9fa2-75065981229d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
@@ -290,6 +290,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<reportElement positionType="Float" x="0" y="157" width="555" height="15" isRemoveLineWhenBlank="true" uuid="c0bd7c5f-87cb-42bd-ba4c-22e608112b06">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{legenda} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6"/>
@@ -297,7 +298,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA[$F{legenda}]]></textFieldExpression>
 			</textField>
 			<break>
-				<reportElement x="0" y="174" width="554" height="1" uuid="da7003f1-fc3c-49cb-bd7b-47f5056ca029">
+				<reportElement positionType="Float" x="0" y="174" width="554" height="1" uuid="da7003f1-fc3c-49cb-bd7b-47f5056ca029">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
