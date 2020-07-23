@@ -3,7 +3,24 @@
 @{
     int paginaAtual = 0;
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoLinhasPorPagina = 44;
+
+
+
+    string VerificaQuebra()
+    {
+        //contadorQuebrarPagina = contadorQuebrarPagina + quantidadeLinhasAdicionar;
+
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            return $@"<div style='page-break-before:always' />";
+
+        }
+
+        return string.Empty;
+
+    }
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarComponente(string componenteNome, bool removerBorderTop = false)
     {
@@ -35,7 +52,7 @@
             <table class='tabela-alunos'>
             <tbody>
                 <tr>
-                    <td colspan='4' style='border-bottom: none; border-top: none;'></td>
+                    <td colspan='4' ></td>
                 </tr>
             </tbody>
             </table>
@@ -47,10 +64,9 @@
         return Html.Raw(str);
     }
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string descricao, string detalhamento, bool mostraDetalhe, string usuario, string aprovador, string usuarioRf, string aprovadorRf)
+    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string descricao, string[] detalhamentos, bool mostraDetalhe, string usuario, string aprovador, string usuarioRf, string aprovadorRf)
     {
-        // Contar
-        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        // Contar        
         var str = $@"
         <table class='tabela-alunos'>
             <thead>
@@ -58,10 +74,12 @@
            </thead>
             <tbody>
                 <tr>
-                    <td colspan='4' style='border-bottom: none; border-top: none;'>{descricao}</td>
+                    <td colspan='4' >{descricao}</td>
                 </tr>
            </tbody>";
-        
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+
+
         if (mostraDetalhe)
         {
             str = str + $@"<table class='tabela-alunos'>
@@ -69,14 +87,32 @@
                 <th style='width: 100%;'>DETALHE DA PENDÊNCIA</th>     
            </thead>
             <tbody>
-                <tr>
-                    <td colspan='4' style='border-bottom: none; border-top: none;'>{detalhamento}</td>
-                </tr>
-           </tbody>
-        </table>";
+            <tr>
+                    <td colspan='4' style=''>";
+            for (int i = 0; i < detalhamentos.Length; i++)
+            {
+                str = str + $@"{detalhamentos[i]}";
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                var quebra = VerificaQuebra();
+
+                if (!string.IsNullOrEmpty(quebra))
+                {
+                       str = str + $@"</td></tr></tbody></table>";
+                    str = str + quebra;
+                    str = str + $@"<table class='tabela-alunos'>
+                                    <thead>
+                                        <th style='width: 100%;'>DETALHE DA PENDÊNCIA</th>     
+                                   </thead>
+                                    <tbody><tr>
+                    <td colspan='4' >";                    
+                }
+            }
+
+            str = str + $@"</td>
+                </tr></tbody></table>";
         }
 
-           str = str + $@"<table class='tabela-alunos'>
+        str = str + $@"<table class='tabela-alunos'>
             <thead>
                 <th style='width: 10%;'>Situação:</th>     
                 <th style='width: 10%;'>Cancelada</th>     
@@ -87,16 +123,19 @@
            </thead>
             <tbody>
                 <tr>
-                    <td colspan='2' style='border-bottom: none; border-top: none;'></td>
-                    <td colspan='1' style='border-bottom: none; border-top: none;'>RF:</td>
-                    <td colspan='1' style='border-bottom: none; border-top: none;'>{usuarioRf}</td>
-                    <td colspan='1' style='border-bottom: none; border-top: none;'>RF:</td>
-                    <td colspan='1' style='border-bottom: none; border-top: none;'>{aprovadorRf}</td>
+                    <td colspan='2' ></td>
+                    <td colspan='1' >RF:</td>
+                    <td colspan='1' >{usuarioRf}</td>
+                    <td colspan='1' >RF:</td>
+                    <td colspan='1' >{aprovadorRf}</td>
 
                 </tr>
            </tbody>
         </table>";
 
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+
+        str = VerificaQuebra() + str ;
 
         return Html.Raw(str);
     }
@@ -121,55 +160,57 @@ SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarCabecalho(string dre, string ue, string ano, string bimestre, string componenteCurricular, string usuario, string rf, string data, string modalidade, string semestre, string turma)
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+
         var str =
            $@"<div>
-<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-</div>
-<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
-<div class='fonte-14 header-pagina'>
-<table class='tblTopo'>
-<tbody>
-<tr>
-<td  width='40%' >DRE: {dre}</td>
-<td width='40%' >UE: {ue}</td>
-<td  width='20%' >ANO LETIVO: {ano}</td>
-</tr>
-</tbody>
-</table>
+                <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+                </div>
+                <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+                <div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
+                <div class='fonte-14 header-pagina'>
+                <table class='tblTopo'>
+                <tbody>
+                <tr>
+                <td  width='40%' >DRE: {dre}</td>
+                <td width='40%' >UE: {ue}</td>
+                <td  width='20%' >ANO LETIVO: {ano}</td>
+                </tr>
+                </tbody>
+                </table>
 
-<table>
-<tbody>
-<tr>
-<td class='campo-bimestre'>MODALIDADE: {modalidade}</td>
-<td class='campo-bimestre'>SEMESTRE: {semestre}</td>
-<td class='campo-bimestre'>TURMA: {turma}</td>
+                <table>
+                <tbody>
+                <tr>
+                <td class='campo-bimestre'>MODALIDADE: {modalidade}</td>
+                <td class='campo-bimestre'>SEMESTRE: {semestre}</td>
+                <td class='campo-bimestre'>TURMA: {turma}</td>
 
-</tr>
-</tbody>
-</table>
+                </tr>
+                </tbody>
+                </table>
 
-<table>
-<tbody>
-<tr>
-<td class='campo-componente-curricular'>
-COMPONENTE CURRICULAR: {componenteCurricular}
-</td>
-<td class='campo-bimestre'>BIMESTRE: {bimestre}</td>
-</tr>
-</tbody>
-</table>
-<table>
-<tbody>
-<tr>
-<td class='campo-usuario'>PROFESSOR: {usuario}</td>
-<td class='campo-rf-data'>RF: {rf}</td>
-<td class='campo-rf-data'>DATA: {data}</td>
-</tr>
-</tbody>
-</table>
-</div>
-";
+                <table>
+                <tbody>
+                <tr>
+                <td class='campo-componente-curricular'>
+                COMPONENTE CURRICULAR: {componenteCurricular}
+                </td>
+                <td class='campo-bimestre'>BIMESTRE: {bimestre}</td>
+                </tr>
+                </tbody>
+                </table>
+                <table>
+                <tbody>
+                <tr>
+                <td class='campo-usuario'>PROFESSOR: {usuario}</td>
+                <td class='campo-rf-data'>RF: {rf}</td>
+                <td class='campo-rf-data'>DATA: {data}</td>
+                </tr>
+                </tbody>
+                </table>
+                </div>
+                ";
 
         return Html.Raw(str);
     }
@@ -321,10 +362,7 @@ COMPONENTE CURRICULAR: {componenteCurricular}
 
     <div>
         @{
-            var ehUltimoRegistro = true;
-
             @MontarCabecalho(Model.DreNome, Model.UeNome, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data, Model.Modalidade, Model.Semestre, Model.TurmaNome)
-
 
             for (int a = 0; a < Model.Dre.Ue.Turmas.Count; a++)
             {
@@ -350,6 +388,8 @@ COMPONENTE CURRICULAR: {componenteCurricular}
 
                                 </thead>
                             </table>
+                            contadorQuebrarPagina = contadorQuebrarPagina + 2;
+                            @Html.Raw(VerificaQuebra())
                         }
 
                         @if (bimestre.Componentes != null)
@@ -365,7 +405,9 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                             <th height="5px" class="thLimpo" style="border-bottom:0"></th>
                                         </tr>
                                     </thead>
-                                </table>
+                                </table>                                
+                                contadorQuebrarPagina = contadorQuebrarPagina + 2;
+                                @Html.Raw(VerificaQuebra())
                             }
 
                             for (int c = 0; c < bimestre.Componentes.Count; c++)
@@ -381,6 +423,9 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                             </tr>
                                         </thead>
                                     </table>
+
+                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                    @Html.Raw(VerificaQuebra())
                                 }
 
                                 if (componente.Pendencias != null)
@@ -389,17 +434,9 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                     for (int i = 0; i < componente.Pendencias.Count; i++)
                                     {
                                         var pendencia = componente.Pendencias[i];
-                                        @MontarLinhaPendencia(pendencia.DescricaoPendencia, pendencia.DetalhamentoPendencia, Model.ExibeDetalhamento, pendencia.NomeUsuario, pendencia.NomeUsuarioAprovacao , pendencia.CodigoUsuarioRf, pendencia.CodigoUsuarioAprovacaoRf)
+                                        @MontarLinhaPendencia(pendencia.DescricaoPendencia, pendencia.DetalhamentoPendenciaArray, Model.ExibeDetalhamento, pendencia.NomeUsuario, pendencia.NomeUsuarioAprovacao, pendencia.CodigoUsuarioRf, pendencia.CodigoUsuarioAprovacaoRf)
 
-                                        @*var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
-                                        @if (atigiuLimiteDadosPorPagina)
-                                        {
-                                            // @FecharTabelaPendencia()
-                                            @MontarQuebrarPagina();
-                                            contadorQuebrarPagina = 0;
-                                            @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
-                                        }*@
                                     }
 
                                     <table class="tabela-alunos">
@@ -409,6 +446,8 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                             </tr>
                                         </thead>
                                     </table>
+                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                    @Html.Raw(VerificaQuebra())
 
 
 
