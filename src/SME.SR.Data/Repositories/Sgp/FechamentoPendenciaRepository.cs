@@ -19,7 +19,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RelatorioFechamentoPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int semestre,
+        public async Task<IEnumerable<RelatorioFechamentoPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
                                                                                                     string[] turmasCodigo, long[] componentesCodigo, int bimestre)
         {
             try
@@ -61,8 +61,10 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
-                        and t.modalidade_codigo = @modalidadeId 
-                        and t.semestre  = @semestre");
+                        and t.modalidade_codigo = @modalidadeId");
+
+                if(semestre.HasValue)
+                    query.AppendLine(" and t.semestre = @semestre ");
 
                 if (turmasCodigo.Length > 0)
                     query.AppendLine(" and t.id = any(@turmasCodigo) ");
@@ -79,7 +81,7 @@ namespace SME.SR.Data
                     dreCodigo,
                     ueCodigo,
                     modalidadeId,
-                    semestre,
+                    semestre = semestre ?? 0,
                     turmasCodigo = turmasCodigo.ToList(),
                     componentesIds = componentesCodigo.ToList(),
                     bimestre

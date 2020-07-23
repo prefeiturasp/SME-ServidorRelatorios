@@ -6,7 +6,7 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IFechamentoPendenciaRepository
     {
-        Task<IEnumerable<RelatorioFechamentoPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int semestre,
+        Task<IEnumerable<RelatorioFechamentoPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
                                                                                                     string[] turmasCodigo, long[] componentesCodigo, int bimestre);
     }
 }
