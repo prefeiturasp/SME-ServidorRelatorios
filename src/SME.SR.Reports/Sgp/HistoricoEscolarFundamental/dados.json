@@ -7,7 +7,8 @@
         "endereco": "Rua RAIMUNDO CORREIA, 5     , VILA DIVA ZONA LESTE, 3351050 SÃO PAULO - SP",
         "atoCriacao": "3.533 - 02/04/1957",
         "atoAutorizacao": "1/81 - 06/04/1981",
-        "lei": "Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06"
+        "leiFundamental": "Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06",
+        "leiMedio": "Ensino Médio – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06"
       },
       "informacoesAluno": {
         "nome": "ARTHUR HERTZ COSTA DE JESUS",
