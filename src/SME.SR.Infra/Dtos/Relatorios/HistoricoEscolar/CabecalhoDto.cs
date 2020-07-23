@@ -13,7 +13,10 @@ namespace SME.SR.Infra
         [JsonProperty("atoAutorizacao")]
         public string AtoAutorizacao { get; set; }
         //TODO: Será tratado em próximas sprint para domínio de leis e modalidades
-        [JsonProperty("lei")]
-        public string Lei { get { return "Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06"; }  }
+        [JsonProperty("leiFundamental")]
+        public string LeiFundamental { get { return "Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06"; }  }
+
+        [JsonProperty("leiMedio")]
+        public string LeiMedio { get { return "Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"; } }
     }
 }
