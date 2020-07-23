@@ -31,10 +31,6 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="RelatorioHistoricoEscolar.cabecalho.atoAutorizacao"/>
 		<fieldDescription><![CDATA[cabecalho.atoAutorizacao]]></fieldDescription>
 	</field>
-	<field name="lei" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="RelatorioHistoricoEscolar.cabecalho.lei"/>
-		<fieldDescription><![CDATA[cabecalho.lei]]></fieldDescription>
-	</field>
 	<field name="nome" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
 		<fieldDescription><![CDATA[informacoesAluno.nome]]></fieldDescription>
@@ -78,6 +74,14 @@
 	<field name="legenda" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="legenda.texto"/>
 		<fieldDescription><![CDATA[legenda.texto]]></fieldDescription>
+	</field>
+	<field name="leiFundamental" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="cabecalho.leiFundamental"/>
+		<fieldDescription><![CDATA[cabecalho.leiFundamental]]></fieldDescription>
+	</field>
+	<field name="leiMedio" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="cabecalho.leiMedio"/>
+		<fieldDescription><![CDATA[cabecalho.leiMedio]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -247,7 +251,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{lei}.toUpperCase()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{leiMedio}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement x="0" y="22" width="555" height="75" uuid="50ccbb3c-07f8-4835-a4fe-35afe74f75a4">
