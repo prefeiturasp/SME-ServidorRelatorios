@@ -1072,7 +1072,7 @@ namespace SME.SR.MVC.Controllers
         {
             RelatorioFechamentoPendenciasDto model = GeraVariasPendencias2Componentes2Turmas();
 
-            return View("RelatorioFechamentoPendencia", model);
+            return View("RelatorioFechamentoPendencias", model);
         }
 
 

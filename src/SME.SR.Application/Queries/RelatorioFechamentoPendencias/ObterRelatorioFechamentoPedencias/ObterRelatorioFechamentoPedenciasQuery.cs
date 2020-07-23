@@ -8,5 +8,6 @@ namespace SME.SR.Application
     public class ObterRelatorioFechamentoPedenciasQuery : IRequest<RelatorioFechamentoPendenciasDto>
     {
         public FiltroRelatorioPendenciasFechamentoDto filtroRelatorioPendenciasFechamentoDto { get; set; }
+        public string UsuarioRf { get; internal set; }
     }
 }

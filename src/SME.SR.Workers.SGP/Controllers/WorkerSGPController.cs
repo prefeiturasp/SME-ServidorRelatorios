@@ -4,6 +4,8 @@ using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
@@ -84,5 +86,14 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioHistoricoEscolarUseCase.Executar(request);
             return true;
         }
+        [HttpGet("relatorios/fechamentopendencias")]
+        [Action("relatorios/fechamentopendencias", typeof(IRelatorioFechamentoPendenciasUseCase))]
+        public async Task<bool> RelatorioFechamentoPendencias([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioFechamentoPendenciasUseCase relatorioFechamentoPendenciasUseCase)
+        {
+            await relatorioFechamentoPendenciasUseCase.Executar(request);            
+            return true;
+        }
+
+        
     }
 }
