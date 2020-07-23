@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SME.SR.Application;
-using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
@@ -1065,8 +1063,606 @@ namespace SME.SR.MVC.Controllers
             //        }
             //    }
             //});
-            
+
             return View(model);
+        }
+
+        [HttpGet("fechamentos-pendencias")]
+        public IActionResult RelatorioFechamentoPendencia([FromServices] IMediator mediator)
+        {
+            RelatorioFechamentoPendenciasDto model = GeraVariasPendencias2Componentes2Turmas();
+
+            return View("RelatorioFechamentoPendencias", model);
+        }
+
+
+        private static RelatorioFechamentoPendenciasDto GeraVariasPendencias2Componentes2Turmas()
+        {
+            var model = new RelatorioFechamentoPendenciasDto();
+
+            model.DreNome = "DRE 001";
+            model.UeNome = "UE 001";
+            model.TurmaNome = "";
+            model.Ano = "1987";
+            model.Bimestre = "";
+            model.ComponenteCurricular = "";
+            model.Usuario = "ADMIN";
+            model.Modalidade = "Fundamental";
+            model.Semestre = "1";
+            //model.Modalidade = "Fundamental";
+            model.RF = "123123123";
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            model.Dre = new RelatorioFechamentoPendenciasDreDto
+            {
+                Codigo = "123",
+                Nome = "DRE 01",
+                Ue = new RelatorioFechamentoPendenciasUeDto
+                {
+                    Nome = "UE 01",
+                    Codigo = "456",
+                    Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>() {
+                         new RelatorioFechamentoPendenciasTurmaDto() {
+                          Nome = "TURMA 01",
+                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                                {
+                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    {
+                                         Nome="1º BIMESTRE",
+                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         {
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "001",
+                                                     NomeComponente = "Matemática",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+
+                                                      }
+                                               },
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "002",
+                                                     NomeComponente = "Ciências",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+
+                                                      }
+                                               }
+
+                                         }
+                                    }
+                        }
+                         },
+                         new RelatorioFechamentoPendenciasTurmaDto() {
+                          Nome = "TURMA 02",
+                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                                {
+                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    {
+                                         Nome="1º BIMESTRE",
+                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         {
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "001",
+                                                     NomeComponente = "Matemática",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+
+                                                      }
+                                               },
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "002",
+                                                     NomeComponente = "Ciências",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+
+                                                      }
+                                               }
+
+                                         }
+                                    }
+                        }
+                         }
+                        },
+
+
+                }
+            };
+            return model;
+        }
+        private static RelatorioFechamentoPendenciasDto GeraVariasPendencias2Componentes()
+        {
+            var model = new RelatorioFechamentoPendenciasDto();
+
+            model.DreNome = "DRE 001";
+            model.UeNome = "UE 001";
+            model.TurmaNome = "1F - 01";
+            model.Ano = "1987";
+            model.Bimestre = "1º";
+            model.ComponenteCurricular = "";
+            model.Usuario = "ADMIN";
+            model.Modalidade = "Fundamental";
+            model.Semestre = "1";
+            //model.Modalidade = "Fundamental";
+            model.RF = "123123123";
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            model.Dre = new RelatorioFechamentoPendenciasDreDto
+            {
+                Codigo = "123",
+                Nome = "DRE 01",
+                Ue = new RelatorioFechamentoPendenciasUeDto
+                {
+                    Nome = "UE 01",
+                    Codigo = "456",
+                    Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>() {
+                         new RelatorioFechamentoPendenciasTurmaDto() {
+                          Nome = "Turma de Teste",
+                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                                {
+                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    {
+                                         Nome="1º BIMESTRE",
+                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         {
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "001",
+                                                     NomeComponente = "Matemática",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+
+                                                      }
+                                               },
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "002",
+                                                     NomeComponente = "Ciências",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+
+                                                      }
+                                               }
+
+                                         }
+                                    }
+                        }
+                         }
+                        }
+
+                }
+            };
+            return model;
+        }
+        private static RelatorioFechamentoPendenciasDto GeraVariasPendencias()
+        {
+            var model = new RelatorioFechamentoPendenciasDto();
+
+            model.DreNome = "DRE 001";
+            model.UeNome = "UE 001";
+            model.TurmaNome = "1F - 01";
+            model.Ano = "1987";
+            model.Bimestre = "1º";
+            model.ComponenteCurricular = "Matemática";
+            model.Usuario = "ADMIN";
+            model.Modalidade = "Fundamental";
+            model.Semestre = "1";
+            //model.Modalidade = "Fundamental";
+            model.RF = "123123123";
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            model.Dre = new RelatorioFechamentoPendenciasDreDto
+            {
+                Codigo = "123",
+                Nome = "DRE 01",
+                Ue = new RelatorioFechamentoPendenciasUeDto
+                {
+                    Nome = "UE 01",
+                    Codigo = "456",
+                    Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>() {
+                         new RelatorioFechamentoPendenciasTurmaDto() {
+                          Nome = "Turma de Teste",
+                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                                {
+                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    {
+                                         Nome="1º BIMESTRE",
+                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         {
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "001",
+                                                     NomeComponente = "Matemática",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+
+                                                      }
+                                               }
+                                         }
+                                    }
+                        }
+                         }
+                        }
+
+                }
+            };
+            return model;
+        }
+        private static RelatorioFechamentoPendenciasDto Gera1PendenciaBasica()
+        {
+            var model = new RelatorioFechamentoPendenciasDto();
+
+            model.DreNome = "DRE 001";
+            model.UeNome = "UE 001";
+            model.TurmaNome = "1F - 01";
+            model.Ano = "1987";
+            model.Bimestre = "1º";
+            model.ComponenteCurricular = "Matemática";
+            model.Usuario = "ADMIN";
+            model.Modalidade = "Fundamental";
+            model.Semestre = "1";
+            //model.Modalidade = "Fundamental";
+            model.RF = "123123123";
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            model.Dre = new RelatorioFechamentoPendenciasDreDto
+            {
+                Codigo = "123",
+                Nome = "DRE 01",
+                Ue = new RelatorioFechamentoPendenciasUeDto
+                {
+                    Nome = "UE 01",
+                    Codigo = "456",
+                    Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>() {
+                         new RelatorioFechamentoPendenciasTurmaDto() {
+                          Nome = "Turma de Teste",
+                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                                {
+                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    {
+                                         Nome="1º BIMESTRE",
+                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         {
+                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               {
+                                                    CodigoComponente = "001",
+                                                     NomeComponente = "Matemática",
+                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      {
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           },
+                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                            CodigoUsuarioAprovacaoRf  = "teste",
+                                                            CodigoUsuarioRf = "123",
+                                                            DescricaoPendencia = "descrição da pendencia",
+                                                            DetalhamentoPendencia = "detalhamento da pendencia",
+                                                            NomeUsuario = "nome do usuário",
+                                                            NomeUsuarioAprovacao = "nome usuário aprovação",
+                                                            Situacao = "situação do aluno"
+                                                           }
+
+
+                                                      }
+                                               }
+                                         }
+                                    }
+                        }
+                         }
+                        }
+
+                }
+            };
+            return model;
         }
     }
 }

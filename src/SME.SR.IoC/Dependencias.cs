@@ -99,6 +99,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IObterEnderecoeAtosDaUeRepository), typeof(ObterEnderecoeAtosDaUeRepository));
             services.TryAddScoped(typeof(IRelatorioFaltasFrequenciaRepository), typeof(RelatorioFaltasFrequenciaRepository));
             services.TryAddScoped(typeof(IConceitoValoresRepository), typeof(ConceitoValoresRepository));
+            services.TryAddScoped(typeof(IFechamentoPendenciaRepository), typeof(FechamentoPendenciaRepository));
         }
 
         private static void RegistrarUseCase(IServiceCollection services)
@@ -112,6 +113,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IDownloadRelatorioUseCase, DownloadRelatorioUseCase>();
             services.TryAddScoped<IRelatorioFaltasFrequenciasUseCase, RelatorioFaltasFrequenciasUseCase>();
             services.TryAddScoped<IRelatorioHistoricoEscolarUseCase, RelatorioHistoricoEscolarUseCase>();
+            services.TryAddScoped<IRelatorioFechamentoPendenciasUseCase, RelatorioFechamentoPendenciasUseCase>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
