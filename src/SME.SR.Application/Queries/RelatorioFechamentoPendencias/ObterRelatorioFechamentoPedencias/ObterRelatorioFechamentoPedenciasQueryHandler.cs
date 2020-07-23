@@ -26,7 +26,7 @@ namespace SME.SR.Application
             var filtros = request.filtroRelatorioPendenciasFechamentoDto;
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo, 
-                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, 1);
+                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre);
 
             if (!resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
@@ -59,8 +59,8 @@ namespace SME.SR.Application
             if (filtros.ComponentesCurriculares.Count() == 1)
                 retorno.ComponenteCurricular = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == filtros.ComponentesCurriculares.FirstOrDefault())?.Disciplina;
 
-            if (filtros.Bimestre.HasValue && filtros.Bimestre.Value != 0)
-                retorno.Bimestre = filtros.Bimestre.Value.ToString();
+            if (filtros.Bimestre > 0 )
+                retorno.Bimestre = filtros.Bimestre.ToString();
 
             retorno.Dre = new RelatorioFechamentoPendenciasDreDto()
             {

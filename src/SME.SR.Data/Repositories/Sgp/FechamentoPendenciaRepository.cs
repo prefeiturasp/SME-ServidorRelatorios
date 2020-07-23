@@ -67,7 +67,7 @@ namespace SME.SR.Data
                     query.AppendLine(" and t.semestre = @semestre ");
 
                 if (turmasCodigo.Length > 0)
-                    query.AppendLine(" and t.id = any(@turmasCodigo) ");
+                    query.AppendLine(" and t.turma_id = any(@turmasCodigo) ");
 
                 if (componentesCodigo.Length > 0)
                     query.AppendLine(" and ftd.disciplina_id = any(@componentesIds)");
