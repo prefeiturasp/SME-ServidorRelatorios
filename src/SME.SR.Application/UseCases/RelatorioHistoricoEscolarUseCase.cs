@@ -69,6 +69,11 @@ namespace SME.SR.Application
             var resultadoFinalFundamental = resultadoFinal.Where(a => a.Modalidade == Modalidade.Fundamental);
             var resultadoFinalMedio = resultadoFinal.Where(a => a.Modalidade == Modalidade.Medio);
 
+            foreach (var item in resultadoFinalMedio)
+            {
+                item.Legenda.Texto = string.Empty;
+            }
+
             if (resultadoFinalFundamental.Any() || resultadoFinalMedio.Any())
             {
                 if (resultadoFinalFundamental.Any() && resultadoFinalMedio.Any())
