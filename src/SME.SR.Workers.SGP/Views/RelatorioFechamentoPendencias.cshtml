@@ -24,7 +24,6 @@
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string descricao, string[] detalhamentos, bool mostraDetalhe, string usuario, string aprovador, string usuarioRf, string aprovadorRf, string status)
     {
-        // Contar
         var str = $@"
 <table class='tabela-alunos'>
     <thead>
@@ -35,8 +34,7 @@
             <td colspan='4' style='border-bottom: none;border-top: none;' >{descricao}</td>
         </tr>
    </tbody>";
-        contadorQuebrarPagina = contadorQuebrarPagina + 2;
-          //var quebra = VerificaQuebra();
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;         
 
         if (mostraDetalhe)
         {
