@@ -4,7 +4,7 @@
     {
         public string Titulo { get; set; }
         public string Detalhe { get; set; }
-        public string Situacao { get; set; }
+        public int Situacao { get; set; }
         public string DreNome { get; set; }
         public string UeNome { get; set; }
         public int AnoLetivo { get; set; }

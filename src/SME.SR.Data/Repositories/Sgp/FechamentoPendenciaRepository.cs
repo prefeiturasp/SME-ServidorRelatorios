@@ -30,8 +30,8 @@ namespace SME.SR.Data
 	                        p.titulo,
 	                        p.descricao as Detalhe,
 	                        p.situacao,
-	                        d.nome as DreNome,
-	                        u.nome as UeNome,
+	                        d.abreviacao as DreNome,
+	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
 	                        t.modalidade_codigo as ModalidadeCodigo,
 	                        t.semestre,
@@ -58,6 +58,8 @@ namespace SME.SR.Data
 	                        on u.dre_id  = d.id 
                         inner join periodo_escolar pe 
 	                        on ft.periodo_escolar_id  = pe.id 
+                        inner join tipo_escola te
+                            on te.id = u.tipo_escola
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo

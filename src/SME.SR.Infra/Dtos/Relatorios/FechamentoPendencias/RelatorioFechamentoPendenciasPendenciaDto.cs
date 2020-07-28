@@ -19,7 +19,7 @@ namespace SME.SR.Infra
         public string NomeUsuarioAprovacao { get; set; }
         public string CodigoUsuarioAprovacaoRf { get; set; }
 
-        public string[] DetalhamentoPendenciaArray { get { return SplitInParts(DetalhamentoPendencia).ToArray(); }   }
+        public string[] DetalhamentoPendenciaArray { get { return SplitInParts(DetalhamentoPendencia.Replace("<br>"," ")).ToArray(); }   }
 
 
         public IEnumerable<string> SplitInParts(string s)
