@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SME.SR.Infra
+{
+    public class RelatorioParecerConclusivoRetornoDto
+    {
+        public string TurmaId { get; set; }
+        public string AlunoCodigo { get; set; }
+        public string ParecerConclusivo { get; set; }
+        public string DreNome { get; set; }
+        public string UeNome { get; set; }
+        public string Ano { get; set; }
+        public string Ciclo { get; set; }
+
+    }
+}
