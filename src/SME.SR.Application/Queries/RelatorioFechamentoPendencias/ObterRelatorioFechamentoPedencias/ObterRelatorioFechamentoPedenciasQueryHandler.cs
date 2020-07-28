@@ -43,9 +43,9 @@ namespace SME.SR.Application
             var retornoLinearParaCabecalho = resultadoQuery.FirstOrDefault();
 
 
-            retorno.UeNome = retornoLinearParaCabecalho.UeNome;
+            retorno.UeNome = string.IsNullOrEmpty(retornoLinearParaCabecalho.UeNome) ? "Todas" : retornoLinearParaCabecalho.UeNome;
             retorno.DreNome = retornoLinearParaCabecalho.DreNome;
-            retorno.Modalidade = ((Modalidade)retornoLinearParaCabecalho.ModalidadeCodigo).GetAttribute<DisplayAttribute>().ShortName;
+            retorno.Modalidade = ((Modalidade)retornoLinearParaCabecalho.ModalidadeCodigo).GetAttribute<DisplayAttribute>().Name;
             retorno.Usuario = request.filtroRelatorioPendenciasFechamentoDto.UsuarioNome;
             retorno.RF = request.filtroRelatorioPendenciasFechamentoDto.UsuarioRf;
             retorno.ExibeDetalhamento = filtros.ExibirDetalhamento;
@@ -55,12 +55,15 @@ namespace SME.SR.Application
 
             if (filtros.TurmasCodigo.Count() == 1)
                 retorno.TurmaNome = retornoLinearParaCabecalho.TurmaNome;
+            else retorno.TurmaNome = "Todas";
 
             if (filtros.ComponentesCurriculares.Count() == 1)
                 retorno.ComponenteCurricular = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == filtros.ComponentesCurriculares.FirstOrDefault())?.Disciplina;
+            else retorno.ComponenteCurricular = "Todos";
 
-            if (filtros.Bimestre > 0 )
+            if (filtros.Bimestre > 0)
                 retorno.Bimestre = filtros.Bimestre.ToString();
+            else retorno.Bimestre = "Todos";
 
             retorno.Dre = new RelatorioFechamentoPendenciasDreDto()
             {
@@ -107,10 +110,11 @@ namespace SME.SR.Application
                             
                             if (filtros.ExibirDetalhamento)
                                 pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaDoComponenteDaTurma.Detalhe;
-
+                            
                             pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador;
                             pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador;
-                            pendenciaParaAdicionar.Situacao = pendenciaDoComponenteDaTurma.Situacao;                            
+                            
+                            pendenciaParaAdicionar.Situacao = ((SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao).ToString();                            
 
                             componenteParaAdicionar.Pendencias.Add(pendenciaParaAdicionar);
                         }
