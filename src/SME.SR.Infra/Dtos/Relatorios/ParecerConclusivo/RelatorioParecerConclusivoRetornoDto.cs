@@ -6,7 +6,7 @@ namespace SME.SR.Infra
 {
     public class RelatorioParecerConclusivoRetornoDto
     {
-        public string TurmaId { get; set; }
+        public long TurmaId { get; set; }
         public string AlunoCodigo { get; set; }
         public string ParecerConclusivo { get; set; }
         public string DreNome { get; set; }

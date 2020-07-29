@@ -100,7 +100,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRelatorioFaltasFrequenciaRepository), typeof(RelatorioFaltasFrequenciaRepository));
             services.TryAddScoped(typeof(IConceitoValoresRepository), typeof(ConceitoValoresRepository));
             services.TryAddScoped(typeof(IFechamentoPendenciaRepository), typeof(FechamentoPendenciaRepository));
-            services.TryAddScoped(typeof(IParecerFinalRepository), typeof(ParecerFinalRepository));
+            services.TryAddScoped(typeof(IParecerConclusivoRepository), typeof(ParecerConclusivoRepository));
         }
 
         private static void RegistrarUseCase(IServiceCollection services)

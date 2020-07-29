@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Data
 {
-    public class ParecerFinalRepository : IParecerFinalRepository
+    public class ParecerConclusivoRepository : IParecerConclusivoRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        public ParecerFinalRepository(VariaveisAmbiente variaveisAmbiente)
+        public ParecerConclusivoRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresFinais(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
+        public async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresFinais(int anoLetivo, string dreCodigo, string ueCodigo, Modalidade? modalidade, int? semestre,
                                                                                                             long cicloId, string[] anos, long parecerConclusivoId)
         {
             try
@@ -51,7 +51,7 @@ namespace SME.SR.Data
 		                                            inner join tipo_ciclo tc
 			                                            on tca.tipo_ciclo_id = tc.id 
     	                                            inner join tipo_escola te
-                                                        on te.id = u.tipo_escola");
+                                                        on te.id = u.tipo_escola where 1=1");
 
                 if (semestre.HasValue)
                     query.AppendLine(" and t.semestre = @semestre ");
@@ -65,6 +65,9 @@ namespace SME.SR.Data
                 if (parecerConclusivoId > 0)
                     query.AppendLine(" and ccp.id = @parecerConclusivoId ");
 
+                if (modalidade.HasValue)
+                    query.AppendLine(" and t.modalidade_codigo = @modalidadeId ");
+
                 query.AppendLine("order by d.id, u.id, t.id");
 
                 var parametros = new
@@ -72,7 +75,7 @@ namespace SME.SR.Data
                     anoLetivo,
                     dreCodigo,
                     ueCodigo,
-                    modalidadeId,
+                    modalidadeId = modalidade.HasValue? (int)modalidade : 0,
                     semestre = semestre ?? 0,
                     cicloId,
                     parecerConclusivoId,

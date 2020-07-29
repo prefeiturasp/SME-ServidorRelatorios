@@ -95,10 +95,10 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/parecerconclusivo")]
-        [Action("relatorios/parecerconclusivo", typeof(IRelatorioFechamentoPendenciasUseCase))]
-        public async Task<bool> RelatorioParecerConclusivo([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioFechamentoPendenciasUseCase relatorioFechamentoPendenciasUseCase)
+        [Action("relatorios/parecerconclusivo", typeof(IRelatorioParecerConclusivoUseCase))]
+        public async Task<bool> RelatorioParecerConclusivo([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioParecerConclusivoUseCase relatorioParecerConclusivoUseCase)
         {
-            await relatorioFechamentoPendenciasUseCase.Executar(request);
+            await relatorioParecerConclusivoUseCase.Executar(request);
             return true;
         }
 
