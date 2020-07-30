@@ -34,7 +34,7 @@ namespace SME.SR.Application
                 //Obter as turmas dos Alunos
                 var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigoAlunos, pareceresConclusivosIds.ToArray()));
                 if (!turmasDosAlunos.Any())
-                    throw new NegocioException("Não foi possíve obter as turmas do(s) aluno(s)");
+                    throw new NegocioException(" Não foi encontrado nenhum histórico de promoção para o(s) aluno(s).");
 
 
                 foreach (var item in informacoesDosAlunos)
@@ -67,7 +67,7 @@ namespace SME.SR.Application
                     var alunosPromovidosCodigos = await mediator.Send(new ObterAlunosPorTurmaParecerConclusivoQuery(request.CodigoTurma, pareceresConclusivosIds.ToArray()));
 
                     if (!alunosPromovidosCodigos.Any())
-                        throw new NegocioException("Não foram encontrados alunos promovidos para esta turma.");
+                        throw new NegocioException(" Não foi encontrado nenhum histórico de promoção para o(s) aluno(s) da turma.");
 
                     IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray());
 
@@ -106,7 +106,7 @@ namespace SME.SR.Application
             informacoesAlunoDto.Nome = item.ObterNomeFinal();
             informacoesAlunoDto.OrgaoExpeditor = item.ExpedicaoOrgaoEmissor;
             informacoesAlunoDto.Rg = item.RG;
-            informacoesAlunoDto.Rga = string.Empty;
+            informacoesAlunoDto.Rga = item.CodigoAluno.ToString();
             informacoesAlunoDto.Codigo = item.CodigoAluno.ToString();
 
             return informacoesAlunoDto;

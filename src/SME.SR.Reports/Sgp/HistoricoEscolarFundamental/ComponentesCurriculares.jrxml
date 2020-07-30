@@ -61,9 +61,9 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaTerceiroAno"/>
 			<fieldDescription><![CDATA[frequenciaTerceiroAno]]></fieldDescription>
 		</field>
-		<field name="notaConceitoQaurtoAno" class="java.lang.String">
-			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoQaurtoAno"/>
-			<fieldDescription><![CDATA[notaConceitoQaurtoAno]]></fieldDescription>
+		<field name="notaConceitoQuartoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoQuartoAno"/>
+			<fieldDescription><![CDATA[notaConceitoQuartoAno]]></fieldDescription>
 		</field>
 		<field name="frequenciaQuartoAno" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaQuartoAno"/>
@@ -130,12 +130,12 @@
 					<datasetRun subDataset="DatasetComponentesCurriculares" uuid="f2671c16-3f0e-4be4-a475-3b122ec19f2b">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="83" uuid="064220a8-725b-4c92-b904-4b966edeeae9">
+					<jr:column width="80" uuid="064220a8-725b-4c92-b904-4b966edeeae9">
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<textField textAdjust="StretchHeight">
-								<reportElement x="0" y="0" width="83" height="15" uuid="4946bac3-0379-4af6-9cd4-f7952517d4c1"/>
+								<reportElement x="0" y="0" width="80" height="15" uuid="4946bac3-0379-4af6-9cd4-f7952517d4c1"/>
 								<box leftPadding="5">
 									<pen lineWidth="0.75"/>
 								</box>
@@ -276,7 +276,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoQaurtoAno} != null ? $F{notaConceitoQaurtoAno}: "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoQuartoAno} != null ? $F{notaConceitoQuartoAno}: "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

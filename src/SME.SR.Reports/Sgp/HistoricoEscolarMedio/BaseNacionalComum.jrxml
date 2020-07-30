@@ -88,6 +88,10 @@
 		<property name="net.sf.jasperreports.jsonql.field.expression" value="nome"/>
 		<fieldDescription><![CDATA[nome]]></fieldDescription>
 	</field>
+	<field name="tipoNota" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota"/>
+		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
+	</field>
 	<field name="nomeGrupo" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="gruposComponentesCurriculares.nome"/>
 		<fieldDescription><![CDATA[gruposComponentesCurriculares.nome]]></fieldDescription>
@@ -144,30 +148,6 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.terceiroAno"/>
 		<fieldDescription><![CDATA[tipoNota.terceiroAno]]></fieldDescription>
 	</field>
-	<field name="quartoAno" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.quartoAno"/>
-		<fieldDescription><![CDATA[tipoNota.quartoAno]]></fieldDescription>
-	</field>
-	<field name="quintoAno" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.quintoAno"/>
-		<fieldDescription><![CDATA[tipoNota.quintoAno]]></fieldDescription>
-	</field>
-	<field name="oitavoAno" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.oitavoAno"/>
-		<fieldDescription><![CDATA[tipoNota.oitavoAno]]></fieldDescription>
-	</field>
-	<field name="sextoAno" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.sextoAno"/>
-		<fieldDescription><![CDATA[tipoNota.sextoAno]]></fieldDescription>
-	</field>
-	<field name="setimoAno" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.setimoAno"/>
-		<fieldDescription><![CDATA[tipoNota.setimoAno]]></fieldDescription>
-	</field>
-	<field name="nonoAno" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.nonoAno"/>
-		<fieldDescription><![CDATA[tipoNota.nonoAno]]></fieldDescription>
-	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -185,7 +165,7 @@
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -200,7 +180,7 @@ conhecimento]]></text>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -209,7 +189,7 @@ conhecimento]]></text>
 curriculares]]></text>
 				</staticText>
 				<componentElement>
-					<reportElement positionType="Float" x="35" y="60" width="519" height="15" uuid="4343193c-4686-4994-bd03-3263c86d0d4e">
+					<reportElement positionType="Float" x="35" y="60" width="520" height="15" uuid="4343193c-4686-4994-bd03-3263c86d0d4e">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -217,7 +197,7 @@ curriculares]]></text>
 						<datasetRun subDataset="DatasetComponentesBaseNacional" uuid="ccc38101-8b21-4116-9388-9c8b60a1dbce">
 							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("baseNacionalComum.areasDeConhecimento")]]></dataSourceExpression>
 						</datasetRun>
-						<jr:listContents height="15" width="519">
+						<jr:listContents height="15" width="520">
 							<textField textAdjust="StretchHeight">
 								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="80" height="15" uuid="f5bb00cb-80d9-49e1-9f2e-c292287f34a0">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -229,7 +209,7 @@ curriculares]]></text>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{nome}!= null ? $F{nome} : ""]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 							</textField>
 							<subreport>
 								<reportElement x="80" y="0" width="330" height="15" uuid="805d560e-727e-49e8-a32b-962d5b460a40"/>
@@ -242,11 +222,11 @@ curriculares]]></text>
 					</jr:list>
 				</componentElement>
 				<staticText>
-					<reportElement x="195" y="0" width="360" height="15" uuid="3049c7e6-c3f5-4175-b118-c9ab29113a4c">
+					<reportElement x="195" y="0" width="360" height="30" uuid="3049c7e6-c3f5-4175-b118-c9ab29113a4c">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -254,12 +234,12 @@ curriculares]]></text>
 					<text><![CDATA[Resultado final]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="195" y="45" width="20" height="15" uuid="177b9bd4-8cde-4136-a556-ef5d29c82b1c">
+					<reportElement x="195" y="45" width="60" height="15" uuid="177b9bd4-8cde-4136-a556-ef5d29c82b1c">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -267,9 +247,11 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{primeiroAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="215" y="45" width="20" height="15" uuid="f42c5731-7614-4fb7-957b-9e95c4baef5f"/>
+					<reportElement x="255" y="45" width="60" height="15" uuid="f42c5731-7614-4fb7-957b-9e95c4baef5f">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -277,9 +259,11 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="255" y="45" width="20" height="15" uuid="3d029a98-59d0-45e7-8252-ac859c6e2c3d"/>
+					<reportElement x="375" y="45" width="60" height="15" uuid="3d029a98-59d0-45e7-8252-ac859c6e2c3d">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -287,11 +271,12 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="235" y="45" width="20" height="15" uuid="67824ec0-197d-4ae9-bcca-d13e3c39d7d1">
+					<reportElement x="315" y="45" width="60" height="15" uuid="67824ec0-197d-4ae9-bcca-d13e3c39d7d1">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -299,9 +284,11 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{segundoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="295" y="45" width="20" height="15" uuid="11cbd2e5-ab63-4ba0-be97-1a9cdcfe16e5"/>
+					<reportElement x="495" y="45" width="60" height="15" uuid="11cbd2e5-ab63-4ba0-be97-1a9cdcfe16e5">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -309,161 +296,65 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="275" y="45" width="20" height="15" uuid="5e33eb08-0415-42da-8c47-e8996072e315">
+					<reportElement x="435" y="45" width="60" height="15" uuid="5e33eb08-0415-42da-8c47-e8996072e315">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{terceiroAno}]]></textFieldExpression>
 				</textField>
-				<textField>
-					<reportElement x="315" y="45" width="20" height="15" uuid="c4b1e579-001b-4fe9-8144-25efd437d982">
+				<staticText>
+					<reportElement x="435" y="30" width="120" height="15" uuid="1b58e272-e426-4979-9a8d-53e5a35303f1">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font size="6" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{quartoAno}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="335" y="45" width="20" height="15" uuid="8c8c1a60-417f-42b0-bbc6-8826b43ffac3"/>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<text><![CDATA[F]]></text>
+					<text><![CDATA[3º ano]]></text>
 				</staticText>
-				<textField>
-					<reportElement x="355" y="45" width="20" height="15" uuid="a3cec645-ef96-4ac0-a120-f26633ebe133">
+				<staticText>
+					<reportElement x="315" y="30" width="120" height="15" uuid="343eed65-ce5b-42fc-8a3c-a51f07cf2290">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font size="6" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{quintoAno}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="375" y="45" width="20" height="15" uuid="b5447e77-4362-462e-bf54-76a0ea9473a2"/>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<text><![CDATA[F]]></text>
+					<text><![CDATA[2º ano]]></text>
 				</staticText>
-				<textField>
-					<reportElement x="395" y="45" width="20" height="15" uuid="d42ba7ef-7c38-4726-9c1a-63298da618f9">
+				<staticText>
+					<reportElement x="195" y="30" width="120" height="15" uuid="25594ed1-057f-4c49-8dc7-a391f7bdbb12">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font size="6" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{sextoAno}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="415" y="45" width="20" height="15" uuid="6e688312-ff0c-4875-890a-03392a84e12c"/>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<text><![CDATA[F]]></text>
+					<text><![CDATA[1º ano]]></text>
 				</staticText>
-				<textField>
-					<reportElement x="435" y="45" width="20" height="15" uuid="d98f7b4c-c841-4c00-9c4c-0ebd3fed5fb2">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{setimoAno}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="455" y="45" width="20" height="15" uuid="1c1a7a8d-d335-4a76-920e-505c80642626"/>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<text><![CDATA[F]]></text>
-				</staticText>
-				<textField>
-					<reportElement x="475" y="45" width="20" height="15" uuid="d2e8b436-0153-4fe6-9dff-c33db06d9f84">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{oitavoAno}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="495" y="45" width="20" height="15" uuid="3af01ea9-3be0-47c5-87d0-05d9b5bea188"/>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<text><![CDATA[F]]></text>
-				</staticText>
-				<textField>
-					<reportElement x="515" y="45" width="20" height="15" uuid="0a217325-edce-41d0-b033-5fe74b023450">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{nonoAno}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="535" y="45" width="20" height="15" uuid="07b34787-53a8-4f6d-8783-1d53676cd3f6"/>
-					<box>
-						<pen lineWidth="0.75"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
-					</textElement>
-					<text><![CDATA[F]]></text>
-				</staticText>
-				<subreport>
-					<reportElement x="195" y="15" width="360" height="30" uuid="4ed4df92-7b89-407b-8d90-02103bb777ce"/>
-					<subreportParameter name="REPORT_DATA_SOURCE">
-						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
-					</subreportParameter>
-					<subreportExpression><![CDATA["Ciclos.jasper"]]></subreportExpression>
-				</subreport>
 			</frame>
 			<staticText>
 				<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="35" height="75" backcolor="#F3F3F3" uuid="148c2d5e-3f8c-4ffe-a78c-79dcbaf91d69"/>
 				<box leftPadding="0">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
 					<font size="6" isBold="true"/>

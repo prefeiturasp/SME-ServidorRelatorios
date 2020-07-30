@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ParecerConclusivo" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="203a35a1-e96d-4e58-ae00-075e3c41760c">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="primeiroAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="relatorioHistoricoEscolar.pareceresConclusivos.primeiroAno"/>
+		<fieldDescription><![CDATA[primeiroAno]]></fieldDescription>
+	</field>
+	<field name="segundoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="relatorioHistoricoEscolar.pareceresConclusivos.segundoAno"/>
+		<fieldDescription><![CDATA[segundoAno]]></fieldDescription>
+	</field>
+	<field name="terceiroAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="relatorioHistoricoEscolar.pareceresConclusivos.terceiroAno"/>
+		<fieldDescription><![CDATA[terceiroAno]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement positionType="Float" mode="Transparent" x="0" y="0" width="195" height="15" backcolor="#FFFFFF" uuid="aa63cbae-cc1e-4fc8-a05d-4a047827f982">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARECER CONCLUSIVO]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="195" y="0" width="120" height="15" uuid="cdd71f29-187c-442f-8257-50e4a7df17d9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{primeiroAno} != null ? $F{primeiroAno} : "-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="315" y="0" width="120" height="15" uuid="1fbea5bd-b9a3-46e9-b13d-ada514944722">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{segundoAno} != null ? $F{segundoAno} : "-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="435" y="0" width="120" height="15" uuid="30ef7e8a-aac2-403c-9849-bcd4fcfece54">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{terceiroAno} != null ? $F{terceiroAno} : "-"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
