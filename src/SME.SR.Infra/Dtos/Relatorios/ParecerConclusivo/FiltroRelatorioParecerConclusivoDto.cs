@@ -11,5 +11,6 @@
         public string AnoEscolar { get; set; }
         public long ParecerConclusivoId { get; set; }
         public string[] Anos { get; set; }
+        public string UsuarioNome { get; set; }
     }
 }

@@ -47,83 +47,22 @@ namespace SME.SR.Data
         {
             try
             {
-                var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
-						DROP TABLE #tmpAlunosFrequencia
-					CREATE TABLE #tmpAlunosFrequencia 
-					(
-						CodigoAluno int,
-						NomeAluno VARCHAR(70),
-						DataNascimento DATETIME,
-						NomeSocialAluno VARCHAR(70),
-						CodigoSituacaoMatricula INT,
-						SituacaoMatricula VARCHAR(40),
-						DataSituacao DATETIME,
-						NumeroAlunoChamada VARCHAR(5),
-						PossuiDeficiencia BIT
-					)
-					INSERT INTO #tmpAlunosFrequencia
-					SELECT aluno.cd_aluno CodigoAluno,
+                var query = @"	SELECT distinct aluno.cd_aluno CodigoAluno,
 					   aluno.nm_aluno NomeAluno,
-					   aluno.dt_nascimento_aluno DataNascimento,
 					   aluno.nm_social_aluno NomeSocialAluno,
-					   mte.cd_situacao_aluno CodigoSituacaoMatricula,
-					   CASE
-							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
-							WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
-							WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
-							WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
-							WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
-							WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
-							WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
-							WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
-							WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
-							WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
-							WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
-							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
-							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
-							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
-							ELSE 'Fora do domínio liberado pela PRODAM'
-							END SituacaoMatricula,
-						mte.dt_situacao_aluno DataSituacao,
-						mte.nr_chamada_aluno NumeroAlunoChamada,
-						CASE
-							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
-							ELSE 1
-						END PossuiDeficiencia
-						FROM v_aluno_cotic aluno
+					   mte.nr_chamada_aluno NumeroAlunoChamada,
+                       mte.cd_turma_escola CodigoTurma
+					   FROM v_aluno_cotic aluno
 						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 						WHERE mte.cd_turma_escola in @turmasId
 						UNION 
 						SELECT  aluno.cd_aluno CodigoAluno,
-						aluno.nm_aluno NomeAluno,
-						aluno.dt_nascimento_aluno DataNascimento,
-						aluno.nm_social_aluno NomeSocialAluno,
-						mte.cd_situacao_aluno CodigoSituacaoMatricula,
-						CASE
-							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
-							WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
-							WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
-							WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
-							WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
-							WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
-							WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
-							WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
-							WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
-							WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
-							WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
-							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
-							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
-							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
-							ELSE 'Fora do domínio liberado pela PRODAM'
-							END SituacaoMatricula,
-						mte.dt_situacao_aluno DataSituacao,
+						aluno.nm_aluno NomeAluno,						
+						aluno.nm_social_aluno NomeSocialAluno,						
 						mte.nr_chamada_aluno NumeroAlunoChamada,
-						CASE
-							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
-							ELSE 1
-						END PossuiDeficiencia
+                        mte.cd_turma_escola CodigoTurma
 						FROM v_aluno_cotic aluno
 						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
@@ -140,28 +79,7 @@ namespace SME.SR.Data
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola  in @turmasId) 
-
-					SELECT
-					CodigoAluno,
-					NomeAluno,
-					NomeSocialAluno,
-					DataNascimento,
-					CodigoSituacaoMatricula,
-					SituacaoMatricula,
-					MAX(DataSituacao) DataSituacao ,
-					NumeroAlunoChamada,
-					PossuiDeficiencia
-					FROM #tmpAlunosFrequencia
-					GROUP BY
-					CodigoAluno,
-					NomeAluno,
-					NomeSocialAluno,
-					DataNascimento,
-					CodigoSituacaoMatricula,
-					SituacaoMatricula,
-					NumeroAlunoChamada,
-					PossuiDeficiencia";
+							AND mte.cd_turma_escola  in @turmasId)";
                 var parametros = new { turmasId };
 
                 using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);

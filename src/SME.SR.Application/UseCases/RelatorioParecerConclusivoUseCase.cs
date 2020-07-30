@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
@@ -18,10 +19,9 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<FiltroRelatorioParecerConclusivoDto>();
 
-            var resultado = await mediator.Send(new ObterRelatorioParecerConclusivoQuery() { filtroRelatorioParecerConclusivoDto = filtros });
-
+            var resultado = await mediator.Send(new ObterRelatorioParecerConclusivoQuery() { filtroRelatorioParecerConclusivoDto = filtros, UsuarioRf = request.UsuarioLogadoRF });
+            
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioParecerConclusivo", resultado, request.CodigoCorrelacao));
-
         }
 
     }

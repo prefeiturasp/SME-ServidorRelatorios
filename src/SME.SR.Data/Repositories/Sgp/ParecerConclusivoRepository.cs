@@ -3,6 +3,7 @@ using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,9 +28,13 @@ namespace SME.SR.Data
 	                                               cca.aluno_codigo AlunoCodigo, 
 	                                               ccp.nome ParecerConclusivo, 
 	                                               d.abreviacao as DreNome, 
+                                                   d.dre_id as DreCodigo,
 	                                               te.descricao || ' - ' || u.nome as UeNome,
+                                                   u.ue_id as UeCodigo,
+                                                   t.nome as TurmaNome,
 	                                               t.ano,
-	                                               tc.descricao as Ciclo
+	                                               tc.descricao as Ciclo,
+                                                   tc.Id as CicloId
 	                                            from conselho_classe_aluno cca 
 		                                            inner join conselho_classe_parecer ccp
 			                                            on cca.conselho_classe_parecer_id = ccp.id 
@@ -79,7 +84,7 @@ namespace SME.SR.Data
                     semestre = semestre ?? 0,
                     cicloId,
                     parecerConclusivoId,
-                    anos =  anos.ToString()                    
+                    anos = anos.ToList()                  
                 };
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
