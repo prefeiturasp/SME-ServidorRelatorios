@@ -43,7 +43,55 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<Aluno>(query, parametros);
             }
         }
+        public async Task<IEnumerable<Aluno>> ObterAlunosPorTurmas(IEnumerable<long> turmasId)
+        {
+            try
+            {
+                var query = @"	SELECT distinct aluno.cd_aluno CodigoAluno,
+					   aluno.nm_aluno NomeAluno,
+					   aluno.nm_social_aluno NomeSocialAluno,
+					   mte.nr_chamada_aluno NumeroAlunoChamada,
+                       mte.cd_turma_escola CodigoTurma
+					   FROM v_aluno_cotic aluno
+						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte.cd_turma_escola in @turmasId
+						UNION 
+						SELECT  aluno.cd_aluno CodigoAluno,
+						aluno.nm_aluno NomeAluno,						
+						aluno.nm_social_aluno NomeSocialAluno,						
+						mte.nr_chamada_aluno NumeroAlunoChamada,
+                        mte.cd_turma_escola CodigoTurma
+						FROM v_aluno_cotic aluno
+						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte.cd_turma_escola in @turmasId
+						and mte.dt_situacao_aluno =                    
+							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+							where
+							mte2.cd_turma_escola in @turmasId
+							and matr2.cd_aluno = matr.cd_aluno
+						)
+						AND NOT EXISTS(
+							SELECT 1 FROM v_matricula_cotic matr3
+						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
+						WHERE mte.cd_matricula = mte3.cd_matricula
+							AND mte.cd_turma_escola  in @turmasId)";
+                var parametros = new { turmasId };
 
+                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+                return await conexao.QueryAsync<Aluno>(query, parametros);
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<IEnumerable<AlunoSituacaoDto>> ObterDadosAlunosSituacao(string turmaCodigo)
         {
             var query = TurmaConsultas.DadosAlunosSituacao;
