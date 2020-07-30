@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SME.SR.Application;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
@@ -1074,7 +1075,13 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioFechamentoPendencias", model);
         }
+        [HttpGet("pareceres-conclusivos")]
+        public async Task<IActionResult> RelatorioParecesConclusivos([FromServices] IMediator mediator)
+        {
+            var model = await mediator.Send(new ObterRelatorioParecerConclusivoQuery() { filtroRelatorioParecerConclusivoDto = new FiltroRelatorioParecerConclusivoDto() { UsuarioNome = "Ronaldo Avante" } , UsuarioRf = "123" });
 
+            return View("RelatorioParecerConclusivo", model);
+        }
 
         private static RelatorioFechamentoPendenciasDto GeraVariasPendencias2Componentes2Turmas()
         {

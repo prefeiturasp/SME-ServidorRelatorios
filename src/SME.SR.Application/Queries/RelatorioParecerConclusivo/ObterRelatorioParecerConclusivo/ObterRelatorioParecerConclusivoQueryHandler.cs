@@ -157,7 +157,7 @@ namespace SME.SR.Application
 
         private static void MontaCabecalho(ObterRelatorioParecerConclusivoQuery request, RelatorioParecerConclusivoDto retorno, System.Collections.Generic.IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar)
         {
-            retorno.Ano = request.filtroRelatorioParecerConclusivoDto.Anos.Length > 0 ? request.filtroRelatorioParecerConclusivoDto.Anos[0] : "Todos" ;
+            retorno.Ano = (request.filtroRelatorioParecerConclusivoDto.Anos != null && request.filtroRelatorioParecerConclusivoDto.Anos.Length > 0) ? request.filtroRelatorioParecerConclusivoDto.Anos[0] : "Todos" ;
 
             if (request.filtroRelatorioParecerConclusivoDto.CicloId == 0)
                 retorno.Ciclo = "Todos";

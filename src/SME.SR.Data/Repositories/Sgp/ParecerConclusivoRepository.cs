@@ -64,7 +64,7 @@ namespace SME.SR.Data
                 if (cicloId > 0)
                     query.AppendLine(" and tc.id = @cicloId ");
 
-                if (anos.Length > 0)
+                if (anos != null && anos.Length > 0)
                     query.AppendLine(" and t.ano = ANY(@anos) ");
 
                 if (parecerConclusivoId > 0)
@@ -80,11 +80,11 @@ namespace SME.SR.Data
                     anoLetivo,
                     dreCodigo,
                     ueCodigo,
-                    modalidadeId = modalidade.HasValue? (int)modalidade : 0,
+                    modalidadeId = modalidade.HasValue ? (int)modalidade : 0,
                     semestre = semestre ?? 0,
                     cicloId,
                     parecerConclusivoId,
-                    anos = anos.ToList()                  
+                    anos = anos?.ToList()                  
                 };
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);

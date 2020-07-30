@@ -9,6 +9,6 @@ namespace SME.SR.Application
     public class ObterRelatorioParecerConclusivoQuery : IRequest<RelatorioParecerConclusivoDto>
     {
         public FiltroRelatorioParecerConclusivoDto filtroRelatorioParecerConclusivoDto { get; set; }
-        public string UsuarioRf { get; internal set; }
+        public string UsuarioRf { get; set; }
     }
 }
