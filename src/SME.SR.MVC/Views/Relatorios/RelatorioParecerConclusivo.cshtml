@@ -1,7 +1,7 @@
 ﻿@model SME.SR.Infra.RelatorioParecerConclusivoDto
 
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 48;
+    int contadorMaximoLinhasPorPagina = 41;
 
     string VerificaQuebra()
     {
@@ -21,7 +21,7 @@
     {
         if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
         {
-            contadorQuebrarPagina = 0;
+            contadorQuebrarPagina = 1;
 
             var breakPage = $@"</tbody></table>
                                     <div style='page-break-before:always' />";
@@ -259,117 +259,102 @@
 
     <div>
         @{
-            @Html.Raw(MontarCabecalho())
+                        @Html.Raw(MontarCabecalho());
 
-            foreach (var dre in Model.Dres)
+                        foreach (var dre in Model.Dres)
+                        {
+            <table class="tabela-alunos">
+                <thead>
+
+                    <tr>
+                        <th>@dre.Nome</th>
+                    </tr>
+                </thead>
+            </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    foreach (var ue in dre.Ues)
+    {
+
+    <table class="tabela-alunos">
+        <thead>
+
+            <tr>
+                <th>@ue.Nome</th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    foreach (var ciclo in ue.Ciclos)
+    {
+
+    <table class="tabela-alunos">
+        <thead>
+
+            <tr>
+                <th>@ciclo.Nome</th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    foreach (var ano in ciclo.Anos)
+    {
+
+    <table class="tabela-alunos">
+        <thead>
+
+            <tr>
+                <th>@ano.Nome</th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    <table class="tabela-alunos">
+        <thead>
+
+            <tr>
+                <th class="thLimpo"></th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    <table class="tblTopo">
+        <thead>
+            <tr>
+                <th class='thLimpo' width='5%'>Nº</th>
+                <th class='thLimpo' width='10%'>ANO</th>
+                <th class='thLimpo' width='60%'>NOME</th>
+                <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    <table>
+        <tbody>
+
+            @foreach (var parecerConclusivo in ano.PareceresConclusivos)
             {
-
-                if (Model.DreNome == "Todas")
-                {
-                    <table class="tabela-alunos">
-                        <thead>
-
-                            <tr>
-                                <th>@dre.Nome</th>
-                            </tr>
-                        </thead>
-                    </table>
-
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                    @Html.Raw(VerificaQuebra()) 
-                }
-
-                foreach (var ue in dre.Ues)
-                {
-
-                    if (Model.UeNome == "Todas")
-                    {
-                        <table class="tabela-alunos">
-                            <thead>
-
-                                <tr>
-                                    <th>@ue.Nome</th>
-                                </tr>
-                            </thead>
-                        </table>
-
-                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                        @Html.Raw(VerificaQuebra())
-                    }
-
-                    foreach (var ciclo in ue.Ciclos)
-                    {
-
-                        if (Model.Ciclo == "Todos")
-                        {
-                            <table class="tabela-alunos">
-                                <thead>
-
-                                    <tr>
-                                        <th>@ciclo.Nome</th>
-                                    </tr>
-                                </thead>
-                            </table>
-
-                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                            @Html.Raw(VerificaQuebra())
-                        }
-
-                        foreach (var ano in ciclo.Anos)
-                        {
-
-                            if (Model.Ano == "Todos")
-                            {
-                                <table class="tabela-alunos">
-                                    <thead>
-
-                                        <tr>
-                                            <th>@ano.Nome</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            }
-
-                            <table class="tabela-alunos">
-                                <thead>
-
-                                    <tr>
-                                        <th class="thLimpo"></th>
-                                    </tr>
-                                </thead>
-                            </table>
-
-                                <table class="tblTopo">
-                                    @if (ano.PareceresConclusivos.Count > 0)
-                                    {
-                                        <thead>
-                                        <th class='thLimpo' width='5%'>Nº</th>
-                                        <th class='thLimpo' width='10%'>ANO</th>
-                                        <th class='thLimpo' width='60%'>NOME</th>
-                                        <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
-                                        </thead>
-                                    }
+    @Html.Raw(VerificaQuebraAlunos());
+    <tr>
+        <td width="5%">@parecerConclusivo.AlunoNumeroChamada</td>
+        <td width="10%">@parecerConclusivo.TurmaNome</td>
+        <td width="60%">@parecerConclusivo.AlunoNomeCompleto</td>
+        <td width="25%">@parecerConclusivo.ParecerConclusivoDescricao</td>
+    </tr>
+contadorQuebrarPagina = contadorQuebrarPagina + 1;
+}
+        </tbody>
+    </table> }
+}
+}
+} }
 
 
-                                        <tbody>
-                                            @foreach (var parecerConclusivo in ano.PareceresConclusivos)
-                                            {
-                                    <tr>
-                                        <td width="5%">@parecerConclusivo.AlunoNumeroChamada</td>
-                                        <td width="10%">@parecerConclusivo.TurmaNome</td>
-                                        <td width="60%">@parecerConclusivo.AlunoNomeCompleto</td>
-                                        <td width="25%">@parecerConclusivo.ParecerConclusivoDescricao</td>
-                                    </tr>
-                                    }
-                                        </tbody>
-                                </table>
-                        }
-                    }
-                }
-            }
-        }
-
-            
-</div>
+    </div>
 </body>
 </html>
