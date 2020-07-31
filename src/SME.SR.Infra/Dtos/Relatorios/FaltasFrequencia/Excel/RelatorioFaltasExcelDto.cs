@@ -2,7 +2,7 @@
 
 namespace SME.SR.Infra
 {
-    public class RelatorioFaltasFrequenciasExcelDto : RelatorioFaltasFrequenciasBaseExcelDto
+    public  class RelatorioFaltasExcelDto : RelatorioFaltasFrequenciasBaseExcelDto
     {
         [Display(Description = "Nome DRE")]
         public string DreNome { get; set; }
@@ -30,8 +30,5 @@ namespace SME.SR.Infra
 
         [Display(Description = "Qtd Aulas")]
         public int AulasQuantidade { get; set; }
-
-        [Display(Description = "% Ausencia")]
-        public double AusenciaPercentual { get; set; }
     }
 }
