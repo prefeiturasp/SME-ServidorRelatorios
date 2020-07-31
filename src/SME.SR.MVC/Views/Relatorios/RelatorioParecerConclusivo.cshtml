@@ -17,6 +17,32 @@
 
     }
 
+    string VerificaQuebraAlunos()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+
+            var breakPage = $@"</tbody></table>
+                                    <div style='page-break-before:always' />";
+
+            var init = $@"<table class='tblTopo'>
+                                            <thead>
+                                                <th class='thLimpo' width='5%'>Nº</th>
+                                                <th class='thLimpo' width='10%'>ANO</th>
+                                                <th class='thLimpo' width='60%'>NOME</th>
+                                                <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
+                                            </thead>";
+
+            var cabecalho = MontarCabecalho();
+
+            return breakPage + cabecalho + init;
+
+        }
+        return string.Empty;
+
+    }
+
 
     string MontarCabecalho()
     {
@@ -302,9 +328,6 @@
                                         </tr>
                                     </thead>
                                 </table>
-
-                                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                @Html.Raw(VerificaQuebra())
                             }
 
                             <table class="tabela-alunos">
@@ -316,22 +339,30 @@
                                 </thead>
                             </table>
 
-                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                            @Html.Raw(VerificaQuebra())
-
-                            <table class="tblTopo">
-                                <tbody>
-                                    @foreach (var parecerConclusivo in ano.PareceresConclusivos)
+                                <table class="tblTopo">
+                                    @if (ano.PareceresConclusivos.Count > 0)
                                     {
-                                        <tr>
+                                        <thead>
+                                        <th class='thLimpo' width='5%'>Nº</th>
+                                        <th class='thLimpo' width='10%'>ANO</th>
+                                        <th class='thLimpo' width='60%'>NOME</th>
+                                        <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
+                                        </thead>
+                                    }
+
+
+                                        <tbody>
+                                            @foreach (var parecerConclusivo in ano.PareceresConclusivos)
+                                            {
+                                    <tr>
                                         <td width="5%">@parecerConclusivo.AlunoNumeroChamada</td>
                                         <td width="10%">@parecerConclusivo.TurmaNome</td>
                                         <td width="60%">@parecerConclusivo.AlunoNomeCompleto</td>
                                         <td width="25%">@parecerConclusivo.ParecerConclusivoDescricao</td>
-                                        </tr>
+                                    </tr>
                                     }
-                                </tbody>
-                            </table>
+                                        </tbody>
+                                </table>
                         }
                     }
                 }
