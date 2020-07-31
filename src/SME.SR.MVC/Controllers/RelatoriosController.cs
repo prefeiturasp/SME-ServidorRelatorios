@@ -1084,11 +1084,13 @@ namespace SME.SR.MVC.Controllers
                 {
                     UsuarioNome = "Ronaldo Avante",
                     DreCodigo = "108900",
-                    UeCodigo = "094099"
+                    UeCodigo = "094099",
+                    Anos = new string[] { "8", "9" }
                 },
                 UsuarioRf = "123"
             });
 
+            var jsonObj = Newtonsoft.Json.JsonConvert.SerializeObject(model);
 
             return View("RelatorioParecerConclusivo", model);
         }

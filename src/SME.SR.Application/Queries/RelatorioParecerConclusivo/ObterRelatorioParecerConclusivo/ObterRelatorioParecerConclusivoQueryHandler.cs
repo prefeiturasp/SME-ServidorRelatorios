@@ -25,6 +25,7 @@ namespace SME.SR.Application
         }
         public async Task<RelatorioParecerConclusivoDto> Handle(ObterRelatorioParecerConclusivoQuery request, CancellationToken cancellationToken)
         {
+            
             var retorno = new RelatorioParecerConclusivoDto();
 
             var parecesParaTratar = await parecerConclusivoRepository.ObterPareceresFinais(request.filtroRelatorioParecerConclusivoDto.AnoLetivo,
@@ -34,12 +35,17 @@ namespace SME.SR.Application
 
             await MontaCabecalho(request, retorno, parecesParaTratar);
 
-            await MontaSecoes(retorno, parecesParaTratar, request.filtroRelatorioParecerConclusivoDto.DreCodigo, request.filtroRelatorioParecerConclusivoDto.UeCodigo);
+            var modalidadeId = request.filtroRelatorioParecerConclusivoDto.Modalidade.HasValue ? (int)request.filtroRelatorioParecerConclusivoDto.Modalidade.Value : 0;
+
+            await MontaSecoes(retorno, parecesParaTratar, request.filtroRelatorioParecerConclusivoDto.DreCodigo,
+                request.filtroRelatorioParecerConclusivoDto.UeCodigo, request.filtroRelatorioParecerConclusivoDto.CicloId, modalidadeId,
+                request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.Anos);
 
             return await Task.FromResult(retorno);
         }
 
-        private async Task MontaSecoes(RelatorioParecerConclusivoDto retorno, IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, string dreCodigoEnviado, string ueCodigoEnviado)
+        private async Task MontaSecoes(RelatorioParecerConclusivoDto retorno, IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, string dreCodigoEnviado,
+            string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos)
         {
             IEnumerable<string> dresCodigos;
 
@@ -54,37 +60,38 @@ namespace SME.SR.Application
                     dreParaAdicionar.Codigo = dre.Codigo;
                     dreParaAdicionar.Nome = dre.Abreviacao;
 
-                    await TrataUes(parecesParaTratar, dreParaAdicionar, dre.Id);
+                    await TrataUes(parecesParaTratar, dreParaAdicionar, dre.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos);
                     retorno.Dres.Add(dreParaAdicionar);
                 }
             }
             else
             {
-                var dreUnicaParaAdicionar = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = dreCodigoEnviado  });
+                var dreUnicaParaAdicionar = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = dreCodigoEnviado });
                 var dreParaAdicionar = new RelatorioParecerConclusivoDreDto();
                 dreParaAdicionar.Codigo = dreUnicaParaAdicionar.Codigo;
                 dreParaAdicionar.Nome = dreUnicaParaAdicionar.Abreviacao;
 
                 if (retorno.UeNome == "Todas")
-                    await TrataUes(parecesParaTratar, dreParaAdicionar, dreUnicaParaAdicionar.Id);
-                else await TrataUes(parecesParaTratar, dreParaAdicionar, dreUnicaParaAdicionar.Id, ueCodigoEnviado);
+                    await TrataUes(parecesParaTratar, dreParaAdicionar, dreUnicaParaAdicionar.Id, "", cicloIdEnviado, modalidadeId, semestre, anos);
+                else await TrataUes(parecesParaTratar, dreParaAdicionar, dreUnicaParaAdicionar.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos);
 
                 retorno.Dres.Add(dreParaAdicionar);
             }
         }
 
-        private async Task TrataUes(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, RelatorioParecerConclusivoDreDto dreParaAdicionar, long dreId, string ueCodigo = "")
+        private async Task TrataUes(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, RelatorioParecerConclusivoDreDto dreParaAdicionar, long dreId,
+            string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos)
         {
 
             List<Ue> uesDaDre = new List<Ue>();
-            
-            if (string.IsNullOrEmpty(ueCodigo))
-                uesDaDre = (await mediator.Send(new ObterUesPorDreIdQuery(dreId))).ToList();
+
+            if (string.IsNullOrEmpty(ueCodigoEnviado))
+                uesDaDre = (await mediator.Send(new ObterUesPorDreSemestreModadalidadeAnoIdQuery(dreId, semestre, modalidadeId, anos))).ToList();
             else
             {
-                var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
+                var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigoEnviado));
                 uesDaDre.Add(ue);
-            }    
+            }
 
             foreach (var ueDaDre in uesDaDre)
             {
@@ -92,16 +99,23 @@ namespace SME.SR.Application
                 ueParaAdicionar.Nome = ueDaDre.TipoEscola + " - " + ueDaDre.Nome;
                 ueParaAdicionar.Codigo = ueDaDre.Codigo;
 
-                await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar);
+                await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, cicloIdEnviado, anos);
 
                 dreParaAdicionar.Ues.Add(ueParaAdicionar);
             }
 
         }
 
-        private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar)
+        private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, long cicloIdEnviado, 
+            string[] anosEnviado)
         {
             var ciclosDaUe = await mediator.Send(new ObterCiclosPorUeIdQuery(ueId));
+
+            if (cicloIdEnviado > 0)
+                ciclosDaUe = ciclosDaUe.Where(a => a.Id == cicloIdEnviado).ToList();
+
+            if (anosEnviado != null && anosEnviado.Length > 0)
+                ciclosDaUe = ciclosDaUe.Where(a => anosEnviado.Contains(a.Ano.ToString())).ToList();                
 
             foreach (var cicloDaUeAgrupado in ciclosDaUe.GroupBy(a => a.Descricao))
             {
