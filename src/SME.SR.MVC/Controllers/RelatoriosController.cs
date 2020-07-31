@@ -1078,7 +1078,17 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("pareceres-conclusivos")]
         public async Task<IActionResult> RelatorioParecesConclusivos([FromServices] IMediator mediator)
         {
-            var model = await mediator.Send(new ObterRelatorioParecerConclusivoQuery() { filtroRelatorioParecerConclusivoDto = new FiltroRelatorioParecerConclusivoDto() { UsuarioNome = "Ronaldo Avante" } , UsuarioRf = "123" });
+            var model = await mediator.Send(new ObterRelatorioParecerConclusivoQuery()
+            {
+                filtroRelatorioParecerConclusivoDto = new FiltroRelatorioParecerConclusivoDto()
+                {
+                    UsuarioNome = "Ronaldo Avante",
+                    DreCodigo = "108900",
+                    UeCodigo = "094099"
+                },
+                UsuarioRf = "123"
+            });
+
 
             return View("RelatorioParecerConclusivo", model);
         }

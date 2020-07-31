@@ -18,5 +18,6 @@ namespace SME.SR.Infra
         public string Ciclo { get; set; }
 
         public List<RelatorioParecerConclusivoDreDto> Dres { get; set; }
+        
     }
 }

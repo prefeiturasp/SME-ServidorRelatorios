@@ -2,6 +2,7 @@
 using Npgsql;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -24,6 +25,15 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryFirstOrDefaultAsync<Ue>(query, parametros);
             }
+        }
+        public async Task<IEnumerable<Ue>> ObterPorDreId(long dreId)
+        {
+            var query = @"select Id, ue_id Codigo, Nome, tipo_escola TipoEscola from ue where dre_id = @dreId";
+            
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryAsync<Ue>(query, new { dreId });
+
         }
     }
 }
