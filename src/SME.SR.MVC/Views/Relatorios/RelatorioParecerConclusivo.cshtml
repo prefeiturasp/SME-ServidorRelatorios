@@ -1,17 +1,16 @@
 ﻿@model SME.SR.Infra.RelatorioParecerConclusivoDto
 
-@{
-    int contadorQuebrarPagina = 0;
+@{ int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 48;
 
- string VerificaQuebra()
+    string VerificaQuebra()
     {
         if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
         {
-            contadorQuebrarPagina = 0;            
+            contadorQuebrarPagina = 0;
 
             var str = MontarCabecalho();
-            return  $@"<div style='page-break-before:always' />" + str;
+            return $@"<div style='page-break-before:always' />" + str;
 
         }
         return string.Empty;
@@ -25,36 +24,63 @@
 
         var str =
            $@"<div>
-                <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-                </div>
-                <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-                <div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
-                <div class='fonte-14 header-pagina'>
-                <table class='tblTopo'>
-                <tbody>
-                <tr>
-                <td  width='40%' >DRE: {Model.DreNome}</td>
-                <td width='40%' >UE: {Model.UeNome}</td>
-                <td  width='20%' >ANO: {Model.Ano}</td>
-                </tr>
-                </tbody>
-                </table>             
-                <table>
-                <tbody>
-                <tr>
-                <td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
-                <td class='campo-rf-data'>RF: {Model.RF}</td>
-                <td class='campo-rf-data'>DATA: {Model.Data}</td>
-                </tr>
-                </tbody>
-                </table>
-                </div>
-                ";
+                    <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+                    </div>
+                    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+                    <div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
+                    <div class='fonte-14 header-pagina'>
+                    <table class='tblTopo'>
+                    <tbody>
+                    <tr>
+                    <td  width='40%' >DRE: {Model.DreNome}</td>
+                    <td width='40%' >UE: {Model.UeNome}</td>
+                    <td  width='20%' >ANO: {Model.Ano}</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                    <table>
+                    <tbody>
+                    <tr>
+                    <td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
+                    <td class='campo-rf-data'>RF: {Model.RF}</td>
+                    <td class='campo-rf-data'>DATA: {Model.Data}</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                    </div>
+                    ";
 
         return str;
     }
 
+    string MontarTabelaPareceres(List<SME.SR.Infra.RelatorioParecerConclusivoAlunoDto> pareceresConclusivos)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        VerificaQuebra();
 
+        var str =
+           $@"<div>
+                    <table class='tblTopo'>
+                    <tbody>";
+
+        foreach (var parecerConclusivo in pareceresConclusivos)
+        {
+            str += $@"<tr>
+                    <td width='5%'>{ parecerConclusivo.AlunoNumeroChamada}</td>
+                    <td width='10%'>{parecerConclusivo.TurmaNome}</td>
+                    <td width='60%'>{parecerConclusivo.AlunoNomeCompleto}</td>
+                    <td width='25%'>{parecerConclusivo.ParecerConclusivoDescricao}</td>
+                    </tr>";
+
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+            VerificaQuebra();
+        }
+
+
+        str += "</tbody></table>";
+
+        return str;
+    }
 }
 
 <!DOCTYPE html>
@@ -66,11 +92,11 @@
 </head>
 <body class="body-rel-faltas-frequencia">
     <style>
-          tblTopo th, td {
-      padding: 3px 0px 3px 15px;
-      text-align: left;
-    }
-            
+        tblTopo th, td {
+            padding: 3px 0px 3px 15px;
+            text-align: left;
+        }
+
         .body-rel-faltas-frequencia {
             margin: 0.5cm auto;
             font-family: Roboto, sans-serif;
@@ -194,158 +220,106 @@
         }
 
         .thLimpo {
-            background-color:#ffffff;
+            background-color: #ffffff;
         }
     </style>
 
 
     <div>
         @{
-            @Html.Raw(MontarCabecalho())
+                @Html.Raw(MontarCabecalho())
 
-            foreach (var dre in Model.Dres)
-            {
-
-                if (Model.DreNome == "Todas")
-                {
-                    <table class="tabela-alunos">
-                        <thead>
-
-                            <tr>
-                                <th>@dre.Nome</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                    @Html.Raw(VerificaQuebra())
-                }
-
-                foreach (var ue in dre.Ues)
-                {
-                    if (Model.UeNome == "Todas")
-                    {
-                        <table class="tabela-alunos">
-                            <thead>
-
-                                <tr>
-                                    <th>@ue.Nome</th>
-                                </tr>
-                            </thead>
-                        </table>
-                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                        @Html.Raw(VerificaQuebra())
-                    }
-
-
-                }
-            }
-
-
-            @*for (int a = 0; a < Model.Dre.Ue.Turmas.Count; a++)
-            {
-
-                @if (Model.Dre.Ue.Turmas[a].Bimestres != null)
-                {
-
-                    foreach (var bimestre in Model.Dre.Ue.Turmas[a].Bimestres)
-                    {
-
-                        if (String.IsNullOrEmpty(Model.TurmaNome))
-                        {
-                            var turma = Model.Dre.Ue.Turmas[a];
-                            <table class="tabela-alunos">
-                                <thead>
-
-                                    <tr>
-                                        <th>@turma.Nome</th>
-                                    </tr>
-                                    <tr>
-                                        <th height="5px" class="thLimpo" style="border-bottom:0"></th>
-                                    </tr>
-
-                                </thead>
-                            </table>
-                            contadorQuebrarPagina = contadorQuebrarPagina + 2;
-                            @Html.Raw(VerificaQuebra())
-                        }
-
-                        @if (bimestre.Componentes != null)
-                        {
-                            if (string.IsNullOrEmpty(Model.Bimestre))
+                            foreach (var dre in Model.Dres)
                             {
-                                <table class="tabela-alunos">
-                                    <thead>
-                                        <tr>
-                                            <th>@bimestre.Nome</th>
-                                        </tr>
-                                        <tr>
-                                            <th height="5px" class="thLimpo" style="border-bottom:0"></th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                                contadorQuebrarPagina = contadorQuebrarPagina + 2;
-                                @Html.Raw(VerificaQuebra())
-                            }
 
-                            for (int c = 0; c < bimestre.Componentes.Count; c++)
-                            {
-                                var componente = bimestre.Componentes[c];
-
-                                if (string.IsNullOrEmpty(Model.ComponenteCurricular))
+                                if (Model.DreNome == "Todas")
                                 {
-                                    <table class="tabela-alunos">
-                                        <thead>
-                                            <tr>
-                                                <th style="border-bottom:0">@componente.NomeComponente</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                <table class="tabela-alunos">
+                    <thead>
 
+                        <tr>
+                            <th>@dre.Nome</th>
+                        </tr>
+                    </thead>
+                </table>
                                     contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                    @Html.Raw(VerificaQuebra())
+                @Html.Raw(VerificaQuebra())
                                 }
 
-                                if (componente.Pendencias != null)
+                                foreach (var ue in dre.Ues)
                                 {
-
-                                    for (int i = 0; i < componente.Pendencias.Count; i++)
+                                    if (Model.UeNome == "Todas")
                                     {
-                                        var pendencia = componente.Pendencias[i];
-                                        @MontarLinhaPendencia(pendencia.DescricaoPendencia, pendencia.DetalhamentoPendenciaArray, Model.ExibeDetalhamento, pendencia.NomeUsuario, pendencia.NomeUsuarioAprovacao, pendencia.CodigoUsuarioRf, pendencia.CodigoUsuarioAprovacaoRf)
+                <table class="tabela-alunos">
+                    <thead>
 
-
+                        <tr>
+                            <th>@ue.Nome</th>
+                        </tr>
+                    </thead>
+                </table>
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                @Html.Raw(VerificaQuebra())
                                     }
 
-                                    <table class="tabela-alunos">
-                                        <thead>
-                                            <tr>
-                                                <th height="5px" class="thLimpo" style="border-bottom:0"></th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                    @Html.Raw(VerificaQuebra())
+                                    foreach (var ciclo in ue.Ciclos)
+                                    {
+                                        if(Model.Ciclo == "Todos")
+                                        {
+                <table class="tabela-alunos">
+                    <thead>
 
+                        <tr>
+                            <th>@ciclo.Nome</th>
+                        </tr>
+                    </thead>
+                </table>
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                @Html.Raw(VerificaQuebra())
+                                        }
 
+                                        foreach(var ano in ciclo.Anos)
+                                        {
+                                            if(Model.Ano == "Todos")
+                                            {
+                <table class="tabela-alunos">
+                    <thead>
+
+                        <tr>
+                            <th>@ano.Nome</th>
+                        </tr>
+                    </thead>
+                </table>
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                @Html.Raw(VerificaQuebra())
+                                        }
+                <table class="tabela-alunos">
+                    <thead>
+
+                        <tr>
+                            <th class="thLimpo"></th>
+                        </tr>
+                    </thead>
+                </table>
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                @Html.Raw(VerificaQuebra())
+                <table class="tabela-alunos">
+                    
+                    <thead>
+                        <th class="thLimpo" width="5%">Nº</th>
+                        <th class="thLimpo" width="10%">ANO</th>
+                        <th class="thLimpo" width="60%">NOME</th>
+                        <th class="thLimpo" width="25%">PARECER CONCLUSIVO</th>
+                    </thead>
+                </table>
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                @Html.Raw(VerificaQuebra())
+                            @Html.Raw(MontarTabelaPareceres(ano.PareceresConclusivos))
+                                        }
+                                    }
 
                                 }
-
-
                             }
-
-
-
-                        }
-
-
-
-                    }
-
-
-
-
-                }
-            }*@
         }
 
     </div>
