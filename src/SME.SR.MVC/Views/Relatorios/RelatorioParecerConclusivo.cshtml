@@ -78,41 +78,6 @@
 
         return str;
     }
-
-    string MontarTabelaPareceres(List<SME.SR.Infra.RelatorioParecerConclusivoAlunoDto> pareceresConclusivos)
-    {
-
-        var cabecalho = $@"<thead>
-                <th class='thLimpo' width='5%'>Nº</th>
-
-                    <th class='thLimpo' width='10%'>ANO</th>
-                <th class='thLimpo' width='60%'>NOME</th>
-                <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
-            </thead>";
-
-        var str =
-           $@"<div>
-            <table class='tblTopo'>
-            <tbody>";
-
-        foreach (var parecerConclusivo in pareceresConclusivos)
-        {
-            str += $@"<tr>
-            <td width='5%'>{ parecerConclusivo.AlunoNumeroChamada}</td>
-            <td width='10%'>{parecerConclusivo.TurmaNome}</td>
-            <td width='60%'>{parecerConclusivo.AlunoNomeCompleto}</td>
-            <td width='25%'>{parecerConclusivo.ParecerConclusivoDescricao}</td>
-            </tr>";
-
-            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-            VerificaQuebra();
-        }
-
-
-        str += "</tbody></table>";
-
-        return str;
-    }
 }
 
 <!DOCTYPE html>
