@@ -73,6 +73,12 @@ namespace SME.SR.Data
                 if (modalidade.HasValue)
                     query.AppendLine(" and t.modalidade_codigo = @modalidadeId ");
 
+                if (string.IsNullOrEmpty(dreCodigo))
+                    query.AppendLine(" and d.dre_id = @dreCodigo ");
+
+                if (string.IsNullOrEmpty(ueCodigo))
+                    query.AppendLine(" and u.ue_id = @ueCodigo ");
+
                 query.AppendLine("order by d.id, u.id, t.id");
 
                 var parametros = new

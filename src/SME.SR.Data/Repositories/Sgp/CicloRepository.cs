@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Npgsql;
-using SME.SR.Data.Models;
 using SME.SR.Data.Queries;
 using SME.SR.Infra;
 using System;
@@ -41,6 +40,23 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryAsync<TipoCiclo>(query, parametros);
             }
+        }
+
+        public async Task<IEnumerable<TipoCiclo>> ObterPorUeId(long ueId)
+        {
+
+
+            var query = @"select distinct tc.descricao, tca.ano, tc.id from tipo_ciclo tc
+                            inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
+                            inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
+                            inner join ue u on t.ue_id  = u.id 
+                                where u.id = @ueId";
+
+            var parametros = new { ueId };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<TipoCiclo>(query, parametros);
+
         }
     }
 }
