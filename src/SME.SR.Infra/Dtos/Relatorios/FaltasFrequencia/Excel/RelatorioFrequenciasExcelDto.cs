@@ -25,7 +25,7 @@ namespace SME.SR.Infra
         [Display(Description = "Nome Estudante")]
         public string EstudanteNome { get; set; }
 
-        [Display(Description = "% Ausencia")]
-        public double AusenciaPercentual { get; set; }
+        [Display(Description = "% Frequência")]
+        public double FrequenciaPercentual { get; set; }
     }
 }

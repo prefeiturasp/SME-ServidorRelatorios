@@ -31,7 +31,7 @@ namespace SME.SR.Infra
         [Display(Description = "Qtd Aulas")]
         public int AulasQuantidade { get; set; }
 
-        [Display(Description = "% Ausencia")]
-        public double AusenciaPercentual { get; set; }
+        [Display(Description = "% Frequencia")]
+        public double FrequenciaPercentual { get; set; }
     }
 }

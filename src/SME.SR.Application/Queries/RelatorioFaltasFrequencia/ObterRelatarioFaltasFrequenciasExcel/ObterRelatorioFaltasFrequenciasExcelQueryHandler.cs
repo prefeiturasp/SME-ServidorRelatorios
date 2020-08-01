@@ -121,12 +121,12 @@ namespace SME.SR.Application
         }
 
 
-        private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, double ausenciaPercentual)
+        private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, double frequenciaPercentual)
         {
             if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos)
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).AusenciaPercentual = ausenciaPercentual;
+                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = frequenciaPercentual;
             else
-                ((RelatorioFrequenciasExcelDto)relatorioDto).AusenciaPercentual = ausenciaPercentual;
+                ((RelatorioFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = frequenciaPercentual;
         }
 
         private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, int totalAulas, int totalFaltas)
