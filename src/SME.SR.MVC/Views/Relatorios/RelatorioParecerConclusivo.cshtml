@@ -182,6 +182,7 @@
         td {
             border: 1px solid #42474a;
             text-align: center;
+            padding: 3px;
         }
 
         .tabela-alunos tr {
@@ -289,12 +290,10 @@
 
     <table class="tblTopo">
         <thead>
-            <tr>
-                <th class='thLimpo' width='5%'>Nº</th>
-                <th class='thLimpo' width='10%'>ANO</th>
-                <th class='thLimpo' width='60%'>NOME</th>
-                <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
-            </tr>
+            <th class='thLimpo' width='5%'>Nº</th>
+            <th class='thLimpo' width='10%'>ANO</th>
+            <th class='thLimpo' width='60%'>NOME</th>
+            <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
         </thead>
     </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
     @Html.Raw(VerificaQuebra());
