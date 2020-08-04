@@ -4,6 +4,7 @@ namespace SME.SR.Infra
 {
     public class RelatorioRecuperacaoParalelaDto
     {
+
         public RelatorioRecuperacaoParalelaDto(string dreNome, string ueNome, string usuarioNome, string usuarioRF, string data, int anoLetivo, int semestre)
         {
             DreNome = dreNome;
@@ -17,7 +18,7 @@ namespace SME.SR.Infra
         }
 
         public string DreNome { get; set; }
-        public string UeNome { get; set; }        
+        public string UeNome { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
         public string Data { get; set; }

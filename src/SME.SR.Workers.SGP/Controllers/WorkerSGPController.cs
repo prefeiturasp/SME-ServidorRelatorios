@@ -94,6 +94,13 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        
+        [HttpGet("relatorios/recuperacaoparalela")]
+        [Action("relatorios/recuperacaoparalela", typeof(IRelatorioRecuperacaoParalelaUseCase))]
+        public async Task<bool> RelatorioRecuperacaoParalela([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioRecuperacaoParalelaUseCase relatorioRecuperacaoParalelaUseCase)
+        {
+            await relatorioRecuperacaoParalelaUseCase.Executar(request);
+            return true;
+        }
+
     }
 }

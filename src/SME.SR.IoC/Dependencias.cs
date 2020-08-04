@@ -114,6 +114,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioFaltasFrequenciasUseCase, RelatorioFaltasFrequenciasUseCase>();
             services.TryAddScoped<IRelatorioHistoricoEscolarUseCase, RelatorioHistoricoEscolarUseCase>();
             services.TryAddScoped<IRelatorioFechamentoPendenciasUseCase, RelatorioFechamentoPendenciasUseCase>();
+            services.TryAddScoped<IRelatorioRecuperacaoParalelaUseCase, RelatorioRecuperacaoParalelaUseCase>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
