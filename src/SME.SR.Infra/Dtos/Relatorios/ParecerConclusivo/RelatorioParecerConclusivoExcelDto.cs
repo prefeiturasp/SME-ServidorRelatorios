@@ -7,7 +7,7 @@ namespace SME.SR.Infra
         [Display(Description = "Nome DRE")]
         public string  NomeDre { get; set; }
 
-        [Display(Description = "Nome da Ue")]
+        [Display(Description = "Nome da UE")]
         public string NomeUe { get; set; }
 
         public string Ciclo { get; set; }
