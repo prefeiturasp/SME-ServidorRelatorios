@@ -6,6 +6,6 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IRelatorioRecuperacaoParalelaRepository
     {
-        Task<IEnumerable<RelatorioRecuperacaoParalelaAlunoSecoesDto>> Obter(int idRecuperacaoParalela, long turmaId, int semestre);
+        Task<IEnumerable<RelatorioRecuperacaoParalelaAlunoDto>> Obter(int idRecuperacaoParalela, long turmaId, int semestre);
     }
 }

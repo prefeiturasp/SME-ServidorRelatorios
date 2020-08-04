@@ -17,8 +17,23 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RelatorioRecuperacaoParalelaAlunoSecoesDto>> Obter(int idRecuperacaoParalela, long turmaId, int semestre)
+        public async Task<IEnumerable<RelatorioRecuperacaoParalelaAlunoDto>> Obter(int idRecuperacaoParalela, long turmaId, int semestre)
         {
+
+            //AlunoNome = alunoNome;
+            //DataNascimento = dataNascimento;
+            //CodigoEol = codigoEol;
+            //Situacao = situacao;
+
+            //Turma = turma;
+            //TurmaRegular = turmaRegular;
+
+            //Historico = historico;
+            //Dificuldades = dificuldades;
+            //Encaminhamentos = encaminhamentos;
+            //Avancos = avancos;
+            //Outros = outros;
+
             var query = @" select	 
                             srs.id, 
 	                        srs.nome, 
@@ -33,7 +48,7 @@ namespace SME.SR.Data
 
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             var parametros = new { idRecuperacaoParalela, turmaId, semestre };
-            return await conexao.QueryAsync<RelatorioRecuperacaoParalelaAlunoSecoesDto>(query, parametros);
+            return await conexao.QueryAsync<RelatorioRecuperacaoParalelaAlunoDto>(query, parametros);
         }
     }
 }

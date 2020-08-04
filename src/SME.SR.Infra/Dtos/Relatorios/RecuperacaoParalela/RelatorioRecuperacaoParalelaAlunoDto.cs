@@ -15,6 +15,7 @@ namespace SME.SR.Infra
             CodigoEol = codigoEol;
             TurmaRegular = turmaRegular;
             Situacao = situacao;
+
             Historico = historico;
             Dificuldades = dificuldades;
             Encaminhamentos = encaminhamentos;
