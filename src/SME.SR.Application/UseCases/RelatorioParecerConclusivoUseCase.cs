@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SME.SR.Infra;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -24,7 +25,7 @@ namespace SME.SR.Application
             switch (relatorioFiltros.TipoFormatoRelatorio)
             {
                 case TipoFormatoRelatorio.Xlsx:
-                    var dadosExcel = await mediator.Send(new ObterRelatorioParecerConclusivoExcelQuery() { RelatorioFaltasFrequencias = relatorioFiltros });
+                    var dadosExcel = await mediator.Send(new ObterRelatorioParecerConclusivoExcelQuery() { RelatorioParecerConclusivo = resultado });
                     if (dadosExcel == null)
                         throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
                     await mediator.Send(new GerarExcelGenericoCommand(dadosExcel.ToList<object>(), "RelatorioParecerConclusivo", request.CodigoCorrelacao));
