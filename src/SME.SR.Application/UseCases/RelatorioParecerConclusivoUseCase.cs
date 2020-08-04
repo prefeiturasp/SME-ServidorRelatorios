@@ -17,11 +17,38 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtros = request.ObterObjetoFiltro<FiltroRelatorioParecerConclusivoDto>();
+            var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioParecerConclusivoDto>();
 
-            var resultado = await mediator.Send(new ObterRelatorioParecerConclusivoQuery() { filtroRelatorioParecerConclusivoDto = filtros, UsuarioRf = request.UsuarioLogadoRF });
-            
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioParecerConclusivo", resultado, request.CodigoCorrelacao));
+            var resultado = await mediator.Send(new ObterRelatorioParecerConclusivoQuery() { filtroRelatorioParecerConclusivoDto = relatorioFiltros, UsuarioRf = request.UsuarioLogadoRF });
+
+            switch (relatorioFiltros.TipoFormatoRelatorio)
+            {
+                case TipoFormatoRelatorio.Xlsx:
+                    var dadosExcel = await mediator.Send(new ObterRelatorioFaltasFrequenciasExcelQuery() { RelatorioFaltasFrequencias = relatorioFiltros });
+                    if (dadosExcel == null)
+                        throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
+                    await mediator.Send(new GerarExcelGenericoCommand(dadosExcel.ToList<object>(), "RelatorioParecerConclusivo", request.CodigoCorrelacao));
+                    break;
+                case TipoFormatoRelatorio.Pdf:
+                    await GerarRelatorioPdf(mediator, resultado, request.CodigoCorrelacao);
+                    break;
+                case TipoFormatoRelatorio.Rtf:
+                case TipoFormatoRelatorio.Html:
+                case TipoFormatoRelatorio.Xls:
+                case TipoFormatoRelatorio.Csv:
+                case TipoFormatoRelatorio.Xml:
+                case TipoFormatoRelatorio.Docx:
+                case TipoFormatoRelatorio.Odt:
+                case TipoFormatoRelatorio.Ods:
+                case TipoFormatoRelatorio.Jrprint:
+                default:
+                    throw new NegocioException($"Não foi possível exportar este relátorio para o formato {relatorioFiltros.TipoFormatoRelatorio}");
+            }
+        }
+
+        private async Task GerarRelatorioPdf(IMediator mediator, RelatorioParecerConclusivoDto dadosRelatorio, Guid codigoCorrelacao)
+        {
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioParecerConclusivo", dadosRelatorio, codigoCorrelacao));
         }
 
     }
