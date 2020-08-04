@@ -139,6 +139,7 @@ namespace SME.SR.Application
                         foreach (var alunoDaTurma in alunosDasTurmas.Where(a => a.CodigoTurma == int.Parse(turma.Codigo)).OrderBy(a => a.ObterNomeFinal()))
                         {
                             var parecerParaIncluir = new RelatorioParecerConclusivoAlunoDto();
+                            parecerParaIncluir.AlunoCodigo = alunoDaTurma.CodigoAluno.ToString();
                             parecerParaIncluir.AlunoNomeCompleto = alunoDaTurma.ObterNomeFinal();
                             parecerParaIncluir.AlunoNumeroChamada = alunoDaTurma.NumeroAlunoChamada ?? "";
                             parecerParaIncluir.TurmaNome = turma.Nome;
