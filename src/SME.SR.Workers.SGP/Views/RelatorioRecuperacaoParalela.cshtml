@@ -25,7 +25,7 @@
 
         contadorQuebrarPagina = 0;
         contadorPagina = contadorPagina + 1;
-        
+
         return $@"<div style='page-break-before:always'> </div>";
     }
 
@@ -34,199 +34,51 @@
 
         var str = "";
 
-        if (!string.IsNullOrEmpty(aluno.Historico))
+        if (aluno.Secoes.Count > 0)
         {
-            str = str + $@"
-        <table class='tabela-alunos'>
-        <thead>
-        <th style='width: 100%;'>HISTÓRICO DO ESTUDANTE</th>
-        </thead>
-        <tbody>
-        <tr>
-            <td colspan='4' style='border-top: none;'>";
 
-            for (int i = 0; i < aluno.HistoricoArray.Length; i++)
+            foreach (var secao in aluno.Secoes)
             {
-                str = str + $@"{aluno.HistoricoArray[i]}";
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                var quebra = VerificaQuebra(aluno);
-                if (!string.IsNullOrEmpty(quebra))
-                {
-                    str = str + $@"</td></tr></tbody></table>";
-                    str = str + quebra;
-                    str = str + $@"<table class='tabela-alunos'>
-                                    <thead>
-                                        <th style='width: 100%;'>HISTÓRICO DO ESTUDANTE</th>     
-                                   </thead>
-                                    <tbody><tr>
-                    <td colspan='4' >";
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                }
-            }
 
-            str = str + @"</td>
-            </tr><tr>
-            <td class='thLimpo' colspan='4' height='15px'></td>
-            </tr>
-        </tbody></table>";
-            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-            VerificaQuebra(aluno);
-        }
-        if (!string.IsNullOrEmpty(aluno.Dificuldades))
-        {
-            str = str + $@"
-        <table class='tabela-alunos'>
-        <thead>
-        <th style='width: 100%;'>DIFICULDADES</th>
-        </thead>
-        <tbody>
-        <tr>
-            <td colspan='4' style='border-top: none;'>";
 
-            for (int i = 0; i < aluno.DificuldadesArray.Length; i++)
-            {
-                str = str + $@"{aluno.DificuldadesArray[i]}";
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                var quebra = VerificaQuebra(aluno);
-                if (!string.IsNullOrEmpty(quebra))
-                {
-                    str = str + $@"</td></tr></tbody></table>";
-                    str = str + quebra;
-                    str = str + $@"<table class='tabela-alunos'>
-                                    <thead>
-                                        <th style='width: 100%;'>DIFICULDADES</th>     
-                                   </thead>
-                                    <tbody><tr>
-                    <td colspan='4' >";
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                }
-            }
-
-            str = str + @"</td>
-            </tr><tr>
-            <td class='thLimpo' colspan='4' height='15px'></td>
-            </tr>
-        </tbody></table>";
-            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-            VerificaQuebra(aluno);
-        }
-
-        if (!string.IsNullOrEmpty(aluno.Encaminhamentos))
-        {
-               str = str + $@"
-        <table class='tabela-alunos'>
-        <thead>
-        <th style='width: 100%;'>ENCAMINHAMENTOS</th>
-        </thead>
-        <tbody>
-        <tr>
-            <td colspan='4' style='border-top: none;'>";
-
-            for (int i = 0; i < aluno.EncaminhamentosArray.Length; i++)
-            {
-                str = str + $@"{aluno.EncaminhamentosArray[i]}";
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                var quebra = VerificaQuebra(aluno);
-                if (!string.IsNullOrEmpty(quebra))
-                {
-                    str = str + $@"</td></tr></tbody></table>";
-                    str = str + quebra;
-                    str = str + $@"<table class='tabela-alunos'>
-                                    <thead>
-                                        <th style='width: 100%;'>ENCAMINHAMENTOS</th>     
-                                   </thead>
-                                    <tbody><tr>
-                    <td colspan='4' >";
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                    VerificaQuebra(aluno);
-                }
-            }
-
-            str = str + @"</td>
-            </tr><tr>
-            <td class='thLimpo' colspan='4' height='15px'></td>
-            </tr>
-        </tbody></table>";
-            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-            VerificaQuebra(aluno);
-        }
-
-        if (!string.IsNullOrEmpty(aluno.Avancos))
-        {
                 str = str + $@"
-        <table class='tabela-alunos'>
-        <thead>
-        <th style='width: 100%;'>AVANÇOS</th>
-        </thead>
-        <tbody>
-        <tr>
-            <td colspan='4' style='border-top: none;'>";
+<table class='tabela-alunos'>
+<thead>
+<th style='width: 100%;'>{secao.SecaoNome}</th>
+</thead>
+<tbody>
+<tr>
+    <td colspan='4' style='border-top: none;'>";
 
-            for (int i = 0; i < aluno.AvancosArray.Length; i++)
-            {
-                str = str + $@"{aluno.AvancosArray[i]}";
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                var quebra = VerificaQuebra(aluno);
-                if (!string.IsNullOrEmpty(quebra))
+                for (int i = 0; i < secao.SecaoValorArray.Length; i++)
                 {
-                    str = str + $@"</td></tr></tbody></table>";
-                    str = str + quebra;
-                    str = str + $@"<table class='tabela-alunos'>
-                                    <thead>
-                                        <th style='width: 100%;'>AVANÇOS</th>     
-                                   </thead>
-                                    <tbody><tr>
-                    <td colspan='4' >";
+                    str = str + $@"{secao.SecaoValorArray[i]}";
                     contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                    var quebra = VerificaQuebra(aluno);
+                    if (!string.IsNullOrEmpty(quebra))
+                    {
+                        str = str + $@"</td></tr></tbody></table>";
+                        str = str + quebra;
+                        str = str + $@"<table class='tabela-alunos'>
+                            <thead>
+                                <th style='width: 100%;'>{secao.SecaoNome}</th>
+                           </thead>
+                            <tbody><tr>
+            <td colspan='4' >";
+                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                    }
                 }
-            }
 
-            str = str + @"</td>
-            </tr><tr>
-            <td class='thLimpo' colspan='4' height='15px'></td>
-            </tr>
-        </tbody></table>";
-            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-            VerificaQuebra(aluno);
+                str = str + @"</td>
+    </tr><tr>
+    <td class='thLimpo' colspan='4' height='15px'></td>
+    </tr>
+</tbody></table>";
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                VerificaQuebra(aluno);
+            }
         }
 
-        if (!string.IsNullOrEmpty(aluno.Outros))
-        {
-              str = str + $@"
-        <table class='tabela-alunos'>
-        <thead>
-        <th style='width: 100%;'>OUTROS</th>
-        </thead>
-        <tbody>
-        <tr>
-            <td colspan='4' style='border-top: none;'>";
-
-            for (int i = 0; i < aluno.OutrosArray.Length; i++)
-            {
-                str = str + $@"{aluno.OutrosArray[i]}";
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                var quebra = VerificaQuebra(aluno);
-                if (!string.IsNullOrEmpty(quebra))
-                {
-                    str = str + $@"</td></tr></tbody></table>";
-                    str = str + quebra;
-                    str = str + $@"<table class='tabela-alunos'>
-                                    <thead>
-                                        <th style='width: 100%;'>OUTROS</th>     
-                                   </thead>
-                                    <tbody><tr>
-                    <td colspan='4' >";
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                }
-            }
-
-            str = str + @"</td>
-            </tr><tr>
-            <td class='thLimpo' colspan='4' height='15px'></td>
-            </tr>
-        </tbody></table>";
-            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-        }
 
         return str;
     }
@@ -326,7 +178,7 @@
 
         .titulo-faltas-frequencia {
             text-align: right;
-            font-size: 14.5px;            
+            font-size: 14.5px;
         }
 
         .img-logo-sgp {
@@ -394,7 +246,7 @@
         }
 
         td {
-            border: 1px solid #42474a;            
+            border: 1px solid #42474a;
         }
 
         .tabela-alunos tr {
@@ -409,7 +261,8 @@
         .fonte-14 {
             font-size: 14px !important;
         }
-            .fonte-12 {
+
+        .fonte-12 {
             font-size: 12px !important;
         }
 
@@ -451,7 +304,7 @@
                 {
                     @Html.Raw(Quebra());
                 }
-            }           
+            }
         }
 
     </div>
