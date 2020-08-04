@@ -30,4 +30,22 @@
         public string Avancos { get; set; }
         public string Outros { get; set; }
     }
+
+    public class RelatorioRecuperacaoParalelaAlunoSecoesDto
+    {
+        public RelatorioRecuperacaoParalelaAlunoSecoesDto(string historico, string dificuldades, string encaminhamentos, string avancos, string outros)
+        {
+            Historico = historico;
+            Dificuldades = dificuldades;
+            Encaminhamentos = encaminhamentos;
+            Avancos = avancos;
+            Outros = outros;
+        }
+
+        public string Historico { get; set; }
+        public string Dificuldades { get; set; }
+        public string Encaminhamentos { get; set; }
+        public string Avancos { get; set; }
+        public string Outros { get; set; }
+    }
 }
