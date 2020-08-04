@@ -94,6 +94,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        
+        [HttpGet("relatorios/parecerconclusivo")]
+        [Action("relatorios/parecerconclusivo", typeof(IRelatorioParecerConclusivoUseCase))]
+        public async Task<bool> RelatorioParecerConclusivo([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioParecerConclusivoUseCase relatorioParecerConclusivoUseCase)
+        {
+            await relatorioParecerConclusivoUseCase.Executar(request);
+            return true;
+        }
+
+
     }
 }
