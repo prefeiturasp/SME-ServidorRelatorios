@@ -1,4 +1,8 @@
-﻿namespace SME.SR.Infra
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SME.SR.Infra
 {
     public class RelatorioRecuperacaoParalelaAlunoDto
     {
@@ -29,5 +33,27 @@
         public string Encaminhamentos { get; set; }
         public string Avancos { get; set; }
         public string Outros { get; set; }
+
+        public string[] HistoricoArray { get { return SplitInParts(LimparString(Historico)).ToArray(); } }
+        public string[] DificuldadesArray { get { return SplitInParts(LimparString(Dificuldades)).ToArray(); } }
+        public string[] EncaminhamentosArray { get { return SplitInParts(LimparString(Encaminhamentos)).ToArray(); } }
+        public string[] AvancosArray { get { return SplitInParts(LimparString(Avancos)).ToArray(); } }
+        public string[] OutrosArray { get { return SplitInParts(LimparString(Outros)).ToArray(); } }
+
+        public static string LimparString(string str)
+        {
+            str = str.ToLower().Replace("<br>", " ");
+            str = str.ToLower().Replace("<p>", "");
+            str = str.ToLower().Replace("</p>", "");
+            return str;
+        }
+
+        public IEnumerable<string> SplitInParts(string s)
+        {
+            for (var i = 0; i < s.Length; i += 124)
+                yield return s.Substring(i, Math.Min(124, s.Length - i));
+        }
+
     }
+
 }
