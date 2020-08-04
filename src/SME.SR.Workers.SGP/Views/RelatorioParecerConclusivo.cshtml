@@ -24,15 +24,15 @@
             contadorQuebrarPagina = 1;
 
             var breakPage = $@"</tbody></table>
-                            <div style='page-break-before:always' />";
+    <div style='page-break-before:always' />";
 
             var init = $@"<table class='tblTopo'>
-                                    <thead>
-                                        <th class='thLimpo' width='5%'>Nº</th>
-                                        <th class='thLimpo' width='10%'>ANO</th>
-                                        <th class='thLimpo' width='60%'>NOME</th>
-                                        <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
-                                    </thead>";
+            <thead>
+                <th class='thLimpo' width='10%'>ANO</th>
+                <th class='thLimpo' width='5%'>Nº</th>
+                <th class='thLimpo' width='60%'>NOME</th>
+                <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
+            </thead>";
 
             var cabecalho = MontarCabecalho();
 
@@ -50,31 +50,31 @@
 
         var str =
            $@"<div>
-    <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-    </div>
-    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-    <div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
-    <div class='fonte-14 header-pagina'>
-    <table class='tblTopo'>
-    <tbody>
-    <tr>
-    <td  width='40%' >DRE: {Model.DreNome}</td>
-    <td width='40%' >UE: {Model.UeNome}</td>
-    <td  width='20%' >ANO: {Model.Ano}</td>
-    </tr>
-    </tbody>
-    </table>
-    <table>
-    <tbody>
-    <tr>
-    <td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
-    <td class='campo-rf-data'>RF: {Model.RF}</td>
-    <td class='campo-rf-data'>DATA: {Model.Data}</td>
-    </tr>
-    </tbody>
-    </table>
-    </div>
-    ";
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='40%' >DRE: {Model.DreNome}</td>
+<td width='40%' >UE: {Model.UeNome}</td>
+<td  width='20%' >ANO: {Model.Ano}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
+<td class='campo-rf-data'>RF: {Model.RF}</td>
+<td class='campo-rf-data'>DATA: {Model.Data}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
 
         return str;
     }
@@ -291,8 +291,8 @@
 
                             <table class="tblTopo">
                                 <thead>
-                                <th class='thLimpo' width='5%'>Nº</th>
                                 <th class='thLimpo' width='10%'>ANO</th>
+                                <th class='thLimpo' width='5%'>Nº</th>
                                 <th class='thLimpo' width='60%'>NOME</th>
                                 <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
                                 </thead>
@@ -306,8 +306,8 @@
                                     {
                                         @Html.Raw(VerificaQuebraAlunos());
                                         <tr>
-                                            <td width="5%">@parecerConclusivo.AlunoNumeroChamada</td>
                                             <td width="10%">@parecerConclusivo.TurmaNome</td>
+                                            <td width="5%">@parecerConclusivo.AlunoNumeroChamada</td>
                                             <td width="60%">@parecerConclusivo.AlunoNomeCompleto</td>
                                             <td width="25%">@parecerConclusivo.ParecerConclusivoDescricao</td>
                                         </tr>
