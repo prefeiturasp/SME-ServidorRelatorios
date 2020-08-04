@@ -24,7 +24,7 @@ namespace SME.SR.Application
             switch (relatorioFiltros.TipoFormatoRelatorio)
             {
                 case TipoFormatoRelatorio.Xlsx:
-                    var dadosExcel = await mediator.Send(new ObterRelatorioFaltasFrequenciasExcelQuery() { RelatorioFaltasFrequencias = relatorioFiltros });
+                    var dadosExcel = await mediator.Send(new ObterRelatorioParecerConclusivoExcelQuery() { RelatorioFaltasFrequencias = relatorioFiltros });
                     if (dadosExcel == null)
                         throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
                     await mediator.Send(new GerarExcelGenericoCommand(dadosExcel.ToList<object>(), "RelatorioParecerConclusivo", request.CodigoCorrelacao));
