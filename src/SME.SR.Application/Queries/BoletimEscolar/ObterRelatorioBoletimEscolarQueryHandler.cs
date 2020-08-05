@@ -53,10 +53,7 @@ namespace SME.SR.Application
 
         private async Task<Ue> ObterUePorCodigo(string ueCodigo)
         {
-            return await mediator.Send(new ObterUePorCodigoQuery()
-            {
-                UeCodigo = ueCodigo
-            });
+            return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
         private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string turmaCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario)

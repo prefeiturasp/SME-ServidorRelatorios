@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioFaltasFrequenciasExcelQuery : IRequest<IEnumerable<RelatorioFaltasFrequenciasExcelDto>>
+    public class ObterRelatorioFaltasFrequenciasExcelQuery : IRequest<IEnumerable<RelatorioFaltasFrequenciasBaseExcelDto>>
     {
-        public FiltroRelatorioFaltasFrequenciasDto RelatorioFaltasFrequencias { get; set; }
+        public RelatorioFaltasFrequenciaDto RelatorioFaltasFrequencias { get; set; }
+
+        public TipoRelatorioFaltasFrequencia TipoRelatorio{ get; set; }
     }
 }

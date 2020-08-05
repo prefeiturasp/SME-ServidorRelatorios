@@ -1,0 +1,324 @@
+﻿@model SME.SR.Infra.RelatorioParecerConclusivoDto
+
+@{ int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 41;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always' />" + str;
+
+        }
+        return string.Empty;
+
+    }
+
+    string VerificaQuebraAlunos()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 1;
+
+            var breakPage = $@"</tbody></table>
+                                    <div style='page-break-before:always' />";
+
+            var init = $@"<table class='tblTopo'>
+                                            <thead>
+                                                <th class='thLimpo' width='5%'>Nº</th>
+                                                <th class='thLimpo' width='10%'>ANO</th>
+                                                <th class='thLimpo' width='60%'>NOME</th>
+                                                <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
+                                            </thead>";
+
+            var cabecalho = MontarCabecalho();
+
+            return breakPage + cabecalho + init;
+
+        }
+        return string.Empty;
+
+    }
+
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 6;
+
+        var str =
+           $@"<div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+            </div>
+            <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+            <div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
+            <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+            <tbody>
+            <tr>
+            <td  width='40%' >DRE: {Model.DreNome}</td>
+            <td width='40%' >UE: {Model.UeNome}</td>
+            <td  width='20%' >ANO: {Model.Ano}</td>
+            </tr>
+            </tbody>
+            </table>
+            <table>
+            <tbody>
+            <tr>
+            <td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
+            <td class='campo-rf-data'>RF: {Model.RF}</td>
+            <td class='campo-rf-data'>DATA: {Model.Data}</td>
+            </tr>
+            </tbody>
+            </table>
+            </div>
+            ";
+
+        return str;
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório Faltas e Frequência</title>
+</head>
+<body class="body-rel-faltas-frequencia">
+    <style>
+        tblTopo th, td {
+            padding: 3px 0px 3px 15px;
+            text-align: left;
+        }
+
+        .body-rel-faltas-frequencia {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-faltas-frequencia {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        .campo-dre {
+            width: 25%;
+        }
+
+        .campo-ue {
+            width: 60%
+        }
+
+        .campo-ano {
+            width: 15%
+        }
+
+        .campo-bimestre {
+            width: 20%;
+            border-top: none;
+        }
+
+        .campo-componente-curricular {
+            width: 80%;
+            border-top: none;
+        }
+
+        .campo-usuario {
+            width: 60%;
+            border-top: none;
+        }
+
+        .campo-rf-data {
+            width: 20%;
+            border-top: none;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+            padding: 3px;
+        }
+
+        .tabela-alunos tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-rel-faltas-frequencia {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+        }
+    </style>
+
+
+    <div>
+        @{
+                        @Html.Raw(MontarCabecalho());
+
+                        foreach (var dre in Model.Dres)
+                        {
+            <table class="tabela-alunos">
+                <thead>
+
+                    <tr>
+                        <th>@dre.Nome</th>
+                    </tr>
+                </thead>
+            </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    foreach (var ue in dre.Ues)
+    {
+
+    <table class="tabela-alunos">
+        <thead>
+
+            <tr>
+                <th>@ue.Nome</th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    foreach (var ciclo in ue.Ciclos)
+    {
+
+    <table class="tabela-alunos">
+        <thead>
+
+            <tr>
+                <th>@ciclo.Nome</th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    foreach (var ano in ciclo.Anos)
+    {
+
+    <table class="tabela-alunos">
+        <thead>
+
+            <tr>
+                <th>@ano.Nome</th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    <table class="tabela-alunos">
+        <thead>
+
+            <tr>
+                <th class="thLimpo"></th>
+            </tr>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    <table class="tblTopo">
+        <thead>
+            <th class='thLimpo' width='5%'>Nº</th>
+            <th class='thLimpo' width='10%'>ANO</th>
+            <th class='thLimpo' width='60%'>NOME</th>
+            <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
+        </thead>
+    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    @Html.Raw(VerificaQuebra());
+
+    <table>
+        <tbody>
+
+            @foreach (var parecerConclusivo in ano.PareceresConclusivos)
+            {
+    @Html.Raw(VerificaQuebraAlunos());
+    <tr>
+        <td width="5%">@parecerConclusivo.AlunoNumeroChamada</td>
+        <td width="10%">@parecerConclusivo.TurmaNome</td>
+        <td width="60%">@parecerConclusivo.AlunoNomeCompleto</td>
+        <td width="25%">@parecerConclusivo.ParecerConclusivoDescricao</td>
+    </tr>
+contadorQuebrarPagina = contadorQuebrarPagina + 1;
+}
+        </tbody>
+    </table> }
+}
+}
+} }
+
+
+    </div>
+</body>
+</html>
