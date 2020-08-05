@@ -46,8 +46,6 @@ namespace SME.SR.Data
                     query.AppendLine("and aluno_codigo = @alunoCodigo ");
                 }
 
-                //TODO: adicionar vigencia
-
                 query.AppendLine("order by ordem ");
 
                 await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
