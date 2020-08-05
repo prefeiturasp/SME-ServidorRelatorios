@@ -30,5 +30,7 @@ namespace SME.SR.Infra
             for (var i = 0; i < s.Length; i += 124)
                 yield return s.Substring(i, Math.Min(124, s.Length - i));
         }
+
+
     }
 }
