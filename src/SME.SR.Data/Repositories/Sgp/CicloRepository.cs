@@ -46,7 +46,7 @@ namespace SME.SR.Data
         {
 
 
-            var query = @"select distinct tc.descricao, tca.ano, tc.id from tipo_ciclo tc
+            var query = @"select distinct tc.descricao, tca.ano, tca.modalidade, tc.id from tipo_ciclo tc
                             inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
                             inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
                             inner join ue u on t.ue_id  = u.id 
