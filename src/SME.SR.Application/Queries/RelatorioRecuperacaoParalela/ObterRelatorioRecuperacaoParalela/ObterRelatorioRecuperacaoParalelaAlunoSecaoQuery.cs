@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using MediatR;
 using SME.SR.Infra;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioRecuperacaoParalelaQuery : IRequest<RelatorioRecuperacaoParalelaDto>
+    public class ObterRelatorioRecuperacaoParalelaAlunoSecaoQuery : IRequest<IEnumerable<RelatorioRecuperacaoParalelaRetornoQueryDto>>
     {
         public string TurmaCodigo { get; internal set; }
 

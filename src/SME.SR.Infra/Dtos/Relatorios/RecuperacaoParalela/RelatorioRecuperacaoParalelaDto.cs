@@ -17,6 +17,12 @@ namespace SME.SR.Infra
             Semestre = semestre;
         }
 
+        public RelatorioRecuperacaoParalelaDto(string dreNome, string ueNome)
+        {
+            DreNome = dreNome;
+            UeNome = ueNome;
+        }
+
         public string DreNome { get; set; }
         public string UeNome { get; set; }
         public string UsuarioNome { get; set; }

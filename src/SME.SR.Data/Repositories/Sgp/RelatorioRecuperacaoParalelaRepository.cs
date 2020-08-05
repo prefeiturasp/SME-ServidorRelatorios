@@ -4,6 +4,7 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -17,38 +18,47 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RelatorioRecuperacaoParalelaAlunoDto>> Obter(int idRecuperacaoParalela, long turmaId, int semestre)
+        public async Task<IEnumerable<RelatorioRecuperacaoParalelaRetornoQueryDto>> ObterDadosDeSecao(string turmaCodigo, string alunoCodigo, int semestre)
         {
+            try
+            {
+                var query = new StringBuilder(@" select 
+	                            rspa.aluno_codigo as alunoCodigo,
+	                            t.turma_id as turmaCodigo, 
+	                            t.nome as turmaNome,
+	                            t.ano_letivo as anoLetivo,
+	                            srsp.nome as secaoNome,
+	                            rspas.valor as secaoValor	     
+                            from relatorio_semestral_pap_aluno rspa 
+                            inner join relatorio_semestral_turma_pap rstp
+	                            on rspa.relatorio_semestral_turma_pap_id = rstp.id
+                            inner join turma t 
+	                            on rstp.turma_id = t.id 
+                            inner join relatorio_semestral_pap_aluno_secao rspas 
+	                            on rspa.id = rspas.relatorio_semestral_pap_aluno_id
+	                            left join secao_relatorio_semestral_pap srsp
+	                            on rspas.secao_relatorio_semestral_pap_id  = srsp.id
+                            where t.turma_id  = @turmaCodigo and 
+                                  rstp.semestre = @semestre ");
 
-            //AlunoNome = alunoNome;
-            //DataNascimento = dataNascimento;
-            //CodigoEol = codigoEol;
-            //Situacao = situacao;
+                if (!string.IsNullOrEmpty(alunoCodigo))
+                {
+                    query.AppendLine("and aluno_codigo = @alunoCodigo ");
+                }
 
-            //Turma = turma;
-            //TurmaRegular = turmaRegular;
+                //TODO: adicionar vigencia
 
-            //Historico = historico;
-            //Dificuldades = dificuldades;
-            //Encaminhamentos = encaminhamentos;
-            //Avancos = avancos;
-            //Outros = outros;
+                query.AppendLine("order by ordem ");
 
-            var query = @" select	 
-                            srs.id, 
-	                        srs.nome, 
-	                        srs.descricao, 
-	                        srs.obrigatorio,
-	                        srs.ordem,
-	                        rsas.valor
-                           from secao_relatorio_semestral_pap srs     
-                            left join relatorio_semestral_pap_aluno_secao rsas on rsas.secao_relatorio_semestral_pap_id = srs.id  
-                            and rsas.relatorio_semestral_pap_aluno_id = @idRecuperacaoParalela
-                            and rs.semestre = @semestre";
-
-            await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            var parametros = new { idRecuperacaoParalela, turmaId, semestre };
-            return await conexao.QueryAsync<RelatorioRecuperacaoParalelaAlunoDto>(query, parametros);
+                await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+                var parametros = new { turmaCodigo, alunoCodigo, semestre };
+                return await conexao.QueryAsync<RelatorioRecuperacaoParalelaRetornoQueryDto>(query.ToString(), parametros);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }
