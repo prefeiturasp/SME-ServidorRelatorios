@@ -36,7 +36,7 @@ namespace SME.SR.Data
 	                            on rstp.turma_id = t.id 
                             inner join relatorio_semestral_pap_aluno_secao rspas 
 	                            on rspa.id = rspas.relatorio_semestral_pap_aluno_id
-	                            left join secao_relatorio_semestral_pap srsp
+	                        inner join secao_relatorio_semestral_pap srsp
 	                            on rspas.secao_relatorio_semestral_pap_id  = srsp.id
                             where t.turma_id  = @turmaCodigo and 
                                   rstp.semestre = @semestre ");

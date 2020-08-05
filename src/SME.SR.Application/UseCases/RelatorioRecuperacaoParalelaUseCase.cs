@@ -1,11 +1,10 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using SME.SR.Data;
 
 namespace SME.SR.Application
 {
@@ -30,39 +29,52 @@ namespace SME.SR.Application
 
             // Obter seções
             var secoes = await mediator.Send(new ObterRelatorioRecuperacaoParalelaAlunoSecaoQuery()
-                { TurmaCodigo = filtros.TurmaCodigo, AlunoCodigo = filtros.AlunoCodigo, Semestre = filtros.Semestre });
+            { TurmaCodigo = filtros.TurmaCodigo, AlunoCodigo = filtros.AlunoCodigo, Semestre = filtros.Semestre });
 
             var relatorioRecuperacaoParalelaDto = new RelatorioRecuperacaoParalelaDto(dreUe.DreNome, dreUe.UeNome)
             {
                 Semestre = filtros.Semestre,
-                Data = new DateTime().ToString(CultureInfo.CurrentCulture),
                 UsuarioNome = filtros.UsuarioNome,
                 AnoLetivo = secoes.FirstOrDefault().AnoLetivo,
                 UsuarioRF = filtros.UsuarioRf
             };
 
+            // Prencher Alunos
+            PreencherAlunos(alunos, filtros, secoes, relatorioRecuperacaoParalelaDto);
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRecuperacaoParalela", relatorioRecuperacaoParalelaDto, request.CodigoCorrelacao));
+        }
+
+        private static void PreencherAlunos(List<Aluno> alunos, FiltroRelatorioRecuperacaoParalelaDto filtros, IEnumerable<RelatorioRecuperacaoParalelaRetornoQueryDto> secoes,
+            RelatorioRecuperacaoParalelaDto relatorioRecuperacaoParalelaDto)
+        {
+            var alunosCodigosComSecao = secoes.Select(a => int.Parse(a.AlunoCodigo)).Distinct();
+
             var alunosDto = new List<RelatorioRecuperacaoParalelaAlunoDto>();
-            foreach (var item in alunos)
+            foreach (var item in alunos.Where(a => alunosCodigosComSecao.Contains(a.CodigoAluno)))
             {
                 var relatorioRecuperacaoParalelaAlunoDto = new RelatorioRecuperacaoParalelaAlunoDto(
-                    item.NomeAluno, filtros.TurmaCodigo, item.DataNascimento.ToString(),
-                    item.CodigoAluno.ToString(), item.CodigoTurma.ToString(), item.SituacaoMatricula);
-                
+                        item.NomeAluno, filtros.TurmaCodigo, item.DataNascimento.ToString(),
+                        item.CodigoAluno.ToString(), item.CodigoTurma.ToString(), item.SituacaoMatricula);
 
-                var secoesDto = new List<RelatorioRecuperacaoParalelaAlunoSecaoDto>();
-                foreach (var secao in secoes)
-                {
-                    secoesDto.Add(new RelatorioRecuperacaoParalelaAlunoSecaoDto(secao.SecaoNome, secao.SecaoValor));
-                }
-
-                relatorioRecuperacaoParalelaAlunoDto.Secoes = secoesDto;
+                // Secoes
+                AtribuirSecoes(secoes.Where(a => a.TurmaCodigo == filtros.TurmaCodigo && a.AlunoCodigo == item.CodigoAluno.ToString()), relatorioRecuperacaoParalelaAlunoDto);
                 alunosDto.Add(relatorioRecuperacaoParalelaAlunoDto);
             }
 
             relatorioRecuperacaoParalelaDto.Alunos = alunosDto;
+        }
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRecuperacaoParalela", relatorioRecuperacaoParalelaDto, request.CodigoCorrelacao));
+        private static void AtribuirSecoes(IEnumerable<RelatorioRecuperacaoParalelaRetornoQueryDto> secoes,
+            RelatorioRecuperacaoParalelaAlunoDto relatorioRecuperacaoParalelaAlunoDto)
+        {
+            var secoesDto = new List<RelatorioRecuperacaoParalelaAlunoSecaoDto>();
+            foreach (var secao in secoes)
+            {
+                secoesDto.Add(new RelatorioRecuperacaoParalelaAlunoSecaoDto(secao.SecaoNome, secao.SecaoValor));
+            }
 
+            relatorioRecuperacaoParalelaAlunoDto.Secoes = secoesDto;
         }
 
         private async Task<List<Aluno>> ObterDadosAlunos(FiltroRelatorioRecuperacaoParalelaDto filtros)
@@ -94,7 +106,7 @@ namespace SME.SR.Application
 
         private async Task<DreUe> ObterDadosDreUe(FiltroRelatorioRecuperacaoParalelaDto filtros)
         {
-            var dreUe = await mediator.Send(new ObterDreUePorTurmaQuery() {CodigoTurma = filtros.TurmaCodigo});
+            var dreUe = await mediator.Send(new ObterDreUePorTurmaQuery() { CodigoTurma = filtros.TurmaCodigo });
 
             if (dreUe == null)
                 throw new NegocioException($"Não foi possível localizar dados do Dre e Ue para a turma {filtros.TurmaCodigo}");

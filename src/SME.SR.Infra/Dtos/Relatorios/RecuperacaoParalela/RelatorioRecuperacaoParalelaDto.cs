@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace SME.SR.Infra
 {
@@ -11,7 +13,7 @@ namespace SME.SR.Infra
             UeNome = ueNome;
             UsuarioNome = usuarioNome;
             UsuarioRF = usuarioRF;
-            Data = data;
+            Data = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             AnoLetivo = anoLetivo;
             Alunos = new List<RelatorioRecuperacaoParalelaAlunoDto>();
             Semestre = semestre;
@@ -21,6 +23,8 @@ namespace SME.SR.Infra
         {
             DreNome = dreNome;
             UeNome = ueNome;
+            Data = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            Alunos = new List<RelatorioRecuperacaoParalelaAlunoDto>();
         }
 
         public string DreNome { get; set; }
