@@ -99,14 +99,14 @@ namespace SME.SR.Application
                 ueParaAdicionar.Nome = ueDaDre.TipoEscola + " - " + ueDaDre.Nome;
                 ueParaAdicionar.Codigo = ueDaDre.Codigo;
 
-                await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, cicloIdEnviado, anos);
+                await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, modalidadeId, cicloIdEnviado, anos);
 
                 dreParaAdicionar.Ues.Add(ueParaAdicionar);
             }
 
         }
 
-        private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, long cicloIdEnviado, 
+        private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, int modalidadeId, long cicloIdEnviado, 
             string[] anosEnviado)
         {
             var ciclosDaUe = await mediator.Send(new ObterCiclosPorUeIdQuery(ueId));
@@ -115,7 +115,7 @@ namespace SME.SR.Application
                 ciclosDaUe = ciclosDaUe.Where(a => a.Id == cicloIdEnviado).ToList();
 
             if (anosEnviado != null && anosEnviado.Length > 0)
-                ciclosDaUe = ciclosDaUe.Where(a => anosEnviado.Contains(a.Ano.ToString())).ToList();                
+                ciclosDaUe = ciclosDaUe.Where(a => anosEnviado.Contains(a.Ano.ToString()) && (int)a.Modalidade == modalidadeId).ToList();                
 
             foreach (var cicloDaUeAgrupado in ciclosDaUe.GroupBy(a => a.Descricao))
             {
@@ -144,7 +144,7 @@ namespace SME.SR.Application
                             parecerParaIncluir.AlunoNumeroChamada = alunoDaTurma.NumeroAlunoChamada ?? "";
                             parecerParaIncluir.TurmaNome = turma.Nome;
 
-                            var parecerFiltradoParaIncluir = parecesParaTratar.FirstOrDefault(a => a.TurmaId == turma.Id
+                            var parecerFiltradoParaIncluir = parecesParaTratar.FirstOrDefault(a => a.TurmaId.ToString() == turma.Codigo
                                                              && a.AlunoCodigo == alunoDaTurma.CodigoAluno && a.Ano == cicloAgrupado.Ano.ToString()
                                                              && a.CicloId == cicloAgrupado.Id);
 

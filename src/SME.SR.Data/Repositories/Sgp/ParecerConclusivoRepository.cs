@@ -44,8 +44,6 @@ namespace SME.SR.Data
 			                                            on cc.fechamento_turma_id = ft.id
 		                                            inner join turma t
 			                                            on ft.turma_id  = t.id
-		                                            inner join periodo_escolar pe
-			                                            on ft.periodo_escolar_id = pe.id
 		                                            inner join ue u 
 			                                            on t.ue_id = u.id 
 		                                            inner join dre d 
