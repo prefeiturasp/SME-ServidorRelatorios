@@ -13,7 +13,7 @@ namespace SME.SR.Infra
             UeNome = ueNome;
             UsuarioNome = usuarioNome;
             UsuarioRF = usuarioRF;
-            Data = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            Data = DateTime.Now.ToString("dd/MM/yyyy");
             AnoLetivo = anoLetivo;
             Alunos = new List<RelatorioRecuperacaoParalelaAlunoDto>();
             Semestre = semestre;
@@ -23,7 +23,7 @@ namespace SME.SR.Infra
         {
             DreNome = dreNome;
             UeNome = ueNome;
-            Data = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            Data = DateTime.Now.ToString("dd/MM/yyyy");
             Alunos = new List<RelatorioRecuperacaoParalelaAlunoDto>();
         }
 
