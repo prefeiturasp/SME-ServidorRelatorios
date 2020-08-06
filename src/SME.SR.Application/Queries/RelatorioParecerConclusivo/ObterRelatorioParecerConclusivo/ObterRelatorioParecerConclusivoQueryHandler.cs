@@ -167,7 +167,7 @@ namespace SME.SR.Application
         private async Task MontaCabecalho(ObterRelatorioParecerConclusivoQuery request, RelatorioParecerConclusivoDto retorno, System.Collections.Generic.IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar)
         {
             retorno.Ano = (request.filtroRelatorioParecerConclusivoDto.Anos != null && request.filtroRelatorioParecerConclusivoDto.Anos.Length > 0) ? request.filtroRelatorioParecerConclusivoDto.Anos[0] : "Todos";
-            retorno.AnoLetivo = parecesParaTratar.FirstOrDefault().AnoLetivo;
+            retorno.AnoLetivo = parecesParaTratar.Any() ? parecesParaTratar.FirstOrDefault().AnoLetivo : request.filtroRelatorioParecerConclusivoDto.AnoLetivo.ToString();
             if (request.filtroRelatorioParecerConclusivoDto.CicloId == 0)
                 retorno.Ciclo = "Todos";
             else
