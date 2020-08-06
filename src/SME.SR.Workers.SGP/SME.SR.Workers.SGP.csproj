@@ -46,6 +46,9 @@
     <Content Update="Views\RelatorioParecerConclusivo.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Views\RelatorioRecuperacaoParalela.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\templates\RelatorioAtasComColunaFinal.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>    
