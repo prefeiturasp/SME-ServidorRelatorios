@@ -115,7 +115,10 @@ namespace SME.SR.Application
                 ciclosDaUe = ciclosDaUe.Where(a => a.Id == cicloIdEnviado).ToList();
 
             if (anosEnviado != null && anosEnviado.Length > 0)
-                ciclosDaUe = ciclosDaUe.Where(a => anosEnviado.Contains(a.Ano.ToString()) && (int)a.Modalidade == modalidadeId).ToList();                
+                ciclosDaUe = ciclosDaUe.Where(a => anosEnviado.Contains(a.Ano.ToString())).ToList();   
+            
+            if (modalidadeId > 0)
+                ciclosDaUe = ciclosDaUe.Where(a => (int)a.Modalidade == modalidadeId).ToList();            
 
             foreach (var cicloDaUeAgrupado in ciclosDaUe.OrderBy( a => a.Id).GroupBy(a => a.Descricao))
             {
