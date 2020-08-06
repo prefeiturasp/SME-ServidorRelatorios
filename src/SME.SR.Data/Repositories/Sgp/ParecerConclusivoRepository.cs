@@ -33,6 +33,7 @@ namespace SME.SR.Data
                                                    u.ue_id as UeCodigo,
                                                    t.nome as TurmaNome,
 	                                               t.ano,
+                                                   t.ano_letivo as anoLetivo,
 	                                               tc.descricao as Ciclo,
                                                    tc.Id as CicloId
 	                                            from conselho_classe_aluno cca 

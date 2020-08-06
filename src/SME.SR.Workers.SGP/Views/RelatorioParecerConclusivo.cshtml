@@ -28,7 +28,7 @@
 
             var init = $@"<table class='tblTopo'>
             <thead>
-                <th class='thLimpo' width='10%'>ANO</th>
+                <th class='thLimpo' width='10%'>TURMA</th>
                 <th class='thLimpo' width='5%'>Nº</th>
                 <th class='thLimpo' width='60%'>NOME</th>
                 <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
@@ -53,14 +53,15 @@
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
+<div class='titulo-faltas-frequencia'>RELATÓRIO DE PARECER CONCLUSIVO</div>
 <div class='fonte-14 header-pagina'>
 <table class='tblTopo'>
 <tbody>
 <tr>
-<td  width='40%' >DRE: {Model.DreNome}</td>
-<td width='40%' >UE: {Model.UeNome}</td>
-<td  width='20%' >ANO: {Model.Ano}</td>
+    <td  width='15%' >Ano Letivo: {Model.AnoLetivo}</td>
+    <td  width='25%' >DRE: {Model.DreNome}</td>
+    <td width='40%' >UE: {Model.UeNome}</td>
+    <td  width='20%' >ANO: {Model.Ano}</td>
 </tr>
 </tbody>
 </table>
@@ -291,7 +292,7 @@
 
                             <table class="tblTopo">
                                 <thead>
-                                <th class='thLimpo' width='10%'>ANO</th>
+                                <th class='thLimpo' width='10%'>TURMA</th>
                                 <th class='thLimpo' width='5%'>Nº</th>
                                 <th class='thLimpo' width='60%'>NOME</th>
                                 <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
