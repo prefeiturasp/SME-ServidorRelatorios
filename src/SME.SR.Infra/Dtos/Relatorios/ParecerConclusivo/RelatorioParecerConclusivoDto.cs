@@ -9,6 +9,7 @@ namespace SME.SR.Infra
             Dres = new List<RelatorioParecerConclusivoDreDto>();
         }
 
+        public string AnoLetivo { get; set; }
         public string DreNome { get; set; }
         public string UeNome { get; set; }
         public string Ano { get; set; }
