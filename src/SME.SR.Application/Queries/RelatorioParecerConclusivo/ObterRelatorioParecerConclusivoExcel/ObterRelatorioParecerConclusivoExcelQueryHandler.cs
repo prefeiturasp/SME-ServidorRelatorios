@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Infra;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,7 +39,7 @@ namespace SME.SR.Application
                     }
                 }
             }
-            return await Task.FromResult(listaPareceresConclusivos);
+            return await Task.FromResult(listaPareceresConclusivos.OrderBy( a => a.NomeDre).ThenBy(a => a.NomeUe).ToList());
         }
     }
 }
