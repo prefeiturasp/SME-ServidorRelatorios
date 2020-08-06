@@ -117,7 +117,7 @@ namespace SME.SR.Application
             if (anosEnviado != null && anosEnviado.Length > 0)
                 ciclosDaUe = ciclosDaUe.Where(a => anosEnviado.Contains(a.Ano.ToString()) && (int)a.Modalidade == modalidadeId).ToList();                
 
-            foreach (var cicloDaUeAgrupado in ciclosDaUe.GroupBy(a => a.Descricao))
+            foreach (var cicloDaUeAgrupado in ciclosDaUe.OrderBy( a => a.Id).GroupBy(a => a.Descricao))
             {
                 var cicloParaAdicionar = new RelatorioParecerConclusivoCicloDto();
                 cicloParaAdicionar.Codigo = "";
