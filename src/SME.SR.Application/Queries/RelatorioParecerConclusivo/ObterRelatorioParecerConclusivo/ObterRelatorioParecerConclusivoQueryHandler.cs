@@ -39,13 +39,14 @@ namespace SME.SR.Application
 
             await MontaSecoes(retorno, parecesParaTratar, request.filtroRelatorioParecerConclusivoDto.DreCodigo,
                 request.filtroRelatorioParecerConclusivoDto.UeCodigo, request.filtroRelatorioParecerConclusivoDto.CicloId, modalidadeId,
-                request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.Anos);
+                request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.Anos,
+                request.filtroRelatorioParecerConclusivoDto.ParecerConclusivoId);
 
             return await Task.FromResult(retorno);
         }
 
         private async Task MontaSecoes(RelatorioParecerConclusivoDto retorno, IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, string dreCodigoEnviado,
-            string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos)
+            string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos, long parecerConclusivoId)
         {
             IEnumerable<string> dresCodigos;
 
@@ -60,7 +61,7 @@ namespace SME.SR.Application
                     dreParaAdicionar.Codigo = dre.Codigo;
                     dreParaAdicionar.Nome = dre.Abreviacao;
 
-                    await TrataUes(parecesParaTratar, dreParaAdicionar, dre.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos);
+                    await TrataUes(parecesParaTratar, dreParaAdicionar, dre.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId);
                     retorno.Dres.Add(dreParaAdicionar);
                 }
             }
@@ -72,15 +73,15 @@ namespace SME.SR.Application
                 dreParaAdicionar.Nome = dreUnicaParaAdicionar.Abreviacao;
 
                 if (retorno.UeNome == "Todas")
-                    await TrataUes(parecesParaTratar, dreParaAdicionar, dreUnicaParaAdicionar.Id, "", cicloIdEnviado, modalidadeId, semestre, anos);
-                else await TrataUes(parecesParaTratar, dreParaAdicionar, dreUnicaParaAdicionar.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos);
+                    await TrataUes(parecesParaTratar, dreParaAdicionar, dreUnicaParaAdicionar.Id, "", cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId);
+                else await TrataUes(parecesParaTratar, dreParaAdicionar, dreUnicaParaAdicionar.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId);
 
                 retorno.Dres.Add(dreParaAdicionar);
             }
         }
 
         private async Task TrataUes(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, RelatorioParecerConclusivoDreDto dreParaAdicionar, long dreId,
-            string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos)
+            string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos, long parecerConclusivoId)
         {
 
             List<Ue> uesDaDre = new List<Ue>();
@@ -99,7 +100,7 @@ namespace SME.SR.Application
                 ueParaAdicionar.Nome = ueDaDre.TipoEscola + " - " + ueDaDre.Nome;
                 ueParaAdicionar.Codigo = ueDaDre.Codigo;
 
-                await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, modalidadeId, cicloIdEnviado, anos);
+                await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, modalidadeId, cicloIdEnviado, anos, parecerConclusivoId);
 
                 dreParaAdicionar.Ues.Add(ueParaAdicionar);
             }
@@ -107,7 +108,7 @@ namespace SME.SR.Application
         }
 
         private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, int modalidadeId, long cicloIdEnviado, 
-            string[] anosEnviado)
+            string[] anosEnviado, long parecerConclusivoId)
         {
             var ciclosDaUe = await mediator.Send(new ObterCiclosPorUeIdQuery(ueId));
 
@@ -135,10 +136,8 @@ namespace SME.SR.Application
                     var turmasFiltradas = await mediator.Send(new ObterTurmasPorUeCicloAnoQuery(cicloAgrupado.Id, cicloAgrupado.Ano.ToString(), ueId));
                     var alunosDasTurmas = await turmaRepository.ObterAlunosPorTurmas(turmasFiltradas.Select(a => long.Parse(a.Codigo)));
 
-
                     foreach (var turma in turmasFiltradas)
                     {
-
                         foreach (var alunoDaTurma in alunosDasTurmas.Where(a => a.CodigoTurma == int.Parse(turma.Codigo)).OrderBy(a => a.ObterNomeFinal()))
                         {
                             var parecerParaIncluir = new RelatorioParecerConclusivoAlunoDto();
@@ -151,11 +150,12 @@ namespace SME.SR.Application
                                                              && a.AlunoCodigo == alunoDaTurma.CodigoAluno && a.Ano == cicloAgrupado.Ano.ToString()
                                                              && a.CicloId == cicloAgrupado.Id);
 
-                            if (parecerFiltradoParaIncluir == null)
-                                parecerParaIncluir.ParecerConclusivoDescricao = "Sem Parecer";
-                            else parecerParaIncluir.ParecerConclusivoDescricao = parecerFiltradoParaIncluir.ParecerConclusivo;
-
-                            anoParaIncluir.PareceresConclusivos.Add(parecerParaIncluir);
+                            if (parecerFiltradoParaIncluir != null || parecerConclusivoId == 0)
+                            {
+                                parecerParaIncluir.ParecerConclusivoDescricao = parecerFiltradoParaIncluir == null ? 
+                                                                                    "Sem Parecer" : parecerFiltradoParaIncluir.ParecerConclusivo;
+                                anoParaIncluir.PareceresConclusivos.Add(parecerParaIncluir);
+                            }
                         }
                     }
                     cicloParaAdicionar.Anos.Add(anoParaIncluir);
