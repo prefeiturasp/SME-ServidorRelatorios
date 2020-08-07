@@ -30,7 +30,7 @@ namespace SME.SR.Application
 
             var parecesParaTratar = await parecerConclusivoRepository.ObterPareceresFinais(request.filtroRelatorioParecerConclusivoDto.AnoLetivo,
                 request.filtroRelatorioParecerConclusivoDto.DreCodigo, request.filtroRelatorioParecerConclusivoDto.UeCodigo, request.filtroRelatorioParecerConclusivoDto.Modalidade,
-                request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.CicloId, request.filtroRelatorioParecerConclusivoDto.Anos,
+                request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.Ciclo, request.filtroRelatorioParecerConclusivoDto.Anos,
                 request.filtroRelatorioParecerConclusivoDto.ParecerConclusivoId);
 
             await MontaCabecalho(request, retorno, parecesParaTratar);
@@ -38,7 +38,7 @@ namespace SME.SR.Application
             var modalidadeId = request.filtroRelatorioParecerConclusivoDto.Modalidade.HasValue ? (int)request.filtroRelatorioParecerConclusivoDto.Modalidade.Value : 0;
 
             await MontaSecoes(retorno, parecesParaTratar, request.filtroRelatorioParecerConclusivoDto.DreCodigo,
-                request.filtroRelatorioParecerConclusivoDto.UeCodigo, request.filtroRelatorioParecerConclusivoDto.CicloId, modalidadeId,
+                request.filtroRelatorioParecerConclusivoDto.UeCodigo, request.filtroRelatorioParecerConclusivoDto.Ciclo, modalidadeId,
                 request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.Anos);
 
             return await Task.FromResult(retorno);
@@ -168,10 +168,10 @@ namespace SME.SR.Application
         {
             retorno.Ano = (request.filtroRelatorioParecerConclusivoDto.Anos != null && request.filtroRelatorioParecerConclusivoDto.Anos.Length > 0) ? request.filtroRelatorioParecerConclusivoDto.Anos[0] : "Todos";
             retorno.AnoLetivo = parecesParaTratar.Any() ? parecesParaTratar.FirstOrDefault().AnoLetivo : request.filtroRelatorioParecerConclusivoDto.AnoLetivo.ToString();
-            if (request.filtroRelatorioParecerConclusivoDto.CicloId == 0)
+            if (request.filtroRelatorioParecerConclusivoDto.Ciclo == 0)
                 retorno.Ciclo = "Todos";
             else
-                retorno.Ciclo = parecesParaTratar.FirstOrDefault(a => a.CicloId == request.filtroRelatorioParecerConclusivoDto.CicloId).Ciclo;
+                retorno.Ciclo = parecesParaTratar.FirstOrDefault(a => a.CicloId == request.filtroRelatorioParecerConclusivoDto.Ciclo).Ciclo;
 
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
