@@ -25,7 +25,7 @@ namespace SME.SR.Application
         }
         public async Task<RelatorioParecerConclusivoDto> Handle(ObterRelatorioParecerConclusivoQuery request, CancellationToken cancellationToken)
         {
-            
+
             var retorno = new RelatorioParecerConclusivoDto();
 
             var parecesParaTratar = await parecerConclusivoRepository.ObterPareceresFinais(request.filtroRelatorioParecerConclusivoDto.AnoLetivo,
@@ -107,7 +107,7 @@ namespace SME.SR.Application
 
         }
 
-        private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, int modalidadeId, long cicloIdEnviado, 
+        private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, int modalidadeId, long cicloIdEnviado,
             string[] anosEnviado, long parecerConclusivoId)
         {
             var ciclosDaUe = await mediator.Send(new ObterCiclosPorUeIdQuery(ueId));
@@ -116,12 +116,12 @@ namespace SME.SR.Application
                 ciclosDaUe = ciclosDaUe.Where(a => a.Id == cicloIdEnviado).ToList();
 
             if (anosEnviado != null && anosEnviado.Length > 0)
-                ciclosDaUe = ciclosDaUe.Where(a => anosEnviado.Contains(a.Ano.ToString())).ToList();   
-            
-            if (modalidadeId > 0)
-                ciclosDaUe = ciclosDaUe.Where(a => (int)a.Modalidade == modalidadeId).ToList();            
+                ciclosDaUe = ciclosDaUe.Where(a => anosEnviado.Contains(a.Ano.ToString())).ToList();
 
-            foreach (var cicloDaUeAgrupado in ciclosDaUe.OrderBy( a => a.Id).GroupBy(a => a.Descricao))
+            if (modalidadeId > 0)
+                ciclosDaUe = ciclosDaUe.Where(a => (int)a.Modalidade == modalidadeId).ToList();
+
+            foreach (var cicloDaUeAgrupado in ciclosDaUe.OrderBy(a => a.Id).GroupBy(a => a.Descricao))
             {
                 var cicloParaAdicionar = new RelatorioParecerConclusivoCicloDto();
                 cicloParaAdicionar.Codigo = "";
@@ -150,18 +150,22 @@ namespace SME.SR.Application
                                                              && a.AlunoCodigo == alunoDaTurma.CodigoAluno && a.Ano == cicloAgrupado.Ano.ToString()
                                                              && a.CicloId == cicloAgrupado.Id);
 
-                            if (parecerFiltradoParaIncluir != null || parecerConclusivoId == 0)
+                            if (parecerFiltradoParaIncluir != null || parecerConclusivoId == 0 ||
+                               (parecerFiltradoParaIncluir == null && parecerConclusivoId < 0))
                             {
-                                parecerParaIncluir.ParecerConclusivoDescricao = parecerFiltradoParaIncluir == null ? 
+                                parecerParaIncluir.ParecerConclusivoDescricao = parecerFiltradoParaIncluir == null ?
                                                                                     "Sem Parecer" : parecerFiltradoParaIncluir.ParecerConclusivo;
                                 anoParaIncluir.PareceresConclusivos.Add(parecerParaIncluir);
                             }
                         }
                     }
-                    cicloParaAdicionar.Anos.Add(anoParaIncluir);
+
+                    if (anoParaIncluir.PareceresConclusivos.Any())
+                        cicloParaAdicionar.Anos.Add(anoParaIncluir);
                 }
 
-                ueParaAdicionar.Ciclos.Add(cicloParaAdicionar);
+                if (cicloParaAdicionar.Anos.Any())
+                    ueParaAdicionar.Ciclos.Add(cicloParaAdicionar);
             }
         }
         private async Task MontaCabecalho(ObterRelatorioParecerConclusivoQuery request, RelatorioParecerConclusivoDto retorno, System.Collections.Generic.IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar)
