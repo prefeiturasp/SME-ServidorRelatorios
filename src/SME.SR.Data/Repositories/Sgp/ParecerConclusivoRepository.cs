@@ -68,6 +68,8 @@ namespace SME.SR.Data
 
                 if (parecerConclusivoId > 0)
                     query.AppendLine(" and ccp.id = @parecerConclusivoId ");
+                else if(parecerConclusivoId < 0)
+                    query.AppendLine(" and ccp.id is null ");
 
                 if (modalidade.HasValue)
                     query.AppendLine(" and t.modalidade_codigo = @modalidadeId ");
