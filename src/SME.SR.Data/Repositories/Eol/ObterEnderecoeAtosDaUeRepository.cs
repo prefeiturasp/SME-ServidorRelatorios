@@ -19,10 +19,6 @@ namespace SME.SR.Data
         public async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoEAtos(string ueCodigo)
         {
 
-            try
-            {
-
-        
             var query = @"	SELECT DISTINCT 
 	                        CONCAT(RTRIM(LTRIM(tpe.sg_tp_escola)), ' - ', RTRIM(LTRIM(vcue.nm_unidade_educacao))) AS nomeUe,
 	                        CONCAT(tl.dc_tp_logradouro, ' ', vcue.nm_logradouro, ', ', vcue.cd_nr_endereco, ', ', vcue.nm_bairro, ', ', vcue.cd_cep, ' SÃO PAULO - SP') as endereco,	
@@ -46,16 +42,7 @@ namespace SME.SR.Data
 
             using var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
             conn.Open();
-            var retorno = await conn.QueryAsync<EnderecoEAtosDaUeDto>(query, new { ueCodigo });
-            conn.Close();
-            return retorno;
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
+            return await conn.QueryAsync<EnderecoEAtosDaUeDto>(query, new { ueCodigo });          
         }
     }
 }
