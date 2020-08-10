@@ -2,17 +2,18 @@
 {
     public class RelatorioNotasEConceitosFinaisDoAlunoDto
     {
-        public RelatorioNotasEConceitosFinaisDoAlunoDto(string turmaNome, string numeroChamadaAluno, string nomeCompletoAluno, string notaConceito)
+        public RelatorioNotasEConceitosFinaisDoAlunoDto(string turmaNome, string alunoNumeroChamada, string alunoNomeCompleto, string notaConceito)
         {
             TurmaNome = turmaNome;
-            NumeroChamadaAluno = numeroChamadaAluno;
-            NomeCompletoAluno = nomeCompletoAluno;
+            AlunoNumeroChamada = alunoNumeroChamada;
+            AlunoNomeCompleto = alunoNomeCompleto;
             NotaConceito = notaConceito;
         }
 
         public string TurmaNome { get; set; }
-        public string NumeroChamadaAluno { get; set; }
-        public string NomeCompletoAluno { get; set; }
+         
+        public string AlunoNumeroChamada { get; set; }
+        public string AlunoNomeCompleto { get; set; }
         public string NotaConceito { get; set; }
     }
 }
