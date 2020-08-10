@@ -31,6 +31,10 @@ namespace SME.SR.Application
             var secoes = await mediator.Send(new ObterRelatorioRecuperacaoParalelaAlunoSecaoQuery()
             { TurmaCodigo = filtros.TurmaCodigo, AlunoCodigo = filtros.AlunoCodigo, Semestre = filtros.Semestre });
 
+            var turma = await mediator.Send(new ObterTurmaQuery(filtros.TurmaCodigo));
+            if (turma == null)
+                throw new NegocioException($"Não foi possível obter os dados da turma {filtros.TurmaCodigo}");
+
             var relatorioRecuperacaoParalelaDto = new RelatorioRecuperacaoParalelaDto(dreUe.DreNome, dreUe.UeNome)
             {
                 Semestre = filtros.Semestre,
@@ -39,23 +43,32 @@ namespace SME.SR.Application
                 UsuarioRF = filtros.UsuarioRf
             };
 
+            //Obter Dados da turma Regular
+            var turmaRegularDaTurmaRec = await mediator.Send(new ObterAlunosTurmasRegularesPorTurmaRecuperacaoCodigoQuery(long.Parse(filtros.TurmaCodigo)));
+            if (turmaRegularDaTurmaRec == null || !turmaRegularDaTurmaRec.Any())
+                throw new NegocioException($"Não foi possível obter as turmas regulares da turma {filtros.TurmaCodigo}.");
+
+
             // Prencher Alunos
-            PreencherAlunos(alunos, filtros, secoes, relatorioRecuperacaoParalelaDto);
+            PreencherAlunos(alunos, filtros, secoes, relatorioRecuperacaoParalelaDto, turmaRegularDaTurmaRec, turma);
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRecuperacaoParalela", relatorioRecuperacaoParalelaDto, request.CodigoCorrelacao));
         }
 
         private static void PreencherAlunos(List<Aluno> alunos, FiltroRelatorioRecuperacaoParalelaDto filtros, IEnumerable<RelatorioRecuperacaoParalelaRetornoQueryDto> secoes,
-            RelatorioRecuperacaoParalelaDto relatorioRecuperacaoParalelaDto)
+            RelatorioRecuperacaoParalelaDto relatorioRecuperacaoParalelaDto, IEnumerable<AlunoTurmaRegularRetornoDto> turmaRegularAlunos, Turma turma)
         {
             var alunosCodigosComSecao = secoes.Select(a => int.Parse(a.AlunoCodigo)).Distinct();
-
+            
             var alunosDto = new List<RelatorioRecuperacaoParalelaAlunoDto>();
             foreach (var item in alunos.Where(a => alunosCodigosComSecao.Contains(a.CodigoAluno)))
             {
+
+                var turmaRegular = turmaRegularAlunos.FirstOrDefault(a => a.AlunoCodigo == item.CodigoAluno)?.TurmaNome;
+
                 var relatorioRecuperacaoParalelaAlunoDto = new RelatorioRecuperacaoParalelaAlunoDto(
-                        item.NomeAluno, filtros.TurmaCodigo, item.DataNascimento.ToString(),
-                        item.CodigoAluno.ToString(), item.CodigoTurma.ToString(), item.SituacaoMatricula);
+                        item.NomeAluno, turma.Nome, item.DataNascimento.ToString("dd/MM/yyyy"),
+                        item.CodigoAluno.ToString(), turmaRegular.ToString(),  item.SituacaoMatricula) ;
 
                 // Secoes
                 AtribuirSecoes(secoes.Where(a => a.TurmaCodigo == filtros.TurmaCodigo && a.AlunoCodigo == item.CodigoAluno.ToString()), relatorioRecuperacaoParalelaAlunoDto);
