@@ -179,11 +179,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             DefinirCabecalho(request, model, filtro, dres, componentes);
 
+            model.Dres = FiltrarFaltasFrequencia(model.Dres, filtro);
             if (model.Dres == null || !model.Dres.Any())
             {
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
             }
-            model.Dres = FiltrarFaltasFrequencia(model.Dres, filtro);
             return await Task.FromResult(model);
         }
 
