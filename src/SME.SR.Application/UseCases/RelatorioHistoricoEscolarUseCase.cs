@@ -63,37 +63,47 @@ namespace SME.SR.Application
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
-            var resultadoFinal = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                frequencias, tipoNotas, turmasCodigo.ToArray(), cabecalho, legenda));
+            var turmasEja = turmas.Where(t => t.ModalidadeCodigo == Modalidade.EJA);
+            var turmasFundMedio = turmas.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
 
-            var resultadoFinalFundamental = resultadoFinal.Where(a => a.Modalidade == Modalidade.Fundamental);
-            var resultadoFinalMedio = resultadoFinal.Where(a => a.Modalidade == Modalidade.Medio);
+            IEnumerable<HistoricoEscolarDTO> resultadoFundMedio = null;
+            IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null;
+
+            if (turmasFundMedio != null && turmasFundMedio.Any())
+                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
+                    frequencias, tipoNotas, turmasFundMedio.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda));
+
+            if (turmasEja != null && turmasEja.Any())
+                resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
+                    frequencias, tipoNotas, turmasEja.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda));
+
+            var resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
+            var resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
 
             foreach (var item in resultadoFinalMedio)
             {
                 item.Legenda.Texto = string.Empty;
             }
 
-            if (resultadoFinalFundamental.Any() || resultadoFinalMedio.Any())
+            if (resultadoFinalFundamental.Any() || resultadoFinalMedio.Any() || resultadoEJA.Any())
             {
-                if (resultadoFinalFundamental.Any() && resultadoFinalMedio.Any())
+                if (resultadoEJA.Any())
+                {
+                    await EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao);
+                }
+
+                if (resultadoFinalFundamental.Any())
                 {
                     await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
+                }
 
-                    await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
-
-                } else if (resultadoFinalFundamental.Any())
-                {
-                    await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
-                } else if (resultadoFinalMedio.Any())
+                if (resultadoFinalMedio.Any())
                 {
                     await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
                 }
             }
             else
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
-
-
         }
 
         private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
@@ -108,6 +118,12 @@ namespace SME.SR.Application
         {
             var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalFundamental });
             await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao));
+        }
+
+        private async Task EnviaRelatorioEJA(IEnumerable<HistoricoEscolarEJADto> resultadoFinalEJA, Guid codigoCorrelacao)
+        {
+            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalEJA });
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarEJA/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao));
         }
 
         private async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoAtoUe(string ueCodigo)
@@ -222,7 +238,7 @@ namespace SME.SR.Application
             }
 
             var resultado = sb.ToString().Replace("\t", "");
-            return resultado.Substring(0, resultado.Length-2);
+            return resultado.Substring(0, resultado.Length - 2);
         }
     }
 }
