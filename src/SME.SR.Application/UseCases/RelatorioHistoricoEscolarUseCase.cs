@@ -63,6 +63,19 @@ namespace SME.SR.Application
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
+            DadosDataDto dadosData = null;
+
+            if (filtros.PreencherDataImpressao)
+                dadosData = await ObterDadosData();
+
+            FuncionarioDto dadosDiretor = null, dadosSecretario = null;
+
+            if (filtros.ImprimirDadosResponsaveis)
+            {
+                dadosDiretor = (await ObterFuncionarioUePorCargo(filtros.UeCodigo, (int)Cargo.Diretor))?.FirstOrDefault();
+                dadosSecretario = (await ObterFuncionarioUePorCargo(filtros.UeCodigo, (int)Cargo.Secretario))?.FirstOrDefault();
+            }
+
             var turmasEja = turmas.Where(t => t.ModalidadeCodigo == Modalidade.EJA);
             var turmasFundMedio = turmas.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
 
@@ -75,7 +88,8 @@ namespace SME.SR.Application
 
             if (turmasEja != null && turmasEja.Any())
                 resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, turmasEja.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda));
+                    frequencias, tipoNotas, turmasEja.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario, 
+                    filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
             var resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
             var resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
@@ -226,6 +240,20 @@ namespace SME.SR.Application
         private async Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia()
         {
             return await mediator.Send(new ObterParametrosMediaFrequenciaQuery());
+        }
+
+        private async Task<DadosDataDto> ObterDadosData()
+        {
+            return await mediator.Send(new ObterDadosDataQuery());
+        }
+
+        private async Task<IEnumerable<FuncionarioDto>> ObterFuncionarioUePorCargo(string codigoUe, int cargo)
+        {
+            return await mediator.Send(new ObterFuncionarioUePorCargoQuery()
+            {
+                CodigoCargo = cargo.ToString(),
+                CodigoUe = codigoUe
+            });
         }
 
         private async Task<string> ObterLegenda()

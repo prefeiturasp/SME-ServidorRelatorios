@@ -49,6 +49,8 @@ namespace SME.SR.Application
                     var tiposNotaDto = MapearTiposNota(agrupamentoTurmas.Key, request.TiposNota);
                     var pareceresDto = MapearPareceres(agrupamentoTurmas, notasAluno);
 
+                    var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
+
                     var historicoDto = new HistoricoEscolarEJADto()
                     {
                         NomeDre = request.Dre.Nome,
@@ -61,7 +63,9 @@ namespace SME.SR.Application
                         Modalidade = agrupamentoTurmas.Key,
                         TipoNota = tiposNotaDto,
                         ParecerConclusivo = pareceresDto,
-                        Legenda = request.Legenda
+                        Legenda = request.Legenda,
+                        DadosData = request.DadosData,
+                        ResponsaveisUe = responsaveisUe
                     };
 
                     listaRetorno.Add(historicoDto);
@@ -69,6 +73,20 @@ namespace SME.SR.Application
             }
 
             return await Task.FromResult(listaRetorno);
+        }
+
+        private ResponsaveisUeDto ObterResponsaveisUe(bool imprimirDadosResponsaveis, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario)
+        {
+            if (imprimirDadosResponsaveis)
+            {
+                return new ResponsaveisUeDto()
+                {
+                    NomeDiretor = dadosDiretor.NomeServidor,
+                    NomeSecretario = dadosSecretario.NomeServidor
+                };
+            }
+
+            return null;
         }
 
         private TiposNotaEJADto MapearTiposNota(Modalidade modalidade, IEnumerable<TipoNotaCicloAno> tiposNota)
