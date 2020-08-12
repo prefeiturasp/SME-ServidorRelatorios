@@ -81,7 +81,9 @@ namespace SME.SR.Application
             {
                 return new ResponsaveisUeDto()
                 {
+                    DocumentoDiretor = dadosDiretor.Documento,
                     NomeDiretor = dadosDiretor.NomeServidor,
+                    DocumentoSecretario = dadosSecretario.Documento,
                     NomeSecretario = dadosSecretario.NomeServidor
                 };
             }

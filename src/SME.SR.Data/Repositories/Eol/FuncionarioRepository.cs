@@ -24,18 +24,22 @@ namespace SME.SR.Data
             SELECT 
 	            NomeServidor
 	            ,CodigoRF
+				,Documento
 	            ,DataInicio
 	            ,DataFim
 	            ,Cargo
 	            FROM(
 	                SELECT DISTINCT 
-							nm_pessoa              NomeServidor 
-			                ,cd_registro_funcional            CodigoRF 
+							servidor.nm_pessoa              NomeServidor 
+			                ,servidor.cd_registro_funcional            CodigoRF 
+							,CONCAT(servDetalhes.nr_rg_pessoa, '-', ISNULL(servDetalhes.cd_complemento_rg,'X'), '/', orgaoEmissor.nm_orgao_emissor) Documento
 			                ,cargoServidor.dt_posse           DataInicio 
 			                ,cargoServidor.dt_fim_nomeacao    DataFim  
 	                        ,CASE WHEN cargoSobreposto.dc_cargo IS NOT NULL THEN cargoSobreposto.dc_cargo ELSE cargo.dc_cargo END AS Cargo
 				            ,CASE WHEN cargoSobreposto.cd_cargo IS NOT NULL THEN cargoSobreposto.cd_cargo ELSE cargo.cd_cargo END AS cd_cargo
 	                FROM v_servidor_cotic servidor
+					INNER JOIN v_servidor_mstech_ativos AS servDetalhes ON servDetalhes.cd_registro_funcional = servidor.cd_registro_funcional
+					INNER JOIN orgao_emissor AS orgaoEmissor ON orgaoEmissor.cd_orgao_emissor = servDetalhes.codigo_orgao_emissor_rg
 	                INNER JOIN v_cargo_base_cotic AS cargoServidor ON cargoServidor.CD_SERVIDOR = servidor.cd_servidor
 	                INNER JOIN cargo AS cargo ON cargoServidor.cd_cargo = cargo.cd_cargo
 	                LEFT JOIN lotacao_servidor AS lotacao_servidor 
@@ -58,13 +62,16 @@ namespace SME.SR.Data
 					            AND cargoSobreposto.cd_unidade_local_servico = dre.cd_unidade_educacao
 	                WHERE  lotacao_servidor.dt_fim IS NULL AND dre.cd_unidade_educacao = @CodigoUE
 		            UNION
-		            SELECT DISTINCT nm_pessoa              NomeServidor 
-			                ,cd_registro_funcional            CodigoRF 
+		            SELECT DISTINCT servidor.nm_pessoa              NomeServidor 
+			                ,servidor.cd_registro_funcional            CodigoRF 
+							,CONCAT(servDetalhes.nr_rg_pessoa, '-', ISNULL(servDetalhes.cd_complemento_rg,'X'), '/', orgaoEmissor.nm_orgao_emissor) Documento
 			                ,cargoServidor.dt_posse           DataInicio 
 			                ,cargoServidor.dt_fim_nomeacao    DataFim  
 			                ,RTRIM(LTRIM(cargo.dc_cargo))     Cargo
 			                ,cargo.cd_cargo
 	                FROM v_servidor_cotic servidor
+						INNER JOIN v_servidor_mstech_ativos AS servDetalhes ON servDetalhes.cd_registro_funcional = servidor.cd_registro_funcional
+						INNER JOIN orgao_emissor AS orgaoEmissor ON orgaoEmissor.cd_orgao_emissor = servDetalhes.codigo_orgao_emissor_rg
 		                INNER JOIN v_cargo_base_cotic AS cargoServidor ON cargoServidor.CD_SERVIDOR = servidor.cd_servidor
 		                LEFT JOIN lotacao_servidor AS lotacao_servidor ON cargoServidor.cd_cargo_base_servidor = lotacao_servidor.cd_cargo_base_servidor
 		                INNER JOIN cargo_sobreposto_servidor AS cargo_sobreposto_servidor 
@@ -76,13 +83,16 @@ namespace SME.SR.Data
 			                ON cargo_sobreposto_servidor.cd_unidade_local_servico = dre.cd_unidade_educacao
 		            WHERE  lotacao_servidor.dt_fim IS NULL AND dre.cd_unidade_educacao = @CodigoUE
 	                UNION
-	                SELECT DISTINCT nm_pessoa              NomeServidor 
-			                ,cd_registro_funcional            CodigoRF 
+	                SELECT DISTINCT servidor.nm_pessoa              NomeServidor 
+			                ,servidor.cd_registro_funcional            CodigoRF 
+							,CONCAT(servDetalhes.nr_rg_pessoa, '-', ISNULL(servDetalhes.cd_complemento_rg,'X'), '/', orgaoEmissor.nm_orgao_emissor) Documento
 			                ,cargoServidor.dt_posse           DataInicio 
 			                ,cargoServidor.dt_fim_nomeacao    DataFim  
 			                ,RTRIM(LTRIM(cargo.dc_cargo))     Cargo
 			                ,cargo.cd_cargo
 	                FROM v_servidor_cotic servidor
+						INNER JOIN v_servidor_mstech_ativos AS servDetalhes ON servDetalhes.cd_registro_funcional = servidor.cd_registro_funcional
+						INNER JOIN orgao_emissor AS orgaoEmissor ON orgaoEmissor.cd_orgao_emissor = servDetalhes.codigo_orgao_emissor_rg
 		                INNER JOIN v_cargo_base_cotic AS cargoServidor ON cargoServidor.CD_SERVIDOR = servidor.cd_servidor
 		                INNER JOIN cargo AS cargo ON cargoServidor.cd_cargo = cargo.cd_cargo
 		                INNER JOIN atribuicao_aula atribuicao ON atribuicao.cd_cargo_base_servidor = cargoServidor.cd_cargo_base_servidor
@@ -94,13 +104,16 @@ namespace SME.SR.Data
 		                AND atribuicao.dt_disponibilizacao_aulas IS  NULL
 		                AND YEAR(dt_atribuicao_aula)  = YEAR(GETDATE())
 	                UNION
-		                SELECT DISTINCT nm_pessoa              NomeServidor 
-			                ,cd_registro_funcional            CodigoRF 
+		                SELECT DISTINCT servidor.nm_pessoa              NomeServidor 
+			                ,servidor.cd_registro_funcional            CodigoRF 
+							,CONCAT(servDetalhes.nr_rg_pessoa, '-' ISNULL(servDetalhes.cd_complemento_rg,'X'), '/', orgaoEmissor.nm_orgao_emissor) Documento
 			                ,cargoServidor.dt_posse           DataInicio 
 			                ,cargoServidor.dt_fim_nomeacao    DataFim  
 			                ,RTRIM(LTRIM(cargo.dc_cargo))     Cargo
 			                ,cargo.cd_cargo
 	                FROM v_servidor_cotic servidor
+						INNER JOIN v_servidor_mstech_ativos AS servDetalhes ON servDetalhes.cd_registro_funcional = servidor.cd_registro_funcional
+						INNER JOIN orgao_emissor AS orgaoEmissor ON orgaoEmissor.cd_orgao_emissor = servDetalhes.codigo_orgao_emissor_rg
 		                INNER JOIN v_cargo_base_cotic AS cargoServidor ON cargoServidor.CD_SERVIDOR = servidor.cd_servidor
 		                INNER JOIN cargo AS cargo ON cargoServidor.cd_cargo = cargo.cd_cargo
 		                INNER JOIN funcao_atividade_cargo_servidor atividade ON atividade.cd_cargo_base_servidor = cargoServidor.cd_cargo_base_servidor

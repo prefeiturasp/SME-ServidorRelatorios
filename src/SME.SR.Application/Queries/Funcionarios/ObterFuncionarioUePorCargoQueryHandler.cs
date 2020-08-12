@@ -36,6 +36,7 @@ namespace SME.SR.Application.Queries.Funcionarios
                 {
                     Cargo = funcionario.Cargo,
                     CodigoRF = funcionario.CodigoRF,
+                    Documento = funcionario.Documento,
                     DataFim = funcionario.DataFim,
                     DataInicio = funcionario.DataInicio,
                     NomeServidor = funcionario.NomeServidor

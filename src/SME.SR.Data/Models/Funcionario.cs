@@ -6,6 +6,8 @@
 
         public string NomeServidor { get; set; }
 
+        public string Documento { get; set; }
+
         public string DataInicio { get; set; }
 
         public string DataFim { get; set; }
