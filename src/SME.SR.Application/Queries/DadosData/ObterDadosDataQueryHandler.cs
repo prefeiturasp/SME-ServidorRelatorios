@@ -25,9 +25,9 @@ namespace SME.SR.Application
 
             return new DadosDataDto()
             {
-                Ano = DateTime.Now.Year.ToString("yyyy"),
-                Dia = DateTime.Now.Day.ToString("dd"),
-                Mes = DateTime.Now.Day.ToString("MM"),
+                Ano = DateTime.Now.ToString("yyyy"),
+                Dia = DateTime.Now.ToString("dd"),
+                Mes = DateTime.Now.ToString("MM"),
                 Municipio = parametroMunicipio
             };
         }
