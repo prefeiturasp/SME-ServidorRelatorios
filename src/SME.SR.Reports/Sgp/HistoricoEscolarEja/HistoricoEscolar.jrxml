@@ -4,8 +4,8 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
 	<property name="ireport.jasperserver.user" value="ebufaino"/>
-	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioBoletimEscolarEja/HistoricoEscolar_files/main_jrxml"/>
-	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioBoletimEscolarEja/HistoricoEscolar"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioHistoricoEscolarEja/HistoricoEscolar_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioHistoricoEscolarEja/HistoricoEscolar"/>
 	<parameter name="jsonString" class="java.lang.String">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
@@ -90,10 +90,6 @@
 	<field name="leiMedio" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="cabecalho.leiMedio"/>
 		<fieldDescription><![CDATA[cabecalho.leiMedio]]></fieldDescription>
-	</field>
-	<field name="leiEja" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="cabecalho.leiEja"/>
-		<fieldDescription><![CDATA[cabecalho.leiEja]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -264,7 +260,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{leiEja}.toUpperCase()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{leiFundamental}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement x="0" y="22" width="555" height="75" uuid="50ccbb3c-07f8-4835-a4fe-35afe74f75a4">
