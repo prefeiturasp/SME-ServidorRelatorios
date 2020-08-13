@@ -193,8 +193,6 @@ namespace SME.SR.Application
         private async Task<CabecalhoDto> MontarCabecalho(FiltroHistoricoEscolarDto filtros)
         {
             var enderecosEAtos = await mediator.Send(new ObterEnderecoEAtosDaUeQuery(filtros.UeCodigo));
-            if (!enderecosEAtos.Any())
-                throw new NegocioException("Não foi possível obter os dados de endereço e atos da UE.");
 
             return MontaCabecalhoComBaseNoEnderecoEAtosDaUe(enderecosEAtos);
         }

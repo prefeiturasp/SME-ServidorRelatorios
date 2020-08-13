@@ -27,7 +27,7 @@ namespace SME.SR.Application
             {
                 Ano = DateTime.Now.ToString("yyyy"),
                 Dia = DateTime.Now.ToString("dd"),
-                Mes = DateTime.Now.ToString("MM"),
+                Mes = DateTime.Now.ToString("MMMM"),
                 Municipio = parametroMunicipio
             };
         }
