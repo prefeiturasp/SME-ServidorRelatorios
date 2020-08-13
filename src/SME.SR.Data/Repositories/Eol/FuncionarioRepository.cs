@@ -133,7 +133,7 @@ namespace SME.SR.Data
             else
                 parametros = new { CodigoUE = codigoUe };
 
-            var query = MontaQuery(campos, where.ToString(), " ORDER BY NomeServidor");
+            var query = MontaQueryObterFuncionariosPorCargoUe(campos, where.ToString(), " ORDER BY NomeServidor");
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
@@ -141,7 +141,7 @@ namespace SME.SR.Data
             }
         }
 
-        protected string MontaQuery(string query, string where, string order = "")
+        protected string MontaQueryObterFuncionariosPorCargoUe(string query, string where, string order = "")
         {
             var sb = new StringBuilder();
             sb.AppendLine(query);

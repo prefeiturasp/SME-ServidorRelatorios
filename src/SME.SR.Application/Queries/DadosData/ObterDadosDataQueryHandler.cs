@@ -23,11 +23,13 @@ namespace SME.SR.Application
             if (string.IsNullOrEmpty(parametroMunicipio))
                 throw new NegocioException("Não foi possível obter o parâmetro de município de atendimento");
 
+            var dataAtual = DateTime.Now;
+
             return new DadosDataDto()
             {
-                Ano = DateTime.Now.ToString("yyyy"),
-                Dia = DateTime.Now.ToString("dd"),
-                Mes = DateTime.Now.ToString("MMMM"),
+                Ano = dataAtual.ToString("yyyy"),
+                Dia = dataAtual.ToString("dd"),
+                Mes = dataAtual.ToString("MMMM"),
                 Municipio = parametroMunicipio
             };
         }

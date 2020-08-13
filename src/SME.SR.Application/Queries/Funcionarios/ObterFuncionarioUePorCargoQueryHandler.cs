@@ -12,16 +12,16 @@ namespace SME.SR.Application.Queries.Funcionarios
 {
     public class ObterFuncionarioUePorCargoQueryHandler : IRequestHandler<ObterFuncionarioUePorCargoQuery, IEnumerable<FuncionarioDto>>
     {
-        private readonly IFuncionarioRepository _funcionarioRepository;
+        private readonly IFuncionarioRepository funcionarioRepository;
 
         public ObterFuncionarioUePorCargoQueryHandler(IFuncionarioRepository conceitoValoresRepository)
         {
-            this._funcionarioRepository = conceitoValoresRepository ?? throw new ArgumentNullException(nameof(conceitoValoresRepository));
+            this.funcionarioRepository = conceitoValoresRepository ?? throw new ArgumentNullException(nameof(conceitoValoresRepository));
         }
 
         public async Task<IEnumerable<FuncionarioDto>> Handle(ObterFuncionarioUePorCargoQuery request, CancellationToken cancellationToken)
         {
-            var funcionarios = await _funcionarioRepository.ObterFuncionariosPorCargoUe(request.CodigoCargo, request.CodigoUe);
+            var funcionarios = await funcionarioRepository.ObterFuncionariosPorCargoUe(request.CodigoCargo, request.CodigoUe);
             if (funcionarios == null && !funcionarios.Any())
                 throw new NegocioException("Não foi possível localizar o funcionarios da ue com este cargo");
 
