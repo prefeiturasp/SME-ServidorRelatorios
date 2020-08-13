@@ -43,8 +43,8 @@
 		<fieldDescription><![CDATA[dadosData.ano]]></fieldDescription>
 	</field>
 	<field name="mes" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="relatorioHistoricoEscolar.dadosData.mes"/>
-		<fieldDescription><![CDATA[relatorioHistoricoEscolar.dadosData.mes]]></fieldDescription>
+		<property name="net.sf.jasperreports.json.field.expression" value="dadosData.mes"/>
+		<fieldDescription><![CDATA[dadosData.mes]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
