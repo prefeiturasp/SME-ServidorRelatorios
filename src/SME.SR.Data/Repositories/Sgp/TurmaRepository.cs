@@ -116,7 +116,7 @@ namespace SME.SR.Data
         public async Task<Turma> ObterPorCodigo(string codigoTurma)
         {
             var query = @"select t.turma_id Codigo, t.nome, 
-			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo,
+			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, t.etapa_eja EtapaEJA,
 			                ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
 			                dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
 			                from  turma t
@@ -179,7 +179,8 @@ namespace SME.SR.Data
 	                        t.turma_id as TurmaCodigo,
                             t.modalidade_codigo Modalidade,
 	                        cca.aluno_codigo as AlunoCodigo,
-	                        t.ano 
+	                        t.ano,
+                            t.etapa_eja as EtapaEJA
                         from
 	                        fechamento_turma ft
                         inner join conselho_classe cc on
