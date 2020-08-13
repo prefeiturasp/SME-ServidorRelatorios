@@ -94,6 +94,20 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/parecerconclusivo")]
+        [Action("relatorios/parecerconclusivo", typeof(IRelatorioParecerConclusivoUseCase))]
+        public async Task<bool> RelatorioParecerConclusivo([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioParecerConclusivoUseCase relatorioParecerConclusivoUseCase)
+        {
+            await relatorioParecerConclusivoUseCase.Executar(request);
+            return true;
+        }
         
+        [HttpGet("relatorios/recuperacaoparalela")]
+        [Action("relatorios/recuperacaoparalela", typeof(IRelatorioRecuperacaoParalelaUseCase))]
+        public async Task<bool> RelatorioRecuperacaoParalela([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioRecuperacaoParalelaUseCase relatorioRecuperacaoParalelaUseCase)
+        {
+            await relatorioRecuperacaoParalelaUseCase.Executar(request);
+            return true;
+        }
     }
 }

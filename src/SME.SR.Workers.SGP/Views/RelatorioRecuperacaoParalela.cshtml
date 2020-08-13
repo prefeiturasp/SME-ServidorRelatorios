@@ -1,0 +1,312 @@
+﻿@model SME.SR.Infra.RelatorioRecuperacaoParalelaDto
+
+@{
+
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 70;
+    int contadorPagina = 0;
+
+    string VerificaQuebra(SME.SR.Infra.RelatorioRecuperacaoParalelaAlunoDto aluno)
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho() + MontarCabecalhoInformacoesAluno(aluno);
+            return $@"<div style='page-break-before:always'> </div>" + str;
+
+        }
+        return string.Empty;
+
+    }
+    string Quebra()
+    {
+
+        contadorQuebrarPagina = 0;
+        contadorPagina = contadorPagina + 1;
+
+        return $@"<div style='page-break-before:always'> </div>";
+    }
+
+    string MontarCorpoInformacoesAluno(SME.SR.Infra.RelatorioRecuperacaoParalelaAlunoDto aluno)
+    {
+
+        var str = "";
+
+        if (aluno.Secoes.Count > 0)
+        {
+
+            foreach (var secao in aluno.Secoes)
+            {
+
+
+                str = str + $@"
+<table class='tabela-alunos'>
+<thead>
+<th style='width: 100%;'>{secao.SecaoNome}</th>
+</thead>
+<tbody>
+<tr>
+    <td colspan='4' style='border-top: none;'>";
+
+                for (int i = 0; i < secao.SecaoValorArray.Length; i++)
+                {
+                    str = str + $@"{secao.SecaoValorArray[i]}";
+                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                    var quebra = VerificaQuebra(aluno);
+                    if (!string.IsNullOrEmpty(quebra))
+                    {
+                        str = str + $@"</td></tr></tbody></table>";
+                        str = str + quebra;
+                        str = str + $@"<table class='tabela-alunos'>
+                            <thead>
+                                <th style='width: 100%;'>{secao.SecaoNome}</th>
+                           </thead>
+                            <tbody><tr>
+            <td colspan='4' >";
+                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                    }
+                }
+
+                str = str + @"</td>
+    </tr><tr>
+    <td class='thLimpo' colspan='4' height='15px'></td>
+    </tr>
+</tbody></table>";
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                VerificaQuebra(aluno);
+            }
+        }
+
+
+        return str;
+    }
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 6;
+        var str =
+           $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-faltas-frequencia'><p  style='margin-bottom:0' >RELATÓRIO SEMESTRAL PAP </p> <p style='margin-top:0.5em'> {Model.Semestre}º SEMESTRE - {Model.AnoLetivo}</p></div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='50%' >DRE: {Model.DreNome}</td>
+<td width='50%' >UE: {Model.UeNome}</td>
+</tr>
+</tbody>
+</table>
+
+
+<table>
+<tbody>
+<tr>
+<td class='campo-usuario'>PROF: {Model.UsuarioNome}</td>
+<td class='campo-rf-data'>RF: {Model.UsuarioRF}</td>
+<td class='campo-rf-data'>DATA: {Model.Data}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+    string MontarCabecalhoInformacoesAluno(SME.SR.Infra.RelatorioRecuperacaoParalelaAlunoDto aluno)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        var str =
+           $@"<div class='fonte-12 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td width='40%'>ESTUDANTE: {aluno.AlunoNome}</td>
+<td width='20%'>TURMA: {aluno.Turma}</td>
+<td width='40%'>DATA DE NASCIMENTO: {aluno.DataNascimento}</td>
+</tr>
+<tr>
+<td >CÓDIGO EOL: {aluno.CodigoEol}</td>
+<td >TURMA REGULAR: {aluno.TurmaRegular}</td>
+<td >SITUAÇÃO: {aluno.Situacao}</td>
+</tr>
+<tr>
+<td class='thLimpo' colspan='3' height='15px'></td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório Fechamento e Pendências</title>
+</head>
+<body class="body-rel-faltas-frequencia">
+    <style>
+        tblTopo th, td {
+            padding: 3px 0px 3px 15px;
+            text-align: left;
+        }
+
+        .body-rel-faltas-frequencia {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-faltas-frequencia {
+            text-align: right;
+            font-size: 14.5px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        .campo-dre {
+            width: 25%;
+        }
+
+        .campo-ue {
+            width: 60%
+        }
+
+        .campo-ano {
+            width: 15%
+        }
+
+        .campo-bimestre {
+            width: 20%;
+            border-top: none;
+        }
+
+        .campo-componente-curricular {
+            width: 80%;
+            border-top: none;
+        }
+
+        .campo-usuario {
+            width: 50%;
+            border-top: none;
+        }
+
+        .campo-rf-data {
+            width: 25%;
+            border-top: none;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        .tabela-alunos tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .fonte-12 {
+            font-size: 12px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-rel-faltas-frequencia {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+        }
+    </style>
+    <div>
+        @{
+            var iCount = 0;
+            foreach (var aluno in Model.Alunos)
+            {
+                @Html.Raw(MontarCabecalho());
+                @Html.Raw(MontarCabecalhoInformacoesAluno(aluno));
+                @Html.Raw(MontarCorpoInformacoesAluno(aluno));
+
+                iCount++;
+
+                if (iCount < Model.Alunos.Count)
+                {
+                    @Html.Raw(Quebra());
+                }
+            }
+        }
+
+    </div>
+</body>
+</html>

@@ -63,7 +63,8 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
-                        and t.modalidade_codigo = @modalidadeId");
+                        and t.modalidade_codigo = @modalidadeId  
+                        and not p.excluido");
 
                 if(semestre.HasValue)
                     query.AppendLine(" and t.semestre = @semestre ");

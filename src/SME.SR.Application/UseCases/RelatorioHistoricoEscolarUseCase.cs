@@ -125,10 +125,7 @@ namespace SME.SR.Application
 
         private async Task<Ue> ObterUePorCodigo(string ueCodigo)
         {
-            return await mediator.Send(new ObterUePorCodigoQuery()
-            {
-                UeCodigo = ueCodigo
-            });
+            return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
         private async Task<IEnumerable<TipoNotaCicloAno>> ObterTiposNotaRelatorio()
         {

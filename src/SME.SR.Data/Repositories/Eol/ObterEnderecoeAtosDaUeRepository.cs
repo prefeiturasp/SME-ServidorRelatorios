@@ -42,7 +42,7 @@ namespace SME.SR.Data
 
             using var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
             conn.Open();
-            return await conn.QueryAsync<EnderecoEAtosDaUeDto>(query, new { ueCodigo });          
+            return await conn.QueryAsync<EnderecoEAtosDaUeDto>(query, new { ueCodigo });
         }
     }
 }
