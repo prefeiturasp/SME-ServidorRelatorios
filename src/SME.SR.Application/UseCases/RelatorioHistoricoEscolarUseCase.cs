@@ -79,7 +79,7 @@ namespace SME.SR.Application
             var turmasEja = turmas.Where(t => t.ModalidadeCodigo == Modalidade.EJA);
             var turmasFundMedio = turmas.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
 
-            IEnumerable<HistoricoEscolarDTO> resultadoFundMedio = null;
+            IEnumerable<HistoricoEscolarDTO> resultadoFundMedio = null, resultadoFinalFundamental = null, resultadoFinalMedio = null;
             IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null;
 
             if (turmasFundMedio != null && turmasFundMedio.Any())
@@ -88,30 +88,35 @@ namespace SME.SR.Application
 
             if (turmasEja != null && turmasEja.Any())
                 resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, turmasEja.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario, 
+                    frequencias, tipoNotas, turmasEja.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
-            var resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
-            var resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
-
-            foreach (var item in resultadoFinalMedio)
+            if (resultadoFundMedio != null && resultadoFundMedio.Any())
             {
-                item.Legenda.Texto = string.Empty;
+                resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
+                resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
+
+                foreach (var item in resultadoFinalMedio)
+                {
+                    item.Legenda.Texto = string.Empty;
+                }
             }
 
-            if (resultadoFinalFundamental.Any() || resultadoFinalMedio.Any() || resultadoEJA.Any())
+            if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) || 
+                (resultadoFinalMedio != null && resultadoFinalMedio.Any()) || 
+                (resultadoEJA != null && resultadoEJA.Any()))
             {
-                if (resultadoEJA.Any())
+                if (resultadoEJA != null && resultadoEJA.Any())
                 {
                     await EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao);
                 }
 
-                if (resultadoFinalFundamental.Any())
+                if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
                 {
                     await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
                 }
 
-                if (resultadoFinalMedio.Any())
+                if (resultadoFinalMedio != null && resultadoFinalMedio.Any())
                 {
                     await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
                 }

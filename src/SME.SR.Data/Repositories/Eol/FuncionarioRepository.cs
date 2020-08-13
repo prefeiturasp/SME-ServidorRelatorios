@@ -106,7 +106,7 @@ namespace SME.SR.Data
 	                UNION
 		                SELECT DISTINCT servidor.nm_pessoa              NomeServidor 
 			                ,servidor.cd_registro_funcional            CodigoRF 
-							,CONCAT(servDetalhes.nr_rg_pessoa, '-' ISNULL(servDetalhes.cd_complemento_rg,'X'), '/', orgaoEmissor.nm_orgao_emissor) Documento
+							,CONCAT(servDetalhes.nr_rg_pessoa, '-', ISNULL(servDetalhes.cd_complemento_rg,'X'), '/', orgaoEmissor.nm_orgao_emissor) Documento
 			                ,cargoServidor.dt_posse           DataInicio 
 			                ,cargoServidor.dt_fim_nomeacao    DataFim  
 			                ,RTRIM(LTRIM(cargo.dc_cargo))     Cargo
