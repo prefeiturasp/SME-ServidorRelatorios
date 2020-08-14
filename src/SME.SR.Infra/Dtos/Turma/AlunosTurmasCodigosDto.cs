@@ -10,5 +10,6 @@ namespace SME.SR.Infra
         public string TurmaCodigo { get; set; }
         public Modalidade Modalidade { get; set; }
         public int Ano { get; set; }
+        public int EtapaEJA { get; set; }
     }
 }
