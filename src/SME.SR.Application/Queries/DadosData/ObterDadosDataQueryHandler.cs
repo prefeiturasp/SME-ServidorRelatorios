@@ -25,6 +25,10 @@ namespace SME.SR.Application
 
             var dataAtual = DateTime.Now;
 
+            //System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("-NL");
+            //DateTime dt = DateTime.Parse(date, cultureinfo);
+
+
             return new DadosDataDto()
             {
                 Ano = dataAtual.ToString("yyyy"),
