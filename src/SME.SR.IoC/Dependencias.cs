@@ -86,6 +86,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IFechamentoTurmaRepository), typeof(FechamentoTurmaRepository));
             services.TryAddScoped(typeof(IFrequenciaAlunoRepository), typeof(FrequenciaAlunoRepository));
             services.TryAddScoped(typeof(INotaTipoRepository), typeof(NotaTipoRepository));
+            services.TryAddScoped(typeof(IFuncionarioRepository), typeof(FuncionarioRepository));
             services.TryAddScoped(typeof(IParametroSistemaRepository), typeof(ParametroSistemaRepository));
             services.TryAddScoped(typeof(IPeriodoEscolarRepository), typeof(PeriodoEscolarRepository));
             services.TryAddScoped(typeof(IPeriodoFechamentoRepository), typeof(PeriodoFechamentoRepository));

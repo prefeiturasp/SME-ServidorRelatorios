@@ -9,6 +9,8 @@ using Microsoft.OpenApi.Models;
 using SME.SR.IoC;
 using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 
@@ -43,7 +45,6 @@ namespace SME.SR.Workers.SGP
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SME - Servidor de relatórios", Version = "v1" });
             });
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
