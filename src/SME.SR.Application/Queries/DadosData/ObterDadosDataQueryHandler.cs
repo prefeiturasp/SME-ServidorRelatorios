@@ -23,19 +23,21 @@ namespace SME.SR.Application
             if (string.IsNullOrEmpty(parametroMunicipio))
                 throw new NegocioException("Não foi possível obter o parâmetro de município de atendimento");
 
-            var dataAtual = DateTime.Now;
-
-            //System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("-NL");
-            //DateTime dt = DateTime.Parse(date, cultureinfo);
-
-
-            return new DadosDataDto()
+            var dataDto = new DadosDataDto()
             {
-                Ano = dataAtual.ToString("yyyy"),
-                Dia = dataAtual.ToString("dd"),
-                Mes = dataAtual.ToString("MMMM"),
                 Municipio = parametroMunicipio
             };
+
+            if (request.PreencherData)
+            {
+                var dataAtual = DateTime.Now;
+
+                dataDto.Ano = dataAtual.ToString("yyyy");
+                dataDto.Dia = dataAtual.ToString("dd");
+                dataDto.Mes = dataAtual.ToString("MMMM");
+            }
+
+            return dataDto;
         }
     }
 }

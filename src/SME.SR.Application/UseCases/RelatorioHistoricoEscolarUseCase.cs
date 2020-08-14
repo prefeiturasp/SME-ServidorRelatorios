@@ -63,10 +63,7 @@ namespace SME.SR.Application
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
-            DadosDataDto dadosData = null;
-
-            if (filtros.PreencherDataImpressao)
-                dadosData = await ObterDadosData();
+            var dadosData = await ObterDadosData(filtros.PreencherDataImpressao);
 
             FuncionarioDto dadosDiretor = null, dadosSecretario = null;
 
@@ -102,8 +99,8 @@ namespace SME.SR.Application
                 }
             }
 
-            if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) || 
-                (resultadoFinalMedio != null && resultadoFinalMedio.Any()) || 
+            if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) ||
+                (resultadoFinalMedio != null && resultadoFinalMedio.Any()) ||
                 (resultadoEJA != null && resultadoEJA.Any()))
             {
                 if (resultadoEJA != null && resultadoEJA.Any())
@@ -248,9 +245,12 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterParametrosMediaFrequenciaQuery());
         }
 
-        private async Task<DadosDataDto> ObterDadosData()
+        private async Task<DadosDataDto> ObterDadosData(bool preencherDarta)
         {
-            return await mediator.Send(new ObterDadosDataQuery());
+            return await mediator.Send(new ObterDadosDataQuery()
+            {
+                PreencherData = preencherDarta
+            });
         }
 
         private async Task<IEnumerable<FuncionarioDto>> ObterFuncionarioUePorCargo(string codigoUe, int cargo)

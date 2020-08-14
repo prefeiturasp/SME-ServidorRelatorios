@@ -5,5 +5,6 @@ namespace SME.SR.Application
 {
     public class ObterDadosDataQuery : IRequest<DadosDataDto>
     {
+        public bool PreencherData { get; set; }
     }
 }
