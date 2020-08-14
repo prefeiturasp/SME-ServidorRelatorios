@@ -2,6 +2,7 @@
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,15 +26,13 @@ namespace SME.SR.Application
 
             var dataAtual = DateTime.Now;
 
-            //System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("-NL");
-            //DateTime dt = DateTime.Parse(date, cultureinfo);
-
+            CultureInfo cultureinfo = new CultureInfo("pt-BR");
 
             return new DadosDataDto()
             {
-                Ano = dataAtual.ToString("yyyy"),
-                Dia = dataAtual.ToString("dd"),
-                Mes = dataAtual.ToString("MMMM"),
+                Ano = dataAtual.ToString("yyyy", cultureinfo),
+                Dia = dataAtual.ToString("dd", cultureinfo),
+                Mes = dataAtual.ToString("MMMM", cultureinfo),
                 Municipio = parametroMunicipio
             };
         }
