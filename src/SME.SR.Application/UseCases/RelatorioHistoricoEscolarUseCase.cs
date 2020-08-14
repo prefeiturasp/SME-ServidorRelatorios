@@ -194,6 +194,9 @@ namespace SME.SR.Application
         {
             var enderecosEAtos = await mediator.Send(new ObterEnderecoEAtosDaUeQuery(filtros.UeCodigo));
 
+            if (enderecosEAtos == null || !enderecosEAtos.Any())
+                enderecosEAtos = new List<EnderecoEAtosDaUeDto>();
+
             return MontaCabecalhoComBaseNoEnderecoEAtosDaUe(enderecosEAtos);
         }
 
