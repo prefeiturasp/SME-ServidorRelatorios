@@ -31,11 +31,13 @@ namespace SME.SR.Application
 
             if (request.PreencherData)
             {
+                CultureInfo cultureinfo = new CultureInfo("pt-BR");
+
                 var dataAtual = DateTime.Now;
 
-                dataDto.Ano = dataAtual.ToString("yyyy");
-                dataDto.Dia = dataAtual.ToString("dd");
-                dataDto.Mes = dataAtual.ToString("MMMM");
+                dataDto.Ano = dataAtual.ToString("yyyy", cultureinfo);
+                dataDto.Dia = dataAtual.ToString("dd", cultureinfo);
+                dataDto.Mes = dataAtual.ToString("MMMM", cultureinfo);
             }
 
             return dataDto;
