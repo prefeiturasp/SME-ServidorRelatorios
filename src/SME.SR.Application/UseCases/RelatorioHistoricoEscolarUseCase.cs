@@ -69,8 +69,8 @@ namespace SME.SR.Application
 
             if (filtros.ImprimirDadosResponsaveis)
             {
-                dadosDiretor = (await ObterFuncionarioUePorCargo(filtros.UeCodigo, (int)Cargo.Diretor))?.FirstOrDefault();
-                dadosSecretario = (await ObterFuncionarioUePorCargo(filtros.UeCodigo, (int)Cargo.Secretario))?.FirstOrDefault();
+                dadosDiretor = await ObterFuncionarioUePorCargo(filtros.UeCodigo, (int)Cargo.Diretor);
+                dadosSecretario = await ObterFuncionarioUePorCargo(filtros.UeCodigo, (int)Cargo.Secretario);
             }
 
             var turmasEja = turmas.Where(t => t.ModalidadeCodigo == Modalidade.EJA);
@@ -254,13 +254,18 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<FuncionarioDto>> ObterFuncionarioUePorCargo(string codigoUe, int cargo)
+        private async Task<FuncionarioDto> ObterFuncionarioUePorCargo(string codigoUe, int cargo)
         {
-            return await mediator.Send(new ObterFuncionarioUePorCargoQuery()
+            var funcionarios = await mediator.Send(new ObterFuncionarioUePorCargoQuery()
             {
                 CodigoCargo = cargo.ToString(),
                 CodigoUe = codigoUe
             });
+
+            if (funcionarios != null && funcionarios.Count() == 1)
+                return funcionarios.FirstOrDefault();
+
+            else return null;
         }
 
         private async Task<string> ObterLegenda()
