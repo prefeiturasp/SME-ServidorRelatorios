@@ -8,20 +8,7 @@ namespace SME.SR.Infra
         public RelatorioNotasEConceitosFinaisDto()
         {
             Data = DateTime.Now.ToString("dd/MM/yyyy");
-        }
-        public RelatorioNotasEConceitosFinaisDto(string dreNome, string ueNome, string turmaNome, string usuarioNome, string usuarioRF)
-        {
-            DreNome = dreNome;
-            UeNome = ueNome;
-            TurmaNome = turmaNome;
-            UsuarioNome = usuarioNome;
-            UsuarioRF = usuarioRF;
-            Data = DateTime.Now.ToString("dd/MM/yyyy");
             Dres = new List<RelatorioNotasEConceitosFinaisDreDto>();
-        }
-
-        public RelatorioNotasEConceitosFinaisDto(string bimestre) {
-            Bimestre = bimestre;
         }
 
         public string DreNome { get; set; }

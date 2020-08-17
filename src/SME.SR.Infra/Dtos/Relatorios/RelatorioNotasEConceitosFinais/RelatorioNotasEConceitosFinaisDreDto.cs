@@ -4,12 +4,12 @@ namespace SME.SR.Infra
 {
     public class RelatorioNotasEConceitosFinaisDreDto
     {
-        public RelatorioNotasEConceitosFinaisDreDto(string codigo, string nome)
+
+        public RelatorioNotasEConceitosFinaisDreDto()
         {
-            Codigo = codigo;
-            Nome = nome;
             Ues = new List<RelatorioNotasEConceitosFinaisUeDto>();
         }
+
         public string Codigo { get; set; }
         public string Nome { get; set; }
 

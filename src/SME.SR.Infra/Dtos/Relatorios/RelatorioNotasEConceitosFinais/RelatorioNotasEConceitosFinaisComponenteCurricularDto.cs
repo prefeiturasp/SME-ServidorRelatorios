@@ -4,9 +4,8 @@ namespace SME.SR.Infra
 {
     public class RelatorioNotasEConceitosFinaisComponenteCurricularDto
     {
-        public RelatorioNotasEConceitosFinaisComponenteCurricularDto(string nome)
+        public RelatorioNotasEConceitosFinaisComponenteCurricularDto()
         {
-            Nome = nome;
             NotaConceitoAlunos = new List<RelatorioNotasEConceitosFinaisDoAlunoDto>();
         }
         public string Nome { get; set; }

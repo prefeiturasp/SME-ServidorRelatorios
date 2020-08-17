@@ -4,6 +4,7 @@ using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,75 +21,101 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
-
-            var dres = new List<Dre>();
-
-            if (string.IsNullOrEmpty(filtros.DreCodigo))
+            try
             {
-                var dresRetorno = await mediator.Send(new ObterTodasDresQuery());
-                if (dresRetorno == null || !dresRetorno.Any())
-                    throw new NegocioException("Não foi possível obter as Dres.");
+                var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
 
-                dres = dresRetorno.ToList();
-            }
-            else
-            {
-                var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
-                if (dre == null)
-                    throw new NegocioException("Não foi possível obter a Dre.");
+                var dres = new List<Dre>();
 
-                dres.Add(dre);
-            }
-
-            var dresIds = dres.Select(d => d.Id).ToArray();
-
-            var ues = await mediator.Send(new ObterPorDresIdQuery(dresIds));
-
-
-            RelatorioNotasEConceitosFinaisDto relatorioNotasEConceitosFinaisDto = new RelatorioNotasEConceitosFinaisDto();
-
-            MontarCabecalho(filtros, relatorioNotasEConceitosFinaisDto);
-
-            var turmas = await mediator.Send(new ObterTurmasPorUeAnosModalidadeSemestreQuery(filtros.UeCodigo, filtros.Anos, filtros.Modalidade, filtros.Semestre));
-
-            if (!turmas.Any())
-                throw new NegocioException("Não foi possível localizar turmas para geração do relatório");
-
-            // Obter dados das turmas
-            foreach (var turma in turmas)
-            {
-                var alunosTurma = await mediator.Send(new ObterAlunosPorTurmaNotasConceitosQuery() { TurmaCodigo = turma.Codigo });
-
-                if (alunosTurma.Any() && alunosTurma != null)
+                if (string.IsNullOrEmpty(filtros.DreCodigo))
                 {
-                    var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesPorCodigoETurmaQuery(turma.Codigo, filtros.ComponentesCurriculares));
+                    var dresRetorno = await mediator.Send(new ObterTodasDresQuery());
+                    if (dresRetorno == null || !dresRetorno.Any())
+                        throw new NegocioException("Não foi possível obter as Dres.");
 
-                    var notasPorTurma = await mediator.Send(new ObterNotasFinaisPorTurmaBimestreQuery(turma.Codigo, filtros.Bimestres.ToArray()));
+                    dres = dresRetorno.ToList();
+                }
+                else
+                {
+                    var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
+                    if (dre == null)
+                        throw new NegocioException("Não foi possível obter a Dre.");
 
-                    if (notasPorTurma != null && notasPorTurma.Any())
+                    dres.Add(dre);
+                }
+
+                var dresIds = dres.Select(d => d.Id).ToArray();
+
+                // Ues
+                string[] uesCodigos;
+                var ues = await mediator.Send(new ObterPorDresIdQuery(dresIds));
+                if (!string.IsNullOrEmpty(filtros.UeCodigo))
+                {
+                    var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
+                    if (ue == null)
+                        throw new NegocioException("Não foi possível obter a Ue.");
+
+                    var codigos = new List<string>
                     {
-                        var ueDaTurma = ues.FirstOrDefault(a => a.Id == turma.UeId);
+                        filtros.UeCodigo
+                    };
+                    uesCodigos = codigos.ToArray();
+                }
+                else
+                {
+                    uesCodigos = ues.Select(u => u.Codigo).ToArray();
+                }
 
-                        if (ueDaTurma == null)
-                            throw new NegocioException("Não foi possível encontrar uma UE para a turma");
+                var relatorioNotasEConceitosFinaisDto = new RelatorioNotasEConceitosFinaisDto();
 
-                        var dreDaTurma = dres.FirstOrDefault(a => a.Id == ueDaTurma.DreId);
+                MontarCabecalho(filtros, relatorioNotasEConceitosFinaisDto);
 
-                        if (dreDaTurma == null)
-                            throw new NegocioException("Não foi possível encontrar uma DRE para a turma");
+                var turmas = await mediator.Send(new ObterTurmasPorUeAnosModalidadeSemestreQuery(uesCodigos, filtros.Anos, filtros.Modalidade, filtros.Semestre));
 
-                        ObterDadosBaseRelatorio(filtros, dreDaTurma, ueDaTurma, turma, relatorioNotasEConceitosFinaisDto, out RelatorioNotasEConceitosFinaisBimestreDto relatorioNotasEConceitosFinaisBimestreDto);
+                if (!turmas.Any())
+                    throw new NegocioException("Não foi possível localizar turmas para geração do relatório");
 
-                        if (notasPorTurma.Any())
+                // Obter dados das turmas
+                foreach (var turma in turmas)
+                {
+                    var alunosTurma = await mediator.Send(new ObterAlunosPorTurmaNotasConceitosQuery() { TurmaCodigo = turma.Codigo });
+
+                    if (alunosTurma.Any() && alunosTurma != null)
+                    {
+                        var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesPorCodigoETurmaQuery(turma.Codigo, filtros.ComponentesCurriculares));
+
+
+                        // TODO: Filtrar por condição
+                        var notasPorTurma = await mediator.Send(new ObterNotasFinaisPorTurmaBimestreQuery(turma.Codigo, filtros.Bimestres.ToArray()));
+
+                        if (notasPorTurma != null && notasPorTurma.Any())
                         {
-                            ObterNotasConceitosFinais(turma, alunosTurma, componentesCurriculares, notasPorTurma, relatorioNotasEConceitosFinaisBimestreDto);
+                            var ueDaTurma = ues.Where(a => a.Id == turma.UeId).FirstOrDefault();
+                            if (ueDaTurma != null)
+                            {
+                                var dreDaTurma = dres.Where(a => a.Id == ueDaTurma.DreId).FirstOrDefault();
+                                if (dreDaTurma != null)
+                                {
+                                    ObterDadosBaseRelatorio(filtros, dreDaTurma, ueDaTurma, relatorioNotasEConceitosFinaisDto, out RelatorioNotasEConceitosFinaisBimestreDto relatorioNotasEConceitosFinaisBimestreDto);
+
+                                    if (notasPorTurma != null && notasPorTurma.Any() && componentesCurriculares != null && componentesCurriculares.Any())
+                                    {
+                                        ObterNotasConceitosFinais(turma, alunosTurma, componentesCurriculares, notasPorTurma, relatorioNotasEConceitosFinaisBimestreDto);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-            }
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotasEConceitosFinais", relatorioNotasEConceitosFinaisDto, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotasEConceitosFinais", relatorioNotasEConceitosFinaisDto, request.CodigoCorrelacao));
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         private static void MontarCabecalho(FiltroRelatorioNotasEConceitosFinaisDto filtros, RelatorioNotasEConceitosFinaisDto relatorioNotasEConceitosFinaisDto)
@@ -109,48 +136,79 @@ namespace SME.SR.Application
                 relatorioNotasEConceitosFinaisDto.TurmaNome = "Todos";
 
             relatorioNotasEConceitosFinaisDto.UsuarioNome = filtros.UsuarioNome;
-            relatorioNotasEConceitosFinaisDto.UsuarioRF = filtros.UsuarioRf;            
+            relatorioNotasEConceitosFinaisDto.UsuarioRF = filtros.UsuarioRf;
         }
 
         private static void ObterNotasConceitosFinais(TurmaFiltradaUeCicloAnoDto turma, IEnumerable<Aluno> alunosTurma, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, IEnumerable<NotaConceitoBimestreComponente> notasPorTurma, RelatorioNotasEConceitosFinaisBimestreDto relatorioNotasEConceitosFinaisBimestreDto)
         {
-            foreach (var componenteCurricular in componentesCurriculares.OrderBy(c => c.Disciplina))
+            try
             {
-                if (!notasPorTurma.Any())
-                    throw new NegocioException("Não foi possível localizar notas e conceitos para a turma");
-
-                var relatorioNotasEConceitosFinaisComponenteCurricularDto = new RelatorioNotasEConceitosFinaisComponenteCurricularDto(componenteCurricular.Disciplina);
-                relatorioNotasEConceitosFinaisBimestreDto.ComponentesCurriculares.Add(relatorioNotasEConceitosFinaisComponenteCurricularDto);
-
-                foreach (var nota in notasPorTurma)
+                foreach (var componenteCurricular in componentesCurriculares.OrderBy(c => c.Disciplina))
                 {
-                    foreach (var aluno in alunosTurma.OrderBy(n => n.NomeAluno))
+                    if (!notasPorTurma.Any())
+                        throw new NegocioException("Não foi possível localizar notas e conceitos para a turma");
+
+                    foreach (var nota in notasPorTurma)
                     {
-                        var notasAluno = notasPorTurma.Where(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ComponenteCurricularCodigo == componenteCurricular.CodDisciplina);
-                        foreach (var notaAluno in notasAluno)
+                        foreach (var aluno in alunosTurma.OrderBy(n => n.NomeAluno))
                         {
-                            var nomeAluno = aluno.NomeSocialAluno == null ? aluno.NomeAluno : aluno.NomeSocialAluno;
-                            var notaConceito = notaAluno.Conceito == null ? notaAluno.NotaConceito : notaAluno.Conceito;
-                            var relatorioNotasEConceitosFinaisDoAlunoDto = new RelatorioNotasEConceitosFinaisDoAlunoDto(turma.Nome, aluno.NumeroAlunoChamada, nomeAluno, notaConceito);
-                            relatorioNotasEConceitosFinaisComponenteCurricularDto.NotaConceitoAlunos.Add(relatorioNotasEConceitosFinaisDoAlunoDto);
+                            var notasAluno = notasPorTurma.Where(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ComponenteCurricularCodigo == componenteCurricular.CodDisciplina);
+
+                            var relatorioNotasEConceitosFinaisComponenteCurricularDto = new RelatorioNotasEConceitosFinaisComponenteCurricularDto();
+                            // Componentes curriculares
+                            if (relatorioNotasEConceitosFinaisBimestreDto.ComponentesCurriculares.Count(c => c.Nome == componenteCurricular.Disciplina) == 0)
+                            {
+                                relatorioNotasEConceitosFinaisComponenteCurricularDto.Nome = componenteCurricular.Disciplina;
+                                relatorioNotasEConceitosFinaisBimestreDto.ComponentesCurriculares.Add(relatorioNotasEConceitosFinaisComponenteCurricularDto);
+                            }
+
+                            // Bimestre
+                            relatorioNotasEConceitosFinaisBimestreDto.Nome = notasPorTurma.FirstOrDefault().Bimestre.ToString();
+
+                            foreach (var notaAluno in notasAluno)
+                            {
+                                var nomeAluno = aluno.NomeSocialAluno == null ? aluno.NomeAluno : aluno.NomeSocialAluno;
+                                var notaConceito = notaAluno.Conceito == null ? notaAluno.NotaConceito : notaAluno.Conceito;
+                                var relatorioNotasEConceitosFinaisDoAlunoDto = new RelatorioNotasEConceitosFinaisDoAlunoDto(turma.Nome, aluno.NumeroAlunoChamada, nomeAluno, notaConceito);
+                                relatorioNotasEConceitosFinaisComponenteCurricularDto.NotaConceitoAlunos.Add(relatorioNotasEConceitosFinaisDoAlunoDto);
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
-        private static void ObterDadosBaseRelatorio(FiltroRelatorioNotasEConceitosFinaisDto filtros, Dre dre, UePorDresIdResultDto ue, TurmaFiltradaUeCicloAnoDto turma, RelatorioNotasEConceitosFinaisDto relatorioNotasEConceitosFinaisDto, out RelatorioNotasEConceitosFinaisBimestreDto relatorioNotasEConceitosFinaisBimestreDto)
+        private static void ObterDadosBaseRelatorio(FiltroRelatorioNotasEConceitosFinaisDto filtros, Dre dre, UePorDresIdResultDto ue, RelatorioNotasEConceitosFinaisDto relatorioNotasEConceitosFinaisDto, out RelatorioNotasEConceitosFinaisBimestreDto relatorioNotasEConceitosFinaisBimestreDto)
         {
-            var relatorioNotasEConceitosFinaisDreDto = new RelatorioNotasEConceitosFinaisDreDto(dre.Codigo, dre.Nome);
-            relatorioNotasEConceitosFinaisDto.Dres.Add(relatorioNotasEConceitosFinaisDreDto);
+            // Dre
+            var relatorioNotasEConceitosFinaisDreDto = new RelatorioNotasEConceitosFinaisDreDto();
+            if (relatorioNotasEConceitosFinaisDto.Dres.Count(d => d.Codigo == dre.Codigo) == 0)
+            {
+                relatorioNotasEConceitosFinaisDreDto.Codigo = dre.Codigo;
+                relatorioNotasEConceitosFinaisDreDto.Nome = dre.Nome;
+                relatorioNotasEConceitosFinaisDto.Dres.Add(relatorioNotasEConceitosFinaisDreDto);
+            }
 
-            var relatorioNotasEConceitosFinaisUeDto = new RelatorioNotasEConceitosFinaisUeDto(ue.Codigo, ue.Nome);
-            relatorioNotasEConceitosFinaisDreDto.Ues.Add(relatorioNotasEConceitosFinaisUeDto);
+            // Ue
+            var relatorioNotasEConceitosFinaisUeDto = new RelatorioNotasEConceitosFinaisUeDto();
+            if (relatorioNotasEConceitosFinaisDreDto.Ues.Count(u => u.Codigo == ue.Codigo) == 0)
+            {
+                relatorioNotasEConceitosFinaisUeDto.Codigo = ue.Codigo;
+                relatorioNotasEConceitosFinaisUeDto.Nome = ue.Nome;
+                relatorioNotasEConceitosFinaisDreDto.Ues.Add(relatorioNotasEConceitosFinaisUeDto);
+            }
 
+            // Ano
             var relatorioNotasEConceitosFinaisAnoDto = new RelatorioNotasEConceitosFinaisAnoDto(filtros.AnoLetivo.ToString());
             relatorioNotasEConceitosFinaisUeDto.Anos.Add(relatorioNotasEConceitosFinaisAnoDto);
 
-            relatorioNotasEConceitosFinaisBimestreDto = new RelatorioNotasEConceitosFinaisBimestreDto("Preencher");
+            // Bimestre
+            relatorioNotasEConceitosFinaisBimestreDto = new RelatorioNotasEConceitosFinaisBimestreDto("Preencher Bimestre");
             relatorioNotasEConceitosFinaisAnoDto.Bimestres.Add(relatorioNotasEConceitosFinaisBimestreDto);
         }
     }

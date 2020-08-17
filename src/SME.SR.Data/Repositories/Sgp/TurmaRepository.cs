@@ -280,7 +280,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, ano });
         }
 
-        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeEAnos(string ueCodigo, string[] anos, int modalidade, int? semestre)
+        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadeESemestre(string[] uesCodigos, string[] anos, int modalidade, int? semestre)
         {
             try
             {
@@ -293,8 +293,8 @@ namespace SME.SR.Data
                 if(anos != null && anos.Length >0)
                     query.AppendLine("and tca.ano = ANY(@anos) ");
                
-                if (!string.IsNullOrEmpty(ueCodigo))
-                    query.AppendLine("and u.ue_id = @ueCodigo ");
+                if (uesCodigos != null && uesCodigos.Length > 0)
+                    query.AppendLine("and u.ue_id = ANY(@uesCodigos) ");
                 
                 if (modalidade > 0)
                     query.AppendLine("and t.modalidade_codigo = @modalidade ");
@@ -304,7 +304,7 @@ namespace SME.SR.Data
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { ueCodigo, anos, modalidade, semestre = semestre ?? 0 });
+                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidade, semestre = semestre ?? 0 });
             }
             catch (Exception ex)
             {
