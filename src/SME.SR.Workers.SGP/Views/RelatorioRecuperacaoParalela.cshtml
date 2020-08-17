@@ -41,7 +41,7 @@
             {
 
 
-                str = str + $@"
+                var strSecao = $@"
 <table class='tabela-alunos'>
 <thead>
 <th style='width: 100%;'>{secao.SecaoNome}</th>
@@ -52,14 +52,14 @@
 
                 for (int i = 0; i < secao.SecaoValorArray.Length; i++)
                 {
-                    str = str + $@"{secao.SecaoValorArray[i]}";
+                    strSecao = strSecao + $@"{secao.SecaoValorArray[i]}";
                     contadorQuebrarPagina = contadorQuebrarPagina + 1;
                     var quebra = VerificaQuebra(aluno);
                     if (!string.IsNullOrEmpty(quebra))
                     {
-                        str = str + $@"</td></tr></tbody></table>";
-                        str = str + quebra;
-                        str = str + $@"<table class='tabela-alunos'>
+                        strSecao = strSecao + $@"</td></tr></tbody></table>";
+                        strSecao = strSecao + quebra;
+                        strSecao = strSecao + $@"<table class='tabela-alunos'>
                             <thead>
                                 <th style='width: 100%;'>{secao.SecaoNome}</th>
                            </thead>
@@ -69,17 +69,22 @@
                     }
                 }
 
-                str = str + @"</td>
-    </tr><tr>
-    <td class='thLimpo' colspan='4' height='15px'></td>
-    </tr>
-</tbody></table>";
+                strSecao = strSecao + @"</td>
+                                            </tr><tr>
+                                            <td class='thLimpo' colspan='4' height='15px'></td>
+                                            </tr>
+                                        </tbody></table>";
                 contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                VerificaQuebra(aluno);
+
+                var quebraSecao = VerificaQuebra(aluno);
+
+                if (!string.IsNullOrEmpty(quebraSecao))
+                    str = str + (quebraSecao + strSecao);                
+                else str = str + strSecao;
+
             }
         }
-
-
+        
         return str;
     }
     string MontarCabecalho()

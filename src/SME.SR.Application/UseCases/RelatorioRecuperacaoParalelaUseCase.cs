@@ -66,8 +66,10 @@ namespace SME.SR.Application
 
                 var turmaRegular = turmaRegularAlunos.FirstOrDefault(a => a.AlunoCodigo == item.CodigoAluno)?.TurmaNome;
 
+                var nomeAlunoComNumeroChamada = $"{item.NomeAluno} Nº {item.NumeroAlunoChamada}";
+
                 var relatorioRecuperacaoParalelaAlunoDto = new RelatorioRecuperacaoParalelaAlunoDto(
-                        item.NomeAluno, turma.Nome, item.DataNascimento.ToString("dd/MM/yyyy"),
+                        nomeAlunoComNumeroChamada, turma.Nome, item.DataNascimento.ToString("dd/MM/yyyy"),
                         item.CodigoAluno.ToString(), turmaRegular.ToString(),  item.SituacaoMatricula) ;
 
                 // Secoes
