@@ -43,18 +43,31 @@ namespace SME.SR.Application
 
                 var notasPorTurmas = await mediator.Send(new ObterNotasFinaisPorTurmasBimestresComponentesQuery(turmas.Select(t => t.Id).ToArray(), dresCodigos, uesCodigos, filtros.Semestre, (int)filtros.Modalidade, filtros.Anos, filtros.AnoLetivo, filtros.Bimestres.ToArray(), filtros.ComponentesCurriculares.ToArray()));
 
+                var componentesCurricularesCodigos = notasPorTurmas.Select(a => a.ComponenteCurricularCodigo).Distinct();
 
+                var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = componentesCurricularesCodigos.ToArray() });
 
+                if (componentesCurriculares == null || !componentesCurriculares.Any())
+                    throw new NegocioException("Não foi possível obter os componentes curriculares");
 
-                var dresParaAdicionar = notasPorTurmas.Select(a =>  new {  a.DreCodigo, a.DreNome, a.DreAbreviacao } ).Distinct();
+                var alunosCodigos = notasPorTurmas.Select(a => long.Parse(a.AlunoCodigo)).Distinct();
 
-                foreach (var dreParaAdicionar in dresParaAdicionar.OrderBy( b => b.DreAbreviacao))
+                var alunos = await mediator.Send(new ObterDadosAlunosHistoricoEscolarQuery() { CodigosAluno = alunosCodigos.ToArray() });
+
+                if (alunos == null || !alunos.Any())
+                    throw new NegocioException("Não foi possível obter os alunos");
+
+                var dresParaAdicionar = notasPorTurmas.Select(a => new { a.DreCodigo, a.DreNome, a.DreAbreviacao }).Distinct();
+
+                
+
+                foreach (var dreParaAdicionar in dresParaAdicionar.OrderBy(b => b.DreAbreviacao))
                 {
                     var dreNova = new RelatorioNotasEConceitosFinaisDreDto();
                     dreNova.Codigo = dreParaAdicionar.DreCodigo;
                     dreNova.Nome = dreParaAdicionar.DreNome;
 
-                    var uesParaAdicionar = notasPorTurmas.Where(a => a.DreCodigo == dreParaAdicionar.DreCodigo).Select( a => new { a.UeCodigo, a.UeNome } ).Distinct();
+                    var uesParaAdicionar = notasPorTurmas.Where(a => a.DreCodigo == dreParaAdicionar.DreCodigo).Select(a => new { a.UeCodigo, a.UeNome }).Distinct();
 
                     foreach (var ueParaAdicionar in uesParaAdicionar)
                     {
@@ -62,75 +75,58 @@ namespace SME.SR.Application
                         ueNova.Codigo = ueParaAdicionar.UeCodigo;
                         ueNova.Nome = ueParaAdicionar.UeNome;
 
-                        var anoNovo = new RelatorioNotasEConceitosFinaisAnoDto();
+                        var anosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo).Select(a => a.Ano).Distinct();
 
-                        ueNova.Anos.Add(anoNovo);
+                        foreach (var anoParaAdicionar in anosParaAdicionar)
+                        {
+                            var anoNovo = new RelatorioNotasEConceitosFinaisAnoDto(anoParaAdicionar);
+
+                            var bimestresParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar).Select(a => a.Bimestre).Distinct();
+
+                            foreach (var bimestreParaAdicionar in bimestresParaAdicionar)
+                            {
+                                var bimestreNovo = new RelatorioNotasEConceitosFinaisBimestreDto(bimestreParaAdicionar.ToString());
+
+                                var componentesParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar && a.Bimestre == bimestreParaAdicionar)
+                                                                             .Select(a => a.ComponenteCurricularCodigo)
+                                                                             .Distinct();
+
+
+                                foreach (var componenteParaAdicionar in componentesParaAdicionar)
+                                {
+                                    var componenteNovo = new RelatorioNotasEConceitosFinaisComponenteCurricularDto();
+                                    componenteNovo.Nome = componentesCurriculares.FirstOrDefault(a => a.CodDisciplina == componenteParaAdicionar)?.Disciplina;
+
+
+                                    var notasDosAlunosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar
+                                                                                           && a.Bimestre == bimestreParaAdicionar && a.ComponenteCurricularCodigo == componenteParaAdicionar)
+                                                                                    .Select(a => new { a.AlunoCodigo, a.NotaConceito, a.TurmaNome })
+                                                                                    .Distinct();
+
+
+                                    foreach (var notaDosAlunosParaAdicionar in notasDosAlunosParaAdicionar)
+                                    {
+                                        var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));
+                                        var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), notaDosAlunosParaAdicionar.NotaConceito);
+                                        componenteNovo.NotaConceitoAlunos.Add(notaConceitoNovo);
+                                    }
+
+                                    bimestreNovo.ComponentesCurriculares.Add(componenteNovo);
+                                }
+
+                                anoNovo.Bimestres.Add(bimestreNovo);
+                            }
+
+                            ueNova.Anos.Add(anoNovo);
+                        }
+
+
 
                         dreNova.Ues.Add(ueNova);
                     }
 
-
-
                     relatorioNotasEConceitosFinaisDto.Dres.Add(dreNova);
                 }
-
-
-
-
-
-
-
-
-                foreach (var turmaNotas in notasPorTurmas.GroupBy( a => a.TurmaCodigo))
-                {
-
-
-                    //if (relatorioNotasEConceitosFinaisDto.Dres.Any( a => a.))
-
-
-
-                }
-
-
-
-
-                ////// Obter dados das turmas
-                ////foreach (var turma in turmas)
-                ////{
-
-                    
-                ////    // Obter alunos de uma turma
-                ////    var alunosTurma = await mediator.Send(new ObterAlunosPorTurmaNotasConceitosQuery() { TurmaCodigo = turma.Codigo });
-
-                ////    if (alunosTurma.Any() && alunosTurma != null)
-                ////    {
-
-                ////        // Obter componentes curriculares de uma turma 
-                ////        var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesPorCodigoETurmaQuery(turma.Codigo, filtros.ComponentesCurriculares));
-
-                ////        if (componentesCurriculares != null && componentesCurriculares.Any())
-                ////        {
-                ////            //TODO: Aplicar filtro por critério de Condições e Valores
-
-                ////            // Obter notas por turma, bimestres e componente curricular
-                ////            //if (notasPorTurma != null && notasPorTurma.Any())
-                ////            //{
-                ////            //    var ueDaTurma = ues.Where(a => a.Id == turma.UeId).FirstOrDefault();
-                ////            //    if (ueDaTurma != null)
-                ////            //    {
-                ////            //        var dreDaTurma = dres.Where(a => a.Id == ueDaTurma.DreId).FirstOrDefault();
-                ////            //        if (dreDaTurma != null)
-                ////            //        {
-                ////            //            ObterDadosBaseRelatorio(filtros, dreDaTurma, ueDaTurma, relatorioNotasEConceitosFinaisDto, out RelatorioNotasEConceitosFinaisBimestreDto relatorioNotasEConceitosFinaisBimestreDto);
-
-                ////            //            if (notasPorTurma != null && notasPorTurma.Any() && componentesCurriculares != null && componentesCurriculares.Any())
-                ////            //                ObterNotasConceitosFinais(filtros, turma, alunosTurma, componentesCurriculares, notasPorTurma, relatorioNotasEConceitosFinaisBimestreDto);
-                ////            //        }
-                ////            //    }
-                ////            //}
-                ////        }
-                ////    }
-                ////}
 
                 if (relatorioNotasEConceitosFinaisDto.Dres.Count == 0)
                     throw new NegocioException("Não encontramos dados para geração do relatório!");
@@ -287,7 +283,7 @@ namespace SME.SR.Application
                 relatorioNotasEConceitosFinaisDto.Bimestre = "Todos";
 
             if (filtros.Anos == null || filtros.Anos.Length == 0)
-                relatorioNotasEConceitosFinaisDto.Ano= "Todos";
+                relatorioNotasEConceitosFinaisDto.Ano = "Todos";
 
             relatorioNotasEConceitosFinaisDto.UsuarioNome = filtros.UsuarioNome;
             relatorioNotasEConceitosFinaisDto.UsuarioRF = filtros.UsuarioRf;
