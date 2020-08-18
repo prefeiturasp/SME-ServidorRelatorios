@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Data.Interfaces;
-using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -295,7 +294,7 @@ namespace SME.SR.Data
                     where te.cd_turma_escola = @turmaCodigo ";
 
             if (componentesCodigo != null && componentesCodigo.Length > 0)
-                query = query += $" and pcc.cd_componente_curricular IN ({string.Join(',', componentesCodigo)})";
+                query = query += $" and pcc.cd_componente_curricular IN ({string.Join(',', componentesCodigo)}) OR cc.cd_componente_curricular IN ({string.Join(',', componentesCodigo)}) ";
 
             var parametros = new { turmaCodigo };
 

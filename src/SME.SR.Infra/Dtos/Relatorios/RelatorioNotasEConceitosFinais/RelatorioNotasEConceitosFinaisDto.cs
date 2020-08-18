@@ -13,7 +13,7 @@ namespace SME.SR.Infra
 
         public string DreNome { get; set; }
         public string UeNome { get; set; }
-        public string TurmaNome { get; set; }
+        public string Ano { get; set; }
         public string Bimestre { get; set; }
         public string ComponenteCurricular { get; set; }
         public string UsuarioNome { get; set; }
