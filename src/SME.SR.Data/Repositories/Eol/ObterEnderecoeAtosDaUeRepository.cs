@@ -22,7 +22,7 @@ namespace SME.SR.Data
             var query = @"	SELECT DISTINCT 
 	                        CONCAT(RTRIM(LTRIM(tpe.sg_tp_escola)), ' - ', RTRIM(LTRIM(vcue.nm_unidade_educacao))) AS nomeUe,
 	                        CONCAT(tl.dc_tp_logradouro, ' ', vcue.nm_logradouro, ', ', vcue.cd_nr_endereco, ', ', vcue.nm_bairro, ', ', vcue.cd_cep, ' SÃO PAULO - SP') as endereco,	
-							ato =
+							atos =
 							case 
 								when hu.nr_ato is null then ''
 								else LTRIM(CONCAT(hu.nr_ato, ' - ', convert(varchar, hu.dt_publicacao_dom, 103)))
