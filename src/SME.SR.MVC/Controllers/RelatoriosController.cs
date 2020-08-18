@@ -1346,15 +1346,69 @@ namespace SME.SR.MVC.Controllers
             var notaConceitoAluno = new RelatorioNotasEConceitosFinaisDoAlunoDto("Turma ABC", "01", "Antolino Neves", "10");
                         
             componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
             bimestre.ComponentesCurriculares.Add(componenteCurricular);
 
             ano.Bimestres.Add(bimestre);
             ueDto.Anos.Add(ano);
+            ueDto.Anos.Add(ano);
             dreDto.Ues.Add(ueDto);
+            model.Dres.Add(dreDto);
+            model.Dres.Add(dreDto);
             model.Dres.Add(dreDto);
 
 
-            return View("RelatorioNotasConceitosFinais", model);
+            return View("RelatorioNotasEConceitosFinais", model);
         }
 
     }
