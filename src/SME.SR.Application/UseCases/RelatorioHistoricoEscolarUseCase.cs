@@ -81,7 +81,8 @@ namespace SME.SR.Application
 
             if (turmasFundMedio != null && turmasFundMedio.Any())
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, turmasFundMedio.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda));
+                    frequencias, tipoNotas, turmasFundMedio.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
+                    filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
             if (turmasEja != null && turmasEja.Any())
                 resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
