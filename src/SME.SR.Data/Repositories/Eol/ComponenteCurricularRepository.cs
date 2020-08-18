@@ -292,8 +292,7 @@ namespace SME.SR.Data
                         and pcc.dt_cancelamento is null
                         -- Turno     
                              inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
-                    where te.cd_turma_escola = @turmaCodigo
-                      and te.st_turma_escola in ('O', 'A', 'C') ";
+                    where te.cd_turma_escola = @turmaCodigo ";
 
             if (componentesCodigo != null && componentesCodigo.Length > 0)
                 query = query += $" and pcc.cd_componente_curricular IN ({string.Join(',', componentesCodigo)})";
