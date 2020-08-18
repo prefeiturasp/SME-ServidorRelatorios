@@ -302,6 +302,8 @@ namespace SME.SR.Data
                 if (semestre.HasValue)
                     query.AppendLine("and t.semestre = @semestre ");
 
+                //query.AppendLine("order by tca.ano ");
+
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
                 return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidade, semestre = semestre ?? 0 });
