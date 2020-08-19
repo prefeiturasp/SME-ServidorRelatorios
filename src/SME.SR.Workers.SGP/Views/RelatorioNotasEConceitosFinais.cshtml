@@ -29,12 +29,13 @@
     string CabecalhoTabelaNotas()
     {
         contadorQuebrarPagina++;
-        return $@"<table class='tabela-alunos'>
+        return $@"
+                  <table class='tabela-alunos'>
                       <thead>
                           <th width='5%'>Nº</th>
-                          <th width='10%'>ANO</th>
+                          <th width='10%'>TURMA</th>
                           <th width='65%'>NOME</th>
-                          <th width='20%'>CONCEITO/NOTA</th>
+                          <th width='20%'>CONCEITO / NOTA</th>
                       </thead>
                   </table>";
 
@@ -43,8 +44,7 @@
     string MontarCorpoInformacoesAluno(List<SME.SR.Infra.RelatorioNotasEConceitosFinaisDoAlunoDto> notas)
     {
 
-        var str = $@"
-        <table class='tabela-alunos'>
+        var str = $@"<table class='tabela-alunos'>
         <tbody>";
 
         foreach (var nota in notas)
@@ -59,10 +59,19 @@
             var quebra = VerificaQuebra();
             str += quebra.Length > 0 ? $@"</tbody></table>{quebra}{CabecalhoTabelaNotas()}<table class='tabela-alunos'><tbody>" :"";
         }
-        str += "</tbody></table>";
-
+        str += $@"</tbody></table>";
 
         return str;
+    }
+
+    string EspacoEmBranco()
+    {
+        contadorQuebrarPagina++;
+        return $@"<table class='tabela-alunos'>
+                      <thead>
+                          <th class='thLimpo' width='100%'></th>
+                      </thead>
+                </table>";
     }
 
     string MontarCabecalho()
@@ -263,6 +272,11 @@
         @{
             foreach (var dre in Model.Dres)
             {
+                
+                if (contadorQuebrarPagina > 6)
+                {
+                   @Html.Raw(EspacoEmBranco());
+                }
                 if (Model.DreNome == "Todas")
                 {
                     <table class="tabela-alunos">
@@ -275,6 +289,10 @@
                     </table>
                     contadorQuebrarPagina++;
                     VerificaQuebra();
+                    if(Model.UeNome != "Todas")
+                    {
+                        @Html.Raw(EspacoEmBranco());
+                    }
                 }
                 foreach(var ue in dre.Ues)
                 {
@@ -290,10 +308,14 @@
                         </table>
                         contadorQuebrarPagina++;
                         VerificaQuebra();
+                        if (Model.Ano != "Todos" && Model.Ano != "")
+                        {
+                            @Html.Raw(EspacoEmBranco());
+                        }
                     }
                     foreach(var ano in ue.Anos)
                     {
-                        if(Model.Ano == "Todos")
+                        if(Model.Ano == "Todos" || Model.Ano == "")
                         {
                              <table class="tabela-alunos">
                                 <thead>
@@ -305,6 +327,10 @@
                             </table>
                             contadorQuebrarPagina++;
                             VerificaQuebra();
+                            if (Model.Bimestre != "Todos")
+                            {
+                                @Html.Raw(EspacoEmBranco());
+                            }
                         }
                         foreach(var bimestre in ano.Bimestres)
                         {
@@ -320,10 +346,14 @@
                                 </table>
                                 contadorQuebrarPagina++;
                                 VerificaQuebra();
+                                if (Model.ComponenteCurricular != "Todos" && Model.ComponenteCurricular != "")
+                                {
+                                    @Html.Raw(EspacoEmBranco());
+                                }
                             }
                             foreach(var componente in bimestre.ComponentesCurriculares)
                             {
-                                if(Model.ComponenteCurricular == "Todos")
+                                if(Model.ComponenteCurricular == "Todos" || Model.ComponenteCurricular == "")
                                 {
                                      <table class="tabela-alunos">
                                         <thead>
@@ -335,6 +365,7 @@
                                     </table>
                                     contadorQuebrarPagina++;
                                     VerificaQuebra();
+                                    @Html.Raw(EspacoEmBranco());
                                 }
                                 if (componente.NotaConceitoAlunos.Count > 0)
                                 {
@@ -346,7 +377,7 @@
                         }
                     }
                 }
-            }
+            }    
             }
 
     </div>
