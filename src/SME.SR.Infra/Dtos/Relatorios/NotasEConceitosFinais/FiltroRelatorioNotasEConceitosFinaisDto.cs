@@ -15,7 +15,8 @@ namespace SME.SR.Infra
         public string UsuarioRf { get; set; }
         public string UsuarioNome { get; set; }
         public CondicoesRelatorioNotasEConceitosFinais Condicao { get; set; }
-        public int ValorCondicao { get; set; }
+        public double ValorCondicao { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
+        public TipoNota TipoNota { get; set; }
     }
 }

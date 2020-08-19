@@ -31,10 +31,7 @@ namespace SME.SR.Application
                 // Ues
                 var ues = await mediator.Send(new ObterPorDresIdQuery(dres.Select(d => d.Id).ToArray()));
                 var uesCodigos = await AplicarFiltroPorUe(filtros, ues.OrderBy(u => u.TipoEscola));
-
-                // Cabeçalho
-                MontarCabecalho(filtros, relatorioNotasEConceitosFinaisDto);
-
+                
                 // Filtrar notas
                 var notasPorTurmas = await mediator.Send(new ObterNotasFinaisRelatorioNotasConceitosFinaisQuery(dresCodigos, uesCodigos, filtros.Semestre, (int)filtros.Modalidade, filtros.Anos, filtros.AnoLetivo, filtros.Bimestres.ToArray(), filtros.ComponentesCurriculares.ToArray()));
 
@@ -43,6 +40,9 @@ namespace SME.SR.Application
 
                 // Componentes curriculares
                 var componentesCurriculares = await ObterComponentesCurriculares(notasPorTurmas);
+
+                // Cabeçalho
+                MontarCabecalho(filtros, relatorioNotasEConceitosFinaisDto, componentesCurriculares);
 
                 // Alunos
                 var alunos = await ObterAlunos(notasPorTurmas);
@@ -107,7 +107,7 @@ namespace SME.SR.Application
                                     componenteNovo.NotaConceitoAlunos = componenteNovo.NotaConceitoAlunos.OrderBy(a => a.AlunoNomeCompleto).ToList();
                                     bimestreNovo.ComponentesCurriculares.Add(componenteNovo);
                                 }
-                                
+
                                 anoNovo.Bimestres.Add(bimestreNovo);
                             }
 
@@ -151,14 +151,23 @@ namespace SME.SR.Application
 
         private IEnumerable<RetornoNotaConceitoBimestreComponenteDto> AplicarFiltroPorCondicoesEValores(FiltroRelatorioNotasEConceitosFinaisDto filtros, IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notas)
         {
-            var operacao = new Dictionary<CondicoesRelatorioNotasEConceitosFinais, Func<double, double, bool>>
-            {
-                { CondicoesRelatorioNotasEConceitosFinais.Igual, (valor, valorFiltro) => valor == valorFiltro },
-                { CondicoesRelatorioNotasEConceitosFinais.Maior, (valor, valorFiltro) => valor > valorFiltro },
-                { CondicoesRelatorioNotasEConceitosFinais.Menor, (valor, valorFiltro) => valor < valorFiltro }
-            };
 
-            return notas.Where(n => operacao[filtros.Condicao](n.Nota, filtros.ValorCondicao)).ToList();
+            if (filtros.TipoNota == TipoNota.Conceito)
+                return notas.Where(a => a.ConceitoId == filtros.ValorCondicao).ToList();
+
+            switch (filtros.Condicao)
+            {
+                case CondicoesRelatorioNotasEConceitosFinais.Igual:
+                    return notas.Where(a => a.Nota == filtros.ValorCondicao && a.ConceitoId == null).ToList();
+                case CondicoesRelatorioNotasEConceitosFinais.Maior:
+                    return notas.Where(a => a.Nota > filtros.ValorCondicao && a.ConceitoId == null).ToList();
+                case CondicoesRelatorioNotasEConceitosFinais.Menor:
+                    return notas.Where(a => a.Nota < filtros.ValorCondicao && a.ConceitoId == null).ToList();
+                default:
+                    break;
+            }
+
+            return default;
         }
 
         private async Task<List<Dre>> AplicarFiltroPorDre(FiltroRelatorioNotasEConceitosFinaisDto filtros)
@@ -207,7 +216,7 @@ namespace SME.SR.Application
             return uesCodigos;
         }
 
-        private async void MontarCabecalho(FiltroRelatorioNotasEConceitosFinaisDto filtros, RelatorioNotasEConceitosFinaisDto relatorioNotasEConceitosFinaisDto)
+        private async void MontarCabecalho(FiltroRelatorioNotasEConceitosFinaisDto filtros, RelatorioNotasEConceitosFinaisDto relatorioNotasEConceitosFinaisDto, IEnumerable<ComponenteCurricularPorTurma> componentes)
         {
             if (string.IsNullOrEmpty(filtros.DreCodigo))
             {
@@ -232,6 +241,8 @@ namespace SME.SR.Application
 
             if (filtros.ComponentesCurriculares == null || filtros.ComponentesCurriculares.Length == 0)
                 relatorioNotasEConceitosFinaisDto.ComponenteCurricular = "Todos";
+            else if (filtros.ComponentesCurriculares.Length == 1)
+                relatorioNotasEConceitosFinaisDto.ComponenteCurricular = componentes.FirstOrDefault(a => a.CodDisciplina == filtros.ComponentesCurriculares[0])?.Disciplina;
 
             if (filtros.Bimestres == null || filtros.Bimestres.Count > 1)
                 relatorioNotasEConceitosFinaisDto.Bimestre = "Todos";
