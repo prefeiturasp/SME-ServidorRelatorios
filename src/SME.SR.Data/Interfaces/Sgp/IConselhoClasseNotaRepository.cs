@@ -9,6 +9,6 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasAluno(long conselhoClasseId, string codigoAluno);
         Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisAlunoBimestre(string codigoTurma, string codigoAluno);
         Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisPorTurma(string turmaCodigo);
-        Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterNotasFinaisPorTurmasBimestresComponentes(string[] dresCodigos, string[] uesCodigos, long[] turmasId, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos);
+        Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterNotasFinaisRelatorioNotasConceitosFinais(string[] dresCodigos, string[] uesCodigos, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos);
     }
 }

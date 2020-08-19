@@ -35,13 +35,8 @@ namespace SME.SR.Application
                 // Cabeçalho
                 MontarCabecalho(filtros, relatorioNotasEConceitosFinaisDto);
 
-                // Obter turmas por códigos da UE, Anos, Modalidade e semestre
-                var turmas = await mediator.Send(new ObterTurmasPorUeAnosModalidadeSemestreQuery(uesCodigos, filtros.Anos, filtros.Modalidade, filtros.Semestre));
-                if (!turmas.Any())
-                    throw new NegocioException("Não foi possível localizar turmas para geração do relatório");
-
                 // Filtrar notas
-                var notasPorTurmas = await mediator.Send(new ObterNotasFinaisPorTurmasBimestresComponentesQuery(turmas.Select(t => t.Id).ToArray(), dresCodigos, uesCodigos, filtros.Semestre, (int)filtros.Modalidade, filtros.Anos, filtros.AnoLetivo, filtros.Bimestres.ToArray(), filtros.ComponentesCurriculares.ToArray()));
+                var notasPorTurmas = await mediator.Send(new ObterNotasFinaisRelatorioNotasConceitosFinaisQuery(dresCodigos, uesCodigos, filtros.Semestre, (int)filtros.Modalidade, filtros.Anos, filtros.AnoLetivo, filtros.Bimestres.ToArray(), filtros.ComponentesCurriculares.ToArray()));
 
                 // Aplicar filtro por condições e valores
                 notasPorTurmas = AplicarFiltroPorCondicoesEValores(filtros, notasPorTurmas);

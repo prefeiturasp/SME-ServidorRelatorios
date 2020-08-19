@@ -144,7 +144,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, new { turmaCodigo });
         }
 
-        public async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterNotasFinaisPorTurmasBimestresComponentes(string[] dresCodigos, string[] uesCodigos, long[] turmasId,  int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos)
+        public async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterNotasFinaisRelatorioNotasConceitosFinais(string[] dresCodigos, string[] uesCodigos, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos)
         {
             var query = new StringBuilder(@"select distinct * from (
                 select fa.aluno_codigo as AlunoCodigo
@@ -184,10 +184,7 @@ namespace SME.SR.Data
                 query.AppendLine(@" and d.dre_id = ANY(@dresCodigos) ");
 
             if (uesCodigos != null && uesCodigos.Length > 0)
-                query.AppendLine(@" and u.ue_id = any(@uesCodigos) ");
-
-            if (turmasId != null && turmasId.Length > 0)
-                query.AppendLine(@" and t.id  = ANY(@turmasId) ");
+                query.AppendLine(@" and u.ue_id = any(@uesCodigos) ");            
 
             if (semestre != null && semestre > 0)
                 query.AppendLine(@" and t.semestre = @semestre ");
@@ -242,10 +239,7 @@ namespace SME.SR.Data
 
             if (uesCodigos != null && uesCodigos.Length > 0)
                 query.AppendLine(@" and u.ue_id = any(@uesCodigos) ");
-
-            if (turmasId != null && turmasId.Length > 0)
-                query.AppendLine(@" and t.id  = ANY(@turmasId) ");
-
+          
             if (semestre != null && semestre > 0)
                 query.AppendLine(@" and t.semestre = @semestre ");
 
@@ -264,7 +258,7 @@ namespace SME.SR.Data
             query.AppendLine(@") x ");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryAsync<RetornoNotaConceitoBimestreComponenteDto>(query.ToString(), new { bimestres, dresCodigos, uesCodigos, turmasId, semestre, modalidade, anos, anoLetivo, componentesCurricularesCodigos });
+            return await conexao.QueryAsync<RetornoNotaConceitoBimestreComponenteDto>(query.ToString(), new { bimestres, dresCodigos, uesCodigos, semestre, modalidade, anos, anoLetivo, componentesCurricularesCodigos });
         }
     }
 }

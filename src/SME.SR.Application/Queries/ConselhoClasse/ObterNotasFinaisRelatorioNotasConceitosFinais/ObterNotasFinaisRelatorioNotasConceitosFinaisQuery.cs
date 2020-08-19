@@ -4,11 +4,10 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterNotasFinaisPorTurmasBimestresComponentesQuery : IRequest<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>>
+    public class ObterNotasFinaisRelatorioNotasConceitosFinaisQuery : IRequest<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>>
     {
-        public ObterNotasFinaisPorTurmasBimestresComponentesQuery(long[] turmasId, string[] dresCodigos, string[] uesCodigos, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos)
+        public ObterNotasFinaisRelatorioNotasConceitosFinaisQuery(string[] dresCodigos, string[] uesCodigos, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos)
         {
-            TurmasId = turmasId;
             DresCodigos = dresCodigos;
             UesCodigos = uesCodigos;
             Semestre = semestre;
@@ -18,8 +17,7 @@ namespace SME.SR.Application
             Bimestres = bimestres;
             ComponentesCurricularesCodigos = componentesCurricularesCodigos;
         }
-
-        public long[] TurmasId { get; set; }
+        
         public string[] DresCodigos { get; set; }
         public string[] UesCodigos { get; set; }
         public int? Semestre { get; set; }
