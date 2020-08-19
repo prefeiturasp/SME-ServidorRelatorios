@@ -72,13 +72,13 @@ namespace SME.SR.Application
 
                         foreach (var anoParaAdicionar in anosParaAdicionar)
                         {
-                            var anoNovo = new RelatorioNotasEConceitosFinaisAnoDto(anoParaAdicionar);
+                            var anoNovo = new RelatorioNotasEConceitosFinaisAnoDto($"{anoParaAdicionar} ANO");
 
                             var bimestresParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar).Select(a => a.Bimestre).Distinct();
 
                             foreach (var bimestreParaAdicionar in bimestresParaAdicionar)
                             {
-                                var bimestreNovo = new RelatorioNotasEConceitosFinaisBimestreDto(bimestreParaAdicionar.ToString());
+                                var bimestreNovo = new RelatorioNotasEConceitosFinaisBimestreDto($"{bimestreParaAdicionar.ToString()}º BIMESTRE");
 
                                 var componentesParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar && a.Bimestre == bimestreParaAdicionar)
                                                                              .Select(a => a.ComponenteCurricularCodigo)
@@ -104,15 +104,17 @@ namespace SME.SR.Application
                                         var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), notaDosAlunosParaAdicionar.NotaConceito);
                                         componenteNovo.NotaConceitoAlunos.Add(notaConceitoNovo);
                                     }
-
+                                    componenteNovo.NotaConceitoAlunos = componenteNovo.NotaConceitoAlunos.OrderBy(a => a.AlunoNomeCompleto).ToList();
                                     bimestreNovo.ComponentesCurriculares.Add(componenteNovo);
                                 }
-
+                                
                                 anoNovo.Bimestres.Add(bimestreNovo);
                             }
 
+                            anoNovo.Bimestres = anoNovo.Bimestres.OrderBy(a => a.Nome).ToList();
                             ueNova.Anos.Add(anoNovo);
                         }
+                        ueNova.Anos = ueNova.Anos.OrderBy(a => a.Nome).ToList();
                         dreNova.Ues.Add(ueNova);
                     }
                     relatorioNotasEConceitosFinaisDto.Dres.Add(dreNova);
