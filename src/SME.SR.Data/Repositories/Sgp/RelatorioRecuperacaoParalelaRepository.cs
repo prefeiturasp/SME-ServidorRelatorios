@@ -20,9 +20,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<RelatorioRecuperacaoParalelaRetornoQueryDto>> ObterDadosDeSecao(string turmaCodigo, string alunoCodigo, int semestre)
         {
-            try
-            {
-                var query = new StringBuilder(@" select 
+            var query = new StringBuilder(@" select 
 	                            rspa.aluno_codigo as alunoCodigo,
 	                            t.turma_id as turmaCodigo, 
 	                            t.nome as turmaNome,
@@ -50,13 +48,7 @@ namespace SME.SR.Data
 
                 await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
                 var parametros = new { turmaCodigo, alunoCodigo, semestre };
-                return await conexao.QueryAsync<RelatorioRecuperacaoParalelaRetornoQueryDto>(query.ToString(), parametros);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+                return await conexao.QueryAsync<RelatorioRecuperacaoParalelaRetornoQueryDto>(query.ToString(), parametros);          
         }
     }
 }

@@ -239,7 +239,8 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="175" splitType="Stretch">
+		<band height="273" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField textAdjust="StretchHeight">
 				<reportElement mode="Opaque" x="0" y="0" width="555" height="22" backcolor="#F3F3F3" uuid="16e02bde-f672-481c-ae42-5b22c9c2a999">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -301,12 +302,6 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				</textElement>
 				<textFieldExpression><![CDATA[$F{legenda}]]></textFieldExpression>
 			</textField>
-			<break>
-				<reportElement positionType="Float" x="0" y="174" width="554" height="1" uuid="da7003f1-fc3c-49cb-bd7b-47f5056ca029">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-			</break>
 			<subreport>
 				<reportElement positionType="Float" x="0" y="97" width="555" height="15" isRemoveLineWhenBlank="true" uuid="20535fb8-ee9e-46f0-9af0-4e80176b2c60">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -316,6 +311,22 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				</subreportParameter>
 				<subreportExpression><![CDATA["GrupoComponentesComNota.jasper"]]></subreportExpression>
 			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="191" width="555" height="80" uuid="51b18d90-1766-48be-9f19-4b96bf5b62ea">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["Observacoes.jasper"]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement positionType="Float" x="0" y="272" width="554" height="1" uuid="da7003f1-fc3c-49cb-bd7b-47f5056ca029">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</break>
 		</band>
 	</detail>
 	<pageFooter>
