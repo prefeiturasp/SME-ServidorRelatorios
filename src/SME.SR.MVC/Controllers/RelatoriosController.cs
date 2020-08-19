@@ -1331,15 +1331,22 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("notas-conceitos-finais")]
         public IActionResult RelatorioNotasConceitosFinais([FromServices] IMediator mediator)
         {
-            RelatorioNotasEConceitosFinaisDto model = new RelatorioNotasEConceitosFinaisDto("Todas", "Todas", "Todas", "Todos", "Todos", "Ronaldo Alves", "1234567", DateTime.Today.ToString("dd/MM/yyyy"), 2020, 1);
+            RelatorioNotasEConceitosFinaisDto model = new RelatorioNotasEConceitosFinaisDto();
+            model.DreNome = "Todas";
+            model.UeNome = "Todas";
+            model.Ano = "Todos";
+            model.ComponenteCurricular = "Todos";
+            model.Bimestre = "Todos";
+            model.UsuarioNome = "Ronaldo Alves";
+            model.UsuarioRF = "1234564";
 
             var dreDto = new RelatorioNotasEConceitosFinaisDreDto() { Codigo = "10001", Nome = "Dre de Teste" };
 
             var ueDto = new RelatorioNotasEConceitosFinaisUeDto() { Codigo = "321", Nome = "Ue de Teste" };
 
-            var ano = new RelatorioNotasEConceitosFinaisAnoDto() { Nome = "1" };
+            var ano = new RelatorioNotasEConceitosFinaisAnoDto("1");
 
-            var bimestre = new RelatorioNotasEConceitosFinaisBimestreDto() { Nome = "Bimestre 1" };
+            var bimestre = new RelatorioNotasEConceitosFinaisBimestreDto("Bimestre 1");
 
             var componenteCurricular = new RelatorioNotasEConceitosFinaisComponenteCurricularDto() { Nome = "Matemática" };
 
