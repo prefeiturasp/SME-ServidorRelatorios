@@ -13,5 +13,7 @@
         public string DataFim { get; set; }
 
         public string Cargo { get; set; }
+
+        public string DocumentoFormatado => Documento.TrimStart('0');
     }
 }
