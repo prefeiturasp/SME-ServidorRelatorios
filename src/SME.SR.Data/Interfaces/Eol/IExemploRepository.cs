@@ -1,4 +1,5 @@
-﻿using SME.SR.Infra.Dtos;
+﻿using SME.SR.Infra;
+using SME.SR.Infra.Dtos;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data

@@ -168,7 +168,8 @@ namespace SME.SR.Data
 					--ExpedicaoOrgaoEmissor,
 					ExpedicaoUF,
 					ExpedicaoData,
-					PossuiDeficiencia
+					PossuiDeficiencia,
+                    NumeroAlunoChamada
 					FROM #tmpAlunosFrequencia
 					GROUP BY
 					CodigoAluno,
@@ -182,7 +183,8 @@ namespace SME.SR.Data
 					--ExpedicaoOrgaoEmissor,
 					ExpedicaoUF,
 					ExpedicaoData,
-					PossuiDeficiencia";
+					PossuiDeficiencia,
+                    NumeroAlunoChamada";
 
             var parametros = new { CodigosAluno = codigosAlunos };
 

@@ -28,7 +28,6 @@ namespace SME.SR.Data
             {
                 var ciclo = await conexao.QueryFirstOrDefaultAsync<string>(query, new { turmaCodigo });
                 await conexao.CloseAsync();
-
                 return ciclo;
             }
         }
@@ -471,16 +470,152 @@ namespace SME.SR.Data
 
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+        
+                return await conexao.QueryAsync<AlunoTurmaRegularRetornoDto>(query, new { codigoTurma = turmaCodigo });
+     
+            
+        }
+
+        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadeESemestre(string[] uesCodigos, string[] anos, int modalidade, int? semestre)
+        {
             try
             {
-                return await conexao.QueryAsync<AlunoTurmaRegularRetornoDto>(query, new { codigoTurma = turmaCodigo });
+                var query = new StringBuilder(@"select t.turma_id as codigo, t.id, u.id as ueId, t.nome from  tipo_ciclo tc 
+                        inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
+                        inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
+                        inner join ue u on t.ue_id  = u.id
+                        where 1=1 ");
+
+                if(anos != null && anos.Length >0)
+                    query.AppendLine("and tca.ano = ANY(@anos) ");
+               
+                if (uesCodigos != null && uesCodigos.Length > 0)
+                    query.AppendLine("and u.ue_id = ANY(@uesCodigos) ");
+                
+                if (modalidade > 0)
+                    query.AppendLine("and t.modalidade_codigo = @modalidade ");
+
+                if (semestre.HasValue)
+                    query.AppendLine("and t.semestre = @semestre ");
+
+                //query.AppendLine("order by tca.ano ");
+
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidade, semestre = semestre ?? 0 });
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
-            
         }
+
+        public async Task<IEnumerable<Aluno>> ObterDadosAlunosPorTurmaNotasConceitos(string codigoTurma)
+        {
+            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+						DROP TABLE #tmpAlunosFrequencia
+					CREATE TABLE #tmpAlunosFrequencia 
+					(
+						CodigoAluno int,
+						NomeAluno VARCHAR(70),
+						DataNascimento DATETIME,
+						NomeSocialAluno VARCHAR(70),
+						CodigoSituacaoMatricula INT,
+						SituacaoMatricula VARCHAR(40),
+						DataSituacao DATETIME,
+						NumeroAlunoChamada VARCHAR(5),
+						PossuiDeficiencia BIT
+					)
+					INSERT INTO #tmpAlunosFrequencia
+					SELECT aluno.cd_aluno CodigoAluno,
+					   aluno.nm_aluno NomeAluno,
+					   aluno.dt_nascimento_aluno DataNascimento,
+					   aluno.nm_social_aluno NomeSocialAluno,
+					   mte.cd_situacao_aluno CodigoSituacaoMatricula,
+					   CASE
+							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+							WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+							WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+							WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+							ELSE 'Fora do domínio liberado pela PRODAM'
+							END SituacaoMatricula,
+						mte.dt_situacao_aluno DataSituacao,
+						mte.nr_chamada_aluno NumeroAlunoChamada,
+						CASE
+							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
+							ELSE 1
+						END PossuiDeficiencia
+						FROM v_aluno_cotic aluno
+						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte.cd_turma_escola = @CodigoTurma
+						UNION 
+						SELECT  aluno.cd_aluno CodigoAluno,
+						aluno.nm_aluno NomeAluno,
+						aluno.dt_nascimento_aluno DataNascimento,
+						aluno.nm_social_aluno NomeSocialAluno,
+						mte.cd_situacao_aluno CodigoSituacaoMatricula,
+						CASE
+							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+							WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+							WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+							WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+							ELSE 'Fora do domínio liberado pela PRODAM'
+							END SituacaoMatricula,
+						mte.dt_situacao_aluno DataSituacao,
+						mte.nr_chamada_aluno NumeroAlunoChamada,
+						CASE
+							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
+							ELSE 1
+						END PossuiDeficiencia
+						FROM v_aluno_cotic aluno
+						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte.cd_turma_escola = @CodigoTurma
+						and mte.dt_situacao_aluno =                    
+							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+							where
+							mte2.cd_turma_escola = @CodigoTurma
+							and matr2.cd_aluno = matr.cd_aluno
+						)
+						AND NOT EXISTS(
+							SELECT 1 FROM v_matricula_cotic matr3
+						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
+						WHERE mte.cd_matricula = mte3.cd_matricula
+							AND mte.cd_turma_escola = @CodigoTurma) 
+
+					SELECT
+					CodigoAluno,
+					NomeAluno,
+					NomeSocialAluno,
+					DataNascimento,
+					CodigoSituacaoMatricula,
+					SituacaoMatricula,
+					MAX(DataSituacao) DataSituacao ,
+					NumeroAlunoChamada,
+					PossuiDeficiencia
+					FROM #tmpAlunosFrequencia
+					GROUP BY
+					CodigoAluno,
+					NomeAluno,
+					NomeSocialAluno,
+					DataNascimento,
+					CodigoSituacaoMatricula,
+					SituacaoMatricula,
+					NumeroAlunoChamada,
+					PossuiDeficiencia";
+            var parametros = new { CodigoTurma = codigoTurma };
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<Aluno>(query, parametros);
+            }
+        }
+
     }
 }

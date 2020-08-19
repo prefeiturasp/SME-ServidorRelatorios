@@ -1,0 +1,385 @@
+﻿@model SME.SR.Infra.RelatorioNotasEConceitosFinaisDto
+
+@{
+
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 40;
+    int contadorPagina = 0;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            return Quebra();
+
+        }
+        return string.Empty;
+
+    }
+
+    string Quebra()
+    {
+        contadorQuebrarPagina = 0;
+        contadorPagina = contadorPagina + 1;
+
+        var str = MontarCabecalho();
+        return $@"<div style='page-break-before:always'> </div>" + str;
+    }
+
+    string CabecalhoTabelaNotas()
+    {
+        contadorQuebrarPagina++;
+        return $@"
+                  <table class='tabela-alunos'>
+                      <thead>
+                          <th width='5%'>Nº</th>
+                          <th width='10%'>TURMA</th>
+                          <th width='65%'>NOME</th>
+                          <th width='20%'>CONCEITO / NOTA</th>
+                      </thead>
+                  </table>";
+
+    }
+
+    string MontarCorpoInformacoesAluno(List<SME.SR.Infra.RelatorioNotasEConceitosFinaisDoAlunoDto> notas)
+    {
+
+        var str = $@"<table class='tabela-alunos'>
+        <tbody>";
+
+        foreach (var nota in notas)
+        {
+            str += $@"<tr>
+                        <td width='5%'>{nota.AlunoNumeroChamada}</td>
+                        <td width='10%'>{nota.TurmaNome}</td>
+                        <td width='65%'>{nota.AlunoNomeCompleto}</td>
+                        <td width='20%'>{nota.NotaConceito}</td>
+                    </tr>";
+            contadorQuebrarPagina++;
+            var quebra = VerificaQuebra();
+            str += quebra.Length > 0 ? $@"</tbody></table>{quebra}{CabecalhoTabelaNotas()}<table class='tabela-alunos'><tbody>" :"";
+        }
+        str += $@"</tbody></table>";
+
+        return str;
+    }
+
+    string EspacoEmBranco()
+    {
+        contadorQuebrarPagina++;
+        return $@"<table class='tabela-alunos'>
+                      <thead>
+                          <th class='thLimpo' width='100%'></th>
+                      </thead>
+                </table>";
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 6;
+        var str =
+           $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-faltas-frequencia'><p  style='margin-bottom:0' >NOTAS E CONCEITOS</p></div>
+<div class='fonte-14 header-pagina'>
+
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='35%' >DRE: {Model.DreNome}</td>
+<td width='35%' >UE: {Model.UeNome}</td>
+<td width='30%' >ANO: {Model.Ano}</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<table>
+<tbody>
+<tr>
+<td class='campo-bimestre'>BIMESTRE: {Model.Bimestre}</td>
+<td class='campo-componente-curricular'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td class='campo-usuario'>USUÁRIO: {Model.UsuarioNome}</td>
+<td class='campo-rf-data'>RF: {Model.UsuarioRF}</td>
+<td class='campo-rf-data'>DATA: {Model.Data}</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+";
+
+        return str;
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório Notas e Conceitos</title>
+</head>
+<body class="body-rel-faltas-frequencia">
+    <style>
+        tblTopo th, td {
+            padding: 3px 0px 3px 15px;
+            text-align: left;
+        }
+
+        .body-rel-faltas-frequencia {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-faltas-frequencia {
+            text-align: right;
+            font-size: 14.5px;            
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        .campo-dre {
+            width: 25%;
+        }
+
+        .campo-ue {
+            width: 60%
+        }
+
+        .campo-ano {
+            width: 15%
+        }
+
+        .campo-bimestre {
+            width: 20%;
+            border-top: none;
+        }
+
+        .campo-componente-curricular {
+            width: 80%;
+            border-top: none;
+        }      
+
+        .campo-rf-data {
+            width: 25%;
+            border-top: none;
+        }
+        .campo-usuario {
+            width: 50%;
+            border-top: none;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;            
+        }
+
+        .tabela-alunos tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+            .fonte-12 {
+            font-size: 12px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-rel-faltas-frequencia {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            font-size: 14px;
+        }
+    </style>
+    <div>
+
+        @Html.Raw(MontarCabecalho())
+
+        @{
+            foreach (var dre in Model.Dres)
+            {
+                
+                if (contadorQuebrarPagina > 6)
+                {
+                   @Html.Raw(EspacoEmBranco());
+                }
+                if (Model.DreNome == "Todas")
+                {
+                    <table class="tabela-alunos">
+                    <thead>
+
+                        <tr>
+                            <th>@dre.Nome</th>
+                        </tr>
+                    </thead>
+                    </table>
+                    contadorQuebrarPagina++;
+                    VerificaQuebra();
+                    if(Model.UeNome != "Todas")
+                    {
+                        @Html.Raw(EspacoEmBranco());
+                    }
+                }
+                foreach(var ue in dre.Ues)
+                {
+                    if(Model.UeNome == "Todas")
+                    {
+                         <table class="tabela-alunos">
+                            <thead>
+
+                                <tr>
+                                    <th>@ue.Nome</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        contadorQuebrarPagina++;
+                        VerificaQuebra();
+                        if (Model.Ano != "Todos" && Model.Ano != "")
+                        {
+                            @Html.Raw(EspacoEmBranco());
+                        }
+                    }
+                    foreach(var ano in ue.Anos)
+                    {
+                        if(Model.Ano == "Todos" || Model.Ano == "")
+                        {
+                             <table class="tabela-alunos">
+                                <thead>
+
+                                    <tr>
+                                        <th>@ano.Nome</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            contadorQuebrarPagina++;
+                            VerificaQuebra();
+                            if (Model.Bimestre != "Todos")
+                            {
+                                @Html.Raw(EspacoEmBranco());
+                            }
+                        }
+                        foreach(var bimestre in ano.Bimestres)
+                        {
+                            if(Model.Bimestre == "Todos")
+                            {
+                                 <table class="tabela-alunos">
+                                    <thead>
+
+                                        <tr>
+                                            <th>@bimestre.Nome</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                contadorQuebrarPagina++;
+                                VerificaQuebra();
+                                if (Model.ComponenteCurricular != "Todos" && Model.ComponenteCurricular != "")
+                                {
+                                    @Html.Raw(EspacoEmBranco());
+                                }
+                            }
+                            foreach(var componente in bimestre.ComponentesCurriculares)
+                            {
+                                if(Model.ComponenteCurricular == "Todos" || Model.ComponenteCurricular == "")
+                                {
+                                     <table class="tabela-alunos">
+                                        <thead>
+
+                                            <tr>
+                                                <th>@componente.Nome</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    contadorQuebrarPagina++;
+                                    VerificaQuebra();
+                                    @Html.Raw(EspacoEmBranco());
+                                }
+                                if (componente.NotaConceitoAlunos.Count > 0)
+                                {
+                                    @Html.Raw(CabecalhoTabelaNotas())
+                                    VerificaQuebra();
+                                    @Html.Raw(MontarCorpoInformacoesAluno(componente.NotaConceitoAlunos))
+                                }
+                            }
+                        }
+                    }
+                }
+            }    
+            }
+
+    </div>
+</body>
+</html>
