@@ -223,7 +223,7 @@ namespace SME.SR.Application
             else
             {
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
-                relatorioNotasEConceitosFinaisDto.DreNome = dre.Nome;
+                relatorioNotasEConceitosFinaisDto.DreNome = dre.Abreviacao;
             }
 
 
