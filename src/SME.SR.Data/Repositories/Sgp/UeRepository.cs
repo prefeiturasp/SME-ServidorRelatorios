@@ -22,12 +22,29 @@ namespace SME.SR.Data
         {
             var query = @"select Id, ue_id Codigo, Nome, tipo_escola TipoEscola from ue where ue_id = @ueCodigo";
             var parametros = new { UeCodigo };
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryFirstOrDefaultAsync<Ue>(query, parametros);
+        }
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+        public async Task<IEnumerable<UePorDresIdResultDto>> ObterPorDresId(long[] dreIds)
+        {
+            try
             {
-                return await conexao.QueryFirstOrDefaultAsync<Ue>(query, parametros);
+                var query = @"select Id, ue.dre_id as dreId, ue_id Codigo, Nome, tipo_escola TipoEscola from ue ";
+                if (dreIds != null && dreIds.Any())
+                    query = query += "where ue.dre_id = ANY(@dreIds) ";
+
+                var parametros = new { dreIds = dreIds.ToList() };
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+                return await conexao.QueryAsync<UePorDresIdResultDto>(query, parametros);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
+
         public async Task<IEnumerable<Ue>> ObterPorDreSemestreModadalidadeAnoId(long dreId, int? semestre, int modalidadeId, string[] anos)
         {
             var query = new StringBuilder(@"select distinct u.Id, u.ue_id Codigo, u.Nome, u.tipo_escola TipoEscola 
@@ -43,7 +60,7 @@ namespace SME.SR.Data
 
             if (anos != null && anos.Length > 0)
                 query.AppendLine("and t.ano = ANY(@anos)");
-            
+
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
             return await conexao.QueryAsync<Ue>(query.ToString(), new

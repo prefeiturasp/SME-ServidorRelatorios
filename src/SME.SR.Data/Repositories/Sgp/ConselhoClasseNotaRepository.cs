@@ -4,6 +4,8 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -112,7 +114,7 @@ namespace SME.SR.Data
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvc on ccn.conceito_id = cvc.id
                   left join sintese_valores sv on sv.id = fn.sintese_id
-                 where t.turma_id = @turmaCodigo
+                 where t.turma_id = @turmaCodigo 
                 union all 
                 select cca.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
@@ -134,13 +136,129 @@ namespace SME.SR.Data
                   left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvf on fn.conceito_id = cvf.id
-                 where t.turma_id = @turmaCodigo
+                 where t.turma_id = @turmaCodigo 
                 ) x	";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-            {
-                return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, new { turmaCodigo });
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, new { turmaCodigo });
+        }
+
+        public async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterNotasFinaisRelatorioNotasConceitosFinais(string[] dresCodigos, string[] uesCodigos, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos)
+        {
+            var query = new StringBuilder(@"select distinct * from (
+                select fa.aluno_codigo as AlunoCodigo
+                	, pe.bimestre
+                	, fn.disciplina_id as ComponenteCurricularCodigo
+                	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
+                	, coalesce(cvc.valor, cvf.valor) as Conceito
+                	, coalesce(ccn.nota, fn.nota) as Nota
+                    , sv.valor as Sintese
+                    , d.nome as dreNome
+                    , d.dre_id as dreCodigo
+                    , d.abreviacao as dreAbreviacao
+                    , u.ue_id  as ueCodigo
+                    , u.nome  as ueNome
+                    , t.ano
+                    , t.turma_id as turmaCodigo
+                    , t.nome as turmaNome
+                  from fechamento_turma ft
+                  left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
+                 inner join turma t on t.id = ft.turma_id 
+                 inner join ue u on t.ue_id  = u.id 
+                 inner join dre d on u.dre_id = d.id   
+                 inner join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
+                 inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
+                 inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
+                 left join conceito_valores cvf on fn.conceito_id = cvf.id
+                 inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
+                  left join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id
+		                                        and cca.aluno_codigo = fa.aluno_codigo 
+                  left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
+		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
+                  left join conceito_valores cvc on ccn.conceito_id = cvc.id
+                  left join sintese_valores sv on sv.id = fn.sintese_id
+                 where pe.bimestre = ANY(@bimestres) ");
+
+            if (dresCodigos != null && dresCodigos.Length > 0)
+                query.AppendLine(@" and d.dre_id = ANY(@dresCodigos) ");
+
+            if (uesCodigos != null && uesCodigos.Length > 0)
+                query.AppendLine(@" and u.ue_id = any(@uesCodigos) ");            
+
+            if (semestre != null && semestre > 0)
+                query.AppendLine(@" and t.semestre = @semestre ");
+
+            if (modalidade > 0)
+                query.AppendLine(@" and t.modalidade_codigo = @modalidade ");
+
+            if (anos != null && anos.Length > 0)
+                query.AppendLine(@" and t.ano = any(@anos) ");
+
+            if (anoLetivo > 0)
+                query.AppendLine(@" and t.ano_letivo = @anoLetivo ");
+
+            if (componentesCurricularesCodigos != null && componentesCurricularesCodigos.Length > 0)
+                query.AppendLine(@" and ccn.componente_curricular_codigo = ANY(@componentesCurricularesCodigos) ");
+
+            query.AppendLine(@"union all 
+                select cca.aluno_codigo as AlunoCodigo
+                	, pe.bimestre
+                	, ccn.componente_curricular_codigo as ComponenteCurricularCodigo
+                	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
+                	, coalesce(cvc.valor, cvf.valor) as Conceito
+                	, coalesce(ccn.nota, fn.nota) as Nota
+                    , null as Sintese
+                    , d.nome as dreNome
+                    , d.dre_id as dreCodigo
+                    , d.abreviacao as dreAbreviacao
+                    , u.ue_id  as ueCodigo
+                    , u.nome  as ueNome
+                    , t.ano
+                    , t.turma_id as turmaCodigo
+                    , t.nome as turmaNome
+                  from fechamento_turma ft
+                  left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
+                 inner join turma t on t.id = ft.turma_id 
+                 inner join ue u on t.ue_id  = u.id 
+                 inner join dre d on u.dre_id = d.id   
+                 inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
+                 inner join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id
+                 inner join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
+                  left join conceito_valores cvc on ccn.conceito_id = cvc.id
+                  left join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
+                  left join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
+		                                        and cca.aluno_codigo = fa.aluno_codigo 
+                  left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
+		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
+                  left join conceito_valores cvf on fn.conceito_id = cvf.id
+                 where pe.bimestre = ANY(@bimestres) ");
+
+            if (dresCodigos != null && dresCodigos.Length > 0)
+                query.AppendLine(@" and d.dre_id = ANY(@dresCodigos) ");
+
+            if (uesCodigos != null && uesCodigos.Length > 0)
+                query.AppendLine(@" and u.ue_id = any(@uesCodigos) ");
+          
+            if (semestre != null && semestre > 0)
+                query.AppendLine(@" and t.semestre = @semestre ");
+
+            if (modalidade > 0)
+                query.AppendLine(@" and t.modalidade_codigo = @modalidade ");
+
+            if (anos != null && anos.Length > 0)
+                query.AppendLine(@" and t.ano = any(@anos) ");
+
+            if (anoLetivo > 0)
+                query.AppendLine(@" and t.ano_letivo = @anoLetivo ");
+
+            if (componentesCurricularesCodigos != null && componentesCurricularesCodigos.Length > 0)
+                query.AppendLine(@" and ccn.componente_curricular_codigo = ANY(@componentesCurricularesCodigos) ");
+
+            query.AppendLine(@") x ");
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<RetornoNotaConceitoBimestreComponenteDto>(query.ToString(), new { bimestres, dresCodigos, uesCodigos, semestre, modalidade, anos, anoLetivo, componentesCurricularesCodigos });
         }
     }
 }

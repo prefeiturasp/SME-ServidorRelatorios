@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GruposComponentesCurriculares" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5d2933ca-ec6b-486f-ae0f-46d83956946e">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<subDataset name="DatasetGrupos" uuid="5c04085a-ae35-4754-89cb-8a43364e0249">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[]]>
+		</queryString>
+		<field name="nome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+		<field name="areasDeConhecimento" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="areasDeConhecimento"/>
+			<fieldDescription><![CDATA[areasDeConhecimento]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="DatasetComponentesBaseNacional" uuid="ffc3258c-a1e6-4dc4-8106-87c308798709">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[relatorioHistoricoEscolar.baseNacionalComum.areasDeConhecimento]]>
+		</queryString>
+		<field name="nome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="DatasetEnriquecimentoCurricular" uuid="aff23d96-eaee-4a0c-9a32-0d64d25d26f2">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[relatorioHistoricoEscolar.enriquecimentoCurricular]]>
+		</queryString>
+		<field name="nome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+		<field name="notaConceitoPrimeiroAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoPrimeiroAno"/>
+			<fieldDescription><![CDATA[notaConceitoPrimeiroAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoSegundoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoSegundoAno"/>
+			<fieldDescription><![CDATA[notaConceitoSegundoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoTerceiroAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoTerceiroAno"/>
+			<fieldDescription><![CDATA[notaConceitoTerceiroAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoQuartoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoQuartoAno"/>
+			<fieldDescription><![CDATA[notaConceitoQuartoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoQuintoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoQuintoAno"/>
+			<fieldDescription><![CDATA[notaConceitoQuintoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoSextoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoSextoAno"/>
+			<fieldDescription><![CDATA[notaConceitoSextoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoSetimoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoSetimoAno"/>
+			<fieldDescription><![CDATA[notaConceitoSetimoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoOitavoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoOitavoAno"/>
+			<fieldDescription><![CDATA[notaConceitoOitavoAno]]></fieldDescription>
+		</field>
+		<field name="notaConceitoNonoAno" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaConceitoNonoAno"/>
+			<fieldDescription><![CDATA[notaConceitoNonoAno]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString language="jsonql">
+		<![CDATA[relatorioHistoricoEscolar]]>
+	</queryString>
+	<field name="nome" class="java.lang.String">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="nome"/>
+		<fieldDescription><![CDATA[nome]]></fieldDescription>
+	</field>
+	<field name="nomeGrupo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="gruposComponentesCurriculares.nome"/>
+		<fieldDescription><![CDATA[gruposComponentesCurriculares.nome]]></fieldDescription>
+	</field>
+	<field name="notaConceitoPrimeiroAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoPrimeiroAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoPrimeiroAno]]></fieldDescription>
+	</field>
+	<field name="notaConceitoSegundoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoSegundoAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoSegundoAno]]></fieldDescription>
+	</field>
+	<field name="notaConceitoTerceiroAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoTerceiroAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoTerceiroAno]]></fieldDescription>
+	</field>
+	<field name="notaConceitoQuartoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoQaurtoAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoQuartoAno]]></fieldDescription>
+	</field>
+	<field name="notaConceitoQuintoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoQuintoAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoQuintoAno]]></fieldDescription>
+	</field>
+	<field name="notaConceitoSextoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoSextoAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoSextoAno]]></fieldDescription>
+	</field>
+	<field name="notaConceitoSetimoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoSetimoAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoSetimoAno]]></fieldDescription>
+	</field>
+	<field name="notaConceitoOitavoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoOitavoAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoOitavoAno]]></fieldDescription>
+	</field>
+	<field name="notaConceitoNonoAno" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoNonoAno"/>
+		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoNonoAno]]></fieldDescription>
+	</field>
+	<field name="legenda" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="legenda"/>
+		<fieldDescription><![CDATA[legenda]]></fieldDescription>
+	</field>
+	<field name="primeiraEtapaCiclo1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.primeiraEtapaCiclo1"/>
+		<fieldDescription><![CDATA[tipoNota.primeiraEtapaCiclo1]]></fieldDescription>
+	</field>
+	<field name="segundaEtapaCiclo1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.segundaEtapaCiclo1"/>
+		<fieldDescription><![CDATA[tipoNota.segundaEtapaCiclo1]]></fieldDescription>
+	</field>
+	<field name="primeiraEtapaCiclo2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.primeiraEtapaCiclo2"/>
+		<fieldDescription><![CDATA[tipoNota.primeiraEtapaCiclo2]]></fieldDescription>
+	</field>
+	<field name="segundaEtapaCiclo2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.segundaEtapaCiclo2"/>
+		<fieldDescription><![CDATA[tipoNota.segundaEtapaCiclo2]]></fieldDescription>
+	</field>
+	<field name="primeiraEtapaCiclo3" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.primeiraEtapaCiclo3"/>
+		<fieldDescription><![CDATA[tipoNota.primeiraEtapaCiclo3]]></fieldDescription>
+	</field>
+	<field name="segundaEtapaCiclo3" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.segundaEtapaCiclo3"/>
+		<fieldDescription><![CDATA[tipoNota.segundaEtapaCiclo3]]></fieldDescription>
+	</field>
+	<field name="primeiraEtapaCiclo4" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.primeiraEtapaCiclo4"/>
+		<fieldDescription><![CDATA[tipoNota.primeiraEtapaCiclo4]]></fieldDescription>
+	</field>
+	<field name="segundaEtapaCiclo4" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.segundaEtapaCiclo4"/>
+		<fieldDescription><![CDATA[tipoNota.segundaEtapaCiclo4]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="75" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<frame>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="75" uuid="62872e79-6a35-4fc7-a62e-6a3967ff670d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="35" y="0" width="100" height="60" uuid="474eb944-ca05-462b-a966-3adb8ace57b2">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Áreas de
+conhecimento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="135" y="0" width="100" height="60" uuid="de8825b5-5330-4ac3-90d9-955966d87da8">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Componentes
+curriculares]]></text>
+				</staticText>
+				<componentElement>
+					<reportElement positionType="Float" x="35" y="60" width="519" height="15" uuid="4343193c-4686-4994-bd03-3263c86d0d4e">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="DatasetComponentesBaseNacional" uuid="ccc38101-8b21-4116-9388-9c8b60a1dbce">
+							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("baseNacionalComum.areasDeConhecimento")]]></dataSourceExpression>
+						</datasetRun>
+						<jr:listContents height="15" width="519">
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="100" height="15" uuid="f5bb00cb-80d9-49e1-9f2e-c292287f34a0">
+									<property name="com.jaspersoft.studio.unit.height" value="px"/>
+									<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								</reportElement>
+								<box leftPadding="5">
+									<pen lineWidth="0.75"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nome}!= null ? $F{nome} : ""]]></textFieldExpression>
+							</textField>
+							<subreport>
+								<reportElement x="100" y="0" width="310" height="15" uuid="805d560e-727e-49e8-a32b-962d5b460a40"/>
+								<subreportParameter name="REPORT_DATA_SOURCE">
+									<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
+								</subreportParameter>
+								<subreportExpression><![CDATA["ComponentesCurriculares.jasper"]]></subreportExpression>
+							</subreport>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+				<staticText>
+					<reportElement x="235" y="0" width="320" height="15" uuid="3049c7e6-c3f5-4175-b118-c9ab29113a4c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Resultado final]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="235" y="45" width="20" height="15" uuid="177b9bd4-8cde-4136-a556-ef5d29c82b1c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{primeiraEtapaCiclo1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="255" y="45" width="20" height="15" uuid="f42c5731-7614-4fb7-957b-9e95c4baef5f"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="295" y="45" width="20" height="15" uuid="3d029a98-59d0-45e7-8252-ac859c6e2c3d"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="275" y="45" width="20" height="15" uuid="67824ec0-197d-4ae9-bcca-d13e3c39d7d1">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{segundaEtapaCiclo1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="335" y="45" width="20" height="15" uuid="11cbd2e5-ab63-4ba0-be97-1a9cdcfe16e5"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="315" y="45" width="20" height="15" uuid="5e33eb08-0415-42da-8c47-e8996072e315">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{primeiraEtapaCiclo2}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="355" y="45" width="20" height="15" uuid="c4b1e579-001b-4fe9-8144-25efd437d982">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{segundaEtapaCiclo2}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="375" y="45" width="20" height="15" uuid="8c8c1a60-417f-42b0-bbc6-8826b43ffac3"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="395" y="45" width="20" height="15" uuid="a3cec645-ef96-4ac0-a120-f26633ebe133">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{primeiraEtapaCiclo3}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="415" y="45" width="20" height="15" uuid="b5447e77-4362-462e-bf54-76a0ea9473a2"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="435" y="45" width="20" height="15" uuid="d42ba7ef-7c38-4726-9c1a-63298da618f9">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{segundaEtapaCiclo3}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="455" y="45" width="20" height="15" uuid="6e688312-ff0c-4875-890a-03392a84e12c"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="475" y="45" width="20" height="15" uuid="d98f7b4c-c841-4c00-9c4c-0ebd3fed5fb2">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{primeiraEtapaCiclo4}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="495" y="45" width="20" height="15" uuid="1c1a7a8d-d335-4a76-920e-505c80642626"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="515" y="45" width="20" height="15" uuid="d2e8b436-0153-4fe6-9dff-c33db06d9f84">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{segundaEtapaCiclo4}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="535" y="45" width="20" height="15" uuid="3af01ea9-3be0-47c5-87d0-05d9b5bea188"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<subreport>
+					<reportElement x="235" y="15" width="320" height="30" uuid="4ed4df92-7b89-407b-8d90-02103bb777ce">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<subreportParameter name="REPORT_DATA_SOURCE">
+						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["Ciclos.jasper"]]></subreportExpression>
+				</subreport>
+			</frame>
+			<staticText>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="35" height="75" backcolor="#F3F3F3" uuid="148c2d5e-3f8c-4ffe-a78c-79dcbaf91d69"/>
+				<box leftPadding="0">
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BASE NACIONAL COMUM]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>
