@@ -20,7 +20,7 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
 
-            var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
+             var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
             var relatorioNotasEConceitosFinaisDto = new RelatorioNotasEConceitosFinaisDto();
 
             // Dres
@@ -28,8 +28,13 @@ namespace SME.SR.Application
             var dresCodigos = dres.Select(d => d.Codigo).ToArray();
 
             // Ues
-            var ues = await mediator.Send(new ObterPorDresIdQuery(dres.Select(d => d.Id).ToArray()));
-            var uesCodigos = await AplicarFiltroPorUe(filtros, ues.OrderBy(u => u.TipoEscola));
+            string[] uesCodigos;
+            if (!string.IsNullOrEmpty(filtros.UeCodigo))
+            {
+                var ues = await mediator.Send(new ObterPorDresIdQuery(dres.Select(d => d.Id).ToArray()));
+                uesCodigos = await AplicarFiltroPorUe(filtros, ues.OrderBy(u => u.TipoEscola));
+            }
+            else uesCodigos = new string[0];
 
             // Filtrar notas
             var notasPorTurmas = await mediator.Send(new ObterNotasFinaisRelatorioNotasConceitosFinaisQuery(dresCodigos, uesCodigos, filtros.Semestre, (int)filtros.Modalidade, filtros.Anos, filtros.AnoLetivo, filtros.Bimestres.ToArray(), filtros.ComponentesCurriculares.ToArray()));
@@ -172,16 +177,8 @@ namespace SME.SR.Application
         {
             var dres = new List<Dre>();
 
-            if (string.IsNullOrEmpty(filtros.DreCodigo))
-            {
-                var dresRetorno = await mediator.Send(new ObterTodasDresQuery());
-                if (dresRetorno == null || !dresRetorno.Any())
-                    throw new NegocioException("Não foi possível obter as Dres.");
-
-                dres = dresRetorno.ToList();
-            }
-            else
-            {
+            if (!string.IsNullOrEmpty(filtros.DreCodigo))
+            {  
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
                 if (dre == null)
                     throw new NegocioException("Não foi possível obter a Dre.");
