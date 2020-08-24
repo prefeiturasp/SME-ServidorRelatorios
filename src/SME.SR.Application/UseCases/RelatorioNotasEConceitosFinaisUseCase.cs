@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -89,21 +90,23 @@ namespace SME.SR.Application
 
                             foreach (var componenteParaAdicionar in componentesParaAdicionar)
                             {
+                                var componente = componentesCurriculares.FirstOrDefault(a => a.CodDisciplina == componenteParaAdicionar);
+
                                 var componenteNovo = new RelatorioNotasEConceitosFinaisComponenteCurricularDto
                                 {
-                                    Nome = componentesCurriculares.FirstOrDefault(a => a.CodDisciplina == componenteParaAdicionar)?.Disciplina
+                                    Nome = componente?.Disciplina
                                 };
 
                                 var notasDosAlunosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar
                                                                                        && a.Bimestre == bimestreParaAdicionar && a.ComponenteCurricularCodigo == componenteParaAdicionar)
-                                                                                .Select(a => new { a.AlunoCodigo, a.NotaConceito, a.TurmaNome })
+                                                                                .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome })
                                                                                 .Distinct();
 
 
                                 foreach (var notaDosAlunosParaAdicionar in notasDosAlunosParaAdicionar)
                                 {
                                     var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));
-                                    var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), notaDosAlunosParaAdicionar.NotaConceito);
+                                    var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componente.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese);
                                     componenteNovo.NotaConceitoAlunos.Add(notaConceitoNovo);
                                 }
                                 componenteNovo.NotaConceitoAlunos = componenteNovo.NotaConceitoAlunos.OrderBy(a => a.AlunoNomeCompleto).ToList();
@@ -152,6 +155,9 @@ namespace SME.SR.Application
 
             if (filtros.TipoNota == TipoNota.Conceito)
                 return notas.Where(a => a.ConceitoId == filtros.ValorCondicao).ToList();
+
+            if (filtros.TipoNota == TipoNota.Sintese)
+                return notas.Where(a => a.SinteseId == filtros.ValorCondicao).ToList();
 
             switch (filtros.Condicao)
             {

@@ -153,6 +153,11 @@ namespace SME.SR.Data
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
                 	, coalesce(cvc.valor, cvf.valor) as Conceito
                 	, coalesce(ccn.nota, fn.nota) as Nota
+                    , CASE
+							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
+							ELSE 1
+					 END EhNotaConceitoFechamento
+                    , sv.id as SinteseId
                     , sv.valor as Sintese
                     , d.nome as dreNome
                     , d.dre_id as dreCodigo
@@ -208,6 +213,10 @@ namespace SME.SR.Data
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
                 	, coalesce(cvc.valor, cvf.valor) as Conceito
                 	, coalesce(ccn.nota, fn.nota) as Nota
+                    , CASE
+							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
+							ELSE 1
+					 END EhNotaConceitoFechamento
                     , null as Sintese
                     , d.nome as dreNome
                     , d.dre_id as dreCodigo
