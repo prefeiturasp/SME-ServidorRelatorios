@@ -178,15 +178,7 @@ namespace SME.SR.Application
             var dres = new List<Dre>();
 
             if (!string.IsNullOrEmpty(filtros.DreCodigo))
-            {
-            //    var dresRetorno = await mediator.Send(new ObterTodasDresQuery());
-            //    if (dresRetorno == null || !dresRetorno.Any())
-            //        throw new NegocioException("Não foi possível obter as Dres.");
-
-            //    dres = dresRetorno.ToList();
-            //}
-            //else
-            //{
+            {  
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
                 if (dre == null)
                     throw new NegocioException("Não foi possível obter a Dre.");
