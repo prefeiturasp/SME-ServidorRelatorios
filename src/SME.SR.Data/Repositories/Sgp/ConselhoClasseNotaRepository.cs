@@ -199,7 +199,7 @@ namespace SME.SR.Data
                 query.AppendLine(@" and t.ano_letivo = @anoLetivo ");
 
             if (componentesCurricularesCodigos != null && componentesCurricularesCodigos.Length > 0)
-                query.AppendLine(@" and ccn.componente_curricular_codigo = ANY(@componentesCurricularesCodigos) ");
+                query.AppendLine(@" and fn.disciplina_id = ANY(@componentesCurricularesCodigos) ");
 
             query.AppendLine(@"union all 
                 select cca.aluno_codigo as AlunoCodigo
@@ -262,3 +262,4 @@ namespace SME.SR.Data
         }
     }
 }
+    
