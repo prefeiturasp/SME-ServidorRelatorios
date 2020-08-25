@@ -1406,6 +1406,15 @@ namespace SME.SR.MVC.Controllers
                 TotalAusencias = 3,
                 TotalCompensacoes = 1
             };
+            var compensacaoAlunoExemplo2 = new RelatorioCompensacaoAusenciaCompensacaoAlunoDto()
+            {
+                NomeAluno = "Teste",
+                NomeTurma = "1F",
+                NumeroChamada = "01",
+                TotalAulas = 10,
+                TotalAusencias = 3,
+                TotalCompensacoes = 1
+            };
 
             model.DreNome = "DRE 001";
             model.UeNome = "UE 001";
@@ -1455,20 +1464,36 @@ namespace SME.SR.MVC.Controllers
                                                         compensacaoAlunoExemplo,
                                                         compensacaoAlunoExemplo,
                                                         compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
                                                         compensacaoAlunoExemplo
                                                     }
                                                 },
                                                 new RelatorioCompensacaoAusenciaAtividadeDto()
                                                 {
                                                     Nome ="Atividade 02",CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo2,
                                                         compensacaoAlunoExemplo,
                                                         compensacaoAlunoExemplo,
                                                         compensacaoAlunoExemplo,
                                                         compensacaoAlunoExemplo,
                                                         compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo2,
                                                         compensacaoAlunoExemplo,
                                                         compensacaoAlunoExemplo,
-                                                        compensacaoAlunoExemplo
+                                                        compensacaoAlunoExemplo2
                                                     }
                                                 }
                                             }
