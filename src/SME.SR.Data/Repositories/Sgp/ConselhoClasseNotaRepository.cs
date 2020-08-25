@@ -146,6 +146,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterNotasFinaisRelatorioNotasConceitosFinais(string[] dresCodigos, string[] uesCodigos, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos)
         {
+
             var query = new StringBuilder(@"select distinct * from (
                 select fa.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
@@ -189,7 +190,7 @@ namespace SME.SR.Data
                 query.AppendLine(@" and d.dre_id = ANY(@dresCodigos) ");
 
             if (uesCodigos != null && uesCodigos.Length > 0)
-                query.AppendLine(@" and u.ue_id = any(@uesCodigos) ");            
+                query.AppendLine(@" and u.ue_id = any(@uesCodigos) ");
 
             if (semestre != null && semestre > 0)
                 query.AppendLine(@" and t.semestre = @semestre ");
@@ -217,6 +218,7 @@ namespace SME.SR.Data
 							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
 							ELSE 1
 					 END EhNotaConceitoFechamento
+                    , null as SinteseId
                     , null as Sintese
                     , d.nome as dreNome
                     , d.dre_id as dreCodigo
@@ -248,7 +250,7 @@ namespace SME.SR.Data
 
             if (uesCodigos != null && uesCodigos.Length > 0)
                 query.AppendLine(@" and u.ue_id = any(@uesCodigos) ");
-          
+
             if (semestre != null && semestre > 0)
                 query.AppendLine(@" and t.semestre = @semestre ");
 
