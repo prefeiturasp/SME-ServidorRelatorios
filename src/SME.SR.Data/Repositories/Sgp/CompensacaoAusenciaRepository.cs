@@ -18,7 +18,7 @@ namespace SME.SR.Data
         }
         public async Task<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>> ObterPorUeModalidadeSemestreComponenteBimestre(long UeId, int modalidadeId, int? semestre, string turmaCodigo, long[] componetesCurricularesIds, int? bimestre )
         {
-            var query = new StringBuilder(@"select ca.disciplina_id, ca.bimestre, ca.nome as AtividadeNome, 
+            var query = new StringBuilder(@"select ca.disciplina_id, ca.bimestre, ca.nome as AtividadeNome, t.turma_id as turmaCodigo, t.nome as turmaNome,
 	                       t.nome as turmaNome, t.id as turmaId, caa.qtd_faltas_compensadas as faltascompensadas, caa.codigo_aluno as alunoCodigo
                     from compensacao_ausencia ca 
                     inner join turma t on t.id  = ca.turma_id 

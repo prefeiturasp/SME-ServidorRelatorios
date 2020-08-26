@@ -28,11 +28,11 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(long[] codigosAlunos)
+        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos)
         {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
-						DROP TABLE #tmpAlunosFrequencia
-					CREATE TABLE #tmpAlunosFrequencia 
+            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
+						DROP TABLE #tmpAlunosPorCodigo
+					CREATE TABLE #tmpAlunosPorCodigo 
 					(
 						CodigoAluno int,
 						NomeAluno VARCHAR(70),
@@ -51,7 +51,7 @@ namespace SME.SR.Data
 						ExpedicaoData DATETIME,
 						PossuiDeficiencia BIT
 					)
-					INSERT INTO #tmpAlunosFrequencia
+					INSERT INTO #tmpAlunosPorCodigo
 					SELECT aluno.cd_aluno CodigoAluno,
 					   aluno.nm_aluno NomeAluno,
 					   aluno.dt_nascimento_aluno DataNascimento,
@@ -170,7 +170,7 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada
-					FROM #tmpAlunosFrequencia
+					FROM #tmpAlunosPorCodigo
 					GROUP BY
 					CodigoAluno,
 					NomeAluno,

@@ -132,7 +132,7 @@ namespace SME.SR.Application
         private async Task<IEnumerable<AlunoHistoricoEscolar>> ObterAlunos(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
         {
             var alunosCodigos = notasPorTurmas.Select(a => long.Parse(a.AlunoCodigo)).Distinct();
-            var alunos = await mediator.Send(new ObterDadosAlunosHistoricoEscolarQuery() { CodigosAluno = alunosCodigos.ToArray() });
+            var alunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery() { CodigosAluno = alunosCodigos.ToArray() });
             if (alunos == null || !alunos.Any())
                 throw new NegocioException("Não foi possível obter os alunos");
             return alunos;
