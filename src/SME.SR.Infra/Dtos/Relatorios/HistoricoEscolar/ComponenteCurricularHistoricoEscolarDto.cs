@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
-   public class ComponenteCurricularHistoricoEscolarDto
+    public class ComponenteCurricularHistoricoEscolarDto
     {
         [JsonIgnore]
         public string Codigo { get; set; }
@@ -72,5 +72,25 @@ namespace SME.SR.Infra
 
         [JsonProperty("frequenciaNonoAno")]
         public string FrequenciaNonoAno { get; set; }
+
+        [JsonIgnore]
+        public bool PossuiNotaValida
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(NotaConceitoPrimeiroAno) ||
+                    !string.IsNullOrEmpty(NotaConceitoSegundoAno) ||
+                    !string.IsNullOrEmpty(NotaConceitoTerceiroAno) ||
+                    !string.IsNullOrEmpty(NotaConceitoQuartoAno) ||
+                    !string.IsNullOrEmpty(NotaConceitoQuintoAno) ||
+                    !string.IsNullOrEmpty(NotaConceitoSextoAno) ||
+                    !string.IsNullOrEmpty(NotaConceitoSetimoAno) ||
+                    !string.IsNullOrEmpty(NotaConceitoOitavoAno) ||
+                    !string.IsNullOrEmpty(NotaConceitoNonoAno))
+                    return true;
+
+                return false;
+            }
+        }
     }
 }

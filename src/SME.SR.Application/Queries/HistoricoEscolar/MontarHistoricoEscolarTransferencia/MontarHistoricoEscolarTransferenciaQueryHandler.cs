@@ -183,7 +183,7 @@ namespace SME.SR.Application
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos, int bimestre)
         {
             if (turma != null)
-                return frequenciaAlunos.FirstOrDefault(f => f.DisciplinaId == codigoComponente && f.TurmaId == turma.Codigo && f.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? "100";
+                return frequenciaAlunos.FirstOrDefault(f => f.DisciplinaId == codigoComponente && f.TurmaId == turma.Codigo && f.Bimestre == bimestre)?.TotalAusencias.ToString() ?? "0";
             else
                 return null;
         }

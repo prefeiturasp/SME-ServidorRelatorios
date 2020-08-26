@@ -38,8 +38,8 @@ namespace SME.SR.Application
                     var projetos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 4)?.Select(p => p);
                     //
 
-                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null);
-                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo);
+                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key) && !request.Transferencias.Select(t => t.CodigoTurma).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null);
+                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key) && !request.Transferencias.Select(t => t.CodigoTurma).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo);
 
                     var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
                     var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento);
@@ -56,10 +56,10 @@ namespace SME.SR.Application
                         NomeDre = request.Dre.Nome,
                         Cabecalho = request.Cabecalho,
                         InformacoesAluno = aluno.Aluno,
-                        GruposComponentesCurriculares = diversificadosDto,
-                        BaseNacionalComum = baseNacionalDto,
-                        EnriquecimentoCurricular = enriquecimentoDto,
-                        ProjetosAtividadesComplementares = projetosDto,
+                        GruposComponentesCurriculares = diversificadosDto.Any(d => d.PossuiNotaValida) ? diversificadosDto : null,
+                        BaseNacionalComum = baseNacionalDto.ObterComNotaValida,
+                        EnriquecimentoCurricular = enriquecimentoDto.Any(d => d.PossuiNotaValida) ? enriquecimentoDto : null,
+                        ProjetosAtividadesComplementares = projetosDto.Any(d => d.PossuiNotaValida) ? projetosDto : null,
                         Modalidade = agrupamentoTurmas.Key,
                         TipoNota = tiposNotaDto,
                         ParecerConclusivo = pareceresDto,
