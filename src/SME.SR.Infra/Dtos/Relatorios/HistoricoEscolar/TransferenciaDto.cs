@@ -14,6 +14,12 @@ namespace SME.SR.Infra
         [JsonProperty("rodape")]
         public string Rodape { get; set; }
 
+        [JsonIgnore]
+        public string CodigoAluno { get; set; }
+
+        [JsonIgnore]
+        public string CodigoTurma { get; set; }
+
         [JsonProperty("baseNacionalComum")]
         public BaseNacionalComumTransferenciaDto BaseNacionalComum { get; set; }
 

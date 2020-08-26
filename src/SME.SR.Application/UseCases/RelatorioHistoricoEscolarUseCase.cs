@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Math;
 using SME.SR.Infra.Utilitarios;
 
 namespace SME.SR.Application
@@ -38,24 +37,16 @@ namespace SME.SR.Application
                 (alunosTurmasTransferencia == null || !alunosTurmasTransferencia.Any()))
                 throw new NegocioException("Não foi encontrado nenhum histórico de promoção e transferência para o(s) aluno(s) da turma.");
 
-           var todasTurmas = new List<Turma>();
+            var todosAlunosTurmas = new List<AlunoTurmasHistoricoEscolarDto>();
 
             if (alunosTurmas != null && alunosTurmas.Any())
-                todasTurmas.AddRange(alunosTurmas.SelectMany(a => a.Turmas));
+                todosAlunosTurmas.AddRange(alunosTurmas);
 
             if (alunosTurmasTransferencia != null && alunosTurmasTransferencia.Any())
-                todasTurmas.AddRange(alunosTurmasTransferencia.SelectMany(a => a.Turmas));
+                todosAlunosTurmas.AddRange(alunosTurmasTransferencia);
 
-            var todosAlunos = new List<InformacoesAlunoDto>();
-
-            if (alunosTurmas != null && alunosTurmas.Any())
-                todosAlunos.AddRange(alunosTurmas.Select(a => a.Aluno));
-
-            if (alunosTurmasTransferencia != null && alunosTurmasTransferencia.Any())
-                todosAlunos.AddRange(alunosTurmasTransferencia.Select(a => a.Aluno));
-
-            todasTurmas = todasTurmas.DistinctBy(t => t.Codigo).ToList();
-            todosAlunos = todosAlunos.DistinctBy(t => t.Codigo).ToList();
+            var todasTurmas = todosAlunosTurmas.SelectMany(a => a.Turmas).DistinctBy(t => t.Codigo);
+            var todosAlunos = todosAlunosTurmas.Select(a => a.Aluno).DistinctBy(t => t.Codigo);
 
             var turmasCodigo = todasTurmas.Select(a => a.Codigo);
             var alunosCodigo = todosAlunos.Select(a => a.Codigo);
@@ -101,14 +92,13 @@ namespace SME.SR.Application
                 resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
                   frequencias, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray()));
 
-            if (turmasFundMedio != null && turmasFundMedio.Any())
-                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
+            if (filtros.Modalidade != Modalidade.EJA)
+                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,
+                    frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
-
-            if (turmasEja != null && turmasEja.Any())
-                resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, resultadoTransferencia, turmasEja.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
+            else
+                resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,
+                    frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
             if (resultadoFundMedio != null && resultadoFundMedio.Any())

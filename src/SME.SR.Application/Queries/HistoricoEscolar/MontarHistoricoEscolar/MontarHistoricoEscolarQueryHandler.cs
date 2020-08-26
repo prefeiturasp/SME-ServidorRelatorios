@@ -65,15 +65,22 @@ namespace SME.SR.Application
                         ParecerConclusivo = pareceresDto,
                         Legenda = request.Legenda,
                         DadosData = request.DadosData,
-                        ResponsaveisUe = responsaveisUe
+                        ResponsaveisUe = responsaveisUe,
+                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Aluno.Codigo)
                     };
 
                     listaRetorno.Add(historicoDto);
                 }
             }
-            
+
             return await Task.FromResult(listaRetorno);
         }
+
+        private TransferenciaDto ObterDadosTransferencia(IEnumerable<TransferenciaDto> transferencias, string codigoAluno)
+        {
+            return transferencias?.FirstOrDefault(t => t.CodigoAluno == codigoAluno);
+        }
+
         private ResponsaveisUeDto ObterResponsaveisUe(bool imprimirDadosResponsaveis, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario)
         {
             if (imprimirDadosResponsaveis)

@@ -48,6 +48,8 @@ namespace SME.SR.Application
 
                     var transferenciaDto = new TransferenciaDto()
                     {
+                        CodigoAluno = aluno.Aluno.Codigo,
+                        CodigoTurma = aluno.Turmas.FirstOrDefault()?.Codigo,
                         Data = aluno.Aluno.DataSituacaoFormatada,
                         Descricao = aluno.Turmas.FirstOrDefault()?.DescricaoRelatorioTransferencia,
                         Rodape = aluno.Turmas.FirstOrDefault()?.RodapeRelatorioTransferencia,
