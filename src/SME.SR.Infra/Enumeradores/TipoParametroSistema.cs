@@ -3,6 +3,7 @@
     public enum TipoParametroSistema
     {
         CompensacaoAusenciaPercentualRegenciaClasse = 10,
-        CompensacaoAusenciaPercentualFund2 = 11
+        CompensacaoAusenciaPercentualFund2 = 11,
+        MunicipioAtendimento = 25
     }
 }

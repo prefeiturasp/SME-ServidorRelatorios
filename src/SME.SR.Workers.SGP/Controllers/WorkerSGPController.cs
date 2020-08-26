@@ -109,5 +109,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioRecuperacaoParalelaUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/notasconceitosfinais")]
+        [Action("relatorios/notasconceitosfinais", typeof(IRelatorioNotasEConceitosFinaisUseCase))]
+        public async Task<bool> RelatorioNotasEConceitosFinais([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioNotasEConceitosFinaisUseCase relatorioNotasEConceitosFinaisUseCase)
+        {
+            await relatorioNotasEConceitosFinaisUseCase.Executar(request);
+            return true;
+        }
     }
 }

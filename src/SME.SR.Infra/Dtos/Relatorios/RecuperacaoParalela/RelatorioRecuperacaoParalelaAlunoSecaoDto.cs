@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SME.SR.Infra.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,21 +10,13 @@ namespace SME.SR.Infra
         public RelatorioRecuperacaoParalelaAlunoSecaoDto(string secaoNome, string secaoValor)
         {
             SecaoNome = secaoNome;
-            SecaoValor = secaoValor;
+            SecaoValor = secaoValor.LimparFormatacaoHtml();
         }
 
         public string SecaoNome { get; set; }
         public string SecaoValor { get; set; }
 
-        public string[] SecaoValorArray { get { return SplitInParts(LimparString(SecaoValor)).ToArray(); } }
-
-        public static string LimparString(string str)
-        {
-            str = str.ToLower().Replace("<br>", " ");
-            str = str.ToLower().Replace("<p>", "");
-            str = str.ToLower().Replace("</p>", "");
-            return str;
-        }
+        public string[] SecaoValorArray { get { return SplitInParts(SecaoValor).ToArray(); } }
 
         public IEnumerable<string> SplitInParts(string s)
         {

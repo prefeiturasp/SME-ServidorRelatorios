@@ -1,4 +1,4 @@
-﻿namespace SME.SR.Infra.Dtos
+﻿namespace SME.SR.Infra
 {
     public class UeDto
     {
