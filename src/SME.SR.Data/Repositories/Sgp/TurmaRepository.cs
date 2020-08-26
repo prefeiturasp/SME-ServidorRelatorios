@@ -115,12 +115,14 @@ namespace SME.SR.Data
         public async Task<Turma> ObterPorCodigo(string codigoTurma)
         {
             var query = @"select t.turma_id Codigo, t.nome, 
-			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, t.etapa_eja EtapaEJA,
+			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA,
 			                ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
 			                dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
 			                from  turma t
 			                inner join ue on ue.id = t.ue_id 
 			                inner join dre on ue.dre_id = dre.id 
+                            left join tipo_ciclo_ano tca on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
+                            left join tipo_ciclo tc on tca.tipo_ciclo_id = tc.id
 			                where t.turma_id = @codigoTurma";
 
             var parametros = new { CodigoTurma = codigoTurma };
@@ -617,5 +619,61 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosSemParecerConclusivo(long[] codigoAlunos)
+        {
+            var query = @"select distinct 
+	                        t.turma_id as TurmaCodigo,
+                            t.modalidade_codigo Modalidade,
+	                        cca.aluno_codigo as AlunoCodigo,
+	                        t.ano,
+                            t.etapa_eja as EtapaEJA,
+                            tc.descricao as Ciclo
+                        from
+	                        fechamento_turma ft
+                        inner join conselho_classe cc on
+	                        cc.fechamento_turma_id = ft.id
+                        inner join conselho_classe_aluno cca on
+	                        cca.conselho_classe_id = cc.id
+	                     inner join turma t 
+	                     	on ft.turma_id = t.id
+                         left join tipo_ciclo_ano tca on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
+                         left join tipo_ciclo tc on tca.tipo_ciclo_id = tc.id
+                        where
+	                        cca.aluno_codigo = any(@codigoAlunos) 
+	                        and cca.conselho_classe_parecer_id is null
+                            and not t.historica    ";
+
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            var codigos = codigoAlunos.Select(a => a.ToString()).ToArray();
+
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigos });
+        }
+
+        public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaSemParecerConclusivo(long turmaCodigo)
+        {
+            var query = @"select distinct 
+	                        ft.turma_id as TurmaCodigo,
+	                        cca.aluno_codigo as AlunoCodigo,
+	                        t.ano
+                        from
+	                        fechamento_turma ft
+                        inner join conselho_classe cc on
+	                        cc.fechamento_turma_id = ft.id
+                        inner join conselho_classe_aluno cca on
+	                        cca.conselho_classe_id = cc.id
+	                     inner join turma t 
+	                     	on ft.turma_id = t.id
+                        where
+	                       t.turma_id = @turmaCodigo
+	                       and cca.conselho_classe_parecer_id is null
+                           and not t.historica     ";
+
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { turmaCodigo = turmaCodigo.ToString()});
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Math;
+using SME.SR.Infra.Utilitarios;
 
 namespace SME.SR.Application
 {
@@ -29,22 +30,35 @@ namespace SME.SR.Application
 
             var cabecalho = await MontarCabecalho(filtros);
 
+            var alunosTurmasTransferencia = await MontarAlunosTurmasTransferencia(filtros);
+
             var alunosTurmas = await MontarAlunosTurmas(filtros);
 
-            var turmas = new List<Turma>();
+            if ((alunosTurmas == null || !alunosTurmas.Any()) &&
+                (alunosTurmasTransferencia == null || !alunosTurmasTransferencia.Any()))
+                throw new NegocioException("Não foi encontrado nenhum histórico de promoção e transferência para o(s) aluno(s) da turma.");
 
-            foreach (var aluno in alunosTurmas)
-            {
-                foreach (var turma in aluno.Turmas)
-                {
-                    if (!turmas.Any(a => a.Codigo == turma.Codigo))
-                        turmas.Add(turma);
-                }
-            }
+           var todasTurmas = new List<Turma>();
 
-            var alunosCodigo = alunosTurmas.Select(a => a.Aluno.Codigo);
+            if (alunosTurmas != null && alunosTurmas.Any())
+                todasTurmas.AddRange(alunosTurmas.SelectMany(a => a.Turmas));
 
-            var turmasCodigo = turmas.Select(a => a.Codigo).Distinct();
+            if (alunosTurmasTransferencia != null && alunosTurmasTransferencia.Any())
+                todasTurmas.AddRange(alunosTurmasTransferencia.SelectMany(a => a.Turmas));
+
+            var todosAlunos = new List<InformacoesAlunoDto>();
+
+            if (alunosTurmas != null && alunosTurmas.Any())
+                todosAlunos.AddRange(alunosTurmas.Select(a => a.Aluno));
+
+            if (alunosTurmasTransferencia != null && alunosTurmasTransferencia.Any())
+                todosAlunos.AddRange(alunosTurmasTransferencia.Select(a => a.Aluno));
+
+            todasTurmas = todasTurmas.DistinctBy(t => t.Codigo).ToList();
+            todosAlunos = todosAlunos.DistinctBy(t => t.Codigo).ToList();
+
+            var turmasCodigo = todasTurmas.Select(a => a.Codigo);
+            var alunosCodigo = todosAlunos.Select(a => a.Codigo);
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
 
@@ -73,20 +87,28 @@ namespace SME.SR.Application
                 dadosSecretario = await ObterFuncionarioUePorCargo(filtros.UeCodigo, (int)Cargo.Secretario);
             }
 
-            var turmasEja = turmas.Where(t => t.ModalidadeCodigo == Modalidade.EJA);
-            var turmasFundMedio = turmas.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
+            var turmasHistorico = alunosTurmas.SelectMany(t => t.Turmas).DistinctBy(t => t.Codigo);
+            var turmasTransferencia = alunosTurmasTransferencia.SelectMany(t => t.Turmas).DistinctBy(t => t.Codigo);
+
+            var turmasEja = turmasHistorico.Where(t => t.ModalidadeCodigo == Modalidade.EJA);
+            var turmasFundMedio = turmasHistorico.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
 
             IEnumerable<HistoricoEscolarDTO> resultadoFundMedio = null, resultadoFinalFundamental = null, resultadoFinalMedio = null;
             IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null;
+            IEnumerable<TransferenciaDto> resultadoTransferencia = null;
+
+            if (turmasTransferencia != null && turmasTransferencia.Any())
+                resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
+                  frequencias, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray()));
 
             if (turmasFundMedio != null && turmasFundMedio.Any())
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, turmasFundMedio.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
+                    frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
             if (turmasEja != null && turmasEja.Any())
                 resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, alunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, turmasEja.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
+                    frequencias, tipoNotas, resultadoTransferencia, turmasEja.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
             if (resultadoFundMedio != null && resultadoFundMedio.Any())
@@ -121,6 +143,24 @@ namespace SME.SR.Application
             }
             else
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+        }
+
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        {
+            return await mediator.Send(new ObterNotasRelatorioBoletimQuery()
+            {
+                CodigosAlunos = alunosCodigo,
+                CodigosTurma = turmasCodigo
+            });
+        }
+
+        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        {
+            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery()
+            {
+                CodigosAluno = alunosCodigo,
+                CodigosTurma = turmasCodigo
+            });
         }
 
         private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
@@ -188,6 +228,19 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterAlunosETurmasHistoricoEscolarQuery(turmaCodigo, alunosCodigos));
         }
 
+        private async Task<IEnumerable<AlunoTurmasHistoricoEscolarDto>> MontarAlunosTurmasTransferencia(FiltroHistoricoEscolarDto filtros)
+        {
+
+            long[] alunosCodigos;
+            if (!filtros.AlunosCodigo.Any(a => a is null))
+                alunosCodigos = filtros.AlunosCodigo.Select(long.Parse).ToArray();
+            else alunosCodigos = new long[0];
+
+            var turmaCodigo = string.IsNullOrEmpty(filtros.TurmaCodigo) ? 0 : long.Parse(filtros.TurmaCodigo);
+
+            return await mediator.Send(new ObterAlunosETurmasHistoricoEscolarTransferenciaQuery(turmaCodigo, alunosCodigos));
+        }
+
         private async Task<CabecalhoDto> MontarCabecalho(FiltroHistoricoEscolarDto filtros)
         {
             var enderecosEAtos = await mediator.Send(new ObterEnderecoEAtosDaUeQuery(filtros.UeCodigo));
@@ -220,24 +273,6 @@ namespace SME.SR.Application
                 CodigoUe = codigoUe,
                 Modalidade = modalidade,
                 Usuario = usuario
-            });
-        }
-
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] turmasCodigo, string[] alunosCodigo)
-        {
-            return await mediator.Send(new ObterNotasRelatorioBoletimQuery()
-            {
-                CodigosAlunos = alunosCodigo,
-                CodigosTurma = turmasCodigo
-            });
-        }
-
-        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] turmasCodigo, string[] alunosCodigo)
-        {
-            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery()
-            {
-                CodigosAluno = alunosCodigo,
-                CodigosTurma = turmasCodigo
             });
         }
 
