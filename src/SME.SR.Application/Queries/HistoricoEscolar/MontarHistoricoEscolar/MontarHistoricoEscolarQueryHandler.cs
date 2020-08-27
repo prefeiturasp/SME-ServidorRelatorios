@@ -38,8 +38,8 @@ namespace SME.SR.Application
                     var projetos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 4)?.Select(p => p);
                     //
 
-                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w =>  w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null && !request.Transferencias.Any(t => t.CodigoAluno == aluno.Aluno.Codigo && w.CodigoTurma == t.CodigoTurma));
-                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo && !request.Transferencias.Any(t => t.CodigoAluno == aluno.Aluno.Codigo && a.TurmaId == t.CodigoTurma));
+                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w =>  w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Aluno.Codigo && w.CodigoTurma == t.CodigoTurma)));
+                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Aluno.Codigo && a.TurmaId == t.CodigoTurma)));
 
                     var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
                     var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento);
