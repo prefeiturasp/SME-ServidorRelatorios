@@ -26,39 +26,39 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 7;
         var str =
            $@"<div>
-    <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-    </div>
-    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-    <div class='titulo-relatorio'>COMPENSAÇÃO DE AUSÊNCIA</div>
-    <div class='fonte-14 header-pagina'>
-    <table class='tblTopo'>
-    <tbody>
-    <tr>
-    <td  width='40%' class='sem-border-bottom'>DRE: {Model.DreNome}</td>
-    <td width='40%' class='sem-border-bottom'>UE: {Model.UeNome}</td>
-    <td  width='20%' class='sem-border-bottom'>TURMA: {Model.TurmaNome}</td>
-    </tr>
-    </tbody>
-    </table>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'>COMPENSAÇÃO DE AUSÊNCIA</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='40%' class='sem-border-bottom'>DRE: {Model.DreNome}</td>
+<td width='40%' class='sem-border-bottom'>UE: {Model.UeNome}</td>
+<td  width='20%' class='sem-border-bottom'>TURMA: {Model.TurmaNome}</td>
+</tr>
+</tbody>
+</table>
 
-    <table>
-    <tbody>
-    <tr>
-    <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
-    <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Bimestre}</td>
-    </tr>
-    </tbody>
-    </table>
+<table>
+<tbody>
+<tr>
+<td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
+<td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Bimestre}</td>
+</tr>
+</tbody>
+</table>
 
-    <table>
-    <tbody>
-    <tr>
-    <td width='80%'>MODALIDADE: {Model.Modalidade}</td>
-    <td width='20%'>DATA: {Model.Data}</td>
-    </tbody>
-    </table>
-    </div>
-    ";
+<table>
+<tbody>
+<tr>
+<td width='80%'>MODALIDADE: {Model.Modalidade}</td>
+<td width='20%'>DATA: {Model.Data}</td>
+</tbody>
+</table>
+</div>
+";
 
         return str;
     }
@@ -66,31 +66,31 @@
     string MontarCabecalhoCompensacoes()
     {
         var str = $@"
-          <table class='tabela-alunos'>
-              <thead>
-                  <th class='sem-border-bottom' width='5%'>Nº</th>
-                  <th class='sem-border-bottom' width='60%'>NOME</th>
-                  <th class='sem-border-bottom' width='25%'>AUSÊNCIAS COMPENSADAS</th>
-                  <th class='sem-border-bottom' width='10%'>%FREQ.</th>
-              </thead>
-          </table>";
+<table class='tabela-alunos'>
+<thead>
+  <th class='sem-border-bottom' width='5%'>Nº</th>
+  <th class='sem-border-bottom' width='60%'>NOME</th>
+  <th class='sem-border-bottom' width='25%'>AUSÊNCIAS COMPENSADAS</th>
+  <th class='sem-border-bottom' width='10%'>%FREQ.</th>
+</thead>
+</table>";
         return str;
     }
 
     string MontarTabelaCompensacoes(List<SME.SR.Infra.RelatorioCompensacaoAusenciaCompensacaoAlunoDto> compensacoes)
     {
         var str = $@"<table class='tabela-alunos' style='border-bottom:none;'>
-                <tbody>";
+<tbody>";
         for (int i = 0; i < compensacoes.Count; i++)
         {
             var compensacao = compensacoes[i];
             str += $@"
-           <tr>
-               <td width='5%'>{compensacao.NumeroChamada}</th>
-               <td width='60%'>{compensacao.NomeAluno}</th>
-               <td width='25%'>{compensacao.TotalCompensacoes}</th>
-               <td width='10%'>{compensacao.Frequencia}</th>
-           </tr>";
+<tr>
+<td width='5%' style='text-align:left'>{compensacao.NumeroChamada}</th>
+<td width='60%' style='text-align:left'>{compensacao.NomeAluno}</th>
+<td width='25%' style='text-align:center'>{compensacao.TotalCompensacoes}</th>
+<td width='10%' style='text-align:center'>{compensacao.Frequencia}</th>
+</tr>";
             contadorQuebrarPagina++;
             var quebra = VerificaQuebra();
             var novaPagina = quebra + (i < compensacoes.Count - 1 ? MontarCabecalhoCompensacoes() : "");
@@ -172,8 +172,7 @@
         }
 
         td {
-            border: 1px solid #42474a;
-            text-align: center;
+            border: 1px solid #42474a;            
         }
 
         .tabela-alunos tr {
@@ -263,7 +262,7 @@
                             {
                                 var componente = bimestre.Componentes[c];
 
-                                if (Model.ComponenteCurricular == "Todos" || Model.ComponenteCurricular == "")
+                                if (string.IsNullOrEmpty(Model.ComponenteCurricular) || Model.ComponenteCurricular == "Todos")
                                 {
                                     <table class="tabela-alunos">
                                         <thead>
@@ -275,35 +274,37 @@
 
                                     contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                     @Html.Raw(VerificaQuebra())
-                                    foreach (var atividade in componente.Atividades)
+
+                                }
+
+                                foreach (var atividade in componente.Atividades)
+                                {
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th>@atividade.Nome</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+
+                                    contadorQuebrarPagina++;
+                                    @Html.Raw(VerificaQuebra())
+                                    if (atividade.CompensacoesAluno.Count() > 0)
                                     {
-                                        <table class="tabela-alunos">
-                                            <thead>
-                                                <tr>
-                                                    <th>@atividade.Nome</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-
+                                        @Html.Raw(MontarCabecalhoCompensacoes())
                                         contadorQuebrarPagina++;
-                                        @Html.Raw(VerificaQuebra())
-                                        if (atividade.CompensacoesAluno.Count() > 0)
-                                        {
-                                            @Html.Raw(MontarCabecalhoCompensacoes())
-                                            contadorQuebrarPagina++;
-                                        }
-                                        @Html.Raw(MontarTabelaCompensacoes(atividade.CompensacoesAluno))
-
-                                        <table class="tabela-alunos" style="border:none!important;">
-                                            <thead>
-                                                <tr>
-                                                    <th class="thLimpo"></th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                        contadorQuebrarPagina++;
-
                                     }
+                                    @Html.Raw(MontarTabelaCompensacoes(atividade.CompensacoesAluno))
+
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th class="thLimpo"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    contadorQuebrarPagina++;
+
                                 }
                             }
                         }
