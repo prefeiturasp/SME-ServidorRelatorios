@@ -56,10 +56,7 @@ namespace SME.SR.Application
                         NomeDre = request.Dre.Nome,
                         Cabecalho = request.Cabecalho,
                         InformacoesAluno = aluno.Aluno,
-                        GruposComponentesCurriculares = diversificadosDto.Any(d => d.PossuiNotaValida) ? diversificadosDto : null,
-                        BaseNacionalComum = baseNacionalDto.ObterComNotaValida,
-                        EnriquecimentoCurricular = enriquecimentoDto.Any(d => d.PossuiNotaValida) ? enriquecimentoDto : null,
-                        ProjetosAtividadesComplementares = projetosDto.Any(d => d.PossuiNotaValida) ? projetosDto : null,
+                        DadosHistorico = ObterDadosHistorico(diversificadosDto, baseNacionalDto, enriquecimentoDto, projetosDto),
                         Modalidade = agrupamentoTurmas.Key,
                         TipoNota = tiposNotaDto,
                         ParecerConclusivo = pareceresDto,
@@ -74,6 +71,21 @@ namespace SME.SR.Application
             }
 
             return await Task.FromResult(listaRetorno);
+        }
+
+        private HistoricoEscolarEJANotasFrequenciaDto ObterDadosHistorico(List<GruposComponentesCurricularesEJADto> diversificadosDto, BaseNacionalComumEJADto baseNacionalDto, List<ComponenteCurricularHistoricoEscolarEJADto> enriquecimentoDto, List<ComponenteCurricularHistoricoEscolarEJADto> projetosDto)
+        {
+            if (!diversificadosDto.Any(d => d.PossuiNotaValida) && baseNacionalDto.ObterComNotaValida == null &&
+               !enriquecimentoDto.Any(d => d.PossuiNotaValida) && !projetosDto.Any(d => d.PossuiNotaValida))
+                return null;
+            else
+                return new HistoricoEscolarEJANotasFrequenciaDto()
+                {
+                    GruposComponentesCurriculares = diversificadosDto,
+                    BaseNacionalComum = baseNacionalDto,
+                    EnriquecimentoCurricular = enriquecimentoDto,
+                    ProjetosAtividadesComplementares = projetosDto
+                };
         }
 
         private TransferenciaDto ObterDadosTransferencia(IEnumerable<TransferenciaDto> transferencias, string codigoAluno)

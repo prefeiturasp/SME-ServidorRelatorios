@@ -20,6 +20,9 @@ namespace SME.SR.Infra
         [JsonIgnore]
         public string CodigoTurma { get; set; }
 
+        [JsonProperty("tipoNota")]
+        public string TipoNota { get; set; }
+
         [JsonProperty("baseNacionalComum")]
         public BaseNacionalComumTransferenciaDto BaseNacionalComum { get; set; }
 

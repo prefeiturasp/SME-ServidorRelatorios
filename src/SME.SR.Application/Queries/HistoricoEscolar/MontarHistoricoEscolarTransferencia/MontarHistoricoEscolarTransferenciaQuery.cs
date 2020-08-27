@@ -15,12 +15,14 @@ namespace SME.SR.Application
                                             IEnumerable<MediaFrequencia> mediasFrequencia,
                                             IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
+                                            IEnumerable<TipoNotaCicloAno> tiposNota,
                                             string[] turmasCodigo)
         {
             AreasConhecimento = areasConhecimento;
             ComponentesCurricularesTurmas = componentesCurricularesTurmas;
             AlunosTurmas = alunosTurmas;
             TurmasCodigo = turmasCodigo;
+            TiposNota = tiposNota;
             Notas = notas;
             Frequencias = frequencias;
             MediasFrequencia = mediasFrequencia;
@@ -32,6 +34,7 @@ namespace SME.SR.Application
         public IEnumerable<AreaDoConhecimento> AreasConhecimento { get; set; }
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }
+        public IEnumerable<TipoNotaCicloAno> TiposNota { get; set; }
         public string[] TurmasCodigo { get; set; }
     }
 }

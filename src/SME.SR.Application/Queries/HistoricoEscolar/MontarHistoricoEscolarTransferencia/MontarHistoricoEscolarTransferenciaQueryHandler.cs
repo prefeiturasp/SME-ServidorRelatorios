@@ -46,13 +46,16 @@ namespace SME.SR.Application
                     var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
                     var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
 
+                    var turma = aluno.Turmas.FirstOrDefault();
+                    var tiposNotaDto = MapearTiposNota(agrupamentoTurmas.Key, request.TiposNota, turma);
+
                     var transferenciaDto = new TransferenciaDto()
                     {
                         CodigoAluno = aluno.Aluno.Codigo,
-                        CodigoTurma = aluno.Turmas.FirstOrDefault()?.Codigo,
+                        CodigoTurma = turma?.Codigo,
                         Data = aluno.Aluno.DataSituacaoFormatada,
-                        Descricao = aluno.Turmas.FirstOrDefault()?.DescricaoRelatorioTransferencia,
-                        Rodape = aluno.Turmas.FirstOrDefault()?.RodapeRelatorioTransferencia,
+                        Descricao = turma?.DescricaoRelatorioTransferencia,
+                        Rodape = turma?.RodapeRelatorioTransferencia,
                         GruposComponentesCurriculares = diversificadosDto,
                         BaseNacionalComum = baseNacionalDto,
                         EnriquecimentoCurricular = enriquecimentoDto,
@@ -64,6 +67,11 @@ namespace SME.SR.Application
             }
 
             return await Task.FromResult(listaRetorno);
+        }
+
+        private string MapearTiposNota(Modalidade modalidade, IEnumerable<TipoNotaCicloAno> tiposNota, Turma turma)
+        {
+            return tiposNota.FirstOrDefault(t => t.Ano.ToString() == turma.Ano && t.Modalidade == modalidade)?.TipoNota;
         }
 
         private List<GruposComponentesCurricularesTransferenciaDto> ObterGruposDiversificado(IEnumerable<Turma> turmas,
