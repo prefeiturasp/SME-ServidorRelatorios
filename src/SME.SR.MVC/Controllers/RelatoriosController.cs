@@ -1399,8 +1399,7 @@ namespace SME.SR.MVC.Controllers
 
             var compensacaoAlunoExemplo = new RelatorioCompensacaoAusenciaCompensacaoAlunoDto()
             {
-                NomeAluno = "Aline Leal",
-                NomeTurma = "1F",
+                NomeAluno = "Aline Leal",                
                 NumeroChamada = "01",
                 TotalAulas = 10,
                 TotalAusencias = 3,
@@ -1409,7 +1408,6 @@ namespace SME.SR.MVC.Controllers
             var compensacaoAlunoExemplo2 = new RelatorioCompensacaoAusenciaCompensacaoAlunoDto()
             {
                 NomeAluno = "Teste",
-                NomeTurma = "1F",
                 NumeroChamada = "01",
                 TotalAulas = 10,
                 TotalAusencias = 3,
@@ -1419,12 +1417,10 @@ namespace SME.SR.MVC.Controllers
             model.DreNome = "DRE 001";
             model.UeNome = "UE 001";
             model.TurmaNome = "";
-            model.Ano = "1987";
             model.Bimestre = "";
             model.ComponenteCurricular = "";
             model.Usuario = "ADMIN";
-            model.Modalidade = "Fundamental";
-            model.Semestre = "1";
+            model.Modalidade = "Fundamental";            
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
             model.Dre = new RelatorioCompensacaoAusenciaDreDto

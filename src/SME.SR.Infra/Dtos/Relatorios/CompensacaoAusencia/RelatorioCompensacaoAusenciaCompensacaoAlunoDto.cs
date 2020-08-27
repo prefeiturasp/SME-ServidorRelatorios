@@ -6,7 +6,6 @@ namespace SME.SR.Infra
     {
         public string NumeroChamada { get; set; }
         public string NomeAluno { get; set; }
-        public string NomeTurma { get; set; }
         public int TotalAusencias { get; set; }
         public int TotalCompensacoes { get; set; }
         public int TotalAulas { get; set; }
