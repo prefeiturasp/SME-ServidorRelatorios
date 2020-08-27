@@ -89,7 +89,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<AlunoHistoricoEscolar>> ObterInformacoesDosAlunos(long[] codigoAlunos)
         {
-            var informacoesDosAlunos = await mediator.Send(new ObterDadosAlunosHistoricoEscolarQuery() { CodigosAluno = codigoAlunos });
+            var informacoesDosAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(codigoAlunos));
             if (!informacoesDosAlunos.Any())
                 throw new NegocioException("Não foi possíve obter os dados dos alunos");
             return informacoesDosAlunos;

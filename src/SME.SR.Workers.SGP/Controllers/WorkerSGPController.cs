@@ -117,5 +117,12 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioNotasEConceitosFinaisUseCase.Executar(request);
             return true;
         }
+        [HttpGet("relatorios/compensacaoausencia")]
+        [Action("relatorios/compensacaoausencia", typeof(IRelatorioCompensacaoAusenciaUseCase))]
+        public async Task<bool> RelatorioCompensacaoAusencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioCompensacaoAusenciaUseCase  relatorioCompensacaoAusenciaUseCase)
+        {
+            await relatorioCompensacaoAusenciaUseCase.Executar(request);
+            return true;
+        }
     }
 }
