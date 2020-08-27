@@ -1392,7 +1392,13 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioCompensacaoAusencia", model);
         }
+        //[HttpGet("impressao-calendrio")]
+        //public IActionResult RelatorioImpressaoCalendario()
+        //{
+        //    RelatorioImpressaoCalendarioDto model = GeraCompensacoesAusencia();
 
+        //    return View("RelatorioCompensacaoAusencia", model);
+        //}
         private static RelatorioCompensacaoAusenciaDto GeraCompensacoesAusencia()
         {
             var model = new RelatorioCompensacaoAusenciaDto();
