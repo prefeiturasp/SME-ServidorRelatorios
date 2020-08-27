@@ -8,7 +8,7 @@
         public Modalidade Modalidade { get; set; }
         public string TurmaCodigo { get; set; }
         public long[] ComponentesCurriculares { get; set; }
-        public int? Bimestre { get; set; }
+        public int Bimestre { get; set; }
         public int? Semestre { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRf { get; set; }

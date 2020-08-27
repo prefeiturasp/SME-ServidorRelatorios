@@ -3,6 +3,7 @@ using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,9 +17,13 @@ namespace SME.SR.Data
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>> ObterPorUeModalidadeSemestreComponenteBimestre(long UeId, int modalidadeId, int? semestre, string turmaCodigo, long[] componetesCurricularesIds, int? bimestre )
+        public async Task<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>> ObterPorUeModalidadeSemestreComponenteBimestre(long UeId, int modalidadeId, int? semestre, string turmaCodigo, long[] componetesCurricularesIds, int bimestre )
         {
-            var query = new StringBuilder(@"select ca.disciplina_id, ca.bimestre, ca.nome as AtividadeNome, t.turma_id as turmaCodigo, t.nome as turmaNome,
+            try
+            {
+
+   
+            var query = new StringBuilder(@"select ca.disciplina_id as disciplinaId, ca.bimestre, ca.nome as AtividadeNome, t.turma_id as turmaCodigo, t.nome as turmaNome,
 	                       t.nome as turmaNome, t.id as turmaId, caa.qtd_faltas_compensadas as faltascompensadas, caa.codigo_aluno as alunoCodigo
                     from compensacao_ausencia ca 
                     inner join turma t on t.id  = ca.turma_id 
@@ -35,19 +40,23 @@ namespace SME.SR.Data
             if (componetesCurricularesIds != null && componetesCurricularesIds.Length > 0)
                 query.AppendLine("and ca.disciplina_id = ANY(@ComponetesCurricularesIds)");
 
-            if (bimestre.HasValue)
+            if (bimestre > 0)
                 query.AppendLine("and ca.bimestre = @bimestre");
 
 
             var parametros = new { semestre = semestre ?? 0,
-                                   bimestre = bimestre ?? 0,
-                                   turmaCodigo, componetesCurricularesIds, modalidadeId, UeId };
+                                   bimestre,
+                                   turmaCodigo,
+                                    componetesCurricularesIds = componetesCurricularesIds.Select(a => a.ToString()).ToList(), modalidadeId, UeId };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-            {
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
                 return await conexao.QueryAsync<RelatorioCompensacaoAusenciaRetornoConsulta>(query.ToString(), parametros);
+            
             }
-
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
     }

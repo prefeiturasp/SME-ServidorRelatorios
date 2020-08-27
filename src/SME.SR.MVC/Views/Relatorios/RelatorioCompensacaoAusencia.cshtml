@@ -26,39 +26,39 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 7;
         var str =
            $@"<div>
-            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-            </div>
-            <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-            <div class='titulo-relatorio'>COMPENSAÇÃO DE AUSÊNCIA</div>
-            <div class='fonte-14 header-pagina'>
-            <table class='tblTopo'>
-            <tbody>
-            <tr>
-            <td  width='40%' class='sem-border-bottom'>DRE: {Model.DreNome}</td>
-            <td width='40%' class='sem-border-bottom'>UE: {Model.UeNome}</td>
-            <td  width='20%' class='sem-border-bottom'>TURMA: {Model.TurmaNome}</td>
-            </tr>
-            </tbody>
-            </table>
+    <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+    </div>
+    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+    <div class='titulo-relatorio'>COMPENSAÇÃO DE AUSÊNCIA</div>
+    <div class='fonte-14 header-pagina'>
+    <table class='tblTopo'>
+    <tbody>
+    <tr>
+    <td  width='40%' class='sem-border-bottom'>DRE: {Model.DreNome}</td>
+    <td width='40%' class='sem-border-bottom'>UE: {Model.UeNome}</td>
+    <td  width='20%' class='sem-border-bottom'>TURMA: {Model.TurmaNome}</td>
+    </tr>
+    </tbody>
+    </table>
 
-            <table>
-            <tbody>
-            <tr>
-            <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
-            <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Bimestre}</td>
-            </tr>
-            </tbody>
-            </table>
+    <table>
+    <tbody>
+    <tr>
+    <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
+    <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Bimestre}</td>
+    </tr>
+    </tbody>
+    </table>
 
-            <table>
-            <tbody>
-            <tr>
-            <td width='80%'>MODALIDADE: {Model.Modalidade}</td>
-            <td width='20%'>DATA: {Model.Data}</td>
-            </tbody>
-            </table>
-            </div>
-            ";
+    <table>
+    <tbody>
+    <tr>
+    <td width='80%'>MODALIDADE: {Model.Modalidade}</td>
+    <td width='20%'>DATA: {Model.Data}</td>
+    </tbody>
+    </table>
+    </div>
+    ";
 
         return str;
     }
@@ -66,34 +66,34 @@
     string MontarCabecalhoCompensacoes()
     {
         var str = $@"
-                  <table class='tabela-alunos'>
-                      <thead>
-                          <th class='sem-border-bottom' width='5%'>Nº</th>
-                          <th class='sem-border-bottom' width='60%'>NOME</th>
-                          <th class='sem-border-bottom' width='25%'>AUSÊNCIAS COMPENSADAS</th>
-                          <th class='sem-border-bottom' width='10%'>%FREQ.</th>
-                      </thead>
-                  </table>";
+          <table class='tabela-alunos'>
+              <thead>
+                  <th class='sem-border-bottom' width='5%'>Nº</th>
+                  <th class='sem-border-bottom' width='60%'>NOME</th>
+                  <th class='sem-border-bottom' width='25%'>AUSÊNCIAS COMPENSADAS</th>
+                  <th class='sem-border-bottom' width='10%'>%FREQ.</th>
+              </thead>
+          </table>";
         return str;
     }
 
     string MontarTabelaCompensacoes(List<SME.SR.Infra.RelatorioCompensacaoAusenciaCompensacaoAlunoDto> compensacoes)
     {
-        var str = $@"<table class='tabela-alunos'>
-                        <tbody>";
-        for(int i = 0; i < compensacoes.Count; i++) 
+        var str = $@"<table class='tabela-alunos' style='border-bottom:none;'>
+                <tbody>";
+        for (int i = 0; i < compensacoes.Count; i++)
         {
             var compensacao = compensacoes[i];
-            str += $@"                  
-                   <tr>
-                       <td width='5%'>{compensacao.NumeroChamada}</th>
-                       <td width='60%'>{compensacao.NomeAluno}</th>
-                       <td width='25%'>{compensacao.TotalCompensacoes}</th>
-                       <td width='10%'>{compensacao.Frequencia}</th>
-                   </tr>";
+            str += $@"
+           <tr>
+               <td width='5%'>{compensacao.NumeroChamada}</th>
+               <td width='60%'>{compensacao.NomeAluno}</th>
+               <td width='25%'>{compensacao.TotalCompensacoes}</th>
+               <td width='10%'>{compensacao.Frequencia}</th>
+           </tr>";
             contadorQuebrarPagina++;
             var quebra = VerificaQuebra();
-            var novaPagina = quebra + (i < compensacoes.Count-1 ? MontarCabecalhoCompensacoes():"");
+            var novaPagina = quebra + (i < compensacoes.Count - 1 ? MontarCabecalhoCompensacoes() : "");
             str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}<table class='tabela-alunos'><tbody>" : "";
         }
         str += $@"</tbody></table>";
@@ -112,6 +112,7 @@
 </head>
 <body class="body-relatorio">
     <style>
+
         tblTopo th, td {
             padding: 3px 0px 3px 15px;
             text-align: left;
@@ -148,9 +149,9 @@
             margin-bottom: 22px;
         }
 
-       .header-pagina td {
-          text-align: left;
-       }
+            .header-pagina td {
+                text-align: left;
+            }
 
         table {
             display: table;
@@ -210,6 +211,7 @@
         .thLimpo {
             background-color: #ffffff;
         }
+
         .sem-border-bottom {
             border-bottom: 0;
         }
@@ -285,12 +287,22 @@
 
                                         contadorQuebrarPagina++;
                                         @Html.Raw(VerificaQuebra())
-                                        if(atividade.CompensacoesAluno.Count() > 0)
+                                        if (atividade.CompensacoesAluno.Count() > 0)
                                         {
-                                            @Html.Raw(MontarCabecalhoCompensacoes()) 
+                                            @Html.Raw(MontarCabecalhoCompensacoes())
                                             contadorQuebrarPagina++;
                                         }
                                         @Html.Raw(MontarTabelaCompensacoes(atividade.CompensacoesAluno))
+
+                                        <table class="tabela-alunos" style="border:none!important;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="thLimpo"></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        contadorQuebrarPagina++;
+
                                     }
                                 }
                             }

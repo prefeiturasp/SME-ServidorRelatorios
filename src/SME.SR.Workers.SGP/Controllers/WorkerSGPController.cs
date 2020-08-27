@@ -118,10 +118,10 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
         [HttpGet("relatorios/compensacaoausencia")]
-        [Action("relatorios/compensacaoausencia", typeof(IRelatorioNotasEConceitosFinaisUseCase))]
-        public async Task<bool> RelatorioCompensacaoAusencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioNotasEConceitosFinaisUseCase relatorioNotasEConceitosFinaisUseCase)
+        [Action("relatorios/compensacaoausencia", typeof(IRelatorioCompensacaoAusenciaUseCase))]
+        public async Task<bool> RelatorioCompensacaoAusencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioCompensacaoAusenciaUseCase  relatorioCompensacaoAusenciaUseCase)
         {
-            await relatorioNotasEConceitosFinaisUseCase.Executar(request);
+            await relatorioCompensacaoAusenciaUseCase.Executar(request);
             return true;
         }
     }

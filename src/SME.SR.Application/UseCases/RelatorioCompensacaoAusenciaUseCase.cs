@@ -1,7 +1,5 @@
 ﻿using MediatR;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +16,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+
             var filtros = request.ObterObjetoFiltro<FiltroRelatorioCompensacaoAusenciaDto>();
 
             var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
@@ -49,44 +48,15 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível obter os componentes curriculares.");
 
 
-            var frequencias = await mediator.Send(new ObterFrequenciaAlunoPorComponentesBimestresETurmasQuery(turmasCodigo, bimestres, componetesCurricularesCodigo));
+            var frequencias = await mediator.Send(new ObterFrequenciaAlunoPorComponentesBimestresETurmasQuery(turmasCodigo, bimestres, componetesCurricularesCodigo));            
 
-            if (frequencias == null || !frequencias.Any())
-                throw new NegocioException("Não foi possível obter as frequências dos alunos.");
+            var result = await mediator.Send(new RelatorioCompensacaoAusenciaObterResultadoFinalQuery(filtros, ue, dre, componentesCurriculares, compensacoes, alunos, frequencias));
 
-            var result = new RelatorioCompensacaoAusenciaDto();
 
-            MontaCabecalho(filtros, ue, dre, compensacoes, componentesCurriculares, result);
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioCompensacaoAusencia", result, request.CodigoCorrelacao));
 
         }
 
-        private static void MontaCabecalho(FiltroRelatorioCompensacaoAusenciaDto filtros, Data.Ue ue, Data.Dre dre, System.Collections.Generic.IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta> compensacoes, System.Collections.Generic.IEnumerable<Data.ComponenteCurricularPorTurma> componentesCurriculares, RelatorioCompensacaoAusenciaDto result)
-        {
-            result.Bimestre = filtros.Bimestre.HasValue ? filtros.Bimestre.ToString() : "Todos";
 
-
-            if (filtros.ComponentesCurriculares != null && filtros.ComponentesCurriculares.Any())
-            {
-                if (filtros.ComponentesCurriculares.Count() == 1)
-                {
-                    var componenteCabecalho = componentesCurriculares.FirstOrDefault(a => a.CodDisciplina == filtros.ComponentesCurriculares.FirstOrDefault())?.Disciplina;
-                }
-                else result.ComponenteCurricular = "";
-
-            }
-            else result.ComponenteCurricular = "Todos";
-
-            result.Data = DateTime.Today.ToString("dd/MM/yyyy");
-            result.Modalidade = filtros.Modalidade.Name();
-            result.RF = filtros.UsuarioRf;
-
-            if (string.IsNullOrEmpty(filtros.TurmaCodigo))
-                result.TurmaNome = "Todas";
-            else result.TurmaNome = $"{filtros.Modalidade.ShortName()} - {compensacoes.FirstOrDefault(a => a.TurmaCodigo == filtros.TurmaCodigo)?.TurmaNome}";
-
-            result.UeNome = ue.Nome.ToString();
-            result.DreNome = dre.Abreviacao;
-            result.Usuario = filtros.UsuarioNome;
-        }
     }
 }
