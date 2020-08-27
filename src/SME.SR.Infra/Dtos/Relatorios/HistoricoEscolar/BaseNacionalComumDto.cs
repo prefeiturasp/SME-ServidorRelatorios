@@ -19,7 +19,7 @@ namespace SME.SR.Infra
                     if (componentes == null || !componentes.Any())
                         return null;
 
-                    if (componentes.Any(c => !string.IsNullOrEmpty(c.NotaConceitoPrimeiroAno) ||
+                    if (componentes.Any(c => c.Nota && (!string.IsNullOrEmpty(c.NotaConceitoPrimeiroAno) ||
                                              !string.IsNullOrEmpty(c.NotaConceitoSegundoAno) ||
                                              !string.IsNullOrEmpty(c.NotaConceitoTerceiroAno) ||
                                              !string.IsNullOrEmpty(c.NotaConceitoQuartoAno) ||
@@ -27,7 +27,7 @@ namespace SME.SR.Infra
                                              !string.IsNullOrEmpty(c.NotaConceitoSextoAno) ||
                                              !string.IsNullOrEmpty(c.NotaConceitoSetimoAno) ||
                                              !string.IsNullOrEmpty(c.NotaConceitoOitavoAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoNonoAno)))
+                                             !string.IsNullOrEmpty(c.NotaConceitoNonoAno))))
                         return this;
                 }
 

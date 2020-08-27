@@ -23,14 +23,14 @@ namespace SME.SR.Infra
                     if (componentes == null || !componentes.Any())
                         return false;
 
-                    if (componentes.Any(c => !string.IsNullOrEmpty(c.NotaConceitoPrimeiraEtapaCiclo1) ||
+                    if (componentes.Any(c => c.Nota && (!string.IsNullOrEmpty(c.NotaConceitoPrimeiraEtapaCiclo1) ||
                                               !string.IsNullOrEmpty(c.NotaConceitoPrimeiraEtapaCiclo2) ||
                                               !string.IsNullOrEmpty(c.NotaConceitoPrimeiraEtapaCiclo3) ||
                                               !string.IsNullOrEmpty(c.NotaConceitoPrimeiraEtapaCiclo4) ||
                                               !string.IsNullOrEmpty(c.NotaConceitoSegundaEtapaCiclo1) ||
                                               !string.IsNullOrEmpty(c.NotaConceitoSegundaEtapaCiclo2) ||
                                               !string.IsNullOrEmpty(c.NotaConceitoSegundaEtapaCiclo3) ||
-                                              !string.IsNullOrEmpty(c.NotaConceitoSegundaEtapaCiclo4)))
+                                              !string.IsNullOrEmpty(c.NotaConceitoSegundaEtapaCiclo4))))
                         return true;
                 }
 

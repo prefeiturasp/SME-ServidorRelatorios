@@ -94,6 +94,11 @@ namespace SME.SR.Application
             var informacoesDosAlunos = await mediator.Send(new ObterDadosAlunosHistoricoEscolarQuery() { CodigosAluno = codigoAlunos });
             if (!informacoesDosAlunos.Any())
                 throw new NegocioException("Não foi possíve obter os dados dos alunos");
+
+            informacoesDosAlunos = informacoesDosAlunos.GroupBy(d => d.CodigoAluno)
+                                  .SelectMany(g => g.OrderByDescending(d => d.DataSituacao)
+                                                    .Take(1));
+
             return informacoesDosAlunos;
         }
 

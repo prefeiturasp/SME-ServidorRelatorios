@@ -191,7 +191,10 @@ namespace SME.SR.Data
 	                     inner join turma t 
 	                     	on ft.turma_id = t.id
                         where
-	                        cca.aluno_codigo = any(@codigoAlunos) 
+                            not ft.excluido 
+                            and not cc.excluido 
+                            and ft.periodo_escolar_id is null
+	                        and cca.aluno_codigo = any(@codigoAlunos) 
 	                        and cca.conselho_classe_parecer_id  = any(@codigoPareceresConclusivos)";
 
 
@@ -206,7 +209,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaParecerConclusivo(long turmaCodigo, long[] codigoPareceresConclusivos)
         {
             var query = @"select distinct 
-	                        ft.turma_id as TurmaCodigo,
+	                        t.turma_id as TurmaCodigo,
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        t.ano
                         from
@@ -217,8 +220,10 @@ namespace SME.SR.Data
 	                        cca.conselho_classe_id = cc.id
 	                     inner join turma t 
 	                     	on ft.turma_id = t.id
-                        where
-	                       t.turma_id = @turmaCodigo
+                        where not ft.excluido 
+                           and not cc.excluido 
+                           and ft.periodo_escolar_id is null
+	                       and t.turma_id = @turmaCodigo
 	                       and cca.conselho_classe_parecer_id = any(@codigoPareceresConclusivos)";
 
 
@@ -638,10 +643,24 @@ namespace SME.SR.Data
 	                     	on ft.turma_id = t.id
                          left join tipo_ciclo_ano tca on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
                          left join tipo_ciclo tc on tca.tipo_ciclo_id = tc.id
-                        where
-	                        cca.aluno_codigo = any(@codigoAlunos) 
+                        where not ft.excluido 
+                            and not cc.excluido 
+                            and ft.periodo_escolar_id is not null
+	                        and cca.aluno_codigo = any(@codigoAlunos) 
 	                        and cca.conselho_classe_parecer_id is null
-                            and not t.historica    ";
+                            and not t.historica  
+                            and not exists (select 1
+                            from
+	                            fechamento_turma ft2
+                            inner join conselho_classe cc2 on
+	                            cc2.fechamento_turma_id = ft2.id
+                            inner join conselho_classe_aluno cca2 on
+	                            cca2.conselho_classe_id = cc2.id
+	                         where not ft2.excluido 
+                                and not cc2.excluido 
+                                and ft2.turma_id = ft.turma_id 
+	                    	    and	cca2.aluno_codigo = cca.aluno_codigo 
+	                    	    and ft2.periodo_escolar_id is null)        ";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
@@ -665,10 +684,24 @@ namespace SME.SR.Data
 	                        cca.conselho_classe_id = cc.id
 	                     inner join turma t 
 	                     	on ft.turma_id = t.id
-                        where
-	                       t.turma_id = @turmaCodigo
-	                       and cca.conselho_classe_parecer_id is null
-                           and not t.historica     ";
+                        where not ft.excluido 
+                            and not cc.excluido 
+                            and ft.periodo_escolar_id is not null
+	                        and t.turma_id = @turmaCodigo
+	                        and cca.conselho_classe_parecer_id is null
+                            and not t.historica   
+                            and not exists (select 1
+                            from
+	                            fechamento_turma ft2
+                            inner join conselho_classe cc2 on
+	                            cc2.fechamento_turma_id = ft2.id
+                            inner join conselho_classe_aluno cca2 on
+	                            cca2.conselho_classe_id = cc2.id
+	                         where not ft2.excluido 
+                                and not cc2.excluido 
+                                and ft2.turma_id = ft.turma_id 
+	                    	    and	cca2.aluno_codigo = cca.aluno_codigo 
+	                    	    and ft2.periodo_escolar_id is null)";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);

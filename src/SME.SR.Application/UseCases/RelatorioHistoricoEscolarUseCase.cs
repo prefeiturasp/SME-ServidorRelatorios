@@ -29,9 +29,9 @@ namespace SME.SR.Application
 
             var cabecalho = await MontarCabecalho(filtros);
 
-            var alunosTurmasTransferencia = await MontarAlunosTurmasTransferencia(filtros);
-
             var alunosTurmas = await MontarAlunosTurmas(filtros);
+
+            var alunosTurmasTransferencia = await MontarAlunosTurmasTransferencia(filtros);
 
             if ((alunosTurmas == null || !alunosTurmas.Any()) &&
                 (alunosTurmasTransferencia == null || !alunosTurmasTransferencia.Any()))

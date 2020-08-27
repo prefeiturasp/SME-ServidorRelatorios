@@ -16,5 +16,9 @@ namespace SME.SR.Infra
 
         [JsonProperty("projetosAtividadesComplementares")]
         public List<ComponenteCurricularHistoricoEscolarEJADto> ProjetosAtividadesComplementares { get; set; }
+        [JsonProperty("tipoNota")]
+        public TiposNotaEJADto TipoNota { get; set; }
+        [JsonProperty("pareceresConclusivos")]
+        public ParecerConclusivoEJADto ParecerConclusivo { get; set; }
     }
 }

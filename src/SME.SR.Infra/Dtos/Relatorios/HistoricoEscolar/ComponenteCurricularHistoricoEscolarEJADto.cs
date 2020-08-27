@@ -73,14 +73,14 @@ namespace SME.SR.Infra
         {
             get
             {
-                if (!string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo1) ||
+                if (Nota && (!string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo1) ||
                     !string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo2) ||
                     !string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo3) ||
                     !string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo4) ||
                     !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo1) ||
                     !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo2) ||
                     !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo3) ||
-                    !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo4))
+                    !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo4)))
                     return true;
 
                 return false;

@@ -13,14 +13,9 @@ namespace SME.SR.Infra
         public InformacoesAlunoDto InformacoesAluno { get; set; }
         [JsonProperty("ciclos")]
         public List<CicloDto> Ciclos { get; set; }
-        [JsonProperty("tipoNota")]
-        public TiposNotaEJADto TipoNota { get; set; }
 
         [JsonProperty("historicoEscolar")]
         public HistoricoEscolarEJANotasFrequenciaDto DadosHistorico { get; set; }
-
-        [JsonProperty("pareceresConclusivos")]
-        public ParecerConclusivoEJADto ParecerConclusivo { get; set; }
 
         [JsonProperty("legenda")]
         public LegendaDto Legenda { get; set; }
