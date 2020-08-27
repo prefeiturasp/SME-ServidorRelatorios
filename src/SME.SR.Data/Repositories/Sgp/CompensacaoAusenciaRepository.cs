@@ -17,13 +17,10 @@ namespace SME.SR.Data
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>> ObterPorUeModalidadeSemestreComponenteBimestre(long UeId, int modalidadeId, int? semestre, 
-            string turmaCodigo, long[] componetesCurricularesIds, int bimestre, int anoLetivo )
+        public async Task<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>> ObterPorUeModalidadeSemestreComponenteBimestre(long UeId, int modalidadeId, int? semestre,
+            string turmaCodigo, long[] componetesCurricularesIds, int bimestre, int anoLetivo)
         {
-            try
-            {
 
-   
             var query = new StringBuilder(@"select ca.disciplina_id as disciplinaId, ca.bimestre, ca.nome as AtividadeNome, t.turma_id as turmaCodigo, t.nome as turmaNome,
 	                       t.nome as turmaNome, t.id as turmaId, caa.qtd_faltas_compensadas as faltascompensadas, caa.codigo_aluno as alunoCodigo
                     from compensacao_ausencia ca 
@@ -45,20 +42,19 @@ namespace SME.SR.Data
                 query.AppendLine("and ca.bimestre = @bimestre");
 
 
-            var parametros = new { semestre = semestre ?? 0,
-                                   bimestre,
-                                   turmaCodigo,
-                                   componetesCurricularesIds = componetesCurricularesIds.Select(a => a.ToString()).ToList(), 
-                                   modalidadeId, UeId, anoLetivo };
-
-                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-                return await conexao.QueryAsync<RelatorioCompensacaoAusenciaRetornoConsulta>(query.ToString(), parametros);
-            
-            }
-            catch (Exception ex)
+            var parametros = new
             {
-                throw ex;
-            }
+                semestre = semestre ?? 0,
+                bimestre,
+                turmaCodigo,
+                componetesCurricularesIds = componetesCurricularesIds.Select(a => a.ToString()).ToList(),
+                modalidadeId,
+                UeId,
+                anoLetivo
+            };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<RelatorioCompensacaoAusenciaRetornoConsulta>(query.ToString(), parametros);
         }
 
     }
