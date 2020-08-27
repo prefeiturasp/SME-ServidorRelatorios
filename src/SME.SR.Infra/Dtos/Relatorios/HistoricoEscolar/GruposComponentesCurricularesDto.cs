@@ -23,15 +23,15 @@ namespace SME.SR.Infra
                     if (componentes == null || !componentes.Any())
                         return false;
 
-                    if (componentes.Any(c => !string.IsNullOrEmpty(c.NotaConceitoPrimeiroAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoSegundoAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoTerceiroAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoQuartoAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoQuintoAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoSextoAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoSetimoAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoOitavoAno) ||
-                                             !string.IsNullOrEmpty(c.NotaConceitoNonoAno)))
+                    if (componentes.Any(c => (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoPrimeiroAno))) ||
+                                             (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoSegundoAno))) ||
+                                             (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoTerceiroAno))) ||
+                                             (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoQuartoAno))) ||
+                                             (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoQuintoAno))) ||
+                                             (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoSextoAno))) ||
+                                             (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoSetimoAno))) ||
+                                             (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoOitavoAno))) ||
+                                             (!c.Nota || (c.Nota && !string.IsNullOrEmpty(c.NotaConceitoNonoAno)))))
                         return true;
                 }
 

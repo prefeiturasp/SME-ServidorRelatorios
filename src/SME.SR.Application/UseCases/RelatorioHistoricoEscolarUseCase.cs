@@ -90,7 +90,7 @@ namespace SME.SR.Application
 
             if (turmasTransferencia != null && turmasTransferencia.Any())
                 resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
-                  frequencias, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray()));
+                  frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray()));
 
             if (filtros.Modalidade != Modalidade.EJA)
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,

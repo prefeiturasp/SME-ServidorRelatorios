@@ -78,15 +78,15 @@ namespace SME.SR.Infra
         {
             get
             {
-                if (!string.IsNullOrEmpty(NotaConceitoPrimeiroAno) ||
-                    !string.IsNullOrEmpty(NotaConceitoSegundoAno) ||
-                    !string.IsNullOrEmpty(NotaConceitoTerceiroAno) ||
-                    !string.IsNullOrEmpty(NotaConceitoQuartoAno) ||
-                    !string.IsNullOrEmpty(NotaConceitoQuintoAno) ||
-                    !string.IsNullOrEmpty(NotaConceitoSextoAno) ||
-                    !string.IsNullOrEmpty(NotaConceitoSetimoAno) ||
-                    !string.IsNullOrEmpty(NotaConceitoOitavoAno) ||
-                    !string.IsNullOrEmpty(NotaConceitoNonoAno))
+                if ((!Nota || (Nota &&  !string.IsNullOrEmpty(NotaConceitoPrimeiroAno))) ||
+                    (!Nota || (Nota && !string.IsNullOrEmpty(NotaConceitoSegundoAno))) ||
+                    (!Nota || (Nota && !string.IsNullOrEmpty(NotaConceitoTerceiroAno))) ||
+                    (!Nota || (Nota && !string.IsNullOrEmpty(NotaConceitoQuartoAno))) ||
+                    (!Nota || (Nota && !string.IsNullOrEmpty(NotaConceitoQuintoAno))) ||
+                    (!Nota || (Nota && !string.IsNullOrEmpty(NotaConceitoSextoAno))) ||
+                    (!Nota || (Nota && !string.IsNullOrEmpty(NotaConceitoSetimoAno))) ||
+                    (!Nota || (Nota && !string.IsNullOrEmpty(NotaConceitoOitavoAno))) ||
+                    (!Nota || (Nota && !string.IsNullOrEmpty(NotaConceitoNonoAno))))
                     return true;
 
                 return false;
