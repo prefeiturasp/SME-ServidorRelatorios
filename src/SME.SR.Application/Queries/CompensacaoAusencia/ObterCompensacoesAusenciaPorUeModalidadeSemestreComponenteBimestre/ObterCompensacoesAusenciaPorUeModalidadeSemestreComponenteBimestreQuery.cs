@@ -8,7 +8,7 @@ namespace SME.SR.Application
 {
     public class ObterCompensacoesAusenciaPorUeModalidadeSemestreComponenteBimestreQuery : IRequest<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>>
     {
-        public ObterCompensacoesAusenciaPorUeModalidadeSemestreComponenteBimestreQuery(long ueId, Modalidade modalidade, int? semestre, string turmaCodigo, long[] componetesCurricularesIds, int bimestre)
+        public ObterCompensacoesAusenciaPorUeModalidadeSemestreComponenteBimestreQuery(long ueId, Modalidade modalidade, int? semestre, string turmaCodigo, long[] componetesCurricularesIds, int bimestre, int anoLetivo)
         {
             UeId = ueId;
             Modalidade = modalidade;
@@ -16,6 +16,7 @@ namespace SME.SR.Application
             TurmaCodigo = turmaCodigo;
             ComponetesCurricularesIds = componetesCurricularesIds;
             Bimestre = bimestre;
+            AnoLetivo = anoLetivo;
         }
 
         public long UeId { get; set; }
@@ -24,5 +25,6 @@ namespace SME.SR.Application
         public string TurmaCodigo { get; set; }
         public long[] ComponetesCurricularesIds { get; set; }
         public int Bimestre { get; set; }
+        public int AnoLetivo { get; set; }
     }
 }

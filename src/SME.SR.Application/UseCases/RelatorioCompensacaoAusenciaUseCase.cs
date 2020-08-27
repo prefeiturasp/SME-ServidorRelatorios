@@ -27,7 +27,12 @@ namespace SME.SR.Application
             if (dre == null)
                 throw new NegocioException("Não foi possível obter a DRE.");
 
-            var compensacoes = await mediator.Send(new ObterCompensacoesAusenciaPorUeModalidadeSemestreComponenteBimestreQuery(ue.Id, filtros.Modalidade, filtros.Semestre, filtros.TurmaCodigo, filtros.ComponentesCurriculares, filtros.Bimestre));
+            var turmaCodigo = "";
+            if (filtros.TurmasCodigo != null && filtros.TurmasCodigo.Length > 0)
+                turmaCodigo = filtros.TurmasCodigo[0];
+
+            
+            var compensacoes = await mediator.Send(new ObterCompensacoesAusenciaPorUeModalidadeSemestreComponenteBimestreQuery(ue.Id, filtros.Modalidade, filtros.Semestre, turmaCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.AnoLetivo));
 
             if (!compensacoes.Any())
                 throw new NegocioException("Não foi possível obter compensações de ausências com os filtros informados.");

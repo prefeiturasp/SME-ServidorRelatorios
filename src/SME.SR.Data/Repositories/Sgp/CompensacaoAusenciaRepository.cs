@@ -17,7 +17,8 @@ namespace SME.SR.Data
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>> ObterPorUeModalidadeSemestreComponenteBimestre(long UeId, int modalidadeId, int? semestre, string turmaCodigo, long[] componetesCurricularesIds, int bimestre )
+        public async Task<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>> ObterPorUeModalidadeSemestreComponenteBimestre(long UeId, int modalidadeId, int? semestre, 
+            string turmaCodigo, long[] componetesCurricularesIds, int bimestre, int anoLetivo )
         {
             try
             {
@@ -29,7 +30,7 @@ namespace SME.SR.Data
                     inner join turma t on t.id  = ca.turma_id 
                     inner join ue u on t.ue_id  = u.id
                     inner join compensacao_ausencia_aluno caa on caa.compensacao_ausencia_id  = ca.id
-                    where u.id = @UeId and t.modalidade_codigo = @modalidadeId ");
+                    where u.id = @UeId and t.modalidade_codigo = @modalidadeId and t.ano_letivo = @anoLetivo ");
 
             if (semestre.HasValue)
                 query.AppendLine("and t.semestre = @semestre");
@@ -47,7 +48,8 @@ namespace SME.SR.Data
             var parametros = new { semestre = semestre ?? 0,
                                    bimestre,
                                    turmaCodigo,
-                                    componetesCurricularesIds = componetesCurricularesIds.Select(a => a.ToString()).ToList(), modalidadeId, UeId };
+                                   componetesCurricularesIds = componetesCurricularesIds.Select(a => a.ToString()).ToList(), 
+                                   modalidadeId, UeId, anoLetivo };
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
                 return await conexao.QueryAsync<RelatorioCompensacaoAusenciaRetornoConsulta>(query.ToString(), parametros);
