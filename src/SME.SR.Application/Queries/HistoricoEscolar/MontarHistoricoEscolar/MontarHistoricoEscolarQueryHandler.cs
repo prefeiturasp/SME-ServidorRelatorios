@@ -40,16 +40,18 @@ namespace SME.SR.Application
                     var projetos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 4)?.Select(p => p);
                     //
 
-                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w =>  w.CodigoAluno == aluno.Key && w.PeriodoEscolar == null && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Key && w.CodigoTurma == t.CodigoTurma)));
-                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Key && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Key && a.TurmaId == t.CodigoTurma)));
+                    var turmasHistorico = agrupamentoTurmas.Where(t => request.Transferencias == null || !request.Transferencias.Any(tt => tt.CodigoTurma == t.Codigo && tt.CodigoAluno == aluno.Key));
 
-                    var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
-                    var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento);
-                    var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
-                    var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
+                    var notasAluno = request.Notas.Where(n => turmasHistorico.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w =>  w.CodigoAluno == aluno.Key && w.PeriodoEscolar == null);
+                    var frequenciasAluno = request.Frequencias.Where(f => turmasHistorico.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Key);
+
+                    var baseNacionalDto = ObterBaseNacionalComum(turmasHistorico, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
+                    var diversificadosDto = ObterGruposDiversificado(turmasHistorico, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento);
+                    var enriquecimentoDto = MontarComponentesNotasFrequencia(turmasHistorico, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
+                    var projetosDto = MontarComponentesNotasFrequencia(turmasHistorico, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
 
                     var tiposNotaDto = MapearTiposNota(agrupamentoTurmas.Key, request.TiposNota);
-                    var pareceresDto = MapearPareceres(agrupamentoTurmas, notasAluno);
+                    var pareceresDto = MapearPareceres(turmasHistorico, notasAluno);
 
                     var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
 
