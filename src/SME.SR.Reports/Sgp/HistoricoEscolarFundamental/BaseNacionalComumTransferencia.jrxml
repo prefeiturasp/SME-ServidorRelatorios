@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HistoricoTransferencia" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8de16628-bd24-4c8b-9795-695beb46f03c">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<subDataset name="DatasetComponentesBaseNacional" uuid="0e3c694d-8388-4890-b013-fe9475129a1e">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[relatorioHistoricoEscolar.baseNacionalComum.areasDeConhecimento]]>
+		</queryString>
+		<field name="nome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="data" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="data"/>
+		<fieldDescription><![CDATA[data]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="descricao"/>
+		<fieldDescription><![CDATA[descricao]]></fieldDescription>
+	</field>
+	<field name="rodape" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="rodape"/>
+		<fieldDescription><![CDATA[rodape]]></fieldDescription>
+	</field>
+	<field name="tipoNota" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota"/>
+		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="97" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="97" uuid="4641d7d5-27a3-451f-a8db-3c7e18153400"/>
+				<textField textAdjust="StretchHeight">
+					<reportElement mode="Opaque" x="0" y="0" width="555" height="22" backcolor="#F3F3F3" uuid="b24c9ace-d5f3-4e7f-ac84-4218c2cbb959">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box leftPadding="10">
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["TRANSFERÊNCIA DO ANO LETIVO ATÉ: "+$F{data}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="35" y="22" width="80" height="60" uuid="804eb90c-4d05-455d-88b6-ad66cd8f3477">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Áreas de
+conhecimento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="115" y="22" width="80" height="60" uuid="33e41d52-dc4a-4f47-ab16-548004f51f35">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Componentes
+curriculares]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="22" width="35" height="75" backcolor="#F3F3F3" uuid="2fc78440-d94f-49bc-92bb-99547be0f242"/>
+					<box leftPadding="0">
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[BASE NACIONAL COMUM]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="195" y="22" width="360" height="25" uuid="b65585fa-5a2c-4625-b8c5-c469eef4a013">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="195" y="47" width="90" height="20" uuid="1de17fb0-e95e-4144-bf3a-587b76e52c71">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[1º Bimestre]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="285" y="47" width="90" height="20" uuid="cd4bd2b4-736d-4010-beb3-b7e17f3efe24">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[2º Bimestre]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="375" y="47" width="90" height="20" uuid="82fc0dc9-fbfc-4172-997a-bd845d315b4b">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[3º Bimestre]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="465" y="47" width="90" height="20" uuid="6220d641-200a-41fc-9d3c-2d22ebee4d02">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[4º Bimestre]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="195" y="67" width="45" height="15" uuid="dda59ecf-ec75-4e74-94d3-333fcc90d362">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="240" y="67" width="45" height="15" uuid="080d2557-fe3a-47aa-90c3-409ceaa325e8"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="330" y="67" width="45" height="15" uuid="067618ff-2842-49ef-b422-5a8a569143e9"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="285" y="67" width="45" height="15" uuid="301c7b07-77c5-447b-a817-9dd28ee92c0d">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="420" y="67" width="45" height="15" uuid="97c7c455-a776-4381-bfee-e70f8ef46079"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="375" y="67" width="45" height="15" uuid="0d75f2cc-e730-43fb-8890-a3f489deed83">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="510" y="67" width="45" height="15" uuid="9a7214c5-fca4-4ef6-bf5f-d87eca17cc51"/>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[F]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="465" y="67" width="45" height="15" uuid="d2184b92-9fa7-4b87-811a-b1c66d05fed8">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
+				</textField>
+				<componentElement>
+					<reportElement positionType="Float" x="35" y="82" width="520" height="15" uuid="43ffb2f4-0b7f-4015-93ba-1540d33ebe3c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="DatasetComponentesBaseNacional" uuid="ce17585f-0791-463d-835b-5563a7caa70e">
+							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("baseNacionalComum.areasDeConhecimento")]]></dataSourceExpression>
+						</datasetRun>
+						<jr:listContents height="15" width="520">
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="80" height="15" uuid="b776bf84-1ee8-45f0-bab0-d7c781994e8e">
+									<property name="com.jaspersoft.studio.unit.height" value="px"/>
+									<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								</reportElement>
+								<box leftPadding="5">
+									<pen lineWidth="0.75"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nome}!= null ? $F{nome} : ""]]></textFieldExpression>
+							</textField>
+							<subreport>
+								<reportElement x="80" y="0" width="330" height="15" uuid="bd97198c-039b-4419-92b4-50e65fcc13fa"/>
+								<subreportParameter name="REPORT_DATA_SOURCE">
+									<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
+								</subreportParameter>
+								<subreportExpression><![CDATA["ComponentesCurricularesTransferencia.jasper"]]></subreportExpression>
+							</subreport>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>
