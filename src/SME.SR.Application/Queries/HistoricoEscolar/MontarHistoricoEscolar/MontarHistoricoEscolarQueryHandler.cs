@@ -22,9 +22,11 @@ namespace SME.SR.Application
         {
             var listaRetorno = new List<HistoricoEscolarDTO>();
 
-            foreach (var aluno in request.AlunosTurmas)
+            var alunosTurmas = request.AlunosTurmas.GroupBy(a => a.Aluno.Codigo);
+
+            foreach (var aluno in alunosTurmas)
             {
-                var alunoTurmasPorModalidade = aluno.Turmas.GroupBy(t => t.ModalidadeCodigo);
+                var alunoTurmasPorModalidade = aluno.SelectMany(a => a.Turmas).GroupBy(t => t.ModalidadeCodigo);
 
                 foreach (var agrupamentoTurmas in alunoTurmasPorModalidade)
                 {
@@ -38,8 +40,8 @@ namespace SME.SR.Application
                     var projetos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 4)?.Select(p => p);
                     //
 
-                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w =>  w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Aluno.Codigo && w.CodigoTurma == t.CodigoTurma)));
-                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Aluno.Codigo && a.TurmaId == t.CodigoTurma)));
+                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w =>  w.CodigoAluno == aluno.Key && w.PeriodoEscolar == null && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Key && w.CodigoTurma == t.CodigoTurma)));
+                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Key && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Key && a.TurmaId == t.CodigoTurma)));
 
                     var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
                     var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento);
@@ -55,13 +57,13 @@ namespace SME.SR.Application
                     {
                         NomeDre = request.Dre.Nome,
                         Cabecalho = request.Cabecalho,
-                        InformacoesAluno = aluno.Aluno,
+                        InformacoesAluno = aluno.Select(a => a.Aluno).FirstOrDefault(),
                         DadosHistorico = ObterDadosHistorico(diversificadosDto, baseNacionalDto, enriquecimentoDto, projetosDto, tiposNotaDto, pareceresDto),
                         Modalidade = agrupamentoTurmas.Key,
                         Legenda = request.Legenda,
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
-                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Aluno.Codigo)
+                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
                     };
 
                     listaRetorno.Add(historicoDto);
