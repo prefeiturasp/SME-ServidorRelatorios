@@ -38,8 +38,8 @@ namespace SME.SR.Application
                     var projetos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 4)?.Select(p => p);
                     //
 
-                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null);
-                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo);
+                    var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar == null && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Aluno.Codigo && w.CodigoTurma == t.CodigoTurma)));
+                    var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo && (request.Transferencias == null || !request.Transferencias.Any(t => t.CodigoAluno == aluno.Aluno.Codigo && a.TurmaId == t.CodigoTurma)));
 
                     var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
                     var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento);
@@ -56,16 +56,12 @@ namespace SME.SR.Application
                         NomeDre = request.Dre.Nome,
                         Cabecalho = request.Cabecalho,
                         InformacoesAluno = aluno.Aluno,
-                        GruposComponentesCurriculares = diversificadosDto,
-                        BaseNacionalComum = baseNacionalDto,
-                        EnriquecimentoCurricular = enriquecimentoDto,
-                        ProjetosAtividadesComplementares = projetosDto,
+                        DadosHistorico = ObterDadosHistorico(diversificadosDto, baseNacionalDto, enriquecimentoDto, projetosDto, tiposNotaDto, pareceresDto),
                         Modalidade = agrupamentoTurmas.Key,
-                        TipoNota = tiposNotaDto,
-                        ParecerConclusivo = pareceresDto,
                         Legenda = request.Legenda,
                         DadosData = request.DadosData,
-                        ResponsaveisUe = responsaveisUe
+                        ResponsaveisUe = responsaveisUe,
+                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Aluno.Codigo)
                     };
 
                     listaRetorno.Add(historicoDto);
@@ -73,6 +69,30 @@ namespace SME.SR.Application
             }
 
             return await Task.FromResult(listaRetorno);
+        }
+
+        private HistoricoEscolarEJANotasFrequenciaDto ObterDadosHistorico(List<GruposComponentesCurricularesEJADto> diversificadosDto, BaseNacionalComumEJADto baseNacionalDto, List<ComponenteCurricularHistoricoEscolarEJADto> enriquecimentoDto, List<ComponenteCurricularHistoricoEscolarEJADto> projetosDto, TiposNotaEJADto tiposNotaDto, ParecerConclusivoEJADto pareceresDto)
+        {
+            if ((diversificadosDto == null || !diversificadosDto.Any(d => d.PossuiNotaValida)) &&
+                (baseNacionalDto == null || baseNacionalDto.ObterComNotaValida == null) &&
+                (enriquecimentoDto == null || !enriquecimentoDto.Any(d => d.PossuiNotaValida)) &&
+                (projetosDto == null || !projetosDto.Any(d => d.PossuiNotaValida)))
+                return null;
+            else
+                return new HistoricoEscolarEJANotasFrequenciaDto()
+                {
+                    GruposComponentesCurriculares = diversificadosDto,
+                    BaseNacionalComum = baseNacionalDto,
+                    EnriquecimentoCurricular = enriquecimentoDto,
+                    ProjetosAtividadesComplementares = projetosDto,
+                    TipoNota = tiposNotaDto,
+                    ParecerConclusivo = pareceresDto
+                };
+        }
+
+        private TransferenciaDto ObterDadosTransferencia(IEnumerable<TransferenciaDto> transferencias, string codigoAluno)
+        {
+            return transferencias?.FirstOrDefault(t => t.CodigoAluno == codigoAluno);
         }
 
         private ResponsaveisUeDto ObterResponsaveisUe(bool imprimirDadosResponsaveis, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario)

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc.Formatters.Internal;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -10,23 +9,18 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterAlunosETurmasHistoricoEscolarQueryHandler : IRequestHandler<ObterAlunosETurmasHistoricoEscolarQuery, IEnumerable<AlunoTurmasHistoricoEscolarDto>>
+    class ObterAlunosETurmasHistoricoEscolarTransferenciaQueryHandler : IRequestHandler<ObterAlunosETurmasHistoricoEscolarTransferenciaQuery, IEnumerable<AlunoTurmasHistoricoEscolarDto>>
     {
         private readonly IMediator mediator;
 
-        public ObterAlunosETurmasHistoricoEscolarQueryHandler(IMediator mediator)
+        public ObterAlunosETurmasHistoricoEscolarTransferenciaQueryHandler(IMediator mediator)
         {
             this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IEnumerable<AlunoTurmasHistoricoEscolarDto>> Handle(ObterAlunosETurmasHistoricoEscolarQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AlunoTurmasHistoricoEscolarDto>> Handle(ObterAlunosETurmasHistoricoEscolarTransferenciaQuery request, CancellationToken cancellationToken)
         {
-
             var retorno = new List<AlunoTurmasHistoricoEscolarDto>();
-
-            var pareceresConclusivosIds = await mediator.Send(new ObterPareceresConclusivosPorTipoAprovacaoQuery(true));
-            if (!pareceresConclusivosIds.Any())
-                throw new NegocioException("Não foi possível localizar os pareceres conclusivos.");
 
             if (request.CodigoAlunos.Any())
             {
@@ -34,10 +28,9 @@ namespace SME.SR.Application
                 IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(request.CodigoAlunos);
 
                 //Obter as turmas dos Alunos
-                var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigoAlunos, pareceresConclusivosIds.ToArray()));
+                var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosSemParecerQuery(request.CodigoAlunos));
                 if (!turmasDosAlunos.Any())
                     return retorno;
-
 
                 foreach (var item in informacoesDosAlunos)
                 {
@@ -51,7 +44,8 @@ namespace SME.SR.Application
                             Ano = turmaDoAluno.Ano.ToString(),
                             Codigo = turmaDoAluno.TurmaCodigo,
                             ModalidadeCodigo = turmaDoAluno.Modalidade,
-                            EtapaEJA = turmaDoAluno.EtapaEJA
+                            EtapaEJA = turmaDoAluno.EtapaEJA,
+                            Ciclo = turmaDoAluno.Ciclo
                         });
                     }
 
@@ -63,12 +57,11 @@ namespace SME.SR.Application
                 //Obter os alunos da turma 
                 if (request.CodigoTurma != 0)
                 {
-
                     var turma = await mediator.Send(new ObterTurmaQuery() { CodigoTurma = request.CodigoTurma.ToString() });
                     if (turma == null)
                         return retorno;
 
-                    var alunosPromovidosCodigos = await mediator.Send(new ObterAlunosPorTurmaParecerConclusivoQuery(request.CodigoTurma, pareceresConclusivosIds.ToArray()));
+                    var alunosPromovidosCodigos = await mediator.Send(new ObterAlunosPorTurmaSemParecerConclusivoQuery(request.CodigoTurma));
 
                     if (!alunosPromovidosCodigos.Any())
                         return retorno;
@@ -93,11 +86,11 @@ namespace SME.SR.Application
         {
             var informacoesDosAlunos = await mediator.Send(new ObterDadosAlunosHistoricoEscolarQuery() { CodigosAluno = codigoAlunos });
             if (!informacoesDosAlunos.Any())
-                throw new NegocioException("Não foi possíve obter os dados dos alunos");
+                throw new NegocioException("Não foi possível obter os dados dos alunos");
 
             informacoesDosAlunos = informacoesDosAlunos.GroupBy(d => d.CodigoAluno)
-                                  .SelectMany(g => g.OrderByDescending(d => d.DataSituacao)
-                                                    .Take(1));
+                                    .SelectMany(g => g.OrderByDescending(d => d.DataSituacao)
+                                                      .Take(1));
 
             return informacoesDosAlunos;
         }
