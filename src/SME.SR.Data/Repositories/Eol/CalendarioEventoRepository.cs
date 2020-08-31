@@ -3,12 +3,11 @@ using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
 {
-    public class CalendarioEventoRepository
+    public class CalendarioEventoRepository : ICalendarioEventoRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
@@ -19,31 +18,6 @@ namespace SME.SR.Data
         public async Task<IEnumerable<CalendarioEventoQueryRetorno>> ObterEventosPorUsuarioTipoCalendarioPerfilDreUe(string usuarioLogin, Guid usuarioPerfil, bool consideraHistorico, bool consideraPendenteAprovacao,
             string dreCodigo, string ueCodigo, bool desconsideraEventoSme, bool desconsideraLocalDre, long tipoCalendarioId)
         {
-
-            //@usuarioLogin
-            //@usuarioPerfil
-            //@consideraHistorico
-            //@consideraPendenteAprovacao
-            //@dreCodigo
-            //@ueCodigo
-            //@desconsideraEventoSme
-            //@desconsideraLocalDre
-            //@tipoCalendarioId
-
-
-            //login = usuario.CodigoRf,
-            //    perfil_id = usuario.PerfilAtual,
-            //    historico = calendarioEventosMesesFiltro.ConsideraHistorico,
-            //    dia,
-            //    mes,
-            //    tipo_calendario_id = calendarioEventosMesesFiltro.IdTipoCalendario,
-            //    considera_evento_aprovado_e_pendente_aprovacao = usuario.TemPerfilSupervisorOuDiretor() || usuario.PodeVisualizarEventosLibExcepRepoRecessoGestoresUeDreSme(),
-            //    dre_id = calendarioEventosMesesFiltro.DreId,
-            //    ue_id = calendarioEventosMesesFiltro.UeId,
-            //    desconsidera_local_dre = !usuario.PodeVisualizarEventosOcorrenciaDre(),
-            //    desconsidera_eventos_sme = !calendarioEventosMesesFiltro.EhEventoSme
-
-
             var query = @"select distinct e.id,
 					e.data_inicio,
 					case
@@ -126,13 +100,10 @@ namespace SME.SR.Data
 		-- caso desconsidere evento SME
 		and (@desconsideraEventoSme = false or (@desconsideraEventoSme = true and not (e.dre_id is null and e.ue_id is null)));	";
 
+            var parametros = new { usuarioLogin, usuarioPerfil, consideraHistorico, consideraPendenteAprovacao, dreCodigo, ueCodigo, desconsideraEventoSme, desconsideraLocalDre, tipoCalendarioId };
 
-            var parametros = new { };
-
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
-            {
-                return await conexao.QueryAsync<CalendarioEventoQueryRetorno>(query, parametros);
-            }          
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
+            return await conexao.QueryAsync<CalendarioEventoQueryRetorno>(query, parametros);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace SME.SR.Workers.SGP
         public async Task Executar(FiltroRelatorioDto request)
         {
             var relatorioQuery = request.ObterObjetoFiltro<RelatorioImpressaoCalendarioFiltroDto>();
-            var relatorio = await mediator.Send(new ObterRelatorioImpressaoCalendarioQuery(relatorioQuery));
+            var relatorio = await mediator.Send(new ObterRelatorioImpressaoCalendarioQuery(relatorioQuery.DreCodigo, relatorioQuery.UeCodigo, relatorioQuery.TipoCalendarioId, relatorioQuery.EhSME, relatorioQuery.UsuarioRF, relatorioQuery.UsuarioPerfil));
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioImpressaoCalendario", relatorio, request.CodigoCorrelacao));
         }

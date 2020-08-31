@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Infra
+﻿using System;
+
+namespace SME.SR.Infra
 {
     public class RelatorioImpressaoCalendarioFiltroDto
     {
@@ -7,6 +9,6 @@
         public long TipoCalendarioId { get; set; }
         public bool EhSME { get; set; }
         public string UsuarioRF { get; set; }
-
+        public Guid UsuarioPerfil { get; set; }
     }
 }
