@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HistoricoTransferencia" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8de16628-bd24-4c8b-9795-695beb46f03c">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="data" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="data"/>
+		<fieldDescription><![CDATA[data]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="descricao"/>
+		<fieldDescription><![CDATA[descricao]]></fieldDescription>
+	</field>
+	<field name="primeiroBimestre" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.primeiroBimestre"/>
+		<fieldDescription><![CDATA[tipoNota.primeiroBimestre]]></fieldDescription>
+	</field>
+	<field name="segundoBimestre" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.segundoBimestre"/>
+		<fieldDescription><![CDATA[tipoNota.segundoBimestre]]></fieldDescription>
+	</field>
+	<field name="terceiroBimestre" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.terceiroBimestre"/>
+		<fieldDescription><![CDATA[tipoNota.terceiroBimestre]]></fieldDescription>
+	</field>
+	<field name="quartoBimestre" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.quartoBimestre"/>
+		<fieldDescription><![CDATA[tipoNota.quartoBimestre]]></fieldDescription>
+	</field>
+	<field name="rodape" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="historicoEscolarTransferencia.rodape"/>
+		<fieldDescription><![CDATA[historicoEscolarTransferencia.rodape]]></fieldDescription>
+	</field>
+	<field name="projetosAtividadesComplementares" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="historicoEscolarTransferencia.projetosAtividadesComplementares"/>
+		<fieldDescription><![CDATA[historicoEscolarTransferencia.projetosAtividadesComplementares]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="157" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="157" uuid="f3aa719b-3034-4300-8a32-f81f40f40982">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreport>
+					<reportElement positionType="Float" x="0" y="0" width="555" height="97" uuid="70f08da6-be60-40ad-9073-93ecca59b590">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<subreportParameter name="REPORT_DATA_SOURCE">
+						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolarTransferencia")]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["BaseNacionalComumTransferencia.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport>
+					<reportElement positionType="Float" x="0" y="97" width="555" height="15" uuid="14d94603-f757-483f-9d2a-5d6d8d96dbc3">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<subreportParameter name="REPORT_DATA_SOURCE">
+						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolarTransferencia")]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["GrupoComponentesComNotaTransferencia.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport>
+					<reportElement positionType="Float" x="0" y="112" width="555" height="15" uuid="8fe88398-24fe-44df-a578-6a9275ebe906">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<subreportParameter name="REPORT_DATA_SOURCE">
+						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolarTransferencia")]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["EnriquecimentoCurricularTransferencia.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport>
+					<reportElement positionType="Float" x="0" y="127" width="555" height="15" isRemoveLineWhenBlank="true" uuid="22ace746-9768-4dcd-8a06-493038208740">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<printWhenExpression><![CDATA[$F{projetosAtividadesComplementares} != null]]></printWhenExpression>
+					</reportElement>
+					<subreportParameter name="REPORT_DATA_SOURCE">
+						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolarTransferencia")]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["ProjetosAtividadesComplementaresTransferencia.jasper"]]></subreportExpression>
+				</subreport>
+				<textField>
+					<reportElement positionType="Float" x="0" y="142" width="555" height="15" isRemoveLineWhenBlank="true" uuid="1f9a6c44-5914-42db-aaaf-e9c7122da8f5">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{rodape}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>

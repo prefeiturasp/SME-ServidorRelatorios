@@ -31,7 +31,7 @@
 	<subDataset name="DatasetComponentesCurriculares" uuid="76c94686-59de-4a56-be64-5efeec9b9222">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 		<queryString language="json">
-			<![CDATA[relatorioHistoricoEscolar.baseNacionalComum.areasDeConhecimento.componentesCurriculares]]>
+			<![CDATA[]]>
 		</queryString>
 		<field name="nome" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>

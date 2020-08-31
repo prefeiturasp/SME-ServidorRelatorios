@@ -68,5 +68,23 @@ namespace SME.SR.Infra
         public string FrequenciaSegundaEtapaCiclo4 { get; set; }
 
 
+        [JsonIgnore]
+        public bool PossuiNotaValida
+        {
+            get
+            {
+                if (Nota && (!string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo1) ||
+                    !string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo2) ||
+                    !string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo3) ||
+                    !string.IsNullOrEmpty(NotaConceitoPrimeiraEtapaCiclo4) ||
+                    !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo1) ||
+                    !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo2) ||
+                    !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo3) ||
+                    !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo4)))
+                    return true;
+
+                return false;
+            }
+        }
     }
 }
