@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -21,7 +20,7 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
 
-             var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
+            var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
             var relatorioNotasEConceitosFinaisDto = new RelatorioNotasEConceitosFinaisDto();
 
             // Dres
@@ -184,7 +183,7 @@ namespace SME.SR.Application
             var dres = new List<Dre>();
 
             if (!string.IsNullOrEmpty(filtros.DreCodigo))
-            {  
+            {
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
                 if (dre == null)
                     throw new NegocioException("Não foi possível obter a Dre.");
@@ -247,6 +246,8 @@ namespace SME.SR.Application
 
             if (filtros.Bimestres == null || filtros.Bimestres.Count > 1)
                 relatorioNotasEConceitosFinaisDto.Bimestre = "Todos";
+            else if (filtros.Bimestres != null && filtros.Bimestres.Count == 1)
+                relatorioNotasEConceitosFinaisDto.Bimestre = $"{filtros.Bimestres[0]}º";
 
             if (filtros.Anos == null || filtros.Anos.Length == 0)
                 relatorioNotasEConceitosFinaisDto.Ano = "Todos";
