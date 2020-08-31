@@ -2562,7 +2562,30 @@
                   "frequenciaQuartoBimestre": "0"
                }
             ],
-            "projetosAtividadesComplementares": null
+            "projetosAtividadesComplementares": [
+               {
+                  "nome": "INFORMATICA - OIE",
+                  "notaConceitoPrimeiroBimestre": "NF",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": "NF",
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": "NF",
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": "NF",
+                  "frequenciaQuartoBimestre": "0"
+               },
+               {
+                  "nome": "LEITURA - OSL",
+                  "notaConceitoPrimeiroBimestre": "NF",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": "NF",
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": "NF",
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": "NF",
+                  "frequenciaQuartoBimestre": "0"
+               }
+            ]
          }
       }
    ]
