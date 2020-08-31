@@ -258,9 +258,10 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 		<band height="288" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField textAdjust="StretchHeight">
-				<reportElement mode="Opaque" x="0" y="0" width="555" height="22" backcolor="#F3F3F3" uuid="16e02bde-f672-481c-ae42-5b22c9c2a999">
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="22" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="16e02bde-f672-481c-ae42-5b22c9c2a999">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{historicoEscolar} != null]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="10">
 					<pen lineWidth="0.75"/>
@@ -271,9 +272,10 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA[$F{leiFundamental}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="22" width="555" height="75" uuid="50ccbb3c-07f8-4835-a4fe-35afe74f75a4">
+				<reportElement positionType="Float" x="0" y="22" width="555" height="75" isRemoveLineWhenBlank="true" uuid="50ccbb3c-07f8-4835-a4fe-35afe74f75a4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{historicoEscolar} != null]]></printWhenExpression>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolar")]]></subreportParameterExpression>
@@ -336,7 +338,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				</reportElement>
 			</break>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="172" width="555" height="48" uuid="8716773c-c7df-486c-b0f9-6b273caedd9f">
+				<reportElement positionType="Float" x="0" y="172" width="555" height="48" isRemoveLineWhenBlank="true" uuid="8716773c-c7df-486c-b0f9-6b273caedd9f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<printWhenExpression><![CDATA[$F{historicoEscolarTransferencia} != null]]></printWhenExpression>
