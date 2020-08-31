@@ -124,5 +124,12 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioCompensacaoAusenciaUseCase.Executar(request);
             return true;
         }
+        [HttpGet("relatorios/impressaocalendario")]
+        [Action("relatorios/impressaocalendario", typeof(IRelatorioImpressaoCalendarioUseCase))]
+        public async Task<bool> RelatorioImpressaoCalendario([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioImpressaoCalendarioUseCase relatorioImpressaoCalendarioUseCase)
+        {
+            await relatorioImpressaoCalendarioUseCase.Executar(request);
+            return true;
+        }
     }
 }

@@ -1,0 +1,14 @@
+﻿using System;
+
+namespace SME.SR.Application
+{
+    public class ObterRelatorioImpressaoCalendarioQuery
+    {
+        public string DreCodigo { get; set; }
+        public string UeCodigo { get; set; }
+        public long TipoCalendarioId { get; set; }
+        public bool EhSME { get; set; }
+        public string UsuarioRF { get; set; }
+        public Guid UsuarioPerfil { get; set; }
+    }
+}
