@@ -20,6 +20,9 @@ namespace SME.SR.Infra
         [JsonIgnore]
         public string CodigoTurma { get; set; }
 
+        [JsonIgnore]
+        public Modalidade Modalidade { get; set; }
+
         [JsonProperty("tipoNota")]
         public string TipoNota { get; set; }
 

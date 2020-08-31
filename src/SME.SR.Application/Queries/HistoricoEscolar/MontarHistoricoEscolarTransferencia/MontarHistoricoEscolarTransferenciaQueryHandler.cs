@@ -53,6 +53,7 @@ namespace SME.SR.Application
                     {
                         CodigoAluno = aluno.Aluno.Codigo,
                         CodigoTurma = turma?.Codigo,
+                        Modalidade = turma.ModalidadeCodigo,
                         TipoNota = tiposNotaDto,
                         Data = aluno.Aluno.DataSituacaoFormatada,
                         Descricao = turma?.DescricaoRelatorioTransferencia,
