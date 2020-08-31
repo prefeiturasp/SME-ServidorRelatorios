@@ -75,14 +75,6 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="legenda.texto"/>
 		<fieldDescription><![CDATA[legenda.texto]]></fieldDescription>
 	</field>
-	<field name="projetosAtividadesComplementares" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="projetosAtividadesComplementares"/>
-		<fieldDescription><![CDATA[projetosAtividadesComplementares]]></fieldDescription>
-	</field>
-	<field name="enriquecimentoCurricular" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="enriquecimentoCurricular"/>
-		<fieldDescription><![CDATA[enriquecimentoCurricular]]></fieldDescription>
-	</field>
 	<field name="leiFundamental" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="cabecalho.leiFundamental"/>
 		<fieldDescription><![CDATA[cabecalho.leiFundamental]]></fieldDescription>
@@ -90,6 +82,22 @@
 	<field name="leiMedio" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="cabecalho.leiMedio"/>
 		<fieldDescription><![CDATA[cabecalho.leiMedio]]></fieldDescription>
+	</field>
+	<field name="historicoEscolar" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="historicoEscolar"/>
+		<fieldDescription><![CDATA[historicoEscolar]]></fieldDescription>
+	</field>
+	<field name="historicoEscolarTransferencia" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="historicoEscolarTransferencia"/>
+		<fieldDescription><![CDATA[historicoEscolarTransferencia]]></fieldDescription>
+	</field>
+	<field name="enriquecimentoCurricular" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="historicoEscolar.enriquecimentoCurricular"/>
+		<fieldDescription><![CDATA[historicoEscolar.enriquecimentoCurricular]]></fieldDescription>
+	</field>
+	<field name="projetosAtividadesComplementares" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="historicoEscolar.projetosAtividadesComplementares"/>
+		<fieldDescription><![CDATA[historicoEscolar.projetosAtividadesComplementares]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -247,7 +255,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="223" splitType="Stretch">
+		<band height="288" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField textAdjust="StretchHeight">
 				<reportElement mode="Opaque" x="0" y="0" width="555" height="22" backcolor="#F3F3F3" uuid="16e02bde-f672-481c-ae42-5b22c9c2a999">
@@ -268,7 +276,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolar")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["BaseNacionalComum.jasper"]]></subreportExpression>
 			</subreport>
@@ -278,7 +286,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<printWhenExpression><![CDATA[$F{enriquecimentoCurricular} != null]]></printWhenExpression>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolar")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["EnriquecimentoCurricular.jasper"]]></subreportExpression>
 			</subreport>
@@ -288,7 +296,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<printWhenExpression><![CDATA[$F{projetosAtividadesComplementares} != null]]></printWhenExpression>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolar")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["ProjetosAtividadesComplementares.jasper"]]></subreportExpression>
 			</subreport>
@@ -297,7 +305,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("pareceresConclusivos")]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolar.pareceresConclusivos")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["ParecerConclusivo.jasper"]]></subreportExpression>
 			</subreport>
@@ -317,19 +325,44 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("historicoEscolar")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["GrupoComponentesComNota.jasper"]]></subreportExpression>
 			</subreport>
 			<break>
-				<reportElement positionType="Float" x="0" y="222" width="552" height="1" uuid="d5b3f514-2d9c-48c5-81d7-c77e958c572b">
+				<reportElement positionType="Float" x="0" y="287" width="552" height="1" uuid="d5b3f514-2d9c-48c5-81d7-c77e958c572b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 			</break>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="183" width="555" height="38" isRemoveLineWhenBlank="true" uuid="6a1d6084-76ba-4543-8289-15563defcc56">
+				<reportElement positionType="Float" x="0" y="172" width="555" height="48" uuid="8716773c-c7df-486c-b0f9-6b273caedd9f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{historicoEscolarTransferencia} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["HistoricoTransferencia.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement positionType="Float" x="0" y="220" width="555" height="15" isRemoveLineWhenBlank="true" uuid="e847fd3e-2552-4088-8437-0ce8daa91838">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<printWhenExpression><![CDATA[$F{historicoEscolar}== null && $F{legenda}!= null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{legenda}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="235" width="555" height="51" isRemoveLineWhenBlank="true" uuid="b16d2f09-6d9e-4f0c-b840-664f0247a80e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
