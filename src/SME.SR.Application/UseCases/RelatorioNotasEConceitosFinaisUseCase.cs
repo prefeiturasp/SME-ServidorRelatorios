@@ -46,7 +46,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
             // Componentes curriculares
-            var componentesCurriculares = await ObterComponentesCurriculares(notasPorTurmas);
+            var componentesCurriculares = await ObterComponentesCurriculares(notasPorTurmas, filtros.TipoNota);
 
             // Cabeçalho
             MontarCabecalho(filtros, relatorioNotasEConceitosFinaisDto, componentesCurriculares);
@@ -145,20 +145,20 @@ namespace SME.SR.Application
             return alunos;
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas, TipoNota filtro)
         {
             var componentesCurricularesCodigos = notasPorTurmas.Select(a => a.ComponenteCurricularCodigo).Distinct();
             var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = componentesCurricularesCodigos.ToArray() });
             if (componentesCurriculares == null || !componentesCurriculares.Any())
                 throw new NegocioException("Não foi possível obter os componentes curriculares");
-            return componentesCurriculares;
+            return componentesCurriculares.Where(cc => cc.LancaNota == (filtro != TipoNota.Sintese));
         }
 
         private IEnumerable<RetornoNotaConceitoBimestreComponenteDto> AplicarFiltroPorCondicoesEValores(FiltroRelatorioNotasEConceitosFinaisDto filtros, IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notas)
         {
 
             if (filtros.TipoNota == TipoNota.Conceito)
-                return notas.Where(a => a.ConceitoId == filtros.ValorCondicao).ToList();
+                return notas.Where(a => a.ConceitoId == filtros.ValorCondicao && a.SinteseId == null).ToList();
 
             if (filtros.TipoNota == TipoNota.Sintese)
                 return notas.Where(a => a.SinteseId == filtros.ValorCondicao).ToList();
@@ -166,11 +166,11 @@ namespace SME.SR.Application
             switch (filtros.Condicao)
             {
                 case CondicoesRelatorioNotasEConceitosFinais.Igual:
-                    return notas.Where(a => a.Nota == filtros.ValorCondicao && a.ConceitoId == null).ToList();
+                    return notas.Where(a => a.Nota == filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
                 case CondicoesRelatorioNotasEConceitosFinais.Maior:
-                    return notas.Where(a => a.Nota > filtros.ValorCondicao && a.ConceitoId == null).ToList();
+                    return notas.Where(a => a.Nota > filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
                 case CondicoesRelatorioNotasEConceitosFinais.Menor:
-                    return notas.Where(a => a.Nota < filtros.ValorCondicao && a.ConceitoId == null).ToList();
+                    return notas.Where(a => a.Nota < filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
                 default:
                     break;
             }
