@@ -19,7 +19,7 @@ namespace SME.SR.Data
             string dreCodigo, string ueCodigo, bool desconsideraEventoSme, bool desconsideraLocalDre, long tipoCalendarioId)
         {
             var query = @"select distinct e.id,
-					e.data_inicio,
+					e.data_inicio as dataInicio,
 					case
 						when data_inicio = data_fim then ''
 						else '(inicio)'
