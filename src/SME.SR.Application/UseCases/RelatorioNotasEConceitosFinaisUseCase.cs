@@ -111,8 +111,7 @@ namespace SME.SR.Application
 
                                 foreach (var notaDosAlunosParaAdicionar in notasDosAlunosParaAdicionar)
                                 {
-                                    if (notaDosAlunosParaAdicionar.EhNotaConceitoFechamento)
-                                        possuiNotaFechamento = true;
+                                    possuiNotaFechamento = notaDosAlunosParaAdicionar.EhNotaConceitoFechamento;
 
                                     var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));
                                     var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componente.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese);
