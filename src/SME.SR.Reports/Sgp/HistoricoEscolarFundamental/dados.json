@@ -2520,7 +2520,7 @@
             "data": "19/12/2019",
             "descricao": "NOTAS E Nº DE FALTAS DO 8º ANO DO CICLO AUTORAL DO ENSINO FUNDAMENTAL",
             "rodape": "O (a) aluno (a) tem direito à matrícula no 8º ano do ciclo AUTORAL do Ensino Fundamental",
-            "tipoNota": null,
+            "tipoNota": "N",
             "baseNacionalComum": {
                "areasDeConhecimento": [
                   {
