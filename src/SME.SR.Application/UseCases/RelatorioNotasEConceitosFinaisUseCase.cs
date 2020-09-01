@@ -57,6 +57,8 @@ namespace SME.SR.Application
             // Dres
             var dresParaAdicionar = notasPorTurmas.Select(a => new { a.DreCodigo, a.DreNome, a.DreAbreviacao }).Distinct();
 
+            bool possuiNotaFechamento = false;
+
             foreach (var dreParaAdicionar in dresParaAdicionar.OrderBy(b => b.DreAbreviacao))
             {
                 var dreNova = new RelatorioNotasEConceitosFinaisDreDto
@@ -103,12 +105,14 @@ namespace SME.SR.Application
 
                                 var notasDosAlunosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar
                                                                                        && a.Bimestre == bimestreParaAdicionar && a.ComponenteCurricularCodigo == componenteParaAdicionar)
-                                                                                .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome })
+                                                                                .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome, a.EhNotaConceitoFechamento })
                                                                                 .Distinct();
 
 
                                 foreach (var notaDosAlunosParaAdicionar in notasDosAlunosParaAdicionar)
                                 {
+                                    possuiNotaFechamento = notaDosAlunosParaAdicionar.EhNotaConceitoFechamento;
+
                                     var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));
                                     var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componente.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese);
                                     componenteNovo.NotaConceitoAlunos.Add(notaConceitoNovo);
@@ -127,6 +131,7 @@ namespace SME.SR.Application
                     dreNova.Ues.Add(ueNova);
                 }
                 relatorioNotasEConceitosFinaisDto.Dres.Add(dreNova);
+                relatorioNotasEConceitosFinaisDto.PossuiNotaFechamento = possuiNotaFechamento;
             }
 
             if (relatorioNotasEConceitosFinaisDto.Dres.Count == 0)

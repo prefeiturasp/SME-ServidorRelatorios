@@ -1339,6 +1339,7 @@ namespace SME.SR.MVC.Controllers
             model.Bimestre = "Todos";
             model.UsuarioNome = "Ronaldo Alves";
             model.UsuarioRF = "1234564";
+            model.PossuiNotaFechamento = true;
 
             var dreDto = new RelatorioNotasEConceitosFinaisDreDto() { Codigo = "10001", Nome = "Dre de Teste" };
 
