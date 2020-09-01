@@ -315,7 +315,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<reportElement positionType="Float" x="0" y="157" width="555" height="15" isRemoveLineWhenBlank="true" uuid="c0bd7c5f-87cb-42bd-ba4c-22e608112b06">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<printWhenExpression><![CDATA[$F{legenda} != null]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{legenda} != null && $F{historicoEscolar}!= null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6"/>
