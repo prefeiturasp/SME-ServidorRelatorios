@@ -50,14 +50,14 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="157" splitType="Stretch">
+		<band height="157" splitType="Prevent">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement positionType="Float" x="0" y="0" width="555" height="157" uuid="f3aa719b-3034-4300-8a32-f81f40f40982">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="555" height="157" uuid="e666c85b-7b78-4071-8857-8ba703157647">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<subreport>
 					<reportElement positionType="Float" x="0" y="0" width="555" height="97" uuid="70f08da6-be60-40ad-9073-93ecca59b590">

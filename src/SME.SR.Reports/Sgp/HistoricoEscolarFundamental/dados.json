@@ -315,160 +315,268 @@
             "ano": "2020"
          },
          "historicoEscolarTransferencia": {
-            "data": "19/12/2019",
-            "descricao": "NOTAS E Nº DE FALTAS DO 8º ANO DO CICLO AUTORAL DO ENSINO FUNDAMENTAL",
-            "rodape": "O (a) aluno (a) tem direito à matrícula no 8º ano do ciclo AUTORAL do Ensino Fundamental",
-            "tipoNota": null,
-            "baseNacionalComum": {
-               "areasDeConhecimento": [
+            "data":"31/08/2020",
+            "descricao":"NOTAS E Nº DE FALTAS DO 1º ANO DO ENSINO MÉDIO",
+            "rodape":"O (a) aluno (a) tem direito à matrícula no 1º ano do Ensino Médio",
+            "tipoNota":"N",
+            "baseNacionalComum":{
+               "areasDeConhecimento":[
                   {
-                     "nome": "Linguagens",
-                     "componentesCurriculares": [
+                     "nome":"Linguagens",
+                     "componentesCurriculares":[
                         {
-                           "nome": "ED. FISICA",
-                           "notaConceitoPrimeiroBimestre": "9.0",
-                           "frequenciaPrimeiroBimestre": "0",
-                           "notaConceitoSegundoBimestre": "9.0",
-                           "frequenciaSegundoBimestre": "0",
-                           "notaConceitoTerceiroBimestre": "9.0",
-                           "frequenciaTerceiroBimestre": "0",
-                           "notaConceitoQuartoBimestre": "9.0",
-                           "frequenciaQuartoBimestre": "0"
+                           "nome":"ED. FISICA",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"6.0",
+                           "frequenciaQuartoBimestre":"0"
                         },
                         {
-                           "nome": "LINGUA PORTUGUESA",
-                           "notaConceitoPrimeiroBimestre": "9.0",
-                           "frequenciaPrimeiroBimestre": "0",
-                           "notaConceitoSegundoBimestre": "9.0",
-                           "frequenciaSegundoBimestre": "0",
-                           "notaConceitoTerceiroBimestre": "9.0",
-                           "frequenciaTerceiroBimestre": "0",
-                           "notaConceitoQuartoBimestre": "9.0",
-                           "frequenciaQuartoBimestre": "0"
+                           "nome":"LINGUA PORTUGUESA",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"5.0",
+                           "frequenciaQuartoBimestre":"0"
                         },
                         {
-                           "nome": "ARTE",
-                           "notaConceitoPrimeiroBimestre": "8.0",
-                           "frequenciaPrimeiroBimestre": "0",
-                           "notaConceitoSegundoBimestre": "5.5",
-                           "frequenciaSegundoBimestre": "2",
-                           "notaConceitoTerceiroBimestre": "4.5",
-                           "frequenciaTerceiroBimestre": "2",
-                           "notaConceitoQuartoBimestre": "10.0",
-                           "frequenciaQuartoBimestre": "0"
+                           "nome":"ARTE",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"5.0",
+                           "frequenciaQuartoBimestre":"0"
                         }
                      ]
                   },
                   {
-                     "nome": "Matemática",
-                     "componentesCurriculares": [
+                     "nome":"Matemática",
+                     "componentesCurriculares":[
                         {
-                           "nome": "MATEMATICA",
-                           "notaConceitoPrimeiroBimestre": "9.0",
-                           "frequenciaPrimeiroBimestre": "0",
-                           "notaConceitoSegundoBimestre": "9.0",
-                           "frequenciaSegundoBimestre": "0",
-                           "notaConceitoTerceiroBimestre": "9.0",
-                           "frequenciaTerceiroBimestre": "0",
-                           "notaConceitoQuartoBimestre": "9.0",
-                           "frequenciaQuartoBimestre": "0"
+                           "nome":"MATEMATICA",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"5.0",
+                           "frequenciaQuartoBimestre":"0"
                         }
                      ]
                   },
                   {
-                     "nome": "Ciências da Natureza",
-                     "componentesCurriculares": [
+                     "nome":"Ciências da Natureza",
+                     "componentesCurriculares":[
                         {
-                           "nome": "CIENCIAS",
-                           "notaConceitoPrimeiroBimestre": "9.0",
-                           "frequenciaPrimeiroBimestre": "0",
-                           "notaConceitoSegundoBimestre": "9.0",
-                           "frequenciaSegundoBimestre": "0",
-                           "notaConceitoTerceiroBimestre": "9.0",
-                           "frequenciaTerceiroBimestre": "0",
-                           "notaConceitoQuartoBimestre": "9.0",
-                           "frequenciaQuartoBimestre": "0"
-                        }
-                     ]
-                  },
-                  {
-                     "nome": "Ciências Humanas",
-                     "componentesCurriculares": [
-                        {
-                           "nome": "HISTORIA",
-                           "notaConceitoPrimeiroBimestre": null,
-                           "frequenciaPrimeiroBimestre": "0",
-                           "notaConceitoSegundoBimestre": null,
-                           "frequenciaSegundoBimestre": "0",
-                           "notaConceitoTerceiroBimestre": null,
-                           "frequenciaTerceiroBimestre": "0",
-                           "notaConceitoQuartoBimestre": null,
-                           "frequenciaQuartoBimestre": "0"
+                           "nome":"FISICA",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"8.0",
+                           "frequenciaQuartoBimestre":"0"
                         },
                         {
-                           "nome": "GEOGRAFIA",
-                           "notaConceitoPrimeiroBimestre": "9.0",
-                           "frequenciaPrimeiroBimestre": "0",
-                           "notaConceitoSegundoBimestre": "9.0",
-                           "frequenciaSegundoBimestre": "0",
-                           "notaConceitoTerceiroBimestre": "9.0",
-                           "frequenciaTerceiroBimestre": "0",
-                           "notaConceitoQuartoBimestre": "9.0",
-                           "frequenciaQuartoBimestre": "0"
+                           "nome":"QUIMICA",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"9.0",
+                           "frequenciaQuartoBimestre":"0"
+                        },
+                        {
+                           "nome":"BIOLOGIA",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"10.0",
+                           "frequenciaQuartoBimestre":"0"
+                        }
+                     ]
+                  },
+                  {
+                     "nome":"Ciências Humanas",
+                     "componentesCurriculares":[
+                        {
+                           "nome":"HISTORIA",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"7.0",
+                           "frequenciaQuartoBimestre":"0"
+                        },
+                        {
+                           "nome":"GEOGRAFIA",
+                           "notaConceitoPrimeiroBimestre":null,
+                           "frequenciaPrimeiroBimestre":"0",
+                           "notaConceitoSegundoBimestre":null,
+                           "frequenciaSegundoBimestre":"0",
+                           "notaConceitoTerceiroBimestre":null,
+                           "frequenciaTerceiroBimestre":"0",
+                           "notaConceitoQuartoBimestre":"7.0",
+                           "frequenciaQuartoBimestre":"0"
                         }
                      ]
                   }
                ]
             },
-            "gruposComponentesCurriculares": [
+            "gruposComponentesCurriculares":[
                {
-                  "nome": "Diversificada",
-                  "areasDeConhecimento": [
+                  "nome":"Diversificada",
+                  "areasDeConhecimento":[
                      {
-                        "nome": "Língua Estrangeira Moderna",
-                        "componentesCurriculares": [
+                        "nome":"Ciências Humanas",
+                        "componentesCurriculares":[
                            {
-                              "nome": "INGLES",
-                              "notaConceitoPrimeiroBimestre": "9.0",
-                              "frequenciaPrimeiroBimestre": "0",
-                              "notaConceitoSegundoBimestre": "9.0",
-                              "frequenciaSegundoBimestre": "0",
-                              "notaConceitoTerceiroBimestre": "9.0",
-                              "frequenciaTerceiroBimestre": "0",
-                              "notaConceitoQuartoBimestre": "9.0",
-                              "frequenciaQuartoBimestre": "0"
+                              "nome":"FILOSOFIA",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"8.0",
+                              "frequenciaQuartoBimestre":"0"
+                           },
+                           {
+                              "nome":"SOCIOLOGIA",
+                              "notaConceitoPrimeiroBimestre":"9.0",
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"1",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"5.0",
+                              "frequenciaQuartoBimestre":"0"
+                           }
+                        ]
+                     },
+                     {
+                        "nome":"Língua Estrangeira Moderna",
+                        "componentesCurriculares":[
+                           {
+                              "nome":"INGLES",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"10.0",
+                              "frequenciaQuartoBimestre":"0"
+                           }
+                        ]
+                     },
+                     {
+                        "nome":null,
+                        "componentesCurriculares":[
+                           {
+                              "nome":"CULTURA DOS PAISES DE LINGUA ESPANHOLA",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"4.0",
+                              "frequenciaQuartoBimestre":"0"
+                           },
+                           {
+                              "nome":"TECNOLOGIAS PARA APRENDIZAGEM",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"7.0",
+                              "frequenciaQuartoBimestre":"0"
+                           },
+                           {
+                              "nome":"PRODUCAO TEXTUAL",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"6.0",
+                              "frequenciaQuartoBimestre":"0"
+                           },
+                           {
+                              "nome":"INVESTIGACAO CIENTIFICA E PROCESSOS MATEMATICOS",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"5.5",
+                              "frequenciaQuartoBimestre":"0"
+                           },
+                           {
+                              "nome":"PRATICAS ESPORTIVAS",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"6.0",
+                              "frequenciaQuartoBimestre":"0"
+                           },
+                           {
+                              "nome":"EXPRESSOES CULTURAIS ARTISTICAS",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"8.0",
+                              "frequenciaQuartoBimestre":"0"
+                           },
+                           {
+                              "nome":"SALA DE LEITURA",
+                              "notaConceitoPrimeiroBimestre":null,
+                              "frequenciaPrimeiroBimestre":"0",
+                              "notaConceitoSegundoBimestre":null,
+                              "frequenciaSegundoBimestre":"0",
+                              "notaConceitoTerceiroBimestre":null,
+                              "frequenciaTerceiroBimestre":"0",
+                              "notaConceitoQuartoBimestre":"9.0",
+                              "frequenciaQuartoBimestre":"0"
                            }
                         ]
                      }
                   ]
                }
             ],
-            "ensinoReligioso": null,
-            "enriquecimentoCurricular": [
-               {
-                  "nome": "INFORMATICA - OIE",
-                  "notaConceitoPrimeiroBimestre": "NF",
-                  "frequenciaPrimeiroBimestre": "0",
-                  "notaConceitoSegundoBimestre": "NF",
-                  "frequenciaSegundoBimestre": "0",
-                  "notaConceitoTerceiroBimestre": "NF",
-                  "frequenciaTerceiroBimestre": "0",
-                  "notaConceitoQuartoBimestre": "NF",
-                  "frequenciaQuartoBimestre": "0"
-               },
-               {
-                  "nome": "LEITURA - OSL",
-                  "notaConceitoPrimeiroBimestre": "NF",
-                  "frequenciaPrimeiroBimestre": "0",
-                  "notaConceitoSegundoBimestre": "NF",
-                  "frequenciaSegundoBimestre": "0",
-                  "notaConceitoTerceiroBimestre": "NF",
-                  "frequenciaTerceiroBimestre": "0",
-                  "notaConceitoQuartoBimestre": "NF",
-                  "frequenciaQuartoBimestre": "0"
-               }
-            ],
-            "projetosAtividadesComplementares": null
+            "ensinoReligioso":null,
+            "enriquecimentoCurricular":null,
+            "projetosAtividadesComplementares":null
          }
       },
       {
@@ -2412,7 +2520,7 @@
             "data": "19/12/2019",
             "descricao": "NOTAS E Nº DE FALTAS DO 8º ANO DO CICLO AUTORAL DO ENSINO FUNDAMENTAL",
             "rodape": "O (a) aluno (a) tem direito à matrícula no 8º ano do ciclo AUTORAL do Ensino Fundamental",
-            "tipoNota": null,
+            "tipoNota": "N",
             "baseNacionalComum": {
                "areasDeConhecimento": [
                   {
