@@ -3,7 +3,7 @@
 @{
 
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoLinhasPorPagina = 54;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -36,6 +36,7 @@
                         <tr>
                             <td  width='40%' class='espaco-esquerda-15'>DRE: {Model.DreNome}</td>
                             <td width='40%' class='espaco-esquerda-15'>UE: {Model.UeNome}</td>
+                            <td width='20%' class='espaco-esquerda-15'>DATA: {Model.DataImpressao}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -48,7 +49,7 @@
 string MontarCabecalhoEventos(string mes)
     {
         var str = $@"
-            <table class='tabela-alunos'>
+            <table class='tabela-eventos'>
                 <thead>
                     <th class='sem-border-bottom'>{mes}</th>
                 </thead>
@@ -91,7 +92,7 @@ string MontarCabecalhoEventos(string mes)
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Model.TipoCalendarioNome</title>
+    <title>Relatório Imperessão do Calendário</title>
 </head>
 <body class="body-relatorio">
     <style>
@@ -189,6 +190,10 @@ string MontarCabecalhoEventos(string mes)
             border-top: 0;
             border-bottom: 0;
             height: 22px;
+        }
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
         }
     </style>
     <div>
