@@ -33,5 +33,14 @@ namespace SME.SR.Data
                 return await conexao.QuerySingleOrDefaultAsync<long>(query, parametros);
             }
         }
+
+        public async Task<TipoCalendarioDto> ObterPorId(long id)
+        {
+            var query = "select tc.ano_letivo as anoLetivo, tc.id, tc.nome from tipo_calendario tc where tc.id = @id";
+                        
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryFirstOrDefaultAsync<TipoCalendarioDto>(query, new { id });           
+
+        }
     }
 }

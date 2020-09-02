@@ -1339,7 +1339,6 @@ namespace SME.SR.MVC.Controllers
             model.Bimestre = "Todos";
             model.UsuarioNome = "Ronaldo Alves";
             model.UsuarioRF = "1234564";
-            model.PossuiNotaFechamento = true;
 
             var dreDto = new RelatorioNotasEConceitosFinaisDreDto() { Codigo = "10001", Nome = "Dre de Teste" };
 
@@ -1393,7 +1392,62 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioCompensacaoAusencia", model);
         }
+        [HttpGet("impressao-calendario")]
+        public IActionResult RelatorioImpressaoCalendario()
+        {
+            RelatorioImpressaoCalendarioDto model = new RelatorioImpressaoCalendarioDto();
+            model.DreNome = "DRE - JT";
+            model.UeNome = "EMEFM DERVILLE ALEGRETTI, PROF.";
+            model.TipoCalendarioNome = "CALENDÁRIO ESCOLAR FUNDAMENTAL/MÉDIO 2020";
 
+            var listaMeses = new List<RelatorioImpressaoCalendarioMesDto>();
+            var mes1 = new RelatorioImpressaoCalendarioMesDto()
+            {
+                MesDescricao = "JANEIRO",
+                MesNumero = 1
+            };
+
+            var mes2 = new RelatorioImpressaoCalendarioMesDto()
+            {
+                MesDescricao = "FEVEREIRO",
+                MesNumero = 2
+            };
+
+            var listaEventos = new List<RelatorioImpressaoCalendarioEventoDto>();
+            var evento1 = new RelatorioImpressaoCalendarioEventoDto()
+            {
+                Dia = "01",
+                DiaSemana = "Seg",
+                EventoTipo = "SME",
+                Evento = "Inicio das Férias Escolares"
+            };
+
+            var evento2 = new RelatorioImpressaoCalendarioEventoDto()
+            {
+                Dia = "15",
+                DiaSemana = "Qua",
+                EventoTipo = "SME",
+                Evento = "Feriado"
+            };
+
+            listaEventos.Add(evento1);
+            listaEventos.Add(evento2);
+            listaEventos.Add(evento1);
+            listaEventos.Add(evento2);
+            listaEventos.Add(evento1);
+            mes1.Eventos = listaEventos;
+            mes2.Eventos = listaEventos;
+
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            model.Meses = listaMeses;
+
+            return View("RelatorioImpressaoCalendario", model);
+        }
         private static RelatorioCompensacaoAusenciaDto GeraCompensacoesAusencia()
         {
             var model = new RelatorioCompensacaoAusenciaDto();

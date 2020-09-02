@@ -1,0 +1,238 @@
+﻿@model SME.SR.Infra.RelatorioImpressaoCalendarioDto
+
+@{
+
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 54;
+    int contadorPagina = 0;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always' />" + str;
+
+        }
+        return string.Empty;
+
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 7;
+        var str =
+           $@"<div>
+                <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+              </div>
+              <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+                <div class='titulo-relatorio'> {Model.TipoCalendarioNome} </div>
+                <div class='fonte-14 header-pagina'>
+                <table class='tblTopo'>
+                    <tbody>
+                        <tr>
+                            <td  width='40%' class='espaco-esquerda-15'>DRE: {Model.DreNome}</td>
+                            <td width='40%' class='espaco-esquerda-15'>UE: {Model.UeNome}</td>
+                            <td width='20%' class='espaco-esquerda-15'>DATA: {Model.DataImpressao}</td>
+                        </tr>
+                    </tbody>
+                </table>
+           </div>
+            ";
+
+        return str;
+    }
+
+string MontarCabecalhoEventos(string mes)
+    {
+        var str = $@"
+            <table class='tabela-alunos'>
+                <thead>
+                    <th class='sem-border-bottom'>{mes}</th>
+                </thead>
+            </table>";
+        return str;
+    }
+
+    string MontarTabelaEventos(List<SME.SR.Infra.RelatorioImpressaoCalendarioEventoDto> eventos, string mes)
+    {
+        var str = $@"<table class='tabela-eventos' style='border-bottom:none;'>
+                <tbody>";
+
+        for (int i = 0; i < eventos.Count; i++)
+        {
+            var evento = eventos[i];
+
+            str += $@"
+                   
+                    <tr>
+                        <td width='5%' class='negrito'>{evento.Dia}</th>
+                        <td width='5%' class='negrito'>{evento.DiaSemana}</th>
+                        <td width='5%' class='negrito'>{evento.EventoTipo}</th>
+                        <td width='85%' class='alinhar-esquerda espaco-esquerda-15'>{evento.Evento}</th>
+                    </tr>";
+
+            contadorQuebrarPagina++;
+            var quebra = VerificaQuebra();
+            var novaPagina = quebra  + (i < eventos.Count - 1 ? MontarCabecalhoEventos(mes) : "");
+            str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}<table class='tabela-eventos'><tbody>" : "";
+
+        }
+        str += $@"</tbody></table>";
+
+        return str;
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório Imperessão do Calendário</title>
+</head>
+<body class="body-relatorio">
+    <style>
+
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+       
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-eventos tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+        
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .negrito{
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border-top: 0;
+            border-bottom: 0;
+            height: 22px;
+        }
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+    </style>
+    <div>
+        @{
+            @Html.Raw(MontarCabecalho())
+
+            var meses = Model.Meses.ToList();
+
+            for (int i = 0; i < meses.Count; i++)
+            {
+                var mes = meses[i];
+
+                <table class="tabela-eventos">
+                    <thead>
+
+                        <tr>
+                            <th class="sem-border-bottom">@mes.MesDescricao</th>
+                        </tr>
+                    </thead>
+                </table>
+
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                @Html.Raw(VerificaQuebra())
+                @Html.Raw(MontarTabelaEventos(mes.Eventos.ToList(), mes.MesDescricao))
+
+                if (i != meses.Count - 1)
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="thLimpo"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                }
+
+                contadorQuebrarPagina++;
+            }
+        }
+    </div>
+</body>
+</html>
