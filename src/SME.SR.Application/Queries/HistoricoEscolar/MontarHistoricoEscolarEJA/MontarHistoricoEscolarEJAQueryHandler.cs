@@ -71,6 +71,7 @@ namespace SME.SR.Application
                     listaRetorno.Add(historicoDto);
                 }
             }
+            listaRetorno = listaRetorno.OrderBy(a => a.InformacoesAluno.Nome).ToList();
 
             return await Task.FromResult(listaRetorno);
         }
@@ -105,7 +106,7 @@ namespace SME.SR.Application
             {
                 return new ResponsaveisUeDto()
                 {
-                    DocumentoDiretor = dadosDiretor?.DocumentoFormatado ,
+                    DocumentoDiretor = dadosDiretor?.DocumentoFormatado,
                     NomeDiretor = dadosDiretor?.NomeServidor,
                     DocumentoSecretario = dadosSecretario?.DocumentoFormatado,
                     NomeSecretario = dadosSecretario?.NomeServidor
