@@ -660,7 +660,8 @@ namespace SME.SR.Data
                                 and not cc2.excluido 
                                 and ft2.turma_id = ft.turma_id 
 	                    	    and	cca2.aluno_codigo = cca.aluno_codigo 
-	                    	    and ft2.periodo_escolar_id is null)        ";
+	                    	    and ft2.periodo_escolar_id is null
+                                and cca2.conselho_classe_parecer_id is not null)        ";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
