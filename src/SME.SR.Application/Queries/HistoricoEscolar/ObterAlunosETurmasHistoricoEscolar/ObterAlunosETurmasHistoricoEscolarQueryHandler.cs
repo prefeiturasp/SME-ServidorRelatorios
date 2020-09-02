@@ -71,12 +71,32 @@ namespace SME.SR.Application
                     if (!alunosPromovidosCodigos.Any())
                         throw new NegocioException(" Não foi encontrado nenhum histórico de promoção para o(s) aluno(s) da turma.");
 
-                    IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray());
+                    long[] codigoAlunos = alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray();
+
+                    IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(codigoAlunos);
+
+                    //Obter as turmas dos Alunos
+                    var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos, pareceresConclusivosIds.ToArray()));
+                    if (!turmasDosAlunos.Any())
+                        return retorno;
 
                     foreach (var item in informacoesDosAlunos)
                     {
                         var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
                         alunoTurmasNotasFrequenciasDto.Turmas.Add(turma);
+
+                        var turmasdoAluno = turmasDosAlunos.Where(a => a.AlunoCodigo == item.CodigoAluno);
+                        foreach (var turmaDoAluno in turmasdoAluno)
+                        {
+                            alunoTurmasNotasFrequenciasDto.Turmas.Add(new Turma()
+                            {
+                                Ano = turmaDoAluno.Ano.ToString(),
+                                Codigo = turmaDoAluno.TurmaCodigo,
+                                ModalidadeCodigo = turmaDoAluno.Modalidade,
+                                EtapaEJA = turmaDoAluno.EtapaEJA
+                            });
+                        }
+
                         retorno.Add(alunoTurmasNotasFrequenciasDto);
                     }
                 }
