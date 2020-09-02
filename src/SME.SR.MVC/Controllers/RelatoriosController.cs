@@ -1444,6 +1444,10 @@ namespace SME.SR.MVC.Controllers
             listaMeses.Add(mes2);
             listaMeses.Add(mes1);
             listaMeses.Add(mes2);
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
             model.Meses = listaMeses;
 
             return View("RelatorioImpressaoCalendario", model);
