@@ -13,5 +13,7 @@ namespace SME.SR.Data
 
         public string NomeRelatorio =>
             $"{Codigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
+
+        public string NomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {Nome}"; } }
     }
 }

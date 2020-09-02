@@ -19,4 +19,8 @@
     <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Queries\HistoricoEscolar\MontarHistoricoEscolarTransferenciaEJA\" />
+  </ItemGroup>
+
 </Project>

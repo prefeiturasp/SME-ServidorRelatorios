@@ -11,5 +11,6 @@ namespace SME.SR.Infra
         public Modalidade Modalidade { get; set; }
         public int Ano { get; set; }
         public int EtapaEJA { get; set; }
+        public string Ciclo { get; set; }
     }
 }

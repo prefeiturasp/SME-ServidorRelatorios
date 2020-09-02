@@ -16,6 +16,7 @@ namespace SME.SR.Application
                                            IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
                                            IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
                                            IEnumerable<TipoNotaCicloAno> tiposNota,
+                                           IEnumerable<TransferenciaDto> transferencias,
                                            string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda,
                                            DadosDataDto dadosData, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario,
                                            bool preencherDataImpressao, bool imprimirDadosResponsaveis)
@@ -31,6 +32,7 @@ namespace SME.SR.Application
             Frequencias = frequencias;
             MediasFrequencia = mediasFrequencia;
             TiposNota = tiposNota;
+            Transferencias = transferencias;
             Legenda = legenda;
             DadosData = dadosData;
             DadosDiretor = dadosDiretor;
@@ -48,6 +50,7 @@ namespace SME.SR.Application
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }
         public IEnumerable<TipoNotaCicloAno> TiposNota { get; set; }
+        public IEnumerable<TransferenciaDto> Transferencias { get; set; }
         public string[] TurmasCodigo { get; set; }
         public DadosDataDto DadosData { get; set; }
         public FuncionarioDto DadosDiretor { get; set; }
