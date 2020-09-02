@@ -72,6 +72,8 @@ namespace SME.SR.Application
                 }
             }
 
+            listaRetorno = listaRetorno.OrderBy(a => a.InformacoesAluno.Nome).ToList();
+
             return await Task.FromResult(listaRetorno);
         }
 
