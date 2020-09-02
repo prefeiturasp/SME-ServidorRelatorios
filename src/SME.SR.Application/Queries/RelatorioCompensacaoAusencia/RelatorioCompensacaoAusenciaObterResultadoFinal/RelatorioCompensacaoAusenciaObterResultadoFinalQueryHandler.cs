@@ -105,9 +105,9 @@ namespace SME.SR.Application
             result.Modalidade = filtros.Modalidade.Name();
             result.RF = filtros.UsuarioRf;
 
-            if (string.IsNullOrEmpty(filtros.TurmaCodigo))
-                result.TurmaNome = "Todas";
-            else result.TurmaNome = $"{filtros.Modalidade.ShortName()} - {compensacoes.FirstOrDefault(a => a.TurmaCodigo == filtros.TurmaCodigo)?.TurmaNome}";
+            if (filtros.TurmasCodigo != null && filtros.TurmasCodigo.Any())
+                result.TurmaNome = $"{filtros.Modalidade.ShortName()} - {compensacoes.FirstOrDefault(a => a.TurmaCodigo == filtros.TurmasCodigo[0])?.TurmaNome}";
+            else result.TurmaNome = "Todas"; 
 
             result.UeNome = ue.Nome.ToString();
             result.DreNome = dre.Abreviacao;

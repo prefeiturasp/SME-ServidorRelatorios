@@ -6,7 +6,7 @@
         public string DreCodigo { get; set; }
         public string UeCodigo { get; set; }
         public Modalidade Modalidade { get; set; }
-        public string TurmaCodigo { get; set; }
+        public string[] TurmasCodigo { get; set; }
         public long[] ComponentesCurriculares { get; set; }
         public int Bimestre { get; set; }
         public int? Semestre { get; set; }

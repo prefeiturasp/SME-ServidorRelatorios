@@ -18,7 +18,7 @@ namespace SME.SR.Application
         }
         public async Task<IEnumerable<RelatorioCompensacaoAusenciaRetornoConsulta>> Handle(ObterCompensacoesAusenciaPorUeModalidadeSemestreComponenteBimestreQuery request, CancellationToken cancellationToken)
         {
-            return await compensacaoAusenciaRepository.ObterPorUeModalidadeSemestreComponenteBimestre(request.UeId, (int)request.Modalidade, request.Semestre, request.TurmaCodigo, request.ComponetesCurricularesIds, request.Bimestre);
+            return await compensacaoAusenciaRepository.ObterPorUeModalidadeSemestreComponenteBimestre(request.UeId, (int)request.Modalidade, request.Semestre, request.TurmaCodigo, request.ComponetesCurricularesIds, request.Bimestre, request.AnoLetivo);
         }
     }
 }

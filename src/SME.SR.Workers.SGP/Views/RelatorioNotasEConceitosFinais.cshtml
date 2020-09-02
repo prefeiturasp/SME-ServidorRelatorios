@@ -1,92 +1,106 @@
 ﻿@model SME.SR.Infra.RelatorioNotasEConceitosFinaisDto
 
-@{
+@{ int contadorQuebrarPagina = 0;
+                int contadorMaximoLinhasPorPagina = 46;
+                int contadorPagina = 0;
 
-    int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 48;
-    int contadorPagina = 0;
+                string VerificaQuebra()
+                {
+                    if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+                    {
+                        return Quebra();
 
-    string VerificaQuebra()
-    {
-        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
-        {
-            return Quebra();
+                    }
+                    else if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina && Model.PossuiNotaFechamento)
+                    {
+                        var quebra = Quebra();
+                        return $@"{montarLegenda()}{quebra}";
+                    }
+                    return string.Empty;
 
-        }
-        return string.Empty;
+                }
 
-    }
+                string montarLegenda(){
+                    return "<span class='legenda'>* Estudante sem conselho de classe registrado</span>";
+                }
 
-    string Quebra()
-    {
-        contadorQuebrarPagina = 0;
-        contadorPagina = contadorPagina + 1;
+                string VerificaMontagemLegendaFim(){
+                    if(contadorPagina > 0){
+                        return montarLegenda();
+                    }
+                    return "";
+                }
 
-        var str = MontarCabecalho();
-        return $@"<div style='page-break-before:always'> </div>" + str;
-    }
+                string Quebra()
+                {
+                    contadorQuebrarPagina = 0;
+                    contadorPagina = contadorPagina + 1;
 
-    string CabecalhoTabelaNotas()
-    {
-        contadorQuebrarPagina++;
-        return $@"
-                  <table class='tabela-alunos'>
-                      <thead>
-                          <th width='5%'>Nº</th>
-                          <th width='10%'>TURMA</th>
-                          <th width='65%'>NOME</th>
-                          <th width='20%'>CONCEITO / NOTA</th>
-                      </thead>
-                  </table>";
+                    var str = MontarCabecalho();
+                    return $@"<div style='page-break-before:always'> </div>" + str;
+                }
 
-    }
+                string CabecalhoTabelaNotas()
+                {
+                    contadorQuebrarPagina++;
+                    return $@"
+                      <table class='tabela-alunos'>
+                          <thead>
+                              <th width='5%'>Nº</th>
+                              <th width='10%'>TURMA</th>
+                              <th width='65%'>NOME</th>
+                              <th width='20%'>CONCEITO / NOTA</th>
+                          </thead>
+                      </table>";
 
-    string MontarCorpoInformacoesAluno(List<SME.SR.Infra.RelatorioNotasEConceitosFinaisDoAlunoDto> notas)
-    {
+                }
 
-        var str = $@"<table class='tabela-alunos'>
-        <tbody>";
+                string MontarCorpoInformacoesAluno(List<SME.SR.Infra.RelatorioNotasEConceitosFinaisDoAlunoDto> notas)
+                {
 
-        foreach (var nota in notas)
-        {
-            str += $@"<tr>
-                        <td width='5%'>{nota.AlunoNumeroChamada}</td>
-                        <td width='10%'>{nota.TurmaNome}</td>
-                        <td width='65%'>{nota.AlunoNomeCompleto}</td>
-                        <td width='20%'>{nota.NotaConceito}</td>
-                    </tr>";
-            contadorQuebrarPagina++;
+                    var str = $@"<table class='tabela-alunos'>
+            <tbody>";
 
-            var quebra = VerificaQuebra();
+                    foreach (var nota in notas)
+                    {
+                        str += $@"<tr>
+                            <td width='5%'>{nota.AlunoNumeroChamada}</td>
+                            <td width='10%'>{nota.TurmaNome}</td>
+                            <td width='65%'>{nota.AlunoNomeCompleto}</td>
+                            <td width='20%'>{nota.NotaConceito}</td>
+                        </tr>";
+                        contadorQuebrarPagina++;
 
-            if (!string.IsNullOrEmpty(quebra))
-            {
-                str += $@"</tbody></table>{quebra}{CabecalhoTabelaNotas()}<table class='tabela-alunos'><tbody>";
-            }
-        }
-        str += $@"</tbody></table>";
-        return str;
-    }
+                        var quebra = VerificaQuebra();
 
-    string EspacoEmBranco()
-    {
-        if (contadorQuebrarPagina > 9 )
-        {
-            contadorQuebrarPagina++;
-            return $@"<table class='tabela-alunos'>
-                      <thead>
-                          <th class='thLimpo' width='100%'></th>
-                      </thead>
-                </table>";
-        }
-        else return "";
-    }
+                        if (!string.IsNullOrEmpty(quebra))
+                        {
+                            str += $@"</tbody></table>{quebra}{CabecalhoTabelaNotas()}<table class='tabela-alunos'><tbody>";
+                        }
+                    }
+                    str += $@"</tbody></table>";
+                    return str;
+                }
 
-    string MontarCabecalho()
-    {
-        contadorQuebrarPagina = contadorQuebrarPagina + 6;
-        var str =
-           $@"<div>
+                string EspacoEmBranco()
+                {
+                    if (contadorQuebrarPagina > 9)
+                    {
+                        contadorQuebrarPagina++;
+                        return $@"<table class='tabela-alunos'>
+                          <thead>
+                              <th class='thLimpo' width='100%'></th>
+                          </thead>
+                    </table>";
+                    }
+                    else return "";
+                }
+
+                string MontarCabecalho()
+                {
+                    contadorQuebrarPagina = contadorQuebrarPagina + 6;
+                    var str =
+                       $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
@@ -127,10 +141,8 @@
 </div>
 ";
 
-        return str;
-    }
-
-}
+                    return str;
+                } }
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -163,7 +175,7 @@
 
         .titulo-faltas-frequencia {
             text-align: right;
-            font-size: 14.5px;            
+            font-size: 14.5px;
         }
 
         .img-logo-sgp {
@@ -200,12 +212,13 @@
         .campo-componente-curricular {
             width: 80%;
             border-top: none;
-        }      
+        }
 
         .campo-rf-data {
             width: 25%;
             border-top: none;
         }
+
         .campo-usuario {
             width: 50%;
             border-top: none;
@@ -230,7 +243,7 @@
         }
 
         td {
-            border: 1px solid #42474a;            
+            border: 1px solid #42474a;
         }
 
         .tabela-alunos tr {
@@ -245,7 +258,8 @@
         .fonte-14 {
             font-size: 14px !important;
         }
-            .fonte-12 {
+
+        .fonte-12 {
             font-size: 12px !important;
         }
 
@@ -271,6 +285,12 @@
         .thLimpo {
             background-color: #ffffff;
             font-size: 14px;
+        }
+
+        .legenda {
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
         }
     </style>
     <div>
@@ -390,6 +410,7 @@
                 }
             }
         }
+        @Html.Raw(VerificaMontagemLegendaFim())
 
     </div>
 </body>
