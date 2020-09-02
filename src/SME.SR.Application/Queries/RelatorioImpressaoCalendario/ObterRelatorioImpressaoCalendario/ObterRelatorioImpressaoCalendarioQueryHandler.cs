@@ -67,9 +67,9 @@ namespace SME.SR.Application
         {
             var retorno = new RelatorioImpressaoCalendarioDto();
 
-            retorno.DreNome = dre == null ? "TODAS" : dre.Nome;
+            retorno.DreNome = dre == null ? "TODAS" : dre.Abreviacao;
             retorno.TipoCalendarioNome = tipoCalendarioDto.Nome;
-            retorno.UeNome = ue == null ? "TODAS" : ue.Nome;
+            retorno.UeNome = ue == null ? "TODAS" : ue.NomeComTipoEscola;
 
             return retorno;
         }
