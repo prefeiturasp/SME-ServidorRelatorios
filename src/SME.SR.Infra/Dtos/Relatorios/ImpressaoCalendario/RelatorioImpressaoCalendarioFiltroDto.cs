@@ -10,7 +10,7 @@ namespace SME.SR.Infra
         public bool EhSME { get; set; }
         public string UsuarioRF { get; set; }
         public Guid UsuarioPerfil { get; set; }
-        public bool ConsideraPendenteAprovacao { get; internal set; }
-        public bool PodeVisualizarEventosOcorrenciaDre { get; internal set; }
+        public bool ConsideraPendenteAprovacao { get; set; }
+        public bool PodeVisualizarEventosOcorrenciaDre { get; set; }
     }
 }

@@ -43,17 +43,17 @@ namespace SME.SR.Application
             foreach (var mes in meses)
             {
                 var mesParaIncluir = new RelatorioImpressaoCalendarioMesDto();
-                mesParaIncluir.MesDescricao = new DateTime(2020, mes, 1).ToString("MMMM", cultureinfo);
+                mesParaIncluir.MesDescricao = new DateTime(2020, mes, 1).ToString("MMMM", cultureinfo).ToUpper();
                 mesParaIncluir.MesNumero = mes;
 
                 var eventosDoMes = retornoQuery.Where(a => a.DataInicio.Month == mes);
-                foreach (var eventoDoMes in eventosDoMes)
+                foreach (var eventoDoMes in eventosDoMes.OrderBy( a => a.DataInicio))
                 {
                     var eventoParaIncluir = new RelatorioImpressaoCalendarioEventoDto();
                     eventoParaIncluir.Dia = eventoDoMes.DataInicio.Day.ToString().PadLeft(2,'0');
-                    eventoParaIncluir.DiaSemana = dtfi.GetShortestDayName(eventoDoMes.DataInicio.DayOfWeek);
+                    eventoParaIncluir.DiaSemana = dtfi.GetAbbreviatedDayName(eventoDoMes.DataInicio.DayOfWeek).ToUpper();
                     eventoParaIncluir.Evento = eventoDoMes.Nome;
-                    eventoParaIncluir.EventoTipo = eventoDoMes.TipoEvento;                    
+                    eventoParaIncluir.EventoTipo = eventoDoMes.TipoEvento;                        
                     mesParaIncluir.Eventos.Add(eventoParaIncluir);
                 }
 

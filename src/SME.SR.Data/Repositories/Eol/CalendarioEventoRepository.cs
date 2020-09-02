@@ -23,7 +23,7 @@ namespace SME.SR.Data
 					case
 						when data_inicio = data_fim then ''
 						else '(inicio)'
-					end descricao_inicio_fim,
+					end InicioFimDesc,
 					e.nome,
 					case
 						when e.dre_id is not null and e.ue_id is null then 'DRE'
@@ -61,11 +61,11 @@ namespace SME.SR.Data
 		-- caso desconsidere evento SME
 		and (@desconsideraEventoSme = false or (@desconsideraEventoSme = true and not (e.dre_id is null and e.ue_id is null)))
 		
-	union
+	union distinct
 	
 	select distinct e.id,
 					e.data_fim,
-					'(fim)',
+					'(fim)' as InicioFimDesc,
 					e.nome,
 					case
 						when e.dre_id is not null and e.ue_id is null then 'DRE'
@@ -102,8 +102,10 @@ namespace SME.SR.Data
 
             var parametros = new { usuarioLogin, usuarioPerfil, consideraHistorico, consideraPendenteAprovacao, dreCodigo, ueCodigo, desconsideraEventoSme, desconsideraLocalDre, tipoCalendarioId };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
             return await conexao.QueryAsync<CalendarioEventoQueryRetorno>(query, parametros);
+
         }
     }
 }

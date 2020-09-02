@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP
 {
-    public class RelatorioImpressaoCalendarioUseCase : IRelatorioBoletimEscolarUseCase
+    public class RelatorioImpressaoCalendarioUseCase : IRelatorioImpressaoCalendarioUseCase
     {
         private readonly IMediator mediator;
 

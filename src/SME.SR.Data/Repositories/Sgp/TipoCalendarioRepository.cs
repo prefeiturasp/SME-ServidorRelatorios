@@ -36,10 +36,10 @@ namespace SME.SR.Data
 
         public async Task<TipoCalendarioDto> ObterPorId(long id)
         {
-            var query = "select tc.ano_letivo as anoLetivo, tc.id, tc.nome from tipo_calendario tc where id = @id";
-
+            var query = "select tc.ano_letivo as anoLetivo, tc.id, tc.nome from tipo_calendario tc where tc.id = @id";
+                        
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryFirstOrDefault(query, new { id });
+            return await conexao.QueryFirstOrDefaultAsync<TipoCalendarioDto>(query, new { id });           
 
         }
     }

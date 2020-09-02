@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -12,6 +13,8 @@ namespace SME.SR.Infra
         public string UeNome { get; set; }
         public string TipoCalendarioNome { get; set; }
         public IList<RelatorioImpressaoCalendarioMesDto> Meses { get; set; }
+
+        public string DataImpressao { get { return DateTime.Today.ToString("dd/MM/yyyy"); } }
 
     }
 }
