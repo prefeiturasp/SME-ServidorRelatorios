@@ -100,7 +100,7 @@ namespace SME.SR.Data
 		-- caso desconsidere evento SME
 		and (@desconsideraEventoSme = false or (@desconsideraEventoSme = true and not (e.dre_id is null and e.ue_id is null)));	";
 
-            var parametros = new { usuarioLogin, usuarioPerfil, consideraHistorico, consideraPendenteAprovacao, dreCodigo, ueCodigo, desconsideraEventoSme, desconsideraLocalDre, tipoCalendarioId };
+            var parametros = new { usuarioLogin, usuarioPerfil, consideraHistorico, consideraPendenteAprovacao, dreCodigo, ueCodigo, desconsideraEventoSme, desconsideraLocalDre = !desconsideraLocalDre, tipoCalendarioId };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
