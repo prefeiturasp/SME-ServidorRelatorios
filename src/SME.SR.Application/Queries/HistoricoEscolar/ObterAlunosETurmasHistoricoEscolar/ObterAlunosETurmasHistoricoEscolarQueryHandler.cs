@@ -96,7 +96,8 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possíve obter os dados dos alunos");
 
             informacoesDosAlunos = informacoesDosAlunos.GroupBy(d => d.CodigoAluno)
-                                  .SelectMany(g => g.OrderByDescending(d => d.DataSituacao)
+                                  .SelectMany(g => g.OrderByDescending(d => d.AnoLetivo)
+                                                    .ThenByDescending(m => m.DataSituacao)
                                                     .Take(1));
 
             return informacoesDosAlunos;
