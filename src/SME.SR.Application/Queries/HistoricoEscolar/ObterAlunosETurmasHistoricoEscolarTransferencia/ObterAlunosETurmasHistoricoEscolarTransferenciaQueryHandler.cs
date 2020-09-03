@@ -89,8 +89,9 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível obter os dados dos alunos");
 
             informacoesDosAlunos = informacoesDosAlunos.GroupBy(d => d.CodigoAluno)
-                                    .SelectMany(g => g.OrderByDescending(d => d.DataSituacao)
-                                                      .Take(1));
+                                   .SelectMany(g => g.OrderByDescending(d => d.AnoLetivo)
+                                                     .ThenByDescending(m => m.DataSituacao)
+                                                     .Take(1));
 
             return informacoesDosAlunos;
         }

@@ -73,16 +73,34 @@ namespace SME.SR.Application
                     if (!alunosPromovidosCodigos.Any())
                         return retorno;
 
-                    IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray());
+                    long[] codigoAlunos = alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray();
+
+                    IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(codigoAlunos);
+
+                    //Obter as turmas dos Alunos
+                    var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos, pareceresConclusivosIds.ToArray()));
+                    if (!turmasDosAlunos.Any())
+                        return retorno;
 
                     foreach (var item in informacoesDosAlunos)
                     {
                         var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
-                        alunoTurmasNotasFrequenciasDto.Turmas.Add(turma);
+
+                        var turmasdoAluno = turmasDosAlunos.Where(a => a.AlunoCodigo == item.CodigoAluno);
+                        foreach (var turmaDoAluno in turmasdoAluno)
+                        {
+                            alunoTurmasNotasFrequenciasDto.Turmas.Add(new Turma()
+                            {
+                                Ano = turmaDoAluno.Ano.ToString(),
+                                Codigo = turmaDoAluno.TurmaCodigo,
+                                ModalidadeCodigo = turmaDoAluno.Modalidade,
+                                EtapaEJA = turmaDoAluno.EtapaEJA
+                            });
+                        }
+
                         retorno.Add(alunoTurmasNotasFrequenciasDto);
                     }
                 }
-
             }
 
             return retorno;
@@ -96,7 +114,8 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possíve obter os dados dos alunos");
 
             informacoesDosAlunos = informacoesDosAlunos.GroupBy(d => d.CodigoAluno)
-                                  .SelectMany(g => g.OrderByDescending(d => d.DataSituacao)
+                                  .SelectMany(g => g.OrderByDescending(d => d.AnoLetivo)
+                                                    .ThenByDescending(m => m.DataSituacao)
                                                     .Take(1));
 
             return informacoesDosAlunos;
