@@ -67,14 +67,14 @@ namespace SME.SR.Application
                     Nome = dreParaAdicionar.DreNome
                 };
 
-                var uesParaAdicionar = notasPorTurmas.Where(a => a.DreCodigo == dreParaAdicionar.DreCodigo).Select(a => new { a.UeCodigo, a.UeNome }).Distinct();
+                var uesParaAdicionar = notasPorTurmas.Where(a => a.DreCodigo == dreParaAdicionar.DreCodigo).Select(a => new { a.UeCodigo, a.UeNomeComTipoEscola }).Distinct();
 
                 foreach (var ueParaAdicionar in uesParaAdicionar)
                 {
                     var ueNova = new RelatorioNotasEConceitosFinaisUeDto
                     {
                         Codigo = ueParaAdicionar.UeCodigo,
-                        Nome = ueParaAdicionar.UeNome
+                        Nome = ueParaAdicionar.UeNomeComTipoEscola
                     };
 
                     var anosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo).Select(a => a.Ano).Distinct();
