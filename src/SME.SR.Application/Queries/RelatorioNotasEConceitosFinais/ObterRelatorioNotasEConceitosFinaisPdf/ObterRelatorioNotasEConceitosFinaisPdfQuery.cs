@@ -9,7 +9,7 @@ namespace SME.SR.Application
 
         public ObterRelatorioNotasEConceitosFinaisPdfQuery(FiltroRelatorioNotasEConceitosFinaisDto filtroRelatorioNotasEConceitosFinais)
         {
-            this.FiltroRelatorioNotasEConceitosFinais = FiltroRelatorioNotasEConceitosFinais;
+            this.FiltroRelatorioNotasEConceitosFinais = filtroRelatorioNotasEConceitosFinais;
         }
     }
 }

@@ -29,8 +29,7 @@ namespace SME.SR.Application
                     if (relatorioDto == null)
                         throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
 
-                    var relatorioAmbos = relatorioDto.OfType<RelatorioFaltasFrequenciasExcelDto>();
-                    await mediator.Send(new GerarExcelGenericoCommand(relatorioAmbos.ToList<object>(), "RelatorioNotasEConceitosFinais", request.CodigoCorrelacao));
+                    await mediator.Send(new GerarExcelGenericoCommand(relatorioDto.ToList<object>(), "RelatorioNotasEConceitosFinais", request.CodigoCorrelacao));
 
                     break;
                 case TipoFormatoRelatorio.Pdf:
