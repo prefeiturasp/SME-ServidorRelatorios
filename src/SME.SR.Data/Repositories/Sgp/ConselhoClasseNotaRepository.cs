@@ -165,6 +165,7 @@ namespace SME.SR.Data
                     , d.abreviacao as dreAbreviacao
                     , u.ue_id  as ueCodigo
                     , u.nome  as ueNome
+                    , u.tipo_escola as tipoEscola
                     , t.ano
                     , t.turma_id as turmaCodigo
                     , t.nome as turmaNome
@@ -225,6 +226,7 @@ namespace SME.SR.Data
                     , d.abreviacao as dreAbreviacao
                     , u.ue_id  as ueCodigo
                     , u.nome  as ueNome
+                    , u.tipo_escola as tipoEscola
                     , t.ano
                     , t.turma_id as turmaCodigo
                     , t.nome as turmaNome

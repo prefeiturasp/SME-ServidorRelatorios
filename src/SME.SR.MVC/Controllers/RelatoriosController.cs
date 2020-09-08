@@ -1349,8 +1349,8 @@ namespace SME.SR.MVC.Controllers
             var bimestre = new RelatorioNotasEConceitosFinaisBimestreDto("Bimestre 1");
 
             var componenteCurricular = new RelatorioNotasEConceitosFinaisComponenteCurricularDto() { Nome = "Matemática" };
-
-            var notaConceitoAluno = new RelatorioNotasEConceitosFinaisDoAlunoDto("Turma ABC", "01", "Antolino Neves", "10");
+            
+            var notaConceitoAluno = new RelatorioNotasEConceitosFinaisDoAlunoDto("Turma ABC", 1, "Antolino Neves", "10", "");
 
             componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
             componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
