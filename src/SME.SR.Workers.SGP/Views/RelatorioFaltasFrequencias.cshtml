@@ -323,7 +323,7 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                                     @if (string.IsNullOrWhiteSpace(Model.Ano) || Model.Ano == "Todos")
                                                     {
                                                         <tr>
-                                                            <th>@string.Format("{0}º Ano", ano.NomeAno)</th>
+                                                            <th>@ano.NomeAno</th>
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                     }
