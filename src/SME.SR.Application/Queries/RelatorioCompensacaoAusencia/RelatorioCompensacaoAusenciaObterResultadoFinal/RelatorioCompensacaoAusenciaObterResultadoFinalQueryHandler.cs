@@ -109,7 +109,7 @@ namespace SME.SR.Application
                 result.TurmaNome = $"{filtros.Modalidade.ShortName()} - {compensacoes.FirstOrDefault(a => a.TurmaCodigo == filtros.TurmasCodigo[0])?.TurmaNome}";
             else result.TurmaNome = "Todas"; 
 
-            result.UeNome = ue.Nome.ToString();
+            result.UeNome = ue.NomeComTipoEscola;
             result.DreNome = dre.Abreviacao;
             result.Usuario = filtros.UsuarioNome;
         }
