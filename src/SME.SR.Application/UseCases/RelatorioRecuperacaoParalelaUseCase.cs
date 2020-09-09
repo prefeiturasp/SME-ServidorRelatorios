@@ -77,7 +77,7 @@ namespace SME.SR.Application
                 alunosDto.Add(relatorioRecuperacaoParalelaAlunoDto);
             }
 
-            relatorioRecuperacaoParalelaDto.Alunos = alunosDto;
+            relatorioRecuperacaoParalelaDto.Alunos = alunosDto.OrderBy(x => x.AlunoNome).ToList();
         }
 
         private static void AtribuirSecoes(IEnumerable<RelatorioRecuperacaoParalelaRetornoQueryDto> secoes,
