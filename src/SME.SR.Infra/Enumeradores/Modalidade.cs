@@ -4,6 +4,9 @@ namespace SME.SR.Infra
 {
     public enum Modalidade
     {
+        [Display(Name = "Infantil", ShortName = "EI")]
+        Infantil = 1,
+
         [Display(Name = "Fundamental", ShortName = "EF")]
         Fundamental = 5,
 

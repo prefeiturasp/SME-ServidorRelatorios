@@ -34,7 +34,10 @@ namespace SME.SR.Data
 	                u.ue_id as CodigoUe,
 	                u.tipo_escola as TipoUe,
 	                u.nome as NomeUe,
-                    t.ano as NomeAno,
+                    case t.modalidade_codigo
+    	                when 1 then coalesce(t.serie_ensino, t.ano)
+    	                else concat(t.ano, 'º ano') 
+                    end as NomeAno,
                     fa.bimestre NomeBimestre, 
                     fa.bimestre Numero, 
                     fa.disciplina_id CodigoComponente,
