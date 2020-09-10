@@ -118,7 +118,7 @@ namespace SME.SR.Application
                                     var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo.CodigoAluno, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componente.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese);
                                     componenteNovo.NotaConceitoAlunos.Add(notaConceitoNovo);
                                 }
-                                componenteNovo.NotaConceitoAlunos = componenteNovo.NotaConceitoAlunos.OrderBy(a => a.AlunoNomeCompleto).ToList();
+                                componenteNovo.NotaConceitoAlunos = componenteNovo.NotaConceitoAlunos.OrderBy(t => t.TurmaNome).ThenBy(a => a.AlunoNomeCompleto).ToList();
                                 bimestreNovo.ComponentesCurriculares.Add(componenteNovo);
                             }
 
