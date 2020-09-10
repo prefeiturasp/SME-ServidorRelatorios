@@ -37,7 +37,18 @@ namespace SME.SR.Application
                 (alunosTurmasTransferencia == null || !alunosTurmasTransferencia.Any()))
                 throw new NegocioException("Não foi encontrado nenhum histórico de promoção e transferência para o(s) aluno(s) da turma.");
 
+            var alunosTransferenciaSemHistorico = alunosTurmasTransferencia.Where(tf => !alunosTurmas.Select(a => a.Aluno.Codigo).Contains(tf.Aluno.Codigo));
+
             var todosAlunosTurmas = new List<AlunoTurmasHistoricoEscolarDto>();
+
+            if (alunosTransferenciaSemHistorico != null && alunosTransferenciaSemHistorico.Any())
+            {
+                filtros.AlunosCodigo = alunosTransferenciaSemHistorico.Select(a => a.Aluno.Codigo).ToArray();
+                var alunosTransferenciaTurmas = await MontarAlunosTurmas(filtros);
+
+                if (alunosTransferenciaTurmas != null && alunosTransferenciaTurmas.Any())
+                    todosAlunosTurmas.AddRange(alunosTransferenciaTurmas);
+            }
 
             if (alunosTurmas != null && alunosTurmas.Any())
                 todosAlunosTurmas.AddRange(alunosTurmas);
