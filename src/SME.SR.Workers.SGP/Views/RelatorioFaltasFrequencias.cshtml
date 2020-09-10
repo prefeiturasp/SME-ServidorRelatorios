@@ -323,7 +323,7 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                                     @if (string.IsNullOrWhiteSpace(Model.Ano) || Model.Ano == "Todos")
                                                     {
                                                         <tr>
-                                                            <th>@string.Format("{0}º Ano", ano.NomeAno)</th>
+                                                            <th>@ano.NomeAno</th>
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                     }
@@ -401,6 +401,14 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                         {
                                             @MontarQuebrarPagina();
                                             contadorQuebrarPagina = 0;
+                                        }
+                                        else
+                                        {
+                                            <footer class='rodape-rel-faltas-frequencia'>
+                                                <div class='titulo-sgp-rodape'>
+                                                    SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
+                                                </div>
+                                            </footer>
                                         }
                                     }
                                 }

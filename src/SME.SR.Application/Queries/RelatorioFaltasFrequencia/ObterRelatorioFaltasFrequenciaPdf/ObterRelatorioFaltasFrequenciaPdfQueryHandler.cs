@@ -15,17 +15,14 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
     public class ObterRelatorioFaltasFrequenciaPdfQueryHandler : IRequestHandler<ObterRelatorioFaltasFrequenciaPdfQuery, RelatorioFaltasFrequenciaDto>
     {
         private readonly IRelatorioFaltasFrequenciaRepository relatorioFaltasFrequenciaRepository;
-        private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
         private readonly ITurmaRepository turmaRepository;
 
         public ObterRelatorioFaltasFrequenciaPdfQueryHandler(IRelatorioFaltasFrequenciaRepository relatorioFaltasFrequenciaRepository,
-                                                             IComponenteCurricularRepository componenteCurricularRepository,
                                                              IMediator mediator,
                                                              ITurmaRepository turmaRepository)
         {
             this.relatorioFaltasFrequenciaRepository = relatorioFaltasFrequenciaRepository ?? throw new ArgumentNullException(nameof(relatorioFaltasFrequenciaRepository));
-            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.turmaRepository = turmaRepository ?? throw new ArgumentNullException(nameof(turmaRepository));
         }
@@ -48,7 +45,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
             }
 
-            var componentes = await componenteCurricularRepository.ListarComponentes();
+            var componentes = await mediator.Send(new ObterListaComponentesCurricularesQuery());
 
             var codigosTurmas = dres.SelectMany(d => d.Ues)
                 .SelectMany(u => u.Anos)
@@ -66,8 +63,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             var deveAdicionarFinal = filtro.Bimestres.Any(c => c == 0);
             var mostrarSomenteFinal = deveAdicionarFinal && filtro.Bimestres.Count() == 1;
-
-
 
             foreach (var dre in dres)
             {
@@ -88,7 +83,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 for (int a = 0; a < componente.Alunos.Count; a++)
                                 {
                                     var aluno = componente.Alunos[a];
-                                    var alunoAtual = alunos.SingleOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
+                                    var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
                                     if (alunoAtual != null)
                                     {
                                         aluno.NomeAluno = alunoAtual.NomeFinal;

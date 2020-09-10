@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using SME.SR.Infra.Utilitarios;
+using System.Globalization;
 
 namespace SME.SR.Infra
 {
@@ -22,7 +23,10 @@ namespace SME.SR.Infra
         public string Ano { get; set; }
         public string TurmaCodigo { get; set; }
         public string TurmaNome { get; set; }
+        public TipoEscola TipoEscola { get; set; }
         public string NotaConceitoFinal => $"{NotaConceito} {(EhNotaConceitoFechamento ? "*" : string.Empty)}";
+        public string UeNomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {UeNome}"; } }
+
 
     }
 }

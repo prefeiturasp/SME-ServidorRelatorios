@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using static SME.SR.Infra.Enumeradores;
 
@@ -34,12 +34,12 @@ namespace SME.SR.Application
                 if (relatorioAlunos.FirstOrDefault() is RelatorioConselhoClasseBimestre)
                 {
                     List<RelatorioConselhoClasseBimestre> listBimestre = relatorioAlunos.Cast<RelatorioConselhoClasseBimestre>().ToList();
-                    jsonString = JsonConvert.SerializeObject(new { RelatorioConselhoDeClasse = listBimestre });
+                    jsonString = JsonSerializer.Serialize(new { RelatorioConselhoDeClasse = listBimestre });
                 }
                 else
                 {
                     List<RelatorioConselhoClasseFinal> listFinal = relatorioAlunos.Cast<RelatorioConselhoClasseFinal>().ToList();
-                    jsonString = JsonConvert.SerializeObject(new { RelatorioConselhoDeClasse = listFinal });
+                    jsonString = JsonSerializer.Serialize(new { RelatorioConselhoDeClasse = listFinal });
                 }
 
                 var urlRelatorio = "";
