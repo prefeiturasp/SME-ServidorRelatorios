@@ -83,7 +83,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 for (int a = 0; a < componente.Alunos.Count; a++)
                                 {
                                     var aluno = componente.Alunos[a];
-                                    var alunoAtual = alunos.SingleOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
+                                    var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
                                     if (alunoAtual != null)
                                     {
                                         aluno.NomeAluno = alunoAtual.NomeFinal;
