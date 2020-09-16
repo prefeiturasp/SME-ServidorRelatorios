@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Spreadsheet;
 using MediatR;
 using Sentry;
+using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
@@ -20,6 +21,12 @@ namespace SME.SR.Application
     {
         private readonly IServicoFila servicoFila;
 
+        private const int LINHA_CABECALHO_DRE = 6;
+        private const int LINHA_CABECALHO_CICLO = 7;
+
+        private const int LINHA_GRUPOS = 9;
+        private const int LINHA_COMPONENTES = 10;
+
         public GerarRelatorioAtaFinalExcelCommandHandler(IServicoFila servicoFila)
         {
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
@@ -36,25 +43,14 @@ namespace SME.SR.Application
                     if (!request.ObjetoExportacao.Any())
                         throw new NegocioException("Não foi possível localizar o objeto de consulta.");
 
-                    //worksheet.SheetView.SetView(XLSheetViewOptions.PageLayout);
-
-                    worksheet.PageSetup.Margins.SetTop(1);
+                    worksheet.PageSetup.Margins.SetTop(2);
                     worksheet.ShowGridLines = false;
-
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine($"&B&10 SGP - Sistema de Gestão Pedagógica");
-                    sb.AppendLine("ATA FINAL DE RESULTADOS");
-
-                    //ws.PageSetup.Header.Left .AddImage(@"D:\SGP\SME-ServidorRelatorios\src\SME.SR.Reports\Sgp\RelatorioConselhoClasse\logo.png", XLHFOccurrence.AllPages);
-                    worksheet.PageSetup.Header.Right.AddText(sb.ToString());
-                    worksheet.PageSetup.Footer.Center.AddText(XLHFPredefinedText.PageNumber, XLHFOccurrence.AllPages);
 
                     var objetoExportacao = request.ObjetoExportacao.FirstOrDefault();
 
                     MontarCabecalho(worksheet, objetoExportacao.Cabecalho, request.TabelaDados.Columns.Count);
 
-                    worksheet.Cell(9, 1).InsertData(request.TabelaDados);
+                    worksheet.Cell(LINHA_GRUPOS, 1).InsertData(request.TabelaDados);
 
                     MergearTabela(worksheet, request.TabelaDados);
 
@@ -85,40 +81,49 @@ namespace SME.SR.Application
             int ultimaColunaUsada = worksheet.LastColumnUsed().ColumnNumber();
             int ultimaLinhaUsada = worksheet.LastRowUsed().RowNumber();
 
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Border.TopBorderColor = XLColor.Black;
+            AdicionarEstiloCabecalho(worksheet, ultimaColunaUsada);
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada);
+        }
 
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Border.RightBorderColor = XLColor.Black;
+        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada)
+        {
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.TopBorderColor = XLColor.Black;
 
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Border.BottomBorderColor = XLColor.Black;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.RightBorderColor = XLColor.Black;
 
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Border.LeftBorderColor = XLColor.Black;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.BottomBorderColor = XLColor.Black;
 
-            worksheet.Range(6, 1, 7, ultimaColunaUsada).Style.Font.Bold = true;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.LeftBorderColor = XLColor.Black;
 
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.TopBorderColor = XLColor.Black;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.Bold = true;
 
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.RightBorderColor = XLColor.Black;
+            worksheet.Rows(LINHA_GRUPOS, LINHA_COMPONENTES).Style.Fill.BackgroundColor = XLColor.LightGray;
+        }
 
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.BottomBorderColor = XLColor.Black;
+        private void AdicionarEstiloCabecalho(IXLWorksheet worksheet, int ultimaColunaUsada)
+        {
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.TopBorderColor = XLColor.Black;
 
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.LeftBorderColor = XLColor.Black;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.RightBorderColor = XLColor.Black;
 
-            worksheet.Range(9, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.Bold = true;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.BottomBorderColor = XLColor.Black;
 
-            worksheet.Rows(9, 10).Style.Fill.BackgroundColor = XLColor.LightGray;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.LeftBorderColor = XLColor.Black;
+
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.Bold = true;
         }
 
         private void MergearTabela(IXLWorksheet worksheet, DataTable tabelaDados)
         {
-            worksheet.Range(4, 1, 5, 2).Merge();
+            worksheet.Range(LINHA_GRUPOS, 1, LINHA_COMPONENTES, 2).Merge();
 
             var listaTitulos = tabelaDados.Columns.Cast<DataColumn>()
                                   .Select(c => c.ColumnName).Where(t => t.StartsWith("Grupo"));
@@ -135,11 +140,11 @@ namespace SME.SR.Application
 
                 if (grupo.Key.Equals("Grupo99"))
                 {
-                    worksheet.Range(4, indiceInicial, 5, indiceInicial + contagemCelulas).Merge();
+                    worksheet.Range(LINHA_GRUPOS, indiceInicial, LINHA_COMPONENTES, indiceInicial + contagemCelulas).Merge();
                 }
                 else
                 {
-                    worksheet.Range(4, indiceInicial, 4, indiceInicial + contagemCelulas).Merge();
+                    worksheet.Range(LINHA_GRUPOS, indiceInicial, LINHA_GRUPOS, indiceInicial + contagemCelulas).Merge();
 
                     var componentes = listaTitulos.Where(t => t.StartsWith(grupo.Key)).GroupBy(g => g.Substring(g.IndexOf("Componente"), g.LastIndexOf('_')));
 
@@ -151,7 +156,7 @@ namespace SME.SR.Application
 
                         contagemCelulas = componente.Count() - 1;
 
-                        worksheet.Range(5, indiceInicial, 5, indiceInicial + contagemCelulas).Merge();
+                        worksheet.Range(LINHA_COMPONENTES, indiceInicial, LINHA_COMPONENTES, indiceInicial + contagemCelulas).Merge();
                     }
                 }
             }
@@ -159,19 +164,28 @@ namespace SME.SR.Application
 
         private void MontarCabecalho(IXLWorksheet worksheet, ConselhoClasseAtaFinalCabecalhoDto dadosCabecalho, int totalColunas)
         {
-            var imagePath = @"c:\path\to\your\image.jpg";
+            worksheet.AddPicture(ObterLogo())
+                .MoveTo(worksheet.Cell(1, 1))
+                .Scale(0.22);
 
-            var image = worksheet.AddPicture(imagePath)
-                .MoveTo((IXLCell)worksheet.Cell(1,1).Address)
-                .Scale(0.5); // optional: resize picture
+            worksheet.Row(2).Cell(totalColunas - 4).Value = "SGP - Sistema de Gestão Pedagógica";
+            worksheet.Range(2, totalColunas - 4, 2, totalColunas).Merge().Style.Font.Bold = true;
+            worksheet.Row(3).Cell(totalColunas - 4).Value = "ATA FINAL DE RESULTADOS";
+            worksheet.Range(3, totalColunas - 4, 3, totalColunas).Merge();
 
-            int indiceFinal = SetarItemCabecalho(worksheet, $"DRE: {dadosCabecalho.Dre}", 0.4, 6, 1, totalColunas);
-            indiceFinal = SetarItemCabecalho(worksheet, $"Unidade Escolar (UE): {dadosCabecalho.Ue}", 0.4, 6, indiceFinal, totalColunas);
-            SetarItemCabecalho(worksheet, $"Turma: {dadosCabecalho.Turma}", 0.2, 6, indiceFinal, totalColunas);
+            int indiceFinal = SetarItemCabecalho(worksheet, $"DRE: {dadosCabecalho.Dre}", 0.4, LINHA_CABECALHO_DRE, 1, totalColunas);
+            indiceFinal = SetarItemCabecalho(worksheet, $"Unidade Escolar (UE): {dadosCabecalho.Ue}", 0.4, LINHA_CABECALHO_DRE, indiceFinal, totalColunas);
+            SetarItemCabecalho(worksheet, $"Turma: {dadosCabecalho.Turma}", 0.2, LINHA_CABECALHO_DRE, indiceFinal, totalColunas);
 
-            indiceFinal = SetarItemCabecalho(worksheet, $"Ciclo: {dadosCabecalho.Ciclo}", 0.6, 7, 1, totalColunas);
-            indiceFinal = SetarItemCabecalho(worksheet, $"Ano Letivo: {dadosCabecalho.AnoLetivo}", 0.2, 7, indiceFinal, totalColunas);
-            SetarItemCabecalho(worksheet, $"Data: {dadosCabecalho.Data}", 0.2, 7, indiceFinal, totalColunas);
+            indiceFinal = SetarItemCabecalho(worksheet, $"Ciclo: {dadosCabecalho.Ciclo}", 0.6, LINHA_CABECALHO_CICLO, 1, totalColunas);
+            indiceFinal = SetarItemCabecalho(worksheet, $"Ano Letivo: {dadosCabecalho.AnoLetivo}", 0.2, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
+            SetarItemCabecalho(worksheet, $"Data: {dadosCabecalho.Data}", 0.2, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
+        }
+
+        public Stream ObterLogo()
+        {
+            string base64Logo = SmeConstants.LogoSmeMono.Substring(SmeConstants.LogoSmeMono.IndexOf(',') + 1);
+            return new MemoryStream(Convert.FromBase64String(base64Logo));
         }
 
         private int SetarItemCabecalho(IXLWorksheet worksheet, string valor, double fator, int linha, int celulaInicial, int totalColunas)
