@@ -43,7 +43,6 @@ namespace SME.SR.Application
                     if (!request.ObjetoExportacao.Any())
                         throw new NegocioException("Não foi possível localizar o objeto de consulta.");
 
-                    worksheet.PageSetup.Margins.SetTop(2);
                     worksheet.ShowGridLines = false;
 
                     var objetoExportacao = request.ObjetoExportacao.FirstOrDefault();
@@ -54,7 +53,7 @@ namespace SME.SR.Application
 
                     MergearTabela(worksheet, request.TabelaDados);
 
-                    AdicionarEstilo(worksheet);
+                    AdicionarEstilo(worksheet, request.TabelaDados);
 
                     worksheet.ColumnsUsed().AdjustToContents();
                     worksheet.RowsUsed().AdjustToContents();
@@ -76,16 +75,16 @@ namespace SME.SR.Application
             }
         }
 
-        private void AdicionarEstilo(IXLWorksheet worksheet)
+        private void AdicionarEstilo(IXLWorksheet worksheet, DataTable tabelaDados)
         {
             int ultimaColunaUsada = worksheet.LastColumnUsed().ColumnNumber();
             int ultimaLinhaUsada = worksheet.LastRowUsed().RowNumber();
 
             AdicionarEstiloCabecalho(worksheet, ultimaColunaUsada);
-            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada);
+            AdicionarEstiloCorpo(worksheet, tabelaDados, ultimaColunaUsada, ultimaLinhaUsada);
         }
 
-        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada)
+        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, DataTable tabelaDados, int ultimaColunaUsada, int ultimaLinhaUsada)
         {
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.TopBorder = XLBorderStyleValues.Thin;
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.TopBorderColor = XLColor.Black;
@@ -102,6 +101,14 @@ namespace SME.SR.Application
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.Bold = true;
 
             worksheet.Rows(LINHA_GRUPOS, LINHA_COMPONENTES).Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            var linhaInicialInativos = tabelaDados.AsEnumerable()
+              .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
+
+            var indiceLinhaInativos = tabelaDados.Rows.IndexOf(linhaInicialInativos);
+
+            worksheet.Rows(LINHA_GRUPOS + indiceLinhaInativos, ultimaLinhaUsada).Style.Fill.BackgroundColor = XLColor.LightGray;
+
         }
 
         private void AdicionarEstiloCabecalho(IXLWorksheet worksheet, int ultimaColunaUsada)

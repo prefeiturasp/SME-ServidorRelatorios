@@ -38,12 +38,12 @@ namespace SME.SR.Application
                 SentrySdk.CaptureException(ex);
                 throw ex;
             }
-           
+
         }
 
         private void MontarLinhas(IEnumerable<ConselhoClasseAtaFinalLinhaDto> linhas, DataTable dt)
         {
-            var agrupamentoPorAluno = linhas.GroupBy(g => new { g.Id, g.Nome });
+            var agrupamentoPorAluno = linhas.GroupBy(g => new { g.Id, g.Nome, g.Inativo, g.Situacao });
 
             foreach (var linha in agrupamentoPorAluno)
             {
@@ -52,7 +52,11 @@ namespace SME.SR.Application
                 var celulas = linha.SelectMany(c => c.Celulas);
 
                 row["NumeroChamada"] = linha.Key.Id;
-                row["NomeAluno"] = linha.Key.Nome;
+
+                if (linha.Key.Inativo)
+                    row["NomeAluno"] = $"{linha.Key.Nome} ({linha.Key.Situacao})";
+                else
+                    row["NomeAluno"] = linha.Key.Nome;
 
                 foreach (var celula in celulas)
                 {
