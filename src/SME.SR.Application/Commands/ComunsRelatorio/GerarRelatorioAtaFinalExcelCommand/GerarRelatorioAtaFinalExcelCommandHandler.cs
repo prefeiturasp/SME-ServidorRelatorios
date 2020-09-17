@@ -98,16 +98,27 @@ namespace SME.SR.Application
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.LeftBorderColor = XLColor.Black;
 
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.Bold = true;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.FontSize = 5;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.FontName = "Arial";
 
-            worksheet.Rows(LINHA_GRUPOS, LINHA_COMPONENTES).Style.Fill.BackgroundColor = XLColor.LightGray;
+            worksheet.Range(LINHA_GRUPOS, 1, LINHA_GRUPOS, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+            worksheet.Range(LINHA_GRUPOS, ultimaColunaUsada - 4, LINHA_GRUPOS, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(LINHA_GRUPOS, ultimaColunaUsada - 4, LINHA_GRUPOS, ultimaColunaUsada).Style.Font.SetBold(true);
+
+            worksheet.Range(LINHA_COMPONENTES + 1, 1, ultimaLinhaUsada, 2).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+            worksheet.Range(LINHA_COMPONENTES, 3, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(LINHA_COMPONENTES, 3, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+            worksheet.Range(LINHA_COMPONENTES, 3, LINHA_COMPONENTES, ultimaColunaUsada).Style.Font.SetBold(true);
 
             var linhaInicialInativos = tabelaDados.AsEnumerable()
               .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
 
             var indiceLinhaInativos = tabelaDados.Rows.IndexOf(linhaInicialInativos);
 
-            worksheet.Rows(LINHA_GRUPOS + indiceLinhaInativos, ultimaLinhaUsada).Style.Fill.BackgroundColor = XLColor.LightGray;
+            worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.BackgroundColor = XLColor.LightGray;
 
         }
 
@@ -125,7 +136,8 @@ namespace SME.SR.Application
             worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
             worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.LeftBorderColor = XLColor.Black;
 
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.Bold = true;
+            worksheet.Range(LINHA_GRUPOS, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.FontSize = 10;
+            worksheet.Range(LINHA_GRUPOS, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.FontName = "Arial";
         }
 
         private void MergearTabela(IXLWorksheet worksheet, DataTable tabelaDados)
@@ -177,8 +189,12 @@ namespace SME.SR.Application
 
             worksheet.Row(2).Cell(totalColunas - 4).Value = "SGP - Sistema de Gestão Pedagógica";
             worksheet.Range(2, totalColunas - 4, 2, totalColunas).Merge().Style.Font.Bold = true;
+            worksheet.Range(2, totalColunas - 4, 2, totalColunas).Style.Font.FontSize = 10;
+            worksheet.Range(2, totalColunas - 4, 2, totalColunas).Style.Font.FontName = "Arial";
+
             worksheet.Row(3).Cell(totalColunas - 4).Value = "ATA FINAL DE RESULTADOS";
-            worksheet.Range(3, totalColunas - 4, 3, totalColunas).Merge();
+            worksheet.Range(3, totalColunas - 4, 3, totalColunas).Merge().Style.Font.FontSize = 10;
+            worksheet.Range(3, totalColunas - 4, 3, totalColunas).Style.Font.FontName = "Arial";
 
             int indiceFinal = SetarItemCabecalho(worksheet, $"DRE: {dadosCabecalho.Dre}", 0.4, LINHA_CABECALHO_DRE, 1, totalColunas);
             indiceFinal = SetarItemCabecalho(worksheet, $"Unidade Escolar (UE): {dadosCabecalho.Ue}", 0.4, LINHA_CABECALHO_DRE, indiceFinal, totalColunas);
