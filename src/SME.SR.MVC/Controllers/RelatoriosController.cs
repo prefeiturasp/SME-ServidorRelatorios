@@ -1349,7 +1349,7 @@ namespace SME.SR.MVC.Controllers
             var bimestre = new RelatorioNotasEConceitosFinaisBimestreDto("Bimestre 1");
 
             var componenteCurricular = new RelatorioNotasEConceitosFinaisComponenteCurricularDto() { Nome = "Matemática" };
-            
+
             var notaConceitoAluno = new RelatorioNotasEConceitosFinaisDoAlunoDto("Turma ABC", 1, "Antolino Neves", "10", "");
 
             componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
@@ -1458,7 +1458,7 @@ namespace SME.SR.MVC.Controllers
 
             var compensacaoAlunoExemplo = new RelatorioCompensacaoAusenciaCompensacaoAlunoDto()
             {
-                NomeAluno = "Aline Leal",                
+                NomeAluno = "Aline Leal",
                 NumeroChamada = "01",
                 TotalAulas = 10,
                 TotalAusencias = 3,
@@ -1479,7 +1479,7 @@ namespace SME.SR.MVC.Controllers
             model.Bimestre = "";
             model.ComponenteCurricular = "";
             model.Usuario = "ADMIN";
-            model.Modalidade = "Fundamental";            
+            model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
             model.Dre = new RelatorioCompensacaoAusenciaDreDto
@@ -1683,6 +1683,42 @@ namespace SME.SR.MVC.Controllers
             };
             return model;
 
+        }
+
+
+        [HttpGet("plano-aula")]
+        public IActionResult RelatorioPlanoAula()
+        {
+
+            var model = new PlanoAulaDto()
+            {
+                DataPlanoAula = DateTime.Now,
+                Id = 1,
+                DesenvolvimentoAula = "TESTE DE DESENVOLVIMENTO DE AULA",
+                Recuperacao = "TESTE DE RECUPERACAO",
+                LicaoCasa = "TESTE DE LICAO DE CASA",
+                Dre = "DRE 1",
+                Ue = "UE 1",
+                Turma = "1A",
+                ComponenteCurricular = "3",
+                Usuario = "Usuario X",
+                RF = "2266334",
+                Objetivos = new List<ObjetivoAprendizagemDto>() {
+                    new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M01",
+                        Descricao = "Explorar números no contexto diário como indicadores de quantidade, ordem, medida e código; ler e produzir escritas numéricas, identificando algumas regularidades do sistema de numeração decimal"
+                    },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    }
+                }
+            };
+            return View("RelatorioPlanoAula", model);
         }
     }
 }
