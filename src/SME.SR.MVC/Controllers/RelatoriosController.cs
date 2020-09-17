@@ -1689,7 +1689,36 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("plano-aula")]
         public IActionResult RelatorioPlanoAula()
         {
-            return View("RelatorioPlanoAula", new { });
+
+            var model = new PlanoAulaDto()
+            {
+                DataPlanoAula = DateTime.Now,
+                Id = 1,
+                DesenvolvimentoAula = "TESTE DE DESENVOLVIMENTO DE AULA",
+                Recuperacao = "TESTE DE RECUPERACAO",
+                LicaoCasa = "TESTE DE LICAO DE CASA",
+                Dre = "DRE 1",
+                Ue = "UE 1",
+                Turma = "1A",
+                ComponenteCurricular = "3",
+                Usuario = "Usuario X",
+                RF = "2266334",
+                Objetivos = new List<ObjetivoAprendizagemDto>() {
+                    new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M01",
+                        Descricao = "Explorar números no contexto diário como indicadores de quantidade, ordem, medida e código; ler e produzir escritas numéricas, identificando algumas regularidades do sistema de numeração decimal"
+                    },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    }
+                }
+            };
+            return View("RelatorioPlanoAula", model);
         }
     }
 }
