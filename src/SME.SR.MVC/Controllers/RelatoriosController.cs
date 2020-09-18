@@ -1688,15 +1688,17 @@ namespace SME.SR.MVC.Controllers
 
         [HttpGet("plano-aula")]
         public IActionResult RelatorioPlanoAula()
+        
         {
 
             var model = new PlanoAulaDto()
             {
                 DataPlanoAula = DateTime.Now,
                 Id = 1,
-                DesenvolvimentoAula = "TESTE DE DESENVOLVIMENTO DE AULA",
-                Recuperacao = "TESTE DE RECUPERACAO",
-                LicaoCasa = "TESTE DE LICAO DE CASA",
+                Descricao = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                DesenvolvimentoAula = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets.",
+                Recuperacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets.",
+                LicaoCasa = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets.",
                 Dre = "DRE 1",
                 Ue = "UE 1",
                 Turma = "1A",
@@ -1711,6 +1713,66 @@ namespace SME.SR.MVC.Controllers
                         new ObjetivoAprendizagemDto() {
                         Codigo = "EF02M02",
                         Descricao = "Compor e decompor números naturais de diversas maneiras"
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
+                    },
+                            new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M03",
+                        Descricao = "Explorar diferentes estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares, agrupamentos e estimativas."
                     },
                             new ObjetivoAprendizagemDto() {
                         Codigo = "EF02M03",
