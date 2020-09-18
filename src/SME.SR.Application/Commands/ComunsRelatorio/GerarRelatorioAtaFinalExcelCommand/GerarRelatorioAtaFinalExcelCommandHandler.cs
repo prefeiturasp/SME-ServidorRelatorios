@@ -82,20 +82,14 @@ namespace SME.SR.Application
 
         private void AdicionarEstiloCorpo(IXLWorksheet worksheet, DataTable tabelaDados, int ultimaColunaUsada, int ultimaLinhaUsada)
         {
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.TopBorderColor = XLColor.Black;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorderColor(XLColor.Black);
 
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.RightBorderColor = XLColor.Black;
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorderColor(XLColor.Black);
 
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.BottomBorderColor = XLColor.Black;
-
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.LeftBorderColor = XLColor.Black;
-
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.FontSize = 5;
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.FontName = "Arial";
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontSize(5);
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontName("Arial");
 
             worksheet.Range(LINHA_GRUPOS, 1, LINHA_GRUPOS, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
@@ -114,7 +108,7 @@ namespace SME.SR.Application
 
             var indiceLinhaInativos = tabelaDados.Rows.IndexOf(linhaInicialInativos);
 
-            worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.BackgroundColor = XLColor.LightGray;
+            worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
             foreach (var celula in worksheet.Range(LINHA_COMPONENTES + 2, 1, ultimaLinhaUsada, ultimaColunaUsada).CellsUsed().Where(c => decimal.TryParse(c.Value.ToString().Replace(",", "."), out _)))
             {
@@ -125,20 +119,14 @@ namespace SME.SR.Application
 
         private void AdicionarEstiloCabecalho(IXLWorksheet worksheet, int ultimaColunaUsada)
         {
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.TopBorderColor = XLColor.Black;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.SetOutsideBorderColor(XLColor.Black);
 
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.RightBorderColor = XLColor.Black;
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border. SetInsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.SetInsideBorderColor(XLColor.Black);
 
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.BottomBorderColor = XLColor.Black;
-
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.LeftBorderColor = XLColor.Black;
-
-            worksheet.Range(LINHA_GRUPOS, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.FontSize = 10;
-            worksheet.Range(LINHA_GRUPOS, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.FontName = "Arial";
+            worksheet.Range(LINHA_GRUPOS, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.SetFontSize(10);
+            worksheet.Range(LINHA_GRUPOS, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.SetFontName("Arial");
         }
 
         private void MergearTabela(IXLWorksheet worksheet, DataTable tabelaDados)
