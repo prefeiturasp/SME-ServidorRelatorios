@@ -20,7 +20,15 @@ namespace SME.SR.Workers.SGP
         {
             var filtros = request.ObterObjetoFiltro<ObterPlanoAulaIdDto>();
 
-            await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
+            var planoAula = await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
+            if(planoAula == null)
+                throw new NegocioException("Plano de aula não encontrado.");
+
+            planoAula.Objetivos = await mediator.Send(new ObterPlanoAulaObjetivoAprendizagemQuery(filtros.PlanoAulaId));
+            planoAula.Usuario = filtros.UsuarioNome;
+            planoAula.RF = filtros.UsuarioRf;
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAula", planoAula, request.CodigoCorrelacao));
         }
     }
 }

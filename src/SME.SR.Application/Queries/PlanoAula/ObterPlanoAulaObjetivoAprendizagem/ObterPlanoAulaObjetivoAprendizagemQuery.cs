@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterPlanoAulaQuery : IRequest<PlanoAulaDto>
+    public class ObterPlanoAulaObjetivoAprendizagemQuery : IRequest<IEnumerable<ObjetivoAprendizagemDto>>
     {
-        public ObterPlanoAulaQuery(long id)
+        public ObterPlanoAulaObjetivoAprendizagemQuery(long id)
         {
             PlanoAulaId = id;
         }
