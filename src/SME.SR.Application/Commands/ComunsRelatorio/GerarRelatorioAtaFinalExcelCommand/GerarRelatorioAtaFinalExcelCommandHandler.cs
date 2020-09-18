@@ -82,26 +82,26 @@ namespace SME.SR.Application
 
         private void AdicionarEstiloCorpo(IXLWorksheet worksheet, DataTable tabelaDados, int ultimaColunaUsada, int ultimaLinhaUsada)
         {
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontName("Arial");
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorderColor(XLColor.Black);
 
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
             worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorderColor(XLColor.Black);
 
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontSize(5);
-            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontName("Arial");
-
-            worksheet.Range(LINHA_GRUPOS, 1, LINHA_GRUPOS, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Range(LINHA_GRUPOS, 1, LINHA_GRUPOS, ultimaColunaUsada).Style.Font.SetFontSize(10);
 
             worksheet.Range(LINHA_GRUPOS, ultimaColunaUsada - 4, LINHA_GRUPOS, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Range(LINHA_GRUPOS, ultimaColunaUsada - 4, LINHA_GRUPOS, ultimaColunaUsada).Style.Font.SetBold(true);
 
-            worksheet.Range(LINHA_COMPONENTES + 1, 1, ultimaLinhaUsada, 2).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Range(LINHA_COMPONENTES, 1, LINHA_COMPONENTES, ultimaColunaUsada).Style.Font.SetFontSize(7);
 
             worksheet.Range(LINHA_COMPONENTES, 3, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            worksheet.Range(LINHA_COMPONENTES, 3, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Range(LINHA_COMPONENTES, 3, LINHA_COMPONENTES + 1, ultimaColunaUsada).Style.Font.SetBold(true);
 
-            worksheet.Range(LINHA_COMPONENTES, 3, LINHA_COMPONENTES, ultimaColunaUsada).Style.Font.SetBold(true);
+            worksheet.Range(LINHA_COMPONENTES + 1, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontSize(5);
 
             var linhaInicialInativos = tabelaDados.AsEnumerable()
               .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
@@ -122,11 +122,11 @@ namespace SME.SR.Application
             worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
             worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.SetOutsideBorderColor(XLColor.Black);
 
-            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border. SetInsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
             worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Border.SetInsideBorderColor(XLColor.Black);
 
-            worksheet.Range(LINHA_GRUPOS, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.SetFontSize(10);
-            worksheet.Range(LINHA_GRUPOS, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.SetFontName("Arial");
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.SetFontSize(10);
+            worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_CICLO, ultimaColunaUsada).Style.Font.SetFontName("Arial");
         }
 
         private void MergearTabela(IXLWorksheet worksheet, DataTable tabelaDados)
