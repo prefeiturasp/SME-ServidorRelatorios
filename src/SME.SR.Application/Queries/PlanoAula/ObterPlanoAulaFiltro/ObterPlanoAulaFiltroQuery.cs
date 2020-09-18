@@ -1,16 +1,13 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterPlanoAulaQuery : IRequest<PlanoAulaDto>
+    public class ObterPlanoAulaFiltroQuery : IRequest<PlanoAulaDto>
     {
-        public ObterPlanoAulaQuery(long id)
-        {
-            PlanoAulaId = id;
-        }
         public long PlanoAulaId { get; set; }
-
+        public Usuario Usuario { get; set; }
     }
 }

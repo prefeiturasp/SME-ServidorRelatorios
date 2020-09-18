@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterPlanoAulaQueryHandler : IRequestHandler<ObterPlanoAulaQuery, IEnumerable<PlanoAulaDto>>
+    public class ObterPlanoAulaQueryHandler : IRequestHandler<ObterPlanoAulaQuery, PlanoAulaDto>
     {
         private readonly IPlanoAulaRepository planoAulaRepository;
         public ObterPlanoAulaQueryHandler(IPlanoAulaRepository planoAulaRepository)
         {
             this.planoAulaRepository = planoAulaRepository ?? throw new ArgumentNullException(nameof(planoAulaRepository));
         }
-        public async Task<IEnumerable<PlanoAulaDto>> Handle(ObterPlanoAulaQuery request, CancellationToken cancellationToken)
+        public async Task<PlanoAulaDto> Handle(ObterPlanoAulaQuery request, CancellationToken cancellationToken)
         {
             return await planoAulaRepository.ObterPorId(request.PlanoAulaId);
         }

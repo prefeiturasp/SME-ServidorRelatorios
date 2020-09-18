@@ -8,7 +8,9 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IPlanoAulaRepository
     {
-        Task<IEnumerable<PlanoAulaDto>> ObterPorId(long planoAulaId);
+        Task<PlanoAulaDto> ObterPorId(long planoAulaId);
+
+        Task<IEnumerable<ObjetivoAprendizagemDto>> ObterObjetivoAprendizagemPorPlanoAulaId(long planoAulaId);
 
     }
 }

@@ -13,7 +13,9 @@ namespace SME.SR.Infra
         public string Dre { get; set; }
         public string Ue { get; set; }
         public string Turma { get; set; }
+        public string TurmaCodigo { get; set; }
         public string ComponenteCurricular { get; set; }
+        public long ComponenteCurricularId { get; set; }
         public string Usuario { get; set; }
         public string RF { get; set; }
         public DateTime Data => DateTime.Now;
