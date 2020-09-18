@@ -1,17 +1,13 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using MediatR;
 using Sentry;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,8 +39,6 @@ namespace SME.SR.Application
                     if (!request.ObjetoExportacao.Any())
                         throw new NegocioException("Não foi possível localizar o objeto de consulta.");
 
-                    worksheet.ShowGridLines = false;
-
                     var objetoExportacao = request.ObjetoExportacao.FirstOrDefault();
 
                     MontarCabecalho(worksheet, objetoExportacao.Cabecalho, request.TabelaDados.Columns.Count);
@@ -54,9 +48,6 @@ namespace SME.SR.Application
                     MergearTabela(worksheet, request.TabelaDados);
 
                     AdicionarEstilo(worksheet, request.TabelaDados);
-
-                    worksheet.ColumnsUsed().AdjustToContents();
-                    worksheet.RowsUsed().AdjustToContents();
 
                     var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                     var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
@@ -82,6 +73,11 @@ namespace SME.SR.Application
 
             AdicionarEstiloCabecalho(worksheet, ultimaColunaUsada);
             AdicionarEstiloCorpo(worksheet, tabelaDados, ultimaColunaUsada, ultimaLinhaUsada);
+
+            worksheet.ShowGridLines = false;
+
+            worksheet.ColumnsUsed().AdjustToContents();
+            worksheet.RowsUsed().AdjustToContents();
         }
 
         private void AdicionarEstiloCorpo(IXLWorksheet worksheet, DataTable tabelaDados, int ultimaColunaUsada, int ultimaLinhaUsada)
@@ -120,6 +116,11 @@ namespace SME.SR.Application
 
             worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.BackgroundColor = XLColor.LightGray;
 
+            foreach (var celula in worksheet.Range(LINHA_COMPONENTES + 2, 1, ultimaLinhaUsada, ultimaColunaUsada).CellsUsed().Where(c => decimal.TryParse(c.Value.ToString().Replace(",", "."), out _)))
+            {
+                celula.SetValue(Convert.ToDecimal(celula.Value.ToString(), new CultureInfo("pt-BR")));
+                celula.SetDataType(XLDataType.Number);
+            }
         }
 
         private void AdicionarEstiloCabecalho(IXLWorksheet worksheet, int ultimaColunaUsada)
@@ -184,17 +185,19 @@ namespace SME.SR.Application
         private void MontarCabecalho(IXLWorksheet worksheet, ConselhoClasseAtaFinalCabecalhoDto dadosCabecalho, int totalColunas)
         {
             worksheet.AddPicture(ObterLogo())
-                .MoveTo(worksheet.Cell(1, 1))
-                .Scale(0.22);
+                .MoveTo(worksheet.Cell(2, 2))
+                .Scale(0.15);
 
-            worksheet.Row(2).Cell(totalColunas - 4).Value = "SGP - Sistema de Gestão Pedagógica";
-            worksheet.Range(2, totalColunas - 4, 2, totalColunas).Merge().Style.Font.Bold = true;
-            worksheet.Range(2, totalColunas - 4, 2, totalColunas).Style.Font.FontSize = 10;
-            worksheet.Range(2, totalColunas - 4, 2, totalColunas).Style.Font.FontName = "Arial";
+            int indiceColunaTitulo = (int)(totalColunas * 0.9) + 1;
 
-            worksheet.Row(3).Cell(totalColunas - 4).Value = "ATA FINAL DE RESULTADOS";
-            worksheet.Range(3, totalColunas - 4, 3, totalColunas).Merge().Style.Font.FontSize = 10;
-            worksheet.Range(3, totalColunas - 4, 3, totalColunas).Style.Font.FontName = "Arial";
+            worksheet.Row(2).Cell(indiceColunaTitulo).Value = "SGP - Sistema de Gestão Pedagógica";
+            worksheet.Range(2, indiceColunaTitulo, 2, totalColunas).Merge().Style.Font.Bold = true;
+            worksheet.Range(2, indiceColunaTitulo, 2, totalColunas).Style.Font.FontSize = 10;
+            worksheet.Range(2, indiceColunaTitulo, 2, totalColunas).Style.Font.FontName = "Arial";
+
+            worksheet.Row(3).Cell(indiceColunaTitulo).Value = "ATA FINAL DE RESULTADOS";
+            worksheet.Range(3, indiceColunaTitulo, 3, totalColunas).Merge().Style.Font.FontSize = 10;
+            worksheet.Range(3, indiceColunaTitulo, 3, totalColunas).Style.Font.FontName = "Arial";
 
             int indiceFinal = SetarItemCabecalho(worksheet, $"DRE: {dadosCabecalho.Dre}", 0.4, LINHA_CABECALHO_DRE, 1, totalColunas);
             indiceFinal = SetarItemCabecalho(worksheet, $"Unidade Escolar (UE): {dadosCabecalho.Ue}", 0.4, LINHA_CABECALHO_DRE, indiceFinal, totalColunas);
@@ -202,7 +205,7 @@ namespace SME.SR.Application
 
             indiceFinal = SetarItemCabecalho(worksheet, $"Ciclo: {dadosCabecalho.Ciclo}", 0.6, LINHA_CABECALHO_CICLO, 1, totalColunas);
             indiceFinal = SetarItemCabecalho(worksheet, $"Ano Letivo: {dadosCabecalho.AnoLetivo}", 0.2, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
-            SetarItemCabecalho(worksheet, $"Data: {dadosCabecalho.Data}", 0.2, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
+            SetarItemCabecalho(worksheet, $"Data: {dadosCabecalho.Data}", 0.21, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
         }
 
         public Stream ObterLogo()
