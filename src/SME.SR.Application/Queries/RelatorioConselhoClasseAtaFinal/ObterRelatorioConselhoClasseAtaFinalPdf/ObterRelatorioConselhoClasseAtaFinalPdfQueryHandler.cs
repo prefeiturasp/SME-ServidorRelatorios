@@ -196,7 +196,7 @@ namespace SME.SR.Application
                 {
                     var coluna = 0;
                     // Monta Colunas notas dos bimestres
-                    foreach (var bimestre in periodosEscolares.Select(a => a.Bimestre))
+                    foreach (var bimestre in periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre))
                     {
                         var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
@@ -282,7 +282,7 @@ namespace SME.SR.Application
 
                     foreach (var componenteCurricular in grupoMatriz)
                     {
-                        grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, periodosEscolares.Select(a => a.Bimestre));
+                        grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre));
                     }
 
                     relatorio.GruposMatriz.Add(grupoMatrizDto);
