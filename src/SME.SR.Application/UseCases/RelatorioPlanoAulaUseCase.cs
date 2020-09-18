@@ -20,7 +20,7 @@ namespace SME.SR.Workers.SGP
         {
             var filtros = request.ObterObjetoFiltro<ObterPlanoAulaIdDto>();
 
-            await mediator.Send(new ObterPlanoAulaQuery(filtros.Id));
+            await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
         }
     }
 }

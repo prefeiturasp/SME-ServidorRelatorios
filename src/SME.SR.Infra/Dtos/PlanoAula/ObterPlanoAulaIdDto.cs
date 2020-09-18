@@ -6,6 +6,8 @@ namespace SME.SR.Infra
 {
     public class ObterPlanoAulaIdDto
     {
-        public long Id { get; set; }
+        public long PlanoAulaId { get; set; }
+        public string UsuarioNome { get; set; }
+        public string UsuarioRf { get; set; }
     }
 }
