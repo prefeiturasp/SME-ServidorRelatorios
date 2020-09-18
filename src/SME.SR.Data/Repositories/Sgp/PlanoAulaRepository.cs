@@ -53,6 +53,7 @@ namespace SME.SR.Data
 	                        ue.nome as Ue,
 	                        dre.nome  as Dre,
 	                        turma.nome  as Turma,
+                            turma.turma_id  as TurmaCodigo,
                             plano_aula.criado_em as DataPlanoAula,
 	                        componente_curricular.descricao_eol as ComponenteCurricular
                         from
@@ -77,7 +78,7 @@ namespace SME.SR.Data
 	                        ue.nome,
 	                        dre.nome,
 	                        turma.nome,
-	                        componente_curricular.descricao_eol";
+	                        componente_curricular.descricao_eol, aula.disciplina_id, turma.turma_id";
 
             var parametros = new
             {
