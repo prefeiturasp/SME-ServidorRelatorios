@@ -191,9 +191,9 @@ namespace SME.SR.Application
             indiceFinal = SetarItemCabecalho(worksheet, $"Unidade Escolar (UE): {dadosCabecalho.Ue}", 0.4, LINHA_CABECALHO_DRE, indiceFinal, totalColunas);
             SetarItemCabecalho(worksheet, $"Turma: {dadosCabecalho.Turma}", 0.2, LINHA_CABECALHO_DRE, indiceFinal, totalColunas);
 
-            indiceFinal = SetarItemCabecalho(worksheet, $"Ciclo: {dadosCabecalho.Ciclo}", 0.6, LINHA_CABECALHO_CICLO, 1, totalColunas);
-            indiceFinal = SetarItemCabecalho(worksheet, $"Ano Letivo: {dadosCabecalho.AnoLetivo}", 0.2, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
-            SetarItemCabecalho(worksheet, $"Data: {dadosCabecalho.Data}", 0.21, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
+            indiceFinal = SetarItemCabecalho(worksheet, $"Ciclo: {dadosCabecalho.Ciclo}", 0.4, LINHA_CABECALHO_CICLO, 1, totalColunas);
+            indiceFinal = SetarItemCabecalho(worksheet, $"Ano Letivo: {dadosCabecalho.AnoLetivo}", 0.4, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
+            SetarItemCabecalho(worksheet, $"Data: {dadosCabecalho.Data}", 0.2, LINHA_CABECALHO_CICLO, indiceFinal, totalColunas);
         }
 
         public Stream ObterLogo()
