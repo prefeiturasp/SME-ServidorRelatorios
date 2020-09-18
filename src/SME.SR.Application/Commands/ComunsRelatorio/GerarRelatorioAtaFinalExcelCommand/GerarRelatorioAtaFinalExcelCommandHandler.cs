@@ -93,9 +93,12 @@ namespace SME.SR.Application
 
             worksheet.Range(LINHA_GRUPOS, 1, LINHA_GRUPOS, ultimaColunaUsada).Style.Font.SetFontSize(10);
 
+            worksheet.Range(LINHA_GRUPOS, 1, ultimaLinhaUsada, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
             worksheet.Range(LINHA_GRUPOS, ultimaColunaUsada - 4, LINHA_GRUPOS, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Range(LINHA_GRUPOS, ultimaColunaUsada - 4, LINHA_GRUPOS, ultimaColunaUsada).Style.Font.SetBold(true);
 
+            worksheet.Range(LINHA_COMPONENTES, 1, LINHA_COMPONENTES, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Range(LINHA_COMPONENTES, 1, LINHA_COMPONENTES, ultimaColunaUsada).Style.Font.SetFontSize(7);
 
             worksheet.Range(LINHA_COMPONENTES, 3, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
