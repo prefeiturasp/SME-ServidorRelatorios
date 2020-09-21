@@ -33,6 +33,7 @@ namespace SME.SR.Data
              $"{NumeroAlunoChamada} - {(NomeSocialAluno ?? NomeAluno)} " +
              $"{(SituacaoEspecial ? $"({CodigoSituacaoMatricula.GetAttribute<DisplayAttribute>().Name})" : "")}";
 
+        public bool EstaAtivo(DateTime dataBase) => SituacoesAtiva.Contains(CodigoSituacaoMatricula) || dataBase.Date <= DataSituacao.Date;
 
         private SituacaoMatriculaAluno[] SituacoesEspeciais => new[] { SituacaoMatriculaAluno.Transferido,
                         SituacaoMatriculaAluno.RemanejadoSaida,

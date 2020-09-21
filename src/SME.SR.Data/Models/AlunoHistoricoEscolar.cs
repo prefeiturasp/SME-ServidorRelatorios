@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using SME.SR.Infra;
 using System;
 
 namespace SME.SR.Data
@@ -11,6 +12,7 @@ namespace SME.SR.Data
         public string RG { get; set; }
         public string ExpedicaoOrgaoEmissor { get; set; }
         public string ExpedicaoUF { get; set; }
-        public DateTime ExpedicaoData { get; set; }        
+        public int AnoLetivo { get; set; }
+        public DateTime ExpedicaoData { get; set; }
     }
 }

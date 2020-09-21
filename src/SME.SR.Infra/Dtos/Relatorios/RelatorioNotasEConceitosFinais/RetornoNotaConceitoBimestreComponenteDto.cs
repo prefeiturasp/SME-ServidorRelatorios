@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using SME.SR.Infra.Utilitarios;
+using System.Globalization;
 
 namespace SME.SR.Infra
 {
@@ -11,8 +12,8 @@ namespace SME.SR.Infra
         public string Conceito { get; set; }
         public long? SinteseId { get; set; }
         public string Sintese { get; set; }
-        public double Nota { get; set; }
-        public string NotaConceito { get => ConceitoId.HasValue ? Conceito : Nota.ToString("0.0", CultureInfo.InvariantCulture); }
+        public double? Nota { get; set; }
+        public string NotaConceito { get => ConceitoId.HasValue ? Conceito : Nota.HasValue ? Nota.Value.ToString("0.0", CultureInfo.InvariantCulture) : ""; }
         public bool EhNotaConceitoFechamento { get; set; }
         public string DreNome { get; set; }
         public string DreCodigo { get; set; }
@@ -22,7 +23,10 @@ namespace SME.SR.Infra
         public string Ano { get; set; }
         public string TurmaCodigo { get; set; }
         public string TurmaNome { get; set; }
+        public TipoEscola TipoEscola { get; set; }
         public string NotaConceitoFinal => $"{NotaConceito} {(EhNotaConceitoFechamento ? "*" : string.Empty)}";
+        public string UeNomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {UeNome}"; } }
+
 
     }
 }

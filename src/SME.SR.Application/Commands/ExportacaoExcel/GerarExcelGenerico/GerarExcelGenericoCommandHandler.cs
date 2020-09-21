@@ -46,7 +46,7 @@ namespace SME.SR.Application
 
                     var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                     var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
-
+                    
                     workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
                 }
                 
@@ -76,7 +76,9 @@ namespace SME.SR.Application
 
                 foreach (var item1 in listValues)
                 {
-                    worksheet.Cells($"{Number2String(iPropriedade, true)}{iLinha}").Value = item1.ToString();
+                    var celulaNome = $"{Number2String(iPropriedade, true)}{iLinha}";
+                    CorpoFormataStylo(worksheet, celulaNome);
+                    worksheet.Cells(celulaNome).Value = item1.ToString();
                     iPropriedade++;
                 }
                 iLinha++;
@@ -89,7 +91,7 @@ namespace SME.SR.Application
             {
                 var propriedadeRaiz = properties.GetValue(column);
 
-                var colunaNome = ((MemberInfo)propriedadeRaiz).Name;
+                var colunaValor = ((MemberInfo)propriedadeRaiz).Name;
 
                 var nomePropriedade = ((MemberInfo)propriedadeRaiz).CustomAttributes.FirstOrDefault(a => a.AttributeType.Name == "DisplayAttribute");
 
@@ -97,11 +99,50 @@ namespace SME.SR.Application
                 {
                     var propriedadeAtributoDescricao = nomePropriedade.NamedArguments.FirstOrDefault(a => a.MemberName == "Description");
                     if (nomePropriedade != null)
-                        colunaNome = propriedadeAtributoDescricao.TypedValue.Value.ToString();
+                        colunaValor = propriedadeAtributoDescricao.TypedValue.Value.ToString();
                 }
+                var colunaNome = $"{Number2String(column, true)}{1}";
 
-                worksheet.Cells($"{Number2String(column, true)}{1}").Value = colunaNome;
+                CabecalhoFormataStylo(worksheet, colunaNome);
+
+                
+                worksheet.Cells(colunaNome).Value = colunaValor;
             }
+        }
+
+        private static void CabecalhoFormataStylo(IXLWorksheet worksheet, string colunaNome)
+        {
+            worksheet.Cells(colunaNome).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Cells(colunaNome).Style.Border.TopBorderColor = XLColor.Black;
+
+            worksheet.Cells(colunaNome).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Cells(colunaNome).Style.Border.RightBorderColor = XLColor.Black;
+
+            worksheet.Cells(colunaNome).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Cells(colunaNome).Style.Border.BottomBorderColor = XLColor.Black;
+
+            worksheet.Cells(colunaNome).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Cells(colunaNome).Style.Border.LeftBorderColor = XLColor.Black;
+
+            worksheet.Cells(colunaNome).Style.Font.Bold = true;
+
+            worksheet.Columns().AdjustToContents();
+
+        }
+        private static void CorpoFormataStylo(IXLWorksheet worksheet, string celulaNome)
+        {
+            worksheet.Cells(celulaNome).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Cells(celulaNome).Style.Border.TopBorderColor = XLColor.Black;
+
+            worksheet.Cells(celulaNome).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Cells(celulaNome).Style.Border.RightBorderColor = XLColor.Black;
+
+            worksheet.Cells(celulaNome).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Cells(celulaNome).Style.Border.BottomBorderColor = XLColor.Black;
+
+            worksheet.Cells(celulaNome).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Cells(celulaNome).Style.Border.LeftBorderColor = XLColor.Black;           
+
         }
 
         private String Number2String(int number, bool isCaps)

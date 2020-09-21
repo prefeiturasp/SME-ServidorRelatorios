@@ -88,10 +88,6 @@
 		<property name="net.sf.jasperreports.jsonql.field.expression" value="nome"/>
 		<fieldDescription><![CDATA[nome]]></fieldDescription>
 	</field>
-	<field name="nomeGrupo" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="gruposComponentesCurriculares.nome"/>
-		<fieldDescription><![CDATA[gruposComponentesCurriculares.nome]]></fieldDescription>
-	</field>
 	<field name="notaConceitoPrimeiroAno" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="ensinoReligioso.notaConceitoPrimeiroAno"/>
 		<fieldDescription><![CDATA[ensinoReligioso.notaConceitoPrimeiroAno]]></fieldDescription>
@@ -167,6 +163,10 @@
 	<field name="nonoAno" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota.nonoAno"/>
 		<fieldDescription><![CDATA[tipoNota.nonoAno]]></fieldDescription>
+	</field>
+	<field name="nomeGrupo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="gruposComponentesCurriculares.nome"/>
+		<fieldDescription><![CDATA[gruposComponentesCurriculares.nome]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
