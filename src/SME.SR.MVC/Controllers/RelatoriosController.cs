@@ -6,6 +6,7 @@ using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.MVC.Controllers
@@ -1392,6 +1393,7 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioCompensacaoAusencia", model);
         }
+
         [HttpGet("impressao-calendario")]
         public IActionResult RelatorioImpressaoCalendario()
         {
@@ -1452,6 +1454,148 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioImpressaoCalendario", model);
         }
+        
+       [HttpGet("resumos-pap")]
+        public IActionResult RelatorioResumosPAP()
+        {
+            ResumoPAPDto model = new ResumoPAPDto();
+            model.DreNome = "DRE - JT";
+            model.UeNome = "EMEFM DERVILLE ALEGRETTI, PROF.";
+            model.AnoLetivo = 2020;
+            model.Ciclo = "INTERDISCIPLINAR";
+            model.Ano = 3;
+            model.Turma = "5A";
+            model.Periodo = "ACOMPANHAMENTO 1º SEMESTRE";
+            model.UsuarioNome = "TESTE USUÁRIO";
+            model.UsuarioRF = "123456789";
+            model.Data = "21/10/2020";
+            model.EhEncaminhamento = false;
+
+            ResumoPAPTotalEstudantesDto totalEstudantes = new ResumoPAPTotalEstudantesDto();
+            totalEstudantes.PorcentagemTotal = 100;
+            totalEstudantes.QuantidadeTotal = 90;
+
+            var anosTotalEstudantes = new List<ResumoPAPTotalAnoDto>();
+            var ano1 = new ResumoPAPTotalAnoDto{
+                AnoDescricao = 5,
+                Porcentagem = 89,
+                Quantidade = 34
+            };
+
+            anosTotalEstudantes.Add(ano1);
+            model.TotalEstudantesDto = totalEstudantes;
+                     
+            var frequencia1 = new ResumoPAPFrequenciaDto() { 
+                PorcentagemTotalFrequencia = 100,
+                QuantidadeTotalFrequencia = 90,                
+            };
+
+            var anoFrequencia1 = new ResumoPAPTotalFrequenciaAnoDto()
+            {
+                Descricao = "Frequente",
+                DescricaoAno = "3º",
+                Porcentagem = 33.3,
+                Quantidade = 30,
+                TotalPorcentagem = 100,
+                TotalQuantidade = 90,
+            };
+
+            var listaAno = new List<ResumoPAPTotalFrequenciaAnoDto>();
+            listaAno.Add(anoFrequencia1);
+            frequencia1.Anos = listaAno;
+            var listaFreq = new List<ResumoPAPFrequenciaDto>();
+            listaFreq.Add(frequencia1);
+            model.FrequenciaDto = listaFreq;
+
+            ResumoPAPTotalResultadoDto resultados = new ResumoPAPTotalResultadoDto()
+             {
+                EixoDescricao = "SONDAGEM"
+
+             };
+
+            var objetivosResultados = new ResumoPAPResultadoObjetivoDto()
+            {
+                ObjetivoDescricao = "Hipotese de escrita",
+            };
+
+            var totalResultados = new ResumoPAPResultadoRespostaDto() {
+                Porcentagem = 9,
+                Quantidade = 20,
+                RespostaDescricao = null,
+                TotalPorcentagem = 100,
+                TotalQuantidade = 19
+            };
+
+            var anosResultados = new ResumoPAPResultadoAnoDto()
+            {
+                AnoDescricao = 3,
+            };
+
+            var respostaResultados = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 20,
+                Quantidade = 10,
+                RespostaDescricao = "Pré silábico",
+                TotalPorcentagem = 100,
+                TotalQuantidade = 19,
+            };
+
+            var listaRespostasResultados = new List<ResumoPAPResultadoRespostaDto>();
+            listaRespostasResultados.Add(respostaResultados);
+            anosResultados.Respostas = listaRespostasResultados;
+            var listaTotalResultados = new List<ResumoPAPResultadoRespostaDto>();
+            listaTotalResultados.Add(totalResultados);
+            var listaAnosResultados = new List<ResumoPAPResultadoAnoDto>();
+            listaAnosResultados.Add(anosResultados);
+            var listaObjetivosResultados = new List<ResumoPAPResultadoObjetivoDto>();
+            objetivosResultados.Anos = listaAnosResultados;
+            objetivosResultados.Total = listaTotalResultados;
+            listaObjetivosResultados.Add(objetivosResultados);
+            resultados.Objetivos = listaObjetivosResultados;
+            model.ResultadoDto.Add(resultados);
+
+            ResumoPAPTotalResultadoDto encaminhamento = new ResumoPAPTotalResultadoDto()
+            {
+                EixoDescricao = "Informações escolares",
+            };
+
+            var objetivosEncaminhamento = new ResumoPAPResultadoObjetivoDto()
+            {
+                ObjetivoDescricao = "É atendido pelo AEE?"
+            };
+
+            var totalEncaminhamento = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 10,
+                Quantidade = 2,
+                RespostaDescricao = "Não",
+                TotalPorcentagem = 80,
+                TotalQuantidade = 12
+            };
+
+            var anosResultadoEncaminhamento = new ResumoPAPResultadoAnoDto()
+            {
+                AnoDescricao = 7,
+            };
+
+            var respostaEncaminhamento = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 0,
+                Quantidade = 0,
+                RespostaDescricao = null,
+                TotalPorcentagem = 100,
+                TotalQuantidade = 72
+            };
+
+            anosResultadoEncaminhamento.Respostas.Append(respostaEncaminhamento);
+            objetivosEncaminhamento.Total.Append(totalEncaminhamento);
+            objetivosEncaminhamento.Anos.Append(anosResultadoEncaminhamento);
+            encaminhamento.Objetivos.Append(objetivosEncaminhamento);
+            model.EncaminhamentoDto.Add(encaminhamento);
+
+            return View("RelatorioResumosPAP", model);
+        }
+        
         private static RelatorioCompensacaoAusenciaDto GeraCompensacoesAusencia()
         {
             var model = new RelatorioCompensacaoAusenciaDto();
