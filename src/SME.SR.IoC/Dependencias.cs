@@ -24,6 +24,23 @@ namespace SME.SR.IoC
 {
     public static class Dependencias
     {
+        public static void AddRabbitMQ(IServiceCollection services, IConfiguration configuration)
+        {
+            var factory = new ConnectionFactory
+            {
+                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
+                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
+                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
+            };
+
+            var conexaoRabbit = factory.CreateConnection();
+            IModel channel = conexaoRabbit.CreateModel();
+
+            services.AddSingleton(conexaoRabbit);
+            services.AddSingleton(channel);
+        }
+
         public static void RegistrarDependencias(this IServiceCollection services, IConfiguration configuration)
         {
             var assembly = AppDomain.CurrentDomain.Load("SME.SR.Application");
@@ -107,6 +124,11 @@ namespace SME.SR.IoC
             
         }
 
+        private static void RegistrarServicos(IServiceCollection services)
+        {
+            services.TryAddScoped<IServicoFila, FilaRabbit>();
+        }
+
         private static void RegistrarUseCase(IServiceCollection services)
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
@@ -123,28 +145,6 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioParecerConclusivoUseCase, RelatorioParecerConclusivoUseCase>();
             services.TryAddScoped<IRelatorioNotasEConceitosFinaisUseCase, RelatorioNotasEConceitosFinaisUseCase>();
             services.TryAddScoped<IRelatorioCompensacaoAusenciaUseCase, RelatorioCompensacaoAusenciaUseCase>();
-        }
-
-        private static void RegistrarServicos(IServiceCollection services)
-        {
-            services.TryAddScoped<IServicoFila, FilaRabbit>();
-        }
-
-
-        public static void AddRabbitMQ(IServiceCollection services, IConfiguration configuration)
-        {
-            var factory = new ConnectionFactory
-            {
-                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
-                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
-                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value
-            };
-
-            var conexaoRabbit = factory.CreateConnection();
-            IModel channel = conexaoRabbit.CreateModel();
-
-            services.AddSingleton(conexaoRabbit);
-            services.AddSingleton(channel);
         }
     }
 }
