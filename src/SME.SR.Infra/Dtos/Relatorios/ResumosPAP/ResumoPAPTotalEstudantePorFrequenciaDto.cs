@@ -1,7 +1,9 @@
-﻿namespace SME.SR.Infra
+﻿using System.Collections.Generic;
+
+namespace SME.SR.Infra
 {
     public class ResumoPAPTotalEstudantePorFrequenciaDto
     {
-        public List<RecuperacaoParalelaTotalEstudanteFrequenciaDto> Frequencia { get; set; }
+        public List<ResumoPAPTotalEstudanteFrequenciaDto> Frequencia { get; set; }
     }
 }
