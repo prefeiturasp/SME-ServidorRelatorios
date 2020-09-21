@@ -47,6 +47,7 @@ namespace SME.SR.Data
         {
             var query = @"select
 	                        plano_aula.id as Id,
+                            plano_aula.descricao as Descricao,
 	                        desenvolvimento_aula as DesenvolvimentoAula,
 	                        recuperacao_aula as Recuperacao,
 	                        licao_casa as LicaoCasa,
