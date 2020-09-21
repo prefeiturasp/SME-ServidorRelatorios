@@ -254,7 +254,7 @@ namespace SME.SR.Application
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? "0", 3);
 
             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
-            linhaDto.AdicionaCelula(99, 99, parecerConclusivo?.ParecerConclusivo ?? "", 4);
+            linhaDto.AdicionaCelula(99, 99, parecerConclusivo?.ParecerConclusivo ?? "Sem Parecer", 4);
 
             return linhaDto;
         }
