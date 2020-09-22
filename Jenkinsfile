@@ -162,6 +162,67 @@ pipeline {
             }
          }
         }
+
+    stage('Docker build HOM-r2') {
+            when {
+                branch 'release-r2'
+            }
+            steps {
+              // Start build das imagens Docker
+      
+          script {
+            step([$class: "RundeckNotifier",
+                includeRundeckLogs: true,
+                    
+                
+                //JOB DE BUILD
+                jobId: "be58097a-881e-4d6e-a961-9d53102a6dfd",
+                nodeFilters: "",
+                //options: """
+                //     PARAM_1=value1
+                //    PARAM_2=value2
+                //     PARAM_3=
+                //     """,
+                rundeckInstance: "Rundeck-SME",
+                shouldFailTheBuild: true,
+                shouldWaitForRundeckJob: true,
+                tags: "",
+                tailLog: true])
+           }
+          }
+        }    
+       
+    stage('Deploy HOM-r2') {
+          when {
+            branch 'release'
+          }
+          steps {
+            
+            timeout(time: 24, unit: "HOURS") {
+               telegramSend("${JOB_NAME}...O Build ${BUILD_DISPLAY_NAME} - Requer uma aprovação para deploy !!!\n Consulte o log para detalhes -> [Job logs](${env.BUILD_URL}console)\n")
+               input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: 'marlon_goncalves, allan_santos, everton_nogueira, marcos_costa, bruno_alevato'
+            }
+            //Start JOB Rundeck para update de imagens no host homologação 
+         
+            script {
+                step([$class: "RundeckNotifier",
+                includeRundeckLogs: true,
+                jobId: "1be62eca-c4a7-4ea5-a1f1-5b2b83661020",
+                nodeFilters: "",
+                //options: """
+                //     PARAM_1=value1
+                //    PARAM_2=value2
+                //     PARAM_3=
+                //     """,
+                rundeckInstance: "Rundeck-SME",
+                shouldFailTheBuild: true,
+                shouldWaitForRundeckJob: true,
+                tags: "",
+                tailLog: true])
+            }
+         }
+        }
+
 	    
 	  stage('Docker build PROD') {
         when {
