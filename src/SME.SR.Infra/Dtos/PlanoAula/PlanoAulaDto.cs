@@ -8,6 +8,7 @@ namespace SME.SR.Infra
     {
         public long Id { get; set; }
         public string DesenvolvimentoAula { get; set; }
+        public string Descricao { get; set; }
         public string Recuperacao { get; set; }
         public string LicaoCasa { get; set; }
         public string Dre { get; set; }

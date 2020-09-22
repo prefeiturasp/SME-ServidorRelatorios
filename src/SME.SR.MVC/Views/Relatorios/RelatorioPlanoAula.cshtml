@@ -1,17 +1,153 @@
 ﻿@model SME.SR.Infra.PlanoAulaDto
 
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 44;
+    int contadorPagina = 0;
+    bool montarCabecalhoObj = true;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            montarCabecalhoObj = true;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always' />" + str;
+
+        }
+        return string.Empty;
+
+    }
+
+    string MontaCabecalhoObjetivos()
+    {
+        var str = "";
+        if (montarCabecalhoObj)
+        {
+            str = @"<table>
+<tr>
+<td width='100 %' class=tb-cabecalho>
+OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
+</td>
+</tr>
+</table> ";
+            montarCabecalhoObj = false;
+
+        }
+        return str;
+    }
+
+    string MontaDescricao(string titulo, string descricao)
+    {
+        var str = "<div class='m-30'>";
+
+        if (titulo != "")
+        {
+            str = str + $@"
+<table>
+<tr>
+<td width='100%' class='tb-cabecalho2'>{titulo}</td>
+</tr>
+</table>";
+        }
+
+
+        str = str + @"<table> <tbody>
+    <tr class='h-50'>
+<td class='fonte-16 caixa-2'>";
+
+        int tamanho = 0;
+        for (int i = 0; i < descricao.Length; i++)
+        {
+
+            if (tamanho <= 100)
+            {
+                str = str + descricao[i];
+                tamanho = tamanho + 1;
+            }
+            else
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                var retornoVerificacao = VerificaQuebra();
+                if (retornoVerificacao != string.Empty)
+                {
+                    str = str + $@"</td> </tr> </tbody> </table> {retornoVerificacao} <table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
+                } else
+                {
+                    str = str + retornoVerificacao;
+                }
+
+                tamanho = 0;
+                str = str + descricao[i];
+            }
+        }
+
+        if (!str.Substring(str.Length - 8).Equals("</table>"))
+        {
+            str = str + @" </tr> </tbody> </table>";
+        }
+
+        return str + "</div>";
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 12;
+        var str =
+           $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-plano-aula'>
+<p style='margin-bottom:0'>PLANO DE AULA - {Model.DataPlanoAula:dd/MM/yyyy} </p>
+</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td width='35%'>DRE: {Model.Dre}</td>
+<td width='40%'>UE: {Model.Ue}</td>
+<td width='15%'>TURMA: {Model.Turma}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td class='campo-componente-curricular'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
+<td class='campo-rf-data'>RF: {Model.RF}</td>
+<td class='campo-rf-data'>DATA: {Model.Data:dd/MM/yyyy}</td>
+</tr>
+</tbody>
+</table>
+</div>";
+
+        return str;
+
+    }
+}
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Relatório Fechamento e Pendências</title>
+    <title>Relatório Plano de Aula</title>
 </head>
 
-<body class="body-rel-faltas-frequencia">
+<body class="body-rel-plano-aula">
     <style>
-        .body-rel-faltas-frequencia {
+        .body-rel-plano-aula {
             margin: 0.5cm auto;
             font-family: Roboto, sans-serif;
             width: 21cm;
@@ -133,11 +269,20 @@
             background-color: #ffffff;
         }
 
-        .tb-head {
+        .tb-cabecalho {
             background-color: #f3f3f3;
             text-align: left;
             font-size: 16px;
             padding: 10px;
+            padding-left: 20px;
+        }
+
+        .tb-cabecalho2 {
+            background-color: #f3f3f3;
+            text-align: left;
+            font-size: 16px;
+            padding: 10px;
+            border-bottom:none;
             padding-left: 20px;
         }
 
@@ -149,7 +294,6 @@
         .caixa-2 {
             padding: 10px 15px 10px 15px;
             text-align: justify;
-            border-top: none;
         }
 
         .h-50 {
@@ -172,7 +316,39 @@
             width: 15%;
         }
 
+        .tabela-objetivos-items-titulo2 {
+            padding: 20px 15px 20px 15px;
+            border-bottom: none;
+            text-align: center;
+            font-weight: bold;
+            width: 15%;
+        }
+
+        .tabela-objetivos-items-titulo3 {
+            padding: 20px 15px 20px 15px;
+            border-top: none;
+            text-align: center;
+            font-weight: bold;
+            width: 15%;
+        }
+
         .tabela-objetivos-items-descricao {
+            border-top: none;
+            width: 85%;
+            text-align: justify;
+            padding: 5px 15px 5px 15px;
+            font-size: 14px
+        }
+
+        .tabela-objetivos-items-descricao2 {
+            border-bottom: none;
+            width: 85%;
+            text-align: justify;
+            padding: 5px 15px 5px 15px;
+            font-size: 14px
+        }
+
+        .tabela-objetivos-items-descricao3 {
             border-top: none;
             width: 85%;
             text-align: justify;
@@ -181,173 +357,44 @@
         }
     </style>
     <div>
+        @Html.Raw(MontarCabecalho())
         <div>
-            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-        </div>
-        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-        <div class='titulo-plano-aula'>
-            <p style='margin-bottom:0'>PLANO DE AULA - 26/04/2020 </p>
-        </div>
-        <div class='fonte-14 header-pagina'>
-            <table class='tblTopo'>
-                <tbody>
-                    <tr>
-                        <td width='35%'>DRE:</td>
-                        <td width='40%'>UE:</td>
-                        <td width='15%'>TURMA:</td>
-                    </tr>
-                </tbody>
-            </table>
-            <table>
-                <tbody>
-                    <tr>
-                        <td class='campo-componente-curricular'>COMPONENTE CURRICULAR:</td>
-                    </tr>
-                </tbody>
-            </table>
-            <table>
-                <tbody>
-                    <tr>
-                        <td class='campo-usuario'>USUÁRIO:</td>
-                        <td class='campo-rf-data'>RF:</td>
-                        <td class='campo-rf-data'>DATA:</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div>
-            <table>
-                <tr>
-                    <td width="100%" class=tb-head>
-                        OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tbody>
-                    <tr class="tabela-objetivos-items-tr">
-                        <td class="fonte-16 tabela-objetivos-items-titulo">
-                            EF02M01
-                        </td>
-                        <td class="fonte-16 tabela-objetivos-items-descricao">
-                            Explorar números no contexto diário como indicadores de
-                            quantidade, ordem, medida e código; ler e produzir escritas numéricas, identificando algumas
-                            regularidades do sistema de numeração decimal
-                        </td>
-                    </tr>
-                    <tr class="tabela-objetivos-items-tr">
-                        <td class="fonte-16 tabela-objetivos-items-titulo">
-                            EF02M02
-                        </td>
-                        <td class="fonte-16 tabela-objetivos-items-descricao">
-                            Compor e
-                            decompor
-                            números naturais de diversas maneiras
-                        </td>
-                    </tr>
-                    <tr class="tabela-objetivos-items-tr">
-                        <td class="fonte-16 tabela-objetivos-items-titulo">
-                            EF02M03
-                        </td>
-                        <td class="fonte-16 tabela-objetivos-items-descricao">
-                            Explorar
-                            diferentes
-                            estratégias para quantificar elementos de uma coleção: contagem um a um, formação de pares,
-                            agrupamentos e estimativas.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div>
-            <div style="margin-top: 15px;">
-                <table>
-                    <tbody>
-                        <tr style="height: 50px; ">
-                            <td class="fonte-16 caixa-1">
-                                Lorem Ipsum
-                                is
-                                simply dummy
-                                text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-                                standard dummy text ever since the 1500s, when an unknown printer took a galley of type
-                                and scrambled it to make a type specimen book. It has survived not only five centuries,
-                                but also the leap into electronic typesetting, remaining essentially unchanged. It was
-                                popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
-                                passages, and more recently with desktop publishing software like Aldus PageMaker
-                                including versions of Lorem Ipsum.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="m-30">
-            <table>
-                <tr>
-                    <td width="100%" class="tb-head">DESENVOLVIMENTO DA AULA</td>
-                </tr>
-            </table>
-            <table>
-                <tbody>
-                    <tr class="h-50">
-                        <td class="fonte-16 caixa-2">
-                            Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
-                            of type and scrambled it to make a type specimen book. It has survived not only five
-                            centuries, but also the leap into electronic typesetting, remaining essentially(5;7)
-                            unchanged. It was popularised in the 1960s with the release of Letraset sheets.
-                        </td>
+            @{
+                var first = Model.Objetivos.First();
+                var last = Model.Objetivos.Last();
 
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="m-30">
-            <table>
-                <tr>
-                    <td width="100%" class="tb-head">
-                        RECUPERAÇÃO CONTÍNUA
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tbody>
-                    <tr class="h-50">
-                        <td class="fonte-16 caixa-2">
-                            Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
-                            of type and scrambled it to make a type specimen book. It has survived not only five
-                            centuries, but also the leap into electronic typesetting, remaining essentially(5;7)
-                            unchanged. It was popularised in the 1960s with the release of Letraset sheets.
-                        </td>
+                @foreach (var objetivo in Model.Objetivos)
+                {
+                    @Html.Raw(MontaCabecalhoObjetivos())
+                    <table>
+                        <tbody>
+                            <tr class="tabela-objetivos-items-tr">
+                                @{
 
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="m-30">
-            <table>
-                <tr>
-                    <td width="100%" class="tb-head">
-                        LIÇÃO DE CASA
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tbody>
-                    <tr class="h-50">
-                        <td class="fonte-16 caixa-2">
-                            Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
-                            of type and scrambled it to make a type specimen book. It has survived not only five
-                            centuries, but also the leap into electronic typesetting, remaining essentially(5;7)
-                            unchanged. It was popularised in the 1960s with the release of Letraset sheets.
-                        </td>
+                                    <td class="fonte-16 tabela-objetivos-items-titulo">
+                                        @objetivo.Codigo
+                                    </td>
+                                    <td class="fonte-16 tabela-objetivos-items-descricao">
+                                        @objetivo.Descricao
+                                    </td>
 
-                    </tr>
-                </tbody>
-            </table>
+                                }
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
+                    @Html.Raw(VerificaQuebra())
+                }
+
+            }
+
         </div>
+        @Html.Raw(MontaDescricao("", @Model.Descricao))
+        @Html.Raw(MontaDescricao("DESENVOLVIMENTO DA AULA", @Model.DesenvolvimentoAula))
+        @Html.Raw(MontaDescricao("RECUPERAÇÃO CONTÍNUA", @Model.DesenvolvimentoAula))
+        @Html.Raw(MontaDescricao("LIÇÃO DE CASA", @Model.DesenvolvimentoAula))
+
     </div>
 </body>
 

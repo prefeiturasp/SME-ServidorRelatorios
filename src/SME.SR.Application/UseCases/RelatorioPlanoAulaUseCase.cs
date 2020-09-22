@@ -38,6 +38,11 @@ namespace SME.SR.Workers.SGP
                 planoAula.ComponenteCurricular = "Regência de Classe";
 
             planoAula.Objetivos = await mediator.Send(new ObterPlanoAulaObjetivoAprendizagemQuery(filtros.PlanoAulaId));
+            planoAula.Descricao = planoAula.Descricao != null ? planoAula.Descricao : "";
+            planoAula.LicaoCasa = planoAula.LicaoCasa != null ? planoAula.LicaoCasa : "";
+            planoAula.Recuperacao = planoAula.Recuperacao != null ? planoAula.Recuperacao : "";
+            planoAula.DesenvolvimentoAula = planoAula.DesenvolvimentoAula != null ? planoAula.DesenvolvimentoAula : "";
+
             planoAula.Usuario = filtros.Usuario.Nome;
             planoAula.RF = filtros.Usuario.CodigoRf;
 
