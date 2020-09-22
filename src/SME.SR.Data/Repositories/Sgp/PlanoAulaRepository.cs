@@ -52,34 +52,38 @@ namespace SME.SR.Data
 	                        recuperacao_aula as Recuperacao,
 	                        licao_casa as LicaoCasa,
 	                        ue.nome as Ue,
-	                        dre.nome  as Dre,
+                            te.descricao as TipoEscola,
+	                        dre.abreviacao  as Dre,
+                            turma.modalidade_codigo  as ModalidadeTurma,
 	                        turma.nome  as Turma,
                             turma.turma_id  as TurmaCodigo,
-                            plano_aula.criado_em as DataPlanoAula,
-	                        componente_curricular.descricao_eol as ComponenteCurricular
+                            aula.data_aula as DataPlanoAula,
+                            aula.disciplina_id::int8 as ComponenteCurricularId
                         from
 	                        plano_aula
                         inner join aula on
 	                        plano_aula.aula_id = aula.id
                         inner join ue on
 	                        aula.ue_id = ue.ue_id
+                        inner join tipo_escola te on ue.tipo_escola = te.id 
                         inner join dre on
 	                        ue.dre_id = dre.id
                         inner join turma on
 	                        aula.turma_id = turma.turma_id 
-                        inner join componente_curricular on
-	                        aula.disciplina_id::int8 = componente_curricular.codigo_eol 
-                                                where plano_aula.id = @id
+                        where plano_aula.id = @id
                         group by
-
                             plano_aula.id,
 	                        desenvolvimento_aula,
 	                        recuperacao_aula,
+                            te.descricao,
 	                        licao_casa,
 	                        ue.nome,
-	                        dre.nome,
+	                        dre.abreviacao,
+                            turma.modalidade_codigo,
 	                        turma.nome,
-	                        componente_curricular.descricao_eol, aula.disciplina_id, turma.turma_id";
+                            aula.disciplina_id,
+                            aula.data_aula,
+                            aula.disciplina_id, turma.turma_id";
 
             var parametros = new
             {

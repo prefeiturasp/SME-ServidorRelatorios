@@ -1,5 +1,6 @@
 ﻿@model SME.SR.Infra.PlanoAulaDto
-
+@using System.Text.RegularExpressions;
+@using SME.SR.Infra.Extensions;
 @{
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 44;
@@ -29,7 +30,7 @@
             str = @"<table>
 <tr>
 <td width='100 %' class=tb-cabecalho>
-OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
+OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
 </td>
 </tr>
 </table> ";
@@ -39,32 +40,68 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
         return str;
     }
 
+    string MontaObjetivos()
+    {
+        var str = "";
+
+        if (Model.Objetivos.Count() > 0)
+        {
+            str += MontaCabecalhoObjetivos();
+            var first = Model.Objetivos.First();
+            var last = Model.Objetivos.Last();
+
+            @foreach (var objetivo in Model.Objetivos)
+            {
+                str += $@"<table><tbody>
+<tr class='tabela-objetivos-items-tr'>
+<td class='fonte-16 tabela-objetivos-items-titulo'>
+{objetivo.Codigo}
+</td>
+<td class='fonte-16 tabela-objetivos-items-descricao'>
+{objetivo.Descricao}
+</td>
+</tr>
+</tbody>
+</table>";
+                contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
+                str += VerificaQuebra();
+            }
+        }
+        else
+        {
+            str += MontaDescricao("OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)", Model.Descricao);
+        }
+
+        return str;
+    }
+
+
+
     string MontaDescricao(string titulo, string descricao)
     {
+        if (descricao.Trim().Length == 0)
+        {
+            return "";
+        }
         var str = "<div class='m-30'>";
 
         if (titulo != "")
         {
-            str = str + $@"
-<table>
-<tr>
-<td width='100%' class='tb-cabecalho2'>{titulo}</td>
-</tr>
-</table>";
+            str += $@"<table><tr><td width='100%' class='tb-cabecalho2'>{titulo}</td></tr></table>";
         }
 
 
-        str = str + @"<table> <tbody>
-<tr class='h-50'>
-<td class='fonte-16 caixa-2'>";
+        str += @"<table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
 
         int tamanho = 0;
+        descricao = Regex.Replace(descricao, @"<[^>]*>", String.Empty);
+        descricao = Regex.Replace(descricao, @"&nbsp;", " ").Trim();
         for (int i = 0; i < descricao.Length; i++)
         {
 
             if (tamanho <= 100)
             {
-                str = str + descricao[i];
+                str += descricao[i];
                 tamanho = tamanho + 1;
             }
             else
@@ -73,21 +110,26 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
                 var retornoVerificacao = VerificaQuebra();
                 if (retornoVerificacao != string.Empty)
                 {
-                    str = str + $@"</td> </tr> </tbody> </table> {retornoVerificacao} <table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
+                    str += $@"</td> </tr> </tbody> </table> {retornoVerificacao} ";
+                    if (titulo != "")
+                    {
+                        str += $@"<table><tr><td width='100%' class='tb-cabecalho2'>{titulo}</td></tr></table>";
+                    }
+                    str += "<table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
                 }
                 else
                 {
-                    str = str + retornoVerificacao;
+                    str += retornoVerificacao;
                 }
 
                 tamanho = 0;
-                str = str + descricao[i];
+                str += descricao[i];
             }
         }
 
         if (!str.Substring(str.Length - 8).Equals("</table>"))
         {
-            str = str + @" </tr> </tbody> </table>";
+            str += @" </tr> </tbody> </table>";
         }
 
         return str + "</div>";
@@ -109,8 +151,8 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
 <tbody>
 <tr>
 <td width='35%'>DRE: {Model.Dre}</td>
-<td width='40%'>UE: {Model.Ue}</td>
-<td width='15%'>TURMA: {Model.Turma}</td>
+<td width='40%'>UE: {Model.TipoEscola} {Model.Ue}</td>
+<td width='15%'>TURMA:{Model.ModalidadeTurma.ShortName()} - {Model.Turma}</td>
 </tr>
 </tbody>
 </table>
@@ -139,7 +181,6 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -360,41 +401,13 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
     <div>
         @Html.Raw(MontarCabecalho())
         <div>
-            @{
-                var first = Model.Objetivos.First();
-                var last = Model.Objetivos.Last();
-
-                @foreach (var objetivo in Model.Objetivos)
-                {
-                    @Html.Raw(MontaCabecalhoObjetivos())
-                    <table>
-                        <tbody>
-                            <tr class="tabela-objetivos-items-tr">
-                                @{
-
-                                    <td class="fonte-16 tabela-objetivos-items-titulo">
-                                        @objetivo.Codigo
-                                    </td>
-                                    <td class="fonte-16 tabela-objetivos-items-descricao">
-                                        @objetivo.Descricao
-                                    </td>
-
-                                }
-                            </tr>
-
-                        </tbody>
-                    </table>
-                    contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
-                    @Html.Raw(VerificaQuebra())
-                }
-
-            }
-
+            @Html.Raw(MontaObjetivos())
         </div>
-        @Html.Raw(MontaDescricao("", @Model.Descricao))
+        @if (Model.Objetivos.Count() > 0)@Html.Raw(MontaDescricao("", @Model.Descricao))
+
         @Html.Raw(MontaDescricao("DESENVOLVIMENTO DA AULA", @Model.DesenvolvimentoAula))
-        @Html.Raw(MontaDescricao("RECUPERAÇÃO CONTÍNUA", @Model.DesenvolvimentoAula))
-        @Html.Raw(MontaDescricao("LIÇÃO DE CASA", @Model.DesenvolvimentoAula))
+        @Html.Raw(MontaDescricao("RECUPERAÇÃO CONTÍNUA", @Model.Recuperacao))
+        @Html.Raw(MontaDescricao("LIÇÃO DE CASA", @Model.LicaoCasa))
 
     </div>
 </body>

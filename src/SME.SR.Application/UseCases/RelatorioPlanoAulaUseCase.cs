@@ -3,6 +3,7 @@ using SME.SR.Application;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP
@@ -21,22 +22,13 @@ namespace SME.SR.Workers.SGP
             var filtros = request.ObterObjetoFiltro<ObterPlanoAulaFiltroQuery>();
 
             var planoAula = await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
-
-            var turma = await mediator.Send(new ObterTurmaQuery() { CodigoTurma = planoAula.TurmaCodigo });
-
+            
             if (planoAula == null)
                 throw new NegocioException("Plano de aula não encontrado.");
 
+            var componenteCurricular = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(planoAula.ComponenteCurricularId));
 
-            var regencia = await mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
-            {
-                CdComponenteCurricular = planoAula.ComponenteCurricularId,
-                Usuario = filtros.Usuario,
-                Turma = turma
-            });
-            if (regencia != null)
-                planoAula.ComponenteCurricular = "Regência de Classe";
-
+            planoAula.ComponenteCurricular = componenteCurricular.FirstOrDefault().Disciplina;
             planoAula.Objetivos = await mediator.Send(new ObterPlanoAulaObjetivoAprendizagemQuery(filtros.PlanoAulaId));
             planoAula.Descricao = planoAula.Descricao != null ? planoAula.Descricao : "";
             planoAula.LicaoCasa = planoAula.LicaoCasa != null ? planoAula.LicaoCasa : "";
