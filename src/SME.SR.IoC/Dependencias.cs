@@ -105,6 +105,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IParecerConclusivoRepository), typeof(ParecerConclusivoRepository));
             services.TryAddScoped(typeof(ICompensacaoAusenciaRepository), typeof(CompensacaoAusenciaRepository));
             services.TryAddScoped(typeof(ICalendarioEventoRepository), typeof(CalendarioEventoRepository));
+            services.TryAddScoped(typeof(IPlanoAulaRepository), typeof(PlanoAulaRepository));
 
         }
 
@@ -112,6 +113,7 @@ namespace SME.SR.IoC
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
             services.TryAddScoped<IMonitorarStatusRelatorioUseCase, MonitorarStatusRelatorioUseCase>();
+            services.TryAddScoped<IRelatorioPlanoAulaUseCase, RelatorioPlanoAulaUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAlunoUseCase, RelatorioConselhoClasseAlunoUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
