@@ -74,19 +74,66 @@
         return str;
     }
 
-string MontarCabecalhoEventos(string mes)
+    string MontarCabecalhoTabela(string cabecalho)
     {
         var str = $@"
-            <table class='tabela-eventos'>
+            <table class='tabela-cabecalho'>
                 <thead>
-                    <th class='sem-border-bottom'></th>
+                    <th class='sem-border-bottom'>{cabecalho}</th>
                 </thead>
             </table>";
         return str;
     }
 
-   
-}
+    string EspacoEmBranco()
+    {
+        return $@"<table class='tabela-alunos'>
+            <thead>
+                <th class='thLimpo' width='100%'></th>
+            </thead>
+        </table>";
+    }
+
+    string MontarTabelaTotalEstudantes()
+    {
+        var totalEstudantes = Model.TotalEstudantesDto;
+        var anos = Model.TotalEstudantesDto.Anos.ToList();
+
+        var str = $@"
+            <table class='tabela-cabecalho'>
+                <thead>
+                    <tr>";
+
+        for (int i = 0; i < anos.Count; i++)
+        {
+            var ano = anos[i];
+            str += $@"<th width='width%' class='sem-border-bottom'>{ano.AnoDescricao}°</th>";
+        }
+        
+        str += $@"
+                    <th width='15%' class='sem-border-bottom negrito'>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+        ";
+
+        for (int i = 0; i < anos.Count; i++)
+        {
+            var ano = anos[i];
+            var width = 85 / anos.Count;
+
+            str += $@"<td>{ano.Quantidade} / {ano.Porcentagem}%</td>";
+        }
+        
+        str += $@"
+                    <td width='15%' class='negrito'>{totalEstudantes.QuantidadeTotal} / {totalEstudantes.PorcentagemTotal}%</td>
+                </tbody>
+            </table>
+        ";
+
+        return str;
+    }        
+ }
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -124,15 +171,14 @@ string MontarCabecalhoEventos(string mes)
             margin-top: 7px;
         }
 
-       
         .header-pagina {
             margin-top: 33px;
             margin-bottom: 22px;
         }
 
-        .header-pagina td {
-            text-align: left;
-        }
+            .header-pagina td {
+                text-align: left;
+            }
 
         table {
             display: table;
@@ -157,7 +203,7 @@ string MontarCabecalhoEventos(string mes)
             text-align: center;
         }
 
-        .tabela-eventos tr {
+        .tabela-cabecalho tr {
             font-size: 12px;
             height: 24px;
         }
@@ -173,12 +219,12 @@ string MontarCabecalhoEventos(string mes)
         .alinhar-esquerda {
             text-align: left;
         }
-        
+
         .espaco-esquerda-15 {
             padding-left: 15px;
         }
 
-        .negrito{
+        .negrito {
             font-weight: bold;
         }
 
@@ -192,6 +238,7 @@ string MontarCabecalhoEventos(string mes)
             border-bottom: 0;
             height: 22px;
         }
+
         .img-logo-sgp {
             height: 64px;
             float: left;
@@ -201,7 +248,62 @@ string MontarCabecalhoEventos(string mes)
         @{
             @Html.Raw(MontarCabecalho())
 
-           
+            @Html.Raw(MontarCabecalhoTabela("TOTAL DE ESTUDANTES"))
+
+            @Html.Raw(MontarTabelaTotalEstudantes())
+
+            @Html.Raw(EspacoEmBranco())
+
+            if (Model.EhEncaminhamento)
+            {
+                @Html.Raw(MontarCabecalhoTabela("INFORMAÇÕES ESCOLARES"))
+            }
+            else
+            {
+                @Html.Raw(MontarCabecalhoTabela("FREQUÊNCIA"))
+
+                <table class='tabela-cabecalho'>
+                    <thead>
+                        <tr>
+                            <th width='20%'></th>
+
+                            @foreach (var frequencias in Model.FrequenciaDto)
+                            {
+                                foreach (var anos in frequencias.Anos)
+                                {
+                                    if (anos.Descricao == "Frequente")
+                                    {
+                                        <th>@anos.DescricaoAno</th>
+
+                                    }
+                                }
+                            }
+                            <th width='15%'>TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class='alinhar-esquerda espaco-esquerda-15'>Frequente</td>
+                            @foreach (var frequencias in Model.FrequenciaDto)
+                            {
+                                foreach (var anos in frequencias.Anos)
+                                {
+                                    if (anos.Descricao == "Frequente")
+                                    {
+                                        <td>@anos.Quantidade / @anos.Porcentagem%</td>
+
+                                    }
+                                }
+                            }
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+
+
+
+
         }
     </div>
 </body>

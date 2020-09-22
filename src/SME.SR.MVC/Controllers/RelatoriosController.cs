@@ -1476,35 +1476,72 @@ namespace SME.SR.MVC.Controllers
             totalEstudantes.QuantidadeTotal = 90;
 
             var anosTotalEstudantes = new List<ResumoPAPTotalAnoDto>();
-            var ano1 = new ResumoPAPTotalAnoDto{
-                AnoDescricao = 5,
-                Porcentagem = 89,
-                Quantidade = 34
-            };
+            
+            for(var i = 0; i < 7; i++)
+            {
+                anosTotalEstudantes.Add(new ResumoPAPTotalAnoDto
+                {
+                    AnoDescricao = i + 3,
+                    Quantidade = i + 8,
+                    Porcentagem = i + 33.3,
+                });
+            }
 
-            anosTotalEstudantes.Add(ano1);
+            totalEstudantes.Anos = anosTotalEstudantes;
             model.TotalEstudantesDto = totalEstudantes;
                      
-            var frequencia1 = new ResumoPAPFrequenciaDto() { 
-                PorcentagemTotalFrequencia = 100,
-                QuantidadeTotalFrequencia = 90,                
-            };
-
-            var anoFrequencia1 = new ResumoPAPTotalFrequenciaAnoDto()
-            {
-                Descricao = "Frequente",
-                DescricaoAno = "3º",
-                Porcentagem = 33.3,
-                Quantidade = 30,
-                TotalPorcentagem = 100,
-                TotalQuantidade = 90,
-            };
-
-            var listaAno = new List<ResumoPAPTotalFrequenciaAnoDto>();
-            listaAno.Add(anoFrequencia1);
-            frequencia1.Anos = listaAno;
+           
             var listaFreq = new List<ResumoPAPFrequenciaDto>();
-            listaFreq.Add(frequencia1);
+            
+            for (var i = 0; i < 2; i++)
+            {
+                var listaAno = new List<ResumoPAPTotalFrequenciaAnoDto>();
+
+                listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
+                {
+                    Descricao = "Frequente",
+                    DescricaoAno = (i + 3).ToString()+'°',
+                    Porcentagem = i + 7.3,
+                    Quantidade = i + 10,
+                    TotalPorcentagem = i + 23,
+                    TotalQuantidade = i + 22,
+                });
+                listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
+                {
+                    Descricao = "Pouco frequente",
+                    DescricaoAno = (i + 3).ToString() + '°',
+                    Porcentagem = i + 8.3,
+                    Quantidade = i + 11,
+                    TotalPorcentagem = i + 22,
+                    TotalQuantidade = i + 25,
+                });
+                listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
+                {
+                    Descricao = "Não comparece",
+                    DescricaoAno = (i + 3).ToString() + '°',
+                    Porcentagem = i + 3.3,
+                    Quantidade = i + 5,
+                    TotalPorcentagem = i + 14,
+                    TotalQuantidade = i + 21,
+                });
+                listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
+                {
+                    Descricao = "Total",
+                    DescricaoAno = (i + 3).ToString() + '°',
+                    Porcentagem = i + 41.3,
+                    Quantidade = i + 31,
+                    TotalPorcentagem = i + 54,
+                    TotalQuantidade = i + 61,
+                });
+
+                listaFreq.Add(new ResumoPAPFrequenciaDto()
+                {
+                    PorcentagemTotalFrequencia = i + 25,
+                    QuantidadeTotalFrequencia = i + 55,
+                    Anos = listaAno
+                });
+            }
+
             model.FrequenciaDto = listaFreq;
 
             ResumoPAPTotalResultadoDto resultados = new ResumoPAPTotalResultadoDto()
@@ -1552,7 +1589,9 @@ namespace SME.SR.MVC.Controllers
             objetivosResultados.Total = listaTotalResultados;
             listaObjetivosResultados.Add(objetivosResultados);
             resultados.Objetivos = listaObjetivosResultados;
-            model.ResultadoDto.Add(resultados);
+            var listaResultados = new List<ResumoPAPTotalResultadoDto>();
+            listaResultados.Add(resultados);
+            model.ResultadoDto = listaResultados;
 
             ResumoPAPTotalResultadoDto encaminhamento = new ResumoPAPTotalResultadoDto()
             {
@@ -1573,7 +1612,7 @@ namespace SME.SR.MVC.Controllers
                 TotalQuantidade = 12
             };
 
-            var anosResultadoEncaminhamento = new ResumoPAPResultadoAnoDto()
+            var anosEncaminhamento = new ResumoPAPResultadoAnoDto()
             {
                 AnoDescricao = 7,
             };
@@ -1587,11 +1626,21 @@ namespace SME.SR.MVC.Controllers
                 TotalQuantidade = 72
             };
 
-            anosResultadoEncaminhamento.Respostas.Append(respostaEncaminhamento);
-            objetivosEncaminhamento.Total.Append(totalEncaminhamento);
-            objetivosEncaminhamento.Anos.Append(anosResultadoEncaminhamento);
-            encaminhamento.Objetivos.Append(objetivosEncaminhamento);
-            model.EncaminhamentoDto.Add(encaminhamento);
+            var listaRespostasEncaminhamento = new List<ResumoPAPResultadoRespostaDto>();
+            listaRespostasEncaminhamento.Add(respostaEncaminhamento);
+            anosEncaminhamento.Respostas = listaRespostasResultados;
+            var listaTotalEncaminhamento = new List<ResumoPAPResultadoRespostaDto>();
+            listaTotalEncaminhamento.Add(totalEncaminhamento);
+            var listaAnosEncaminhamento = new List<ResumoPAPResultadoAnoDto>();
+            listaAnosEncaminhamento.Add(anosEncaminhamento);
+            var listaObjetivosEncaminhamento = new List<ResumoPAPResultadoObjetivoDto>();
+            objetivosEncaminhamento.Anos = listaAnosEncaminhamento;
+            objetivosEncaminhamento.Total = listaTotalEncaminhamento;
+            listaObjetivosEncaminhamento.Add(objetivosEncaminhamento);
+            encaminhamento.Objetivos = listaObjetivosEncaminhamento;
+            var listaEncaminhamento = new List<ResumoPAPTotalResultadoDto>();
+            listaEncaminhamento.Add(encaminhamento);
+            model.ResultadoDto = listaEncaminhamento;
 
             return View("RelatorioResumosPAP", model);
         }
