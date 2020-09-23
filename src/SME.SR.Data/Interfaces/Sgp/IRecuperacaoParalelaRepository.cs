@@ -8,6 +8,12 @@ namespace SME.SR.Data
     {
         Task<RecuperacaoParalelaPeriodo> ObterPeriodoPorId(long id);
 
-        Task<IEnumerable<ResumoPAPTotalAlunosAnoDto>> ListarTotalAlunosSeries(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo);
+        Task<IEnumerable<RetornoResumoPAPTotalAlunosAnoDto>> ListarTotalAlunosSeries(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo);
+
+        Task<IEnumerable<RetornoResumoPAPTotalAlunosAnoFrequenciaDto>> ListarTotalEstudantesPorFrequencia(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo);
+
+        Task<IEnumerable<RetornoResumoPAPTotalResultadoDto>> ListarTotalResultado(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo, int? pagina);
+
+        Task<IEnumerable<RetornoResumoPAPTotalResultadoDto>> ListarTotalResultadoEncaminhamento(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo, int? pagina);
     }
 }

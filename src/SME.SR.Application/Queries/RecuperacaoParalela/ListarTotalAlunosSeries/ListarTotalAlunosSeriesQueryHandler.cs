@@ -3,12 +3,13 @@ using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application.Queries.RecuperacaoParalela.ListarTotalAlunosSeries
 {
-    public class ListarTotalAlunosSeriesQueryHandler : IRequestHandler<ListarTotalAlunosSeriesQuery, IEnumerable<ResumoPAPTotalAlunosAnoDto>>
+    public class ListarTotalAlunosSeriesQueryHandler : IRequestHandler<ListarTotalAlunosSeriesQuery, ResumoPAPTotalEstudantesDto>
     {
         private readonly IRecuperacaoParalelaRepository recuperacaoParalelaRepository;
 
@@ -17,15 +18,30 @@ namespace SME.SR.Application.Queries.RecuperacaoParalela.ListarTotalAlunosSeries
             this.recuperacaoParalelaRepository = recuperacaoParalelaRepository ?? throw new ArgumentNullException(nameof(recuperacaoParalelaRepository));
         }
 
-        public async Task<IEnumerable<ResumoPAPTotalAlunosAnoDto>> Handle(ListarTotalAlunosSeriesQuery request, CancellationToken cancellationToken)
+        public async Task<ResumoPAPTotalEstudantesDto> Handle(ListarTotalAlunosSeriesQuery request, CancellationToken cancellationToken)
         {
             var totalAlunos = await recuperacaoParalelaRepository.ListarTotalAlunosSeries(request.Periodo, request.DreId, request.UeId, request.CicloId, 
                 request.TurmaId, request.Ano, request.AnoLetivo);
 
-            if (totalAlunos == null)
-                throw new NegocioException("Não foi possível obter o total de alunos da recuperação paralela");
+            if (!totalAlunos.Any()) return null;
+            var total = totalAlunos.Sum(s => s.Total);
 
-            return totalAlunos;
+            return MapearParaDtoTotalEstudantes(total, totalAlunos);
+        }
+
+        private ResumoPAPTotalEstudantesDto MapearParaDtoTotalEstudantes(int total, IEnumerable<RetornoResumoPAPTotalAlunosAnoDto> totalAlunosPorSeries)
+        {
+            return new ResumoPAPTotalEstudantesDto
+            {
+                QuantidadeTotal = total,
+                PorcentagemTotal = 100,
+                Anos = totalAlunosPorSeries.Select(x => new ResumoPAPTotalAnoDto
+                {
+                    AnoDescricao = x.Ano,
+                    Quantidade = x.Total,
+                    Porcentagem = ((double)(x.Total * 100)) / total
+                })
+            };
         }
     }
 }

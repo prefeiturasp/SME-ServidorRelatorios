@@ -133,7 +133,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/resumopap")]
-        [Action("relatorios/resumopap", typeof(IRelatorioImpressaoCalendarioUseCase))]
+        [Action("relatorios/resumopap", typeof(IRelatorioResumoPAPUseCase))]
         public async Task<bool> RelatorioResumoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioResumoPAPUseCase relatorioResumoPAPUseCase)
         {
             await relatorioResumoPAPUseCase.Executar(request);

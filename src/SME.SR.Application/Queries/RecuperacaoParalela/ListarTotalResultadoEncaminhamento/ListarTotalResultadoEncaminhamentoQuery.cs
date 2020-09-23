@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ListarTotalAlunosSeriesQuery : IRequest<ResumoPAPTotalEstudantesDto>
+    public class ListarTotalResultadoEncaminhamentoQuery : IRequest<IEnumerable<ResumoPAPTotalResultadoDto>>
     {
         public int? Periodo { get; set; }
 

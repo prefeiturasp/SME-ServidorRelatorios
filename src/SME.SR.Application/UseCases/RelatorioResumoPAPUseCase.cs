@@ -32,15 +32,58 @@ namespace SME.SR.Application
 
             var periodo = await ObterPeriodo(filtros);
 
-            var relatorioResumoPAPDto = new ResumoPAPDto();
+            var totalEstudantes = await ObterTotalEstudantes(filtros);
+
+            var totalFrequencia = await ObterTotalFrequencia(filtros);
+
+            var encaminhamento = await ObterEncaminhamento(filtros);
+
+            var resultado = await ObterResultados(filtros);
+
+            var relatorioResumoPAPDto = new ResumoPAPDto()
+            {
+                Ano = filtros.Ano,
+                AnoLetivo = filtros.AnoLetivo,
+                Ciclo = ciclo.Descricao,
+                Data = DateTime.Now.ToString("dd/MM/yyyy"),
+                DreNome = dreUe.DreNome,
+                EhEncaminhamento = (filtros.Periodo == (int)PeriodoRecuperacaoParalela.Encaminhamento),
+                EncaminhamentoDto = encaminhamento != null && encaminhamento.Any() ? encaminhamento.ToList() : null,
+                FrequenciaDto = totalFrequencia,
+                Periodo = periodo.Nome,
+                ResultadoDto = resultado != null && resultado.Any() ? resultado.ToList() : null,
+                TotalEstudantesDto = totalEstudantes,
+                Turma = turma.Nome,
+                UeNome = dreUe.UeNome,
+                UsuarioNome = filtros.UsuarioNome,
+                UsuarioRF = filtros.UsuarioRf
+            };
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRecuperacaoParalela", relatorioResumoPAPDto, request.CodigoCorrelacao));
         }
 
-        private async Task<ResumoPAPTotalEstudantesDto> ObterTotalEstudantes(FiltroRelatorioResumoPAPDto filtros)
+        private async Task<IEnumerable<ResumoPAPTotalResultadoDto>> ObterResultados(FiltroRelatorioResumoPAPDto filtros)
         {
-            var totalAlunosPorSeries = await mediator.Send(
-                new ListarTotalAlunosSeriesQuery()
+            if (filtros.Periodo.HasValue && filtros.Periodo.Value != (int)PeriodoRecuperacaoParalela.Encaminhamento) return null;
+            return await mediator.Send(
+               new ListarTotalResultadoQuery()
+               {
+                   Periodo = filtros.Periodo,
+                   DreId = filtros.DreId,
+                   UeId = filtros.UeId,
+                   CicloId = filtros.CicloId,
+                   TurmaId = filtros.TurmaId,
+                   Ano = filtros.Ano,
+                   AnoLetivo = filtros.AnoLetivo
+               });
+        }
+
+        private async Task<IEnumerable<ResumoPAPTotalResultadoDto>> ObterEncaminhamento(FiltroRelatorioResumoPAPDto filtros)
+        {
+            if (filtros.Periodo.HasValue && filtros.Periodo.Value != (int)PeriodoRecuperacaoParalela.Encaminhamento) return null;
+
+            return await mediator.Send(
+                new ListarTotalResultadoEncaminhamentoQuery()
                 {
                     Periodo = filtros.Periodo,
                     DreId = filtros.DreId,
@@ -50,25 +93,39 @@ namespace SME.SR.Application
                     Ano = filtros.Ano,
                     AnoLetivo = filtros.AnoLetivo
                 });
-            if (!totalAlunosPorSeries.Any()) return null;
-            var total = totalAlunosPorSeries.Sum(s => s.Total);
-            return MapearParaDtoTotalEstudantes(total, totalAlunosPorSeries);
         }
 
-        private ResumoPAPTotalEstudantesDto MapearParaDtoTotalEstudantes(int total, IEnumerable<ResumoPAPTotalAlunosAnoDto> totalAlunosPorSeries)
+        private async Task<ResumoPAPTotalEstudantePorFrequenciaDto> ObterTotalFrequencia(FiltroRelatorioResumoPAPDto filtros)
         {
-            return new ResumoPAPTotalEstudantesDto
-            {
-                QuantidadeTotal = total,
-                PorcentagemTotal = 100,
-                Anos = totalAlunosPorSeries.Select(x => new ResumoPAPTotalAnoDto
-                {
-                    AnoDescricao = x.Ano,
-                    Quantidade = x.Total,
-                    Porcentagem = ((double)(x.Total * 100)) / total
-                })
-            };
+            return await mediator.Send(
+               new ListarTotalAlunosPorFrequenciaQuery()
+               {
+                   Periodo = filtros.Periodo,
+                   DreId = filtros.DreId,
+                   UeId = filtros.UeId,
+                   CicloId = filtros.CicloId,
+                   TurmaId = filtros.TurmaId,
+                   Ano = filtros.Ano,
+                   AnoLetivo = filtros.AnoLetivo
+               });
         }
+
+        private async Task<ResumoPAPTotalEstudantesDto> ObterTotalEstudantes(FiltroRelatorioResumoPAPDto filtros)
+        {
+            return await mediator.Send(
+                 new ListarTotalAlunosSeriesQuery()
+                 {
+                     Periodo = filtros.Periodo,
+                     DreId = filtros.DreId,
+                     UeId = filtros.UeId,
+                     CicloId = filtros.CicloId,
+                     TurmaId = filtros.TurmaId,
+                     Ano = filtros.Ano,
+                     AnoLetivo = filtros.AnoLetivo
+                 });
+        }
+
+
 
         private async Task<RecuperacaoParalelaPeriodoDto> ObterPeriodo(FiltroRelatorioResumoPAPDto filtros)
         {
