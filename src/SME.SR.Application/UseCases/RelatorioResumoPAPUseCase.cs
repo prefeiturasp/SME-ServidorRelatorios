@@ -1,7 +1,10 @@
 ﻿using MediatR;
+using Newtonsoft.Json.Linq;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -32,6 +35,39 @@ namespace SME.SR.Application
             var relatorioResumoPAPDto = new ResumoPAPDto();
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRecuperacaoParalela", relatorioResumoPAPDto, request.CodigoCorrelacao));
+        }
+
+        private async Task<ResumoPAPTotalEstudantesDto> ObterTotalEstudantes(FiltroRelatorioResumoPAPDto filtros)
+        {
+            var totalAlunosPorSeries = await mediator.Send(
+                new ListarTotalAlunosSeriesQuery()
+                {
+                    Periodo = filtros.Periodo,
+                    DreId = filtros.DreId,
+                    UeId = filtros.UeId,
+                    CicloId = filtros.CicloId,
+                    TurmaId = filtros.TurmaId,
+                    Ano = filtros.Ano,
+                    AnoLetivo = filtros.AnoLetivo
+                });
+            if (!totalAlunosPorSeries.Any()) return null;
+            var total = totalAlunosPorSeries.Sum(s => s.Total);
+            return MapearParaDtoTotalEstudantes(total, totalAlunosPorSeries);
+        }
+
+        private ResumoPAPTotalEstudantesDto MapearParaDtoTotalEstudantes(int total, IEnumerable<ResumoPAPTotalAlunosAnoDto> totalAlunosPorSeries)
+        {
+            return new ResumoPAPTotalEstudantesDto
+            {
+                QuantidadeTotal = total,
+                PorcentagemTotal = 100,
+                Anos = totalAlunosPorSeries.Select(x => new ResumoPAPTotalAnoDto
+                {
+                    AnoDescricao = x.Ano,
+                    Quantidade = x.Total,
+                    Porcentagem = ((double)(x.Total * 100)) / total
+                })
+            };
         }
 
         private async Task<RecuperacaoParalelaPeriodoDto> ObterPeriodo(FiltroRelatorioResumoPAPDto filtros)
