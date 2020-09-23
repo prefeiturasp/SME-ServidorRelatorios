@@ -132,6 +132,64 @@
         ";
 
         return str;
+    }
+
+    string MontarTabelaFrequencia()  
+    { 
+        var str = $@"
+            <table class='tabela-cabecalho'>
+                <thead>
+                    <tr>
+                        <th width='20%'></th>
+        ";
+
+        foreach (var frequencias in Model.FrequenciaDto)
+        {
+            foreach (var linhas in frequencias.Linhas)
+            {
+                foreach (var anos in linhas.Anos)
+                {
+                    str += $@"<th>{anos.DescricaoAno}</th>";
+                }
+                break;
+            }
+            break;
+        }
+
+        str += $@"<th width='15%' class='negrito'>TOTAL</th>
+                    </tr>
+                </thead>
+            <tbody>
+        ";
+
+        foreach (var frequencias in Model.FrequenciaDto)
+        {
+            foreach (var linhas in frequencias.Linhas)
+            {
+                var classeNegrito = frequencias.FrequenciaDescricao == "Total" ? "negrito" : "";
+                var  classeFundoCinza = frequencias.FrequenciaDescricao == "Total" ? "fundo-cinza" : "";
+
+                str += $@"
+                    <tr>
+                        <td class='alinhar-esquerda espaco-esquerda-15'>{frequencias.FrequenciaDescricao}</td>
+                ";
+                foreach (var anos in linhas.Anos)
+                {
+                    str += $@"<td class='{classeNegrito} {classeFundoCinza}'>{anos.Quantidade} / {anos.Porcentagem}%</td>";
+                }
+                str += $@"
+                        <td class='negrito {classeFundoCinza}'>{linhas.QuantidadeTotalFrequencia} / {linhas.PorcentagemTotalFrequencia}%</td>
+                    </tr>
+                ";
+            }
+        }
+
+        str += $@"
+                </tbody>
+            </table>
+        ";
+        
+        return str;
     }        
  }
 
@@ -176,9 +234,9 @@
             margin-bottom: 22px;
         }
 
-            .header-pagina td {
-                text-align: left;
-            }
+        .header-pagina td {
+            text-align: left;
+        }
 
         table {
             display: table;
@@ -232,6 +290,27 @@
             border-bottom: 0;
         }
 
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .linha-dividida {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .linha-dividida span:first-child , .linha-span {
+            border-bottom: 1px solid #42474a;
+            padding-bottom: 3px;
+            margin-bottom: 3px;
+        }
+
+        .ajustar-altura {
+            height: 15px;
+            padding: 8px 0;
+        }
+
         .thLimpo {
             background-color: #ffffff;
             border-top: 0;
@@ -257,52 +336,96 @@
             if (Model.EhEncaminhamento)
             {
                 @Html.Raw(MontarCabecalhoTabela("INFORMAÇÕES ESCOLARES"))
+
+                <table class='tabela-cabecalho'>
+                    <thead>
+                        <tr>
+                            <th width='17.5%'></th>
+                            <th width='12.5%'></th>
+                            <th>4</th>
+                            <th width='10%'  class="negrito">Total</th>                            
+                        </tr>
+                        </thead>
+                    <tbody>
+                        <tr>
+                            <td class="alinhar-esquerda espaco-esquerda-15">É atendido pelo AEE?</td>                           
+                            <td>
+                                <div class="linha-dividida alinhar-esquerda">
+                                    <span class="espaco-esquerda-15">Sim</span>
+                                    <span class="espaco-esquerda-15">Não</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="linha-dividida">
+                                    <span>0 / 0%</span>
+                                    <span>10 / 13,89%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="linha-dividida negrito">
+                                    <span>2 / 2,78%</span>
+                                    <span>100 / 97,22%</span>
+                                </div>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="alinhar-esquerda espaco-esquerda-15">É atendido pelo NAAPA?</td>                           
+                            <td>
+                                <div class="linha-dividida alinhar-esquerda">
+                                    <span class="espaco-esquerda-15">Sim</span>
+                                    <span class="espaco-esquerda-15">Não</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="linha-dividida">
+                                    <span>0 / 0%</span>
+                                    <span>10 / 13,89%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="linha-dividida negrito">
+                                    <span>2 / 2,78%</span>
+                                    <span>70 / 97,22%</span>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                         <tr>
+                            <td class="alinhar-esquerda espaco-esquerda-15">Parecer conclusivo do ano anterior</td>                           
+                            <td>
+                                <div class="linha-dividida alinhar-esquerda">
+                                    <span class="espaco-esquerda-15">Aprovado</span>
+                                    <span class="espaco-esquerda-15 linha-span">Aprovado pelo conselho</span>
+                                    <span class="espaco-esquerda-15">Retido</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="linha-dividida">
+                                    <span>0 / 0%</span>
+                                    <span class="linha-span ajustar-altura">10 / 13,89%</span>
+                                    <span>10 / 13,89%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="linha-dividida negrito">
+                                    <span>2 / 2,78%</span>
+                                    <span class="linha-span ajustar-altura">70 / 97,22%</span>
+                                    <span>70 / 97,22%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>    
+
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(Model.EncaminhamentoDto);
+                <div>@json</div>
             }
             else
             {
                 @Html.Raw(MontarCabecalhoTabela("FREQUÊNCIA"))
 
-                <table class='tabela-cabecalho'>
-                    <thead>
-                        <tr>
-                            <th width='20%'></th>
-
-                            @foreach (var frequencias in Model.FrequenciaDto)
-                            {
-                                foreach (var anos in frequencias.Anos)
-                                {
-                                    if (anos.Descricao == "Frequente")
-                                    {
-                                        <th>@anos.DescricaoAno</th>
-                                    }
-                                }
-                            }
-                            <th width='15%'>TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class='alinhar-esquerda espaco-esquerda-15'>Frequente</td>
-                            @foreach (var frequencias in Model.FrequenciaDto)
-                            {
-                                foreach (var anos in frequencias.Anos)
-                                {
-                                    if (anos.Descricao == "Frequente")
-                                    {
-                                        <td>@anos.Quantidade / @anos.Porcentagem%</td>
-                                    }
-                                }
-                            }
-                            @* <td>@frequencias.QuantidadeTotalFrequencia / @frequencias.PorcentagemTotalFrequencia%</td> *@
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+                @Html.Raw(MontarTabelaFrequencia())                
             }
-
-
-
-
         }
     </div>
 </body>

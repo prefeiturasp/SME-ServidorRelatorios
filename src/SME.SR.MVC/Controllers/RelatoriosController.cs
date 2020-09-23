@@ -1469,7 +1469,7 @@ namespace SME.SR.MVC.Controllers
             model.UsuarioNome = "TESTE USUÁRIO";
             model.UsuarioRF = "123456789";
             model.Data = "21/10/2020";
-            model.EhEncaminhamento = false;
+            model.EhEncaminhamento = true;
 
             ResumoPAPTotalEstudantesDto totalEstudantes = new ResumoPAPTotalEstudantesDto();
             totalEstudantes.PorcentagemTotal = 100;
@@ -1491,58 +1491,60 @@ namespace SME.SR.MVC.Controllers
             model.TotalEstudantesDto = totalEstudantes;
                      
            
-            var listaFreq = new List<ResumoPAPFrequenciaDto>();
+            var listaFrequencia = new List<ResumoPAPTotalEstudanteFrequenciaDto>();
             
-            for (var i = 0; i < 2; i++)
+            for (var i = 0; i < 4; i++)
             {
                 var listaAno = new List<ResumoPAPTotalFrequenciaAnoDto>();
+                var listaLinhas = new List<ResumoPAPFrequenciaDto>();
 
-                listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
+                for (var j = 0; j < 7; j++)
                 {
-                    Descricao = "Frequente",
-                    DescricaoAno = (i + 3).ToString()+'°',
-                    Porcentagem = i + 7.3,
-                    Quantidade = i + 10,
-                    TotalPorcentagem = i + 23,
-                    TotalQuantidade = i + 22,
-                });
-                listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
-                {
-                    Descricao = "Pouco frequente",
-                    DescricaoAno = (i + 3).ToString() + '°',
-                    Porcentagem = i + 8.3,
-                    Quantidade = i + 11,
-                    TotalPorcentagem = i + 22,
-                    TotalQuantidade = i + 25,
-                });
-                listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
-                {
-                    Descricao = "Não comparece",
-                    DescricaoAno = (i + 3).ToString() + '°',
-                    Porcentagem = i + 3.3,
-                    Quantidade = i + 5,
-                    TotalPorcentagem = i + 14,
-                    TotalQuantidade = i + 21,
-                });
-                listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
-                {
-                    Descricao = "Total",
-                    DescricaoAno = (i + 3).ToString() + '°',
-                    Porcentagem = i + 41.3,
-                    Quantidade = i + 31,
-                    TotalPorcentagem = i + 54,
-                    TotalQuantidade = i + 61,
-                });
+                    listaAno.Add(new ResumoPAPTotalFrequenciaAnoDto()
+                    {
+                        DescricaoAno = (j + 3).ToString()+'°',
+                        Porcentagem = j + i + 7.3,
+                        Quantidade = j + i + 10,
+                        TotalQuantidade = i + 12,
+                        TotalPorcentagem = i + 13,
+                    });
 
-                listaFreq.Add(new ResumoPAPFrequenciaDto()
+                }
+
+                listaLinhas.Add(new ResumoPAPFrequenciaDto()
                 {
-                    PorcentagemTotalFrequencia = i + 25,
-                    QuantidadeTotalFrequencia = i + 55,
+                    QuantidadeTotalFrequencia = i + 10 + listaAno.Count,
+                    PorcentagemTotalFrequencia =  i + 11 + listaAno.Count,
                     Anos = listaAno
+                });
+
+                var desc = "";
+                switch (i)
+                {
+                    case 0:
+                            desc = "Frequente";
+                        break;
+                    case 1:
+                        desc = " Pouco frequente";
+                        break;
+                    case 2:
+                        desc = "Não comparece";
+                        break;
+                    default:
+                        desc = "Total";
+                        break;
+                }
+
+                listaFrequencia.Add(new ResumoPAPTotalEstudanteFrequenciaDto()
+                {
+                    PorcentagemTotalFrequencia = 0,
+                    QuantidadeTotalFrequencia = 0,
+                    FrequenciaDescricao = desc,
+                    Linhas = listaLinhas
                 });
             }
 
-            model.FrequenciaDto = listaFreq;
+            model.FrequenciaDto = listaFrequencia;
 
             ResumoPAPTotalResultadoDto resultados = new ResumoPAPTotalResultadoDto()
              {
@@ -1593,54 +1595,89 @@ namespace SME.SR.MVC.Controllers
             listaResultados.Add(resultados);
             model.ResultadoDto = listaResultados;
 
-            ResumoPAPTotalResultadoDto encaminhamento = new ResumoPAPTotalResultadoDto()
+
+            var listaEncaminhamento = new List<ResumoPAPTotalResultadoDto>();
+            var listaObjetivos= new List<ResumoPAPResultadoObjetivoDto>();
+
+            for (var i = 0; i < 3; i++)
+            {
+                var listaAnos = new List<ResumoPAPResultadoAnoDto>();
+                var listaTotal = new List<ResumoPAPResultadoRespostaDto>();
+                var listaRepostas = new List<ResumoPAPResultadoRespostaDto>();
+
+
+                for (var j = 0; j < 1; j++)
+                {
+                    listaTotal.Add(new ResumoPAPResultadoRespostaDto()
+                    {
+                        Porcentagem = 0,
+                        Quantidade = 0,
+                        RespostaDescricao = null,
+                        TotalQuantidade = 20 + j,
+                        TotalPorcentagem = 21 + j
+                    });    
+                    
+                    if(i == 2)
+                    {
+                        listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
+                        {
+                            Porcentagem = 11 + j,
+                            Quantidade = 10 + j,
+                            RespostaDescricao = "Aprovado",
+                            TotalQuantidade = 0,
+                            TotalPorcentagem = 0
+                        });
+                    }
+                    else
+                    {
+                        listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
+                        {
+                            Porcentagem = 11 + j,
+                            Quantidade = 10 + j,
+                            RespostaDescricao = "Não",
+                            TotalQuantidade = 0,
+                            TotalPorcentagem = 0
+                        });
+                    }
+
+                    listaAnos.Add(new ResumoPAPResultadoAnoDto()
+                    {
+                        AnoDescricao = 4 + j,
+                        Respostas = listaRepostas
+                    });
+                }
+
+                var obj = "";
+                switch (i)
+                {
+                    case 0:
+                        obj = "É atendido pelo AEE?";
+                        break;
+                    case 1:
+                        obj = "É atendido pelo NAAPA?";
+                        break;
+                    default:
+                        obj = "Parecer conclusivo do ano anterior";
+                        break;
+                }
+
+                listaObjetivos.Add(new ResumoPAPResultadoObjetivoDto()
+                {
+                    ObjetivoDescricao = obj,
+                    Anos = listaAnos,
+                    Total = listaTotal
+                });
+
+            }
+
+            listaEncaminhamento.Add(new ResumoPAPTotalResultadoDto()
             {
                 EixoDescricao = "Informações escolares",
-            };
+                Objetivos = listaObjetivos
 
-            var objetivosEncaminhamento = new ResumoPAPResultadoObjetivoDto()
-            {
-                ObjetivoDescricao = "É atendido pelo AEE?"
-            };
-
-            var totalEncaminhamento = new ResumoPAPResultadoRespostaDto()
-            {
-                Porcentagem = 10,
-                Quantidade = 2,
-                RespostaDescricao = "Não",
-                TotalPorcentagem = 80,
-                TotalQuantidade = 12
-            };
-
-            var anosEncaminhamento = new ResumoPAPResultadoAnoDto()
-            {
-                AnoDescricao = 7,
-            };
-
-            var respostaEncaminhamento = new ResumoPAPResultadoRespostaDto()
-            {
-                Porcentagem = 0,
-                Quantidade = 0,
-                RespostaDescricao = null,
-                TotalPorcentagem = 100,
-                TotalQuantidade = 72
-            };
-
-            var listaRespostasEncaminhamento = new List<ResumoPAPResultadoRespostaDto>();
-            listaRespostasEncaminhamento.Add(respostaEncaminhamento);
-            anosEncaminhamento.Respostas = listaRespostasResultados;
-            var listaTotalEncaminhamento = new List<ResumoPAPResultadoRespostaDto>();
-            listaTotalEncaminhamento.Add(totalEncaminhamento);
-            var listaAnosEncaminhamento = new List<ResumoPAPResultadoAnoDto>();
-            listaAnosEncaminhamento.Add(anosEncaminhamento);
-            var listaObjetivosEncaminhamento = new List<ResumoPAPResultadoObjetivoDto>();
-            objetivosEncaminhamento.Anos = listaAnosEncaminhamento;
-            objetivosEncaminhamento.Total = listaTotalEncaminhamento;
-            listaObjetivosEncaminhamento.Add(objetivosEncaminhamento);
-            encaminhamento.Objetivos = listaObjetivosEncaminhamento;
-            var listaEncaminhamento = new List<ResumoPAPTotalResultadoDto>();
-            listaEncaminhamento.Add(encaminhamento);
-            model.ResultadoDto = listaEncaminhamento;
+            });
+                        
+            model.EncaminhamentoDto = listaEncaminhamento;
 
             return View("RelatorioResumosPAP", model);
         }
