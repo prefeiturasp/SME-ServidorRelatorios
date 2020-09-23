@@ -1,8 +1,6 @@
 ﻿@model SME.SR.Infra.ResumoPAPDto
 
-@{
-
-    int contadorQuebrarPagina = 0;
+@{ int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 54;
     int contadorPagina = 0;
 
@@ -26,50 +24,50 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 7;
         var str =
             $@"<div>
-                <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-              </div>
-              <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-                <div class='titulo-relatorio'> RELATÓRIO DE ACOMPANHAMENTO PAP - RESUMOS</div>
-                <div class='fonte-14 header-pagina'>
-                <table class='tblTopo'>
-                    <tbody>
-                        <tr>
-                            <td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {Model.DreNome}</td>
-                            <td width='45%' class='espaco-esquerda-15 sem-border-bottom'>UE: {Model.UeNome}</td>
-                            <td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO LETIVO: {Model.AnoLetivo}</td>
-                        </tr>
-                    </tbody>
-                </table>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'> RELATÓRIO DE ACOMPANHAMENTO PAP - RESUMOS</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {Model.DreNome}</td>
+<td width='45%' class='espaco-esquerda-15 sem-border-bottom'>UE: {Model.UeNome}</td>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO LETIVO: {Model.AnoLetivo}</td>
+</tr>
+</tbody>
+</table>
 
-                 <table>
-                    <tbody>
-                        <tr>
-                            <td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>CICLO: {Model.Ciclo}</td>
-                            <td width='30%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Ano}</td>
-                            <td width='35%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Turma}</td>
-                        </tr>
-                    </tbody>
-                </table>
+<table>
+<tbody>
+<tr>
+<td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>CICLO: {Model.Ciclo}</td>
+<td width='30%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Ano}</td>
+<td width='35%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Turma}</td>
+</tr>
+</tbody>
+</table>
 
-                 <table>
-                    <tbody>
-                        <tr>
-                            <td  width='100%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Periodo}</td>
-                        </tr>
-                    </tbody>
-                </table>
+<table>
+<tbody>
+<tr>
+<td  width='100%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Periodo}</td>
+</tr>
+</tbody>
+</table>
 
-                 <table>
-                    <tbody>
-                        <tr>
-                            <td  width='60%' class='espaco-esquerda-15'>USUÁRIO: {Model.UsuarioNome}</td>
-                            <td width='20%' class='espaco-esquerda-15'>RF: {Model.UsuarioRF}</td>
-                            <td width='20%' class='espaco-esquerda-15'>DATA: {Model.Data}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            ";
+<table>
+<tbody>
+<tr>
+<td  width='60%' class='espaco-esquerda-15'>USUÁRIO: {Model.UsuarioNome}</td>
+<td width='20%' class='espaco-esquerda-15'>RF: {Model.UsuarioRF}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.Data}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
 
         return str;
     }
@@ -77,21 +75,21 @@
     string MontarCabecalhoTabela(string cabecalho)
     {
         var str = $@"
-            <table class='tabela-cabecalho'>
-                <thead>
-                    <th class='sem-border-bottom'>{cabecalho}</th>
-                </thead>
-            </table>";
+<table class='tabela-cabecalho'>
+<thead>
+<th class='sem-border-bottom'>{cabecalho}</th>
+</thead>
+</table>";
         return str;
     }
 
     string EspacoEmBranco()
     {
         return $@"<table class='tabela-alunos'>
-            <thead>
-                <th class='thLimpo' width='100%'></th>
-            </thead>
-        </table>";
+<thead>
+<th class='thLimpo' width='100%'></th>
+</thead>
+</table>";
     }
 
     string MontarTabelaTotalEstudantes()
@@ -100,22 +98,22 @@
         var anos = Model.TotalEstudantesDto.Anos.ToList();
 
         var str = $@"
-            <table class='tabela-cabecalho'>
-                <thead>
-                    <tr>";
+<table class='tabela-cabecalho'>
+<thead>
+<tr>";
 
         for (int i = 0; i < anos.Count; i++)
         {
             var ano = anos[i];
             str += $@"<th width='width%' class='sem-border-bottom'>{ano.AnoDescricao}°</th>";
         }
-        
+
         str += $@"
-                    <th width='15%' class='sem-border-bottom negrito'>TOTAL</th>
-                </tr>
-            </thead>
-            <tbody>
-        ";
+<th width='15%' class='sem-border-bottom negrito'>TOTAL</th>
+</tr>
+</thead>
+<tbody>
+";
 
         for (int i = 0; i < anos.Count; i++)
         {
@@ -124,16 +122,119 @@
 
             str += $@"<td>{ano.Quantidade} / {ano.Porcentagem}%</td>";
         }
-        
+
         str += $@"
-                    <td width='15%' class='negrito'>{totalEstudantes.QuantidadeTotal} / {totalEstudantes.PorcentagemTotal}%</td>
-                </tbody>
-            </table>
-        ";
+<td width='15%' class='negrito'>{totalEstudantes.QuantidadeTotal} / {totalEstudantes.PorcentagemTotal}%</td>
+</tbody>
+</table>
+";
 
         return str;
-    }        
- }
+    }
+
+    string MontarResultados()
+    {
+        var str = "";
+
+        foreach (var resultado in Model.ResultadoDto)
+        {
+
+            str += MontarCabecalhoTabela(resultado.EixoDescricao);
+            str += "<table>";
+            int count = 0;
+            foreach (var objetivo in resultado.Objetivos.OrderBy(a => a.Anos))
+            {
+                if (objetivo.Anos.Count() == 1)
+                {
+                    int respostas = 0;
+                    if (count == 0)
+                    {
+                        str += @"<tr><td class='tb-cabecalho2 tb-w40' colspan='2'>&nbsp;</td>";
+
+                        foreach (var ano in objetivo.Anos)
+                        {
+                            respostas = ano.Respostas.Count();
+                            str += $"<td class='tb-cabecalho2 tb-w10'>{ano.AnoDescricao}°</td>";
+                        }
+                        str += "<td class='tb-cabecalho2 negrito tb-w20'>Total</td></tr>";
+                    }
+
+                    str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3' style='width: 20%'>{objetivo.ObjetivoDescricao}</td>";
+
+                    var first = objetivo.Anos.First().Respostas.First();
+
+                    str += $"<td class='tb-conteudo3'>{first.RespostaDescricao}</td>";
+                    str += $"<td class='tb-conteudo3 centralizar'>{first.Quantidade} | {first.Porcentagem}%</td>";
+                    str += $"<td class='tb-conteudo3 negrito tb-w20 centralizar'>{first.TotalQuantidade} | {first.TotalPorcentagem}%</td></tr>";
+
+                    foreach (var ano in objetivo.Anos)
+                    {
+
+
+                        foreach (var resposta in ano.Respostas)
+                        {
+                            if (resposta.Equals(first))
+                            {
+                                continue;
+                            }
+                            str += "<tr>";
+
+                            str += $"<td class='tb-conteudo3'>{resposta.RespostaDescricao}</td>";
+                            str += $"<td class='tb-conteudo3 centralizar'>{resposta.Quantidade} | {resposta.Porcentagem}%</td>";
+                            str += $"<td class='tb-conteudo3 negrito tb-w20 centralizar'>{resposta.TotalQuantidade} | {resposta.TotalPorcentagem}%</td>";
+                            str += "</tr>";
+                        }
+
+
+                    }
+                }
+                else
+                {
+                    int respostas = 0;
+                    respostas = objetivo.Anos.First().Respostas.Count();
+                    if (count == 0)
+                    {
+                        str += @"<tr><td class='tb-cabecalho2 tb-w40' colspan='2'>&nbsp;</td>";
+
+                        foreach (var ano in objetivo.Anos)
+                        {
+
+                            str += $"<td class='tb-cabecalho2 tb-w10'>{ano.AnoDescricao}°</td>";
+                        }
+                        str += "<td class='tb-cabecalho2 negrito tb-w20'>Total</td></tr>";
+                    }
+
+                    str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3' style='width: 20%'>{objetivo.ObjetivoDescricao}</td>";
+
+                    var first = objetivo.Anos.First().Respostas.First();
+
+                    for (var r = 0; r < respostas; r++)
+                    {
+                        if (r != 0)
+                        {
+                            str += "<tr>";
+                        }
+
+                        str += $"<td>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+
+                        foreach (var ano in objetivo.Anos)
+                        {
+                            str += $"<td>{objetivo.Anos.First().Respostas.ToList()[r].Quantidade} | {objetivo.Anos.First().Respostas.ToList()[r].Porcentagem}</td>";
+                        }
+                        str += $"<td>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} | {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}</td>";
+                        str += "</tr>";
+                    }
+                    str += "</tr>";
+                }
+                count += 1;
+            }
+            str += "</table>";
+        }
+
+        return str;
+    }
+
+}
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -243,67 +344,102 @@
             height: 64px;
             float: left;
         }
+
+
+        .tb-cabecalho1 {
+            background-color: #f3f3f3;
+            text-align: CENTER;
+            font-size: 16px;
+            padding: 10px;
+            padding-left: 20px;
+        }
+
+        .tb-cabecalho2 {
+            background-color: #f3f3f3;
+            text-align: CENTER;
+            font-size: 12px;
+            padding: 5px;
+        }
+
+        .tb-w10 {
+            width: 8%;
+        }
+
+        .tb-w20 {
+            width: 20%;
+        }
+
+        .tb-w40 {
+            width: 30%;
+        }
+
+        .tb-conteudo2 {
+            border-top: none;
+            width: 10%;
+            text-align: CENTER;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        .tb-conteudo3 {
+            font-size: 12px;
+            border-top: none;
+            padding-left: 10px;
+            padding-right: 10px;
+            text-align: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
     </style>
     <div>
         @{
-            @Html.Raw(MontarCabecalho())
-
-            @Html.Raw(MontarCabecalhoTabela("TOTAL DE ESTUDANTES"))
-
-            @Html.Raw(MontarTabelaTotalEstudantes())
-
-            @Html.Raw(EspacoEmBranco())
-
-            if (Model.EhEncaminhamento)
-            {
-                @Html.Raw(MontarCabecalhoTabela("INFORMAÇÕES ESCOLARES"))
-            }
-            else
-            {
-                @Html.Raw(MontarCabecalhoTabela("FREQUÊNCIA"))
-
-                <table class='tabela-cabecalho'>
-                    <thead>
-                        <tr>
-                            <th width='20%'></th>
-
-                            @foreach (var frequencias in Model.FrequenciaDto)
-                            {
-                                foreach (var anos in frequencias.Anos)
-                                {
-                                    if (anos.Descricao == "Frequente")
-                                    {
-                                        <th>@anos.DescricaoAno</th>
-                                    }
-                                }
-                            }
-                            <th width='15%'>TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class='alinhar-esquerda espaco-esquerda-15'>Frequente</td>
-                            @foreach (var frequencias in Model.FrequenciaDto)
-                            {
-                                foreach (var anos in frequencias.Anos)
-                                {
-                                    if (anos.Descricao == "Frequente")
-                                    {
-                                        <td>@anos.Quantidade / @anos.Porcentagem%</td>
-                                    }
-                                }
-                            }
-                            @* <td>@frequencias.QuantidadeTotalFrequencia / @frequencias.PorcentagemTotalFrequencia%</td> *@
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            }
-
-
-
-
-        }
+                        @Html.Raw(MontarCabecalho())
+                                    @Html.Raw(MontarCabecalhoTabela("TOTAL DE ESTUDANTES"))
+                                                @Html.Raw(MontarTabelaTotalEstudantes())
+                                                            @Html.Raw(EspacoEmBranco()) if (Model.EhEncaminhamento)
+                                                            {
+                                                @Html.Raw(MontarCabecalhoTabela("INFORMAÇÕES ESCOLARES")) }
+                                                            else
+                                                            {
+                                                @Html.Raw(MontarCabecalhoTabela("FREQUÊNCIA"))
+                                                                <table class='tabela-cabecalho'>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width='20%'></th>
+                                                                            @foreach (var frequencias in Model.FrequenciaDto)
+                                                                            {
+                                                                                foreach (var anos in frequencias.Anos)
+                                                                                {
+                                                                                    if (anos.Descricao == "Frequente")
+                                                                                    {
+                                                            <th>@anos.DescricaoAno</th>}
+                                                                                }
+                                                                            }
+                                                                            <th width='15%'>TOTAL</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td class='alinhar-esquerda espaco-esquerda-15'>Frequente</td>
+                                                                            @foreach (var frequencias in Model.FrequenciaDto)
+                                                                            {
+                                                                                foreach (var anos in frequencias.Anos)
+                                                                                {
+                                                                                    if (anos.Descricao == "Frequente")
+                                                                                    {
+                                                            <td>@anos.Quantidade / @anos.Porcentagem%</td>}
+                                                                                }
+                                                                            }
+                                                                            @* <td>@frequencias.QuantidadeTotalFrequencia / @frequencias.PorcentagemTotalFrequencia%</td> *@
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table> }
+                                                                @Html.Raw(EspacoEmBranco())
+                                                                            @Html.Raw(MontarCabecalhoTabela("DESEMPENHO ESTUDANTES"))
+                                                                                        @Html.Raw(MontarResultados()) }
     </div>
 </body>
 </html>

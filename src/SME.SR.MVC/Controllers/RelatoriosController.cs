@@ -1580,10 +1580,13 @@ namespace SME.SR.MVC.Controllers
             var listaRespostasResultados = new List<ResumoPAPResultadoRespostaDto>();
             listaRespostasResultados.Add(respostaResultados);
             anosResultados.Respostas = listaRespostasResultados;
+
             var listaTotalResultados = new List<ResumoPAPResultadoRespostaDto>();
             listaTotalResultados.Add(totalResultados);
+
             var listaAnosResultados = new List<ResumoPAPResultadoAnoDto>();
             listaAnosResultados.Add(anosResultados);
+
             var listaObjetivosResultados = new List<ResumoPAPResultadoObjetivoDto>();
             objetivosResultados.Anos = listaAnosResultados;
             objetivosResultados.Total = listaTotalResultados;
@@ -1591,7 +1594,7 @@ namespace SME.SR.MVC.Controllers
             resultados.Objetivos = listaObjetivosResultados;
             var listaResultados = new List<ResumoPAPTotalResultadoDto>();
             listaResultados.Add(resultados);
-            model.ResultadoDto = listaResultados;
+            
 
             ResumoPAPTotalResultadoDto encaminhamento = new ResumoPAPTotalResultadoDto()
             {
@@ -1603,16 +1606,26 @@ namespace SME.SR.MVC.Controllers
                 ObjetivoDescricao = "É atendido pelo AEE?"
             };
 
+            var objetivosEncaminhamento2 = new ResumoPAPResultadoObjetivoDto()
+            {
+                ObjetivoDescricao = "É AEE?"
+            };
+
             var totalEncaminhamento = new ResumoPAPResultadoRespostaDto()
             {
                 Porcentagem = 10,
                 Quantidade = 2,
-                RespostaDescricao = "Não",
+                RespostaDescricao = null,
                 TotalPorcentagem = 80,
                 TotalQuantidade = 12
             };
 
             var anosEncaminhamento = new ResumoPAPResultadoAnoDto()
+            {
+                AnoDescricao = 3,
+            };
+
+            var anosEncaminhamento2 = new ResumoPAPResultadoAnoDto()
             {
                 AnoDescricao = 7,
             };
@@ -1621,27 +1634,56 @@ namespace SME.SR.MVC.Controllers
             {
                 Porcentagem = 0,
                 Quantidade = 0,
-                RespostaDescricao = null,
+                RespostaDescricao = "Não",
+                TotalPorcentagem = 100,
+                TotalQuantidade = 72
+            };
+
+            var respostaEncaminhamento2 = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 0,
+                Quantidade = 0,
+                RespostaDescricao = "Sim",
+                TotalPorcentagem = 100,
+                TotalQuantidade = 72
+            };
+
+            var respostaEncaminhamento3 = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 10,
+                Quantidade = 50,
+                RespostaDescricao = "Talvez",
                 TotalPorcentagem = 100,
                 TotalQuantidade = 72
             };
 
             var listaRespostasEncaminhamento = new List<ResumoPAPResultadoRespostaDto>();
             listaRespostasEncaminhamento.Add(respostaEncaminhamento);
-            anosEncaminhamento.Respostas = listaRespostasResultados;
+            listaRespostasEncaminhamento.Add(respostaEncaminhamento2);
+            listaRespostasEncaminhamento.Add(respostaEncaminhamento3);
+            anosEncaminhamento.Respostas = listaRespostasEncaminhamento;
+            anosEncaminhamento2.Respostas = listaRespostasEncaminhamento;
+
+
             var listaTotalEncaminhamento = new List<ResumoPAPResultadoRespostaDto>();
             listaTotalEncaminhamento.Add(totalEncaminhamento);
             var listaAnosEncaminhamento = new List<ResumoPAPResultadoAnoDto>();
             listaAnosEncaminhamento.Add(anosEncaminhamento);
+            listaAnosEncaminhamento.Add(anosEncaminhamento2);
             var listaObjetivosEncaminhamento = new List<ResumoPAPResultadoObjetivoDto>();
             objetivosEncaminhamento.Anos = listaAnosEncaminhamento;
             objetivosEncaminhamento.Total = listaTotalEncaminhamento;
-            listaObjetivosEncaminhamento.Add(objetivosEncaminhamento);
-            encaminhamento.Objetivos = listaObjetivosEncaminhamento;
-            var listaEncaminhamento = new List<ResumoPAPTotalResultadoDto>();
-            listaEncaminhamento.Add(encaminhamento);
-            model.ResultadoDto = listaEncaminhamento;
 
+            objetivosEncaminhamento2.Anos = listaAnosEncaminhamento;
+            objetivosEncaminhamento2.Total = listaTotalEncaminhamento;
+            listaObjetivosEncaminhamento.Add(objetivosEncaminhamento);
+            listaObjetivosEncaminhamento.Add(objetivosEncaminhamento2);
+            encaminhamento.Objetivos = listaObjetivosEncaminhamento;
+            
+            listaResultados.Add(encaminhamento);
+            
+
+            model.ResultadoDto = listaResultados;
             return View("RelatorioResumosPAP", model);
         }
         
