@@ -161,7 +161,7 @@ namespace SME.SR.Application
 
         private async Task<Turma> ObterDadosTurma(FiltroRelatorioResumoPAPDto filtros)
         {
-            if (string.IsNullOrEmpty(filtros.TurmaId) && filtros.TurmaId != "0")
+            if (!string.IsNullOrEmpty(filtros.TurmaId) && filtros.TurmaId != "0")
             {
                 var turma = await mediator.Send(new ObterTurmaQuery() { CodigoTurma = filtros.TurmaId });
 
@@ -179,7 +179,7 @@ namespace SME.SR.Application
         {
             DreUe dreUe = new DreUe();
 
-            if (string.IsNullOrEmpty(filtros.DreId) && filtros.DreId != "0")
+            if (!string.IsNullOrEmpty(filtros.DreId) && filtros.DreId != "0")
             {
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreId });
 
@@ -195,7 +195,7 @@ namespace SME.SR.Application
                 dreUe.DreNome = "Todas";
             }
 
-            if (string.IsNullOrEmpty(filtros.UeId) && filtros.UeId != "0")
+            if (!string.IsNullOrEmpty(filtros.UeId) && filtros.UeId != "0")
             {
                 var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeId));
 
