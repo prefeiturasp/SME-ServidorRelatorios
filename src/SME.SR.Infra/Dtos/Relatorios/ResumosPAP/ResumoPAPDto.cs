@@ -28,7 +28,7 @@ namespace SME.SR.Infra
 
         public ResumoPAPTotalEstudantesDto TotalEstudantesDto { get; set; }
 
-        public List<ResumoPAPFrequenciaDto> FrequenciaDto { get; set; }
+        public List<ResumoPAPTotalEstudanteFrequenciaDto> FrequenciaDto { get; set; }
 
         public List<ResumoPAPTotalResultadoDto> ResultadoDto { get; set; }
 
