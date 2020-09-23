@@ -105,6 +105,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IParecerConclusivoRepository), typeof(ParecerConclusivoRepository));
             services.TryAddScoped(typeof(ICompensacaoAusenciaRepository), typeof(CompensacaoAusenciaRepository));
             services.TryAddScoped(typeof(ICalendarioEventoRepository), typeof(CalendarioEventoRepository));
+            services.TryAddScoped(typeof(IRecuperacaoParalelaRepository), typeof(RecuperacaoParalelaRepository));
 
         }
 
@@ -125,8 +126,9 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioNotasEConceitosFinaisUseCase, RelatorioNotasEConceitosFinaisUseCase>();
             services.TryAddScoped<IRelatorioCompensacaoAusenciaUseCase, RelatorioCompensacaoAusenciaUseCase>();
             services.TryAddScoped<IRelatorioImpressaoCalendarioUseCase, RelatorioImpressaoCalendarioUseCase>();
-            
-            
+            services.TryAddScoped<IRelatorioResumoPAPUseCase, RelatorioResumoPAPUseCase>();
+
+
         }
 
         private static void RegistrarServicos(IServiceCollection services)
