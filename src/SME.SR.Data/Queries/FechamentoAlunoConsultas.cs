@@ -19,7 +19,7 @@
                 from fechamento_turma_disciplina ftd 
                 inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
                 inner join fechamento_turma ft on ftd.fechamento_turma_id = ft.id 
-                inner join componente_curricular coc on ftd.disciplina_id = coc.codigo_eol 
+                inner join componente_curricular_jurema coc on ftd.disciplina_id = coc.codigo_eol 
                 inner join turma t on ft.turma_id = t.id 
                 where fa.anotacao is not null and
                       fa.aluno_codigo = @codigoAluno and
