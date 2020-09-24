@@ -17,7 +17,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RetornoResumoPAPTotalAlunosAnoDto>> ListarTotalAlunosSeries(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo)
+        public async Task<IEnumerable<RetornoResumoPAPTotalAlunosAnoDto>> ListarTotalAlunosSeries(int? periodoId, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo)
         {
             var query = new StringBuilder();
             query.Append(@" select
@@ -32,12 +32,12 @@ namespace SME.SR.Data
                                 inner join ue on ue.id = turma.ue_id
                                 inner join dre on dre.id = ue.dre_id");
 
-            MontarWhereRecuperacaoParalela(query, dreId, ueId, cicloId, ano, periodo, turmaId, null);
+            MontarWhereRecuperacaoParalela(query, dreId, ueId, cicloId, ano, periodoId, turmaId, null);
             query.Append(@" group by
                                 turma.ano,
                                 tipo_ciclo.descricao");
 
-            var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodo, anoLetivo };
+            var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodoId, anoLetivo };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -45,7 +45,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<RetornoResumoPAPTotalAlunosAnoFrequenciaDto>> ListarTotalEstudantesPorFrequencia(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo)
+        public async Task<IEnumerable<RetornoResumoPAPTotalAlunosAnoFrequenciaDto>> ListarTotalEstudantesPorFrequencia(int? periodoId, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo)
         {
             var query = new StringBuilder();
             query.Append(@"select
@@ -63,7 +63,7 @@ namespace SME.SR.Data
 	                            inner join recuperacao_paralela_resposta rpr on rpp.resposta_id = rpr.id
                                 inner join  ue on ue.id = turma.ue_id
                                 inner join dre on dre.id = ue.dre_id");
-            MontarWhereRecuperacaoParalela(query, dreId, ueId, cicloId, ano, periodo, turmaId, null);
+            MontarWhereRecuperacaoParalela(query, dreId, ueId, cicloId, ano, periodoId, turmaId, null);
             query.AppendLine("and rpp.objetivo_id = 4");
             query.Append(@"group by
 	                            turma.nome,
@@ -74,7 +74,7 @@ namespace SME.SR.Data
                                 tipo_ciclo.id
                             order by rpr.ordem");
 
-            var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodo, anoLetivo };
+            var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodoId, anoLetivo };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -82,14 +82,14 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<RetornoResumoPAPTotalResultadoDto>> ListarTotalResultado(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo, int? pagina)
+        public async Task<IEnumerable<RetornoResumoPAPTotalResultadoDto>> ListarTotalResultado(int? periodoId, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo, int? pagina)
         {
             if (pagina == 0) pagina = 1;
             StringBuilder query = new StringBuilder();
             query.AppendLine("select");
             MontarCamposResumo(query);
             MontarFromResumo(query);
-            MontarWhereRecuperacaoParalela(query, dreId, ueId, cicloId, ano, periodo, turmaId, null);
+            MontarWhereRecuperacaoParalela(query, dreId, ueId, cicloId, ano, periodoId, turmaId, null);
             query.AppendLine("and e.id NOT IN (1,2)");
             query.AppendLine("and e.excluido = false");
             query.AppendLine("and o.excluido = false");
@@ -111,7 +111,7 @@ namespace SME.SR.Data
             query.AppendLine("o.ordem,");
             query.AppendLine("rpr.ordem;");
 
-            var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodo, pagina, anoLetivo };
+            var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodoId, pagina, anoLetivo };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -119,13 +119,13 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<RetornoResumoPAPTotalResultadoDto>> ListarTotalResultadoEncaminhamento(int? periodo, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo, int? pagina)
+        public async Task<IEnumerable<RetornoResumoPAPTotalResultadoDto>> ListarTotalResultadoEncaminhamento(int? periodoId, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo, int? pagina)
         {
             StringBuilder query = new StringBuilder();
             query.AppendLine("select");
             MontarCamposResumo(query);
             MontarFromResumo(query);
-            MontarWhereRecuperacaoParalela(query, dreId, ueId, cicloId, ano, periodo, turmaId, pagina);
+            MontarWhereRecuperacaoParalela(query, dreId, ueId, cicloId, ano, periodoId, turmaId, pagina);
             query.AppendLine("and e.id = 1");
             query.AppendLine("and e.excluido = false");
             query.AppendLine("and o.excluido = false");
@@ -147,7 +147,7 @@ namespace SME.SR.Data
             query.AppendLine("o.ordem,");
             query.AppendLine("rpr.ordem;");
 
-            var parametros = new { dreId, ueId, cicloId, turmaId, ano, pagina, periodo, anoLetivo };
+            var parametros = new { dreId, ueId, cicloId, turmaId, ano, pagina, periodoId, anoLetivo };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -157,13 +157,13 @@ namespace SME.SR.Data
 
         public async Task<RecuperacaoParalelaPeriodo> ObterPeriodoPorId(long id)
         {
-            var query = @"select id, nome, descricao, bimestre_edicao
+            var query = @"select id, nome, descricao, bimestre_edicao from recuperacao_paralela_periodo
                          where not excluido and id = @Id";
             var parametros = new { Id = id } ;
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync(query, parametros);
+                return await conexao.QueryFirstOrDefaultAsync<RecuperacaoParalelaPeriodo>(query, parametros);
             }
         }
 
