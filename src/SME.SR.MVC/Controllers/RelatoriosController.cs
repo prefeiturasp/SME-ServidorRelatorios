@@ -1567,27 +1567,52 @@ namespace SME.SR.MVC.Controllers
 
             var anosResultados = new ResumoPAPResultadoAnoDto()
             {
-                AnoDescricao = 3,
+                AnoDescricao = 4,
+            };
+
+            var anosResultados1 = new ResumoPAPResultadoAnoDto()
+            {
+                AnoDescricao = 8,
             };
 
             var respostaResultados = new ResumoPAPResultadoRespostaDto()
             {
-                Porcentagem = 20,
+                Porcentagem = 11,
                 Quantidade = 10,
                 RespostaDescricao = "Pré silábico",
                 TotalPorcentagem = 100,
                 TotalQuantidade = 19,
             };
 
+            var respostaResultados1 = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 21,
+                Quantidade = 20,
+                RespostaDescricao = "Silábico",
+                TotalPorcentagem = 100,
+                TotalQuantidade = 19,
+            };
+
+
             var listaRespostasResultados = new List<ResumoPAPResultadoRespostaDto>();
             listaRespostasResultados.Add(respostaResultados);
+            listaRespostasResultados.Add(respostaResultados);
+            listaRespostasResultados.Add(respostaResultados);
+            listaRespostasResultados.Add(respostaResultados);
+            listaRespostasResultados.Add(respostaResultados);
             anosResultados.Respostas = listaRespostasResultados;
+
+            var listaRespostasResultados1 = new List<ResumoPAPResultadoRespostaDto>();
+            listaRespostasResultados1.Add(respostaResultados1);
+            listaRespostasResultados1.Add(respostaResultados1);
+            anosResultados1.Respostas = listaRespostasResultados1;
 
             var listaTotalResultados = new List<ResumoPAPResultadoRespostaDto>();
             listaTotalResultados.Add(totalResultados);
 
             var listaAnosResultados = new List<ResumoPAPResultadoAnoDto>();
             listaAnosResultados.Add(anosResultados);
+            listaAnosResultados.Add(anosResultados1);
 
             var listaObjetivosResultados = new List<ResumoPAPResultadoObjetivoDto>();
             objetivosResultados.Anos = listaAnosResultados;
@@ -1653,11 +1678,13 @@ namespace SME.SR.MVC.Controllers
             };
 
             var listaRespostasResultados2 = new List<ResumoPAPResultadoRespostaDto>();
+            var listaRespostasResultados3 = new List<ResumoPAPResultadoRespostaDto>();
             listaRespostasResultados2.Add(respostaResultados2);
             listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados3);
             anosResultados2.Respostas = listaRespostasResultados2;
             anosResultados3.Respostas = listaRespostasResultados2;
-            anosResultados4.Respostas = listaRespostasResultados2;
+            anosResultados4.Respostas = listaRespostasResultados3;
 
             var listaTotalResultados2 = new List<ResumoPAPResultadoRespostaDto>();
             listaTotalResultados2.Add(totalResultados2);
@@ -1684,46 +1711,74 @@ namespace SME.SR.MVC.Controllers
 
             for (var i = 0; i < 3; i++)
             {
-                var listaAnos = new List<ResumoPAPResultadoAnoDto>();
+                var listaAnosEnca = new List<ResumoPAPResultadoAnoDto>();
                 var listaTotal = new List<ResumoPAPResultadoRespostaDto>();
                 var listaRepostas = new List<ResumoPAPResultadoRespostaDto>();
 
-
-                for (var j = 0; j < 1; j++)
+                listaTotal.Add(new ResumoPAPResultadoRespostaDto()
                 {
-                    listaTotal.Add(new ResumoPAPResultadoRespostaDto()
-                    {
-                        Porcentagem = 0,
-                        Quantidade = 0,
-                        RespostaDescricao = null,
-                        TotalQuantidade = 20 + j,
-                        TotalPorcentagem = 21 + j
-                    });    
-                    
-                    if(i == 2)
-                    {
-                        listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
-                        {
-                            Porcentagem = 11 + j,
-                            Quantidade = 10 + j,
-                            RespostaDescricao = "Aprovado",
-                            TotalQuantidade = 0,
-                            TotalPorcentagem = 0
-                        });
-                    }
-                    else
-                    {
-                        listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
-                        {
-                            Porcentagem = 11 + j,
-                            Quantidade = 10 + j,
-                            RespostaDescricao = "Não",
-                            TotalQuantidade = 0,
-                            TotalPorcentagem = 0
-                        });
-                    }
+                    Porcentagem = 0,
+                    Quantidade = 0,
+                    RespostaDescricao = null,
+                    TotalQuantidade = 30 +  i,
+                    TotalPorcentagem = 31 + i
+                });
 
-                    listaAnos.Add(new ResumoPAPResultadoAnoDto()
+
+                if (i == 2)
+                {
+                    listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
+                    {
+                        Porcentagem = 11 + i,
+                        Quantidade = 10 + i,
+                        RespostaDescricao = "Aprovado",
+                        TotalQuantidade = 0,
+                        TotalPorcentagem = 0
+                    });
+
+                    listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
+                    {
+                        Porcentagem = 21 + i,
+                        Quantidade = 20 + i,
+                        RespostaDescricao = "Aprovado pelo conselho",
+                        TotalQuantidade = 0,
+                        TotalPorcentagem = 0
+                    });
+
+                    listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
+                    {
+                        Porcentagem = 31 + i,
+                        Quantidade = 30 + i,
+                        RespostaDescricao = "Retido",
+                        TotalQuantidade = 0,
+                        TotalPorcentagem = 0
+                    });
+                }
+                else
+                {
+                    listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
+                    {
+                        Porcentagem = 11 + i,
+                        Quantidade = 10 + i,
+                        RespostaDescricao = "Sim",
+                        TotalQuantidade = 0,
+                        TotalPorcentagem = 0
+                    });
+
+                    listaRepostas.Add(new ResumoPAPResultadoRespostaDto()
+                    {
+                        Porcentagem = 21 + i,
+                        Quantidade = 20 + i,
+                        RespostaDescricao = "Nao",
+                        TotalQuantidade = 0,
+                        TotalPorcentagem = 0
+                    });
+
+                }
+
+                for (var j = 0; j < 7; j++)
+                {                    
+                    listaAnosEnca.Add(new ResumoPAPResultadoAnoDto()
                     {
                         AnoDescricao = 4 + j,
                         Respostas = listaRepostas
@@ -1747,7 +1802,7 @@ namespace SME.SR.MVC.Controllers
                 listaObjetivos.Add(new ResumoPAPResultadoObjetivoDto()
                 {
                     ObjetivoDescricao = obj,
-                    Anos = listaAnos,
+                    Anos = listaAnosEnca,
                     Total = listaTotal
                 });
 

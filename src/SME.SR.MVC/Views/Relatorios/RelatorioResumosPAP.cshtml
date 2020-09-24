@@ -79,7 +79,8 @@
 <thead>
 <th class='sem-border-bottom'>{cabecalho}</th>
 </thead>
-</table>";
+</table>
+";
         return str;
     }
 
@@ -89,7 +90,8 @@
 <thead>
 <th class='thLimpo' width='100%'></th>
 </thead>
-</table>";
+</table>
+";
     }
 
     string MontarTabelaTotalEstudantes()
@@ -100,7 +102,8 @@
         var str = $@"
 <table class='tabela-cabecalho'>
 <thead>
-<tr>";
+<tr>
+";
 
         for (int i = 0; i < anos.Count; i++)
         {
@@ -164,8 +167,8 @@
                     var first = objetivo.Anos.First().Respostas.First();
 
                     str += $"<td class='tb-conteudo3'>{first.RespostaDescricao}</td>";
-                    str += $"<td class='tb-conteudo3 centralizar'>{first.Quantidade} | {first.Porcentagem}%</td>";
-                    str += $"<td class='tb-conteudo3 negrito tb-w20 centralizar'>{first.TotalQuantidade} | {first.TotalPorcentagem}%</td></tr>";
+                    str += $"<td class='tb-conteudo3 centralizar'>{first.Quantidade} / {first.Porcentagem}%</td>";
+                    str += $"<td class='tb-conteudo3 negrito tb-w20 centralizar'>{first.TotalQuantidade} / {first.TotalPorcentagem}%</td></tr>";
 
                     foreach (var ano in objetivo.Anos)
                     {
@@ -180,7 +183,7 @@
                             str += "<tr>";
 
                             str += $"<td class='tb-conteudo3'>{resposta.RespostaDescricao}</td>";
-                            str += $"<td class='tb-conteudo3 centralizar'>{resposta.Quantidade} | {resposta.Porcentagem}%</td>";
+                            str += $"<td class='tb-conteudo3 centralizar'>{resposta.Quantidade} / {resposta.Porcentagem}%</td>";
                             str += $"<td class='tb-conteudo3 negrito tb-w20 centralizar'>{resposta.TotalQuantidade} | {resposta.TotalPorcentagem}%</td>";
                             str += "</tr>";
                         }
@@ -219,9 +222,9 @@
 
                         foreach (var ano in objetivo.Anos)
                         {
-                            str += $"<td class='tb-conteudo3 centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].Quantidade} | {objetivo.Anos.First().Respostas.ToList()[r].Porcentagem}</td>";
+                            str += $"<td class='tb-conteudo3 centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].Quantidade} / {objetivo.Anos.First().Respostas.ToList()[r].Porcentagem}</td>";
                         }
-                        str += $"<td class='tb-conteudo3 negrito tb-w20 centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} | {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}</td>";
+                        str += $"<td class='tb-conteudo3 negrito tb-w20 centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} / {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}</td>";
                         str += "</tr>";
                     }
                     str += "</tr>";
@@ -234,14 +237,14 @@
         return str;
     }
 
-    string MontarTabelaFrequencia()  
-    { 
+    string MontarTabelaFrequencia()
+    {
         var str = $@"
-            <table class='tabela-cabecalho'>
-                <thead>
-                    <tr>
-                        <th width='20%'></th>
-        ";
+<table class='tabela-cabecalho'>
+<thead>
+    <tr>
+        <th width='20%'></th>
+";
 
         foreach (var frequencias in Model.FrequenciaDto)
         {
@@ -257,41 +260,288 @@
         }
 
         str += $@"<th width='15%' class='negrito'>TOTAL</th>
-                    </tr>
-                </thead>
-            <tbody>
-        ";
+</tr>
+</thead>
+<tbody>
+";
 
         foreach (var frequencias in Model.FrequenciaDto)
         {
             foreach (var linhas in frequencias.Linhas)
             {
                 var classeNegrito = frequencias.FrequenciaDescricao == "Total" ? "negrito" : "";
-                var  classeFundoCinza = frequencias.FrequenciaDescricao == "Total" ? "fundo-cinza" : "";
+                var classeFundoCinza = frequencias.FrequenciaDescricao == "Total" ? "fundo-cinza" : "";
 
                 str += $@"
-                    <tr>
-                        <td class='alinhar-esquerda espaco-esquerda-15'>{frequencias.FrequenciaDescricao}</td>
-                ";
+    <tr>
+    <td class='alinhar-esquerda espaco-esquerda-15'>{frequencias.FrequenciaDescricao}</td>
+ ";
                 foreach (var anos in linhas.Anos)
                 {
                     str += $@"<td class='{classeNegrito} {classeFundoCinza}'>{anos.Quantidade} / {anos.Porcentagem}%</td>";
                 }
                 str += $@"
-                        <td class='negrito {classeFundoCinza}'>{linhas.QuantidadeTotalFrequencia} / {linhas.PorcentagemTotalFrequencia}%</td>
-                    </tr>
-                ";
+        <td class='negrito {classeFundoCinza}'>{linhas.QuantidadeTotalFrequencia} / {linhas.PorcentagemTotalFrequencia}%</td>
+    </tr>
+";
             }
         }
 
         str += $@"
-                </tbody>
-            </table>
-        ";
-        
+</tbody>
+</table>
+";
+
         return str;
-    }        
- }
+    }
+
+    string MontarInformacoesEscolares()
+    {
+        var str = "<table>";
+
+        var objetivos = Model.EncaminhamentoDto.First().Objetivos;
+
+        str += @"<tr><td class='tb-cabecalho2' colspan='2' width='28%'>&nbsp;</td>";
+        var count = 0;
+        foreach (var objetivo in objetivos)
+        {
+            var width = objetivo.Anos.Count();
+            if (count == 0)
+            {
+                //CABEçALHO DE ANOS
+                foreach (var ano in objetivo.Anos)
+                {
+                    str += $"<td class='tb-cabecalho2' width='{63 / width}%'>{ano.AnoDescricao}°</td>";
+
+                }
+
+                str += "<td class='tb-cabecalho2 negrito' width='9%'>Total</td></tr>";
+                str += "";
+            }
+
+            var imprimiuObjetivo = false;
+
+            foreach (var ano in objetivo.Anos)
+            {
+                if (!imprimiuObjetivo)
+                {
+
+                    var rowspawn = ano.Respostas.Count();
+
+                    str += $@"<tr><td rowspan='{rowspawn}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td></tr>";
+                    imprimiuObjetivo = true;
+                }
+
+                foreach (var resposta in ano.Respostas)
+                {
+                    str += $@"<tr><td  class='tb-conteudo3'>{resposta.RespostaDescricao}</td></tr>";
+                }
+
+            }
+
+
+
+
+            //var first = objetivo.Anos.First().Respostas.First();
+            //var respostas = objetivo.Anos.First().Respostas.Count();
+
+            //var rowspan = count == 2 ? '3' : '2';
+            //str += $@"<tr><td rowspan='{rowspan}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
+
+            //if(respostas == 1){
+            //    if(count != 2)
+            //    {
+            //        for (var r = 0; r < respostas; r++)
+            //        {
+            //            if(objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao != "Sim"){
+            //                str += $"<td class='tb-conteudo3'>Sim</td>";
+
+            //                foreach (var ano in objetivo.Anos)
+            //                {
+            //                    str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+            //                }
+
+            //                str += $"<td class='tb-conteudo3 negrito centralizar'>0 / 0%</td>";
+            //                str += "</tr>";
+            //                str += "<tr>";
+            //            }
+
+            //            str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+
+            //            foreach (var ano in objetivo.Anos)
+            //            {
+            //                str += $"<td class='tb-conteudo3 centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].Quantidade} / {objetivo.Anos.First().Respostas.ToList()[r].Porcentagem}%</td>";
+            //            }
+
+            //            str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Total.First().TotalQuantidade} / {objetivo.Total.First().TotalPorcentagem}%</td>";
+            //            str += "</tr>";
+
+            //            if(objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao != "Não"){
+            //                str += "<tr>";
+            //                str += $"<td class='tb-conteudo3'>Não</td>";
+
+            //                foreach (var ano in objetivo.Anos)
+            //                {
+            //                    str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+            //                }
+
+            //                str += $"<td class='tb-conteudo3 negrito tb-w20 centralizar'>0 / 0%</td>";
+            //                str += "</tr>";
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        for (var r = 0; r < respostas; r++)
+            //        {
+            //            if (objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao != "Aprovado")
+            //            {
+            //                str += $"<td class='tb-conteudo3' >Aprovado</td>";
+
+            //                foreach (var ano in objetivo.Anos)
+            //                {
+            //                    str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+            //                }
+
+            //                str += $"<td class='tb-conteudo3 negrito centralizar'>0 / 0%</td>";
+            //                str += "</tr>";
+            //                str += "<tr>";
+            //            }
+
+            //            str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+
+            //            foreach (var ano in objetivo.Anos)
+            //            {
+            //                str += $"<td class='tb-conteudo3 centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].Quantidade} / {objetivo.Anos.First().Respostas.ToList()[r].Porcentagem}%</td>";
+            //            }
+
+            //            str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Total.First().TotalQuantidade} / {objetivo.Total.First().TotalPorcentagem}%</td>";
+            //            str += "</tr>";
+
+            //            if (objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao != "Aprovado pelo conselho")
+            //            {
+            //                str += "<tr>";
+            //                str += $"<td class='tb-conteudo3'>Aprovado pelo conselho</td>";
+
+            //                foreach (var ano in objetivo.Anos)
+            //                {
+            //                    str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+            //                }
+
+            //                str += $"<td class='tb-conteudo3 negrito centralizar'>0 / 0%</td>";
+            //                str += "</tr>";
+            //            }
+
+            //            if (objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao != "Retido")
+            //            {
+            //                str += "<tr>";
+            //                str += $"<td class='tb-conteudo3'>Retido</td>";
+
+            //                foreach (var ano in objetivo.Anos)
+            //                {
+            //                    str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+            //                }
+
+            //                str += $"<td class='tb-conteudo3 negrito centralizar'>0 / 0%</td>";
+            //                str += "</tr>";
+            //            }
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    if(count != 2)
+            //    {
+            //        for (var r = 0; r < respostas; r++)
+            //        {
+            //              if (r != 0)
+            //            {
+            //                str += "<tr>";
+            //            }
+
+            //            str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+
+            //            foreach (var ano in objetivo.Anos)
+            //            {
+            //                str += $"<td class='tb-conteudo3 centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].Quantidade} / {objetivo.Anos.First().Respostas.ToList()[r].Porcentagem}%</td>";
+            //            }
+
+            //            str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Total.First().TotalQuantidade} / {objetivo.Total.First().TotalPorcentagem}%</td>";
+            //            str += "</tr>";
+            //        }
+            //    }
+            //    else
+            //    {
+            //        for (var r = 0; r < respostas; r++)
+            //        {
+            //            var respostaDescricao  = objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao;
+            //            var respostaDescricaoAnterior = "";
+
+            //            if (r != 0)
+            //            {
+            //                str += "<tr>";
+            //                respostaDescricaoAnterior = objetivo.Anos.First().Respostas.ToList()[r - 1].RespostaDescricao;
+
+            //            }
+
+            //            if ( respostaDescricao == "Aprovado pelo conselho" && r == 0)
+            //            {
+            //                str += $"<td class='tb-conteudo3'>Aprovado</td>";
+
+            //                foreach (var ano in objetivo.Anos)
+            //                {
+            //                    str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+            //                }
+
+            //                str += $"<td class='tb-conteudo3 negrito centralizar'>0 / 0%</td>";
+            //                str += "</tr>";
+            //            }
+
+            //            if ( respostaDescricao == "Retido" && r == 1 && respostaDescricaoAnterior != "Aprovado pelo conselho")
+            //            {
+            //                str += $"<td class='tb-conteudo3'>Aprovado pelo conselho</td>";
+
+            //                foreach (var ano in objetivo.Anos)
+            //                {
+            //                    str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+            //                }
+
+            //                str += $"<td class='tb-conteudo3 negrito centralizar'>0 / 0%</td>";
+            //                str += "</tr>";
+            //            }
+
+            //            str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+
+            //            foreach (var ano in objetivo.Anos)
+            //            {
+            //                str += $"<td class='tb-conteudo3 centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].Quantidade} / {objetivo.Anos.First().Respostas.ToList()[r].Porcentagem}%</td>";
+            //            }
+
+            //            str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Total.First().TotalQuantidade} / {objetivo.Total.First().TotalPorcentagem}%</td>";
+            //            str += "</tr>";
+
+            //            if ( respostaDescricao == "Aprovado pelo conselho" && r == 1 && respostas < 3)
+            //            {
+            //                str += $"<td class='tb-conteudo3'>Retido</td>";
+
+            //                foreach (var ano in objetivo.Anos)
+            //                {
+            //                    str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+            //                }
+
+            //                str += $"<td class='tb-conteudo3 negrito centralizar'>0 / 0%</td>";
+            //                str += "</tr>";
+            //            }
+            //        }
+            //    }
+            //}
+            count += 1;
+        }
+        str += "</table>";
+
+        return str;
+    }
+}
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -334,9 +584,9 @@
             margin-bottom: 22px;
         }
 
-        .header-pagina td {
-            text-align: left;
-        }
+            .header-pagina td {
+                text-align: left;
+            }
 
         table {
             display: table;
@@ -400,11 +650,11 @@
             flex-direction: column;
         }
 
-        .linha-dividida span:first-child , .linha-span {
-            border-bottom: 1px solid #42474a;
-            padding-bottom: 3px;
-            margin-bottom: 3px;
-        }
+            .linha-dividida span:first-child, .linha-span {
+                border-bottom: 1px solid #42474a;
+                padding-bottom: 3px;
+                margin-bottom: 3px;
+            }
 
         .ajustar-altura {
             height: 15px;
@@ -472,112 +722,40 @@
         }
     </style>
     <div>
-        @{
-            @Html.Raw(MontarCabecalho())
+        @Html.Raw(MontarCabecalho())
 
-            @Html.Raw(MontarCabecalhoTabela("TOTAL DE ESTUDANTES"))
+        @Html.Raw(MontarCabecalhoTabela("TOTAL DE ESTUDANTES"))
 
-            @Html.Raw(MontarTabelaTotalEstudantes())
+        @Html.Raw(MontarTabelaTotalEstudantes())
 
-            @Html.Raw(EspacoEmBranco())
+        @Html.Raw(EspacoEmBranco())
 
-            if (Model.EhEncaminhamento)
-            {
-                @Html.Raw(MontarCabecalhoTabela("INFORMAÇÕES ESCOLARES"))
+        @if (Model.EhEncaminhamento)
+        {
+            @Html.Raw(MontarCabecalhoTabela("INFORMAÇÕES ESCOLARES"))
+            @Html.Raw(MontarInformacoesEscolares())
 
-                <table class='tabela-cabecalho'>
-                    <thead>
-                        <tr>
-                            <th width='17.5%'></th>
-                            <th width='12.5%'></th>
-                            <th>4</th>
-                            <th width='10%'  class="negrito">Total</th>                            
-                        </tr>
-                        </thead>
-                    <tbody>
-                        <tr>
-                            <td class="alinhar-esquerda espaco-esquerda-15">É atendido pelo AEE?</td>                           
-                            <td>
-                                <div class="linha-dividida alinhar-esquerda">
-                                    <span class="espaco-esquerda-15">Sim</span>
-                                    <span class="espaco-esquerda-15">Não</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="linha-dividida">
-                                    <span>0 / 0%</span>
-                                    <span>10 / 13,89%</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="linha-dividida negrito">
-                                    <span>2 / 2,78%</span>
-                                    <span>100 / 97,22%</span>
-                                </div>
-                            </td>
-                        </tr>
-                         <tr>
-                            <td class="alinhar-esquerda espaco-esquerda-15">É atendido pelo NAAPA?</td>                           
-                            <td>
-                                <div class="linha-dividida alinhar-esquerda">
-                                    <span class="espaco-esquerda-15">Sim</span>
-                                    <span class="espaco-esquerda-15">Não</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="linha-dividida">
-                                    <span>0 / 0%</span>
-                                    <span>10 / 13,89%</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="linha-dividida negrito">
-                                    <span>2 / 2,78%</span>
-                                    <span>70 / 97,22%</span>
-                                </div>
-                            </td>
-                        </tr>
-                        
-                         <tr>
-                            <td class="alinhar-esquerda espaco-esquerda-15">Parecer conclusivo do ano anterior</td>                           
-                            <td>
-                                <div class="linha-dividida alinhar-esquerda">
-                                    <span class="espaco-esquerda-15">Aprovado</span>
-                                    <span class="espaco-esquerda-15 linha-span">Aprovado pelo conselho</span>
-                                    <span class="espaco-esquerda-15">Retido</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="linha-dividida">
-                                    <span>0 / 0%</span>
-                                    <span class="linha-span ajustar-altura">10 / 13,89%</span>
-                                    <span>10 / 13,89%</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="linha-dividida negrito">
-                                    <span>2 / 2,78%</span>
-                                    <span class="linha-span ajustar-altura">70 / 97,22%</span>
-                                    <span>70 / 97,22%</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>    
 
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(Model.EncaminhamentoDto);
-                <div>@json</div>
-            }
-            else
-            {
-                @Html.Raw(MontarCabecalhoTabela("FREQUÊNCIA"))
-
-                @Html.Raw(MontarTabelaFrequencia())                
-            }
         }
-         @Html.Raw(EspacoEmBranco())
+        else
+        {
+            @Html.Raw(MontarCabecalhoTabela("FREQUÊNCIA"))
+
+            @Html.Raw(MontarTabelaFrequencia())
+        }
+
+
+        @Html.Raw(EspacoEmBranco())
+
         @Html.Raw(MontarCabecalhoTabela("DESEMPENHO ESTUDANTES"))
         @Html.Raw(MontarResultados())
+
+        @{
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(Model.ResultadoDto);
+            <div>
+                @json
+            </div>
+        }
     </div>
 </body>
 </html>
