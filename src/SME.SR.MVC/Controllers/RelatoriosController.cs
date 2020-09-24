@@ -1101,8 +1101,8 @@ namespace SME.SR.MVC.Controllers
             RelatorioRecuperacaoParalelaDto model = new RelatorioRecuperacaoParalelaDto("Todas", "Todas", "ALANA FERREIRA DE OLIVEIRA", "1234567", DateTime.Today.ToString("dd/MM/yyyy"), 2020, 1);
 
             var aluno = new RelatorioRecuperacaoParalelaAlunoDto("JOSÉ AUGUSTO CLEMENTE", "RF", "16/03/1985", "4241513", "RF", "MATRICULADO EM 04/02/2019");
-            
-            var secaoH =  new RelatorioRecuperacaoParalelaAlunoSecaoDto("Histórico do Estudante", "Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.") ;
+
+            var secaoH = new RelatorioRecuperacaoParalelaAlunoSecaoDto("Histórico do Estudante", "Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.");
             var secaoD = new RelatorioRecuperacaoParalelaAlunoSecaoDto("Dificuldades", "Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.");
             var secaoE = new RelatorioRecuperacaoParalelaAlunoSecaoDto("Encaminhamentos", "Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.");
             var secaoA = new RelatorioRecuperacaoParalelaAlunoSecaoDto("Avanços", "Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.Donec. Aliquam pretium adipiscing consequat sollicitudin sed penatibus sit accumsan. Nostra hendrerit nascetur leo consectetuer ultrices mauris venenatis sodales massa, tellus vulputate condimentum nostra. Metus hendrerit luctus felis morbi. Libero condimentum primis, mattis condimentum fames urna. Pretium. Mauris et tincidunt viverra montes. Nascetur. Ante nisl vel convallis porta felis. Ad hymenaeos placerat. Phasellus. Odio magnis condimentum Enim hendrerit blandit, odio. Cursus lacus. Odio vulputate. At fames nam. Bibendum ut dis risus cursus aliquet hendrerit. Scelerisque eget penatibus nunc sit tellus pharetra pharetra porta condimentum cras Rutrum Fermentum vel proin feugiat molestie suscipit felis orci purus, nec tempus dapibus lacinia ultricies.");
@@ -1350,41 +1350,8 @@ namespace SME.SR.MVC.Controllers
 
             var componenteCurricular = new RelatorioNotasEConceitosFinaisComponenteCurricularDto() { Nome = "Matemática" };
 
-            var notaConceitoAluno = new RelatorioNotasEConceitosFinaisDoAlunoDto("Turma ABC", "01", "Antolino Neves", "10");
-                        
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
-            componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
+            var notaConceitoAluno = new RelatorioNotasEConceitosFinaisDoAlunoDto("Turma ABC", 1, "Antolino Neves", "10", "");
+
             componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
             componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
             componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
@@ -1418,5 +1385,510 @@ namespace SME.SR.MVC.Controllers
             return View("RelatorioNotasEConceitosFinais", model);
         }
 
+        [HttpGet("compensacao-ausencia")]
+        public IActionResult RelatorioCompensacaoAusencia([FromServices] IMediator mediator)
+        {
+            RelatorioCompensacaoAusenciaDto model = GeraCompensacoesAusencia();
+
+            return View("RelatorioCompensacaoAusencia", model);
+        }
+        [HttpGet("impressao-calendario")]
+        public IActionResult RelatorioImpressaoCalendario()
+        {
+            RelatorioImpressaoCalendarioDto model = new RelatorioImpressaoCalendarioDto();
+            model.DreNome = "DRE - JT";
+            model.UeNome = "EMEFM DERVILLE ALEGRETTI, PROF.";
+            model.TipoCalendarioNome = "CALENDÁRIO ESCOLAR FUNDAMENTAL/MÉDIO 2020";
+
+            var listaMeses = new List<RelatorioImpressaoCalendarioMesDto>();
+            var mes1 = new RelatorioImpressaoCalendarioMesDto()
+            {
+                MesDescricao = "JANEIRO",
+                MesNumero = 1
+            };
+
+            var mes2 = new RelatorioImpressaoCalendarioMesDto()
+            {
+                MesDescricao = "FEVEREIRO",
+                MesNumero = 2
+            };
+
+            var listaEventos = new List<RelatorioImpressaoCalendarioEventoDto>();
+            var evento1 = new RelatorioImpressaoCalendarioEventoDto()
+            {
+                Dia = "01",
+                DiaSemana = "Seg",
+                EventoTipo = "SME",
+                Evento = "Inicio das Férias Escolares"
+            };
+
+            var evento2 = new RelatorioImpressaoCalendarioEventoDto()
+            {
+                Dia = "15",
+                DiaSemana = "Qua",
+                EventoTipo = "SME",
+                Evento = "Feriado"
+            };
+
+            listaEventos.Add(evento1);
+            listaEventos.Add(evento2);
+            listaEventos.Add(evento1);
+            listaEventos.Add(evento2);
+            listaEventos.Add(evento1);
+            mes1.Eventos = listaEventos;
+            mes2.Eventos = listaEventos;
+
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            listaMeses.Add(mes1);
+            listaMeses.Add(mes2);
+            model.Meses = listaMeses;
+
+            return View("RelatorioImpressaoCalendario", model);
+        }
+        private static RelatorioCompensacaoAusenciaDto GeraCompensacoesAusencia()
+        {
+            var model = new RelatorioCompensacaoAusenciaDto();
+
+            var compensacaoAlunoExemplo = new RelatorioCompensacaoAusenciaCompensacaoAlunoDto()
+            {
+                NomeAluno = "Aline Leal",
+                NumeroChamada = "01",
+                TotalAulas = 10,
+                TotalAusencias = 3,
+                TotalCompensacoes = 1
+            };
+            var compensacaoAlunoExemplo2 = new RelatorioCompensacaoAusenciaCompensacaoAlunoDto()
+            {
+                NomeAluno = "Teste",
+                NumeroChamada = "01",
+                TotalAulas = 10,
+                TotalAusencias = 3,
+                TotalCompensacoes = 1
+            };
+
+            model.DreNome = "DRE 001";
+            model.UeNome = "UE 001";
+            model.TurmaNome = "";
+            model.Bimestre = "";
+            model.ComponenteCurricular = "";
+            model.Usuario = "ADMIN";
+            model.Modalidade = "Fundamental";
+            model.RF = "123123123";
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            model.Dre = new RelatorioCompensacaoAusenciaDreDto
+            {
+                Codigo = "123",
+                Nome = "DRE 01",
+                Ue = new RelatorioCompensacaoAusenciaUeDto
+                {
+                    Nome = "UE 01",
+                    Codigo = "456",
+                    Turmas = new List<RelatorioCompensacaoAusenciaTurmaDto>()
+                    {
+                        new RelatorioCompensacaoAusenciaTurmaDto()
+                        {
+                            Nome = "TURMA 01",
+                            Bimestres = new List<RelatorioCompensacaoAusenciaBimestreDto>
+                            {
+                                new RelatorioCompensacaoAusenciaBimestreDto
+                                {
+                                    Nome = "1º BIMESTRE",
+                                    Componentes = new List<RelatorioCompensacaoAusenciaComponenteDto>
+                                    {
+                                        new RelatorioCompensacaoAusenciaComponenteDto()
+                                        {
+                                            CodigoComponente = "001",
+                                            NomeComponente = "Matemática",
+                                            Atividades = new List<RelatorioCompensacaoAusenciaAtividadeDto>
+                                            {
+                                                new RelatorioCompensacaoAusenciaAtividadeDto()
+                                                {
+                                                    Nome ="Atividade 01",
+                                                    CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo
+                                                    }
+                                                },
+                                                new RelatorioCompensacaoAusenciaAtividadeDto()
+                                                {
+                                                    Nome ="Atividade 02",CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo2,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo2,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo2
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        new RelatorioCompensacaoAusenciaComponenteDto()
+                                        {
+                                            CodigoComponente = "002",
+                                            NomeComponente = "Ciências",
+                                            Atividades = new List<RelatorioCompensacaoAusenciaAtividadeDto>
+                                            {
+                                                new RelatorioCompensacaoAusenciaAtividadeDto()
+                                                {
+                                                    Nome ="Atividade 01",
+                                                    CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo
+                                                    }
+                                                },
+                                                new RelatorioCompensacaoAusenciaAtividadeDto()
+                                                {
+                                                    Nome ="Atividade 02",CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        },
+                        new RelatorioCompensacaoAusenciaTurmaDto()
+                        {
+                            Nome = "TURMA 02",
+                            Bimestres = new List<RelatorioCompensacaoAusenciaBimestreDto>
+                            {
+                                new RelatorioCompensacaoAusenciaBimestreDto
+                                {
+                                    Nome = "1º BIMESTRE",
+                                    Componentes = new List<RelatorioCompensacaoAusenciaComponenteDto>
+                                    {
+                                        new RelatorioCompensacaoAusenciaComponenteDto()
+                                        {
+                                            CodigoComponente = "001",
+                                            NomeComponente = "Matemática",
+                                            Atividades = new List<RelatorioCompensacaoAusenciaAtividadeDto>
+                                            {
+                                                new RelatorioCompensacaoAusenciaAtividadeDto()
+                                                {
+                                                    Nome ="Atividade 01",
+                                                    CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo
+                                                    }
+                                                },
+                                                new RelatorioCompensacaoAusenciaAtividadeDto()
+                                                {
+                                                    Nome ="Atividade 02",CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        new RelatorioCompensacaoAusenciaComponenteDto()
+                                        {
+                                            CodigoComponente = "002",
+                                            NomeComponente = "Ciências",
+                                            Atividades = new List<RelatorioCompensacaoAusenciaAtividadeDto>
+                                            {
+                                                new RelatorioCompensacaoAusenciaAtividadeDto()
+                                                {
+                                                    Nome ="Atividade 01",
+                                                    CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo
+                                                    }
+                                                },
+                                                new RelatorioCompensacaoAusenciaAtividadeDto()
+                                                {
+                                                    Nome ="Atividade 02",CompensacoesAluno = new List<RelatorioCompensacaoAusenciaCompensacaoAlunoDto>(){
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo,
+                                                        compensacaoAlunoExemplo
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            return model;
+
+        }
+
+
+        [HttpGet("plano-aula")]
+        public IActionResult RelatorioPlanoAula()
+
+        {
+
+            var model = new PlanoAulaDto()
+            {
+                DataPlanoAula = DateTime.Now,
+                Id = 1,
+                Descricao = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a purus consectetur ante tristique fringilla id
+ut purus. Pellentesque lobortis eu sem facilisis ullamcorper. Integer congue ante et nibh aliquet gravida. Donec
+accumsan nisi pulvinar dignissim molestie. Suspendisse a libero suscipit, pharetra sem semper, sagittis
+turpis. Sed vulputate vel lacus in commodo. Pellentesque nisi quam, consectetur in eros ac, semper porta velit.
+Donec sapien ante, commodo in neque eu, faucibus tincidunt erat. Duis a felis aliquet, vulputate lectus vitae,
+elementum metus. Sed massa nulla, pretium euismod massa eu, volutpat auctor mi.
+Mauris vestibulum dictum odio a auctor. Fusce ullamcorper, nibh sed sollicitudin porta, lectus velit gravida
+tellus, vel pellentesque metus quam at magna. Sed laoreet metus massa, et sollicitudin lacus elementum vitae.
+Vestibulum in quam tincidunt, vestibulum eros non, imperdiet justo. Aenean suscipit felis ipsum, sit amet
+vulputate metus sollicitudin non. Curabitur a dapibus nibh. Nullam non lorem a felis mattis bibendum. Vivamus
+sit amet posuere orci, a sodales ipsum. Curabitur viverra euismod urna.
+Ut sed porttitor eros. Nullam eget convallis mi. Nam luctus erat a sem malesuada auctor. Aliquam nec pulvinar
+risus. Nullam tincidunt maximus lectus nec dignissim. Nunc porta dolor quis nisl imperdiet cursus. Aliquam
+convallis, dui a aliquam bibendum, nunc nisi commodo ipsum, quis vestibulum lacus risus non nisl. Quisque in
+sapien neque. Suspendisse potenti.
+Nullam id nisl vel ipsum ultrices rutrum. Curabitur consequat tempor nunc, a condimentum eros iaculis ac.
+Integer risus lorem, commodo non felis euismod, finibus ultrices libero. Duis posuere magna ante, id auctor
+turpis pulvinar molestie. Morbi mattis purus eget turpis imperdiet pulvinar. Quisque vehicula euismod justo quis
+ullamcorper. In hac habitasse platea dictumst. Pellentesque quis elementum dolor, in sagittis neque.
+Maecenas blandit tristique vestibulum.
+Aliquam rhoncus dui odio, id posuere ante ullamcorper in. Nam odio libero, pharetra vitae interdum non,
+fringilla ut sem. Sed aliquam urna tortor, eu congue justo semper in. Nullam enim nisl, laoreet quis arcu quis,
+semper dignissim tortor. Phasellus sit amet massa ullamcorper, iaculis diam vel, vulputate sem. Quisque quis
+massa ut risus congue maximus at vitae leo. Etiam scelerisque lectus a tempor efficitur",
+                DesenvolvimentoAula = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a purus consectetur ante tristique fringilla id
+ut purus. Pellentesque lobortis eu sem facilisis ullamcorper. Integer congue ante et nibh aliquet gravida. Donec
+accumsan nisi pulvinar dignissim molestie. Suspendisse a libero suscipit, pharetra sem semper, sagittis
+turpis. Sed vulputate vel lacus in commodo. Pellentesque nisi quam, consectetur in eros ac, semper porta velit.
+Donec sapien ante, commodo in neque eu, faucibus tincidunt erat. Duis a felis aliquet, vulputate lectus vitae,
+elementum metus. Sed massa nulla, pretium euismod massa eu, volutpat auctor mi.
+Mauris vestibulum dictum odio a auctor. Fusce ullamcorper, nibh sed sollicitudin porta, lectus velit gravida
+tellus, vel pellentesque metus quam at magna. Sed laoreet metus massa, et sollicitudin lacus elementum vitae.
+Vestibulum in quam tincidunt, vestibulum eros non, imperdiet justo. Aenean suscipit felis ipsum, sit amet
+vulputate metus sollicitudin non. Curabitur a dapibus nibh. Nullam non lorem a felis mattis bibendum. Vivamus
+sit amet posuere orci, a sodales ipsum. Curabitur viverra euismod urna.
+Ut sed porttitor eros. Nullam eget convallis mi. Nam luctus erat a sem malesuada auctor. Aliquam nec pulvinar
+risus. Nullam tincidunt maximus lectus nec dignissim. Nunc porta dolor quis nisl imperdiet cursus. Aliquam
+convallis, dui a aliquam bibendum, nunc nisi commodo ipsum, quis vestibulum lacus risus non nisl. Quisque in
+sapien neque. Suspendisse potenti.
+Nullam id nisl vel ipsum ultrices rutrum. Curabitur consequat tempor nunc, a condimentum eros iaculis ac.
+Integer risus lorem, commodo non felis euismod, finibus ultrices libero. Duis posuere magna ante, id auctor
+turpis pulvinar molestie. Morbi mattis purus eget turpis imperdiet pulvinar. Quisque vehicula euismod justo quis
+ullamcorper. In hac habitasse platea dictumst. Pellentesque quis elementum dolor, in sagittis neque.
+Maecenas blandit tristique vestibulum.
+Aliquam rhoncus dui odio, id posuere ante ullamcorper in. Nam odio libero, pharetra vitae interdum non,
+fringilla ut sem. Sed aliquam urna tortor, eu congue justo semper in. Nullam enim nisl, laoreet quis arcu quis,
+semper dignissim tortor. Phasellus sit amet massa ullamcorper, iaculis diam vel, vulputate sem. Quisque quis
+massa ut risus congue maximus at vitae leo. Etiam scelerisque lectus a tempor efficitur.",
+                Recuperacao = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a purus consectetur ante tristique fringilla id
+ut purus.Pellentesque lobortis eu sem facilisis ullamcorper.Integer congue ante et nibh aliquet gravida.Donec
+accumsan nisi pulvinar dignissim molestie.Suspendisse a libero suscipit,
+                pharetra sem semper,
+                sagittis
+turpis.Sed vulputate vel lacus in commodo.Pellentesque nisi quam,
+                consectetur in eros ac,
+                semper porta velit.
+Donec sapien ante,
+                commodo in neque eu,
+                faucibus tincidunt erat.Duis a felis aliquet,
+                vulputate lectus vitae,
+                elementum metus.Sed massa nulla,
+                pretium euismod massa eu,
+                volutpat auctor mi.
+Mauris vestibulum dictum odio a auctor.Fusce ullamcorper,
+                nibh sed sollicitudin porta,
+                lectus velit gravida
+tellus,
+                vel pellentesque metus quam at magna.Sed laoreet metus massa,
+                et sollicitudin lacus elementum vitae.
+Vestibulum in quam tincidunt,
+                vestibulum eros non,
+                imperdiet justo.Aenean suscipit felis ipsum,
+                sit amet
+vulputate metus sollicitudin non.Curabitur a dapibus nibh.Nullam non lorem a felis mattis bibendum.Vivamus
+sit amet posuere orci,
+                a sodales ipsum.Curabitur viverra euismod urna.
+Ut sed porttitor eros.Nullam eget convallis mi.Nam luctus erat a sem malesuada auctor.Aliquam nec pulvinar
+risus.Nullam tincidunt maximus lectus nec dignissim.Nunc porta dolor quis nisl imperdiet cursus.Aliquam
+convallis,
+                dui a aliquam bibendum,
+                nunc nisi commodo ipsum,
+                quis vestibulum lacus risus non nisl.Quisque in
+sapien neque.Suspendisse potenti.
+Nullam id nisl vel ipsum ultrices rutrum.Curabitur consequat tempor nunc,
+                a condimentum eros iaculis ac.
+Integer risus lorem,
+                commodo non felis euismod,
+                finibus ultrices libero.Duis posuere magna ante,
+                id auctor
+turpis pulvinar molestie.Morbi mattis purus eget turpis imperdiet pulvinar.Quisque vehicula euismod justo quis
+ullamcorper.In hac habitasse platea dictumst.Pellentesque quis elementum dolor, in sagittis neque.
+Maecenas blandit tristique vestibulum.
+Aliquam rhoncus dui odio,
+                id posuere ante ullamcorper in. Nam odio libero,
+                pharetra vitae interdum non,
+                fringilla ut sem.Sed aliquam urna tortor,
+                eu congue justo semper in. Nullam enim nisl,
+                laoreet quis arcu quis,
+                semper dignissim tortor.Phasellus sit amet massa ullamcorper,
+                iaculis diam vel,
+                vulputate sem.Quisque quis
+massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor efficitur",
+                LicaoCasa = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a purus consectetur ante tristique fringilla id
+ut purus.Pellentesque lobortis eu sem facilisis ullamcorper.Integer congue ante et nibh aliquet gravida.Donec
+accumsan nisi pulvinar dignissim molestie.Suspendisse a libero suscipit,
+                pharetra sem semper,
+                sagittis
+turpis.Sed vulputate vel lacus in commodo.Pellentesque nisi quam,
+                consectetur in eros ac,
+                semper porta velit.
+Donec sapien ante,
+                commodo in neque eu,
+                faucibus tincidunt erat.Duis a felis aliquet,
+                vulputate lectus vitae,
+                elementum metus.Sed massa nulla,
+                pretium euismod massa eu,
+                volutpat auctor mi.
+Mauris vestibulum dictum odio a auctor.Fusce ullamcorper,
+                nibh sed sollicitudin porta,
+                lectus velit gravida
+tellus,
+                vel pellentesque metus quam at magna.Sed laoreet metus massa,
+                et sollicitudin lacus elementum vitae.
+Vestibulum in quam tincidunt,
+                vestibulum eros non,
+                imperdiet justo.Aenean suscipit felis ipsum,
+                sit amet
+vulputate metus sollicitudin non.Curabitur a dapibus nibh.Nullam non lorem a felis mattis bibendum.Vivamus
+sit amet posuere orci,
+                a sodales ipsum.Curabitur viverra euismod urna.
+Ut sed porttitor eros.Nullam eget convallis mi.Nam luctus erat a sem malesuada auctor.Aliquam nec pulvinar
+risus.Nullam tincidunt maximus lectus nec dignissim.Nunc porta dolor quis nisl imperdiet cursus.Aliquam
+convallis,
+                dui a aliquam bibendum,
+                nunc nisi commodo ipsum,
+                quis vestibulum lacus risus non nisl.Quisque in
+sapien neque.Suspendisse potenti.
+Nullam id nisl vel ipsum ultrices rutrum.Curabitur consequat tempor nunc,
+                a condimentum eros iaculis ac.
+Integer risus lorem,
+                commodo non felis euismod,
+                finibus ultrices libero.Duis posuere magna ante,
+                id auctor
+turpis pulvinar molestie.Morbi mattis purus eget turpis imperdiet pulvinar.Quisque vehicula euismod justo quis
+ullamcorper.In hac habitasse platea dictumst.Pellentesque quis elementum dolor, in sagittis neque.
+Maecenas blandit tristique vestibulum.
+Aliquam rhoncus dui odio,
+                id posuere ante ullamcorper in. Nam odio libero,
+                pharetra vitae interdum non,
+                fringilla ut sem.Sed aliquam urna tortor,
+                eu congue justo semper in. Nullam enim nisl,
+                laoreet quis arcu quis,
+                semper dignissim tortor.Phasellus sit amet massa ullamcorper,
+                iaculis diam vel,
+                vulputate sem.Quisque quis
+massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor efficitur",
+                Dre = "DRE 1",
+                Ue = "UE 1",
+                Turma = "1A",
+                ComponenteCurricular = "3",
+                Usuario = "Usuario X",
+                RF = "2266334",
+                Objetivos = new List<ObjetivoAprendizagemDto>() {
+                    new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M01",
+                        Descricao = "Explorar números no contexto diário como indicadores de quantidade, ordem, medida e código; ler e produzir escritas numéricas, identificando algumas regularidades do sistema de numeração decimal"
+                    },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        }
+                }
+            };
+            return View("RelatorioPlanoAula", model);
+        }
     }
 }

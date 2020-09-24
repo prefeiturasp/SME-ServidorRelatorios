@@ -38,7 +38,8 @@ namespace SME.SR.Data
                             PermiteLancamentoDeNota,
                             EhTerritorio,
                             EhBaseNacional,
-                            IdGrupoMatriz
+                            IdGrupoMatriz,
+                            Descricao
                     FROM ComponenteCurricular";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
