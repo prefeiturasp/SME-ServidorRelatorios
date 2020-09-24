@@ -131,5 +131,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioImpressaoCalendarioUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/resumopap")]
+        [Action("relatorios/resumopap", typeof(IRelatorioResumoPAPUseCase))]
+        public async Task<bool> RelatorioResumoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioResumoPAPUseCase relatorioResumoPAPUseCase)
+        {
+            await relatorioResumoPAPUseCase.Executar(request);
+            return true;
+        }
     }
 }

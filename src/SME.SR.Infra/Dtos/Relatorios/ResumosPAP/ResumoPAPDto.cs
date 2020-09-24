@@ -12,7 +12,7 @@ namespace SME.SR.Infra
 
         public string Ciclo { get; set; }
 
-        public int Ano { get; set; }
+        public string Ano { get; set; }
 
         public string Turma { get; set; }
 
@@ -28,7 +28,7 @@ namespace SME.SR.Infra
 
         public ResumoPAPTotalEstudantesDto TotalEstudantesDto { get; set; }
 
-        public List<ResumoPAPTotalEstudanteFrequenciaDto> FrequenciaDto { get; set; }
+        public ResumoPAPTotalEstudantePorFrequenciaDto FrequenciaDto { get; set; }
 
         public List<ResumoPAPTotalResultadoDto> ResultadoDto { get; set; }
 
