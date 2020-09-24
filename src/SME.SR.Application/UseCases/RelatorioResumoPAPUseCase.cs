@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json.Linq;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -42,7 +41,7 @@ namespace SME.SR.Application
 
             var relatorioResumoPAPDto = new ResumoPAPDto()
             {
-                Ano = filtros.Ano,
+                Ano = filtros.Ano != "0" ? filtros.Ano : "Todos",
                 AnoLetivo = filtros.AnoLetivo,
                 Ciclo = ciclo.Descricao,
                 Data = DateTime.Now.ToString("dd/MM/yyyy"),
