@@ -1785,26 +1785,26 @@ namespace SME.SR.MVC.Controllers
                         Respostas = listaRepostas
                     });
                 }
-                if(i == 0)
-                {
+                //if(i == 0)
+                //{
 
-                    listaRepostas1.Add(new ResumoPAPResultadoRespostaDto()
-                    {
-                        Porcentagem = 71,
-                        Quantidade = 70,
-                        RespostaDescricao = "Nao",
-                        TotalQuantidade = 0,
-                        TotalPorcentagem = 0
-                    });
+                //    listaRepostas1.Add(new ResumoPAPResultadoRespostaDto()
+                //    {
+                //        Porcentagem = 71,
+                //        Quantidade = 70,
+                //        RespostaDescricao = "Nao",
+                //        TotalQuantidade = 0,
+                //        TotalPorcentagem = 0
+                //    });
 
                 
 
-                    listaAnosEnca.Add(new ResumoPAPResultadoAnoDto()
-                    {
-                        AnoDescricao = 6,
-                        Respostas = listaRepostas1
-                    });
-                }
+                //    listaAnosEnca.Add(new ResumoPAPResultadoAnoDto()
+                //    {
+                //        AnoDescricao = 6,
+                //        Respostas = listaRepostas1
+                //    });
+                //}
 
 
                 var obj = "";
