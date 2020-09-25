@@ -1557,62 +1557,46 @@ namespace SME.SR.MVC.Controllers
                 ObjetivoDescricao = "Hipotese de escrita",
             };
 
-            var totalResultados = new ResumoPAPResultadoRespostaDto() {
-                Porcentagem = 9,
-                Quantidade = 20,
-                RespostaDescricao = null,
-                TotalPorcentagem = 100,
-                TotalQuantidade = 19
-            };
-
-            var anosResultados = new ResumoPAPResultadoAnoDto()
-            {
-                AnoDescricao = 4,
-            };
-
-            var anosResultados1 = new ResumoPAPResultadoAnoDto()
-            {
-                AnoDescricao = 8,
-            };
-
-            var respostaResultados = new ResumoPAPResultadoRespostaDto()
-            {
-                Porcentagem = 11,
-                Quantidade = 10,
-                RespostaDescricao = "Pré silábico",
-                TotalPorcentagem = 100,
-                TotalQuantidade = 19,
-            };
-
-            var respostaResultados1 = new ResumoPAPResultadoRespostaDto()
-            {
-                Porcentagem = 21,
-                Quantidade = 20,
-                RespostaDescricao = "Silábico",
-                TotalPorcentagem = 100,
-                TotalQuantidade = 19,
-            };
-
-
-            var listaRespostasResultados = new List<ResumoPAPResultadoRespostaDto>();
-            listaRespostasResultados.Add(respostaResultados);
-            listaRespostasResultados.Add(respostaResultados);
-            listaRespostasResultados.Add(respostaResultados);
-            listaRespostasResultados.Add(respostaResultados);
-            listaRespostasResultados.Add(respostaResultados);
-            anosResultados.Respostas = listaRespostasResultados;
-
-            var listaRespostasResultados1 = new List<ResumoPAPResultadoRespostaDto>();
-            listaRespostasResultados1.Add(respostaResultados1);
-            listaRespostasResultados1.Add(respostaResultados1);
-            anosResultados1.Respostas = listaRespostasResultados1;
-
+              
             var listaTotalResultados = new List<ResumoPAPResultadoRespostaDto>();
-            listaTotalResultados.Add(totalResultados);
-
+            var listaRespostasResultados = new List<ResumoPAPResultadoRespostaDto>();
+            var listaRespostasResultados1 = new List<ResumoPAPResultadoRespostaDto>();
             var listaAnosResultados = new List<ResumoPAPResultadoAnoDto>();
-            listaAnosResultados.Add(anosResultados);
-            listaAnosResultados.Add(anosResultados1);
+
+            //anos
+            for (var i = 0; i < 3; i++)
+            {
+                //respostas
+                for (var j = 0;  j < 2; j++)
+                {
+                    var desc = j % 2 == 0 ? "Pré silábico" : "Silabico";
+                    listaRespostasResultados.Add(new ResumoPAPResultadoRespostaDto()
+                        {
+                            Porcentagem = 11 + i + j ,
+                            Quantidade = 10 + i + j ,
+                            RespostaDescricao = desc,
+                            TotalPorcentagem = 80 + i,
+                            TotalQuantidade = 70 + i,
+                        }
+                    );
+                }
+
+                listaTotalResultados.Add(new ResumoPAPResultadoRespostaDto()
+                {
+                    Porcentagem = 41 + i,
+                    Quantidade = 50 + i,
+                    RespostaDescricao = null,
+                    TotalPorcentagem = 100,
+                    TotalQuantidade = 19
+                });
+                listaAnosResultados.Add(new ResumoPAPResultadoAnoDto()
+                    {
+                        AnoDescricao = 4 + i,
+                        Respostas = listaRespostasResultados
+                    }
+                );
+            }
+
 
             var listaObjetivosResultados = new List<ResumoPAPResultadoObjetivoDto>();
             objetivosResultados.Anos = listaAnosResultados;
@@ -1659,6 +1643,15 @@ namespace SME.SR.MVC.Controllers
                 TotalQuantidade = 19
             };
 
+            var totalResultadosA1 = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 9,
+                Quantidade = 20,
+                RespostaDescricao = null,
+                TotalPorcentagem = 73,
+                TotalQuantidade = 33
+            };
+
             var respostaResultados2 = new ResumoPAPResultadoRespostaDto()
             {
                 Porcentagem = 20,
@@ -1677,17 +1670,93 @@ namespace SME.SR.MVC.Controllers
                 TotalQuantidade = 19,
             };
 
+
+
+            var respostaResultadosA1 = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 16,
+                Quantidade = 15,
+                RespostaDescricao = "Realizou Plenamente",
+                TotalPorcentagem = 100,
+                TotalQuantidade = 19,
+            };
+
+            var respostaResultadosA2 = new ResumoPAPResultadoRespostaDto()
+            {
+                Porcentagem = 18,
+                Quantidade = 17,
+                RespostaDescricao = "Realizou",
+                TotalPorcentagem = 100,
+                TotalQuantidade = 19,
+            };
+
             var listaRespostasResultados2 = new List<ResumoPAPResultadoRespostaDto>();
             var listaRespostasResultados3 = new List<ResumoPAPResultadoRespostaDto>();
+            var listaRespostasResultadosA1 = new List<ResumoPAPResultadoRespostaDto>();
             listaRespostasResultados2.Add(respostaResultados2);
             listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
             listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+            listaRespostasResultados2.Add(respostaResultados2);
+            listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
+            listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+            listaRespostasResultados2.Add(respostaResultados2);
+            listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
+            listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultados2.Add(respostaResultados2);
+            listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
+            listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+            listaRespostasResultados2.Add(respostaResultados2);
+            listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
+            listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+            listaRespostasResultados2.Add(respostaResultados2);
+            listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
+            listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+            listaRespostasResultados2.Add(respostaResultados2);
+            listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
+            listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+            listaRespostasResultados2.Add(respostaResultados2);
+            listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
+            listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+            listaRespostasResultados2.Add(respostaResultados2);
+            listaRespostasResultados2.Add(respostaResultados3);
+            listaRespostasResultados3.Add(respostaResultados2);
+            listaRespostasResultados3.Add(respostaResultados3);
+            listaRespostasResultadosA1.Add(respostaResultadosA1);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+            listaRespostasResultadosA1.Add(respostaResultadosA2);
+
             anosResultados2.Respostas = listaRespostasResultados2;
-            anosResultados3.Respostas = listaRespostasResultados2;
+            anosResultados3.Respostas = listaRespostasResultadosA1;
             anosResultados4.Respostas = listaRespostasResultados3;
 
             var listaTotalResultados2 = new List<ResumoPAPResultadoRespostaDto>();
             listaTotalResultados2.Add(totalResultados2);
+
+            var listaTotalResultadosA1 = new List<ResumoPAPResultadoRespostaDto>();
+            listaTotalResultadosA1.Add(totalResultadosA1);
 
             var listaAnosResultados2 = new List<ResumoPAPResultadoAnoDto>();
             listaAnosResultados2.Add(anosResultados2);
@@ -1696,7 +1765,7 @@ namespace SME.SR.MVC.Controllers
 
             var listaObjetivosResultados2 = new List<ResumoPAPResultadoObjetivoDto>();
             objetivosResultados2.Anos = listaAnosResultados2;
-            objetivosResultados2.Total = listaTotalResultados2;
+            objetivosResultados2.Total = listaTotalResultadosA1;
             listaObjetivosResultados2.Add(objetivosResultados2);
             resultados2.Objetivos = listaObjetivosResultados2;
             
@@ -1714,7 +1783,6 @@ namespace SME.SR.MVC.Controllers
                 var listaAnosEnca = new List<ResumoPAPResultadoAnoDto>();
                 var listaTotal = new List<ResumoPAPResultadoRespostaDto>();
                 var listaRepostas = new List<ResumoPAPResultadoRespostaDto>();
-                var listaRepostas1 = new List<ResumoPAPResultadoRespostaDto>();
 
                 listaTotal.Add(new ResumoPAPResultadoRespostaDto()
                 {
