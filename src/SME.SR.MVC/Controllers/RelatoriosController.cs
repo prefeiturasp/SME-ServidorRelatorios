@@ -1714,6 +1714,7 @@ namespace SME.SR.MVC.Controllers
                 var listaAnosEnca = new List<ResumoPAPResultadoAnoDto>();
                 var listaTotal = new List<ResumoPAPResultadoRespostaDto>();
                 var listaRepostas = new List<ResumoPAPResultadoRespostaDto>();
+                var listaRepostas1 = new List<ResumoPAPResultadoRespostaDto>();
 
                 listaTotal.Add(new ResumoPAPResultadoRespostaDto()
                 {
@@ -1776,7 +1777,7 @@ namespace SME.SR.MVC.Controllers
 
                 }
 
-                for (var j = 0; j < 7; j++)
+                for (var j = 0; j < 2; j++)
                 {                    
                     listaAnosEnca.Add(new ResumoPAPResultadoAnoDto()
                     {
@@ -1784,6 +1785,26 @@ namespace SME.SR.MVC.Controllers
                         Respostas = listaRepostas
                     });
                 }
+                if(i == 0)
+                {
+                    listaRepostas1.Add(new ResumoPAPResultadoRespostaDto()
+                    {
+                        Porcentagem = 71,
+                        Quantidade = 70,
+                        RespostaDescricao = "Nao",
+                        TotalQuantidade = 0,
+                        TotalPorcentagem = 0
+                    });
+
+                
+
+                    listaAnosEnca.Add(new ResumoPAPResultadoAnoDto()
+                    {
+                        AnoDescricao = 6,
+                        Respostas = listaRepostas1
+                    });
+                }
+
 
                 var obj = "";
                 switch (i)
