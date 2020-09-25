@@ -333,14 +333,15 @@
 
                 foreach (var ano in objetivo.Anos)
                 {
+                    //ano.Respostas.ToList()[r].RespostaDescricao != objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao
 
-                    if(r > ano.Respostas.ToList().Count() - 1 && ano.Respostas.ToList()[r].RespostaDescricao != objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao)
+                    if (r > ano.Respostas.ToList().Count() - 1)
                     {
                         str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
 
                     }else
                     {
-                        str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].Quantidade} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
+                        str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].RespostaDescricao} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
 
                     }
 

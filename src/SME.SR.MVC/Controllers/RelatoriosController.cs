@@ -1787,6 +1787,7 @@ namespace SME.SR.MVC.Controllers
                 }
                 if(i == 0)
                 {
+
                     listaRepostas1.Add(new ResumoPAPResultadoRespostaDto()
                     {
                         Porcentagem = 71,
