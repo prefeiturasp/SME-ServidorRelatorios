@@ -4,16 +4,18 @@ using Microsoft.Extensions.Logging;
 using SME.SR.Application;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
+using SME.SR.MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 
 namespace SME.SR.MVC.Controllers
 {
     public class RelatoriosController : Controller
     {
         private readonly ILogger<RelatoriosController> _logger;
-
+        private Random rnd = new Random();
         public RelatoriosController(ILogger<RelatoriosController> logger)
         {
             _logger = logger;
@@ -23,7 +25,54 @@ namespace SME.SR.MVC.Controllers
         {
             return View();
         }
+        [HttpGet("graficos")]
+        public IActionResult RelatorioGraficosTeste()
+        {
 
+            var lstModel = new List<SimpleReportViewModel>();
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Technology",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Sales",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Marketing",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Human Resource",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Research and Development",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Acconting",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Support",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Logistics",
+                Quantity = rnd.Next(10)
+            });
+
+            return View("RelatorioGraficoBarrasTeste", lstModel);
+        }
         [HttpGet("faltas-frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
