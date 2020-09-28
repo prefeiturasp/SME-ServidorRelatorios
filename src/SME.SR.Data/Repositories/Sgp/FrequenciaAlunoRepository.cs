@@ -90,7 +90,8 @@ namespace SME.SR.Data
                                 , fa.total_compensacoes as TotalCompensacoes
                             from frequencia_aluno fa
                            inner join periodo_escolar pe on pe.id = fa.periodo_escolar_id
-                            where fa.tipo = 1
+                            where not excluido 
+                              and fa.tipo = 1
                               and fa.turma_id = @turmaCodigo
                               and pe.tipo_calendario_id = @tipoCalendarioId ";
 
