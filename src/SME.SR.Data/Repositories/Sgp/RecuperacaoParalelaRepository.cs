@@ -167,6 +167,20 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds>> ObterRespostasPorObjetivosIdsAsync(int[] idsObjetivos)
+        {
+            var query = @"select distinct resposta_id as respostaId, rpr.descricao as respostaDescricao, rppor.objetivo_id as objetivoId from recuperacao_paralela_periodo_objetivo_resposta rppor
+                            inner join recuperacao_paralela_resposta rpr 
+                            on rpr.id  = rppor.resposta_id 
+                            where rppor.objetivo_id = ANY(@idsObjetivos)";
+            var parametros = new { idsObjetivos };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<RetornoResumoPAPRespostasPorObjetivosIds>(query, parametros);
+            }
+        }
+
         private void MontarCamposResumo(StringBuilder query)
         {
             query.AppendLine("tipo_ciclo.descricao as ciclo,");

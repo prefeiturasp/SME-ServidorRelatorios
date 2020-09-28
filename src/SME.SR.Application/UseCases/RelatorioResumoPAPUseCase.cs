@@ -58,7 +58,7 @@ namespace SME.SR.Application
                 UsuarioRF = filtros.UsuarioRf
             };
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRecuperacaoParalela", relatorioResumoPAPDto, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioResumosPAP", relatorioResumoPAPDto, request.CodigoCorrelacao));
         }
 
         private async Task<IEnumerable<ResumoPAPTotalResultadoDto>> ObterResultados(FiltroRelatorioResumoPAPDto filtros)
