@@ -130,7 +130,7 @@ namespace SME.SR.Application
                 var itemParaAlterar = listaRetorno.Find(a => a.RespostaId == item.Key.RespostaId);
                 itemParaAlterar.Quantidade = item.Sum(q => q.Total);
                 itemParaAlterar.Porcentagem = ((double)item.Sum(q => q.Total) * 100) / total;
-                
+                itemParaAlterar.TotalQuantidade = itemParaAlterar.Quantidade / items.Sum(q => q.Total);
             }
 
             return listaRetorno;
