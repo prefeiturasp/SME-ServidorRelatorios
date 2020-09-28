@@ -204,7 +204,7 @@
     {
         var str = $@"<table class='tabela-cabecalho'><thead><tr><th width='20%'></th>";
 
-        foreach (var frequencias in Model.FrequenciaDto)
+        foreach (var frequencias in Model.FrequenciaDto.Frequencia)
         {
             foreach (var linhas in frequencias.Linhas)
             {
@@ -220,7 +220,7 @@
         str += $@"<th width='15%' class='negrito'>TOTAL</th></tr></thead><tbody>";
         contadorQuebrarPagina++;
 
-        foreach (var frequencias in Model.FrequenciaDto)
+        foreach (var frequencias in Model.FrequenciaDto.Frequencia)
         {
             foreach (var linhas in frequencias.Linhas)
             {
@@ -483,7 +483,7 @@
                 contadorQuebrarPagina++;
                 @Html.Raw(VerificaQuebra())
 
-                @Html.Raw(MontarTabelaFrequencia())               
+                //@Html.Raw(MontarTabelaFrequencia())               
             }
 
             @Html.Raw(EspacoEmBranco())

@@ -1463,7 +1463,7 @@ namespace SME.SR.MVC.Controllers
             model.UeNome = "EMEFM DERVILLE ALEGRETTI, PROF.";
             model.AnoLetivo = 2020;
             model.Ciclo = "INTERDISCIPLINAR";
-            model.Ano = 3;
+            model.Ano = "3";
             model.Turma = "5A";
             model.Periodo = "ACOMPANHAMENTO 1º SEMESTRE";
             model.UsuarioNome = "TESTE USUÁRIO";
@@ -1544,7 +1544,7 @@ namespace SME.SR.MVC.Controllers
                 });
             }
 
-            model.FrequenciaDto = listaFrequencia;
+         //   model.FrequenciaDto = listaFrequencia;
 
             ResumoPAPTotalResultadoDto resultados = new ResumoPAPTotalResultadoDto()
              {

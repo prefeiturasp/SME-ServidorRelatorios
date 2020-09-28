@@ -25,64 +25,115 @@ namespace SME.SR.Application
 
             if (!totalResultados.Any()) return null;
 
-            return MapearResultadoParaDto(totalResultados);
+            return await MapearResultadoParaDto(totalResultados);
         }
 
-        private IEnumerable<ResumoPAPTotalResultadoDto> MapearResultadoParaDto(IEnumerable<RetornoResumoPAPTotalResultadoDto> items)
+        private async Task<IEnumerable<ResumoPAPTotalResultadoDto>> MapearResultadoParaDto(IEnumerable<RetornoResumoPAPTotalResultadoDto> items)
         {
+            var idsObjetivos = items.Select(a => a.ObjetivoId).Distinct().ToArray();
+
+           var respostasDosObjetivos = await recuperacaoParalelaRepository.ObterRespostasPorObjetivosIdsAsync(idsObjetivos);
+
             return items
                 .GroupBy(g => new { g.EixoId, g.Eixo })
                 .Select(eixo => new ResumoPAPTotalResultadoDto
                 {
                     EixoDescricao = eixo.Key.Eixo,
-                    Objetivos = ObterObjetivos(items, eixo.Key.EixoId)
+                    Objetivos = ObterObjetivos(items, eixo.Key.EixoId, respostasDosObjetivos)
                 });
         }
 
-        private IEnumerable<ResumoPAPResultadoObjetivoDto> ObterObjetivos(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int eixoId)
+        private IEnumerable<ResumoPAPResultadoObjetivoDto> ObterObjetivos(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int eixoId, IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds> respostasDosObjetivos)
         {
-            return items.Where(obj => obj.EixoId == eixoId)
-                .GroupBy(objetivo => new { objetivo.ObjetivoId, objetivo.Objetivo })
-                .Select(objetivo => new ResumoPAPResultadoObjetivoDto
+            var itens = items.Where(obj => obj.EixoId == eixoId)
+                .GroupBy(objetivo => new { objetivo.ObjetivoId, objetivo.Objetivo });
+
+
+            var listaRetorno = new List<ResumoPAPResultadoObjetivoDto>();
+
+            foreach (var item in itens)
+            {
+                var objetivoId = item.Key.ObjetivoId;
+
+                listaRetorno.Add(new ResumoPAPResultadoObjetivoDto()
                 {
-                    Anos = ObterAnos(items, objetivo.Key.ObjetivoId, items.Where(x => x.ObjetivoId == objetivo.Key.ObjetivoId).Sum(s => s.Total)),
-                    ObjetivoDescricao = objetivo.Key.Objetivo,
-                    Total = ObterTotalPorObjetivo(items, objetivo.Key.ObjetivoId, items.Where(x => x.ObjetivoId == objetivo.Key.ObjetivoId).Sum(s => s.Total))
+                    Anos = ObterAnos(items, objetivoId, items.Where(x => x.ObjetivoId == item.Key.ObjetivoId).Sum(s => s.Total), respostasDosObjetivos.Where(a => a.ObjetivoId == objetivoId)),
+                    ObjetivoDescricao = item.Key.Objetivo,
+                    Total = ObterTotalPorObjetivo(items, objetivoId, items.Where(x => x.ObjetivoId == objetivoId).Sum(s => s.Total))
                 });
+            }
+
+            return listaRetorno;
+
         }
 
         private IEnumerable<ResumoPAPResultadoRespostaDto> ObterTotalPorObjetivo(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, int total)
         {
-            return items.Where(tot => tot.ObjetivoId == objetivoId)
-                .GroupBy(gt => gt.ObjetivoId)
-                .Select(objetivoTotal => new ResumoPAPResultadoRespostaDto
+            var itens = items.Where(tot => tot.ObjetivoId == objetivoId)
+                .GroupBy(gt => gt.ObjetivoId);
+
+
+            var listaRetorno = new List<ResumoPAPResultadoRespostaDto>();
+
+            foreach (var item in itens)
+            {
+                listaRetorno.Add(new ResumoPAPResultadoRespostaDto
                 {
-                    TotalQuantidade = objetivoTotal.Sum(x => x.Total),
-                    TotalPorcentagem = (objetivoTotal.Sum(x => x.Total) * 100) / total
+                    TotalQuantidade = item.Sum(x => x.Total),
+                    TotalPorcentagem = (item.Sum(x => x.Total) * 100) / total
                 });
+            }
+
+
+            return listaRetorno;
         }
 
-        private IEnumerable<ResumoPAPResultadoAnoDto> ObterAnos(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, int total)
+        private IEnumerable<ResumoPAPResultadoAnoDto> ObterAnos(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, int total, IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds> respostasDosObjetivos)
         {
-            return items.Where(ano => ano.ObjetivoId == objetivoId)
-                .GroupBy(h => new { h.Ano, h.ObjetivoId })
-                .Select(ano => new ResumoPAPResultadoAnoDto
+            var itens = items.Where(ano => ano.ObjetivoId == objetivoId)
+                .GroupBy(h => new { h.Ano, h.ObjetivoId });
+
+
+            var listaRetorno = new List<ResumoPAPResultadoAnoDto>();
+
+            foreach (var item in itens)
+            {
+                listaRetorno.Add(new ResumoPAPResultadoAnoDto
                 {
-                    AnoDescricao = ano.Key.Ano,
-                    Respostas = ObterRespostas(items, objetivoId, ehAno: true, ano.Key.Ano, total)
+                    AnoDescricao = item.Key.Ano,
+                    Respostas = ObterRespostas(items, objetivoId, ehAno: true, item.Key.Ano, total, respostasDosObjetivos)
                 });
+            }
+
+            return listaRetorno;
         }
 
-        private IEnumerable<ResumoPAPResultadoRespostaDto> ObterRespostas(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, bool ehAno, int anoCiclo, int total)
+        private IEnumerable<ResumoPAPResultadoRespostaDto> ObterRespostas(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, bool ehAno, int anoCiclo, int total, IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds> respostasDosObjetivos)
         {
-            return items.Where(res => res.ObjetivoId == objetivoId && (ehAno ? res.Ano == anoCiclo : res.CicloId == anoCiclo))
-                .GroupBy(gre => (gre.Resposta, gre.RespostaId))
-                .Select(resposta => new ResumoPAPResultadoRespostaDto
+            var itens = items.Where(res => res.ObjetivoId == objetivoId && (ehAno ? res.Ano == anoCiclo : res.CicloId == anoCiclo))
+                .GroupBy(gre => (gre.Resposta, gre.RespostaId));
+
+            var listaRetorno = new List<ResumoPAPResultadoRespostaDto>();
+
+            foreach (var resposta in respostasDosObjetivos)
+            {
+                listaRetorno.Add(new ResumoPAPResultadoRespostaDto
                 {
-                    RespostaDescricao = resposta.Key.Resposta,
-                    Quantidade = resposta.Sum(q => q.Total),
-                    Porcentagem = ((double)resposta.Sum(q => q.Total) * 100) / total
+                    RespostaDescricao = resposta.RespostaDescricao,
+                    RespostaId = resposta.RespostaId
                 });
+            }
+
+
+            foreach (var item in itens)
+            {
+                var itemParaAlterar = listaRetorno.Find(a => a.RespostaId == item.Key.RespostaId);
+                itemParaAlterar.Quantidade = item.Sum(q => q.Total);
+                itemParaAlterar.Porcentagem = ((double)item.Sum(q => q.Total) * 100) / total;
+                
+            }
+
+            return listaRetorno;
         }
     }
 }

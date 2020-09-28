@@ -15,5 +15,6 @@ namespace SME.SR.Data
         Task<IEnumerable<RetornoResumoPAPTotalResultadoDto>> ListarTotalResultado(int? periodoId, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo, int? pagina);
 
         Task<IEnumerable<RetornoResumoPAPTotalResultadoDto>> ListarTotalResultadoEncaminhamento(int? periodoId, string dreId, string ueId, int? cicloId, string turmaId, string ano, int anoLetivo, int? pagina);
+        Task<IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds>> ObterRespostasPorObjetivosIdsAsync(int[] idsObjetivos);
     }
 }
