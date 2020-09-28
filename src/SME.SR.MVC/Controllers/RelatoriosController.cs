@@ -1469,7 +1469,7 @@ namespace SME.SR.MVC.Controllers
             model.UsuarioNome = "TESTE USUÁRIO";
             model.UsuarioRF = "123456789";
             model.Data = "21/10/2020";
-            model.EhEncaminhamento = true;
+            model.EhEncaminhamento = false;
 
             ResumoPAPTotalEstudantesDto totalEstudantes = new ResumoPAPTotalEstudantesDto();
             totalEstudantes.PorcentagemTotal = 100;
@@ -1560,7 +1560,6 @@ namespace SME.SR.MVC.Controllers
               
             var listaTotalResultados = new List<ResumoPAPResultadoRespostaDto>();
             var listaRespostasResultados = new List<ResumoPAPResultadoRespostaDto>();
-            var listaRespostasResultados1 = new List<ResumoPAPResultadoRespostaDto>();
             var listaAnosResultados = new List<ResumoPAPResultadoAnoDto>();
 
             //anos
