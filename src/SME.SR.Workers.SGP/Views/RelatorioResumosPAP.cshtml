@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 39;
+    int contadorMaximoLinhasPorPagina = 40;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -74,7 +74,7 @@
 
     string MontarCabecalhoTabela(string cabecalho)
     {
-        return $@"<table class='tabela-cabecalho'><thead><th class='sem-border-bottom'>{cabecalho}</th></thead></table>";
+        return $@"<table class='tabela-cabecalho'><thead><th class='sem-border-bottom'>{cabecalho} p-> {contadorQuebrarPagina}</th></thead></table>";
     }
 
     string EspacoEmBranco()
@@ -179,13 +179,13 @@
                     contadorQuebrarPagina++;
                 }
 
-
                 str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
 
                 var first = objetivo.Anos.First().Respostas.First();
 
                 for (var r = 0; r < respostas; r++)
                 {
+
                     if (r != 0)
                     {
                         str += "<tr>";
@@ -202,13 +202,12 @@
                     str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} / {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}%</td>";
                     str += "</tr>";
 
+                    contadorQuebrarPagina++;
                     var quebra = VerificaQuebra();
                     var novaPagina = quebra + (count < respostas - 1 ? MontarCabecalhoTabelaResultados(objetivo, width, resultado, respostas) : "");
                     str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}" : "";
-
                 }
 
-                //}
                 count += 1;
 
             }
