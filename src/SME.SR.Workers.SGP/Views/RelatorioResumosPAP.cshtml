@@ -84,10 +84,14 @@
 
     string MontarTabelaTotalEstudantes()
     {
+        var str = String.Empty;
+
+        if (Model.TotalEstudantesDto == null) return String.Empty;
+
         var totalEstudantes = Model.TotalEstudantesDto;
         var anos = Model.TotalEstudantesDto.Anos.ToList();
 
-        var str = $@"<table class='tabela-cabecalho'><thead><tr>";
+        str += $@"<table class='tabela-cabecalho'><thead><tr>";
 
         for (int i = 0; i < anos.Count; i++)
         {
@@ -104,7 +108,7 @@
             var ano = anos[i];
             var width = 85 / anos.Count;
 
-            str += $@"<td>{ano.Quantidade} / {ano.Porcentagem}%</td>";
+            str += $@"<td>{ano.Quantidade} / {Math.Round(ano.Porcentagem, 2)}%</td>";
         }
 
         str += $@"<td width='15%' class='negrito'>{totalEstudantes.QuantidadeTotal} / {totalEstudantes.PorcentagemTotal}%</td></tbody></table>";
@@ -115,109 +119,113 @@
 
     string MontarCabecalhoTabelaResultados(SME.SR.Infra.ResumoPAPResultadoObjetivoDto objetivo, int width, SME.SR.Infra.ResumoPAPTotalResultadoDto resultado ,int respostas)
     {
-        try
+        var str = String.Empty;
+
+        return str;
+
+        str += MontarCabecalhoTabela(resultado.EixoDescricao);
+
+        if (objetivo.Anos == null) return str;
+
+        str += "<table>";
+
+        str += @"<tr><td class='tb-cabecalho2' width='28%' colspan='2'>&nbsp;</td>";
+
+        foreach (var ano in objetivo.Anos)
         {
 
-
-            var str = "";
-            str += MontarCabecalhoTabela(resultado.EixoDescricao);
-            str += "<table>";
-
-            str += @"<tr><td class='tb-cabecalho2' width='28%' colspan='2'>&nbsp;</td>";
-
-            foreach (var ano in objetivo.Anos)
-            {
-
-                str += $"<td class='tb-cabecalho2' width='{62 / width}%' >{ano.AnoDescricao}°</td>";
-            }
-
-            str += "<td class='tb-cabecalho2 negrito' width='10%' >TOTAL</td></tr>";
-            contadorQuebrarPagina++;
-
-            str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
-
-            return str;
+            str += $"<td class='tb-cabecalho2' width='{62 / width}%' >{ano.AnoDescricao}°</td>";
         }
-        catch (Exception ex)
-        {
 
-            throw ex;
-        }
+        str += "<td class='tb-cabecalho2 negrito' width='10%' >TOTAL</td></tr>";
+        contadorQuebrarPagina++;
+
+        str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
+
+
+        return str;
     }
 
     string MontarResultados()
     {
-       
-            var str = "";
+        var str = String.Empty;
 
-            foreach (var resultado in Model.ResultadoDto)
+        return str;
+
+        if (Model.ResultadoDto == null) return str;
+
+        foreach (var resultado in Model.ResultadoDto)
+        {
+
+            str += MontarCabecalhoTabela(resultado.EixoDescricao);
+            contadorQuebrarPagina++;
+            str += "<table>";
+            int count = 0;
+
+            foreach (var objetivo in resultado.Objetivos)
             {
-               
-                str += MontarCabecalhoTabela(resultado.EixoDescricao);
-                contadorQuebrarPagina++;
-                str += "<table>";
-                int count = 0;
 
-                foreach (var objetivo in resultado.Objetivos)
+                var width = objetivo.Anos.Count();
+                int respostas = 0;
+                respostas = objetivo.Anos.First().Respostas.Count();
+                if (count == 0)
                 {
-                  
-                        var width = objetivo.Anos.Count();
-                        int respostas = 0;
-                        respostas = objetivo.Anos.First().Respostas.Count();
-                        if (count == 0)
-                        {
-                            str += @"<tr><td class='tb-cabecalho2' width='28%' colspan='2'>&nbsp;</td>";
+                    str += @"<tr><td class='tb-cabecalho2' width='28%' colspan='2'>&nbsp;</td>";
 
-                            foreach (var ano in objetivo.Anos)
-                            {
+                    foreach (var ano in objetivo.Anos)
+                    {
 
-                                str += $"<td class='tb-cabecalho2' width='{62 / width}%' >{ano.AnoDescricao}°</td>";
-                            }
-                            str += "<td class='tb-cabecalho2 negrito' width='10%' >TOTAL</td></tr>";
-                            contadorQuebrarPagina++;
-                        }
-
-                        str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
-
-                        var first = objetivo.Anos.First().Respostas.First();
-
-                        for (var r = 0; r < respostas; r++)
-                        {
-                            if (r != 0)
-                            {
-                                str += "<tr>";
-                            }                         
-
-                                str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
-
-                                foreach (var ano in objetivo.Anos)
-                                {
-                                    str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].Quantidade} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
-                                }
-                                str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} / {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}%</td>";
-                                str += "</tr>";
-
-                                var quebra = VerificaQuebra();
-                                var novaPagina = quebra + (count < respostas - 1 ? MontarCabecalhoTabelaResultados(objetivo, width, resultado, respostas) : "");
-                                str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}" : "";                          
-
-                        }
-
-                        //}
-                        count += 1;
-                  
+                        str += $"<td class='tb-cabecalho2' width='{62 / width}%' >{ano.AnoDescricao}°</td>";
+                    }
+                    str += "<td class='tb-cabecalho2 negrito' width='10%' >TOTAL</td></tr>";
+                    contadorQuebrarPagina++;
                 }
-                str += "</table>";
+
+                str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
+
+                var first = objetivo.Anos.First().Respostas.First();
+
+                for (var r = 0; r < respostas; r++)
+                {
+                    if (r != 0)
+                    {
+                        str += "<tr>";
+                    }
+
+                    str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+
+                    foreach (var ano in objetivo.Anos)
+                    {
+                        str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].Quantidade} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
+                    }
+                    str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} / {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}%</td>";
+                    str += "</tr>";
+
+                    var quebra = VerificaQuebra();
+                    var novaPagina = quebra + (count < respostas - 1 ? MontarCabecalhoTabelaResultados(objetivo, width, resultado, respostas) : "");
+                    str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}" : "";
+
+                }
+
+                //}
+                count += 1;
 
             }
+            str += "</table>";
 
-            return str;
-       
+        }
+
+        return str;
+
     }
 
     string MontarTabelaFrequencia()
     {
-        var str = $@"<table class='tabela-cabecalho'><thead><tr><th width='20%'></th>";
+        var str = String.Empty;
+
+        if (Model.FrequenciaDto == null) return str;
+
+        str += $@"<table class='tabela-cabecalho'><thead><tr><th width='20%'></th>";
 
         foreach (var frequencias in Model.FrequenciaDto.Frequencia)
         {
@@ -259,7 +267,11 @@
 
     string MontarInformacoesEscolares()
     {
-        var str = "<table class='tabela-cabecalho'>";
+        var str = String.Empty;
+
+        if (Model.EncaminhamentoDto == null || Model.EncaminhamentoDto.First().Objetivos == null) return str;
+
+        str += "<table class='tabela-cabecalho'>";
         str += @"<thead><th colspan='2' width='28%'>&nbsp;</th>";
 
         var count = 0;
@@ -297,7 +309,14 @@
 
                 foreach (var ano in objetivo.Anos)
                 {
-                    str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].Quantidade} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
+                    if (r > ano.Respostas.ToList().Count - 1)
+                    {
+                        str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+                    }
+                    else
+                    {
+                        str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].Quantidade} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
+                    }
                 }
                 str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} / {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}%</td>";
                 str += "</tr>";

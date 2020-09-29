@@ -80,7 +80,7 @@ namespace SME.SR.Application
                 listaRetorno.Add(new ResumoPAPResultadoRespostaDto
                 {
                     TotalQuantidade = item.Sum(x => x.Total),
-                    TotalPorcentagem = (item.Sum(x => x.Total) * 100) / total
+                    TotalPorcentagem = item.Sum(x => x.Total) * 100 / total
                 });
             }
 
@@ -129,8 +129,7 @@ namespace SME.SR.Application
             {
                 var itemParaAlterar = listaRetorno.Find(a => a.RespostaId == item.Key.RespostaId);
                 itemParaAlterar.Quantidade = item.Sum(q => q.Total);
-                itemParaAlterar.Porcentagem = ((double)item.Sum(q => q.Total) * 100) / total;
-                itemParaAlterar.TotalQuantidade = itemParaAlterar.Quantidade / items.Sum(q => q.Total);
+                itemParaAlterar.Porcentagem = (double)item.Sum(q => q.Total) * 100 / total;
             }
 
             return listaRetorno;
