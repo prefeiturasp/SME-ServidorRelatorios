@@ -150,8 +150,6 @@
     {
         var str = String.Empty;
 
-        return str;
-
         if (Model.ResultadoDto == null) return str;
 
         foreach (var resultado in Model.ResultadoDto)
@@ -193,6 +191,8 @@
                     }
 
                     str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+
+                    objetivo.Anos.OrderBy(h => h.AnoDescricao);
 
                     foreach (var ano in objetivo.Anos)
                     {
