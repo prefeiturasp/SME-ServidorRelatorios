@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 39;
+    int contadorMaximoLinhasPorPagina = 46;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -74,7 +74,7 @@
 
     string MontarCabecalhoTabela(string cabecalho)
     {
-        return $@"<table class='tabela-cabecalho'><thead><th class='sem-border-bottom'>{cabecalho}</th></thead></table>";
+        return $@"<table class='tabela-cabecalho'><thead><th class='sem-border-bottom'>{cabecalho} p-> {contadorQuebrarPagina}</th></thead></table>";
     }
 
     string EspacoEmBranco()
@@ -142,7 +142,6 @@
 
         str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
 
-
         return str;
     }
 
@@ -185,6 +184,8 @@
 
                 for (var r = 0; r < respostas; r++)
                 {
+
+
                     if (r != 0)
                     {
                         str += "<tr>";
@@ -202,7 +203,7 @@
                         SME.SR.Infra.ResumoPAPResultadoRespostaDto anoResposta = ano.Respostas.ToList().Find(h => h.RespostaDescricao == anoRespostaDescricao);
                         if (anoResposta != null)
                         {
-                            str += $"<td class='tb-conteudo3 centralizar'>{anoResposta.Quantidade} / {Math.Round(anoResposta.Porcentagem, 2)}%</td>";
+                            str += $"<td class='tb-conteudo3 centralizar'>{anoResposta.Quantidade} / {Math.Round(anoResposta.Porcentagem, 2)}% p-> {contadorQuebrarPagina}</td>";
                             totalQuantidade += anoResposta.Quantidade;
                             totalPorcentagem += anoResposta.Porcentagem;
                         }
@@ -214,22 +215,19 @@
                     str += $"<td class='tb-conteudo3 negrito centralizar'>{totalQuantidade} / {Math.Round(totalPorcentagem, 2)}%</td>";
                     str += "</tr>";
 
+                    contadorQuebrarPagina++;
                     var quebra = VerificaQuebra();
                     var novaPagina = quebra + (count < respostas - 1 ? MontarCabecalhoTabelaResultados(objetivo, width, resultado, respostas) : "");
                     str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}" : "";
-
                 }
 
-                //}
                 count += 1;
 
             }
             str += "</table>";
-
         }
 
         return str;
-
     }
 
     string MontarTabelaFrequencia()
@@ -295,10 +293,10 @@
             {
                 foreach (var ano in objetivo.Anos)
                 {
-                    str += $"<th  width='{63 / width}%'>{ano.AnoDescricao}°</th>";
+                    str += $"<th  width='{61 / width}%'>{ano.AnoDescricao}°</th>";
                 }
 
-                str += "<th class='negrito' width='9%'>TOTAL</th></tr></thead>";
+                str += "<th class='negrito' width='11%'>TOTAL</th></tr></thead>";
 
                 contadorQuebrarPagina++;
             }
@@ -497,7 +495,7 @@
             padding-left: 10px;
             padding-right: 10px;
             text-align: left;
-            height: 24px;
+            min-height: 24px;
         }
 
         .centralizar {
