@@ -150,8 +150,6 @@
     {
         var str = String.Empty;
 
-        return str;
-
         if (Model.ResultadoDto == null) return str;
 
         foreach (var resultado in Model.ResultadoDto)
@@ -180,6 +178,7 @@
                     str += "<td class='tb-cabecalho2 negrito' width='10%' >TOTAL</td></tr>";
                     contadorQuebrarPagina++;
                 }
+
 
                 str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
 
@@ -282,10 +281,10 @@
             {
                 foreach (var ano in objetivo.Anos)
                 {
-                    str += $"<th  width='{63 / width}%'>{ano.AnoDescricao}°</th>";
+                    str += $"<th  width='{61 / width}%'>{ano.AnoDescricao}°</th>";
                 }
 
-                str += "<th class='negrito' width='9%'>TOTAL</th></tr></thead>";
+                str += "<th class='negrito' width='11%'>TOTAL</th></tr></thead>";
 
                 contadorQuebrarPagina++;
             }
