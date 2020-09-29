@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 40;
+    int contadorMaximoLinhasPorPagina = 46;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -142,7 +142,6 @@
 
         str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
 
-
         return str;
     }
 
@@ -186,6 +185,7 @@
                 for (var r = 0; r < respostas; r++)
                 {
 
+
                     if (r != 0)
                     {
                         str += "<tr>";
@@ -203,7 +203,7 @@
                         SME.SR.Infra.ResumoPAPResultadoRespostaDto anoResposta = ano.Respostas.ToList().Find(h => h.RespostaDescricao == anoRespostaDescricao);
                         if (anoResposta != null)
                         {
-                            str += $"<td class='tb-conteudo3 centralizar'>{anoResposta.Quantidade} / {Math.Round(anoResposta.Porcentagem, 2)}%</td>";
+                            str += $"<td class='tb-conteudo3 centralizar'>{anoResposta.Quantidade} / {Math.Round(anoResposta.Porcentagem, 2)}% p-> {contadorQuebrarPagina}</td>";
                             totalQuantidade += anoResposta.Quantidade;
                             totalPorcentagem += anoResposta.Porcentagem;
                         }
@@ -225,11 +225,9 @@
 
             }
             str += "</table>";
-
         }
 
         return str;
-
     }
 
     string MontarTabelaFrequencia()
@@ -497,7 +495,7 @@
             padding-left: 10px;
             padding-right: 10px;
             text-align: left;
-            height: 24px;
+            min-height: 24px;
         }
 
         .centralizar {
