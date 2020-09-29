@@ -305,17 +305,19 @@
                     str += "<tr>";
                 }
 
-                str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+                var anoRespostaDescricao = objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao;
+
+                str += $"<td class='tb-conteudo3'>{anoRespostaDescricao}</td>";
 
                 foreach (var ano in objetivo.Anos)
                 {
-                    if (r > ano.Respostas.ToList().Count - 1)
+                    SME.SR.Infra.ResumoPAPResultadoRespostaDto anoResposta = ano.Respostas.ToList().Find(h => h.RespostaDescricao == anoRespostaDescricao);
+                    if (anoResposta != null)
+                    {
+                        str += $"<td class='tb-conteudo3 centralizar'>{anoResposta.Quantidade} / {Math.Round(anoResposta.Porcentagem, 2)}%</td>";
+                    } else
                     {
                         str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
-                    }
-                    else
-                    {
-                        str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].Quantidade} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
                     }
                 }
                 str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} / {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}%</td>";
