@@ -137,5 +137,21 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<FrequenciaAluno>(query.ToString(), new { componentesCurriculares, bimestres, turmasCodigos});
             }
         }
+
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunosPorTurma(string codigoTurma)
+        {
+            var query = @$"select fa.codigo_aluno as CodigoAluno
+                                , fa.turma_id as TurmaId
+                                , fa.total_aulas as TotalAulas
+                                , fa.total_ausencias as TotalAusencias
+                                , fa.total_compensacoes as TotalCompensacoes
+                              from frequencia_aluno fa 
+                            where fa.turma_id = @codigoTurma and fa.tipo = 2 ";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigoTurma });
+            }
+        }
     }
 }
