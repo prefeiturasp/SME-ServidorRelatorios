@@ -159,6 +159,9 @@
             strEixo += MontarCabecalhoTabela(resultado.EixoDescricao);
             contadorQuebrarPagina++;
 
+            if (contadorQuebrarPagina + 5 >= contadorMaximoLinhasPorPagina)
+                contadorQuebrarPagina += 5;
+
             var quebraEixo = VerificaQuebra();
 
             if (!string.IsNullOrEmpty(quebraEixo))
@@ -191,7 +194,9 @@
                 }
 
                 var respostas = objetivo.Anos.First().Respostas.Count();
+
                 strObjetivo += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
+                contadorQuebrarPagina++;
 
                 for (var r = 0; r < respostas; r++)
                 {
@@ -241,7 +246,7 @@
                     contadorQuebrarPagina++;
 
                     novaLinhaParaObjetivo += "<table>" ;
-                    
+
 
                     novaLinhaParaObjetivo += @"<tr><td class='tb-cabecalho2' width='28%' colspan='2'>&nbsp;</td>";
 
@@ -251,7 +256,7 @@
                         novaLinhaParaObjetivo += $"<td class='tb-cabecalho2' width='{62 / width}%' >{ano.AnoDescricao}°</td>";
                     }
                     novaLinhaParaObjetivo += "<td class='tb-cabecalho2 negrito' width='10%' >TOTAL</td></tr>";
-                    contadorQuebrarPagina++;                                  
+                    contadorQuebrarPagina++;
 
                     strEixo += novaLinhaParaObjetivo + strObjetivo;
                 }
