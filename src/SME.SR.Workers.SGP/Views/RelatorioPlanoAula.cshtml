@@ -1,0 +1,419 @@
+﻿@model SME.SR.Infra.PlanoAulaDto
+@using System.Text.RegularExpressions;
+@using SME.SR.Infra.Extensions;
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 44;
+    int contadorPagina = 0;
+    bool montarCabecalhoObj = true;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            montarCabecalhoObj = true;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always' />" + str;
+
+        }
+        return string.Empty;
+
+    }
+
+    string MontaCabecalhoObjetivos()
+    {
+        var str = "";
+        if (montarCabecalhoObj)
+        {
+            str = @"<table>
+<tr>
+<td width='100 %' class=tb-cabecalho>
+OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
+</td>
+</tr>
+</table> ";
+            montarCabecalhoObj = false;
+
+        }
+        return str;
+    }
+
+    string MontaObjetivos()
+    {
+        var str = "";
+
+        if (Model.Objetivos.Count() > 0)
+        {
+            str += MontaCabecalhoObjetivos();
+            var first = Model.Objetivos.First();
+            var last = Model.Objetivos.Last();
+
+            @foreach (var objetivo in Model.Objetivos)
+            {
+                str += $@"<table><tbody>
+<tr class='tabela-objetivos-items-tr'>
+<td class='fonte-16 tabela-objetivos-items-titulo'>
+{objetivo.Codigo}
+</td>
+<td class='fonte-16 tabela-objetivos-items-descricao'>
+{objetivo.Descricao}
+</td>
+</tr>
+</tbody>
+</table>";
+                contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
+                str += VerificaQuebra();
+            }
+        }
+        else
+        {
+            str += MontaDescricao("OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)", Model.Descricao);
+        }
+
+        return str;
+    }
+
+
+
+    string MontaDescricao(string titulo, string descricao)
+    {
+        if (descricao.Trim().Length == 0)
+        {
+            return "";
+        }
+        var str = "<div class='m-30'>";
+
+        if (titulo != "")
+        {
+            str += $@"<table><tr><td width='100%' class='tb-cabecalho2'>{titulo}</td></tr></table>";
+        }
+
+
+        str += @"<table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
+
+        int tamanho = 0;
+        descricao = Regex.Replace(descricao, @"<[^>]*>", String.Empty);
+        descricao = Regex.Replace(descricao, @"&nbsp;", " ").Trim();
+        for (int i = 0; i < descricao.Length; i++)
+        {
+
+            if (tamanho <= 100)
+            {
+                str += descricao[i];
+                tamanho = tamanho + 1;
+            }
+            else
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                var retornoVerificacao = VerificaQuebra();
+                if (retornoVerificacao != string.Empty)
+                {
+                    str += $@"</td> </tr> </tbody> </table> {retornoVerificacao} ";
+                    if (titulo != "")
+                    {
+                        str += $@"<table><tr><td width='100%' class='tb-cabecalho2'>{titulo}</td></tr></table>";
+                    }
+                    str += "<table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
+                }
+                else
+                {
+                    str += retornoVerificacao;
+                }
+
+                tamanho = 0;
+                str += descricao[i];
+            }
+        }
+
+        if (!str.Substring(str.Length - 8).Equals("</table>"))
+        {
+            str += @" </tr> </tbody> </table>";
+        }
+
+        return str + "</div>";
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 12;
+        var str =
+           $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-plano-aula'>
+<p style='margin-bottom:0'>PLANO DE AULA - {Model.DataPlanoAula:dd/MM/yyyy} </p>
+</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td width='35%'>DRE: {Model.Dre}</td>
+<td width='40%'>UE: {Model.TipoEscola} {Model.Ue}</td>
+<td width='15%'>TURMA:{Model.ModalidadeTurma.ShortName()} - {Model.Turma}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td class='campo-componente-curricular'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
+<td class='campo-rf-data'>RF: {Model.RF}</td>
+<td class='campo-rf-data'>DATA: {Model.Data:dd/MM/yyyy}</td>
+</tr>
+</tbody>
+</table>
+</div>";
+
+        return str;
+
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório Plano de Aula</title>
+</head>
+
+<body class="body-rel-plano-aula">
+    <style>
+        .body-rel-plano-aula {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-plano-aula {
+            text-align: right;
+            font-size: 14.5px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+                padding-left: 15px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+        .campo-dre {
+            width: 25%;
+        }
+
+        .campo-ue {
+            width: 60%
+        }
+
+        .campo-ano {
+            width: 15%
+        }
+
+
+        .campo-componente-curricular {
+            width: 80%;
+            border-top: none;
+        }
+
+        .campo-usuario {
+            width: 60%;
+            border-top: none;
+        }
+
+        .campo-rf-data {
+            width: 15%;
+            border-top: none;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        .fonte-16 {
+            font-size: 16px !important;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .fonte-12 {
+            font-size: 12px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-rel-faltas-frequencia {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+        }
+
+        .tb-cabecalho {
+            background-color: #f3f3f3;
+            text-align: left;
+            font-size: 16px;
+            padding: 10px;
+            padding-left: 20px;
+        }
+
+        .tb-cabecalho2 {
+            background-color: #f3f3f3;
+            text-align: left;
+            font-size: 16px;
+            padding: 10px;
+            border-bottom: none;
+            padding-left: 20px;
+        }
+
+        .caixa-1 {
+            text-align: justify;
+            padding: 20px 15px 20px 15px;
+        }
+
+        .caixa-2 {
+            padding: 10px 15px 10px 15px;
+            text-align: justify;
+        }
+
+        .h-50 {
+            height: 50px;
+        }
+
+        .m-30 {
+            margin-top: 30px;
+        }
+
+        .tabela-objetivos-items-tr {
+            height: 50px;
+        }
+
+        .tabela-objetivos-items-titulo {
+            padding: 20px 15px 20px 15px;
+            border-top: none;
+            text-align: center;
+            font-weight: bold;
+            width: 15%;
+        }
+
+        .tabela-objetivos-items-titulo2 {
+            padding: 20px 15px 20px 15px;
+            border-bottom: none;
+            text-align: center;
+            font-weight: bold;
+            width: 15%;
+        }
+
+        .tabela-objetivos-items-titulo3 {
+            padding: 20px 15px 20px 15px;
+            border-top: none;
+            text-align: center;
+            font-weight: bold;
+            width: 15%;
+        }
+
+        .tabela-objetivos-items-descricao {
+            border-top: none;
+            width: 85%;
+            text-align: justify;
+            padding: 5px 15px 5px 15px;
+            font-size: 14px
+        }
+
+        .tabela-objetivos-items-descricao2 {
+            border-bottom: none;
+            width: 85%;
+            text-align: justify;
+            padding: 5px 15px 5px 15px;
+            font-size: 14px
+        }
+
+        .tabela-objetivos-items-descricao3 {
+            border-top: none;
+            width: 85%;
+            text-align: justify;
+            padding: 5px 15px 5px 15px;
+            font-size: 14px
+        }
+    </style>
+    <div>
+        @Html.Raw(MontarCabecalho())
+        <div>
+            @Html.Raw(MontaObjetivos())
+        </div>
+        @if (Model.Objetivos.Count() > 0)@Html.Raw(MontaDescricao("", @Model.Descricao))
+
+        @Html.Raw(MontaDescricao("DESENVOLVIMENTO DA AULA", @Model.DesenvolvimentoAula))
+        @Html.Raw(MontaDescricao("RECUPERAÇÃO CONTÍNUA", @Model.Recuperacao))
+        @Html.Raw(MontaDescricao("LIÇÃO DE CASA", @Model.LicaoCasa))
+
+    </div>
+</body>
+
+</html>
+
+
+
+

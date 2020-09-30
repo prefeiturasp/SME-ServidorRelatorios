@@ -1350,7 +1350,7 @@ namespace SME.SR.MVC.Controllers
             var bimestre = new RelatorioNotasEConceitosFinaisBimestreDto("Bimestre 1");
 
             var componenteCurricular = new RelatorioNotasEConceitosFinaisComponenteCurricularDto() { Nome = "Matemática" };
-            
+
             var notaConceitoAluno = new RelatorioNotasEConceitosFinaisDoAlunoDto("Turma ABC", 1, "Antolino Neves", "10", "");
 
             componenteCurricular.NotaConceitoAlunos.Add(notaConceitoAluno);
@@ -1470,7 +1470,7 @@ namespace SME.SR.MVC.Controllers
 
             var compensacaoAlunoExemplo = new RelatorioCompensacaoAusenciaCompensacaoAlunoDto()
             {
-                NomeAluno = "Aline Leal",                
+                NomeAluno = "Aline Leal",
                 NumeroChamada = "01",
                 TotalAulas = 10,
                 TotalAusencias = 3,
@@ -1491,7 +1491,7 @@ namespace SME.SR.MVC.Controllers
             model.Bimestre = "";
             model.ComponenteCurricular = "";
             model.Usuario = "ADMIN";
-            model.Modalidade = "Fundamental";            
+            model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
             model.Dre = new RelatorioCompensacaoAusenciaDreDto
@@ -1695,6 +1695,212 @@ namespace SME.SR.MVC.Controllers
             };
             return model;
 
+        }
+
+
+        [HttpGet("plano-aula")]
+        public IActionResult RelatorioPlanoAula()
+
+        {
+
+            var model = new PlanoAulaDto()
+            {
+                DataPlanoAula = DateTime.Now,
+                Id = 1,
+                Descricao = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a purus consectetur ante tristique fringilla id
+ut purus. Pellentesque lobortis eu sem facilisis ullamcorper. Integer congue ante et nibh aliquet gravida. Donec
+accumsan nisi pulvinar dignissim molestie. Suspendisse a libero suscipit, pharetra sem semper, sagittis
+turpis. Sed vulputate vel lacus in commodo. Pellentesque nisi quam, consectetur in eros ac, semper porta velit.
+Donec sapien ante, commodo in neque eu, faucibus tincidunt erat. Duis a felis aliquet, vulputate lectus vitae,
+elementum metus. Sed massa nulla, pretium euismod massa eu, volutpat auctor mi.
+Mauris vestibulum dictum odio a auctor. Fusce ullamcorper, nibh sed sollicitudin porta, lectus velit gravida
+tellus, vel pellentesque metus quam at magna. Sed laoreet metus massa, et sollicitudin lacus elementum vitae.
+Vestibulum in quam tincidunt, vestibulum eros non, imperdiet justo. Aenean suscipit felis ipsum, sit amet
+vulputate metus sollicitudin non. Curabitur a dapibus nibh. Nullam non lorem a felis mattis bibendum. Vivamus
+sit amet posuere orci, a sodales ipsum. Curabitur viverra euismod urna.
+Ut sed porttitor eros. Nullam eget convallis mi. Nam luctus erat a sem malesuada auctor. Aliquam nec pulvinar
+risus. Nullam tincidunt maximus lectus nec dignissim. Nunc porta dolor quis nisl imperdiet cursus. Aliquam
+convallis, dui a aliquam bibendum, nunc nisi commodo ipsum, quis vestibulum lacus risus non nisl. Quisque in
+sapien neque. Suspendisse potenti.
+Nullam id nisl vel ipsum ultrices rutrum. Curabitur consequat tempor nunc, a condimentum eros iaculis ac.
+Integer risus lorem, commodo non felis euismod, finibus ultrices libero. Duis posuere magna ante, id auctor
+turpis pulvinar molestie. Morbi mattis purus eget turpis imperdiet pulvinar. Quisque vehicula euismod justo quis
+ullamcorper. In hac habitasse platea dictumst. Pellentesque quis elementum dolor, in sagittis neque.
+Maecenas blandit tristique vestibulum.
+Aliquam rhoncus dui odio, id posuere ante ullamcorper in. Nam odio libero, pharetra vitae interdum non,
+fringilla ut sem. Sed aliquam urna tortor, eu congue justo semper in. Nullam enim nisl, laoreet quis arcu quis,
+semper dignissim tortor. Phasellus sit amet massa ullamcorper, iaculis diam vel, vulputate sem. Quisque quis
+massa ut risus congue maximus at vitae leo. Etiam scelerisque lectus a tempor efficitur",
+                DesenvolvimentoAula = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a purus consectetur ante tristique fringilla id
+ut purus. Pellentesque lobortis eu sem facilisis ullamcorper. Integer congue ante et nibh aliquet gravida. Donec
+accumsan nisi pulvinar dignissim molestie. Suspendisse a libero suscipit, pharetra sem semper, sagittis
+turpis. Sed vulputate vel lacus in commodo. Pellentesque nisi quam, consectetur in eros ac, semper porta velit.
+Donec sapien ante, commodo in neque eu, faucibus tincidunt erat. Duis a felis aliquet, vulputate lectus vitae,
+elementum metus. Sed massa nulla, pretium euismod massa eu, volutpat auctor mi.
+Mauris vestibulum dictum odio a auctor. Fusce ullamcorper, nibh sed sollicitudin porta, lectus velit gravida
+tellus, vel pellentesque metus quam at magna. Sed laoreet metus massa, et sollicitudin lacus elementum vitae.
+Vestibulum in quam tincidunt, vestibulum eros non, imperdiet justo. Aenean suscipit felis ipsum, sit amet
+vulputate metus sollicitudin non. Curabitur a dapibus nibh. Nullam non lorem a felis mattis bibendum. Vivamus
+sit amet posuere orci, a sodales ipsum. Curabitur viverra euismod urna.
+Ut sed porttitor eros. Nullam eget convallis mi. Nam luctus erat a sem malesuada auctor. Aliquam nec pulvinar
+risus. Nullam tincidunt maximus lectus nec dignissim. Nunc porta dolor quis nisl imperdiet cursus. Aliquam
+convallis, dui a aliquam bibendum, nunc nisi commodo ipsum, quis vestibulum lacus risus non nisl. Quisque in
+sapien neque. Suspendisse potenti.
+Nullam id nisl vel ipsum ultrices rutrum. Curabitur consequat tempor nunc, a condimentum eros iaculis ac.
+Integer risus lorem, commodo non felis euismod, finibus ultrices libero. Duis posuere magna ante, id auctor
+turpis pulvinar molestie. Morbi mattis purus eget turpis imperdiet pulvinar. Quisque vehicula euismod justo quis
+ullamcorper. In hac habitasse platea dictumst. Pellentesque quis elementum dolor, in sagittis neque.
+Maecenas blandit tristique vestibulum.
+Aliquam rhoncus dui odio, id posuere ante ullamcorper in. Nam odio libero, pharetra vitae interdum non,
+fringilla ut sem. Sed aliquam urna tortor, eu congue justo semper in. Nullam enim nisl, laoreet quis arcu quis,
+semper dignissim tortor. Phasellus sit amet massa ullamcorper, iaculis diam vel, vulputate sem. Quisque quis
+massa ut risus congue maximus at vitae leo. Etiam scelerisque lectus a tempor efficitur.",
+                Recuperacao = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a purus consectetur ante tristique fringilla id
+ut purus.Pellentesque lobortis eu sem facilisis ullamcorper.Integer congue ante et nibh aliquet gravida.Donec
+accumsan nisi pulvinar dignissim molestie.Suspendisse a libero suscipit,
+                pharetra sem semper,
+                sagittis
+turpis.Sed vulputate vel lacus in commodo.Pellentesque nisi quam,
+                consectetur in eros ac,
+                semper porta velit.
+Donec sapien ante,
+                commodo in neque eu,
+                faucibus tincidunt erat.Duis a felis aliquet,
+                vulputate lectus vitae,
+                elementum metus.Sed massa nulla,
+                pretium euismod massa eu,
+                volutpat auctor mi.
+Mauris vestibulum dictum odio a auctor.Fusce ullamcorper,
+                nibh sed sollicitudin porta,
+                lectus velit gravida
+tellus,
+                vel pellentesque metus quam at magna.Sed laoreet metus massa,
+                et sollicitudin lacus elementum vitae.
+Vestibulum in quam tincidunt,
+                vestibulum eros non,
+                imperdiet justo.Aenean suscipit felis ipsum,
+                sit amet
+vulputate metus sollicitudin non.Curabitur a dapibus nibh.Nullam non lorem a felis mattis bibendum.Vivamus
+sit amet posuere orci,
+                a sodales ipsum.Curabitur viverra euismod urna.
+Ut sed porttitor eros.Nullam eget convallis mi.Nam luctus erat a sem malesuada auctor.Aliquam nec pulvinar
+risus.Nullam tincidunt maximus lectus nec dignissim.Nunc porta dolor quis nisl imperdiet cursus.Aliquam
+convallis,
+                dui a aliquam bibendum,
+                nunc nisi commodo ipsum,
+                quis vestibulum lacus risus non nisl.Quisque in
+sapien neque.Suspendisse potenti.
+Nullam id nisl vel ipsum ultrices rutrum.Curabitur consequat tempor nunc,
+                a condimentum eros iaculis ac.
+Integer risus lorem,
+                commodo non felis euismod,
+                finibus ultrices libero.Duis posuere magna ante,
+                id auctor
+turpis pulvinar molestie.Morbi mattis purus eget turpis imperdiet pulvinar.Quisque vehicula euismod justo quis
+ullamcorper.In hac habitasse platea dictumst.Pellentesque quis elementum dolor, in sagittis neque.
+Maecenas blandit tristique vestibulum.
+Aliquam rhoncus dui odio,
+                id posuere ante ullamcorper in. Nam odio libero,
+                pharetra vitae interdum non,
+                fringilla ut sem.Sed aliquam urna tortor,
+                eu congue justo semper in. Nullam enim nisl,
+                laoreet quis arcu quis,
+                semper dignissim tortor.Phasellus sit amet massa ullamcorper,
+                iaculis diam vel,
+                vulputate sem.Quisque quis
+massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor efficitur",
+                LicaoCasa = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a purus consectetur ante tristique fringilla id
+ut purus.Pellentesque lobortis eu sem facilisis ullamcorper.Integer congue ante et nibh aliquet gravida.Donec
+accumsan nisi pulvinar dignissim molestie.Suspendisse a libero suscipit,
+                pharetra sem semper,
+                sagittis
+turpis.Sed vulputate vel lacus in commodo.Pellentesque nisi quam,
+                consectetur in eros ac,
+                semper porta velit.
+Donec sapien ante,
+                commodo in neque eu,
+                faucibus tincidunt erat.Duis a felis aliquet,
+                vulputate lectus vitae,
+                elementum metus.Sed massa nulla,
+                pretium euismod massa eu,
+                volutpat auctor mi.
+Mauris vestibulum dictum odio a auctor.Fusce ullamcorper,
+                nibh sed sollicitudin porta,
+                lectus velit gravida
+tellus,
+                vel pellentesque metus quam at magna.Sed laoreet metus massa,
+                et sollicitudin lacus elementum vitae.
+Vestibulum in quam tincidunt,
+                vestibulum eros non,
+                imperdiet justo.Aenean suscipit felis ipsum,
+                sit amet
+vulputate metus sollicitudin non.Curabitur a dapibus nibh.Nullam non lorem a felis mattis bibendum.Vivamus
+sit amet posuere orci,
+                a sodales ipsum.Curabitur viverra euismod urna.
+Ut sed porttitor eros.Nullam eget convallis mi.Nam luctus erat a sem malesuada auctor.Aliquam nec pulvinar
+risus.Nullam tincidunt maximus lectus nec dignissim.Nunc porta dolor quis nisl imperdiet cursus.Aliquam
+convallis,
+                dui a aliquam bibendum,
+                nunc nisi commodo ipsum,
+                quis vestibulum lacus risus non nisl.Quisque in
+sapien neque.Suspendisse potenti.
+Nullam id nisl vel ipsum ultrices rutrum.Curabitur consequat tempor nunc,
+                a condimentum eros iaculis ac.
+Integer risus lorem,
+                commodo non felis euismod,
+                finibus ultrices libero.Duis posuere magna ante,
+                id auctor
+turpis pulvinar molestie.Morbi mattis purus eget turpis imperdiet pulvinar.Quisque vehicula euismod justo quis
+ullamcorper.In hac habitasse platea dictumst.Pellentesque quis elementum dolor, in sagittis neque.
+Maecenas blandit tristique vestibulum.
+Aliquam rhoncus dui odio,
+                id posuere ante ullamcorper in. Nam odio libero,
+                pharetra vitae interdum non,
+                fringilla ut sem.Sed aliquam urna tortor,
+                eu congue justo semper in. Nullam enim nisl,
+                laoreet quis arcu quis,
+                semper dignissim tortor.Phasellus sit amet massa ullamcorper,
+                iaculis diam vel,
+                vulputate sem.Quisque quis
+massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor efficitur",
+                Dre = "DRE 1",
+                Ue = "UE 1",
+                Turma = "1A",
+                ComponenteCurricular = "3",
+                Usuario = "Usuario X",
+                RF = "2266334",
+                Objetivos = new List<ObjetivoAprendizagemDto>() {
+                    new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M01",
+                        Descricao = "Explorar números no contexto diário como indicadores de quantidade, ordem, medida e código; ler e produzir escritas numéricas, identificando algumas regularidades do sistema de numeração decimal"
+                    },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        },
+                        new ObjetivoAprendizagemDto() {
+                        Codigo = "EF02M02",
+                        Descricao = "Compor e decompor números naturais de diversas maneiras"
+                        }
+                }
+            };
+            return View("RelatorioPlanoAula", model);
         }
     }
 }
