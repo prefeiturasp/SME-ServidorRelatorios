@@ -25,27 +25,37 @@ namespace SME.SR.Application
 
             if (!totalResultadoEncaminhamento.Any()) return null;
 
-            return MapearResultadoParaDto(totalResultadoEncaminhamento);
+
+            bool deveExibirCiclo = false;
+
+            if (string.IsNullOrEmpty(request.Ano))
+                deveExibirCiclo = true;
+
+            return await MapearResultadoParaDto(totalResultadoEncaminhamento.OrderBy( a => a.Ano).ToList(), deveExibirCiclo);
         }
 
-        private IEnumerable<ResumoPAPTotalResultadoDto> MapearResultadoParaDto(IEnumerable<RetornoResumoPAPTotalResultadoDto> items)
+        private async Task<IEnumerable<ResumoPAPTotalResultadoDto>> MapearResultadoParaDto(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, bool deveExibirCiclo)
         {
+
+            var idsObjetivos = items.Select(a => a.ObjetivoId).Distinct().ToArray();
+            var respostasDosObjetivos = await recuperacaoParalelaRepository.ObterRespostasPorObjetivosIdsAsync(idsObjetivos);
+
             return items
                 .GroupBy(g => new { g.EixoId, g.Eixo })
                 .Select(eixo => new ResumoPAPTotalResultadoDto
                 {
                     EixoDescricao = eixo.Key.Eixo,
-                    Objetivos = ObterObjetivos(items, eixo.Key.EixoId)
+                    Objetivos = ObterObjetivos(items, eixo.Key.EixoId, deveExibirCiclo, respostasDosObjetivos)
                 });
         }
 
-        private IEnumerable<ResumoPAPResultadoObjetivoDto> ObterObjetivos(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int eixoId)
+        private IEnumerable<ResumoPAPResultadoObjetivoDto> ObterObjetivos(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int eixoId, bool deveExibirCiclo, IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds> respostasDosObjetivos)
         {
             return items.Where(obj => obj.EixoId == eixoId)
                 .GroupBy(objetivo => new { objetivo.ObjetivoId, objetivo.Objetivo })
                 .Select(objetivo => new ResumoPAPResultadoObjetivoDto
                 {
-                    Anos = ObterAnos(items, objetivo.Key.ObjetivoId, items.Where(x => x.ObjetivoId == objetivo.Key.ObjetivoId).Sum(s => s.Total)),
+                    Anos = ObterAnos(items, objetivo.Key.ObjetivoId, items.Where(x => x.ObjetivoId == objetivo.Key.ObjetivoId).Sum(s => s.Total), deveExibirCiclo, respostasDosObjetivos),
                     ObjetivoDescricao = objetivo.Key.Objetivo,
                     Total = ObterTotalPorObjetivo(items, objetivo.Key.ObjetivoId, items.Where(x => x.ObjetivoId == objetivo.Key.ObjetivoId).Sum(s => s.Total))
                 });
@@ -62,27 +72,74 @@ namespace SME.SR.Application
                 });
         }
 
-        private IEnumerable<ResumoPAPResultadoAnoDto> ObterAnos(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, int total)
+        private IEnumerable<ResumoPAPResultadoAnoDto> ObterAnos(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, int total, bool deveExibirCiclo, IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds> respostasDosObjetivos)
         {
-            return items.Where(ano => ano.ObjetivoId == objetivoId)
-                .GroupBy(h => new { h.Ano, h.ObjetivoId })
-                .Select(ano => new ResumoPAPResultadoAnoDto
+
+            var listaRetorno = new List<ResumoPAPResultadoAnoDto>();
+
+            if (deveExibirCiclo)
+            {
+                var itens = items.GroupBy(h => new { h.CicloId, h.Ciclo, h.ObjetivoId, });
+
+                foreach (var item in itens)
                 {
-                    AnoDescricao = ano.Key.Ano,
-                    Respostas = ObterRespostas(items, objetivoId, ehAno: true, ano.Key.Ano, total)
-                });
+                    if (!listaRetorno.Any(a => a.AnoDescricao == item.Key.Ciclo))
+                    {
+                        listaRetorno.Add(new ResumoPAPResultadoAnoDto
+                        {
+                            AnoDescricao = item.Key.Ciclo,
+                            Respostas = ObterRespostas(items, objetivoId, false, item.Key.CicloId, total, respostasDosObjetivos.Where(a => a.ObjetivoId == objetivoId).ToList())
+                        });
+                    }
+                }
+            }
+            else
+            {
+                var itens = items.GroupBy(h => new { h.Ano, h.ObjetivoId });
+
+                foreach (var item in itens)
+                {
+                    var descricaoAno = item.Key.Ano + "°";
+                    if (!listaRetorno.Any(a => a.AnoDescricao == descricaoAno))
+                    {
+                        listaRetorno.Add(new ResumoPAPResultadoAnoDto
+                        {
+                            AnoDescricao = descricaoAno,
+                            Respostas = ObterRespostas(items, objetivoId, ehAno: true, item.Key.Ano, total, respostasDosObjetivos.Where(a => a.ObjetivoId == objetivoId).ToList())
+                        });
+
+                    }
+                }
+            }
+            return listaRetorno;
         }
 
-        private IEnumerable<ResumoPAPResultadoRespostaDto> ObterRespostas(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, bool ehAno, int anoCiclo, int total)
+        private IEnumerable<ResumoPAPResultadoRespostaDto> ObterRespostas(IEnumerable<RetornoResumoPAPTotalResultadoDto> items, int objetivoId, bool ehAno, int anoCiclo, int total, IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds> respostasDosObjetivos)
         {
-            return items.Where(res => res.ObjetivoId == objetivoId && (ehAno ? res.Ano == anoCiclo : res.CicloId == anoCiclo))
-                .GroupBy(gre => (gre.Resposta, gre.RespostaId))
-                .Select(resposta => new ResumoPAPResultadoRespostaDto
+
+            var itens = items.Where(res => res.ObjetivoId == objetivoId && (ehAno ? res.Ano == anoCiclo : res.CicloId == anoCiclo))
+                .GroupBy(gre => (gre.Resposta, gre.RespostaId));
+
+            var listaRetorno = new List<ResumoPAPResultadoRespostaDto>();
+
+            foreach (var resposta in respostasDosObjetivos)
+            {
+                listaRetorno.Add(new ResumoPAPResultadoRespostaDto
                 {
-                    RespostaDescricao = resposta.Key.Resposta,
-                    Quantidade = resposta.Sum(q => q.Total),
-                    Porcentagem = ((double)resposta.Sum(q => q.Total) * 100) / total
+                    RespostaDescricao = resposta.RespostaDescricao,
+                    RespostaId = resposta.RespostaId
                 });
+            }
+
+
+            foreach (var item in itens)
+            {
+                var itemParaAlterar = listaRetorno.Find(a => a.RespostaId == item.Key.RespostaId);
+                itemParaAlterar.Quantidade = item.Sum(q => q.Total);
+                itemParaAlterar.Porcentagem = (double)item.Sum(q => q.Total) * 100 / total;
+            }
+
+            return listaRetorno;     
         }
     }
 }

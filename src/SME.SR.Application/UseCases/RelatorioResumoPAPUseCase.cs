@@ -57,13 +57,13 @@ namespace SME.SR.Application
                 UsuarioNome = filtros.UsuarioNome,
                 UsuarioRF = filtros.UsuarioRf
             };
-
+            
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioResumosPAP", relatorioResumoPAPDto, request.CodigoCorrelacao));
         }
 
         private async Task<IEnumerable<ResumoPAPTotalResultadoDto>> ObterResultados(FiltroRelatorioResumoPAPDto filtros)
         {
-            if (filtros.Periodo.HasValue && filtros.Periodo.Value != (int)PeriodoRecuperacaoParalela.Encaminhamento) return null;
+            //if (filtros.Periodo.HasValue && filtros.Periodo.Value != (int)PeriodoRecuperacaoParalela.Encaminhamento) return null;
             return await mediator.Send(
                new ListarTotalResultadoQuery()
                {
