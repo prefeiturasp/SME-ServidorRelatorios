@@ -63,7 +63,6 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ResumoPAPTotalResultadoDto>> ObterResultados(FiltroRelatorioResumoPAPDto filtros)
         {
-            //if (filtros.Periodo.HasValue && filtros.Periodo.Value != (int)PeriodoRecuperacaoParalela.Encaminhamento) return null;
             return await mediator.Send(
                new ListarTotalResultadoQuery()
                {
