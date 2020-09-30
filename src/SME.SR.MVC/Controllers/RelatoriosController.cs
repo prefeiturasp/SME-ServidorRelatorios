@@ -6,6 +6,7 @@ using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.MVC.Controllers
@@ -1392,6 +1393,7 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioCompensacaoAusencia", model);
         }
+
         [HttpGet("impressao-calendario")]
         public IActionResult RelatorioImpressaoCalendario()
         {
@@ -1452,6 +1454,16 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioImpressaoCalendario", model);
         }
+        
+       [HttpGet("resumos-pap")]
+        public IActionResult RelatorioResumosPAP([FromServices]IMediator mediator)
+        {
+         
+
+
+            return View("RelatorioResumosPAP", model);
+        }
+        
         private static RelatorioCompensacaoAusenciaDto GeraCompensacoesAusencia()
         {
             var model = new RelatorioCompensacaoAusenciaDto();

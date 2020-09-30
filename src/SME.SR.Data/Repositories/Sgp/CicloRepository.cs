@@ -42,6 +42,19 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<TipoCiclo> ObterPorId(long id)
+        {
+            var query = @"select tc.id, tc.descricao from tipo_ciclo tc
+                        where tc.id = @Id";
+
+            var parametros = new { Id = id };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<TipoCiclo>(query, parametros);
+            }
+        }
+
         public async Task<IEnumerable<TipoCiclo>> ObterPorUeId(long ueId)
         {
 
