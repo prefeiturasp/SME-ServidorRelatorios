@@ -262,11 +262,16 @@
                 var classeFundoCinza = frequencias.FrequenciaDescricao == "Total" ? "fundo-cinza" : "";
 
                 str += $@"<tr><td class='alinhar-esquerda espaco-esquerda-15'>{frequencias.FrequenciaDescricao}</td>";
+
+                int totalQuantidade = 0;
+                double totalPorcentagem = 0;
                 foreach (var anos in linhas.Anos)
                 {
-                    str += $@"<td class='{classeNegrito} {classeFundoCinza}'>{anos.Quantidade} / {anos.Porcentagem}%</td>";
+                    str += $@"<td class='{classeNegrito} {classeFundoCinza}'>{anos.Quantidade} / {Math.Round(anos.Porcentagem)}%</td>";
+                    totalQuantidade += anos.Quantidade;
+                    totalPorcentagem += anos.Porcentagem;
                 }
-                str += $@"<td class='negrito {classeFundoCinza}'>{linhas.QuantidadeTotalFrequencia} / {linhas.PorcentagemTotalFrequencia}%</td></tr>";
+                str += $@"<td class='negrito {classeFundoCinza}'>{totalQuantidade} / {Math.Round(totalPorcentagem)}%</td></tr>";
                 contadorQuebrarPagina++;
             }
         }
@@ -534,7 +539,7 @@
                 contadorQuebrarPagina++;
                 @Html.Raw(VerificaQuebra())
 
-               // @Html.Raw(MontarTabelaFrequencia())               
+               @Html.Raw(MontarTabelaFrequencia())               
             }
 
             @Html.Raw(EspacoEmBranco())
