@@ -4,7 +4,6 @@ using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

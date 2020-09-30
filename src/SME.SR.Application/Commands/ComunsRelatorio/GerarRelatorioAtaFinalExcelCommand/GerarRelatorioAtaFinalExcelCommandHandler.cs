@@ -115,7 +115,9 @@ namespace SME.SR.Application
 
             foreach (var celula in worksheet.Range(LINHA_COMPONENTES + 2, 1, ultimaLinhaUsada, ultimaColunaUsada).CellsUsed().Where(c => decimal.TryParse(c.Value.ToString().Replace(",", "."), out _)))
             {
-                celula.SetValue(Convert.ToDecimal(celula.Value.ToString(), new CultureInfo("pt-BR")));
+                if (celula.Value.ToString().IndexOf(',') >= 0)
+                    celula.SetValue(Convert.ToDecimal(celula.Value.ToString(), new CultureInfo("pt-BR")));
+
                 celula.SetDataType(XLDataType.Number);
             }
         }
