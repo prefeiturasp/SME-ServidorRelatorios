@@ -180,12 +180,12 @@ namespace SME.SR.Application
             if (!string.IsNullOrEmpty(filtros.DreId) && filtros.DreId != "0")
             {
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreId });
-
+                
                 if (dre != null)
                 {
                     dreUe.DreCodigo = dre.Codigo;
                     dreUe.DreId = dre.Id;
-                    dreUe.DreNome = dre.Nome;
+                    dreUe.DreNome = dre.Abreviacao;
                 }
             }
             else
@@ -201,7 +201,7 @@ namespace SME.SR.Application
                 {
                     dreUe.UeCodigo = ue.Codigo;
                     dreUe.UeId = ue.Id;
-                    dreUe.UeNome = ue.Nome;
+                    dreUe.UeNome = ue.NomeComTipoEscola;
                 }
             }
             else
