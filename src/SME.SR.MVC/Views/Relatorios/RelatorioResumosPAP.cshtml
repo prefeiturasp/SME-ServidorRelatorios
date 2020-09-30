@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 39;
+    int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -13,7 +13,7 @@
             contadorPagina = contadorPagina + 1;
 
             var str = MontarCabecalho();
-            return $@"<div style='page-break-before:always' />" + str;
+            return $@"<div style='page-break-before:always'></div>" + str;
 
         }
         return string.Empty;
@@ -74,7 +74,7 @@
 
     string MontarCabecalhoTabela(string cabecalho)
     {
-        return $@"<table class='tabela-cabecalho'><thead><th class='sem-border-bottom'>{cabecalho}</th></thead></table>";
+        return $@"<table class='tabela-cabecalho'><thead><th class='sem-border-bottom'>{cabecalho} </th></thead></table>";
     }
 
     string EspacoEmBranco()
@@ -84,10 +84,14 @@
 
     string MontarTabelaTotalEstudantes()
     {
+        var str = String.Empty;
+
+        if (Model.TotalEstudantesDto == null) return String.Empty;
+
         var totalEstudantes = Model.TotalEstudantesDto;
         var anos = Model.TotalEstudantesDto.Anos.ToList();
 
-        var str = $@"<table class='tabela-cabecalho'><thead><tr>";
+        str += $@"<table class='tabela-cabecalho'><thead><tr>";
 
         for (int i = 0; i < anos.Count; i++)
         {
@@ -104,7 +108,7 @@
             var ano = anos[i];
             var width = 85 / anos.Count;
 
-            str += $@"<td>{ano.Quantidade} / {ano.Porcentagem}%</td>";
+            str += $@"<td>{ano.Quantidade} / {Math.Round(ano.Porcentagem, 2)}%</td>";
         }
 
         str += $@"<td width='15%' class='negrito'>{totalEstudantes.QuantidadeTotal} / {totalEstudantes.PorcentagemTotal}%</td></tbody></table>";
@@ -113,10 +117,16 @@
         return str;
     }
 
-    string MontarCabecalhoTabelaResultados(SME.SR.Infra.ResumoPAPResultadoObjetivoDto objetivo, int width, SME.SR.Infra.ResumoPAPTotalResultadoDto resultado ,int respostas)
+    string MontarCabecalhoTabelaResultados(SME.SR.Infra.ResumoPAPResultadoObjetivoDto objetivo, int width, SME.SR.Infra.ResumoPAPTotalResultadoDto resultado, int respostas)
     {
-        var str = "";
+        var str = String.Empty;
+
+        return str;
+
         str += MontarCabecalhoTabela(resultado.EixoDescricao);
+
+        if (objetivo.Anos == null) return str;
+
         str += "<table>";
 
         str += @"<tr><td class='tb-cabecalho2' width='28%' colspan='2'>&nbsp;</td>";
@@ -137,72 +147,122 @@
 
     string MontarResultados()
     {
-        var str = "";
+        var str = String.Empty;
+
+        if (Model.ResultadoDto == null) return str;
 
         foreach (var resultado in Model.ResultadoDto)
         {
 
-            str += MontarCabecalhoTabela(resultado.EixoDescricao);
-            contadorQuebrarPagina++;
-            str += "<table>";
-            int count = 0;
+            var strEixo = "";
 
-            foreach (var objetivo in resultado.Objetivos.OrderBy(a => a.Anos))
+            strEixo += MontarCabecalhoTabela(resultado.EixoDescricao);
+            contadorQuebrarPagina++;
+
+            var quebraEixo = VerificaQuebra();
+
+            if (!string.IsNullOrEmpty(quebraEixo))
             {
+                strEixo = quebraEixo + strEixo;
+            }
+
+            strEixo += "<table>";
+
+            bool inserirCabecalhoObjetivo = true;
+
+            foreach (var objetivo in resultado.Objetivos)
+            {
+                var strObjetivo = "";
+
                 var width = objetivo.Anos.Count();
-                int respostas = 0;
-                respostas = objetivo.Anos.First().Respostas.Count();
-                if (count == 0)
+
+                if (inserirCabecalhoObjetivo)
                 {
-                    str += @"<tr><td class='tb-cabecalho2' width='28%' colspan='2'>&nbsp;</td>";
+                    strObjetivo += @"<tr><td class='tb-cabecalho2' width='28%' colspan='2'>&nbsp;</td>";
 
                     foreach (var ano in objetivo.Anos)
                     {
 
-                        str += $"<td class='tb-cabecalho2' width='{62 / width}%' >{ano.AnoDescricao}°</td>";
+                        strObjetivo += $"<td class='tb-cabecalho2' width='{62 / width}%' >{ano.AnoDescricao}°</td>";
                     }
-                    str += "<td class='tb-cabecalho2 negrito' width='10%' >TOTAL</td></tr>";
+                    strObjetivo += "<td class='tb-cabecalho2 negrito' width='10%' >TOTAL</td></tr>";
                     contadorQuebrarPagina++;
+                    inserirCabecalhoObjetivo = false;
                 }
 
-                str += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
-
-                var first = objetivo.Anos.First().Respostas.First();
+                var respostas = objetivo.Anos.First().Respostas.Count();
+                strObjetivo += $@"<tr><td rowspan='{respostas}' class='tb-conteudo3'>{objetivo.ObjetivoDescricao}</td>";
 
                 for (var r = 0; r < respostas; r++)
                 {
                     if (r != 0)
                     {
-                        str += "<tr>";
+                        strObjetivo += "<tr>";
                     }
 
-                    str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+                    var anoRespostaDescricao = objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao;
+                    strObjetivo += $"<td class='tb-conteudo3'>{anoRespostaDescricao}</td>";
 
-                    foreach (var ano in objetivo.Anos)
+                    IOrderedEnumerable<SME.SR.Infra.ResumoPAPResultadoAnoDto> anosOrdenados = objetivo.Anos.OrderBy(h => h.AnoDescricao);
+
+                    int totalQuantidade = 0;
+                    double totalPorcentagem = 0;
+                    foreach (var ano in anosOrdenados)
                     {
-                        str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].Quantidade} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
-                    }
-                    str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} / {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}%</td>";
-                    str += "</tr>";
+                        SME.SR.Infra.ResumoPAPResultadoRespostaDto anoResposta = ano.Respostas.ToList().Find(h => h.RespostaDescricao == anoRespostaDescricao);
+                        if (anoResposta != null)
+                        {
+                            strObjetivo += $"<td class='tb-conteudo3 centralizar'>{anoResposta.Quantidade} / {Math.Round(anoResposta.Porcentagem, 2)}% </td>";
+                            totalQuantidade += anoResposta.Quantidade;
+                            totalPorcentagem += anoResposta.Porcentagem;
 
-                    var quebra = VerificaQuebra();
-                    var novaPagina = quebra + (count < respostas - 1 ? MontarCabecalhoTabelaResultados(objetivo, width, resultado, respostas) : "");
-                    str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}" : "";
+                        }
+                        else
+                        {
+                            strObjetivo += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+
+                        }
+                    }
+                    strObjetivo += $"<td class='tb-conteudo3 negrito centralizar'>{totalQuantidade} / {Math.Round(totalPorcentagem, 2)}%</td>";
+                    strObjetivo += "</tr>";
+
+                    contadorQuebrarPagina++;
 
                 }
 
-                //}
-                count += 1;
+                var quebraLinhaObjetivo = VerificaQuebra();
+
+                if (!string.IsNullOrEmpty(quebraLinhaObjetivo))
+                {
+                    strObjetivo += "</table>";
+                    strEixo += strObjetivo;
+
+                    strObjetivo = quebraLinhaObjetivo + strObjetivo;
+                    strObjetivo += "<table>";
+                    inserirCabecalhoObjetivo = true;
+                }
+                else
+                {
+                    strEixo += strObjetivo;
+                }
+
+
             }
-            str += "</table>";
+
+            strEixo += "</table>";
+            str += strEixo;
+
         }
-
         return str;
-    }
 
+    }
     string MontarTabelaFrequencia()
     {
-        var str = $@"<table class='tabela-cabecalho'><thead><tr><th width='20%'></th>";
+        var str = String.Empty;
+
+        if (Model.FrequenciaDto == null) return str;
+
+        str += $@"<table class='tabela-cabecalho'><thead><tr><th width='20%'></th>";
 
         foreach (var frequencias in Model.FrequenciaDto.Frequencia)
         {
@@ -228,11 +288,16 @@
                 var classeFundoCinza = frequencias.FrequenciaDescricao == "Total" ? "fundo-cinza" : "";
 
                 str += $@"<tr><td class='alinhar-esquerda espaco-esquerda-15'>{frequencias.FrequenciaDescricao}</td>";
+
+                int totalQuantidade = 0;
+                double totalPorcentagem = 0;
                 foreach (var anos in linhas.Anos)
                 {
-                    str += $@"<td class='{classeNegrito} {classeFundoCinza}'>{anos.Quantidade} / {anos.Porcentagem}%</td>";
+                    str += $@"<td class='{classeNegrito} {classeFundoCinza}'>{anos.Quantidade} / {Math.Round(anos.Porcentagem)}%</td>";
+                    totalQuantidade += anos.Quantidade;
+                    totalPorcentagem += anos.Porcentagem;
                 }
-                str += $@"<td class='negrito {classeFundoCinza}'>{linhas.QuantidadeTotalFrequencia} / {linhas.PorcentagemTotalFrequencia}%</td></tr>";
+                str += $@"<td class='negrito {classeFundoCinza}'>{totalQuantidade} / {Math.Round(totalPorcentagem)}%</td></tr>";
                 contadorQuebrarPagina++;
             }
         }
@@ -244,7 +309,11 @@
 
     string MontarInformacoesEscolares()
     {
-        var str = "<table class='tabela-cabecalho'>";
+        var str = String.Empty;
+
+        if (Model.EncaminhamentoDto == null || Model.EncaminhamentoDto.First().Objetivos == null) return str;
+
+        str += "<table class='tabela-cabecalho'>";
         str += @"<thead><th colspan='2' width='28%'>&nbsp;</th>";
 
         var count = 0;
@@ -255,10 +324,10 @@
             {
                 foreach (var ano in objetivo.Anos)
                 {
-                    str += $"<th  width='{63 / width}%'>{ano.AnoDescricao}°</th>";
+                    str += $"<th  width='{61 / width}%'>{ano.AnoDescricao}°</th>";
                 }
 
-                str += "<th class='negrito' width='9%'>TOTAL</th></tr></thead>";
+                str += "<th class='negrito' width='11%'>TOTAL</th></tr></thead>";
 
                 contadorQuebrarPagina++;
             }
@@ -278,13 +347,27 @@
                     str += "<tr>";
                 }
 
-                str += $"<td class='tb-conteudo3'>{objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao}</td>";
+                var anoRespostaDescricao = objetivo.Anos.First().Respostas.ToList()[r].RespostaDescricao;
 
+                str += $"<td class='tb-conteudo3'>{anoRespostaDescricao}</td>";
+
+                int totalQuantidade = 0;
+                double totalPorcentagem = 0;
                 foreach (var ano in objetivo.Anos)
                 {
-                    str += $"<td class='tb-conteudo3 centralizar'>{ano.Respostas.ToList()[r].Quantidade} / {ano.Respostas.ToList()[r].Porcentagem}%</td>";
+                    SME.SR.Infra.ResumoPAPResultadoRespostaDto anoResposta = ano.Respostas.ToList().Find(h => h.RespostaDescricao == anoRespostaDescricao);
+                    if (anoResposta != null)
+                    {
+                        str += $"<td class='tb-conteudo3 centralizar'>{anoResposta.Quantidade} / {Math.Round(anoResposta.Porcentagem, 2)}%</td>";
+                        totalQuantidade += anoResposta.Quantidade;
+                        totalPorcentagem += anoResposta.Porcentagem;
+                    }
+                    else
+                    {
+                        str += $"<td class='tb-conteudo3 centralizar'>0 / 0%</td>";
+                    }
                 }
-                str += $"<td class='tb-conteudo3 negrito centralizar'>{objetivo.Anos.First().Respostas.ToList()[r].TotalQuantidade} / {objetivo.Anos.First().Respostas.ToList()[r].TotalPorcentagem}%</td>";
+                str += $"<td class='tb-conteudo3 negrito centralizar'>{totalQuantidade} / {Math.Round(totalPorcentagem, 2)}%</td>";
                 str += "</tr>";
                 contadorQuebrarPagina++;
             }
@@ -429,7 +512,7 @@
             font-size: 12px;
             padding: 5px;
         }
-        
+
         .tb-conteudo2 {
             border-top: none;
             width: 10%;
@@ -444,7 +527,7 @@
             padding-left: 10px;
             padding-right: 10px;
             text-align: left;
-            height: 24px;
+            min-height: 24px;
         }
 
         .centralizar {
@@ -483,7 +566,7 @@
                 contadorQuebrarPagina++;
                 @Html.Raw(VerificaQuebra())
 
-                //@Html.Raw(MontarTabelaFrequencia())               
+                @Html.Raw(MontarTabelaFrequencia())
             }
 
             @Html.Raw(EspacoEmBranco())
