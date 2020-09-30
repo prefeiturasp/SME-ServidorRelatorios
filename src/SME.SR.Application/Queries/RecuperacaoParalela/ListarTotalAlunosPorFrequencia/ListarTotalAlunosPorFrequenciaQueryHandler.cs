@@ -26,24 +26,29 @@ namespace SME.SR.Application
             if (!totalAlunosPorSeries.Any()) return null;
             var total = totalAlunosPorSeries.Sum(s => s.Total);
 
-            return MapearParaDtoTotalEstudantesPorFrequencia(total, totalAlunosPorSeries);
+            bool deveExibirCiclo = false;
+
+            if (string.IsNullOrEmpty(request.Ano))
+                deveExibirCiclo = true;
+
+            return MapearParaDtoTotalEstudantesPorFrequencia(total, totalAlunosPorSeries.OrderBy( a => a.Ano).ToList(), deveExibirCiclo);
         }
 
-        private ResumoPAPTotalEstudantePorFrequenciaDto MapearParaDtoTotalEstudantesPorFrequencia(int total, IEnumerable<RetornoResumoPAPTotalAlunosAnoFrequenciaDto> items)
+        private ResumoPAPTotalEstudantePorFrequenciaDto MapearParaDtoTotalEstudantesPorFrequencia(int total, IEnumerable<RetornoResumoPAPTotalAlunosAnoFrequenciaDto> items, bool deveExibirCiclo)
         {
             var retorno = new ResumoPAPTotalEstudantePorFrequenciaDto
             {
-                Frequencia = items.GroupBy(fg => new { fg.RespostaId, fg.Frequencia }).Select(freq => new ResumoPAPTotalEstudanteFrequenciaDto
+                Frequencia = items.GroupBy(fg => new { fg.RespostaId, fg.Frequencia, fg.Ciclo }).Select(freq => new ResumoPAPTotalEstudanteFrequenciaDto
                 {
                     FrequenciaDescricao = freq.Key.Frequencia,
                     PorcentagemTotalFrequencia = (double)(freq.Sum(x => x.Total) * 100) / total,
                     QuantidadeTotalFrequencia = freq.Sum(x => x.Total),
                     Linhas = items.Where(wlinha => wlinha.RespostaId == freq.Key.RespostaId).GroupBy(glinha => new { glinha.RespostaId }).Select(lin => new ResumoPAPFrequenciaDto
                     {
-                        Anos = items.Where(wano => wano.RespostaId == lin.Key.RespostaId).GroupBy(gano => new { gano.Ano }).Select(ano => new ResumoPAPTotalFrequenciaAnoDto
+                        Anos = items.Where(wano => wano.RespostaId == lin.Key.RespostaId).GroupBy(gano => new { gano.Ano, gano.Ciclo }).Select(ano => new ResumoPAPTotalFrequenciaAnoDto
                         {
                             CodigoAno = ano.Key.Ano,
-                            DescricaoAno = ano.Key.Ano.ToString(),
+                            DescricaoAno = (deveExibirCiclo == true ? ano.Key.Ciclo : ano.Key.Ano.ToString() + "°"),
                             Descricao = $"{ano.Key.Ano}º",
                             Quantidade = ano.Sum(c => c.Total),
                             Porcentagem = ((double)ano.Sum(c => c.Total) * 100) / total,
