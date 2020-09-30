@@ -39,6 +39,10 @@ namespace SME.SR.Application
 
             var resultado = await ObterResultados(filtros);
 
+
+            if ((resultado == null || !resultado.Any()) && (encaminhamento == null || !encaminhamento.Any()))
+                throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
+
             var relatorioResumoPAPDto = new ResumoPAPDto()
             {
                 Ano = filtros.Ano != "0" ? filtros.Ano : "Todos",
@@ -57,7 +61,7 @@ namespace SME.SR.Application
                 UsuarioNome = filtros.UsuarioNome,
                 UsuarioRF = filtros.UsuarioRf
             };
-            
+
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioResumosPAP", relatorioResumoPAPDto, request.CodigoCorrelacao));
         }
 
@@ -180,7 +184,7 @@ namespace SME.SR.Application
             if (!string.IsNullOrEmpty(filtros.DreId) && filtros.DreId != "0")
             {
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreId });
-                
+
                 if (dre != null)
                 {
                     dreUe.DreCodigo = dre.Codigo;
