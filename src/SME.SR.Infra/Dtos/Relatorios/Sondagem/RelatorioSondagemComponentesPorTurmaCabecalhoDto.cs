@@ -9,7 +9,7 @@ namespace SME.SR.Infra
         public string Dre { get; set; }
         public string Ue { get; set; }
         public int AnoLetivo { get; set; }
-        public string Ano { get; set; }
+        public int Ano { get; set; }
         public string Turma { get; set; }
         public string ComponenteCurricular { get; set; }
         public string Proficiencia { get; set; }
@@ -17,5 +17,11 @@ namespace SME.SR.Infra
         public string Usuario { get; set; }
         public string Rf { get; set; }
         public DateTime DataSolicitacao { get; set; }
+        public List<RelatorioSondagemComponentesPorTurmaOrdemDto> Ordens { get; set; } = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
+
+        public RelatorioSondagemComponentesPorTurmaCabecalhoDto()
+        {
+            this.Ordens = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
+        }
     }
 }
