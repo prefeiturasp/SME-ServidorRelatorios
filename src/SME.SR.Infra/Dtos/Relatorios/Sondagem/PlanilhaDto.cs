@@ -3,18 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SME.SR.Infra.Dtos.Relatorios.Sondagem
+namespace SME.SR.Infra
 {
     public class PlanilhaDto
     {
-        [JsonProperty("aluno")]
         public AlunoDto Aluno { get; set; }
-
-        [JsonProperty("ordens")]
         public List<OrdemDto> Ordens { get; set; } = new List<OrdemDto>();
-
-        [JsonProperty("ordensResultados")]
         public List<OrdemRespostasDto> OrdensRespostas { get; set; } = new List<OrdemRespostasDto>();
 
+        public PlanilhaDto()
+        {
+            this.Ordens = new List<OrdemDto>();
+            this.OrdensRespostas = new List<OrdemRespostasDto>();
+        }
     }
 }
