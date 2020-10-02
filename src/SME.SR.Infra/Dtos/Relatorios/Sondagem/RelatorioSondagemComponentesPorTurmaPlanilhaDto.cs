@@ -7,14 +7,10 @@ namespace SME.SR.Infra
 {
     public class RelatorioSondagemComponentesPorTurmaPlanilhaDto
     {
-        public RelatorioSondagemComponentesPorTurmaAlunoDto Aluno { get; set; }
-        public List<RelatorioSondagemComponentesPorTurmaOrdemDto> Ordens { get; set; } = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
-        public List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> OrdensRespostas { get; set; } = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>();
-
+        public List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> Linhas;
         public RelatorioSondagemComponentesPorTurmaPlanilhaDto()
         {
-            this.Ordens = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
-            this.OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>();
+            this.Linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
         }
     }
 }

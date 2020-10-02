@@ -6,7 +6,7 @@ namespace SME.SR.Infra
 {
     public class RelatorioSondagemComponentesPorTurmaRelatorioDto
     {
-        public CabecalhoDto Cabecalho { get; set; }
+        public RelatorioSondagemComponentesPorTurmaCabecalhoDto Cabecalho { get; set; }
         public RelatorioSondagemComponentesPorTurmaPlanilhaDto Planilha { get; set;  } 
     }
 }
