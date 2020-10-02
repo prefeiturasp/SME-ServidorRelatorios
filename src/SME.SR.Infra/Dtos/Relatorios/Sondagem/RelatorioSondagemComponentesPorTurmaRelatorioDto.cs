@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class RelatorioDto
+    public class RelatorioSondagemComponentesPorTurmaRelatorioDto
     {
         public CabecalhoDto Cabecalho { get; set; }
-        public PlanilhaDto Planilha { get; set;  } 
+        public RelatorioSondagemComponentesPorTurmaPlanilhaDto Planilha { get; set;  } 
     }
 }
