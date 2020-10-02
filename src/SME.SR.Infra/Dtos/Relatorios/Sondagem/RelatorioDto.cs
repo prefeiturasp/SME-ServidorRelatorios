@@ -7,13 +7,10 @@ namespace SME.SR.Infra.Dtos.Relatorios.Sondagem
 {
     public class RelatorioDto
     {
-        [JsonProperty("componenteCurricular")]
-        public ComponenteCurricularDto ComponenteCurricular { get; set; }
+        [JsonProperty("cabecalho")]
+        public CabecalhoDto Cabecalho { get; set; }
 
-        [JsonProperty("aluno")]
-        public AlunoDto Aluno { get; set; }
-
-        [JsonProperty("ordens")]
-        public List<OrdemDto> Ordens { get; set; } = new List<OrdemDto>();
+        [JsonProperty("conteudo")]
+        public PlanilhaDto Planilha { get; set;  } 
     }
 }

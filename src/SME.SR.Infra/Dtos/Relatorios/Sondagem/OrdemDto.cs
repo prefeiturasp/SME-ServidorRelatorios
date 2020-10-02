@@ -7,13 +7,10 @@ namespace SME.SR.Infra.Dtos.Relatorios.Sondagem
 {
     public class OrdemDto
     {
-        [JsonProperty("ordem")]
-        public string Ordem { get; set; }
+        [JsonProperty("id")]
+        public int Id { get; set; }
 
-        [JsonProperty("ideia")]
-        public string Ideia { get; set; }
-
-        [JsonProperty("resultado")]
-        public string Resultado { get; set; }
+        [JsonProperty("nome")]
+        public string Nome { get; set; }
     }
 }
