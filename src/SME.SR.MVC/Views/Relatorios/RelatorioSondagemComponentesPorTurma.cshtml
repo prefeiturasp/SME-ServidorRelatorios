@@ -1,0 +1,299 @@
+﻿@model SME.SR.Infra.RelatorioSondagemComponentesPorTurmaRelatorioDto
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 44;
+    int contadorPagina = 0;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always'></div>" + str;
+
+        }
+        return string.Empty;
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        var str =
+            $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'> RELATÓRIO DE SONDAGEM</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {Model.Cabecalho.Dre}</td>
+<td width='45%' class='espaco-esquerda-15 sem-border-bottom'>UE: {Model.Cabecalho.Ue}</td>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO LETIVO: {Model.Cabecalho.AnoLetivo}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Cabecalho.Ano}</td>
+<td width='23%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Cabecalho.Turma}</td>
+<td  width='57%' class='espaco-esquerda-15 sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Cabecalho.ComponenteCurricular}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Cabecalho.Periodo}</td>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>P    ROEFICIÊNCIA: {Model.Cabecalho.Proficiencia}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='60%' class='espaco-esquerda-15'>USUÁRIO: {Model.Cabecalho.Usuario}</td>
+<td width='20%' class='espaco-esquerda-15'>RF: {Model.Cabecalho.Rf}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.Cabecalho.DataSolicitacao.ToShortDateString()}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+    string MontarCabecalhoTabela(string cabecalho)
+    {
+        return $@"<table class='tabela-cabecalho'><thead><th class='sem-border-bottom'>{cabecalho} </th></thead></table>";
+    }
+
+    string EspacoEmBranco()
+    {
+        return $@"<table class='tabela-alunos'><thead><th class='thLimpo' width='100%'></th></thead></table>";
+    }
+
+    string MontarTabelaSondagem()
+    {
+        var str = $@"<table class='tabela-cabecalho'><thead><tr><td colspan='2' class='coluna-vazia'>&nbsp;</td>";
+
+        foreach (var ordem in Model.Cabecalho.Ordens)
+        {
+            str += $@"<td colspan='2'>{ordem.Nome}</td>";
+        }
+
+        str += $@"</tr><tr><td width='8%'>Cod. EOL</td>";
+        str += $@"<td width='26%'>Alunos</td>";
+
+        foreach (var ordem in Model.Cabecalho.Ordens)
+        {
+            str += $@"<td>Resultado</td>";
+            str += $@"<td>Ideia</td>";
+        }
+
+        str += $@"</tr></thead><tbody>";
+
+
+        for (var i=0; i < Model.Planilha.Linhas.Count; i++)
+        {
+            var linha = Model.Planilha.Linhas[i];
+
+            if(i!= 0)
+            {
+                str += $@"<tr>";
+            }
+
+            str += $@"<td>{linha.Aluno.Codigo}</td>";
+            str += $@"<td>{linha.Aluno.Nome}</td>";
+
+            foreach (var resposta in linha.OrdensRespostas)
+            {
+                str += $@"<td>{resposta.Resultado}</td>";
+                str += $@"<td>{resposta.Ideia}</td>";
+            }
+
+            str += $@"</tr>";
+        }
+
+        str += "</tbody></table>";
+
+        return str;
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de Acompanhamento PAP - Resumos</title>
+</head>
+<body class="body-relatorio">
+    <style>
+
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 10px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-bottom: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border-top: 0;
+            border-bottom: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .coluna-vazia {
+            border: 0;
+            background: white;
+        }
+    </style>
+    <div>
+        @{
+            @Html.Raw(MontarCabecalho())
+
+            @Html.Raw(MontarTabelaSondagem())
+
+
+            @*<table class="tabela-cabecalho">
+                    <thead>
+                        <tr>
+                            <td colspan="2" class="coluna-vazia"></td>
+                            <td colspan="2">orderm-1</td>
+                            <td colspan="2">orderm-2</td>
+                            <td colspan="2">orderm-3</td>
+                        </tr>
+                        <tr>
+                            <td width="8%">Cod eol</td>
+                            <td width="26%">Alunos</td>
+                            <td width="11">Resultado</td>
+                            <td width="11">ideia</td>
+                            <td width="11">Resultado</td>
+                            <td width="11">ideia</td>
+                            <td width="11">Resultado</td>
+                            <td width="11">ideia</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1234567</td>
+                            <td>ALEXIA FERNANDES LIMA</td>
+                            <td>Errou</td>
+                            <td>Acertou</td>
+                            <td>Acertou</td>
+                            <td>Errou</td>
+                            <td>Errou</td>
+                            <td>Acertou</td>
+                        </tr>
+                    </tbody>
+                </table>*@
+        }
+    </div>
+</body>
+</html>

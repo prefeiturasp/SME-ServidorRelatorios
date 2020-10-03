@@ -2355,7 +2355,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             var model = new RelatorioSondagemComponentesPorTurmaRelatorioDto() {
                 Cabecalho = new RelatorioSondagemComponentesPorTurmaCabecalhoDto() {
-                    Ano = 2020,
+                    Ano = 5,
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
                     DataSolicitacao = DateTime.Now,
@@ -2400,18 +2400,18 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
-                                    Ideia = "Errou",
-                                    Resultado = "Errou"
+                                    Ideia = "Errou2",
+                                    Resultado = "Errou1"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
-                                    Ideia = "Acertou",
-                                    Resultado = "Errou"
+                                    Ideia = "Acertou4",
+                                    Resultado = "Errou3"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 3,
-                                    Ideia = "Errou",
-                                    Resultado = "Acertou"
+                                    Ideia = "Errou6",
+                                    Resultado = "Acertou5"
                                 },
                             },
                         },
@@ -2426,18 +2426,18 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
-                                    Ideia = "Acertou",
-                                    Resultado = "Acertou"
+                                    Ideia = "Acertou8",
+                                    Resultado = "Acertou7"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
-                                    Ideia = "Acertou",
-                                    Resultado = "Errou"
+                                    Ideia = "Acertou10",
+                                    Resultado = "Errou9"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 3,
-                                    Ideia = "Errou",
-                                    Resultado = "Acertou"
+                                    Ideia = "Errou12",
+                                    Resultado = "Acertou11"
                                 },
                             },
                         },
@@ -2452,18 +2452,18 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
-                                    Ideia = "Acertou",
-                                    Resultado = "Errou"
+                                    Ideia = "Acertou14",
+                                    Resultado = "Errou13"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
-                                    Ideia = "Acertou",
-                                    Resultado = "Acertou"
+                                    Ideia = "Acertou16",
+                                    Resultado = "Acertou15"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 3,
-                                    Ideia = "Errou",
-                                    Resultado = "Acertou"
+                                    Ideia = "Errou18",
+                                    Resultado = "Acertou17"
                                 },
                             },
                         },
