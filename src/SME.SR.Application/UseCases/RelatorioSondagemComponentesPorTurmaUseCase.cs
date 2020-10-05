@@ -28,7 +28,7 @@ namespace SME.SR.Application
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, request.CodigoCorrelacao));
         }
 
-        private async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaRetornoQueryDto>> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros)
+        private async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros)
         {
             return await mediator.Send(
                new ObterRelatorioSondagemComponentesPorTurmaQuery()

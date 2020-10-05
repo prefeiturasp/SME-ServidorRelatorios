@@ -16,8 +16,9 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaRetornoQueryDto>> ObterRelatorio(int dreId, int turmaId, int ueId, int ano)
+        public async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterRelatorio(int dreId, int turmaId, int ueId, int ano)
         {
+            // TODO: Implementar ObterRelatorio - Marcos Rezende
             var query = new StringBuilder();
             query.Append(@" aqui vai a query");
 
@@ -25,7 +26,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
-                return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaRetornoQueryDto>(query.ToString(), parametros);
+                return await Task.FromResult(new RelatorioSondagemComponentesPorTurmaRelatorioDto());
             }
         }
     }

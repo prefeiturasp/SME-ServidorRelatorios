@@ -6,10 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data;
+using System.Linq;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioSondagemComponentesPorTurmaQueryHandler : IRequestHandler<ObterRelatorioSondagemComponentesPorTurmaQuery, IEnumerable<RelatorioSondagemComponentesPorTurmaRetornoQueryDto>>
+    public class ObterRelatorioSondagemComponentesPorTurmaQueryHandler : IRequestHandler<ObterRelatorioSondagemComponentesPorTurmaQuery, RelatorioSondagemComponentesPorTurmaRelatorioDto>
     { 
         private readonly IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository;
 
@@ -18,9 +19,9 @@ namespace SME.SR.Application
             this.relatorioSondagemComponentePorTurmaRepository = relatorioSondagemComponentePorTurmaRepository ?? throw new ArgumentNullException(nameof(relatorioSondagemComponentePorTurmaRepository));
         }
 
-        async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaRetornoQueryDto>> IRequestHandler<ObterRelatorioSondagemComponentesPorTurmaQuery, IEnumerable<RelatorioSondagemComponentesPorTurmaRetornoQueryDto>>.Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
+        public Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            return await relatorioSondagemComponentePorTurmaRepository.ObterRelatorio(request.DreId, request.TurmaId, request.UeId, request.Ano);
+            return this.relatorioSondagemComponentePorTurmaRepository.ObterRelatorio(request.DreId, request.TurmaId, request.UeId, request.Ano);
         }
     }
 }
