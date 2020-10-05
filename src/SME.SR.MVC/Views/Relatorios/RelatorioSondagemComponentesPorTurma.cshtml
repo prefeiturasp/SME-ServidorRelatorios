@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 44;
+    int contadorMaximoLinhasPorPagina = 47;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -52,8 +52,8 @@
 <table>
 <tbody>
 <tr>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PROEFICIÊNCIA: {Model.Cabecalho.Proficiencia}</td>
 <td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Cabecalho.Periodo}</td>
-<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>P    ROEFICIÊNCIA: {Model.Cabecalho.Proficiencia}</td>
 </tr>
 </tbody>
 </table>
@@ -73,42 +73,53 @@
         return str;
     }
 
-    string MontarCabecalhoTabela(string cabecalho)
-    {
-        return $@"<table class='tabela-cabecalho'><thead><th class='sem-border-bottom'>{cabecalho} </th></thead></table>";
-    }
-
-    string EspacoEmBranco()
-    {
-        return $@"<table class='tabela-alunos'><thead><th class='thLimpo' width='100%'></th></thead></table>";
-    }
-
-    string MontarTabelaSondagem()
-    {
+    string MontarCabecalhoSondagem() {
         var str = $@"<table class='tabela-cabecalho'><thead><tr><td colspan='2' class='coluna-vazia'>&nbsp;</td>";
+
+        var ordens = Model.Cabecalho.Ordens.Count;
+        int width = 68 / (ordens * 2);
 
         foreach (var ordem in Model.Cabecalho.Ordens)
         {
             str += $@"<td colspan='2'>{ordem.Nome}</td>";
+
+            if(ordens > 4 && ordem.Nome.Count() > 20)
+            {
+                contadorMaximoLinhasPorPagina = 46;
+            }
         }
 
-        str += $@"</tr><tr><td width='8%'>Cod. EOL</td>";
-        str += $@"<td width='26%'>Alunos</td>";
+        str += $@"</tr><tr><td width='7%'>Cod. EOL</td>";
+        str += $@"<td width='25%'>Alunos</td>";
 
         foreach (var ordem in Model.Cabecalho.Ordens)
         {
-            str += $@"<td>Resultado</td>";
-            str += $@"<td>Ideia</td>";
+            str += $@"<td width='{width}%'>Resultado</td>";
+            str += $@"<td width='{width}%'>Ideia</td>";
         }
 
         str += $@"</tr></thead><tbody>";
 
+        return str;
+    }
 
-        for (var i=0; i < Model.Planilha.Linhas.Count; i++)
+    string MontarTabelaSondagem()
+    {
+        var str = MontarCabecalhoSondagem();
+        var quebrou = true;
+
+        for (var i = 0; i < Model.Planilha.Linhas.Count; i++)
         {
             var linha = Model.Planilha.Linhas[i];
+            int numeroLinhas = (linha.Aluno.Nome.Count() / 30);
 
-            if(i!= 0)
+            if (quebrou)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + 2;
+                quebrou = false;
+            }
+
+            if (i!= 0)
             {
                 str += $@"<tr>";
             }
@@ -123,6 +134,24 @@
             }
 
             str += $@"</tr>";
+
+            if(numeroLinhas > 1)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+            }
+            else
+            {
+                contadorQuebrarPagina++;
+            }
+
+            var quebra = VerificaQuebra();
+            var novaPagina = quebra + (i < Model.Planilha.Linhas.Count - 1 ? MontarCabecalhoSondagem() : "");
+
+            if(quebra.Length > 0)
+            {
+                str += $@"</tbody></table>{novaPagina}";
+                quebrou = true;
+            }
         }
 
         str += "</tbody></table>";
@@ -259,40 +288,6 @@
             @Html.Raw(MontarCabecalho())
 
             @Html.Raw(MontarTabelaSondagem())
-
-
-            @*<table class="tabela-cabecalho">
-                    <thead>
-                        <tr>
-                            <td colspan="2" class="coluna-vazia"></td>
-                            <td colspan="2">orderm-1</td>
-                            <td colspan="2">orderm-2</td>
-                            <td colspan="2">orderm-3</td>
-                        </tr>
-                        <tr>
-                            <td width="8%">Cod eol</td>
-                            <td width="26%">Alunos</td>
-                            <td width="11">Resultado</td>
-                            <td width="11">ideia</td>
-                            <td width="11">Resultado</td>
-                            <td width="11">ideia</td>
-                            <td width="11">Resultado</td>
-                            <td width="11">ideia</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1234567</td>
-                            <td>ALEXIA FERNANDES LIMA</td>
-                            <td>Errou</td>
-                            <td>Acertou</td>
-                            <td>Acertou</td>
-                            <td>Errou</td>
-                            <td>Errou</td>
-                            <td>Acertou</td>
-                        </tr>
-                    </tbody>
-                </table>*@
         }
     </div>
 </body>
