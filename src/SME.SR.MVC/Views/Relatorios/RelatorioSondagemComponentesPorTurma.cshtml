@@ -52,7 +52,7 @@
 <table>
 <tbody>
 <tr>
-<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PROEFICIÊNCIA: {Model.Cabecalho.Proficiencia}</td>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PROFICIÊNCIA: {Model.Cabecalho.Proficiencia}</td>
 <td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Cabecalho.Periodo}</td>
 </tr>
 </tbody>
@@ -73,29 +73,45 @@
         return str;
     }
 
-    string MontarCabecalhoSondagem() {
-        var str = $@"<table class='tabela-cabecalho'><thead><tr><td colspan='2' class='coluna-vazia'>&nbsp;</td>";
+    string MontarCabecalhoSondagem()
+    {
+        var str = $@"<table class='tabela-cabecalho'><thead>";
 
         var ordens = Model.Cabecalho.Ordens.Count;
-        int width = 68 / (ordens * 2);
+        var perguntas = Model.Cabecalho.Perguntas.Count;
+        int width = 68 / (ordens * perguntas);
 
-        foreach (var ordem in Model.Cabecalho.Ordens)
+        if (Model.Cabecalho.Ordens.First().Id > 0)
         {
-            str += $@"<td colspan='2'>{ordem.Nome}</td>";
+            str += $@"<tr><td colspan='2' class='coluna-vazia'>&nbsp;</td>";
+        }
 
-            if(ordens > 4 && ordem.Nome.Count() > 20)
+        IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemComponentesPorTurmaOrdemDto> ordensOrdenadas = Model.Cabecalho.Ordens.OrderBy(h => h.Id);
+
+        foreach (var ordem in ordensOrdenadas)
+        {
+            if (ordem.Id > 0)
             {
-                contadorMaximoLinhasPorPagina = 46;
+                str += $@"<td colspan='2'>{ordem.Nome}</td>";
+
+                if (ordens > 4 && ordem.Nome.Count() > 20)
+                {
+                    contadorMaximoLinhasPorPagina = 46;
+                }
             }
         }
 
         str += $@"</tr><tr><td width='7%'>Cod. EOL</td>";
-        str += $@"<td width='25%'>Alunos</td>";
+        str += $@"<td width='25%'>Nome do Estudante</td>";
 
-        foreach (var ordem in Model.Cabecalho.Ordens)
+        foreach (var ordem in ordensOrdenadas)
         {
-            str += $@"<td width='{width}%'>Resultado</td>";
-            str += $@"<td width='{width}%'>Ideia</td>";
+            IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntasOrdenadas = Model.Cabecalho.Perguntas.OrderBy(h => h.Id);
+
+            foreach (var pergunta in perguntasOrdenadas)
+            {
+                str += $@"<td width='{width}%'>{pergunta.Nome}</td>";
+            }
         }
 
         str += $@"</tr></thead><tbody>";
@@ -106,7 +122,7 @@
     string MontarTabelaSondagem()
     {
         var str = MontarCabecalhoSondagem();
-        var quebrou = true;
+        bool quebrou = true;
 
         for (var i = 0; i < Model.Planilha.Linhas.Count; i++)
         {
@@ -119,7 +135,7 @@
                 quebrou = false;
             }
 
-            if (i!= 0)
+            if (i != 0)
             {
                 str += $@"<tr>";
             }
@@ -127,15 +143,33 @@
             str += $@"<td>{linha.Aluno.Codigo}</td>";
             str += $@"<td>{linha.Aluno.Nome}</td>";
 
-            foreach (var resposta in linha.OrdensRespostas)
+            IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemComponentesPorTurmaOrdemDto> ordensOrdenadas = Model.Cabecalho.Ordens.OrderBy(h => h.Id);
+            IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> respostasOrdenadas = linha.OrdensRespostas.ToList().OrderBy(h => h.OrdemId).ThenBy(h => h.PerguntaId);
+
+            foreach (var ordem in ordensOrdenadas)
             {
-                str += $@"<td>{resposta.Resultado}</td>";
-                str += $@"<td>{resposta.Ideia}</td>";
+                bool preencheu = false;
+                foreach (var resposta in respostasOrdenadas)
+                {
+                    if (resposta.OrdemId == ordem.Id)
+                    {
+                        var quebraPalavra = ordem.Id == 0 ? "quebra-palavra" : "";
+
+                        str += $@"<td  class='{quebraPalavra}'>{resposta.Resposta}</td>";
+                        preencheu = true;
+                    }
+                }
+
+                if (!preencheu && ordem.Id > 0)
+                {
+                    str += $@"<td>&nbsp;</td>";
+                    str += $@"<td>&nbsp;</td>";
+                }
             }
 
             str += $@"</tr>";
 
-            if(numeroLinhas > 1)
+            if (numeroLinhas > 1)
             {
                 contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
             }
@@ -144,10 +178,15 @@
                 contadorQuebrarPagina++;
             }
 
+            if (Model.Cabecalho.Ordens.First().Id == 0)
+            {
+                contadorMaximoLinhasPorPagina = 33;
+            }
+
             var quebra = VerificaQuebra();
             var novaPagina = quebra + (i < Model.Planilha.Linhas.Count - 1 ? MontarCabecalhoSondagem() : "");
 
-            if(quebra.Length > 0)
+            if (quebra.Length > 0)
             {
                 str += $@"</tbody></table>{novaPagina}";
                 quebrou = true;
@@ -166,7 +205,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Relatório de Acompanhamento PAP - Resumos</title>
+    <title>Relatório de Sondagem</title>
 </head>
 <body class="body-relatorio">
     <style>
@@ -281,6 +320,10 @@
         .coluna-vazia {
             border: 0;
             background: white;
+        }
+
+        .quebra-palavra {
+            word-break: break-word;
         }
     </style>
     <div>

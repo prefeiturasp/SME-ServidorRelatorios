@@ -6,7 +6,6 @@ using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.MVC.Controllers
@@ -2350,15 +2349,235 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
-        [HttpGet("sondagem-componentes-por-turma")]
-        public IActionResult SondagemComponentesPorTurma()
+        [HttpGet("sondagem-componentes-numeros")]
+        public IActionResult SondagemComponentesNumeros()
         {
-            var planilha = new RelatorioSondagemComponentesPorTurmaPlanilhaDto();
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
-            for (var i = 0; i < 20; i++) {
+            for(var i = 0; i < 30; i++)
+            {
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
+                        Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                        {
+                            Codigo = 6197654,
+                            Nome = "ALEXIA FERNANDES LIMA",
+                            SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
+                        },
+                        OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                        {
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "",
+                                PerguntaId = 1
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 2
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 3
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 4
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 5
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "",
+                                PerguntaId = 6
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 7
+                            },
+                        }
+                    });
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6195479,
+                        Nome = "ALICE SILVA RIBEIRO",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                            {
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Não Escreve Convencionalmente",
+                                    PerguntaId = 1
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "",
+                                    PerguntaId = 2
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Escreve Convencionalmente",
+                                    PerguntaId = 3
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Não Escreve Convencionalmente",
+                                    PerguntaId = 4
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Não Escreve Convencionalmente",
+                                    PerguntaId = 5
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Não Escreve Convencionalmente",
+                                    PerguntaId = 6
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "",
+                                    PerguntaId = 7
+                                },
+                            },
+                });
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "AMANDA ALBUQUERQUE",
+                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                        {
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Não Escreve Convencionalmente",
+                                PerguntaId = 1
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Não Escreve Convencionalmente",
+                                PerguntaId = 2
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Não Escreve Convencionalmente",
+                                PerguntaId = 3
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "",
+                                PerguntaId = 4
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "",
+                                PerguntaId = 5
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Não Escreve Convencionalmente",
+                                PerguntaId = 6
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 7
+                            },
+                    },
+                });
+            }
+
+            var model = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
+                {
+                    Ano = 5,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Matemática",
+                    DataSolicitacao = DateTime.Now,
+                    Dre = "DRE - BT",
+                    Periodo = "1º Semestre",
+                    Proficiencia = "Números",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    Ordens = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>()
+                    {
+                        new RelatorioSondagemComponentesPorTurmaOrdemDto()
+                        {
+                            //Id = 1,
+                            Id = 0,
+                            Nome = "ORDEM 1 - COMPOSIÇÃO"
+                        },                        
+                    },
+                    Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 1,
+                            Nome = "Familiares ou Frequentes"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 2,
+                            Nome = "Opacos"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 3,
+                            Nome = "Transparentes"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 4,
+                            Nome = "Terminam em Zero"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 5,
+                            Nome = "Algarismos Iguais"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 6,
+                            Nome = "Processos de Generalização"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 7,
+                            Nome = "Zeros Intercalados"
+                        }
+                    },
+                },
+                Planilha = new RelatorioSondagemComponentesPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
+            };
+
+            return View("RelatorioSondagemComponentesPorTurma", model);
+        }
+
+        [HttpGet("sondagem-componentes-aditivos")]
+        public IActionResult SondagemComponentesAditivos()
+        {
+            var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+            for (var i = 0; i < 20; i++)
+            {
                 linhas.Add(
-                new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
+                new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
                         Codigo = 6197654,
@@ -2369,33 +2588,39 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
-                            Ideia = "Errou",
-                            Resultado = "Não resolveu"
+                            Resposta = "Errou",
+                            PerguntaId = 1
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 1,
+                            Resposta = "Acertou",
+                            PerguntaId = 2
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
-                            Ideia = "Acertou",
-                            Resultado = "Errou"
+                            Resposta = "Errou",
+                            PerguntaId = 1 
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 3,
-                            Ideia = "Errou",
-                            Resultado = "Acertou"
+                            OrdemId = 2,
+                            Resposta = "Não resolveu",
+                            PerguntaId = 2
                         },
-                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 4,
-                            Ideia = "Não resolveu",
-                            Resultado = "Errou" 
-                        },
-                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 5,
-                            Ideia = "Errou",
-                            Resultado = "Acertou"
-                        },
+                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = 3,
+                        //    Resposta = "Errou",
+                        //    PerguntaId = 1
+                        //},
+                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = 3,
+                        //    Resposta = "Acertou",
+                        //    PerguntaId = 2
+                        //},
                     },
                 });
                 linhas.Add(
-                new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
+                new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
                         Codigo = 4650630,
@@ -2403,31 +2628,36 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                        {
+                    {
+                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = 1,
+                        //    Resposta = "Errou",
+                        //    PerguntaId = 1
+                        //},
+                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = 1,
+                        //    Resposta = "Acertou",
+                        //    PerguntaId = 2
+                        //},
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 1,
-                            Ideia = "Acertou",
-                            Resultado = "Não resolveu"
+                            OrdemId = 2,
+                            Resposta = "Errou",
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
-                            Ideia = "Acertou",
-                            Resultado = "Errou"
+                            Resposta = "Não resolveu",
+                            PerguntaId = 2
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
-                            Ideia = "Errou",
-                            Resultado = "Acertou"
+                            Resposta = "Errou",
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 4,
-                            Ideia = "Acertou",
-                            Resultado = "Não resolveu"
-                        },
-                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 5,
-                            Ideia = "Errou",
-                            Resultado = "Acertou"
+                            OrdemId = 3,
+                            Resposta = "Acertou",
+                            PerguntaId = 2
                         },
                     },
                 });
@@ -2441,41 +2671,46 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                        {
-                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                     {
+                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
-                            Ideia = "Acertou",
-                            Resultado = "Errou"
+                            Resposta = "Errou",
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 2,
-                            Ideia = "Acertou",
-                            Resultado = "Não resolveu"
+                            OrdemId = 1,
+                            Resposta = "Acertou",
+                            PerguntaId = 2
+                        },
+                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = 2,
+                        //    Resposta = "Errou",
+                        //    PerguntaId = 1
+                        //},
+                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = 2,
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = 2
+                        //},
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 3,
+                            Resposta = "Errou",
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
-                            Ideia = "Errou",
-                            Resultado = "Acertou"
-                        }, 
-                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 4,
-                            Ideia = "Acertou",
-                            Resultado = "Não resolveu"
-                        },
-                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                            OrdemId = 5,
-                            Ideia = "Errou",
-                            Resultado = "Acertou"
+                            Resposta = "Acertou",
+                            PerguntaId = 2
                         },
                     },
                 });
-                    
-            }
-            
-            planilha.Linhas = linhas;
 
-            var model = new RelatorioSondagemComponentesPorTurmaRelatorioDto() {
-                Cabecalho = new RelatorioSondagemComponentesPorTurmaCabecalhoDto() {
+            }
+
+            var model = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
+                {
                     Ano = 5,
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
@@ -2504,19 +2739,25 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Id = 3,
                             Nome = "ORDEM 3 - COMPOSIÇÃO"
                         },
-                        new RelatorioSondagemComponentesPorTurmaOrdemDto()
+                    },
+                    Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                         {
-                            Id = 4,
-                            Nome = "ORDEM 4 - RELAÇÕES ENTRE GRANDEZAS E PORCENTAGEM"
+                            Id = 1,
+                            Nome = "Ideia"
                         },
-                        new RelatorioSondagemComponentesPorTurmaOrdemDto()
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                         {
-                            Id = 5,
-                            Nome = "ORDEM 5 - COMPOSIÇÃO"
-                        },
+                            Id = 2,
+                            Nome = "Resultado"
+                        }
                     },
                 },
-                Planilha = planilha
+                Planilha = new RelatorioSondagemComponentesPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
             };
 
             return View("RelatorioSondagemComponentesPorTurma", model);
