@@ -147,5 +147,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioPlanoAulaUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/sondagemcomponenteporturma")]
+        [Action("relatorios/resumopap", typeof(IRelatorioSondagemComponentesPorTurmaUseCase))]
+        public async Task<bool> RelatorioSondagemPorTurma([FromQuery] RelatorioSondagemComponentesPorTurmaFiltroDto request, [FromServices] IRelatorioSondagemComponentesPorTurmaUseCase relatorioSondagemPorTurmaUseCase)
+        {
+            await relatorioSondagemPorTurmaUseCase.Executar(request);
+            return true;
+        }
     }
 }
