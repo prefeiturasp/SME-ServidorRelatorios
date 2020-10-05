@@ -9,10 +9,10 @@ namespace SME.SR.Infra
     {
         public Guid CodigoCorrelacao { get; set; }
         public object Mensagem { get; set; }
-        public string DreId { get; set; }
-        public string TurmaId { get; set; }
-        public string UeId { get; set; }
-        public string Ano { get; set; }
+        public int DreId { get; set; }
+        public int TurmaId { get; set; }
+        public int UeId { get; set; }
+        public int Ano { get; set; }
         public T ObterObjetoFiltro<T>() where T : class
         {
             return JsonConvert.DeserializeObject<T>(Mensagem.ToString());
