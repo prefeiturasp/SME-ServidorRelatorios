@@ -17,11 +17,14 @@ namespace SME.SR.Infra
         public string Usuario { get; set; }
         public string Rf { get; set; }
         public DateTime DataSolicitacao { get; set; }
-        public List<RelatorioSondagemComponentesPorTurmaOrdemDto> Ordens { get; set; } = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
+        public List<RelatorioSondagemComponentesPorTurmaOrdemDto> Ordens { get; set; }
+
+        public List<RelatorioSondagemComponentesPorTurmaPerguntaDto> Perguntas { get; set; }
 
         public RelatorioSondagemComponentesPorTurmaCabecalhoDto()
         {
-            this.Ordens = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
+            Ordens = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
+            Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>();
         }
     }
 }
