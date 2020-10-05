@@ -149,7 +149,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/sondagemcomponenteporturma")]
-        [Action("relatorios/resumopap", typeof(IRelatorioSondagemComponentesPorTurmaUseCase))]
+        [Action("relatorios/sondagemcomponenteporturma", typeof(IRelatorioSondagemComponentesPorTurmaUseCase))]
         public async Task<bool> RelatorioSondagemPorTurma([FromQuery] RelatorioSondagemComponentesPorTurmaFiltroDto request, [FromServices] IRelatorioSondagemComponentesPorTurmaUseCase relatorioSondagemPorTurmaUseCase)
         {
             await relatorioSondagemPorTurmaUseCase.Executar(request);
