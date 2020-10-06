@@ -8,6 +8,7 @@ namespace SME.SR.Data
 {
     public interface IRelatorioSondagemComponentePorTurmaRepository
     {
-        Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterRelatorio(int dreId, int turmaId, int ueId, int ano);
+        public List<RelatorioSondagemComponentesPorTurmaOrdemDto> ObterOrdens();
+        public List<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto> ObterPlanilhaLinhas(int dreId, int turmaId, int ano, int semestre);
     }
 }
