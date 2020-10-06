@@ -2360,7 +2360,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                         {
                             Codigo = 6197654,
-                            Nome = "ALEXIA FERNANDES LIMA",
+                            Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
                             SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
                         },
                         OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
@@ -2516,7 +2516,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
-                            //Id = 1,
                             Id = 0,
                             Nome = "ORDEM 1 - COMPOSIÇÃO"
                         },                        
@@ -2606,16 +2605,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Resposta = "Não resolveu",
                             PerguntaId = 2
                         },
-                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                        //    OrdemId = 3,
-                        //    Resposta = "Errou",
-                        //    PerguntaId = 1
-                        //},
-                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                        //    OrdemId = 3,
-                        //    Resposta = "Acertou",
-                        //    PerguntaId = 2
-                        //},
                     },
                 });
                 linhas.Add(
@@ -2624,21 +2613,11 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
                         Codigo = 4650630,
-                        Nome = "MATHEUS GUILHERME NASCIMENTO DA SILVA",
+                        Nome = "MATHEUS GUILHERME NASCIMENTO DA SILVA (RECLASSIFICADO SAÍDA EM 11/04/2020)",
                         SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                    {
-                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                        //    OrdemId = 1,
-                        //    Resposta = "Errou",
-                        //    PerguntaId = 1
-                        //},
-                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                        //    OrdemId = 1,
-                        //    Resposta = "Acertou",
-                        //    PerguntaId = 2
-                        //},
+                    {                        
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Errou",
@@ -2671,8 +2650,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                     {
-                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                    { 
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Errou",
                             PerguntaId = 1
@@ -2682,16 +2661,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Resposta = "Acertou",
                             PerguntaId = 2
                         },
-                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                        //    OrdemId = 2,
-                        //    Resposta = "Errou",
-                        //    PerguntaId = 1
-                        //},
-                        //new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                        //    OrdemId = 2,
-                        //    Resposta = "Não resolveu",
-                        //    PerguntaId = 2
-                        //},
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Errou",

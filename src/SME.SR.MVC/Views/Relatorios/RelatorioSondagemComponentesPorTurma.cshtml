@@ -77,13 +77,13 @@
     {
         var str = $@"<table class='tabela-cabecalho'><thead>";
 
-        var ordens = Model.Cabecalho.Ordens.Count;
-        var perguntas = Model.Cabecalho.Perguntas.Count;
-        int width = 68 / (ordens * perguntas);
+        var numeroOrdens = Model.Cabecalho.Ordens.Count;
+        var numeroPerguntas = Model.Cabecalho.Perguntas.Count;
+        int width = 68 / (numeroOrdens * numeroPerguntas);
 
         if (Model.Cabecalho.Ordens.First().Id > 0)
         {
-            str += $@"<tr><td colspan='2' class='coluna-vazia'>&nbsp;</td>";
+            str += $@"<tr><td colspan='{numeroPerguntas}' class='coluna-vazia'>&nbsp;</td>";
         }
 
         IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemComponentesPorTurmaOrdemDto> ordensOrdenadas = Model.Cabecalho.Ordens.OrderBy(h => h.Id);
@@ -92,9 +92,9 @@
         {
             if (ordem.Id > 0)
             {
-                str += $@"<td colspan='2'>{ordem.Nome}</td>";
+                str += $@"<td colspan='{numeroPerguntas}'>{ordem.Nome}</td>";
 
-                if (ordens > 4 && ordem.Nome.Count() > 20)
+                if (numeroOrdens > 4 && ordem.Nome.Count() > 20)
                 {
                     contadorMaximoLinhasPorPagina = 46;
                 }
@@ -162,8 +162,10 @@
 
                 if (!preencheu && ordem.Id > 0)
                 {
-                    str += $@"<td>&nbsp;</td>";
-                    str += $@"<td>&nbsp;</td>";
+                    for(var k = 0; k < Model.Cabecalho.Perguntas.Count; k++)
+                    {
+                        str += $@"<td>&nbsp;</td>";
+                    }
                 }
             }
 
@@ -197,7 +199,6 @@
 
         return str;
     }
-
 }
 
 <!DOCTYPE html>
@@ -241,9 +242,9 @@
             margin-bottom: 22px;
         }
 
-            .header-pagina td {
-                text-align: left;
-            }
+        .header-pagina td {
+            text-align: left;
+        }
 
         table {
             display: table;
