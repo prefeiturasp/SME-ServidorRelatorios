@@ -147,5 +147,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioPlanoAulaUseCase.Executar(request);
             return true;
         }
+        [HttpGet("relatorios/sondagem/matematica-por-turma")]
+        //TODO: MODIFICAR PARA O USE CASE RELATIVO A HISTORIA
+        [Action("relatorios/sondagem/matematica-por-turma", typeof(IRelatorioPlanoAulaUseCase))]
+        public async Task<bool> RelatorioSondagemComponentesPorTurma([FromQuery] FiltroRelatorioDto request)
+        {
+            
+            return true;
+        }
     }
 }
