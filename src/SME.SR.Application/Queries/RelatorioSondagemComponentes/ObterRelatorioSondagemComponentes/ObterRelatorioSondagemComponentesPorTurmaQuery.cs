@@ -8,7 +8,7 @@ namespace SME.SR.Application
     {
         public int DreId { get; internal set; }
         public int TurmaId { get; internal set; }
-        public int UeId { get; internal set; }
         public int Ano { get; internal set; }
+        public int Semestre { get; internal set; }
     }
 }

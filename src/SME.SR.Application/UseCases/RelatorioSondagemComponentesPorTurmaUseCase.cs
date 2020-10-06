@@ -36,7 +36,7 @@ namespace SME.SR.Application
                     Ano = filtros.Ano,
                     DreId = filtros.DreId,
                     TurmaId = filtros.TurmaId,
-                    UeId = filtros.UeId
+                    Semestre = filtros.Semestre
                });
         }
     }

@@ -21,7 +21,7 @@ namespace SME.SR.Application
 
         public Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            return this.relatorioSondagemComponentePorTurmaRepository.ObterRelatorio(request.DreId, request.TurmaId, request.UeId, request.Ano);
+            return this.relatorioSondagemComponentePorTurmaRepository.ObterRelatorio(request.DreId, request.TurmaId, request.Ano, request.Semestre);
         }
     }
 }

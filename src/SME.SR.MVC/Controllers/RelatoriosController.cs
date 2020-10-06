@@ -2371,18 +2371,18 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
-                            Id = 1,
-                            Nome = "ORDEM 1 - COMPOSIÇÃO"
+                            Id = "1",
+                            Descricao = "ORDEM 1 - COMPOSIÇÃO"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
-                            Id = 2,
-                            Nome = "ORDEM 2 - COMPOSIÇÃO"
+                            Id = "2",
+                            Descricao = "ORDEM 2 - COMPOSIÇÃO"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
-                            Id = 3,
-                            Nome = "ORDEM 3 - COMPOSIÇÃO"
+                            Id = "3",
+                            Descricao = "ORDEM 3 - COMPOSIÇÃO"
                         },
                     },
                     Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
@@ -2406,7 +2406,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
                             Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                             {
-                                Codigo = 6197654,
+                                Codigo = "6197654",
                                 Nome = "ALEXIA FERNANDES LIMA",
                                 SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
                             },
@@ -2415,31 +2415,31 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
                                     Resposta = "Errou",
-                                    PerguntaId = 1
+                                    PerguntaId = "1"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
                                     Resposta = "Errou",
-                                    PerguntaId = 2
+                                    PerguntaId = "2"
                                 },
                               new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
                                     Resposta = "Acertou",
-                                    PerguntaId = 1
+                                    PerguntaId = "1"
                                 },
                                  new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
                                     Resposta = "Errou",
-                                    PerguntaId = 2
+                                    PerguntaId = "2"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 3,
-                                    PerguntaId = 1,
+                                    PerguntaId = "1",
                                     Resposta = "Errou"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 3,
-                                    PerguntaId = 2,
+                                    PerguntaId = "2",
                                     Resposta = "Acertou"
                                 },
                             },
@@ -2447,7 +2447,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
                             Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                             {
-                                Codigo = 6195479,
+                                Codigo = "6195479",
                                 Nome = "ALICE SILVA RIBEIRO",
                                 SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
                             },
@@ -2456,29 +2456,29 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
                                     Resposta = "Acertou",
-                                    PerguntaId = 1
+                                    PerguntaId = "1"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
                                     Resposta = "Errou",
-                                    PerguntaId = 2
+                                    PerguntaId = "2"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
                                     Resposta = "Acertou",
-                                    PerguntaId = 1
+                                    PerguntaId = "1"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
                                     Resposta = "Errou",
-                                    PerguntaId = 2
+                                    PerguntaId = "2"
                                 },
                             },
                         },
                         new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
                             Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                             {
-                                Codigo = 6197654,
+                                Codigo = "6197654",
                                 Nome = "AMANDA ALBUQUERQUE",
                                 SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
                             },
@@ -2487,32 +2487,32 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
                                     Resposta = "Acertou",
-                                    PerguntaId = 1
+                                    PerguntaId = "1"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 1,
                                     Resposta = "Errou",
-                                    PerguntaId = 2
+                                    PerguntaId = "2"
                                 },
                                  new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
                                     Resposta = "Acertou",
-                                    PerguntaId = 1
+                                    PerguntaId = "1"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 2,
                                     Resposta = "Acertou",
-                                    PerguntaId = 2
+                                    PerguntaId = "2"
                                 },
                                           new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 3,
                                     Resposta = "Errou",
-                                    PerguntaId = 1
+                                    PerguntaId = "1"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 3,
                                     Resposta = "Acertou",
-                                    PerguntaId = 2
+                                    PerguntaId = "2"
                                 },
                             },
                         },
