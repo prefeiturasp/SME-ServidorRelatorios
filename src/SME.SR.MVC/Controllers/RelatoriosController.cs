@@ -2143,7 +2143,59 @@ namespace SME.SR.MVC.Controllers
             return model;
 
         }
+        
+        [HttpGet("sondagem-consolidado-matematica-numeros")]
+        public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
+        {
 
+            var model = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
+            model.Ano = "9";
+            model.AnoLetivo = 2020;
+            model.ComponenteCurricular = "Matemática";
+            model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+            model.Dre = "DRE-JT";
+            model.Periodo = "1º semestre";
+            model.Proficiencia = "Multiplicação";
+            model.RF = "7777710";
+            model.Ue = "EMEF - Máximo de Moura";
+            model.Usuario = "Heloisa de Sá";
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            { Pergunta = "Familiares ou frequentes", Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() { 
+             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = 100, Resposta = "Escreve convencionalmente" },
+             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 90, AlunosQuantidade = 900, Resposta = "Não escreve convencionalmente" }
+            } });
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Opacos",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 50, AlunosQuantidade = 500, Resposta = "Escreve convencionalmente" },
+             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 50, AlunosQuantidade = 500, Resposta = "Não escreve convencionalmente" }
+            }
+            });
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Transparentes",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 40, AlunosQuantidade = 400, Resposta = "Escreve convencionalmente" },
+             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = 600, Resposta = "Não escreve convencionalmente" }
+            }
+            });
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Terminam em zero",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 20, AlunosQuantidade = 200, Resposta = "Escreve convencionalmente" },
+             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 80, AlunosQuantidade = 800, Resposta = "Não escreve convencionalmente" }
+            }
+            });
+
+
+            return View("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", model);
+        }
 
         [HttpGet("plano-aula")]
         public IActionResult RelatorioPlanoAula()

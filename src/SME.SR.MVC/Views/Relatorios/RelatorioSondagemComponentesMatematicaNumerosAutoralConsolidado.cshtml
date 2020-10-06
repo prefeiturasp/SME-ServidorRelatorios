@@ -1,0 +1,290 @@
+﻿
+
+@model SME.SR.Infra.RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 44;
+    int contadorPagina = 0;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always'></div>" + str;
+
+        }
+        return string.Empty;
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        var str =
+            $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'> RELATÓRIO DE SONDAGEM</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {Model.Dre}</td>
+<td width='45%' class='espaco-esquerda-15 sem-border-bottom'>UE: {Model.Ue}</td>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO LETIVO: {Model.AnoLetivo}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>CICLO: {Model.Periodo}</td>
+<td width='30%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Ano}</td>
+<td width='35%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Turma}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='100%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Periodo}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='60%' class='espaco-esquerda-15'>USUÁRIO: {Model.Usuario}</td>
+<td width='20%' class='espaco-esquerda-15'>RF: {Model.RF}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.DataSolicitacao}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+
+
+    string EspacoEmBranco()
+    {
+        return $@"<table class='tabela-alunos'><thead><th class='thLimpo' width='100%'></th></thead></table>";
+    }
+
+    string MontaTabelaPerguntasRespostas(SME.SR.Infra.RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto perguntaRespostas)
+    {
+
+        <table>
+            <thead>
+                <tr>
+                    <td width="45%">
+                        @perguntaRespostas.Pergunta
+                    </td>
+                    <td width="45%">
+                        Alunos
+                    </td>
+                    <td width="10%">
+                        %
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        teste 1
+                    </td>
+                    <td>
+                        teste 2
+                    </td>
+                    <td>
+                        teste 3
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        return "";
+    }
+
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Relatório Sondagem</title>
+    </head>
+    <body class="body-relatorio">
+        <style>
+
+            .tblTopo th, td {
+                padding: 3px 0;
+                text-align: left;
+            }
+
+            .body-relatorio {
+                margin: 0.5cm auto;
+                font-family: Roboto, sans-serif;
+                width: 21cm;
+                min-height: 29.7cm;
+                background: white;
+                color: #42474a;
+            }
+
+            .titulo-sgp {
+                text-align: right;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .titulo-relatorio {
+                text-align: right;
+                font-size: 14.5px;
+                margin-top: 7px;
+            }
+
+            .header-pagina {
+                margin-top: 33px;
+                margin-bottom: 22px;
+            }
+
+                .header-pagina td {
+                    text-align: left;
+                }
+
+            table {
+                display: table;
+                width: 100%;
+                border-color: #42474a;
+                empty-cells: show;
+                border: none;
+                border-collapse: collapse;
+            }
+
+            thead {
+                background-color: #f3f3f3;
+            }
+
+            th {
+                border: 1px solid #42474a;
+                font-weight: normal;
+            }
+
+            td {
+                border: 1px solid #42474a;
+                text-align: center;
+            }
+
+            .tabela-cabecalho tr {
+                font-size: 12px;
+                height: 24px;
+            }
+
+            .mt-25 {
+                margin-top: 25px;
+            }
+
+            .fonte-14 {
+                font-size: 14px !important;
+            }
+
+            .alinhar-esquerda {
+                text-align: left;
+            }
+
+            .espaco-esquerda-15 {
+                padding-left: 15px;
+            }
+
+            .negrito {
+                font-weight: bold;
+            }
+
+            .sem-border-bottom {
+                border-bottom: 0;
+            }
+
+            .sem-border-top {
+                border-bottom: 0;
+            }
+
+            .fundo-cinza {
+                background-color: #f3f3f3;
+            }
+
+            .thLimpo {
+                background-color: #ffffff;
+                border-top: 0;
+                border-bottom: 0;
+                height: 22px;
+            }
+
+            .img-logo-sgp {
+                height: 64px;
+                float: left;
+            }
+
+
+            .tb-cabecalho1 {
+                background-color: #f3f3f3;
+                text-align: CENTER;
+                font-size: 16px;
+                padding: 10px;
+                padding-left: 20px;
+            }
+
+            .tb-cabecalho2 {
+                background-color: #f3f3f3;
+                text-align: CENTER;
+                font-size: 12px;
+                padding: 5px;
+            }
+
+            .tb-conteudo2 {
+                border-top: none;
+                width: 10%;
+                text-align: CENTER;
+                font-size: 16px;
+                padding: 5px;
+            }
+
+            .tb-conteudo3 {
+                font-size: 12px;
+                border-top: none;
+                padding-left: 10px;
+                padding-right: 10px;
+                text-align: left;
+                min-height: 24px;
+            }
+
+            .centralizar {
+                text-align: center;
+            }
+        </style>
+        <div>
+            @{
+                @Html.Raw(MontarCabecalho())
+
+                foreach (var perguntaResposta in Model.PerguntasRespostas)
+                {
+                    @Html.Raw(MontaTabelaPerguntasRespostas(perguntaResposta));
+
+                }
+
+
+            }
+        </div>        
+    </body>
+</html>
+                }
+
