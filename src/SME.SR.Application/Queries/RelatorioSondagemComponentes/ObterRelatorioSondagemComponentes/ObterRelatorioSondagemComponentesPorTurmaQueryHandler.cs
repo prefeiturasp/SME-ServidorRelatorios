@@ -35,48 +35,63 @@ namespace SME.SR.Application
             this.usuarioRepository = usuarioRepository ?? throw new ArgumentNullException(nameof(usuarioRepository));
         }
 
-        public Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
+        public async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(new RelatorioSondagemComponentesPorTurmaRelatorioDto() { 
-                Cabecalho = ObterCabecalho(request),
-                Planilha = ObterPlanilha(request)
-            });
+            RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
+            RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha = await ObterPlanilha(request);
+
+            return new RelatorioSondagemComponentesPorTurmaRelatorioDto() { 
+                Cabecalho = cabecalho,
+                Planilha = planilha
+            };
         }
 
-        private RelatorioSondagemComponentesPorTurmaCabecalhoDto ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        private async Task<RelatorioSondagemComponentesPorTurmaCabecalhoDto> ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
+            var componenteCurricular = await ObterComponenteCurricular(request.ComponenteCurricularId);
+            var ordens = await ObterOrdens();
+            var ue = await ObterUe(request.UeCodigo);
+            var usuario = await this.usuarioRepository.ObterDados(request.UsuarioRF);
+            var perguntas = await ObterPerguntas();
+
             return new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
             {
                 Ano = request.AnoLetivo,
                 AnoLetivo = request.AnoLetivo,
-                ComponenteCurricular = ObterComponenteCurricular(request.ComponenteCurricularId).Descricao,
+                ComponenteCurricular = componenteCurricular.FirstOrDefault().Descricao,
                 DataSolicitacao = DateTime.Now,
                 Dre = this.dreRepository.ObterPorCodigo(request.DreCodigo).Result.Abreviacao,
                 Periodo = request.Semestre.ToString(),
-                Proficiencia = "Campo Aditivo",
+                Proficiencia = request.ProficienciaId.ToString(),
                 Turma = request.TurmaCodigo,
-                Ue = ObterUe(request.UeCodigo).NomeRelatorio,
+                Ue = ue.NomeRelatorio,
                 Rf = request.UsuarioRF,
-                Usuario = this.usuarioRepository.ObterDados(request.UsuarioRF).Result.Login,
-                Ordens = this.relatorioSondagemComponentePorTurmaRepository.ObterOrdens(),
-                Perguntas = ObterPerguntas()
+                Usuario = usuario.Login,
+                Ordens = ordens.ToList(),
+                Perguntas = perguntas
             };
         }
 
-        private ComponenteCurricularSondagem ObterComponenteCurricular(string componenteCurricularId)
+        private async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> ObterOrdens()
         {
-            return this.componenteCurricularRepository.ObterComponenteCurricularDeSondagemPorId(componenteCurricularId).Result.FirstOrDefault();
+            return await this.relatorioSondagemComponentePorTurmaRepository.ObterOrdensAsync();
 
         }
 
-        private Ue ObterUe(string ueCodigo)
+        private async Task<IEnumerable<ComponenteCurricularSondagem>> ObterComponenteCurricular(string componenteCurricularId)
         {
-            return this.ueRepository.ObterPorCodigo(ueCodigo).Result;
+            return await this.componenteCurricularRepository.ObterComponenteCurricularDeSondagemPorId(componenteCurricularId);
+
         }
 
-        public List<RelatorioSondagemComponentesPorTurmaPerguntaDto> ObterPerguntas()
+        private async Task<Ue> ObterUe(string ueCodigo)
         {
-            return new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
+            return await this.ueRepository.ObterPorCodigo(ueCodigo);
+        }
+
+        public async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntas()
+        {
+            return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
                 {
                     new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                     {
@@ -88,28 +103,31 @@ namespace SME.SR.Application
                         Id = 2,
                         Nome = "Resultado"
                     }
-                };
+                });
         }
 
-        public RelatorioSondagemComponentesPorTurmaPlanilhaDto ObterPlanilha(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        public async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilha(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+            var planilhaLinhas = await this.relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo, request.AnoLetivo, request.Semestre);
 
-            foreach (var linha in this.relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo, request.AnoLetivo, request.Semestre))
+            List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+            foreach (var linha in planilhaLinhas.ToList())
             {
+                var aluno = await ObterAluno(linha.TurmaEolCode, linha.AlunoEolCode, linha.AlunoNome);
+                var respostas = await ObterOrdemRespostas(linha);
+
                 linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
                 {
-                    Aluno = ObterAluno(linha.TurmaEolCode, linha.AlunoEolCode, linha.AlunoNome),
-                    OrdensRespostas = ObterOrdemRespostas(linha)
+                    Aluno = aluno,
+                    OrdensRespostas = respostas
                 });
             }
-
             return new RelatorioSondagemComponentesPorTurmaPlanilhaDto() { Linhas = linhasPlanilhaQueryDto };
         }
 
-        private RelatorioSondagemComponentesPorTurmaAlunoDto ObterAluno(string turmaEolCode, string alunoEolCode, string alunoNome)
+        private async Task<RelatorioSondagemComponentesPorTurmaAlunoDto> ObterAluno(string turmaEolCode, string alunoEolCode, string alunoNome)
         {
-            Aluno aluno = alunoRepository.ObterDados(turmaEolCode, alunoEolCode).Result;
+            Aluno aluno = await alunoRepository.ObterDados(turmaEolCode, alunoEolCode);
 
             return new RelatorioSondagemComponentesPorTurmaAlunoDto()
             {
@@ -120,9 +138,9 @@ namespace SME.SR.Application
             };
         }
 
-        private List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> ObterOrdemRespostas(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha)
+        private async Task<List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>> ObterOrdemRespostas(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha)
         {
-            return new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+            return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                 {
                     new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                         OrdemId = 1,
@@ -144,7 +162,7 @@ namespace SME.SR.Application
                         PerguntaId = linha.Ordem4Ideia,
                         Resposta = linha.Ordem4Resultado,
                     },
-                };
+                });
         }
     }
 }
