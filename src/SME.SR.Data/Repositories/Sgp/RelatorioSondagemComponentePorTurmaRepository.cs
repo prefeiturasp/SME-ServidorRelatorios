@@ -17,16 +17,16 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public List<RelatorioSondagemComponentesPorTurmaOrdemDto> ObterOrdens()
+        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> ObterOrdensAsync()
         {
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
-                return conexao.Query<RelatorioSondagemComponentesPorTurmaOrdemDto>(
-                "select Id, Descricao from Ordem").ToList();
+                return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaOrdemDto>(
+                "select Id, Descricao from Ordem");
             }
         }
 
-        public List<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int ano, int semestre)
+        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int ano, int semestre)
         {
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
@@ -54,7 +54,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
                 var parametros = new { dreCodigo, ano, turmaCodigo, semestre };
 
-                return conexao.Query<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql, parametros).ToList();
+                return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql, parametros);
             }
         }
     }
