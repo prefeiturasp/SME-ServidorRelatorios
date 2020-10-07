@@ -14,13 +14,22 @@ namespace SME.SR.Application
     { 
         private readonly IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository;
         private readonly IAlunoRepository alunoRepository;
+        private readonly IComponenteCurricularRepository componenteCurricularRepository;
+        private readonly IDreRepository dreRepository;
+        private readonly IUeRepository ueRepository;
 
         public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
             IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
-            IAlunoRepository alunoRepository)
+            IAlunoRepository alunoRepository,
+            IComponenteCurricularRepository componenteCurricularRepository,
+            IDreRepository dreRepository,
+            IUeRepository ueRepository)
         {
             this.relatorioSondagemComponentePorTurmaRepository = relatorioSondagemComponentePorTurmaRepository ?? throw new ArgumentNullException(nameof(relatorioSondagemComponentePorTurmaRepository));
             this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
+            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
+            this.dreRepository = dreRepository ?? throw new ArgumentNullException(nameof(dreRepository));
+            this.ueRepository = ueRepository ?? throw new ArgumentNullException(nameof(ueRepository));
         }
 
         public Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
@@ -33,23 +42,33 @@ namespace SME.SR.Application
 
         private RelatorioSondagemComponentesPorTurmaCabecalhoDto ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            // TODO: Pegar os dados do cabeçalho pelo Dto que o Lobo desenvolveu
             return new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
             {
-                Ano = request.Ano,
-                AnoLetivo = request.Ano,
-                ComponenteCurricular = "Matemática",
+                Ano = request.AnoLetivo,
+                AnoLetivo = request.AnoLetivo,
+                ComponenteCurricular = ObterComponenteCurricular(request.ComponenteCurricularId).Descricao,
                 DataSolicitacao = DateTime.Now,
-                Dre = "", // TODO: Pegar o nome do DRE abreviado
+                Dre = this.dreRepository.ObterPorCodigo(request.DreCodigo).Result.Abreviacao,
                 Periodo = request.Semestre.ToString(),
                 Proficiencia = "Campo Aditivo",
-                Turma = "Todas",
-                Ue = "CEU EMEF BUTANTA",
-                Rf = "987987",
-                Usuario = "master",
+                Turma = request.TurmaCodigo,
+                Ue = ObterUe(request.UeCodigo).NomeRelatorio,
+                Rf = request.UsuarioRF,
+                Usuario = request.UsuarioRF,
                 Ordens = this.relatorioSondagemComponentePorTurmaRepository.ObterOrdens(),
                 Perguntas = ObterPerguntas()
             };
+        }
+
+        private ComponenteCurricularSondagem ObterComponenteCurricular(string componenteCurricularId)
+        {
+            return this.componenteCurricularRepository.ObterComponenteCurricularDeSondagemPorId(componenteCurricularId).Result.FirstOrDefault();
+
+        }
+
+        private Ue ObterUe(string ueCodigo)
+        {
+            return this.ueRepository.ObterPorCodigo(ueCodigo).Result;
         }
 
         public List<RelatorioSondagemComponentesPorTurmaPerguntaDto> ObterPerguntas()
@@ -73,7 +92,7 @@ namespace SME.SR.Application
         {
             List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
-            foreach (var linha in this.relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreId, request.TurmaId, request.Ano, request.Semestre))
+            foreach (var linha in this.relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo, request.AnoLetivo, request.Semestre))
             {
                 linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
                 {

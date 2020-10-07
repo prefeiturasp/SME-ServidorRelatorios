@@ -16,7 +16,7 @@ namespace SME.SR.Application
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task Executar(RelatorioSondagemComponentesPorTurmaFiltroDto request)
+        public async Task Executar(FiltroRelatorioDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemComponentesPorTurmaFiltroDto>();
 
@@ -33,10 +33,14 @@ namespace SME.SR.Application
             return await mediator.Send(
                new ObterRelatorioSondagemComponentesPorTurmaQuery()
                {
-                    Ano = filtros.Ano,
-                    DreId = filtros.DreId,
-                    TurmaId = filtros.TurmaId,
-                    Semestre = filtros.Semestre
+                    AnoLetivo = filtros.AnoLetivo,
+                    ComponenteCurricularId = filtros.ComponenteCurricularId,
+                    DreCodigo = filtros.DreCodigo,
+                    ProficienciaId = filtros.ProficienciaId,
+                    Semestre = filtros.Semestre,
+                    TurmaCodigo = filtros.TurmaCodigo,
+                    UeCodigo = filtros.UeCodigo,
+                    UsuarioRF = filtros.UsuarioRF
                });
         }
     }

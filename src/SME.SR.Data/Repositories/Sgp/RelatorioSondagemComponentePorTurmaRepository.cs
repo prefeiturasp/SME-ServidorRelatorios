@@ -26,7 +26,7 @@ namespace SME.SR.Data.Repositories.Sgp
             }
         }
 
-        public List<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto> ObterPlanilhaLinhas(int dreId, int turmaId, int ano, int semestre)
+        public List<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int ano, int semestre)
         {
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
@@ -46,12 +46,14 @@ namespace SME.SR.Data.Repositories.Sgp
                         Ordem4Resultado
                         from MathPoolCAs
                         where
-                        DreEolCode = { dreId }
-                        and AnoLetivo = { ano }
-                        and AnoTurma = { turmaId }
+                        DreEolCode = @dreCodigo
+                        and AnoLetivo = @ano
+                        and AnoTurma = @turmaCodigo
                         order by AlunoNome";
 
-                return conexao.Query<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql).ToList();
+                var parametros = new { dreCodigo, ano, turmaCodigo };
+
+                return conexao.Query<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql, parametros).ToList();
             }
         }
     }
