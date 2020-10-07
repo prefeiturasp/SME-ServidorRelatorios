@@ -40,7 +40,7 @@ namespace SME.SR.Data
 
             var parametros = new { codigoDre, codigoUe, anoTurma, anoLetivo, semestre };
 
-			using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringEol);
+			using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 			return await conexao.QueryAsync<MathPoolNumber>(query.ToString(), parametros);
 		}
     }
