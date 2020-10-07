@@ -2349,40 +2349,364 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
-        [HttpGet("sondagem-componentes-por-turma")]
-        public IActionResult SondagemComponentesPorTurma()
+        [HttpGet("sondagem-componentes-numeros")]
+        public IActionResult SondagemComponentesNumeros()
         {
+            var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+
+            for(var i = 0; i < 30; i++)
+            {
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
+                        Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                        {
+                            Codigo = 6197654,
+                            Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
+                            SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
+                        },
+                        OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                        {
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "",
+                                PerguntaId = 1
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 2
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 3
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 4
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 5
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "",
+                                PerguntaId = 6
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 7
+                            },
+                        }
+                    });
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6195479,
+                        Nome = "ALICE SILVA RIBEIRO",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                            {
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Não Escreve Convencionalmente",
+                                    PerguntaId = 1
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "",
+                                    PerguntaId = 2
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Escreve Convencionalmente",
+                                    PerguntaId = 3
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Não Escreve Convencionalmente",
+                                    PerguntaId = 4
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Não Escreve Convencionalmente",
+                                    PerguntaId = 5
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "Não Escreve Convencionalmente",
+                                    PerguntaId = 6
+                                },
+                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                    OrdemId = 0,
+                                    Resposta = "",
+                                    PerguntaId = 7
+                                },
+                            },
+                });
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "AMANDA ALBUQUERQUE",
+                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                        {
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Não Escreve Convencionalmente",
+                                PerguntaId = 1
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Não Escreve Convencionalmente",
+                                PerguntaId = 2
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Não Escreve Convencionalmente",
+                                PerguntaId = 3
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "",
+                                PerguntaId = 4
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "",
+                                PerguntaId = 5
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Não Escreve Convencionalmente",
+                                PerguntaId = 6
+                            },
+                            new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                                OrdemId = 0,
+                                Resposta = "Escreve Convencionalmente",
+                                PerguntaId = 7
+                            },
+                    },
+                });
+            }
+
             var model = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
             {
                 Cabecalho = new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
                 {
-                    Ano = 2020,
+                    Ano = 5,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Matemática",
+                    DataSolicitacao = DateTime.Now,
+                    Dre = "DRE - BT",
+                    Periodo = "1º Semestre",
+                    Proficiencia = "Números",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    Ordens = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>()
+                    {
+                        new RelatorioSondagemComponentesPorTurmaOrdemDto()
+                        {
+                            Id = 0,
+                            Nome = "ORDEM 1 - COMPOSIÇÃO"
+                        },                        
+                    },
+                    Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 1,
+                            Nome = "Familiares ou Frequentes"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 2,
+                            Nome = "Opacos"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 3,
+                            Nome = "Transparentes"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 4,
+                            Nome = "Terminam em Zero"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 5,
+                            Nome = "Algarismos Iguais"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 6,
+                            Nome = "Processos de Generalização"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 7,
+                            Nome = "Zeros Intercalados"
+                        }
+                    },
+                },
+                Planilha = new RelatorioSondagemComponentesPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
+            };
+
+            return View("RelatorioSondagemComponentesPorTurma", model);
+        }
+
+        [HttpGet("sondagem-componentes-aditivos")]
+        public IActionResult SondagemComponentesAditivos()
+        {
+            var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+            for (var i = 0; i < 20; i++)
+            {
+                linhas.Add(
+                new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 1,
+                            Resposta = "Errou",
+                            PerguntaId = 1
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 1,
+                            Resposta = "Acertou",
+                            PerguntaId = 2
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 2,
+                            Resposta = "Errou",
+                            PerguntaId = 1 
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 2,
+                            Resposta = "Não resolveu",
+                            PerguntaId = 2
+                        },
+                    },
+                });
+                linhas.Add(
+                new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 4650630,
+                        Nome = "MATHEUS GUILHERME NASCIMENTO DA SILVA (RECLASSIFICADO SAÍDA EM 11/04/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                    {                        
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 2,
+                            Resposta = "Errou",
+                            PerguntaId = 1
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 2,
+                            Resposta = "Não resolveu",
+                            PerguntaId = 2
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 3,
+                            Resposta = "Errou",
+                            PerguntaId = 1
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 3,
+                            Resposta = "Acertou",
+                            PerguntaId = 2
+                        },
+                    },
+                });
+                linhas.Add(
+                new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "AMANDA ALBUQUERQUE",
+                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                    { 
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 1,
+                            Resposta = "Errou",
+                            PerguntaId = 1
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 1,
+                            Resposta = "Acertou",
+                            PerguntaId = 2
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 3,
+                            Resposta = "Errou",
+                            PerguntaId = 1
+                        },
+                        new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
+                            OrdemId = 3,
+                            Resposta = "Acertou",
+                            PerguntaId = 2
+                        },
+                    },
+                });
+
+            }
+
+            var model = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
+                {
+                    Ano = 5,
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
                     DataSolicitacao = DateTime.Now,
                     Dre = "DRE - BT",
                     Periodo = "1º Semestre",
                     Proficiencia = "Campo Aditivo",
-                    Rf = "987987",
+                    Rf = "9879878",
                     Turma = "Todas",
                     Ue = "CEU EMEF BUTANTA",
-                    Usuario = "master",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
                     Ordens = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>()
                     {
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
-                            Id = "1",
-                            Descricao = "ORDEM 1 - COMPOSIÇÃO"
+                            Id = 1,
+                            Nome = "ORDEM 1 - COMPOSIÇÃO"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
-                            Id = "2",
-                            Descricao = "ORDEM 2 - COMPOSIÇÃO"
+                            Id = 2,
+                            Nome = "ORDEM 2 - COMPOSIÇÃO"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
-                            Id = "3",
-                            Descricao = "ORDEM 3 - COMPOSIÇÃO"
+                            Id = 3,
+                            Nome = "ORDEM 3 - COMPOSIÇÃO"
                         },
                     },
                     Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
@@ -2401,123 +2725,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
                 Planilha = new RelatorioSondagemComponentesPorTurmaPlanilhaDto()
                 {
-                    Linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
-                    {
-                        new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
-                            Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
-                            {
-                                Codigo = "6197654",
-                                Nome = "ALEXIA FERNANDES LIMA",
-                                SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
-                            },
-                            OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                            {
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 1,
-                                    Resposta = "Errou",
-                                    PerguntaId = "1"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 1,
-                                    Resposta = "Errou",
-                                    PerguntaId = "2"
-                                },
-                              new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 2,
-                                    Resposta = "Acertou",
-                                    PerguntaId = "1"
-                                },
-                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 2,
-                                    Resposta = "Errou",
-                                    PerguntaId = "2"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 3,
-                                    PerguntaId = "1",
-                                    Resposta = "Errou"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 3,
-                                    PerguntaId = "2",
-                                    Resposta = "Acertou"
-                                },
-                            },
-                        },
-                        new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
-                            Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
-                            {
-                                Codigo = "6195479",
-                                Nome = "ALICE SILVA RIBEIRO",
-                                SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
-                            },
-                            OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                            {
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 1,
-                                    Resposta = "Acertou",
-                                    PerguntaId = "1"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 1,
-                                    Resposta = "Errou",
-                                    PerguntaId = "2"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 2,
-                                    Resposta = "Acertou",
-                                    PerguntaId = "1"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 2,
-                                    Resposta = "Errou",
-                                    PerguntaId = "2"
-                                },
-                            },
-                        },
-                        new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
-                            Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
-                            {
-                                Codigo = "6197654",
-                                Nome = "AMANDA ALBUQUERQUE",
-                                SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
-                            },
-                            OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                            {
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 1,
-                                    Resposta = "Acertou",
-                                    PerguntaId = "1"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 1,
-                                    Resposta = "Errou",
-                                    PerguntaId = "2"
-                                },
-                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 2,
-                                    Resposta = "Acertou",
-                                    PerguntaId = "1"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 2,
-                                    Resposta = "Acertou",
-                                    PerguntaId = "2"
-                                },
-                                          new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 3,
-                                    Resposta = "Errou",
-                                    PerguntaId = "1"
-                                },
-                                new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
-                                    OrdemId = 3,
-                                    Resposta = "Acertou",
-                                    PerguntaId = "2"
-                                },
-                            },
-                        },
-                    }
-                }
+                    Linhas = linhas
+                },
             };
 
             return View("RelatorioSondagemComponentesPorTurma", model);
