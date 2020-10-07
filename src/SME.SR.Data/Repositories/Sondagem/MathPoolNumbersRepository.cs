@@ -24,19 +24,19 @@ namespace SME.SR.Data
             query.Append("SELECT * from \"MathPoolNumbers\" mpn where 1=1 ");
 
             if (!string.IsNullOrEmpty(codigoDre))
-                query.Append("and DreEolCode = @codigoDre ");
+                query.Append("and \"DreEolCode\" = @codigoDre ");
 
             if (!string.IsNullOrEmpty(codigoUe))
-                query.Append("and EscolaEolCode = @codigoUe ");
+                query.Append("and \"EscolaEolCode\" = @codigoUe ");
 
             if (anoTurma > 0)
-                query.Append("and AnoTurma = @anoTurma ");
+                query.Append("and \"AnoTurma\" = @anoTurma ");
 
             if (anoLetivo > 0)
-                query.Append("and AnoLetivo = @anoLetivo ");
+                query.Append("and \"AnoLetivo\" = @anoLetivo ");
 
             if (semestre > 0)
-                query.Append("and Semestre = @semestre ");
+                query.Append("and \"Semestre\" = @semestre ");
 
             var parametros = new { codigoDre, codigoUe, anoTurma, anoLetivo, semestre };
 

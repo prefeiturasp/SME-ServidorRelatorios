@@ -9,8 +9,8 @@ namespace SME.SR.Application
 {
     public class ObterUsuarioPorCodigoRfQueryHandler : IRequestHandler<ObterUsuarioPorCodigoRfQuery, Usuario>
     {
-
         private readonly IUsuarioRepository usuarioRepository;
+
         public ObterUsuarioPorCodigoRfQueryHandler(IUsuarioRepository usuarioRepository)
         {
             this.usuarioRepository = usuarioRepository ?? throw new ArgumentNullException(nameof(usuarioRepository));

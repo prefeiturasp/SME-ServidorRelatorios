@@ -10,7 +10,7 @@
 
         public string UeCodigo { get; set; }
 
-        public int TurmaAno { get; set; }
+        public int Ano { get; set; }
 
         public string UsuarioRf { get; set; }
     }

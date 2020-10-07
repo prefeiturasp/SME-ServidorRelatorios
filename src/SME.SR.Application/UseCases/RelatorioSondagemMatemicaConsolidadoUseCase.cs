@@ -31,7 +31,7 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter a UE.");
             }
 
-            if (!string.IsNullOrEmpty(filtros.UeCodigo))
+            if (!string.IsNullOrEmpty(filtros.DreCodigo))
             {
                 dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
                 if (dre == null)
@@ -52,7 +52,7 @@ namespace SME.SR.Application
                 Dre = dre,
                 Ue = ue,
                 Semestre = filtros.Semestre,
-                TurmaAno = filtros.TurmaAno,
+                TurmaAno = filtros.Ano,
                 Usuario = usuario
             });
 
