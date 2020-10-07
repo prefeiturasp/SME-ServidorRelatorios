@@ -2359,7 +2359,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
                         Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                         {
-                            Codigo = 6197654,
+                            Codigo = "6197654",
                             Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
                             SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
                         },
@@ -2368,44 +2368,44 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "",
-                                PerguntaId = 1
+                                PerguntaId = "1"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = 2
+                                PerguntaId = "2"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = 3
+                                PerguntaId = "3"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = 4
+                                PerguntaId = "4"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = 5
+                                PerguntaId = "5"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "",
-                                PerguntaId = 6
+                                PerguntaId = "6"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = 7
+                                PerguntaId = "7"
                             },
                         }
                     });
                 linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = 6195479,
+                        Codigo = "6195479",
                         Nome = "ALICE SILVA RIBEIRO",
                         SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
                     },
@@ -2414,37 +2414,37 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Não Escreve Convencionalmente",
-                                    PerguntaId = 1
+                                    PerguntaId = "1"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "",
-                                    PerguntaId = 2
+                                    PerguntaId = "2"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Escreve Convencionalmente",
-                                    PerguntaId = 3
+                                    PerguntaId = "3"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Não Escreve Convencionalmente",
-                                    PerguntaId = 4
+                                    PerguntaId = "4"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Não Escreve Convencionalmente",
-                                    PerguntaId = 5
+                                    PerguntaId = "5"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Não Escreve Convencionalmente",
-                                    PerguntaId = 6
+                                    PerguntaId = "6"
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "",
-                                    PerguntaId = 7
+                                    PerguntaId = "7"
                                 },
                             },
                 });
@@ -2452,7 +2452,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = 6197654,
+                        Codigo = "6197654",
                         Nome = "AMANDA ALBUQUERQUE",
                         SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
                     },
@@ -2461,37 +2461,37 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Não Escreve Convencionalmente",
-                                PerguntaId = 1
+                                PerguntaId = "1"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Não Escreve Convencionalmente",
-                                PerguntaId = 2
+                                PerguntaId = "2"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Não Escreve Convencionalmente",
-                                PerguntaId = 3
+                                PerguntaId = "3"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "",
-                                PerguntaId = 4
+                                PerguntaId = "4"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "",
-                                PerguntaId = 5
+                                PerguntaId = "5"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Não Escreve Convencionalmente",
-                                PerguntaId = 6
+                                PerguntaId = "6"
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = 7
+                                PerguntaId = "7"
                             },
                     },
                 });
@@ -2517,7 +2517,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
                             Id = 0,
-                            Nome = "ORDEM 1 - COMPOSIÇÃO"
+                            Descricao = "ORDEM 1 - COMPOSIÇÃO"
                         },                        
                     },
                     Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
@@ -2579,7 +2579,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = 6197654,
+                        Codigo = "6197654",
                         Nome = "ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA",
                         SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
                     },
@@ -2588,22 +2588,22 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Acertou",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Errou",
-                            PerguntaId = 1 
+                            PerguntaId = "1" 
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Não resolveu",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                     },
                 });
@@ -2612,7 +2612,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = 4650630,
+                        Codigo = "4650630",
                         Nome = "MATHEUS GUILHERME NASCIMENTO DA SILVA (RECLASSIFICADO SAÍDA EM 11/04/2020)",
                         SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
                     },
@@ -2621,22 +2621,22 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Não resolveu",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Acertou",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                     },
                 });
@@ -2645,7 +2645,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = 6197654,
+                        Codigo = "6197654",
                         Nome = "AMANDA ALBUQUERQUE",
                         SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
                     },
@@ -2654,22 +2654,22 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Acertou",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Acertou",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                     },
                 });
@@ -2696,17 +2696,17 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
                             Id = 1,
-                            Nome = "ORDEM 1 - COMPOSIÇÃO"
+                            Descricao = "ORDEM 1 - COMPOSIÇÃO"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
                             Id = 2,
-                            Nome = "ORDEM 2 - COMPOSIÇÃO"
+                            Descricao = "ORDEM 2 - COMPOSIÇÃO"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemDto()
                         {
                             Id = 3,
-                            Nome = "ORDEM 3 - COMPOSIÇÃO"
+                            Descricao = "ORDEM 3 - COMPOSIÇÃO"
                         },
                     },
                     Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()

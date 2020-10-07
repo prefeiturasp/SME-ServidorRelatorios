@@ -6,8 +6,9 @@ namespace SME.SR.Infra
 {
     public class RelatorioSondagemComponentesPorTurmaAlunoDto
     {
-        public long Codigo { get; set; }
+        public string Codigo { get; set; }
         public string Nome { get; set; }
         public SituacaoMatriculaAluno SituacaoMatricula { get; set; }
+        public DateTime DataSituacao { get; set; }
     }
 }
