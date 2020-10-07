@@ -2149,50 +2149,164 @@ namespace SME.SR.MVC.Controllers
         {
 
             var model = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
-            model.Ano = "9";
-            model.AnoLetivo = 2020;
-            model.ComponenteCurricular = "Matemática";
-            model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
             model.Dre = "DRE-JT";
-            model.Periodo = "1º semestre";
-            model.Proficiencia = "Multiplicação";
-            model.RF = "7777710";
             model.Ue = "EMEF - Máximo de Moura";
-            model.Usuario = "Heloisa de Sá";
+            model.AnoLetivo = 2020;
+            model.Ano = "9";
+            model.Turma = "Todas";
+            model.ComponenteCurricular = "Matemática";
+            model.Proficiencia = "Números";
+            model.Periodo = "1º semestre";
+            model.Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque";
+            model.RF = "7777710";
+            model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
 
             model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-            { Pergunta = "Familiares ou frequentes", Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() { 
-             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = 100, Resposta = "Escreve convencionalmente" },
-             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 90, AlunosQuantidade = 900, Resposta = "Não escreve convencionalmente" }
-            } });
-
+            { 
+                Pergunta = "Familiares ou frequentes", Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() { 
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 82, AlunosQuantidade = 32275, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 18, AlunosQuantidade = 7040, Resposta = "Não escreve convencionalmente" }
+                } 
+            });
             model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
             {
                 Pergunta = "Opacos",
                 Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 50, AlunosQuantidade = 500, Resposta = "Escreve convencionalmente" },
-             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 50, AlunosQuantidade = 500, Resposta = "Não escreve convencionalmente" }
-            }
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 73, AlunosQuantidade = 28021, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 27, AlunosQuantidade = 10293, Resposta = "Não escreve convencionalmente" }
+                }
             });
-
             model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
             {
                 Pergunta = "Transparentes",
                 Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 40, AlunosQuantidade = 400, Resposta = "Escreve convencionalmente" },
-             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = 600, Resposta = "Não escreve convencionalmente" }
-            }
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 56, AlunosQuantidade = 21333, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 44, AlunosQuantidade = 16770, Resposta = "Não escreve convencionalmente" }
+                }
             });
-
             model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
             {
                 Pergunta = "Terminam em zero",
                 Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 20, AlunosQuantidade = 200, Resposta = "Escreve convencionalmente" },
-             new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 80, AlunosQuantidade = 800, Resposta = "Não escreve convencionalmente" }
-            }
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 53, AlunosQuantidade = 20307, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 47, AlunosQuantidade = 17668, Resposta = "Não escreve convencionalmente" }
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Algarismos iguais",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 50, AlunosQuantidade = 18794, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 50, AlunosQuantidade = 18925 , Resposta = "Não escreve convencionalmente" }
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Processo de generalização",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 43, AlunosQuantidade = 16201, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 57, AlunosQuantidade = 21159, Resposta = "Não escreve convencionalmente" }
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Zero intercalado",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 33, AlunosQuantidade = 7054, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 67, AlunosQuantidade = 14374, Resposta = "Não escreve convencionalmente" }
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Zero intercalado1",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 33, AlunosQuantidade = 7054, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 67, AlunosQuantidade = 14374, Resposta = "Não escreve convencionalmente" }
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Zero intercalado2",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 33, AlunosQuantidade = 7054, Resposta = "Escreve convencionalmente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 67, AlunosQuantidade = 14374, Resposta = "Não escreve convencionalmente" }
+                }
             });
 
+            return View("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", model);
+        }
+
+        [HttpGet("sondagem-consolidado-matematica-autoral")]
+        public IActionResult RelatorioSondagemConsolidadoMatematicaAutoral()
+        {
+
+            var model = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
+            model.Dre = "DRE-JT";
+            model.Ue = "EMEF - Máximo de Moura";
+            model.AnoLetivo = 2020;
+            model.Ano = "9";
+            model.Turma = "Todas";
+            model.ComponenteCurricular = "Matemática";
+            model.Proficiencia = "Números";
+            model.Periodo = "1º semestre";
+            model.Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque";
+            model.RF = "7777710";
+            model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Problema de lógica",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 20, AlunosQuantidade = 32275, Resposta = "Resolveu corretamente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = 7040, Resposta = "Resolveu uma parte do problema corretamente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 25, AlunosQuantidade = 32275, Resposta = "Não registrou" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 40, AlunosQuantidade = 32275, Resposta = "Sem preenchimento" },
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Área e perímetro",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = 32275, Resposta = "Resolveu corretamente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 23, AlunosQuantidade = 28021, Resposta = "Compreende o que é área, mas não compreende o que é perímetro" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 27, AlunosQuantidade = 10293, Resposta = "Compreende o que é perímetro, mas não compreende o que é área" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 25, AlunosQuantidade = 32275, Resposta = "Não registrou" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = 32275, Resposta = "Sem preenchimento" },
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Sólidos geométricos",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = 32275, Resposta = "Resolveu corretamente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 26, AlunosQuantidade = 21333, Resposta = "Identificou os nomes das figuras e não determinou elementos de poliedros corretamente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 24, AlunosQuantidade = 16770, Resposta = "Não identificou nomes de figuras e não determinou elementos de poliedros corretamente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 25, AlunosQuantidade = 32275, Resposta = "Não registrou" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = 32275, Resposta = "Sem preenchimento" },
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Relações entre grandezas e porcentagem",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = 32275, Resposta = "Resolveu corretamente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 23, AlunosQuantidade = 20307, Resposta = "Identificou corretamente a proporcionalidade e indicou a porcentagem corretamente, mas errou os cálculos" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 32, AlunosQuantidade = 17668, Resposta = "NNão identificou corretamente a proporcionalidade e indicou incorretamente a porcentagem" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 20, AlunosQuantidade = 32275, Resposta = "Não registrou" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = 32275, Resposta = "Sem preenchimento" },
+                }
+            });
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            {
+                Pergunta = "Média, moda e mediana",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = 32275, Resposta = "Resolveu corretamente" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = 18794, Resposta = "Identificou corretamente as três medidas de tendência central, mas erros os cálculos" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = 18925 , Resposta = "Não identificou uma ou mais medidas de tendência central" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 25, AlunosQuantidade = 32275, Resposta = "Não registrou" },
+                    new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 20, AlunosQuantidade = 32275, Resposta = "Sem preenchimento" },
+                }
+            });
 
             return View("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", model);
         }

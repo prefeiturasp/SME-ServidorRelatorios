@@ -7,18 +7,15 @@
     int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
 
-    string VerificaQuebra()
+    bool VerificaQuebra()
     {
         if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
         {
             contadorQuebrarPagina = 0;
             contadorPagina = contadorPagina + 1;
-
-            var str = MontarCabecalho();
-            return $@"<div style='page-break-before:always'></div>" + str;
-
+            return true;
         }
-        return string.Empty;
+        return false;
     }
 
     string MontarCabecalho()
@@ -40,25 +37,23 @@
 </tr>
 </tbody>
 </table>
-
 <table>
 <tbody>
 <tr>
-<td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>CICLO: {Model.Periodo}</td>
-<td width='30%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Ano}</td>
-<td width='35%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Turma}</td>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Ano}</td>
+<td width='23%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Turma}</td>
+<td  width='57%' class='espaco-esquerda-15 sem-border-bottom'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
 </tr>
 </tbody>
 </table>
-
 <table>
 <tbody>
 <tr>
-<td  width='100%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Periodo}</td>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PROFICIÊNCIA: {Model.Proficiencia}</td>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Periodo}</td>
 </tr>
 </tbody>
 </table>
-
 <table>
 <tbody>
 <tr>
@@ -74,48 +69,100 @@
         return str;
     }
 
-
-
     string EspacoEmBranco()
     {
-        return $@"<table class='tabela-alunos'><thead><th class='thLimpo' width='100%'></th></thead></table>";
-    }
-
-    string MontaTabelaPerguntasRespostas(SME.SR.Infra.RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto perguntaRespostas)
-    {
-
-        <table>
+        <table class="tabela-cabecalho">
             <thead>
-                <tr>
-                    <td width="45%">
-                        @perguntaRespostas.Pergunta
-                    </td>
-                    <td width="45%">
-                        Alunos
-                    </td>
-                    <td width="10%">
-                        %
-                    </td>
-                </tr>
+            <th class="thLimpo" width="100%"></th>
             </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        teste 1
-                    </td>
-                    <td>
-                        teste 2
-                    </td>
-                    <td>
-                        teste 3
-                    </td>
-                </tr>
-            </tbody>
         </table>
 
         return "";
     }
 
+    string MontaCabecalhoSondagem(string pergunta)
+    {
+        <thead>
+            <tr>
+                <td class="alinhar-esquerda espaco-esquerda-15" width="32%">
+                    @pergunta
+                </td>
+                <td width="55%">
+                    Estudantes
+                </td>
+                <td width="8%">
+                    %
+                </td>
+            </tr>
+        </thead>
+
+        return "";
+    }
+
+    string MontaTabelaPerguntasRespostas(SME.SR.Infra.RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto perguntaRespostas)
+    {
+        var pergunta = perguntaRespostas.Pergunta;
+
+        <table class="tabela-cabecalho">
+            @Html.Raw(MontaCabecalhoSondagem(pergunta))
+
+            <tbody>
+                @{
+                    contadorQuebrarPagina++;
+                    int totalQuantidade = 0;
+                    double totalPercentual = 0;
+                }
+
+                @foreach (var respostas in perguntaRespostas.Respostas)
+                {
+                    int numeroLinhas = (respostas.Resposta.Count() / 40);
+                    var quebra = VerificaQuebra();
+
+                    if (quebra)
+                    {
+                        @Html.Raw("</tbody></table><div style ='page-break-before:always'></div >")
+                        @Html.Raw(MontarCabecalho())
+                        @Html.Raw("<table class='tabela-cabecalho'>")
+                        @Html.Raw(MontaCabecalhoSondagem(pergunta))
+                    }
+
+                    <tr>
+                        <td class="alinhar-esquerda espaco-esquerda-15">
+                            @respostas.Resposta
+                        </td>
+                        <td>
+                            @respostas.AlunosQuantidade
+                        </td>
+                        <td>
+                            @respostas.AlunosPercentual
+
+                        </td>
+                    </tr>
+
+                    if (numeroLinhas > 1)
+                    {
+                        contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+                    }
+                    else
+                    {
+                        contadorQuebrarPagina++;
+                    }
+
+                    totalQuantidade += respostas.AlunosQuantidade;
+                    totalPercentual += respostas.AlunosPercentual;
+                }
+                <tr class="fundo-cinza">
+                    <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
+                    <td>@totalQuantidade</td>
+                    <td>@totalPercentual</td>
+                </tr>
+            </tbody>
+        </table>
+
+        contadorQuebrarPagina++;
+
+        return "";
+    }
 
     <!DOCTYPE html>
     <html lang="pt-BR">
@@ -206,6 +253,10 @@
                 padding-left: 15px;
             }
 
+            .fundo-cinza {
+                background-color: #f3f3f3;
+            }
+
             .negrito {
                 font-weight: bold;
             }
@@ -218,53 +269,15 @@
                 border-bottom: 0;
             }
 
-            .fundo-cinza {
-                background-color: #f3f3f3;
-            }
-
             .thLimpo {
                 background-color: #ffffff;
-                border-top: 0;
-                border-bottom: 0;
+                border: 0;
                 height: 22px;
             }
 
             .img-logo-sgp {
                 height: 64px;
                 float: left;
-            }
-
-
-            .tb-cabecalho1 {
-                background-color: #f3f3f3;
-                text-align: CENTER;
-                font-size: 16px;
-                padding: 10px;
-                padding-left: 20px;
-            }
-
-            .tb-cabecalho2 {
-                background-color: #f3f3f3;
-                text-align: CENTER;
-                font-size: 12px;
-                padding: 5px;
-            }
-
-            .tb-conteudo2 {
-                border-top: none;
-                width: 10%;
-                text-align: CENTER;
-                font-size: 16px;
-                padding: 5px;
-            }
-
-            .tb-conteudo3 {
-                font-size: 12px;
-                border-top: none;
-                padding-left: 10px;
-                padding-right: 10px;
-                text-align: left;
-                min-height: 24px;
             }
 
             .centralizar {
@@ -275,16 +288,27 @@
             @{
                 @Html.Raw(MontarCabecalho())
 
-                foreach (var perguntaResposta in Model.PerguntasRespostas)
+                for (var i = 0; i < Model.PerguntasRespostas.Count; i++)
                 {
-                    @Html.Raw(MontaTabelaPerguntasRespostas(perguntaResposta));
+                    var quebra = VerificaQuebra();
 
+                    if (quebra)
+                    {
+                        @Html.Raw("<div style='page-break-before:always'></div>");
+                        @Html.Raw(MontarCabecalho())
+                    }
+
+                    @Html.Raw(MontaTabelaPerguntasRespostas(Model.PerguntasRespostas[i]));
+
+                    if (i < Model.PerguntasRespostas.Count - 1)
+                    {
+                        @Html.Raw(EspacoEmBranco());
+                        contadorQuebrarPagina++;
+                    }
                 }
-
-
             }
-        </div>        
+        </div>
     </body>
 </html>
-                }
+}
 
