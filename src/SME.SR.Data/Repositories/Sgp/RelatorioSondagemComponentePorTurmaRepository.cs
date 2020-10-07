@@ -49,9 +49,10 @@ namespace SME.SR.Data.Repositories.Sgp
                         DreEolCode = @dreCodigo
                         and AnoLetivo = @ano
                         and AnoTurma = @turmaCodigo
+                        and Semestre = @semestre
                         order by AlunoNome";
 
-                var parametros = new { dreCodigo, ano, turmaCodigo };
+                var parametros = new { dreCodigo, ano, turmaCodigo, semestre };
 
                 return conexao.Query<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql, parametros).ToList();
             }
