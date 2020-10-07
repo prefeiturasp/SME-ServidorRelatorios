@@ -152,7 +152,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/sondagem/matemicaconsolidado", typeof(IRelatorioPlanoAulaUseCase))]
         public async Task<bool> RelatorioMatemicaConsolidade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemMatemicaConsolidadoUseCase relatorioSondagemMatemicaConsolidadoUseCase)
         {
-            await relatorioPlanoAulaUseCase.Executar(request);
+            await relatorioSondagemMatemicaConsolidadoUseCase.Executar(request);
             return true;
         }
     }
