@@ -92,9 +92,9 @@
         {
             if (ordem.Id > 0)
             {
-                str += $@"<td colspan='{numeroPerguntas}'>{ordem.Descricao}</td>";
+                str += $@"<td colspan='{numeroPerguntas}'>{ordem.Nome}</td>";
 
-                if (numeroOrdens > 4 && ordem.Descricao.Count() > 20)
+                if (numeroOrdens > 4 && ordem.Nome.Count() > 20)
                 {
                     contadorMaximoLinhasPorPagina = 46;
                 }
