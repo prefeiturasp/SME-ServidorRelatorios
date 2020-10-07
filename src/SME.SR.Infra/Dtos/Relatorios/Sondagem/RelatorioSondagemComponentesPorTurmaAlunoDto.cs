@@ -9,5 +9,6 @@ namespace SME.SR.Infra
         public string Codigo { get; set; }
         public string Nome { get; set; }
         public SituacaoMatriculaAluno SituacaoMatricula { get; set; }
+        public DateTime DataSituacao { get; set; }
     }
 }

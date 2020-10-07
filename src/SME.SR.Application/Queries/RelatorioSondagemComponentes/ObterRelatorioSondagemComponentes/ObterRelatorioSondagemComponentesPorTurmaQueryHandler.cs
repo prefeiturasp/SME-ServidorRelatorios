@@ -13,10 +13,14 @@ namespace SME.SR.Application
     public class ObterRelatorioSondagemComponentesPorTurmaQueryHandler : IRequestHandler<ObterRelatorioSondagemComponentesPorTurmaQuery, RelatorioSondagemComponentesPorTurmaRelatorioDto>
     { 
         private readonly IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository;
+        private readonly IAlunoRepository alunoRepository;
 
-        public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository)
+        public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
+            IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
+            IAlunoRepository alunoRepository)
         {
             this.relatorioSondagemComponentePorTurmaRepository = relatorioSondagemComponentePorTurmaRepository ?? throw new ArgumentNullException(nameof(relatorioSondagemComponentePorTurmaRepository));
+            this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
         }
 
         public Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
@@ -29,14 +33,14 @@ namespace SME.SR.Application
 
         private RelatorioSondagemComponentesPorTurmaCabecalhoDto ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            // TODO: Verificar como montar o restante de dados do cabeçalho
+            // TODO: Pegar os dados do cabeçalho pelo Dto que o Lobo desenvolveu
             return new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
             {
                 Ano = request.Ano,
                 AnoLetivo = request.Ano,
                 ComponenteCurricular = "Matemática",
                 DataSolicitacao = DateTime.Now,
-                Dre = "",
+                Dre = "", // TODO: Pegar o nome do DRE abreviado
                 Periodo = request.Semestre.ToString(),
                 Proficiencia = "Campo Aditivo",
                 Turma = "Todas",
@@ -73,7 +77,7 @@ namespace SME.SR.Application
             {
                 linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
                 {
-                    Aluno = ObterAluno(linha.AlunoEolCode, linha.AlunoNome),
+                    Aluno = ObterAluno(linha.TurmaEolCode, linha.AlunoEolCode, linha.AlunoNome),
                     OrdensRespostas = ObterOrdemRespostas(linha)
                 });
             }
@@ -81,20 +85,17 @@ namespace SME.SR.Application
             return new RelatorioSondagemComponentesPorTurmaPlanilhaDto() { Linhas = linhasPlanilhaQueryDto };
         }
 
-        private RelatorioSondagemComponentesPorTurmaAlunoDto ObterAluno(string alunoEolCode, string alunoNome)
+        private RelatorioSondagemComponentesPorTurmaAlunoDto ObterAluno(string turmaEolCode, string alunoEolCode, string alunoNome)
         {
+            Aluno aluno = alunoRepository.ObterDados(turmaEolCode, alunoEolCode).Result;
+
             return new RelatorioSondagemComponentesPorTurmaAlunoDto()
             {
                 Codigo = alunoEolCode,
                 Nome = alunoNome,
-                SituacaoMatricula = ObterSituacaoMatriculaAluno(alunoEolCode)
+                SituacaoMatricula = aluno.CodigoSituacaoMatricula,
+                DataSituacao = aluno.DataSituacao
             };
-        }
-
-        private SituacaoMatriculaAluno ObterSituacaoMatriculaAluno(string alunoEolCode)
-        {
-            // TODO: Criar lógica
-            return SituacaoMatriculaAluno.Ativo;
         }
 
         private List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> ObterOrdemRespostas(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha)
