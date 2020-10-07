@@ -22,7 +22,7 @@ namespace SME.SR.Application
 
             Dre dre = null;
             Ue ue = null;
-            Turma turma = null;
+            Usuario usuario = null;
 
             if (!string.IsNullOrEmpty(filtros.UeCodigo))
             {
@@ -38,13 +38,22 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter a DRE.");
             }
 
+
+            if (!string.IsNullOrEmpty(filtros.UsuarioRf))
+            {
+                usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRf });
+                if (usuario == null)
+                    throw new NegocioException("Não foi possível obter o usuário.");
+            }
+
             var relatorio = mediator.Send(new ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQuery()
             {
                 AnoLetivo = filtros.AnoLetivo,
                 Dre = dre,
                 Ue = ue,
                 Semestre = filtros.Semestre,
-                TurmaAno = filtros.TurmaAno
+                TurmaAno = filtros.TurmaAno,
+                Usuario = usuario
             });
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemMatemicaConsolidado", relatorio, request.CodigoCorrelacao));

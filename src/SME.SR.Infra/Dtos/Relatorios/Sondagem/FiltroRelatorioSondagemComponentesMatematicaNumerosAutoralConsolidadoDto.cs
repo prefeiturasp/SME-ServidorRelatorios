@@ -11,5 +11,7 @@
         public string UeCodigo { get; set; }
 
         public int TurmaAno { get; set; }
+
+        public string UsuarioRf { get; set; }
     }
 }
