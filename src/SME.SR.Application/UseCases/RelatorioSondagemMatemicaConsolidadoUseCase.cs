@@ -1,0 +1,53 @@
+﻿using MediatR;
+using SME.SR.Data;
+using SME.SR.Infra;
+using System;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SME.SR.Application
+{
+    public class RelatorioSondagemMatemicaConsolidadoUseCase : IRelatorioSondagemMatemicaConsolidadoUseCase
+    {
+        private readonly IMediator mediator;
+
+        public RelatorioSondagemMatemicaConsolidadoUseCase(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
+
+        public async Task Executar(FiltroRelatorioDto request)
+        {
+            var filtros = request.ObterObjetoFiltro<FiltroRelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto>();
+
+            Dre dre = null;
+            Ue ue = null;
+            Turma turma = null;
+
+            if (!string.IsNullOrEmpty(filtros.UeCodigo))
+            {
+                ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
+                if (ue == null)
+                    throw new NegocioException("Não foi possível obter a UE.");
+            }
+
+            if (!string.IsNullOrEmpty(filtros.UeCodigo))
+            {
+                dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
+                if (dre == null)
+                    throw new NegocioException("Não foi possível obter a DRE.");
+            }
+
+            var relatorio = mediator.Send(new ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQuery()
+            {
+                AnoLetivo = filtros.AnoLetivo,
+                Dre = dre,
+                Ue = ue,
+                Semestre = filtros.Semestre,
+                TurmaAno = filtros.TurmaAno
+            });
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemMatemicaConsolidado", relatorio, request.CodigoCorrelacao));
+        }
+    }
+}
