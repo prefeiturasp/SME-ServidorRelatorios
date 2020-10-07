@@ -17,19 +17,22 @@ namespace SME.SR.Application
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IDreRepository dreRepository;
         private readonly IUeRepository ueRepository;
+        private readonly IUsuarioRepository usuarioRepository;
 
         public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
             IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
             IAlunoRepository alunoRepository,
             IComponenteCurricularRepository componenteCurricularRepository,
             IDreRepository dreRepository,
-            IUeRepository ueRepository)
+            IUeRepository ueRepository,
+            IUsuarioRepository usuarioRepository)
         {
             this.relatorioSondagemComponentePorTurmaRepository = relatorioSondagemComponentePorTurmaRepository ?? throw new ArgumentNullException(nameof(relatorioSondagemComponentePorTurmaRepository));
             this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
             this.dreRepository = dreRepository ?? throw new ArgumentNullException(nameof(dreRepository));
             this.ueRepository = ueRepository ?? throw new ArgumentNullException(nameof(ueRepository));
+            this.usuarioRepository = usuarioRepository ?? throw new ArgumentNullException(nameof(usuarioRepository));
         }
 
         public Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
@@ -54,7 +57,7 @@ namespace SME.SR.Application
                 Turma = request.TurmaCodigo,
                 Ue = ObterUe(request.UeCodigo).NomeRelatorio,
                 Rf = request.UsuarioRF,
-                Usuario = request.UsuarioRF,
+                Usuario = this.usuarioRepository.ObterDados(request.UsuarioRF).Result.Login,
                 Ordens = this.relatorioSondagemComponentePorTurmaRepository.ObterOrdens(),
                 Perguntas = ObterPerguntas()
             };
