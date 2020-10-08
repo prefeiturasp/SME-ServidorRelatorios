@@ -1,9 +1,8 @@
 ﻿using Dapper;
+using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -22,7 +21,7 @@ namespace SME.SR.Data
 
             var parametros = new { codigoRf };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryFirstOrDefaultAsync<Usuario>(query, parametros);
             }

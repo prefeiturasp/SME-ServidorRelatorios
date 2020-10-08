@@ -20,27 +20,37 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemComponentesPorTurmaFiltroDto>();
 
-            var relatorio = await ObterDadosRelatorio(filtros);
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = filtros.TurmaCodigo.ToString() });
+            if (alunosDaTurma == null || !alunosDaTurma.Any())
+                throw new NegocioException("Não foi possível localizar os alunos da turma.");
+
+
+            var relatorio = await ObterDadosRelatorio(filtros, alunosDaTurma);
 
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, request.CodigoCorrelacao));
+            var mensagemDaNotificacao = $"Este é o relatório de Sondagem de Matemática ({relatorio.Cabecalho.Proficiencia}) da turma {relatorio.Cabecalho.Turma} da {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre})";
+            var mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre}) - {relatorio.Cabecalho.Turma}";
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
         }
 
-        private async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros)
+        private async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)
         {
             return await mediator.Send(
                new ObterRelatorioSondagemComponentesPorTurmaQuery()
                {
                     AnoLetivo = filtros.AnoLetivo,
-                    ComponenteCurricularId = filtros.ComponenteCurricularId,
+                    ComponenteCurricular = filtros.ComponenteCurricularId,
                     DreCodigo = filtros.DreCodigo,
-                    ProficienciaId = filtros.ProficienciaId,
+                    Proficiencia = filtros.ProficienciaId,
                     Semestre = filtros.Semestre,
                     TurmaCodigo = filtros.TurmaCodigo,
                     UeCodigo = filtros.UeCodigo,
-                    UsuarioRF = filtros.UsuarioRF
+                    UsuarioRF = filtros.UsuarioRF,
+                    alunos = alunos,
+                    Ano = filtros.Ano
                });
         }
     }
