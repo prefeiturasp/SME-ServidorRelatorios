@@ -83,30 +83,40 @@ namespace SME.SR.Application
             relatorio.AnoLetivo = anoLetivo;
             relatorio.ComponenteCurricular = "Matemática";
             relatorio.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
-            relatorio.Dre = dre == null ? dre.Abreviacao : "Todas";
+            relatorio.Dre = dre != null ? dre.Abreviacao : "Todas";
             relatorio.Periodo = $"{semestre}º Semestre";
             relatorio.Proficiencia = "Números";
             relatorio.RF = rf;
-            relatorio.Ue = ue == null ? ue.NomeComTipoEscola : "Todas";
+            relatorio.Ue = ue != null ? ue.NomeComTipoEscola : "Todas";
             relatorio.Usuario = usuario;
         }
 
         private void AdicionarPergunta(IEnumerable<IGrouping<string, MathPoolNumber>> agrupamento, string grupo, List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> perguntas)
         {
-            perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            var respostas = ObterRespostas(agrupamento);
+
+            if (respostas != null && respostas.Any())
             {
-                Pergunta = grupo,
-                Respostas = ObterRespostas(agrupamento)
-            });
+                perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+                {
+                    Pergunta = grupo,
+                    Respostas = respostas
+                });
+            }
         }
 
         private void AdicionarPergunta(IGrouping<string, PerguntasAutoralDto> agrupamento, string grupo, List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> perguntas)
         {
-            perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+            var respostas = ObterRespostas(agrupamento);
+
+            if (respostas != null && respostas.Any())
             {
-                Pergunta = grupo,
-                Respostas = ObterRespostas(agrupamento)
-            });
+                perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+                {
+                    Pergunta = agrupamento.FirstOrDefault(a => a.PerguntaId == grupo).Pergunta,
+                    Respostas = respostas
+                });
+            }
         }
 
         private List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolNumber>> agrupamento)
@@ -127,14 +137,17 @@ namespace SME.SR.Application
                 });
             }
 
-            return respostas;
+            if (respostas.Any())
+                return respostas;
+            else
+                return null;
         }
 
         private List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto> ObterRespostas(IGrouping<string, PerguntasAutoralDto> agrupamento)
         {
             var respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>();
 
-            var agrupamentosComValor = agrupamento.Where(a => a.RespostaId != null && a.Resposta.Trim().Equals(""));
+            var agrupamentosComValor = agrupamento.Where(a => a.RespostaId != null && !a.Resposta.Trim().Equals(""));
 
             var totalAlunos = agrupamentosComValor.Count();
 
@@ -148,7 +161,10 @@ namespace SME.SR.Application
                 });
             }
 
-            return respostas;
+            if (respostas.Any())
+                return respostas;
+            else
+                return null;
         }
     }
 

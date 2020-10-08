@@ -41,7 +41,7 @@ namespace SME.SR.Data
                 query.Append("and \"AnoLetivo\" = @anoLetivo ");
 
             if (componenteCurricularSondagem != null)
-                query.Append("and \"ComponenteCurricularId\" = @componenteCurricularId ");
+                query.Append("and sa.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
             var parametros = new { codigoDre, codigoUe, anoTurma, anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name() };
 
