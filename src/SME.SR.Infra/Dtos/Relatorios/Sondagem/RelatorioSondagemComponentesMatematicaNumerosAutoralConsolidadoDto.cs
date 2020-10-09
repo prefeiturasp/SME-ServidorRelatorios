@@ -18,6 +18,7 @@ namespace SME.SR.Infra
         public string Proficiencia { get; set; }
         public string RF { get; set; }
         public string Usuario { get; set; }
+        public string Turma { get; set; }
 
         public List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> PerguntasRespostas { get; set; }
 
