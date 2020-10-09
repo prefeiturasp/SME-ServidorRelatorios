@@ -46,7 +46,7 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
 
-            var relatorio = mediator.Send(new ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQuery()
+            var relatorio = await mediator.Send(new ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQuery()
             {
                 AnoLetivo = filtros.AnoLetivo,
                 Dre = dre,
@@ -56,7 +56,10 @@ namespace SME.SR.Application
                 Usuario = usuario
             });
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, request.CodigoCorrelacao));
+            var mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Ue} ({relatorio.Dre})";
+            var mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Ue} ({relatorio.Dre}) - {relatorio.Ano}º ano";
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
         }
     }
 }
