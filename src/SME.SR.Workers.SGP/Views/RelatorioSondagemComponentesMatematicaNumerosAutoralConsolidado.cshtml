@@ -84,13 +84,13 @@
     {
         <thead>
             <tr>
-                <td class="alinhar-esquerda espaco-esquerda-15" width="32%">
+                <td class="alinhar-esquerda espaco-esquerda-15 negrito" width="32%">
                     @pergunta
                 </td>
-                <td width="55%">
+                <td width="55%" class="negrito">
                     Estudantes
                 </td>
-                <td width="8%">
+                <td width="8%" class="negrito">
                     %
                 </td>
             </tr>
@@ -117,6 +117,8 @@
                 {
                     int numeroLinhas = (respostas.Resposta.Count() / 40);
                     var quebra = VerificaQuebra();
+                    var alunosPercentual = Math.Round(respostas.AlunosPercentual, 2);
+                    var alunosPercentualAlterado = alunosPercentual.ToString().Replace(',', '.');
 
                     if (quebra)
                     {
@@ -128,13 +130,13 @@
 
                     <tr>
                         <td class="alinhar-esquerda espaco-esquerda-15">
-                            @respostas.Resposta
+                           @respostas.Resposta
                         </td>
                         <td>
                             @respostas.AlunosQuantidade
                         </td>
                         <td>
-                            @respostas.AlunosPercentual
+                            @alunosPercentualAlterado
 
                         </td>
                     </tr>
