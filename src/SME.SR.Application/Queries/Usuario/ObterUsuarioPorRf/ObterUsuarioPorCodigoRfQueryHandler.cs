@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Threading;
@@ -18,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<Usuario> Handle(ObterUsuarioPorCodigoRfQuery request, CancellationToken cancellationToken)
         {
-            var usuario = await usuarioRepository.ObterPorCodigoRF(request.UsuarioRf);
+            var usuario = await usuarioRepository.ObterDados(request.UsuarioRf);
 
             if (usuario == null)
                 throw new NegocioException("Não foi possível encontrar o usuário");

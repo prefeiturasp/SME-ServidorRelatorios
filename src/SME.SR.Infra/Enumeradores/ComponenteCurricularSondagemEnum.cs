@@ -4,9 +4,9 @@ namespace SME.SR.Infra
 {
     public enum ComponenteCurricularSondagemEnum
     {
-        [Display(Name = "Matemática")]
+        [Display(Name = "9f3d8467-2f6e-4bcb-a8e9-12e840426aba")]
         Matematica = 1,
-        [Display(Name = "Português")]
+        [Display(Name = "c65b2c0a-7a58-4d40-b474-23f0982f14b1")]
         Portugues = 2
     }
 }

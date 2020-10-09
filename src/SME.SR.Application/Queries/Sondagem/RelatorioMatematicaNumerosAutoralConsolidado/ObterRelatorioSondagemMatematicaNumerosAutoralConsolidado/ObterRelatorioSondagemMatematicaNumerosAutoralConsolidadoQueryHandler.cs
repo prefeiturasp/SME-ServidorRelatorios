@@ -29,7 +29,7 @@ namespace SME.SR.Application
 
             if (request.TurmaAno > 3)
             {
-                var listaAlunos = await perguntasAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagem.Matematica);
+                var listaAlunos = await perguntasAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
                 if (listaAlunos != null && listaAlunos.Any())
                 {
