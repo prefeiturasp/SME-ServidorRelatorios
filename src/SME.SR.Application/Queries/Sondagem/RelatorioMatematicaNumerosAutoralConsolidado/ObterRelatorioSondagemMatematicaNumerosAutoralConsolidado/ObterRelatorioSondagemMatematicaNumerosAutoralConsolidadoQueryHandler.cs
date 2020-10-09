@@ -13,11 +13,13 @@ namespace SME.SR.Application
     {
         private readonly IMathPoolNumbersRepository mathPoolNumbersRepository;
         private readonly IPerguntasAutoralRepository perguntasAutoralRepository;
+        private readonly ISondagemAutoralRepository sondagemAutoralRepository;
 
-        public ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQueryHandler(IMathPoolNumbersRepository mathPoolNumbersRepository, IPerguntasAutoralRepository perguntasAutoralRepository)
+        public ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQueryHandler(IMathPoolNumbersRepository mathPoolNumbersRepository, IPerguntasAutoralRepository perguntasAutoralRepository, ISondagemAutoralRepository sondagemAutoralRepository)
         {
             this.mathPoolNumbersRepository = mathPoolNumbersRepository ?? throw new ArgumentNullException(nameof(mathPoolNumbersRepository));
             this.perguntasAutoralRepository = perguntasAutoralRepository ?? throw new ArgumentNullException(nameof(perguntasAutoralRepository));
+            this.sondagemAutoralRepository = sondagemAutoralRepository ?? throw new ArgumentNullException(nameof(sondagemAutoralRepository));
         }
 
         public async Task<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto> Handle(ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQuery request, CancellationToken cancellationToken)
@@ -29,15 +31,19 @@ namespace SME.SR.Application
 
             if (request.TurmaAno > 3)
             {
-                var listaAlunos = await perguntasAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+                var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, ComponenteCurricularSondagemEnum.Matematica);
+                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
-                if (listaAlunos != null && listaAlunos.Any())
+                if (listaPerguntas != null && listaPerguntas.Any())
                 {
-                    var perguntasAgrupado = listaAlunos.GroupBy(g => g.PerguntaId);
+                    var perguntasAgrupado = listaPerguntas.GroupBy(g => g.PerguntaId);
+                    var respostasAgrupado = listaAlunos.GroupBy(g => g.PerguntaId);
 
                     foreach (var pergunta in perguntasAgrupado)
                     {
-                        AdicionarPergunta(pergunta, pergunta.Key, perguntas);
+                        var respostas = respostasAgrupado.FirstOrDefault(a => a.Key == pergunta.Key);
+
+                        AdicionarPergunta(pergunta, pergunta.Key, respostas, perguntas);
                     }
                 }
             }
@@ -85,8 +91,9 @@ namespace SME.SR.Application
             relatorio.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
             relatorio.Dre = dre != null ? dre.Abreviacao : "Todas";
             relatorio.Periodo = $"{semestre}º Semestre";
-            relatorio.Proficiencia = "Números";
+            relatorio.Proficiencia = int.Parse(anoTurma) > 3 ? "" : "Números";
             relatorio.RF = rf;
+            relatorio.Turma = "Todas";
             relatorio.Ue = ue != null ? ue.NomeComTipoEscola : "Todas";
             relatorio.Usuario = usuario;
         }
@@ -105,15 +112,15 @@ namespace SME.SR.Application
             }
         }
 
-        private void AdicionarPergunta(IGrouping<string, PerguntasAutoralDto> agrupamento, string grupo, List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> perguntas)
+        private void AdicionarPergunta(IGrouping<string, PerguntasAutoralDto> pergunta, string grupo, IGrouping<string, SondagemAutoralDto> respostasAlunos, List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> perguntas)
         {
-            var respostas = ObterRespostas(agrupamento);
+            var respostas = ObterRespostas(pergunta, respostasAlunos);
 
             if (respostas != null && respostas.Any())
             {
                 perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
                 {
-                    Pergunta = agrupamento.FirstOrDefault(a => a.PerguntaId == grupo).Pergunta,
+                    Pergunta = pergunta.FirstOrDefault(a => a.PerguntaId == grupo).Pergunta,
                     Respostas = respostas
                 });
             }
@@ -143,7 +150,7 @@ namespace SME.SR.Application
                 return null;
         }
 
-        private List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto> ObterRespostas(IGrouping<string, PerguntasAutoralDto> agrupamento)
+        private List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto> ObterRespostas(IGrouping<string, PerguntasAutoralDto> pergunta, IGrouping<string, SondagemAutoralDto> agrupamento)
         {
             var respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>();
 
@@ -151,13 +158,17 @@ namespace SME.SR.Application
 
             var totalAlunos = agrupamentosComValor.Count();
 
-            foreach (var item in agrupamentosComValor.GroupBy(g => new { g.RespostaId, g.Resposta }))
+            var agrupamentosComValorAgrupado = agrupamentosComValor.GroupBy(g => g.RespostaId );
+
+            foreach (var item in pergunta)
             {
+                var totalAlunosRespota = agrupamentosComValorAgrupado.Where(a => a.Key == item.RespostaId).Count();
+
                 respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
                 {
-                    Resposta = item.Key.Resposta,
-                    AlunosQuantidade = item.Count(),
-                    AlunosPercentual = ((double)item.Count() / totalAlunos) * 100
+                    Resposta = item.Resposta,
+                    AlunosQuantidade = totalAlunosRespota,
+                    AlunosPercentual = ((double)totalAlunosRespota / totalAlunos) * 100
                 });
             }
 
