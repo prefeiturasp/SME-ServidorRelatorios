@@ -56,7 +56,7 @@ namespace SME.SR.Application
                 Usuario = usuario
             });
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemMatemicaConsolidado", relatorio, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, request.CodigoCorrelacao));
         }
     }
 }
