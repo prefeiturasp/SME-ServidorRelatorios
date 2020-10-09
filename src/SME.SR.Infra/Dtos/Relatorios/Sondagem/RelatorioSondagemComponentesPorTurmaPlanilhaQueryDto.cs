@@ -28,6 +28,13 @@ namespace SME.SR.Infra
         public string Ordem7Resultado { get; set; }
         public string Ordem8Ideia { get; set; }
         public string Ordem8Resultado { get; set; }
+        public string Familiares { get; set;  }
+        public string Opacos { get; set; }
+        public string Transparentes { get; set; }
+        public string TerminamZero { get; set; }
+        public string Algarismos { get; set; }
+        public string Processo { get; set; }
+        public string ZeroIntercalados { get; set; }
 
     }
 }
