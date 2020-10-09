@@ -154,21 +154,21 @@ namespace SME.SR.Application
         {
             var respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>();
 
-            var agrupamentosComValor = agrupamento.Where(a => a.RespostaId != null && !a.Resposta.Trim().Equals(""));
+            var agrupamentosComValor = agrupamento?.Where(a => !string.IsNullOrEmpty(a.RespostaId));
 
-            var totalAlunos = agrupamentosComValor.Count();
+            var totalAlunos =  agrupamentosComValor?.Count() ?? 0;
 
-            var agrupamentosComValorAgrupado = agrupamentosComValor.GroupBy(g => g.RespostaId );
+            var agrupamentosComValorAgrupado = agrupamentosComValor?.GroupBy(g => g.RespostaId );
 
             foreach (var item in pergunta)
             {
-                var totalAlunosRespota = agrupamentosComValorAgrupado.Where(a => a.Key == item.RespostaId).Count();
+                var totalAlunosResposta = agrupamentosComValorAgrupado?.FirstOrDefault(a => a.Key == item.RespostaId)?.Count() ?? 0;
 
                 respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
                 {
                     Resposta = item.Resposta,
-                    AlunosQuantidade = totalAlunosRespota,
-                    AlunosPercentual = ((double)totalAlunosRespota / totalAlunos) * 100
+                    AlunosQuantidade = totalAlunosResposta,
+                    AlunosPercentual = totalAlunosResposta > 0 ? ((double)totalAlunosResposta / totalAlunos) * 100 : 0
                 });
             }
 
