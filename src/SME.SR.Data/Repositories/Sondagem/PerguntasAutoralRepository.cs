@@ -34,7 +34,7 @@ namespace SME.SR.Data
             if (componenteCurricularSondagem != null)
                 query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
-            query.Append("order by \"Ordenacao\" ");
+            query.Append("order by pae.\"Ordenacao\" ");
 
             var parametros = new { anoTurma, componenteCurricularId = componenteCurricularSondagem.Name() };
 
