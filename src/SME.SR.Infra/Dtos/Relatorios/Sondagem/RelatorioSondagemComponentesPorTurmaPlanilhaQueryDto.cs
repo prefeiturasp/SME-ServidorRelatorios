@@ -20,5 +20,14 @@ namespace SME.SR.Infra
         public string Ordem3Resultado { get; set; }
         public string Ordem4Ideia { get; set; }
         public string Ordem4Resultado { get; set; }
+        public string Ordem5Ideia { get; set; }
+        public string Ordem5Resultado { get; set; }
+        public string Ordem6Ideia { get; set; }
+        public string Ordem6Resultado { get; set; }
+        public string Ordem7Ideia { get; set; }
+        public string Ordem7Resultado { get; set; }
+        public string Ordem8Ideia { get; set; }
+        public string Ordem8Resultado { get; set; }
+
     }
 }
