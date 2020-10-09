@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace SME.SR.Data
+namespace SME.SR.Data.Interfaces
 {
     public interface IUsuarioRepository
     {
-        Task<Usuario> ObterPorCodigoRF(string codigoRf);
+        Task<Usuario> ObterDados(string codigoRf);
     }
 }

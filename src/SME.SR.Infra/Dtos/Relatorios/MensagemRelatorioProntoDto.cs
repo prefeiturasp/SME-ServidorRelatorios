@@ -10,11 +10,13 @@ namespace SME.SR.Infra
         {
         }
 
-        public MensagemRelatorioProntoDto(string mensagemUsuario)
+        public MensagemRelatorioProntoDto(string mensagemUsuario, string mensagemTitulo)
         {
             MensagemUsuario = mensagemUsuario;
+            MensagemTitulo = mensagemTitulo;
         }
 
         public string MensagemUsuario { get; set; }
+        public string MensagemTitulo { get; set; }
     }
 }

@@ -304,5 +304,15 @@ namespace SME.SR.Data
 
 
         }
+
+        public async Task<IEnumerable<ComponenteCurricularSondagem>> ObterComponenteCurricularDeSondagemPorId(string componenteCurricularId)
+        {
+            string query = @"select Id, Descicao, Excluido from ComponenteCurricular where Id = @componenteCurricularId";
+
+            var parametros = new { componenteCurricularId };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+            return await conexao.QueryAsync<ComponenteCurricularSondagem>(query, parametros);
+        }
     }
 }
