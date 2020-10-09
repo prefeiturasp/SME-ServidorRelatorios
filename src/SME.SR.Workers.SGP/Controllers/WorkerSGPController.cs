@@ -147,5 +147,12 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioPlanoAulaUseCase.Executar(request);
             return true;
         }
+        [HttpGet("relatorios/sondagem/matematica-por-turma")]        
+        [Action("relatorios/sondagem/matematica-por-turma", typeof(IRelatorioSondagemComponentesPorTurmaUseCase))]
+        public async Task<bool> RelatorioSondagemComponentesPorTurma([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioSondagemComponentesPorTurmaUseCase relatorioSondagemComponentesPorTurmaUseCase)
+        {
+            await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);
+            return true;
+        }
     }
 }
