@@ -62,7 +62,7 @@ namespace SME.SR.Application
                 Turma = turma.NomeRelatorio,
                 Ue = ue.NomeComTipoEscola,
                 Rf = request.UsuarioRF,
-                Usuario = usuario.Login,
+                Usuario = usuario.Nome,
                 Ordens = ordens.ToList(),
                 Perguntas = perguntas
             };
