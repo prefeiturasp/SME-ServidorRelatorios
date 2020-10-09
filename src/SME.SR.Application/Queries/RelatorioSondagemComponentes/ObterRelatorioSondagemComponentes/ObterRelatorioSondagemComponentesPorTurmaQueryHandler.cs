@@ -133,7 +133,7 @@ namespace SME.SR.Application
             {
                 Codigo = aluno.CodigoAluno,
                 DataSituacao = aluno.DataSituacao.ToString("dd/MM/yyyy"),
-                Nome = aluno.ObterNomeFinal(),
+                Nome = aluno.ObterNomeParaRelatorioSondagem(),
                 SituacaoMatricula = aluno.SituacaoMatricula
             };
 

@@ -17,6 +17,91 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
+        public async Task<IEnumerable<Aluno>> ObterAlunosPorTurmaDataSituacaoMaricula(long turmaCodigo, DateTime dataReferencia)
+        {
+            var query = @"
+					SELECT aluno.cd_aluno CodigoAluno,
+					   aluno.nm_aluno NomeAluno,
+					   aluno.dt_nascimento_aluno DataNascimento,
+					   aluno.nm_social_aluno NomeSocialAluno,
+					   mte.cd_situacao_aluno CodigoSituacaoMatricula,
+					   CASE
+							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+							WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+							WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+							WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+							WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+							WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+							WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+							WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+							WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+							WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+							WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							ELSE 'Fora do domínio liberado pela PRODAM'
+							END SituacaoMatricula,
+						mte.dt_situacao_aluno DataSituacao,						
+						mte.nr_chamada_aluno NumeroAlunoChamada				
+							FROM v_aluno_cotic aluno
+						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte.cd_turma_escola = @turmaCodigo
+						and (matr.st_matricula in (1, 6, 10, 13, 5) or (matr.st_matricula not in (1, 6, 10, 13, 5) and matr.dt_status_matricula > @dataReferencia))
+						UNION 
+						SELECT  aluno.cd_aluno CodigoAluno,
+						aluno.nm_aluno NomeAluno,
+						aluno.dt_nascimento_aluno DataNascimento,
+						aluno.nm_social_aluno NomeSocialAluno,
+						mte.cd_situacao_aluno CodigoSituacaoMatricula,
+						CASE
+							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+							WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+							WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+							WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+							WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+							WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+							WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+							WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+							WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+							WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+							WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							ELSE 'Fora do domínio liberado pela PRODAM'
+							END SituacaoMatricula,
+						mte.dt_situacao_aluno DataSituacao,						
+						mte.nr_chamada_aluno NumeroAlunoChamada
+							FROM v_aluno_cotic aluno
+						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte.cd_turma_escola = @turmaCodigo
+						and mte.dt_situacao_aluno =                    
+							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+							where
+							mte2.cd_turma_escola = @turmaCodigo
+							and matr2.cd_aluno = matr.cd_aluno
+							and (matr2.st_matricula in (1, 6, 10, 13, 5) or (matr2.st_matricula not in (1, 6, 10, 13, 5) and matr2.dt_status_matricula > @dataReferencia))
+						)
+						AND NOT EXISTS(
+							SELECT 1 FROM v_matricula_cotic matr3
+						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
+						WHERE mte.cd_matricula = mte3.cd_matricula
+							AND mte.cd_turma_escola = @turmaCodigo)";
+
+            var parametros = new { turmaCodigo, dataReferencia };
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+
+            return await conexao.QueryAsync<Aluno>(query, parametros);
+
+        }
+
         public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
         {
             var query = AlunoConsultas.DadosAluno;
@@ -28,9 +113,9 @@ namespace SME.SR.Data
             }
         }
 
-		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(long[] codigosAlunos)
-		{
-			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosHistoricoEscolar') IS NOT NULL
+        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(long[] codigosAlunos)
+        {
+            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosHistoricoEscolar') IS NOT NULL
 						DROP TABLE #tmpAlunosHistoricoEscolar
 					CREATE TABLE #tmpAlunosHistoricoEscolar 
 					(
@@ -195,14 +280,14 @@ namespace SME.SR.Data
 					PossuiDeficiencia,
                     NumeroAlunoChamada";
 
-			var parametros = new { CodigosAluno = codigosAlunos };
+            var parametros = new { CodigosAluno = codigosAlunos };
 
-			using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-			return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
 
-		}
+        }
 
-		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos)
+        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos)
         {
             var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
