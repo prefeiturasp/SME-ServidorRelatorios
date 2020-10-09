@@ -42,7 +42,7 @@ namespace SME.SR.Workers.SGP
             var relatorio = await mediator.Send(new ObterRelatorioImpressaoCalendarioQuery(dre, ue, tipoCalendario,
                 filtros.EhSME, filtros.UsuarioRF, filtros.UsuarioPerfil, filtros.ConsideraPendenteAprovacao, filtros.PodeVisualizarEventosOcorrenciaDre));
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioImpressaoCalendario", relatorio, request.CodigoCorrelacao, "", "Título da notificação de teste"));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioImpressaoCalendario", relatorio, request.CodigoCorrelacao));
         }
     }
 }
