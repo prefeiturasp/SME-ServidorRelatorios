@@ -2359,92 +2359,92 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
                         Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                         {
-                            Codigo = "6197654",
+                            Codigo = 6197654,
                             Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
-                            SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
+                            SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
                         },
                         OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                         {
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "",
-                                PerguntaId = "1"
+                                PerguntaId = 1
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = "2"
+                                PerguntaId = 2
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = "3"
+                                PerguntaId = 3
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = "4"
+                                PerguntaId = 4
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = "5"
+                                PerguntaId = 5
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "",
-                                PerguntaId = "6"
+                                PerguntaId = 6
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = "7"
+                                PerguntaId = 7
                             },
                         }
                     });
                 linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = "6195479",
+                        Codigo = 6195479,
                         Nome = "ALICE SILVA RIBEIRO",
-                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
+                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente.ToString(),
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                             {
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Não Escreve Convencionalmente",
-                                    PerguntaId = "1"
+                                    PerguntaId = 1
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "",
-                                    PerguntaId = "2"
+                                    PerguntaId = 2
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Escreve Convencionalmente",
-                                    PerguntaId = "3"
+                                    PerguntaId = 3
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Não Escreve Convencionalmente",
-                                    PerguntaId = "4"
+                                    PerguntaId = 4
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Não Escreve Convencionalmente",
-                                    PerguntaId = "5"
+                                    PerguntaId = 5
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "Não Escreve Convencionalmente",
-                                    PerguntaId = "6"
+                                    PerguntaId = 6
                                 },
                                 new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                     OrdemId = 0,
                                     Resposta = "",
-                                    PerguntaId = "7"
+                                    PerguntaId = 7
                                 },
                             },
                 });
@@ -2452,46 +2452,46 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = "6197654",
+                        Codigo = 6197654,
                         Nome = "AMANDA ALBUQUERQUE",
-                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
+                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu.ToString(),
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                         {
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Não Escreve Convencionalmente",
-                                PerguntaId = "1"
+                                PerguntaId = 1
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Não Escreve Convencionalmente",
-                                PerguntaId = "2"
+                                PerguntaId = 2
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Não Escreve Convencionalmente",
-                                PerguntaId = "3"
+                                PerguntaId = 3
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "",
-                                PerguntaId = "4"
+                                PerguntaId = 4
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "",
-                                PerguntaId = "5"
+                                PerguntaId = 5
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Não Escreve Convencionalmente",
-                                PerguntaId = "6"
+                                PerguntaId = 6
                             },
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
                                 Resposta = "Escreve Convencionalmente",
-                                PerguntaId = "7"
+                                PerguntaId = 7
                             },
                     },
                 });
@@ -2501,7 +2501,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             {
                 Cabecalho = new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
                 {
-                    Ano = 5,
+                    Ano = "5",
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
                     DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
@@ -2579,31 +2579,31 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = "6197654",
+                        Codigo = 6197654,
                         Nome = "ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA",
-                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo,
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                     {
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Errou",
-                            PerguntaId = "1"
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Acertou",
-                            PerguntaId = "2"
+                            PerguntaId = 2
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Errou",
-                            PerguntaId = "1" 
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Não resolveu",
-                            PerguntaId = "2"
+                            PerguntaId = 2
                         },
                     },
                 });
@@ -2612,31 +2612,31 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = "4650630",
+                        Codigo = 4650630,
                         Nome = "MATHEUS GUILHERME NASCIMENTO DA SILVA (RECLASSIFICADO SAÍDA EM 11/04/2020)",
-                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente,
+                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente.ToString(),
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                     {                        
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Errou",
-                            PerguntaId = "1"
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Não resolveu",
-                            PerguntaId = "2"
+                            PerguntaId = 2
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Errou",
-                            PerguntaId = "1"
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Acertou",
-                            PerguntaId = "2"
+                            PerguntaId = 2
                         },
                     },
                 });
@@ -2645,31 +2645,31 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
-                        Codigo = "6197654",
+                        Codigo = 6197654,
                         Nome = "AMANDA ALBUQUERQUE",
-                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu,
+                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu.ToString(),
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                     { 
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Errou",
-                            PerguntaId = "1"
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Acertou",
-                            PerguntaId = "2"
+                            PerguntaId = 2
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Errou",
-                            PerguntaId = "1"
+                            PerguntaId = 1
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Acertou",
-                            PerguntaId = "2"
+                            PerguntaId = 2
                         },
                     },
                 });
@@ -2680,7 +2680,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             {
                 Cabecalho = new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
                 {
-                    Ano = 5,
+                    Ano = "5",
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
                     DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
@@ -2730,6 +2730,60 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
 
             return View("RelatorioSondagemComponentesPorTurma", model);
+        }
+
+        [HttpGet("sondagem-consolidado-matematica-aditivo")]
+        public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
+        {
+
+            var model = new RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto();
+            model.Dre = "DRE-JT";
+            model.Ue = "EMEF - Máximo de Moura";
+            model.AnoLetivo = 2020;
+            model.Ano = "9";
+            model.Turma = "Todas";
+            model.ComponenteCurricular = "Matemática";
+            model.Proficiencia = "Números";
+            model.Periodo = "1º semestre";
+            model.Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque";
+            model.RF = "7777710";
+            model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+            Random randNum = new Random();
+
+            var perguntas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto>();
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto() { Descricao = "Ideia", Id = 1 });
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto() { Descricao = "Resultado", Id = 2 });
+            model.Perguntas = perguntas;
+
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto() 
+            {
+                 Ordem = "ORDEM 1 - COMPOSIÇÃO",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 2 },
+                }
+            });
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
+            {
+                Ordem = "ORDEM 2 - COMPOSIÇÃO",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 2 },
+                }
+            });
+
+
+            return View("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", model);
         }
     }
 }
