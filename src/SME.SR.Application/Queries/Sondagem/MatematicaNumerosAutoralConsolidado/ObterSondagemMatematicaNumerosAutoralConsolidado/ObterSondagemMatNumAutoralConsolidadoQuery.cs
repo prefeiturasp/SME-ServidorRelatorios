@@ -4,7 +4,7 @@ using SME.SR.Infra;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQuery : IRequest<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto>
+    public class ObterSondagemMatNumAutoralConsolidadoQuery : IRequest<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto>
     {
         public Dre Dre { get; set; }
 

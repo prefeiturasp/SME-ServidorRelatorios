@@ -46,7 +46,7 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
 
-            var relatorio = await mediator.Send(new ObterRelatorioSondagemMatematicaNumerosAutoralConsolidadoQuery()
+            var relatorio = await mediator.Send(new ObterSondagemMatNumAutoralConsolidadoQuery()
             {
                 AnoLetivo = filtros.AnoLetivo,
                 Dre = dre,
