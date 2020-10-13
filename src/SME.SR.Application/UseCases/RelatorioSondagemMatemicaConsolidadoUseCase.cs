@@ -45,6 +45,9 @@ namespace SME.SR.Application
                 if (usuario == null)
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
+            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            
+            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo));
 
             var relatorio = await mediator.Send(new ObterSondagemMatNumAutoralConsolidadoQuery()
             {
@@ -53,11 +56,28 @@ namespace SME.SR.Application
                 Ue = ue,
                 Semestre = filtros.Semestre,
                 TurmaAno = int.Parse(filtros.Ano),
-                Usuario = usuario
+                Usuario = usuario,
+                QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno
             });
 
-            var mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Ue} ({relatorio.Dre})";
-            var mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Ue} ({relatorio.Dre}) - {relatorio.Ano}º ano";
+
+            string mensagemDaNotificacao, mensagemTitulo;
+
+            if (!string.IsNullOrEmpty(filtros.UeCodigo))
+            {
+                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Ue} ({relatorio.Dre})";
+                mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Ue} ({relatorio.Dre}) - {relatorio.Ano}º ano";
+            }
+                
+            else if (filtros.DreCodigo > 0)
+            {
+                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Dre}";
+                mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Dre.Replace("-", "")} - {relatorio.Ano}º ano";
+            } else
+            {
+                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da SME";
+                mensagemTitulo = $"Relatório de Sondagem (Matemática) - SME - {relatorio.Ano}º ano";
+            }            
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
         }

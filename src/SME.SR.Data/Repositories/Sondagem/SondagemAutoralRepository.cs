@@ -20,11 +20,15 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<SondagemAutoralDto>> ObterPorFiltros(string codigoDre, string codigoUe, int? anoTurma, int? anoLetivo, ComponenteCurricularSondagemEnum? componenteCurricularSondagem)
         {
+            try
+            {
+
+          
             StringBuilder query = new StringBuilder();
 
             query.Append(" select \"CodigoDre\", \"CodigoUe\", \"CodigoTurma\", \"CodigoAluno\", \"NomeAluno\", \"AnoLetivo\", ");
-            query.Append(" \"AnoTurma\", p.\"Id\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Id\" RespostaId,  r.\"Descricao\" Resposta ");
-            query.Append(" from \"SondagemAutoral\" sa ");
+            query.Append(" \"AnoTurma\", \"PerguntaId\", \"RespostaId\"");
+            query.Append(" from \"SondagemAutoral\" ");
             query.Append(" where 1=1 ");
 
             if (!string.IsNullOrEmpty(codigoDre))
@@ -40,12 +44,19 @@ namespace SME.SR.Data
                 query.Append("and \"AnoLetivo\" = @anoLetivo ");
 
             if (componenteCurricularSondagem != null)
-                query.Append("and sa.\"ComponenteCurricularId\" = @componenteCurricularId ");
+                query.Append("and \"ComponenteCurricularId\" = @componenteCurricularId ");
 
             var parametros = new { codigoDre, codigoUe, anoTurma, anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name() };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<SondagemAutoralDto>(query.ToString(), parametros);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
     }
 }
