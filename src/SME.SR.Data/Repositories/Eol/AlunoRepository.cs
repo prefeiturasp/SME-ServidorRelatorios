@@ -103,8 +103,10 @@ namespace SME.SR.Data
         }
         public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMariculaAsync(IEnumerable<long> turmaCodigos, DateTime dataReferencia)
         {
-                
-            var query = @"
+            try
+            {
+
+                var query = @"
 					  select sum(quantidade) from (select count(aluno.cd_aluno) quantidade			
 							FROM v_aluno_cotic aluno
 						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
@@ -136,12 +138,20 @@ namespace SME.SR.Data
 
 
 
-            var parametros = new { turmaCodigos, dataReferencia };
+                var parametros = new { turmaCodigos, dataReferencia };
 
-            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-            return await conexao.QueryFirstOrDefaultAsync<int>(query, parametros);
-          
+                return await conexao.QueryFirstOrDefaultAsync<int>(query, parametros);
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
 
         }
         public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
