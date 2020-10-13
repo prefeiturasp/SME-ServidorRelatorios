@@ -154,5 +154,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/sondagem/matematica-consolidado")]
+        [Action("relatorios/sondagem/matematica-consolidado", typeof(IRelatorioSondagemMatemicaConsolidadoUseCase))]
+        public async Task<bool> RelatorioMatemicaConsolidade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemMatemicaConsolidadoUseCase relatorioSondagemMatemicaConsolidadoUseCase)
+        {
+            await relatorioSondagemMatemicaConsolidadoUseCase.Executar(request);
+            return true;
+        }
     }
 }

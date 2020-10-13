@@ -101,7 +101,59 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<Aluno>(query, parametros);
 
         }
+        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMariculaAsync(IEnumerable<long> turmaCodigos, DateTime dataReferencia)
+        {
+            try
+            {
 
+                var query = @"
+					  select sum(quantidade) from (select count(aluno.cd_aluno) quantidade			
+							FROM v_aluno_cotic aluno
+						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte.cd_turma_escola in @turmaCodigos
+						and (matr.st_matricula in (1, 6, 10, 13, 5) or (matr.st_matricula not in (1, 6, 10, 13, 5) and matr.dt_status_matricula > @dataReferencia))
+						UNION 
+						SELECT  
+                        count(aluno.cd_aluno) quantidade
+							FROM v_aluno_cotic aluno
+						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte.cd_turma_escola  in @turmaCodigos
+						and mte.dt_situacao_aluno =                    
+							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+							where
+							mte2.cd_turma_escola in @turmaCodigos
+							and matr2.cd_aluno = matr.cd_aluno
+							and (matr2.st_matricula in (1, 6, 10, 13, 5) or (matr2.st_matricula not in (1, 6, 10, 13, 5) and matr2.dt_status_matricula > @dataReferencia))
+						)
+						AND NOT EXISTS(
+							SELECT 1 FROM v_matricula_cotic matr3
+						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
+						WHERE mte.cd_matricula = mte3.cd_matricula
+							AND mte.cd_turma_escola in @turmaCodigos)) x";
+
+
+
+                var parametros = new { turmaCodigos, dataReferencia };
+
+                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+
+                return await conexao.QueryFirstOrDefaultAsync<int>(query, parametros);
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+
+        }
         public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
         {
             var query = AlunoConsultas.DadosAluno;
