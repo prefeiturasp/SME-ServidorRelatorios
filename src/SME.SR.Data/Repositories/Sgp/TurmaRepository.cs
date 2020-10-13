@@ -709,5 +709,27 @@ namespace SME.SR.Data
 
             return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { turmaCodigo = turmaCodigo.ToString()});
         }
+
+        public async Task<IEnumerable<long>> ObterTurmasCodigoPorUeAnoSondagemAsync(string ano, long ueCodigo, int anoLetivo)
+        {
+            var query = @"
+                     SELECT distinct turma.cd_turma_escola  codigoTurma 
+                     FROM turma_escola Turma  
+                     INNER JOIN serie_turma_escola serie_turma
+					 ON serie_turma.cd_turma_escola = turma.cd_turma_escola
+					 INNER JOIN serie_ensino serie_ensino
+					 ON serie_turma.cd_serie_ensino = serie_ensino.cd_serie_ensino
+					 INNER JOIN etapa_ensino etapa_ensino
+					 ON etapa_ensino.cd_etapa_ensino = serie_ensino.cd_etapa_ensino
+                     AND etapa_ensino.cd_modalidade_ensino = 1
+					 AND etapa_ensino.cd_etapa_ensino = 5 AND etapa_ensino.dt_cancelamento is null
+					 WHERE an_letivo = @anoLetivo and Turma.st_turma_escola <> 'E' 
+					  AND turma.cd_escola = @ueCodigo
+					  AND left(dc_turma_escola, 1) = @ano AND Turma.cd_tipo_turma = 1";
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+
+            return await conexao.QueryAsync<long>(query, new { ano, ueCodigo, anoLetivo });
+        }
     }
 }

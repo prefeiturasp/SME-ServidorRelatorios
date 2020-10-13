@@ -45,6 +45,9 @@ namespace SME.SR.Application
                 if (usuario == null)
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
+            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            
+            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, long.Parse(ue.Codigo), filtros.AnoLetivo, dataReferencia));
 
             var relatorio = await mediator.Send(new ObterSondagemMatNumAutoralConsolidadoQuery()
             {
@@ -53,7 +56,8 @@ namespace SME.SR.Application
                 Ue = ue,
                 Semestre = filtros.Semestre,
                 TurmaAno = int.Parse(filtros.Ano),
-                Usuario = usuario
+                Usuario = usuario,
+                QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno
             });
 
             var mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Ue} ({relatorio.Dre})";

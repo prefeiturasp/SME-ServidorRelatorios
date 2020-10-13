@@ -80,7 +80,31 @@ namespace SME.SR.Application
             if (perguntas.Any())
                 relatorio.PerguntasRespostas = perguntas;
 
+
+            TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
+
             return relatorio;
+        }
+
+        private void TrataAlunosQueNaoResponderam(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, int quantidadeTotalAlunos)
+        {
+            foreach (var perguntaResposta in relatorio.PerguntasRespostas)
+            {
+                var qntDeAlunosPreencheu = perguntaResposta.Respostas.Sum(a => a.AlunosQuantidade);
+                var diferencaPreencheuNao = quantidadeTotalAlunos - qntDeAlunosPreencheu;
+
+                var percentualNaoPreencheu = (diferencaPreencheuNao / 100) * (quantidadeTotalAlunos /10 );
+
+                perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
+                {
+                    Resposta = "Sem preenchimento", 
+                    AlunosQuantidade = diferencaPreencheuNao,
+                     AlunosPercentual = percentualNaoPreencheu
+
+                });
+
+
+            }
         }
 
         private void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, string rf, string usuario)
