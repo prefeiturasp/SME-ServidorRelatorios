@@ -2761,13 +2761,13 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 {
                     Ordem = "ORDEM " + (i + 1) + " - COMPOSIÇÃO",
                     Respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>() {
-                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 1 + i, AlunosQuantidade = 1 + i, Resposta = "Acertou" , PerguntaId = 1 },
-                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 2 + i, AlunosQuantidade = 2 + i, Resposta = "Errou", PerguntaId = 1 },
-                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 97 + i, AlunosQuantidade = 3 + i, Resposta = "Não resolveu", PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 67.85714285714286 + i, AlunosQuantidade = 1 + i, Resposta = "Acertou" , PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 17.857142857142858 + i, AlunosQuantidade = 2 + i, Resposta = "Errou", PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 14.285714285714285 + i, AlunosQuantidade = 3 + i, Resposta = "Não resolveu", PerguntaId = 1 },
 
-                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 3 + i, AlunosQuantidade = 4 + i, Resposta = "Acertou" , PerguntaId = 2 },
-                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 4 + i, AlunosQuantidade = 5 + i, Resposta = "Errou", PerguntaId = 2 },
-                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 93 + i, AlunosQuantidade = 6 + i, Resposta = "Não resolveu", PerguntaId = 2 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 58.92857142857143 + i, AlunosQuantidade = 4 + i, Resposta = "Acertou" , PerguntaId = 2 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 25 + i, AlunosQuantidade = 5 + i, Resposta = "Errou", PerguntaId = 2 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 16.071428571428573 + i, AlunosQuantidade = 6 + i, Resposta = "Não resolveu", PerguntaId = 2 },
                     }
                 });
             }
