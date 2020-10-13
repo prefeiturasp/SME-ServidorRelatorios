@@ -129,7 +129,9 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(ITurmaEolRepository), typeof(TurmaEolRepository));            
             services.TryAddScoped(typeof(IMathPoolNumbersRepository), typeof(MathPoolNumbersRepository));
             services.TryAddScoped(typeof(IPerguntasAutoralRepository), typeof(PerguntasAutoralRepository));
-            services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));
+            services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));            
+            services.TryAddScoped(typeof(IPeriodoSondagemRepository), typeof(PeriodoSondagemRepository));
+            
 
         }
 

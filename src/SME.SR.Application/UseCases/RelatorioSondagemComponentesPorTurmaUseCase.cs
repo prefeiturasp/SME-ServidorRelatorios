@@ -20,7 +20,11 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemComponentesPorTurmaFiltroDto>();
 
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = filtros.TurmaCodigo.ToString() });
+            //Obter a data do periodo\\
+            var dataDoPeriodo = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+
+
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(filtros.TurmaCodigo, dataDoPeriodo));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
 

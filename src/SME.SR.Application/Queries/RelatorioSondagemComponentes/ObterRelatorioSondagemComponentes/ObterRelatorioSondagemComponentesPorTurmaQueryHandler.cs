@@ -62,7 +62,7 @@ namespace SME.SR.Application
                 Turma = turma.NomeRelatorio,
                 Ue = ue.NomeComTipoEscola,
                 Rf = request.UsuarioRF,
-                Usuario = usuario.Login,
+                Usuario = usuario.Nome,
                 Ordens = ordens.ToList(),
                 Perguntas = perguntas
             };
@@ -133,7 +133,7 @@ namespace SME.SR.Application
             {
                 Codigo = aluno.CodigoAluno,
                 DataSituacao = aluno.DataSituacao.ToString("dd/MM/yyyy"),
-                Nome = aluno.ObterNomeFinal(),
+                Nome = aluno.ObterNomeParaRelatorioSondagem(),
                 SituacaoMatricula = aluno.SituacaoMatricula
             };
 
