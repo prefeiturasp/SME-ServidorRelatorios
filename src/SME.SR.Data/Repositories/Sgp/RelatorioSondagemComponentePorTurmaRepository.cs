@@ -37,7 +37,7 @@ namespace SME.SR.Data.Repositories.Sgp
             if (proficiencia == ProficienciaSondagemEnum.Numeros)
                 sql = $"select \"AlunoEolCode\", \"AlunoNome\", \"AnoLetivo\", \"AnoTurma\",\"Semestre\",\"Familiares\",\"Opacos\",\"Transparentes\",\"TerminamZero\",\"Algarismos\",\"Processo\",\"ZeroIntercalados\" from \"MathPoolNumbers\" where \"DreEolCode\" = @dreCodigo and \"AnoLetivo\" = @ano and \"TurmaEolCode\" = @turmaCodigo and \"Semestre\" = @semestre order by \"AlunoNome\"";
 
-            if (proficiencia == ProficienciaSondagemEnum.Escrita || proficiencia == ProficienciaSondagemEnum.Leitura)
+            if (ano >= 7)
             {
                 sql = "select \"CodigoAluno\" AlunoEolCode, \"NomeAluno\" AlunoNome, \"AnoLetivo\", \"AnoTurma\", \"CodigoTurma\", pae.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta";
                 sql += " from \"SondagemAutoral\" sa inner join \"Pergunta\" p on sa.\"PerguntaId\" = p.\"Id\"";

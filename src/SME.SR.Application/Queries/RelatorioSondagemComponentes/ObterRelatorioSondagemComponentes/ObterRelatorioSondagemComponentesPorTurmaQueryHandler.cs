@@ -197,7 +197,7 @@ namespace SME.SR.Application
                     {
                         listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                         {
-                            OrdemId = 1,
+                            OrdemId = 0,
                             PerguntaId = pergunta.Id,
                             Resposta = resposta.Resposta,
                         });
@@ -205,7 +205,7 @@ namespace SME.SR.Application
                     {
                         listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                         {
-                            OrdemId = 1,
+                            OrdemId = 0,
                             PerguntaId = pergunta.Id,
                             Resposta = String.Empty,
                         });
