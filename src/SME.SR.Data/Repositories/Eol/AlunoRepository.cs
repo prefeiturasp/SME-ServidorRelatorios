@@ -92,7 +92,8 @@ namespace SME.SR.Data
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola = @turmaCodigo)";
+							AND mte.cd_turma_escola = @turmaCodigo) 
+                        and mte.nr_chamada_aluno is not null;";
 
             var parametros = new { turmaCodigo, dataReferencia };
 
@@ -103,10 +104,7 @@ namespace SME.SR.Data
         }
         public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMariculaAsync(IEnumerable<long> turmaCodigos, DateTime dataReferencia)
         {
-            try
-            {
-
-                var query = @"
+            var query = @"
 					  select sum(quantidade) from (select count(aluno.cd_aluno) quantidade			
 							FROM v_aluno_cotic aluno
 						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
@@ -134,25 +132,16 @@ namespace SME.SR.Data
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola in @turmaCodigos)) x";
+							AND mte.cd_turma_escola in @turmaCodigos)
+                            and mte.nr_chamada_aluno is not null) x";
 
 
 
-                var parametros = new { turmaCodigos, dataReferencia };
+            var parametros = new { turmaCodigos, dataReferencia };
 
-                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-                return await conexao.QueryFirstOrDefaultAsync<int>(query, parametros);
-
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-
-
+            return await conexao.QueryFirstOrDefaultAsync<int>(query, parametros);
         }
         public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
         {
