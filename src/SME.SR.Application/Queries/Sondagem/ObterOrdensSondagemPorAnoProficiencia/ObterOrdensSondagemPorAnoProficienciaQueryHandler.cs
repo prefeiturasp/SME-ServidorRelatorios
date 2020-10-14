@@ -31,7 +31,12 @@ namespace SME.SR.Application
                 case "5":
                 case "6":
                     AdicionarOrdensAno5(listaRetorno, request.Proficiencia);
-                    break;                
+                    break;
+                case "7":
+                case "8":
+                case "9":
+                    AdicionarOrdensAnos789(listaRetorno);
+                    break;
                 default:
                     break;
             }
@@ -253,5 +258,15 @@ namespace SME.SR.Application
                 Id = 3
             });
         }
+
+        private static void AdicionarOrdensAnos789(List<RelatorioSondagemComponentesPorTurmaOrdemDto> listaRetorno)
+        {
+            listaRetorno.Add(new RelatorioSondagemComponentesPorTurmaOrdemDto()
+            {
+                Descricao = "ORDEM AUTORAL",
+                Id = 0
+            });
+        }
+
     }
 }

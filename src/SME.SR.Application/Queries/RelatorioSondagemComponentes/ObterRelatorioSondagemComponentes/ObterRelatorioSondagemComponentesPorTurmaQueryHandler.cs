@@ -58,7 +58,7 @@ namespace SME.SR.Application
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Dre = dre.Abreviacao,
                 Periodo = $"{request.Semestre.ToString()}° Semestre",
-                Proficiencia = proficiencia,
+                Proficiencia = (Int32.Parse(request.Ano) >= 7) ? String.Empty : proficiencia,
                 Turma = turma.NomeRelatorio,
                 Ue = ue.NomeComTipoEscola,
                 Rf = request.UsuarioRF,
@@ -86,6 +86,38 @@ namespace SME.SR.Application
 
         public async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntas(ProficienciaSondagemEnum proficiencia, string ano)
         {
+            if (Int32.Parse(ano) >= 7)
+            {
+                return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
+                {
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 1,
+                        Nome = "Problema de lógica"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 2,
+                        Nome = "Área e perímetro"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 3,
+                        Nome = (ano == "8")?"Triângulos e quadriláteros":"Sólidos geométricos"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 4,
+                        Nome = (ano == "9")?"Regularidade e generalização":"Relações entre grandezas e porcentagem"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 5,
+                        Nome = (ano == "7")?"Média, moda e mediana":"Probabilidade"
+                    },
+                });
+            }
+
             if (proficiencia == ProficienciaSondagemEnum.CampoAditivo || proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
             {
                 return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
@@ -141,38 +173,6 @@ namespace SME.SR.Application
                     {
                         Id = 7,
                         Nome = "Zero Intercalado"
-                    },
-                });
-            }
-
-            if (Int32.Parse(ano) >= 7)
-            {
-                return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
-                {
-                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
-                    {
-                        Id = 1,
-                        Nome = "Problema de lógica"
-                    },
-                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
-                    {
-                        Id = 2,
-                        Nome = "Área e perímetro"
-                    },
-                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
-                    {
-                        Id = 3,
-                        Nome = (ano == "8")?"Triângulos e quadriláteros":"Sólidos geométricos"
-                    },
-                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
-                    {
-                        Id = 4,
-                        Nome = (ano == "9")?"Regularidade e generalização":"Relações entre grandezas e porcentagem"
-                    },
-                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
-                    {
-                        Id = 5,
-                        Nome = (ano == "7")?"Média, moda e mediana":"Probabilidade"
                     },
                 });
             }
