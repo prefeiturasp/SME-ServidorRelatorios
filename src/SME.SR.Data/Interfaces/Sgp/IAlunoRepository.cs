@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Interfaces
@@ -14,5 +15,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos);
 
         Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(long[] codigosAlunos);
+        Task<IEnumerable<Aluno>> ObterAlunosPorTurmaDataSituacaoMaricula(long turmaCodigo, DateTime dataReferencia);
+        Task<int> ObterTotalAlunosPorTurmasDataSituacaoMariculaAsync(IEnumerable<long> turmaCodigos, DateTime dataReferencia);
     }
 }

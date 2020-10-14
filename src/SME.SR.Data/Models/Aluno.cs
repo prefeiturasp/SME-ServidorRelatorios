@@ -46,6 +46,20 @@ namespace SME.SR.Data
                         SituacaoMatriculaAluno.PendenteRematricula,
                         SituacaoMatriculaAluno.SemContinuidade };
 
+        private SituacaoMatriculaAluno[] SituacoesAtivaSondagem => new[] { SituacaoMatriculaAluno.Ativo,
+                        SituacaoMatriculaAluno.Rematriculado,
+                        SituacaoMatriculaAluno.PendenteRematricula,
+                        SituacaoMatriculaAluno.SemContinuidade, 
+            SituacaoMatriculaAluno.Concluido};
+
+        public string ObterNomeParaRelatorioSondagem()
+        {
+            var nome = ObterNomeFinal();
+            if (!SituacoesAtivaSondagem.Contains(CodigoSituacaoMatricula))
+                return $"{nome} ({CodigoSituacaoMatricula.GetAttribute<DisplayAttribute>().Name} em {DataSituacao.ToString("dd/MM/yyyy")})";
+            else return nome;
+        }
+
         private bool SituacaoEspecial => !SituacoesAtiva.Contains(CodigoSituacaoMatricula) || SituacoesEspeciais.Contains(CodigoSituacaoMatricula);
     }
 }

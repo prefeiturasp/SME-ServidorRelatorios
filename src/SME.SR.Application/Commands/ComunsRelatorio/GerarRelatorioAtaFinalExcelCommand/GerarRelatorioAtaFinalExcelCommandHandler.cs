@@ -181,7 +181,7 @@ namespace SME.SR.Application
                 .MoveTo(worksheet.Cell(2, 2))
                 .Scale(0.15);
 
-            int indiceColunaTitulo = (int)(totalColunas * 0.9) + 1;
+            int indiceColunaTitulo = (int)(totalColunas * 0.8) + 1;
 
             worksheet.Row(2).Cell(indiceColunaTitulo).Value = "SGP - Sistema de Gestão Pedagógica";
             worksheet.Range(2, indiceColunaTitulo, 2, totalColunas).Merge().Style.Font.Bold = true;

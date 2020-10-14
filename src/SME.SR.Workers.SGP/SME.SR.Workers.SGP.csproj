@@ -49,6 +49,10 @@
     <Content Update="Views\RelatorioRecuperacaoParalela.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Views\RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="Views\RelatorioResumosPAP.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
