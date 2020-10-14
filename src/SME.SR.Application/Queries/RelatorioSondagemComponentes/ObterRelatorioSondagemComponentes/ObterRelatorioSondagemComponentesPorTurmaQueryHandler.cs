@@ -234,8 +234,8 @@ namespace SME.SR.Application
 
                 var respostaDoAluno = listaSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString());
 
-                if (respostaDoAluno != null)
-                    respostas = await ObterOrdemRespostas(respostaDoAluno, request.Ano, request.Proficiencia);
+                respostas = await ObterOrdemRespostas(respostaDoAluno, request.Ano, request.Proficiencia);
+                
 
                 linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
                 {
@@ -295,45 +295,45 @@ namespace SME.SR.Application
         {
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 1,
-                Resposta = linha.Familiares,
+                Resposta = linha?.Familiares,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 2,
-                Resposta = linha.Opacos,
+                Resposta = linha?.Opacos,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 3,
-                Resposta = linha.Transparentes,
+                Resposta = linha?.Transparentes,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 4,
-                Resposta = linha.TerminamZero,
+                Resposta = linha?.TerminamZero,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 5,
-                Resposta = linha.Algarismos,
+                Resposta = linha?.Algarismos,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 6,
-                Resposta = linha.Processo,
+                Resposta = linha?.Processo,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 7,
-                Resposta = linha.ZeroIntercalados,
+                Resposta = linha?.ZeroIntercalados,
             });
         }
 
@@ -349,37 +349,37 @@ namespace SME.SR.Application
                 {
                     OrdemId = 1,
                     PerguntaId = 1,
-                    Resposta = linha.Ordem1Ideia,
+                    Resposta = linha?.Ordem1Ideia,
                 });
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
                     OrdemId = 1,
                     PerguntaId = 2,
-                    Resposta = linha.Ordem1Resultado,
+                    Resposta = linha?.Ordem1Resultado,
                 });
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
                     OrdemId = 2,
                     PerguntaId = 1,
-                    Resposta = linha.Ordem2Ideia,
+                    Resposta = linha?.Ordem2Ideia,
                 });
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
                     OrdemId = 2,
                     PerguntaId = 2,
-                    Resposta = linha.Ordem2Resultado,
+                    Resposta = linha?.Ordem2Resultado,
                 });
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
                     OrdemId = 3,
                     PerguntaId = 1,
-                    Resposta = linha.Ordem3Ideia,
+                    Resposta = linha?.Ordem3Ideia,
                 });
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
                     OrdemId = 3,
                     PerguntaId = 2,
-                    Resposta = linha.Ordem3Resultado,
+                    Resposta = linha?.Ordem3Resultado,
                 });
             }
         }
