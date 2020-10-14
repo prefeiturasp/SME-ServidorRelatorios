@@ -1,0 +1,307 @@
+﻿@model SME.SR.Infra.RelatorioSondagemPortuguesPorTurmaRelatorioDto
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 44;
+    int contadorPagina = 0;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always'></div>" + str;
+
+        }
+        return string.Empty;
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        var str =
+            $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'> RELATÓRIO DE SONDAGEM</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {Model.Cabecalho.Dre}</td>
+<td width='45%' class='espaco-esquerda-15 sem-border-bottom'>UE: {Model.Cabecalho.Ue}</td>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO LETIVO: {Model.Cabecalho.AnoLetivo}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Cabecalho.Ano}</td>
+<td width='23%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Cabecalho.Turma}</td>
+<td  width='57%' class='espaco-esquerda-15 sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Cabecalho.ComponenteCurricular}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PROFICIÊNCIA: {Model.Cabecalho.Proficiencia}</td>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Cabecalho.Periodo}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='60%' class='espaco-esquerda-15'>USUÁRIO: {Model.Cabecalho.Usuario}</td>
+<td width='20%' class='espaco-esquerda-15'>RF: {Model.Cabecalho.Rf}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.Cabecalho.DataSolicitacao}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+    string MontarCabecalhoSondagem()
+    {
+        var str = $@"<table class='tabela-cabecalho'><thead>";
+
+        var numeroPerguntas = Model.Cabecalho.Perguntas.Count;
+        int width = 63 / numeroPerguntas;
+
+        str += $@"<tr><th width='7%'>Cod. EOL</th>";
+        str += $@"<th width='30%'>Nome do Estudante</th>";
+
+        foreach (var pergunta in Model.Cabecalho.Perguntas)
+        {
+            str += $@"<th width='{width}%'>{pergunta.Nome}</th>";
+        }
+
+        str += $@"</tr></thead><tbody>";
+
+        return str;
+    }
+
+    string MontarTabelaSondagem()
+    {
+        var str = MontarCabecalhoSondagem();
+        bool escreveuCabecalho = true;
+
+        for (var i = 0; i < Model.Planilha.Linhas.Count; i++)
+        {
+            var linha = Model.Planilha.Linhas[i];
+            int numeroLinhas = (linha.Aluno.Nome.Length / 30);
+
+            if (escreveuCabecalho)
+            {
+                contadorQuebrarPagina++;
+                escreveuCabecalho = false;
+            }
+
+            if (i != 0)
+            {
+                str += $@"<tr>";
+            }
+
+            str += $@"<td>{linha.Aluno.Codigo}</td>";
+            str += $@"<td>{linha.Aluno.Nome}</td>";
+
+            bool preencheu = false;
+            foreach (var resposta in linha.Respostas)
+            {
+                if(resposta.Resposta == "S") {
+                    str += $@"<td>X</td>";
+                }else if(resposta.Resposta == "N")
+                {
+                    str += $@"<td>&nbsp;</td>";
+                }
+                else
+                {
+                    str += $@"<td>{resposta.Resposta}</td>";
+                }
+
+                preencheu = true;
+            }
+
+            if (!preencheu)
+            {
+                for(var k = 0; k < Model.Cabecalho.Perguntas.Count; k++)
+                {
+                    str += $@"<td>&nbsp;</td>";
+                }
+            }
+
+            str += $@"</tr>";
+
+            if (numeroLinhas > 1)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+            }
+            else
+            {
+                contadorQuebrarPagina++;
+            }
+
+            var quebra = VerificaQuebra();
+            var novaPagina = quebra + (i < Model.Planilha.Linhas.Count - 1 ? MontarCabecalhoSondagem() : "");
+
+            if (quebra.Length > 0)
+            {
+                str += $@"</tbody></table>{novaPagina}";
+                escreveuCabecalho = true;
+            }
+        }
+
+        str += "</tbody></table>";
+
+        return str;
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de Sondagem</title>
+</head>
+<body class="body-relatorio">
+    <style>
+
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+            padding: 3px;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 10px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-bottom: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border-top: 0;
+            border-bottom: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .coluna-vazia {
+            border: 0;
+            background: white;
+        }
+
+        .quebra-palavra {
+            word-break: break-word;
+        }
+    </style>
+    <div>
+        @{
+            @Html.Raw(MontarCabecalho())
+
+            @Html.Raw(MontarTabelaSondagem())
+        }
+    </div>
+</body>
+</html>

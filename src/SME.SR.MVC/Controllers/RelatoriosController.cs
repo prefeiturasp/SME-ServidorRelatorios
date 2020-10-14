@@ -2737,7 +2737,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             var linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto>();
 
-            for (var i = 0; i < 30; i++)
+            for (var i = 0; i < 12; i++)
             {
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
                 {
@@ -2755,21 +2755,53 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             },
                         }
                 });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 5727636,
+                        Nome = "BRENDHA VITORIA DOMINGUES DE ALMEIDA)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostasDto>()
+                        {
+                            new RelatorioSondagemPortuguesPorTurmaRespostasDto() {
+                                Resposta = "Nível3",
+                                PerguntaId = 1
+                            },
+                        }
+                });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 7334362,
+                        Nome = "ALESSANDRA RIKELY BENTO SANTOS",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostasDto>()
+                        {
+                            new RelatorioSondagemPortuguesPorTurmaRespostasDto() {
+                                Resposta = "Nível2",
+                                PerguntaId = 1
+                            },
+                        }
+                });
             }
 
             var model = new RelatorioSondagemPortuguesPorTurmaRelatorioDto()
             {
                 Cabecalho = new RelatorioSondagemPortuguesPorTurmaCabecalhoDto()
                 {
-                    Ano = "5",
+                    Ano = "1",
                     AnoLetivo = 2020,
-                    ComponenteCurricular = "Matemática",
-                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    ComponenteCurricular = "Língua Portuguesa",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                     Dre = "DRE - BT",
-                    Periodo = "1º Semestre",
-                    Proficiencia = "Números",
+                    Periodo = "1º Bimestre",
+                    Proficiencia = "Leitura",
                     Rf = "9879878",
-                    Turma = "Todas",
+                    Turma = "EMEF - 1A",
                     Ue = "CEU EMEF BUTANTA",
                     Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
                     Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
@@ -2795,7 +2827,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             var linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto>();
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 7; i++)
             {
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
                 {
@@ -2885,10 +2917,10 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Ano = "5",
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
-                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                     Dre = "DRE - BT",
-                    Periodo = "1º Semestre",
-                    Proficiencia = "Números",
+                    Periodo = "1º Bimestre",
+                    Proficiencia = "Escrita",
                     Rf = "9879878",
                     Turma = "Todas",
                     Ue = "CEU EMEF BUTANTA",
@@ -2916,7 +2948,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             var linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto>();
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 7; i++)
             {
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
                 {
@@ -3029,7 +3061,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 PerguntaId = 4
                             },
                         }
-                }); linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
+                }); 
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
@@ -3044,7 +3077,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 PerguntaId = 1
                             },
                             new RelatorioSondagemPortuguesPorTurmaRespostasDto() {
-                                Resposta = "N",
+                                Resposta = "S",
                                 PerguntaId = 2
                             },
                             new RelatorioSondagemPortuguesPorTurmaRespostasDto() {
@@ -3052,7 +3085,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 PerguntaId = 3
                             },
                             new RelatorioSondagemPortuguesPorTurmaRespostasDto() {
-                                Resposta = "S",
+                                Resposta = "N",
                                 PerguntaId = 4
                             },
                         }
@@ -3066,12 +3099,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Ano = "5",
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
-                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                     Dre = "DRE - BT",
-                    Periodo = "1º Semestre",
-                    Proficiencia = "Números",
+                    Periodo = "1º Bimestre",
+                    Proficiencia = "Leitura em voz alta",
                     Rf = "9879878",
-                    Turma = "Todas",
+                    Turma = "EMEF - 5A",
                     Ue = "CEU EMEF BUTANTA",
                     Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
                     Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
