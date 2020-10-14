@@ -41,7 +41,7 @@ namespace SME.SR.Application
 
         private async Task<RelatorioSondagemComponentesPorTurmaCabecalhoDto> ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            var componenteCurricular = request.ComponenteCurricular.Name();
+            var componenteCurricular = request.ComponenteCurricular.ShortName();
             var ordens = await ObterOrdens(request.Ano, request.Proficiencia);
             var ue = await ObterUe(request.UeCodigo);
             var usuario = await usuarioRepository.ObterDados(request.UsuarioRF);
