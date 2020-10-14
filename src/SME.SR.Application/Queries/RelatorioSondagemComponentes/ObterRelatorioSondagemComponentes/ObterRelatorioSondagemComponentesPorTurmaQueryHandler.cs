@@ -30,7 +30,7 @@ namespace SME.SR.Application
         public async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
         {
             RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
-            RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha = await ObterPlanilha(request);
+            RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha = (Int32.Parse(request.Ano) >= 7)? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
 
             return new RelatorioSondagemComponentesPorTurmaRelatorioDto()
             {
@@ -45,7 +45,7 @@ namespace SME.SR.Application
             var ordens = await ObterOrdens(request.Ano, request.Proficiencia);
             var ue = await ObterUe(request.UeCodigo);
             var usuario = await usuarioRepository.ObterDados(request.UsuarioRF);
-            var perguntas = await ObterPerguntas();
+            var perguntas = await ObterPerguntas(request.Proficiencia, request.Ano);
             var dre = await ObterDre(request.DreCodigo);
             var proficiencia = request.Proficiencia.Name();
             var turma = await mediator.Send(new ObterTurmaSondagemEolPorCodigoQuery(request.TurmaCodigo));
@@ -58,7 +58,7 @@ namespace SME.SR.Application
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Dre = dre.Abreviacao,
                 Periodo = $"{request.Semestre.ToString()}° Semestre",
-                Proficiencia = proficiencia,
+                Proficiencia = (Int32.Parse(request.Ano) >= 7) ? String.Empty : proficiencia,
                 Turma = turma.NomeRelatorio,
                 Ue = ue.NomeComTipoEscola,
                 Rf = request.UsuarioRF,
@@ -84,9 +84,43 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        public async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntas()
+        public async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntas(ProficienciaSondagemEnum proficiencia, string ano)
         {
-            return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
+            if (Int32.Parse(ano) >= 7)
+            {
+                return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
+                {
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 1,
+                        Nome = "Problema de lógica"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 2,
+                        Nome = "Área e perímetro"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 3,
+                        Nome = (ano == "8")?"Triângulos e quadriláteros":"Sólidos geométricos"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 4,
+                        Nome = (ano == "9")?"Regularidade e generalização":"Relações entre grandezas e porcentagem"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 5,
+                        Nome = (ano == "7")?"Média, moda e mediana":"Probabilidade"
+                    },
+                });
+            }
+
+            if (proficiencia == ProficienciaSondagemEnum.CampoAditivo || proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
+            {
+                return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
                 {
                     new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                     {
@@ -99,11 +133,98 @@ namespace SME.SR.Application
                         Nome = "Resultado"
                     }
                 });
+            }
+
+            if (proficiencia == ProficienciaSondagemEnum.Numeros)
+            {
+                return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
+                {
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 1,
+                        Nome = "Familiares ou Frequentes"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 2,
+                        Nome = "Opacos"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 3,
+                        Nome = "Transparentes"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 4,
+                        Nome = "Terminam em Zero"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 5,
+                        Nome = "Algarismos Iguais"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 6,
+                        Nome = "Processo de Generalização"
+                    },
+                    new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                    {
+                        Id = 7,
+                        Nome = "Zero Intercalado"
+                    },
+                });
+            }
+
+            return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>());
+        }
+
+        public async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilhaAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request, List<RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntas)
+        {
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(), request.AnoLetivo, request.Semestre, request.Proficiencia, Int32.Parse(request.Ano));
+
+            List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+
+            foreach (var aluno in request.alunos.OrderBy(a => a.ObterNomeFinal()))
+            {
+                var listaRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>();
+
+                foreach (RelatorioSondagemComponentesPorTurmaPerguntaDto pergunta in perguntas)
+                {
+                    RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto resposta = listaSondagem.FirstOrDefault(r => r.AlunoEolCode == aluno.CodigoAluno.ToString() && r.PerguntaId == pergunta.Id);
+                    if (resposta != null)
+                    {
+                        listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                        {
+                            OrdemId = 0,
+                            PerguntaId = pergunta.Id,
+                            Resposta = resposta.Resposta,
+                        });
+                    } else
+                    {
+                        listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                        {
+                            OrdemId = 0,
+                            PerguntaId = pergunta.Id,
+                            Resposta = String.Empty,
+                        });
+                    }
+                }
+
+                linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = TransformarAlunoDto(aluno),
+                    OrdensRespostas = listaRespostas
+                });
+            }
+
+            return new RelatorioSondagemComponentesPorTurmaPlanilhaDto() { Linhas = linhasPlanilhaQueryDto };
         }
 
         public async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilha(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(), request.AnoLetivo, request.Semestre, request.Proficiencia);
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(), request.AnoLetivo, request.Semestre, request.Proficiencia, Int32.Parse(request.Ano));
 
             List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
@@ -113,8 +234,8 @@ namespace SME.SR.Application
 
                 var respostaDoAluno = listaSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString());
 
-                if (respostaDoAluno != null)
-                    respostas = await ObterOrdemRespostas(respostaDoAluno, request.Ano, request.Proficiencia);
+                respostas = await ObterOrdemRespostas(respostaDoAluno, request.Ano, request.Proficiencia);
+                
 
                 linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
                 {
@@ -170,52 +291,106 @@ namespace SME.SR.Application
 
             return await Task.FromResult(listaRespostas);
         }
-
- 
-
-        private static void ObterRespostasAno1(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha, List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> listaRespostas, ProficienciaSondagemEnum proficiencia)
+        private static void ObterRespostasNumeros(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha, List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> listaRespostas)
         {
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 1,
-                Resposta = linha.Ordem1Ideia,
+                Resposta = linha?.Familiares,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 1,
+                OrdemId = 0,
                 PerguntaId = 2,
-                Resposta = linha.Ordem1Resultado,
+                Resposta = linha?.Opacos,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 2,
-                PerguntaId = 1,
-                Resposta = linha.Ordem2Ideia,
+                OrdemId = 0,
+                PerguntaId = 3,
+                Resposta = linha?.Transparentes,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 2,
-                PerguntaId = 2,
-                Resposta = linha.Ordem2Resultado,
+                OrdemId = 0,
+                PerguntaId = 4,
+                Resposta = linha?.TerminamZero,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 3,
-                PerguntaId = 1,
-                Resposta = linha.Ordem3Ideia,
+                OrdemId = 0,
+                PerguntaId = 5,
+                Resposta = linha?.Algarismos,
             });
             listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
             {
-                OrdemId = 3,
-                PerguntaId = 2,
-                Resposta = linha.Ordem3Resultado,
+                OrdemId = 0,
+                PerguntaId = 6,
+                Resposta = linha?.Processo,
             });
+            listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+            {
+                OrdemId = 0,
+                PerguntaId = 7,
+                Resposta = linha?.ZeroIntercalados,
+            });
+        }
+
+        private static void ObterRespostasAno1(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha, List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> listaRespostas, ProficienciaSondagemEnum proficiencia)
+        {
+            if (proficiencia == ProficienciaSondagemEnum.Numeros)
+            {
+                ObterRespostasNumeros(linha, listaRespostas);
+            }
+            else if (proficiencia == ProficienciaSondagemEnum.CampoAditivo)
+            {
+                listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                {
+                    OrdemId = 1,
+                    PerguntaId = 1,
+                    Resposta = linha?.Ordem1Ideia,
+                });
+                listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                {
+                    OrdemId = 1,
+                    PerguntaId = 2,
+                    Resposta = linha?.Ordem1Resultado,
+                });
+                listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                {
+                    OrdemId = 2,
+                    PerguntaId = 1,
+                    Resposta = linha?.Ordem2Ideia,
+                });
+                listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                {
+                    OrdemId = 2,
+                    PerguntaId = 2,
+                    Resposta = linha?.Ordem2Resultado,
+                });
+                listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                {
+                    OrdemId = 3,
+                    PerguntaId = 1,
+                    Resposta = linha?.Ordem3Ideia,
+                });
+                listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                {
+                    OrdemId = 3,
+                    PerguntaId = 2,
+                    Resposta = linha?.Ordem3Resultado,
+                });
+            }
         }
 
         private static void ObterRespostasAno2(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha, List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> listaRespostas, ProficienciaSondagemEnum proficiencia)
         {
-            if (proficiencia == ProficienciaSondagemEnum.CampoAditivo)
+            if (proficiencia == ProficienciaSondagemEnum.Numeros)
+            {
+                ObterRespostasNumeros(linha, listaRespostas);
+            }
+            else if (proficiencia == ProficienciaSondagemEnum.CampoAditivo)
             {
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
@@ -260,7 +435,11 @@ namespace SME.SR.Application
 
         private static void ObterRespostasAno3(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha, List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> listaRespostas, ProficienciaSondagemEnum proficiencia)
         {
-            if (proficiencia == ProficienciaSondagemEnum.CampoAditivo)
+            if (proficiencia == ProficienciaSondagemEnum.Numeros)
+            {
+                ObterRespostasNumeros(linha, listaRespostas);
+            }
+            else if (proficiencia == ProficienciaSondagemEnum.CampoAditivo)
             {
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
