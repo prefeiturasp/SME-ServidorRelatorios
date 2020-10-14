@@ -50,16 +50,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
-            try
-            {
-                return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql, parametros);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            
-
+            return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql, parametros);
         }
     }
 }
