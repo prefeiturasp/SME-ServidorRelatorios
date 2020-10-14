@@ -2517,12 +2517,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
-        //[HttpGet("sondagem-componentes-numeros")]
-        //public IActionResult SondagemComponentesNumeros()
-        //{
-        //    var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+        [HttpGet("sondagem-componentes-numeros")]
+        public IActionResult SondagemComponentesNumeros()
+        {
+            var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
-            for(var i = 0; i < 30; i++)
+            for (var i = 0; i < 30; i++)
             {
                 linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
                         Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
@@ -2733,8 +2733,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
-        //    return View("RelatorioSondagemComponentesPorTurma", model);
-        //}
+            return View("RelatorioSondagemComponentesPorTurma", model);
+        }
 
         [HttpGet("sondagem-componentes-aditivos")]
         public IActionResult SondagemComponentesAditivos()
@@ -2785,7 +2785,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         SituacaoMatricula = SituacaoMatriculaAluno.Desistente.ToString(),
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                    {                        
+                    {
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Errou",
@@ -2818,7 +2818,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu.ToString(),
                     },
                     OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
-                    { 
+                    {
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Errou",
@@ -2842,7 +2842,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     },
                 });
 
-        //    }
+            }
 
             var model = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
             {
@@ -2897,7 +2897,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
-        //    return View("RelatorioSondagemComponentesPorTurma", model);
-        //}
-    }
+                return View("RelatorioSondagemComponentesPorTurma", model);
+            }
+        }
 }
