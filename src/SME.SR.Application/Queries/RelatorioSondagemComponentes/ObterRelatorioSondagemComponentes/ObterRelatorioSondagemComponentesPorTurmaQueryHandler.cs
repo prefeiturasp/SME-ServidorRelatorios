@@ -59,7 +59,7 @@ namespace SME.SR.Application
                 Dre = dre.Abreviacao,
                 Periodo = $"{request.Semestre.ToString()}° Semestre",
                 Proficiencia = (Int32.Parse(request.Ano) >= 7) ? String.Empty : proficiencia,
-                Turma = turma.NomeRelatorio,
+                Turma = turma.Nome,
                 Ue = ue.NomeComTipoEscola,
                 Rf = request.UsuarioRF,
                 Usuario = usuario.Nome,
