@@ -12,36 +12,40 @@ namespace SME.SR.Application
         public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> Handle(ObterOrdensSondagemPorAnoProficienciaQuery request, CancellationToken cancellationToken)
         {
             var listaRetorno = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
-
-
-            switch (request.Ano)
+            // Marcos
+            if (request.Proficiencia == ProficienciaSondagemEnum.Numeros)
             {
-                case "1":
-                    AdicionarOrdensAno1(listaRetorno);
-                    break;
-                case "2":
-                    AdicionarOrdensAno2(listaRetorno, request.Proficiencia);
-                    break;
-                case "3":
-                    AdicionarOrdensAno3(listaRetorno, request.Proficiencia);
-                    break;
-                case "4":
-                    AdicionarOrdensAno4(listaRetorno, request.Proficiencia);
-                    break;
-                case "5":
-                case "6":
-                    AdicionarOrdensAno5(listaRetorno, request.Proficiencia);
-                    break;
-                case "7":
-                case "8":
-                case "9":
-                    AdicionarOrdensAnos789(listaRetorno);
-                    break;
-                default:
-                    break;
+                AdicionarOrdensNumeros(listaRetorno);
             }
-
-
+            else
+            {
+                switch (request.Ano)
+                {
+                    case "1":
+                        AdicionarOrdensAno1(listaRetorno);
+                        break;
+                    case "2":
+                        AdicionarOrdensAno2(listaRetorno, request.Proficiencia);
+                        break;
+                    case "3":
+                        AdicionarOrdensAno3(listaRetorno, request.Proficiencia);
+                        break;
+                    case "4":
+                        AdicionarOrdensAno4(listaRetorno, request.Proficiencia);
+                        break;
+                    case "5":
+                    case "6":
+                        AdicionarOrdensAno5(listaRetorno, request.Proficiencia);
+                        break;
+                    case "7":
+                    case "8":
+                    case "9":
+                        AdicionarOrdensAnos789(listaRetorno);
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             return await Task.FromResult(listaRetorno);
 
@@ -264,6 +268,15 @@ namespace SME.SR.Application
             listaRetorno.Add(new RelatorioSondagemComponentesPorTurmaOrdemDto()
             {
                 Descricao = "ORDEM AUTORAL",
+                Id = 0
+            });
+        }
+
+        private static void AdicionarOrdensNumeros(List<RelatorioSondagemComponentesPorTurmaOrdemDto> listaRetorno)
+        {
+            listaRetorno.Add(new RelatorioSondagemComponentesPorTurmaOrdemDto()
+            {
+                Descricao = "ORDEM NUMEROS",
                 Id = 0
             });
         }
