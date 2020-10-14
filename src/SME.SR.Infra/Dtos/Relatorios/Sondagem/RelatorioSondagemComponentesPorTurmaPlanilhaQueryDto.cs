@@ -35,6 +35,9 @@ namespace SME.SR.Infra
         public string Algarismos { get; set; }
         public string Processo { get; set; }
         public string ZeroIntercalados { get; set; }
+        public int PerguntaId { get; set; }
+        public string Pergunta { get; set; }
+        public string Resposta { get; set; }
 
     }
 }
