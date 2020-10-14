@@ -25,32 +25,40 @@ namespace SME.SR.Data.Repositories.Sgp
 
         }
 
-        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int ano, int semestre, ProficienciaSondagemEnum proficiencia)
+        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int anoLetivo, int semestre, ProficienciaSondagemEnum proficiencia, int anoTurma)
         {
             string sql = String.Empty;
 
-            sql = $"select \"AlunoEolCode\", \"AlunoNome\", \"AnoLetivo\", \"AnoTurma\",\"Semestre\",\"Ordem1Ideia\",\"Ordem1Resultado\",\"Ordem2Ideia\",\"Ordem2Resultado\",\"Ordem3Ideia\",\"Ordem3Resultado\",\"Ordem4Ideia\",\"Ordem4Resultado\" from \"MathPoolCAs\" where \"DreEolCode\" = @dreCodigo and \"AnoLetivo\" = @ano and \"TurmaEolCode\" = @turmaCodigo and \"Semestre\" = @semestre order by \"AlunoNome\"";
+            sql = $"select \"AlunoEolCode\", \"AlunoNome\", \"AnoLetivo\", \"AnoTurma\",\"Semestre\",\"Ordem1Ideia\",\"Ordem1Resultado\",\"Ordem2Ideia\",\"Ordem2Resultado\",\"Ordem3Ideia\",\"Ordem3Resultado\",\"Ordem4Ideia\",\"Ordem4Resultado\" from \"MathPoolCAs\" where \"DreEolCode\" = @dreCodigo and \"AnoLetivo\" = @anoLetivo and \"TurmaEolCode\" = @turmaCodigo and \"Semestre\" = @semestre order by \"AlunoNome\"";
 
             if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
-                sql = $"select \"AlunoEolCode\", \"AlunoNome\", \"AnoLetivo\", \"AnoTurma\",\"Semestre\",\"Ordem3Ideia\",\"Ordem3Resultado\",\"Ordem4Ideia\",\"Ordem4Resultado\",\"Ordem5Ideia\",\"Ordem5Resultado\",\"Ordem6Ideia\",\"Ordem6Resultado\",\"Ordem7Ideia\",\"Ordem7Resultado\",\"Ordem8Ideia\",\"Ordem8Resultado\" from \"MathPoolCMs\" where \"DreEolCode\" = @dreCodigo and \"AnoLetivo\" = @ano and \"TurmaEolCode\" = @turmaCodigo and \"Semestre\" = @semestre order by \"AlunoNome\"";
+                sql = $"select \"AlunoEolCode\", \"AlunoNome\", \"AnoLetivo\", \"AnoTurma\",\"Semestre\",\"Ordem3Ideia\",\"Ordem3Resultado\",\"Ordem4Ideia\",\"Ordem4Resultado\",\"Ordem5Ideia\",\"Ordem5Resultado\",\"Ordem6Ideia\",\"Ordem6Resultado\",\"Ordem7Ideia\",\"Ordem7Resultado\",\"Ordem8Ideia\",\"Ordem8Resultado\" from \"MathPoolCMs\" where \"DreEolCode\" = @dreCodigo and \"AnoLetivo\" = @anoLetivo and \"TurmaEolCode\" = @turmaCodigo and \"Semestre\" = @semestre order by \"AlunoNome\"";
 
             if (proficiencia == ProficienciaSondagemEnum.Numeros)
-                sql = $"select \"AlunoEolCode\", \"AlunoNome\", \"AnoLetivo\", \"AnoTurma\",\"Semestre\",\"Familiares\",\"Opacos\",\"Transparentes\",\"TerminamZero\",\"Algarismos\",\"Processo\",\"ZeroIntercalados\" from \"MathPoolNumbers\" where \"DreEolCode\" = @dreCodigo and \"AnoLetivo\" = @ano and \"TurmaEolCode\" = @turmaCodigo and \"Semestre\" = @semestre order by \"AlunoNome\"";
+                sql = $"select \"AlunoEolCode\", \"AlunoNome\", \"AnoLetivo\", \"AnoTurma\",\"Semestre\",\"Familiares\",\"Opacos\",\"Transparentes\",\"TerminamZero\",\"Algarismos\",\"Processo\",\"ZeroIntercalados\" from \"MathPoolNumbers\" where \"DreEolCode\" = @dreCodigo and \"AnoLetivo\" = @anoLetivo and \"TurmaEolCode\" = @turmaCodigo and \"Semestre\" = @semestre order by \"AlunoNome\"";
 
-            if (ano >= 7)
+            if (anoTurma >= 7)
             {
                 sql = "select \"CodigoAluno\" AlunoEolCode, \"NomeAluno\" AlunoNome, \"AnoLetivo\", \"AnoTurma\", \"CodigoTurma\", pae.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta";
                 sql += " from \"SondagemAutoral\" sa inner join \"Pergunta\" p on sa.\"PerguntaId\" = p.\"Id\"";
                 sql += " inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" and pae.\"AnoEscolar\" = sa.\"AnoTurma\"";
                 sql += " inner join \"Resposta\" r on sa.\"RespostaId\" = r.\"Id\"";
-                sql += " where \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @ano and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\"";
+                sql += " where sa.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\"";
             }
 
-            var parametros = new { dreCodigo, ano, turmaCodigo, semestre };
+            var parametros = new { dreCodigo, anoLetivo, turmaCodigo, semestre, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
-            return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql, parametros);
+            try
+            {
+                return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>(sql, parametros);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
 
         }
     }
