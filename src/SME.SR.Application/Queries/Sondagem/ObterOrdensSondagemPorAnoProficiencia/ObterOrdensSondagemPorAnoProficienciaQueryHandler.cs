@@ -12,7 +12,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> Handle(ObterOrdensSondagemPorAnoProficienciaQuery request, CancellationToken cancellationToken)
         {
             var listaRetorno = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
-            // Marcos
+            
             if (request.Proficiencia == ProficienciaSondagemEnum.Numeros)
             {
                 AdicionarOrdensNumeros(listaRetorno);
