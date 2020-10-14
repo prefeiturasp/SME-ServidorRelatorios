@@ -154,5 +154,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/sondagem/matematica-consolidado-aditivo-multiplicativo")]
+        [Action("relatorios/sondagem/matematica-consolidado-aditivo-multiplicativo", typeof(IRelatorioSondagemMatConsolidadoAdtMultiUseCase))]
+        public async Task<bool> RelatorioMatemicaConsolidade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemMatConsolidadoAdtMultiUseCase relatorioSondagemMatConsolidadoAdtMultiUseCase)
+        {
+            await relatorioSondagemMatConsolidadoAdtMultiUseCase.Executar(request);
+            return true;
+        }
     }
 }
