@@ -15,7 +15,7 @@
                 "A" => "Acertou",
                 "E" => "Errou",
                 "NR" => "Não resolveu",
-                _ => "",
+                _ => sigla,
             };
         }
     }
