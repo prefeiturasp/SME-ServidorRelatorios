@@ -2142,7 +2142,7 @@ namespace SME.SR.MVC.Controllers
             return model;
 
         }
-        
+
         //[HttpGet("sondagem-consolidado-matematica-numeros")]
         //public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
         //{
@@ -2524,14 +2524,15 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             for (var i = 0; i < 30; i++)
             {
-                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
-                        Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
-                        {
-                            Codigo = 6197654,
-                            Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
-                            SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
-                        },
-                        OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                         {
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
@@ -2569,8 +2570,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 PerguntaId = 7
                             },
                         }
-                    });
-                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
+                });
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
                         Codigo = 6195479,
@@ -2686,7 +2688,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         {
                             Id = 0,
                             Descricao = "ORDEM 1 - COMPOSIÇÃO"
-                        },                        
+                        },
                     },
                     Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
                     {
@@ -2897,7 +2899,16 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
-                return View("RelatorioSondagemComponentesPorTurma", model);
-            }
+            return View("RelatorioSondagemComponentesPorTurma", model);
         }
+
+        [HttpGet("controle-grade-sintetico")]
+        public IActionResult RelatorioControleGradeSintetico()
+        {
+
+            return View("RelatorioControleGradeSintetico", new { });
+
+        }
+    }
+      
 }
