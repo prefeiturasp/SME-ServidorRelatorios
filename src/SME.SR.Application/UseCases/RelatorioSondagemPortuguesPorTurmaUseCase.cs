@@ -21,29 +21,24 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesPorTurmaFiltroDto>();
 
-            var dataDoPeriodo = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
 
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(filtros.TurmaCodigo, dataDoPeriodo));
+            var dataDoPeriodo = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
+
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Int32.Parse(filtros.TurmaCodigo), dataDoPeriodo));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
 
             var relatorioPerguntas = await ObterPerguntas(filtros);
 
-            var relatorioCabecalho = await ObterCabecalho(filtros, dataDoPeriodo, relatorioPerguntas);
-
-            var relatorio = await mediator.Send(new ObterRelatorioSondagemPortuguesPorTurmaQuery() { 
-                Alunos = alunosDaTurma,
-                Cabecalho = relatorioCabecalho,
-                Ano = filtros.Ano,
-                AnoLetivo = filtros.AnoLetivo,
-                ComponenteCurricular = filtros.ComponenteCurricularId,
-                DreCodigo = filtros.DreCodigo,
-                Proficiencia = filtros.ProficienciaId,
-                Semestre = filtros.Semestre,
-                TurmaCodigo = filtros.TurmaCodigo,
-                UeCodigo = filtros.UeCodigo,
-                UsuarioRF = filtros.UsuarioRF,
-            });
+            RelatorioSondagemPortuguesPorTurmaRelatorioDto relatorio = new RelatorioSondagemPortuguesPorTurmaRelatorioDto()
+            {
+                Cabecalho = await ObterCabecalho(filtros, relatorioPerguntas, dataDoPeriodo),
+                Planilha = new RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
+                {
+                    Linhas = await ObterLinhas(filtros, alunosDaTurma)
+                }
+            };
 
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
@@ -54,9 +49,7 @@ namespace SME.SR.Application
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
         }
 
-        private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(
-            RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, DateTime periodo,
-            List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas)
+        private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)
         {
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });
 
@@ -71,8 +64,8 @@ namespace SME.SR.Application
                 Usuario = usuario.Nome,
                 AnoLetivo = filtros.AnoLetivo,
                 Perguntas = perguntas,
-                Ano = filtros.Ano,
-                ComponenteCurricular = filtros.ComponenteCurricularId.ToString(),
+                Ano = filtros.AnoTurma,
+                ComponenteCurricular = "Português",
                 Proficiencia = filtros.ProficienciaId.ToString()
             });
         }
@@ -127,6 +120,46 @@ namespace SME.SR.Application
                 default:
                     return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>());
             }
+        }
+
+        private async Task<List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>> ObterLinhas(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)
+        {
+            IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto> linhasSondagem = await mediator.Send(new ObterRelatorioSondagemPortuguesPorTurmaQuery()
+            {
+                DreCodigo = filtros.DreCodigo,
+                UeCodigo = filtros.UeCodigo,
+                TurmaCodigo = filtros.TurmaCodigo,
+                AnoLetivo = filtros.AnoLetivo,
+                AnoTurma = filtros.AnoTurma,
+                Bimestre = filtros.Bimestre,
+                Proficiencia = filtros.ProficienciaId,
+            });
+
+            List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto> linhasPlanilha = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>();
+            foreach (Aluno aluno in alunos)
+            {
+                var sondagem = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString());
+
+                linhasPlanilha.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = aluno.CodigoAluno,
+                        Nome = aluno.NomeRelatorio,
+                        DataSituacao = aluno.DataSituacao.ToString("dd/MM/yyyy"),
+                        SituacaoMatricula = aluno.SituacaoMatricula
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto()
+                        {
+                            PerguntaId = 1,
+                            Resposta = sondagem?.Resposta
+                        }
+                    }
+                });
+            }
+            return await Task.FromResult(linhasPlanilha);
         }
     }
 }

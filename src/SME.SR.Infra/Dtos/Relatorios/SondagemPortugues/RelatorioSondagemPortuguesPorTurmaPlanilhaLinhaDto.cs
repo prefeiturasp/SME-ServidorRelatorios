@@ -7,7 +7,8 @@ namespace SME.SR.Infra
     public class RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto
     {
         public RelatorioSondagemComponentesPorTurmaAlunoDto Aluno { get; set; }
-        public List<RelatorioSondagemPortuguesPorTurmaRespostaDto> Respostas { get; set; } = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>();
+        public List<RelatorioSondagemPortuguesPorTurmaRespostaDto> Respostas { get; set; }
+
         public RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
         {
             this.Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>();

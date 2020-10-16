@@ -14,19 +14,34 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>> ObterPlanilhaLinhas(string dreCodigo, long turmaCodigo, int ano, int semestre, ProficienciaSondagemEnum proficiencia)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia)
         {
             string sql = String.Empty;
+
+            string nomeColunaBimestre = ObterNomeColunaBimestre(bimestre, proficiencia);
+
+            if (nomeColunaBimestre == String.Empty)
+                throw new Exception($"Nome da coluna do bimestre não pode ser vazio.");
 
             switch (proficiencia)
             {
                 case ProficienciaSondagemEnum.Leitura:
-                    sql = $"";
-                    break;
                 case ProficienciaSondagemEnum.Escrita:
-                    sql = $"";
+                    sql = $"select {nomeColunaBimestre} Resposta, ";
+                    sql += "\"studentCodeEol\" AlunoEolCode, ";
+                    sql += "\"studentNameEol\" AlunoNome, ";
+                    sql += "\"schoolYear\" AnoLetivo, ";
+                    sql += "\"yearClassroom\" AnoTurma, ";
+                    sql += "\"classroomCodeEol\" TurmaEolCode ";
+                    sql += "from \"PortuguesePolls\" ";
+                    sql += "where \"dreCodeEol\" = @dreCodigo ";
+                    sql += "and \"schoolCodeEol\" = @ueCodigo ";
+                    sql += "and \"classroomCodeEol\" = @turmaCodigo ";
+                    sql += "and \"schoolYear\" = @anoLetivo ";
+                    sql += "and \"yearClassroom\" = @anoTurma ";
                     break;
                 case ProficienciaSondagemEnum.LeituraVozAlta:
+                    // TODO: Query para Leitura em voz alta
                     sql = $"";
                     break;
             }
@@ -34,11 +49,24 @@ namespace SME.SR.Data.Repositories.Sgp
             if (sql == String.Empty)
                 throw new Exception($"{ proficiencia } fora do esperado.");
 
-            var parametros = new { dreCodigo, ano, turmaCodigo, semestre };
+            var parametros = new { dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
-            return await conexao.QueryAsync<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>(sql, parametros);
+            return await conexao.QueryAsync<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>(sql, parametros);
+        }
+
+        private String ObterNomeColunaBimestre(int bimestre, ProficienciaSondagemEnum proficiencia)
+        {
+            string nomeColunaBimestre = String.Empty;
+
+            if (proficiencia == ProficienciaSondagemEnum.Leitura)
+                nomeColunaBimestre = $"reading{bimestre}B";
+
+            if (proficiencia == ProficienciaSondagemEnum.Leitura)
+                nomeColunaBimestre = $"writing{bimestre}B";
+
+            return nomeColunaBimestre;
         }
     }
 }

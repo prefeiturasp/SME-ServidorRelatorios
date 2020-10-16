@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioSondagemPortuguesPorTurmaQueryHandler : IRequestHandler<ObterRelatorioSondagemPortuguesPorTurmaQuery, RelatorioSondagemPortuguesPorTurmaRelatorioDto>
+    public class ObterRelatorioSondagemPortuguesPorTurmaQueryHandler : IRequestHandler<ObterRelatorioSondagemPortuguesPorTurmaQuery, IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>>
     {
         private readonly IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository;
         private readonly IMediator mediator;
@@ -25,18 +25,9 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<RelatorioSondagemPortuguesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemPortuguesPorTurmaQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> Handle(ObterRelatorioSondagemPortuguesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto> linhas = await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo, request.Ano, request.Semestre, request.Proficiencia);
-
-            return await Task.FromResult(new RelatorioSondagemPortuguesPorTurmaRelatorioDto()
-            {
-                Cabecalho = request.Cabecalho,
-                Planilha = new RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
-                {
-                    Linhas = linhas.ToList()
-                }
-            });
+            return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia);
         }
     }
 }
