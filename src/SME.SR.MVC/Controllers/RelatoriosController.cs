@@ -2906,9 +2906,61 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public IActionResult RelatorioControleGradeSintetico()
         {
 
-            return View("RelatorioControleGradeSintetico", new { });
+            var controleGrade = new ControleGradeSinteticoDto()
+            {
+                Dre = "DRE - BT",
+                Ue = "CEU EMEF BUTANTA",
+                TurmaDescricao = "Todas",
+                BimestreDescricao = "Todos",
+                ComponenteCurricularDescricao = "Todos",
+                RF = "9879878",
+                Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+            };
+
+            controleGrade.Turmas = new List<TurmaControleGradeSinteticoDto>()
+            {
+               new TurmaControleGradeSinteticoDto()
+               {
+                   Nome="1F",
+                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   {
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Nome = "1° BIMESTRE",
+                           Vigencia = "20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   Previstas = 10,
+                                   CriadasProfessorTitular = 8,
+                                   CriadasProfessorSubstituto = 2,
+                                   DadasProfessorTitular = 8,
+                                   DadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   Previstas = 20,
+                                   CriadasProfessorTitular = 16,
+                                   CriadasProfessorSubstituto = 4,
+                                   DadasProfessorTitular = 19,
+                                   DadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       }
+                   }
+               }
+            };
+
+            return View("RelatorioControleGradeSintetico", controleGrade);
 
         }
     }
-      
+
 }
