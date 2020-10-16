@@ -64,7 +64,7 @@ namespace SME.SR.Application
                 Usuario = usuario.Nome,
                 AnoLetivo = filtros.AnoLetivo,
                 Perguntas = perguntas,
-                Ano = filtros.AnoTurma,
+                AnoTurma = filtros.AnoTurma,
                 ComponenteCurricular = "Português",
                 Proficiencia = filtros.ProficienciaId.ToString()
             });

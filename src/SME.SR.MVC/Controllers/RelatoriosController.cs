@@ -2931,7 +2931,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             {
                 Cabecalho = new RelatorioSondagemPortuguesPorTurmaCabecalhoDto()
                 {
-                    Ano = 5,
+                    AnoTurma = 5,
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Português",
                     DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
@@ -3052,7 +3052,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             {
                 Cabecalho = new RelatorioSondagemPortuguesPorTurmaCabecalhoDto()
                 {
-                    Ano = 5,
+                    AnoTurma = 5,
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
                     DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
@@ -3233,7 +3233,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             {
                 Cabecalho = new RelatorioSondagemPortuguesPorTurmaCabecalhoDto()
                 {
-                    Ano = 5,
+                    AnoTurma = 5,
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Matemática",
                     DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
