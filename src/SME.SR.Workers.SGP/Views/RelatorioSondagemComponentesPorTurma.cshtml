@@ -122,12 +122,12 @@
     string MontarTabelaSondagem()
     {
         var str = MontarCabecalhoSondagem();
-        bool quebrou = true;
+        bool quebrou = false;
 
         for (var i = 0; i < Model.Planilha.Linhas.Count; i++)
         {
             var linha = Model.Planilha.Linhas[i];
-            int numeroLinhas = (linha.Aluno.Nome.Count() / 30);
+            int numeroLinhas = (linha.Aluno.Nome.Length / 30);
 
             if (quebrou)
             {
@@ -180,9 +180,9 @@
                 contadorQuebrarPagina++;
             }
 
-            if (Model.Cabecalho.Ordens.First().Id == 0)
+            if (Model.Cabecalho.Ordens.First().Id == 0 && !string.IsNullOrEmpty(Model.Cabecalho.Proficiencia))
             {
-                contadorMaximoLinhasPorPagina = 33;
+                contadorMaximoLinhasPorPagina = 33;                
             }
 
             var quebra = VerificaQuebra();
