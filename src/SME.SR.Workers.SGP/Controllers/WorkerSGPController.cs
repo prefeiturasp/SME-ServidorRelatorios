@@ -155,11 +155,11 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet("relatorios/sondagem/matematica-consolidado")]
-        [Action("relatorios/sondagem/matematica-consolidado", typeof(IRelatorioSondagemMatemicaConsolidadoUseCase))]
-        public async Task<bool> RelatorioMatemicaConsolidade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemMatemicaConsolidadoUseCase relatorioSondagemMatemicaConsolidadoUseCase)
+        [HttpGet("relatorios/sondagem/portugues-por-turma")]
+        [Action("relatorios/sondagem/portugues-por-turma", typeof(IRelatorioSondagemPortuguesPorTurmaUseCase))]
+        public async Task<bool> RelatorioSondagemPortuguesPorTurma([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemPortuguesPorTurmaUseCase relatorioSondagemPortuguesPorTurmaUseCase)
         {
-            await relatorioSondagemMatemicaConsolidadoUseCase.Executar(request);
+            await relatorioSondagemPortuguesPorTurmaUseCase.Executar(request);
             return true;
         }
     }
