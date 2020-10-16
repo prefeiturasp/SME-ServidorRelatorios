@@ -102,42 +102,93 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<Aluno>(query, parametros);
 
         }
-        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMariculaAsync(IEnumerable<long> turmaCodigos, DateTime dataReferencia)
-        {
+        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia)
+		{
             var query = @"
-					  select sum(quantidade) from (select count(aluno.cd_aluno) quantidade			
-							FROM v_aluno_cotic aluno
-						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE mte.cd_turma_escola in @turmaCodigos
-						and (matr.st_matricula in (1, 6, 10, 13, 5) or (matr.st_matricula not in (1, 6, 10, 13, 5) and matr.dt_status_matricula > @dataReferencia))
-						UNION 
-						SELECT  
-                        count(aluno.cd_aluno) quantidade
-							FROM v_aluno_cotic aluno
-						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE mte.cd_turma_escola  in @turmaCodigos
-						and mte.dt_situacao_aluno =                    
-							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
-							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-							where
-							mte2.cd_turma_escola in @turmaCodigos
-							and matr2.cd_aluno = matr.cd_aluno
-							and (matr2.st_matricula in (1, 6, 10, 13, 5) or (matr2.st_matricula not in (1, 6, 10, 13, 5) and matr2.dt_status_matricula > @dataReferencia))
-						)
-						AND NOT EXISTS(
-							SELECT 1 FROM v_matricula_cotic matr3
-						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola in @turmaCodigos)
-                            and mte.nr_chamada_aluno is not null) x";
+					SELECT sum(Total) from (	
+					 SELECT
+	                    count(DISTINCT matricula.cd_aluno) Total
+                    FROM
+	                    v_matricula_cotic matricula
+                    left JOIN matricula_turma_escola matrTurma ON
+	                    matricula.cd_matricula = matrTurma.cd_matricula and matrTurma.nr_chamada_aluno is not null
+                    INNER JOIN turma_escola turesc ON
+	                    matrTurma.cd_turma_escola = turesc.cd_turma_escola
+                    INNER JOIN v_cadastro_unidade_educacao vue ON
+	                    vue.cd_unidade_educacao = turesc.cd_escola
+                    INNER JOIN (
+	                    SELECT
+		                    v_ua.cd_unidade_educacao, v_ua.nm_unidade_educacao, v_ua.nm_exibicao_unidade
+	                    FROM
+		                    unidade_administrativa ua
+	                    INNER JOIN v_cadastro_unidade_educacao v_ua ON
+		                    v_ua.cd_unidade_educacao = ua.cd_unidade_administrativa
+	                    WHERE
+		                    tp_unidade_administrativa = 24) dre ON
+	                    dre.cd_unidade_educacao = vue.cd_unidade_administrativa_referencia
+	                    --Serie Ensino
+                    left join serie_turma_escola ste ON
+	                    ste.cd_turma_escola = turesc.cd_turma_escola
+                    left join serie_turma_grade ON
+	                    serie_turma_grade.cd_turma_escola = ste.cd_turma_escola
+                    left join escola_grade ON
+	                    serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
+                    left join grade ON
+	                    escola_grade.cd_grade = grade.cd_grade
+                    left join serie_ensino se ON
+	                    grade.cd_serie_ensino = se.cd_serie_ensino
+                    where
+	                  	turesc.an_letivo = @anoLetivo
+	                    and turesc.cd_tipo_turma = 1
+	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  )
+	                    and vue.cd_unidade_educacao = @ueCodigo
+						and dre.cd_unidade_educacao = @dreCodigo
+						and se.sg_resumida_serie = @anoTurma
+	                    and se.cd_etapa_ensino in (5, 13)
+	                UNION 
+	                SELECT
+	                    count(DISTINCT matricula.cd_aluno) Total
+                    FROM
+	                    v_historico_matricula_cotic matricula
+                    left JOIN historico_matricula_turma_escola matrTurma ON
+	                    matricula.cd_matricula = matrTurma.cd_matricula and matrTurma.nr_chamada_aluno is not null
+                    INNER JOIN turma_escola turesc ON
+	                    matrTurma.cd_turma_escola = turesc.cd_turma_escola
+                    INNER JOIN v_cadastro_unidade_educacao vue ON
+	                    vue.cd_unidade_educacao = turesc.cd_escola
+                    INNER JOIN (
+	                    SELECT
+		                    v_ua.cd_unidade_educacao, v_ua.nm_unidade_educacao, v_ua.nm_exibicao_unidade
+	                    FROM
+		                    unidade_administrativa ua
+	                    INNER JOIN v_cadastro_unidade_educacao v_ua ON
+		                    v_ua.cd_unidade_educacao = ua.cd_unidade_administrativa
+	                    WHERE
+		                    tp_unidade_administrativa = 24) dre ON
+	                    dre.cd_unidade_educacao = vue.cd_unidade_administrativa_referencia
+	                    --Serie Ensino
+                    left join serie_turma_escola ste ON
+	                    ste.cd_turma_escola = turesc.cd_turma_escola
+                    left join serie_turma_grade ON
+	                    serie_turma_grade.cd_turma_escola = ste.cd_turma_escola
+                    left join escola_grade ON
+	                    serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
+                    left join grade ON
+	                    escola_grade.cd_grade = grade.cd_grade
+                    left join serie_ensino se ON
+	                    grade.cd_serie_ensino = se.cd_serie_ensino
+                    where
+	                   turesc.an_letivo = @anoLetivo
+	                    and turesc.cd_tipo_turma = 1
+	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  )
+						and vue.cd_unidade_educacao = @ueCodigo
+						and dre.cd_unidade_educacao = @dreCodigo
+	                    and se.sg_resumida_serie = @anoTurma
+	                    and se.cd_etapa_ensino in (5, 13) ) x";
 
 
 
-            var parametros = new { turmaCodigos, dataReferencia };
+            var parametros = new { dreCodigo, ueCodigo, anoTurma, anoLetivo, dataFim = dataReferencia };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
