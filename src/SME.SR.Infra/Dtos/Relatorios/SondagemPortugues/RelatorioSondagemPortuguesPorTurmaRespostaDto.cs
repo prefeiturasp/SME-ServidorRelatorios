@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class RelatorioSondagemPortuguesPorTurmaRespostasDto
+    public class RelatorioSondagemPortuguesPorTurmaRespostaDto
     {
         private string _resposta { get; set; }
         public int PerguntaId { get; set; }

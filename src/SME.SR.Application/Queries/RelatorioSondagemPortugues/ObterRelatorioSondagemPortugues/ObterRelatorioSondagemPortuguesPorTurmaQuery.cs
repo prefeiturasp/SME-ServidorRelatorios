@@ -7,7 +7,8 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioSondagemPortuguesPorTurmaQuery : IRequest<RelatorioSondagemPortuguesPorTurmaRelatorioDto>
     {
-        public IEnumerable<Aluno> alunos;
+        public IEnumerable<Aluno> Alunos { get; set; }
+        public RelatorioSondagemPortuguesPorTurmaCabecalhoDto Cabecalho { get; set; }
         public int AnoLetivo { get; set; }
         public string DreCodigo { get; set; }
         public string UeCodigo { get; set; }
@@ -16,6 +17,6 @@ namespace SME.SR.Application
         public ProficienciaSondagemEnum Proficiencia { get; set; }
         public int Semestre { get; set; }
         public string UsuarioRF { get; set; }
-        public string Ano { get; set; }
+        public int Ano { get; set; }
     }
 }

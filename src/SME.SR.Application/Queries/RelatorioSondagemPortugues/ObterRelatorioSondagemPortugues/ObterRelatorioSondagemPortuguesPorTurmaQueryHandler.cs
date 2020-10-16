@@ -27,7 +27,16 @@ namespace SME.SR.Application
 
         public async Task<RelatorioSondagemPortuguesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemPortuguesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto> linhas = await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo, request.Ano, request.Semestre, request.Proficiencia);
+
+            return await Task.FromResult(new RelatorioSondagemPortuguesPorTurmaRelatorioDto()
+            {
+                Cabecalho = request.Cabecalho,
+                Planilha = new RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas.ToList()
+                }
+            });
         }
     }
 }

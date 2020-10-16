@@ -14,9 +14,31 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int ano, int semestre, ProficienciaSondagemEnum proficiencia)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>> ObterPlanilhaLinhas(string dreCodigo, long turmaCodigo, int ano, int semestre, ProficienciaSondagemEnum proficiencia)
         {
-            throw new NotImplementedException();
+            string sql = String.Empty;
+
+            switch (proficiencia)
+            {
+                case ProficienciaSondagemEnum.Leitura:
+                    sql = $"";
+                    break;
+                case ProficienciaSondagemEnum.Escrita:
+                    sql = $"";
+                    break;
+                case ProficienciaSondagemEnum.LeituraVozAlta:
+                    sql = $"";
+                    break;
+            }
+
+            if (sql == String.Empty)
+                throw new Exception($"{ proficiencia } fora do esperado.");
+
+            var parametros = new { dreCodigo, ano, turmaCodigo, semestre };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryAsync<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>(sql, parametros);
         }
     }
 }
