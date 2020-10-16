@@ -154,5 +154,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/sondagem/portugues-por-turma")]
+        [Action("relatorios/sondagem/portugues-por-turma", typeof(IRelatorioSondagemPortuguesPorTurmaUseCase))]
+        public async Task<bool> RelatorioSondagemPortuguesPorTurma([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemPortuguesPorTurmaUseCase relatorioSondagemPortuguesPorTurmaUseCase)
+        {
+            await relatorioSondagemPortuguesPorTurmaUseCase.Executar(request);
+            return true;
+        }
     }
 }
