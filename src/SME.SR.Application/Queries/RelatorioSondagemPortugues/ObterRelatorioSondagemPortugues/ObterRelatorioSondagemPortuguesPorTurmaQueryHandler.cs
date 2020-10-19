@@ -30,12 +30,12 @@ namespace SME.SR.Application
             if (request.Proficiencia != ProficienciaSondagemEnum.Leitura ||
                 request.Proficiencia != ProficienciaSondagemEnum.Escrita ||
                 request.Proficiencia != ProficienciaSondagemEnum.LeituraVozAlta)
-                throw new Exception($"{ request.Proficiencia } fora do esperado.");
+                throw new NegocioException($"{ request.Proficiencia } fora do esperado.");
 
             string nomeColunaBimestre = ObterNomeColunaBimestre(request.Bimestre, request.Proficiencia);
 
             if (nomeColunaBimestre == String.Empty)
-                throw new Exception($"Nome da coluna do bimestre não pode ser vazio.");
+                throw new NegocioException($"Nome da coluna do bimestre não pode ser vazio.");
 
             return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia, nomeColunaBimestre);
         }
