@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioSondagemPortuguesPorTurmaQueryHandler : IRequestHandler<ObterRelatorioSondagemPortuguesPorTurmaQuery, RelatorioSondagemPortuguesPorTurmaRelatorioDto>
+    public class ObterRelatorioSondagemPortuguesPorTurmaQueryHandler : IRequestHandler<ObterRelatorioSondagemPortuguesPorTurmaQuery, IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>>
     {
         private readonly IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository;
         private readonly IMediator mediator;
@@ -25,9 +25,32 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<RelatorioSondagemPortuguesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemPortuguesPorTurmaQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> Handle(ObterRelatorioSondagemPortuguesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (request.Proficiencia != ProficienciaSondagemEnum.Leitura ||
+                request.Proficiencia != ProficienciaSondagemEnum.Escrita ||
+                request.Proficiencia != ProficienciaSondagemEnum.LeituraVozAlta)
+                throw new NegocioException($"{ request.Proficiencia } fora do esperado.");
+
+            string nomeColunaBimestre = ObterNomeColunaBimestre(request.Bimestre, request.Proficiencia);
+
+            if (nomeColunaBimestre == String.Empty)
+                throw new NegocioException($"Nome da coluna do bimestre não pode ser vazio.");
+
+            return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia, nomeColunaBimestre);
+        }
+
+        private String ObterNomeColunaBimestre(int bimestre, ProficienciaSondagemEnum proficiencia)
+        {
+            string nomeColunaBimestre = String.Empty;
+
+            if (proficiencia == ProficienciaSondagemEnum.Leitura)
+                nomeColunaBimestre = $"reading{bimestre}B";
+
+            if (proficiencia == ProficienciaSondagemEnum.Leitura)
+                nomeColunaBimestre = $"writing{bimestre}B";
+
+            return nomeColunaBimestre;
         }
     }
 }

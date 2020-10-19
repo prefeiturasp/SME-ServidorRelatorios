@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Sgp
@@ -41,12 +43,15 @@ namespace SME.SR.Data.Repositories.Sgp
             {
                 sql = "select \"CodigoAluno\" AlunoEolCode, \"NomeAluno\" AlunoNome, \"AnoLetivo\", \"AnoTurma\", \"CodigoTurma\", pae.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta";
                 sql += " from \"SondagemAutoral\" sa inner join \"Pergunta\" p on sa.\"PerguntaId\" = p.\"Id\"";
+                sql += " inner join \"ComponenteCurricular\" cc on p.\"ComponenteCurricularId\" = cc.\"Id\"";
                 sql += " inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" and pae.\"AnoEscolar\" = sa.\"AnoTurma\"";
                 sql += " inner join \"Resposta\" r on sa.\"RespostaId\" = r.\"Id\"";
-                sql += " where sa.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\"";
+                sql += " where cc.\"Id\" = @componenteCurricular and sa.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\"";
             }
 
-            var parametros = new { dreCodigo, anoLetivo, turmaCodigo, semestre, anoTurma };
+            var componenteCurricular = ComponenteCurricularSondagemEnum.Matematica.Name();
+
+            var parametros = new { componenteCurricular, dreCodigo, anoLetivo, turmaCodigo, semestre, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
