@@ -4,6 +4,8 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -103,8 +105,10 @@ namespace SME.SR.Data
 
         }
         public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia)
-		{
-            var query = @"
+        {
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine(@"
 					SELECT sum(Total) from (	
 					 SELECT
 	                    count(DISTINCT matricula.cd_aluno) Total
@@ -140,11 +144,19 @@ namespace SME.SR.Data
                     where
 	                  	turesc.an_letivo = @anoLetivo
 	                    and turesc.cd_tipo_turma = 1
-	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  )
-	                    and vue.cd_unidade_educacao = @ueCodigo
-						and dre.cd_unidade_educacao = @dreCodigo
-						and se.sg_resumida_serie = @anoTurma
-	                    and se.cd_etapa_ensino in (5, 13)
+	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  ) ");
+
+            if (!string.IsNullOrEmpty(ueCodigo))
+                query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
+
+            if (dreCodigo > 0)
+                query.Append("and dre.cd_unidade_educacao = @dreCodigo ");
+
+            if (!string.IsNullOrEmpty(anoTurma))
+                query.Append("and se.sg_resumida_serie = @anoTurma ");
+
+
+            query.AppendLine(@" and se.cd_etapa_ensino in (5, 13)
 	                UNION 
 	                SELECT
 	                    count(DISTINCT matricula.cd_aluno) Total
@@ -178,22 +190,36 @@ namespace SME.SR.Data
                     left join serie_ensino se ON
 	                    grade.cd_serie_ensino = se.cd_serie_ensino
                     where
-	                   turesc.an_letivo = @anoLetivo
+						matrTurma.dt_situacao_aluno =                    
+							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+							where
+							mte2.cd_turma_escola = matrTurma.cd_turma_escola
+							and matr2.cd_aluno = matricula.cd_aluno
+							and (matr2.st_matricula in (1, 6, 10, 13, 5) or (matr2.st_matricula not in (1, 6, 10, 13, 5) and matr2.dt_status_matricula > @dataFim))
+						)
+	                    and turesc.an_letivo = @anoLetivo
 	                    and turesc.cd_tipo_turma = 1
-	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  )
-						and vue.cd_unidade_educacao = @ueCodigo
-						and dre.cd_unidade_educacao = @dreCodigo
-	                    and se.sg_resumida_serie = @anoTurma
-	                    and se.cd_etapa_ensino in (5, 13) ) x";
+	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  ) ");
 
+            if (!string.IsNullOrEmpty(ueCodigo))
+                query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
 
+            if (dreCodigo > 0)
+                query.Append("and dre.cd_unidade_educacao = @dreCodigo ");
+
+            if (!string.IsNullOrEmpty(anoTurma))
+                query.Append("and se.sg_resumida_serie = @anoTurma ");
+
+            query.AppendLine(" and se.cd_etapa_ensino in (5, 13) ) x");
 
             var parametros = new { dreCodigo, ueCodigo, anoTurma, anoLetivo, dataFim = dataReferencia };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-            return await conexao.QueryFirstOrDefaultAsync<int>(query, parametros);
+            return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString(), parametros);
         }
+
         public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
         {
             var query = AlunoConsultas.DadosAluno;
