@@ -27,7 +27,30 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> Handle(ObterRelatorioSondagemPortuguesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia);
+            if (request.Proficiencia != ProficienciaSondagemEnum.Leitura ||
+                request.Proficiencia != ProficienciaSondagemEnum.Escrita ||
+                request.Proficiencia != ProficienciaSondagemEnum.LeituraVozAlta)
+                throw new Exception($"{ request.Proficiencia } fora do esperado.");
+
+            string nomeColunaBimestre = ObterNomeColunaBimestre(request.Bimestre, request.Proficiencia);
+
+            if (nomeColunaBimestre == String.Empty)
+                throw new Exception($"Nome da coluna do bimestre não pode ser vazio.");
+
+            return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia, nomeColunaBimestre);
+        }
+
+        private String ObterNomeColunaBimestre(int bimestre, ProficienciaSondagemEnum proficiencia)
+        {
+            string nomeColunaBimestre = String.Empty;
+
+            if (proficiencia == ProficienciaSondagemEnum.Leitura)
+                nomeColunaBimestre = $"reading{bimestre}B";
+
+            if (proficiencia == ProficienciaSondagemEnum.Leitura)
+                nomeColunaBimestre = $"writing{bimestre}B";
+
+            return nomeColunaBimestre;
         }
     }
 }

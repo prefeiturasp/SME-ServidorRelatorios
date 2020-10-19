@@ -17,14 +17,9 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia, string nomeColunaBimestre)
         {
             string sql = String.Empty;
-
-            string nomeColunaBimestre = ObterNomeColunaBimestre(bimestre, proficiencia);
-
-            if (nomeColunaBimestre == String.Empty)
-                throw new Exception($"Nome da coluna do bimestre não pode ser vazio.");
 
             switch (proficiencia)
             {
@@ -54,29 +49,13 @@ namespace SME.SR.Data.Repositories.Sgp
                     break;
             }
 
-            if (sql == String.Empty)
-                throw new Exception($"{ proficiencia } fora do esperado.");
-
-            var componenteCurricular = ComponenteCurricularSondagemEnum.Portugues.GetAttribute<DisplayAttribute>().Name;
+            var componenteCurricular = EnumExtensao.Name(ComponenteCurricularSondagemEnum.Portugues);
 
             var parametros = new { componenteCurricular, dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
             return await conexao.QueryAsync<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>(sql, parametros);
-        }
-
-        private String ObterNomeColunaBimestre(int bimestre, ProficienciaSondagemEnum proficiencia)
-        {
-            string nomeColunaBimestre = String.Empty;
-
-            if (proficiencia == ProficienciaSondagemEnum.Leitura)
-                nomeColunaBimestre = $"reading{bimestre}B";
-
-            if (proficiencia == ProficienciaSondagemEnum.Leitura)
-                nomeColunaBimestre = $"writing{bimestre}B";
-
-            return nomeColunaBimestre;
         }
     }
 }
