@@ -162,5 +162,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioSondagemPortuguesPorTurmaUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/sondagem/portugues-consolidado-leitura")]
+        [Action("relatorios/sondagem/portugues-consolidado-leitura", typeof(IRelatorioSondagemPortuguesConsolidadoLeituraUseCase))]
+        public async Task<bool> RelatorioSondagemPortuguesConsolidadoLeitura([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemPortuguesConsolidadoLeituraUseCase relatorioSondagemPortuguesConsolidadoLeituraUseCase)
+        {
+            await relatorioSondagemPortuguesConsolidadoLeituraUseCase.Executar(request);
+            return true;
+        }
     }
 }
