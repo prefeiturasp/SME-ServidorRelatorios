@@ -49,7 +49,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 sql += " where cc.\"Id\" = @componenteCurricular and sa.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\"";
             }
 
-            var componenteCurricular = EnumExtensao.Name(ComponenteCurricularSondagemEnum.Matematica);
+            var componenteCurricular = ComponenteCurricularSondagemEnum.Matematica.Name();
 
             var parametros = new { componenteCurricular, dreCodigo, anoLetivo, turmaCodigo, semestre, anoTurma };
 

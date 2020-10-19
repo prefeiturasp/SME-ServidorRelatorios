@@ -68,7 +68,7 @@ namespace SME.SR.Application
                 AnoLetivo = filtros.AnoLetivo,
                 Perguntas = perguntas,
                 AnoTurma = filtros.AnoTurma,
-                ComponenteCurricular = EnumExtensao.ShortName(ComponenteCurricularSondagemEnum.Portugues),
+                ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name(),
                 Proficiencia = filtros.ProficienciaId.ToString()
             });
         }

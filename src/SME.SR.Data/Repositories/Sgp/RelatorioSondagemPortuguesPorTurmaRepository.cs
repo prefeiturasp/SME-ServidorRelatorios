@@ -49,7 +49,7 @@ namespace SME.SR.Data.Repositories.Sgp
                     break;
             }
 
-            var componenteCurricular = EnumExtensao.Name(ComponenteCurricularSondagemEnum.Portugues);
+            var componenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name();
 
             var parametros = new { componenteCurricular, dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
 
