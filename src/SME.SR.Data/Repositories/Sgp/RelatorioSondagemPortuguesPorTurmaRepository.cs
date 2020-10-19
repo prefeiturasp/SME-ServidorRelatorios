@@ -28,6 +28,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 case ProficienciaSondagemEnum.Leitura:
                 case ProficienciaSondagemEnum.Escrita:
                     sql = $"select {nomeColunaBimestre} Resposta, ";
+                    sql += "1 Id, '' Pergunta, ";
                     sql += "\"studentCodeEol\" AlunoEolCode, ";
                     sql += "\"studentNameEol\" AlunoNome, ";
                     sql += "\"schoolYear\" AnoLetivo, ";
@@ -41,8 +42,11 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "and \"yearClassroom\" = @anoTurma ";
                     break;
                 case ProficienciaSondagemEnum.LeituraVozAlta:
-                    // TODO: Query para Leitura em voz alta
-                    sql = $"";
+                    sql = $"select \"CodigoAluno\" AlunoEolCode, \"NomeAluno\" AlunoNome, \"AnoLetivo\", \"AnoTurma\", \"CodigoTurma\" TurmaEolCode, pae.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta";
+                    sql += " from \"SondagemAutoral\" sa inner join \"Pergunta\" p on sa.\"PerguntaId\" = p.\"Id\"";
+                    sql += " inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" and pae.\"AnoEscolar\" = sa.\"AnoTurma\"";
+                    sql += " inner join \"Resposta\" r on sa.\"RespostaId\" = r.\"Id\"";
+                    sql += " where \"CodigoDre\" = @dreCodigo and \"CodigoUe\" = @ueCodigo and \"CodigoTurma\" = @turmaCodigo and sa.\"AnoLetivo\" = @anoLetivo and \"AnoTurma\" = @anoTurma order by \"NomeAluno\"";
                     break;
             }
 
