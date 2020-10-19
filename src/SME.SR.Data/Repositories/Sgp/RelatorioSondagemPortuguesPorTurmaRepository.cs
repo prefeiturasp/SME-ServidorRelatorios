@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -44,16 +46,19 @@ namespace SME.SR.Data.Repositories.Sgp
                 case ProficienciaSondagemEnum.LeituraVozAlta:
                     sql = $"select \"CodigoAluno\" AlunoEolCode, \"NomeAluno\" AlunoNome, \"AnoLetivo\", \"AnoTurma\", \"CodigoTurma\" TurmaEolCode, pae.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta";
                     sql += " from \"SondagemAutoral\" sa inner join \"Pergunta\" p on sa.\"PerguntaId\" = p.\"Id\"";
+                    sql += " inner join \"ComponenteCurricular\" cc on p.\"ComponenteCurricularId\" = cc.\"Id\"";
                     sql += " inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" and pae.\"AnoEscolar\" = sa.\"AnoTurma\"";
                     sql += " inner join \"Resposta\" r on sa.\"RespostaId\" = r.\"Id\"";
-                    sql += " where \"CodigoDre\" = @dreCodigo and \"CodigoUe\" = @ueCodigo and \"CodigoTurma\" = @turmaCodigo and sa.\"AnoLetivo\" = @anoLetivo and \"AnoTurma\" = @anoTurma order by \"NomeAluno\"";
+                    sql += " where cc.\"Id\" = @componenteCurricular and  \"CodigoDre\" = @dreCodigo and \"CodigoUe\" = @ueCodigo and \"CodigoTurma\" = @turmaCodigo and sa.\"AnoLetivo\" = @anoLetivo and \"AnoTurma\" = @anoTurma order by \"NomeAluno\"";
                     break;
             }
 
             if (sql == String.Empty)
                 throw new Exception($"{ proficiencia } fora do esperado.");
 
-            var parametros = new { dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
+            var componenteCurricular = Enum.GetName(typeof(ComponenteCurricularSondagemEnum), ComponenteCurricularSondagemEnum.Portugues);
+
+            var parametros = new { componenteCurricular, dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
