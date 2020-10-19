@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Sgp
@@ -47,7 +49,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 sql += " where cc.\"Id\" = @componenteCurricular and sa.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\"";
             }
 
-            var componenteCurricular = Enum.GetName(typeof(ComponenteCurricularSondagemEnum), ComponenteCurricularSondagemEnum.Matematica);
+            var componenteCurricular = ComponenteCurricularSondagemEnum.Matematica.GetAttribute<DisplayAttribute>().Name;
 
             var parametros = new { componenteCurricular, dreCodigo, anoLetivo, turmaCodigo, semestre, anoTurma };
 

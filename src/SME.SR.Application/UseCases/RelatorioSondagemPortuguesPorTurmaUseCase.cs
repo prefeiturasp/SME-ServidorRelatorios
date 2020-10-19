@@ -1,8 +1,11 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,7 +68,7 @@ namespace SME.SR.Application
                 AnoLetivo = filtros.AnoLetivo,
                 Perguntas = perguntas,
                 AnoTurma = filtros.AnoTurma,
-                ComponenteCurricular = "Português",
+                ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.GetAttribute<DisplayAttribute>().ShortName,
                 Proficiencia = filtros.ProficienciaId.ToString()
             });
         }

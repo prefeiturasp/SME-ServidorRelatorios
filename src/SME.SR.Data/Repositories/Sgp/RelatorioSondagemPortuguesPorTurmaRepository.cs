@@ -5,6 +5,7 @@ using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Sgp
@@ -56,7 +57,7 @@ namespace SME.SR.Data.Repositories.Sgp
             if (sql == String.Empty)
                 throw new Exception($"{ proficiencia } fora do esperado.");
 
-            var componenteCurricular = Enum.GetName(typeof(ComponenteCurricularSondagemEnum), ComponenteCurricularSondagemEnum.Portugues);
+            var componenteCurricular = ComponenteCurricularSondagemEnum.Portugues.GetAttribute<DisplayAttribute>().Name;
 
             var parametros = new { componenteCurricular, dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
 
