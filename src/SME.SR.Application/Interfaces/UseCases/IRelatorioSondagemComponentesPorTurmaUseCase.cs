@@ -5,6 +5,6 @@ namespace SME.SR.Application
 {
     public interface IRelatorioSondagemComponentesPorTurmaUseCase
     {
-        Task Executar(FiltroRelatorioDto request);
+        Task<string> Executar(FiltroRelatorioSincronoDto request);
     }
 }
