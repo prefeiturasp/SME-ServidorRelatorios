@@ -145,20 +145,6 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             await relatorioPlanoAulaUseCase.Executar(request);
             return true;
-        }
-        //[HttpGet("relatorios/sondagem/matematica-por-turma")]        
-        //[Action("relatorios/sondagem/matematica-por-turma", typeof(IRelatorioSondagemComponentesPorTurmaUseCase))]
-        //public async Task<string> RelatorioSondagemComponentesPorTurma([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioSondagemComponentesPorTurmaUseCase relatorioSondagemComponentesPorTurmaUseCase)
-        //{
-        //    return await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);            
-        //}
-
-        //[HttpGet("relatorios/sondagem/matematica-consolidado")]
-        //[Action("relatorios/sondagem/matematica-consolidado", typeof(IRelatorioSondagemMatemicaConsolidadoUseCase))]
-        //public async Task<bool> RelatorioMatemicaConsolidade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemMatemicaConsolidadoUseCase relatorioSondagemMatemicaConsolidadoUseCase)
-        //{
-        //    await relatorioSondagemMatemicaConsolidadoUseCase.Executar(request);
-        //    return true;
-        //}
+        }    
     }
 }
