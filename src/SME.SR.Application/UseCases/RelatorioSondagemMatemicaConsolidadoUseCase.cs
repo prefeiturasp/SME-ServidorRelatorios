@@ -16,7 +16,7 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task Executar(FiltroRelatorioDto request)
+        public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<FiltroRelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto>();
 
@@ -79,7 +79,7 @@ namespace SME.SR.Application
                 mensagemTitulo = $"Relatório de Sondagem (Matemática) - SME - {relatorio.Ano}º ano";
             }            
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
+            return (await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false)));
         }
     }
 }
