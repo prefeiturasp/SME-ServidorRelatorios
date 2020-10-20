@@ -6,10 +6,10 @@ namespace SME.SR.Infra
 {
     public class RelatorioSondagemPortuguesPorTurmaPlanilhaDto
     {
-        public List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto> Linhas;
+        public List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto> Linhas;
         public RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
         {
-            this.Linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto>();
+            this.Linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>();
         }
     }
 }

@@ -8,14 +8,14 @@
         public string Resposta { get { return TransformarSiglaResposta(_resposta); } set { _resposta = value; } }
         private string TransformarSiglaResposta(string sigla)
         {
-            return (sigla.ToUpper()) switch
+            return (sigla?.ToUpper()) switch
             {
                 "S" => "Escreve convencionalmente",
                 "N" => "Não escreve convencionalmente",
                 "A" => "Acertou",
                 "E" => "Errou",
                 "NR" => "Não resolveu",
-                _ => "",
+                _ => sigla,
             };
         }
     }
