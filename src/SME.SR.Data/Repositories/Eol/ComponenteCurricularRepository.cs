@@ -118,7 +118,7 @@ namespace SME.SR.Data
                           from componente_curricular cc 
                          order by cc.id";
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<ComponenteCurricular>(query);
             }
