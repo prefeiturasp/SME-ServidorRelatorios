@@ -56,7 +56,8 @@ namespace SME.SR.Application
                 Semestre = filtros.Semestre,
                 TurmaAno = int.Parse(filtros.Ano),
                 Usuario = usuario,
-                QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno
+                QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno,
+                Proficiencia = filtros.ProficienciaId
             });
 
 

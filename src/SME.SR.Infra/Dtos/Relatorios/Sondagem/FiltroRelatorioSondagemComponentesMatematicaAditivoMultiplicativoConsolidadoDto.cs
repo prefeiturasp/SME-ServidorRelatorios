@@ -17,5 +17,7 @@ namespace SME.SR.Infra
         public string Ano { get; set; }
 
         public string UsuarioRf { get; set; }
+
+        public ProficienciaSondagemEnum ProficienciaId { get; set; }
     }
 }

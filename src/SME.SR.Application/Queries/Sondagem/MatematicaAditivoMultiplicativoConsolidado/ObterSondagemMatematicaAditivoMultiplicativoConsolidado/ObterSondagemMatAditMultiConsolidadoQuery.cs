@@ -17,6 +17,9 @@ namespace SME.SR.Application
         public int AnoLetivo { get; set; }
 
         public Usuario Usuario { get; set; }
+
         public int QuantidadeTotalAlunos { get; internal set; }
+
+        public ProficienciaSondagemEnum Proficiencia { get; set; }
     }
 }
