@@ -205,7 +205,7 @@ namespace SME.SR.Application
         {
             var lstRespostas = ObterRespostas(agrupamento, perguntas, totalAlunosGeral);
 
-            if (respostas != null && respostas.Any())
+            if (lstRespostas != null && lstRespostas.Any())
             {
                 respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
                 {
@@ -219,7 +219,7 @@ namespace SME.SR.Application
         {
             var lstRespostas = ObterRespostas(agrupamento, perguntas, totalAlunosGeral);
 
-            if (respostas != null && respostas.Any())
+            if (lstRespostas != null && lstRespostas.Any())
             {
                 respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
                 {
@@ -233,7 +233,7 @@ namespace SME.SR.Application
         {
             var respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>();
 
-            var agrupamentosComValor = agrupamento.Where(a => !a.Key.Trim().Equals(""));
+            var agrupamentosComValor = agrupamento.Where(a => a.Key != null && !a.Key.Trim().Equals(""));
 
             foreach (var item in agrupamentosComValor)
             {
@@ -259,7 +259,7 @@ namespace SME.SR.Application
         {
             var respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>();
 
-            var agrupamentosComValor = agrupamento.Where(a => !a.Key.Trim().Equals(""));
+            var agrupamentosComValor = agrupamento.Where(a => a.Key != null && !a.Key.Trim().Equals(""));
 
             foreach (var item in agrupamentosComValor)
             {
