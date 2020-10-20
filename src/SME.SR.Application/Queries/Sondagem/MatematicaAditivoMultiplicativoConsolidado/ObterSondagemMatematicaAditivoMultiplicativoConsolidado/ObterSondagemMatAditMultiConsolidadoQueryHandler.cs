@@ -23,8 +23,10 @@ namespace SME.SR.Application
         public async Task<RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto> Handle(ObterSondagemMatAditMultiConsolidadoQuery request, CancellationToken cancellationToken)
         {
             var relatorio = new RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto();
-            var perguntas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto>();
+            var respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto>();
+            var perguntas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto>();
 
+            MontarPerguntas(perguntas);
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Usuario.CodigoRf, request.Usuario.Nome);
 
             if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo)
@@ -47,8 +49,8 @@ namespace SME.SR.Application
 
                         var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
 
-                        AdicionarOrdem(ordem3Ideia, ordem: "3", perguntas, request.QuantidadeTotalAlunos);
-                        AdicionarOrdem(ordem3Resultado, ordem: "3", perguntas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem: 3, perguntas, respostas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Resultado, ordem: 3, perguntas, respostas, request.QuantidadeTotalAlunos);
 
                         if (request.TurmaAno != 1 && request.TurmaAno != 3)
                         {
@@ -56,16 +58,16 @@ namespace SME.SR.Application
 
                             var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
 
-                            AdicionarOrdem(ordem4Ideia, ordem: "4", perguntas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(ordem4Resultado, ordem: "4", perguntas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem: 4, perguntas, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Resultado, ordem: 4, perguntas, respostas, request.QuantidadeTotalAlunos);
 
                         }
                     }
 
-                    AdicionarOrdem(ordem1Ideia, ordem: "1", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarOrdem(ordem1Resultado, ordem: "1", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarOrdem(ordem2Ideia, ordem: "2", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarOrdem(ordem2Resultado, ordem: "2", perguntas, request.QuantidadeTotalAlunos);
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem1Ideia, ordem: 1, perguntas, respostas, request.QuantidadeTotalAlunos);
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem1Resultado, ordem: 1, perguntas, respostas, request.QuantidadeTotalAlunos);
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem2Ideia, ordem: 2, perguntas, respostas, request.QuantidadeTotalAlunos);
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem2Resultado, ordem: 2, perguntas, respostas, request.QuantidadeTotalAlunos);
                 }
             }
             else
@@ -80,8 +82,8 @@ namespace SME.SR.Application
 
                         var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
 
-                        AdicionarOrdem(ordem3Ideia, ordem: "3", perguntas, request.QuantidadeTotalAlunos);
-                        AdicionarOrdem(ordem3Resultado, ordem: "3", perguntas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem: 3, perguntas, respostas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Resultado, ordem: 3, perguntas, respostas, request.QuantidadeTotalAlunos);
                     }
                     else
                     {
@@ -91,8 +93,8 @@ namespace SME.SR.Application
 
                             var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
 
-                            AdicionarOrdem(ordem3Ideia, ordem: "3", perguntas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(ordem3Resultado, ordem: "3", perguntas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem: 3, perguntas, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Resultado, ordem: 3, perguntas, respostas, request.QuantidadeTotalAlunos);
                         }
 
 
@@ -100,8 +102,8 @@ namespace SME.SR.Application
 
                         var ordem5Resultado = listaAlunos.GroupBy(fu => fu.Ordem5Resultado);
 
-                        AdicionarOrdem(ordem5Ideia, ordem: "5", perguntas, request.QuantidadeTotalAlunos);
-                        AdicionarOrdem(ordem5Resultado, ordem: "5", perguntas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem5Ideia, ordem: 5, perguntas, respostas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem5Resultado, ordem: 5, perguntas, respostas, request.QuantidadeTotalAlunos);
 
                         if (request.TurmaAno != 3)
                         {
@@ -109,15 +111,15 @@ namespace SME.SR.Application
 
                             var ordem6Resultado = listaAlunos.GroupBy(fu => fu.Ordem6Resultado);
 
-                            AdicionarOrdem(ordem6Ideia, ordem: "6", perguntas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(ordem6Resultado, ordem: "6", perguntas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem6Ideia, ordem: 6, perguntas, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem6Resultado, ordem: 6, perguntas, respostas, request.QuantidadeTotalAlunos);
 
                             var ordem7Ideia = listaAlunos.GroupBy(fu => fu.Ordem7Ideia);
 
                             var ordem7Resultado = listaAlunos.GroupBy(fu => fu.Ordem6Resultado);
 
-                            AdicionarOrdem(ordem7Ideia, ordem: "7", perguntas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(ordem7Resultado, ordem: "7", perguntas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem7Ideia, ordem: 7, perguntas, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem7Resultado, ordem: 7, perguntas, respostas, request.QuantidadeTotalAlunos);
                         }
 
                         if (request.TurmaAno != 3 && request.TurmaAno != 4)
@@ -126,8 +128,8 @@ namespace SME.SR.Application
 
                             var ordem8Resultado = listaAlunos.GroupBy(fu => fu.Ordem8Resultado);
 
-                            AdicionarOrdem(ordem8Ideia, ordem: "8", perguntas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(ordem8Resultado, ordem: "8", perguntas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem8Ideia, ordem: 8, perguntas, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem8Resultado, ordem: 8, perguntas, respostas, request.QuantidadeTotalAlunos);
                         }
 
                     }
@@ -135,11 +137,35 @@ namespace SME.SR.Application
             }
 
             if (perguntas.Any())
-                relatorio.PerguntasRespostas = perguntas;
+                relatorio.Perguntas = perguntas;
+
+            if (respostas.Any())
+                relatorio.PerguntasRespostas = respostas;
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
 
             return relatorio;
+        }
+
+        private void MontarPerguntas(List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas)
+        {
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto()
+            {
+                Descricao = "Acertou",
+                Id = 1
+            });
+
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto()
+            {
+                Descricao = "Errou",
+                Id = 2
+            });
+
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto()
+            {
+                Descricao = "Não Resolveu",
+                Id = 3
+            });
         }
 
         private void TrataAlunosQueNaoResponderam(RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto relatorio, int quantidadeTotalAlunos)
@@ -175,35 +201,35 @@ namespace SME.SR.Application
             relatorio.Usuario = usuario;
         }
 
-        private void AdicionarOrdem(IEnumerable<IGrouping<string, MathPoolCA>> agrupamento, string ordem, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> perguntas, int TotalAlunosGeral)
+        private void AdicionarOrdem(ProficienciaSondagemEnum proficiencia, int anoTurma, IEnumerable<IGrouping<string, MathPoolCA>> agrupamento, int ordem, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> respostas, int totalAlunosGeral)
         {
-            var respostas = ObterRespostas(agrupamento, TotalAlunosGeral);
+            var lstRespostas = ObterRespostas(agrupamento, perguntas, totalAlunosGeral);
 
             if (respostas != null && respostas.Any())
             {
-                perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
+                respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
                 {
-                    Ordem = ordem,
-                    Respostas = respostas
+                    Ordem = ObterTituloOrdem(proficiencia, anoTurma, ordem),
+                    Respostas = lstRespostas
                 });
             }
         }
 
-        private void AdicionarOrdem(IEnumerable<IGrouping<string, MathPoolCM>> agrupamento, string ordem, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> perguntas, int TotalAlunosGeral)
+        private void AdicionarOrdem(ProficienciaSondagemEnum proficiencia, int anoTurma, IEnumerable<IGrouping<string, MathPoolCM>> agrupamento, int ordem, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> respostas, int totalAlunosGeral)
         {
-            var respostas = ObterRespostas(agrupamento, TotalAlunosGeral);
+            var lstRespostas = ObterRespostas(agrupamento, perguntas, totalAlunosGeral);
 
             if (respostas != null && respostas.Any())
             {
-                perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
+                respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
                 {
-                    Ordem = ordem,
-                    Respostas = respostas
+                    Ordem = ObterTituloOrdem(proficiencia, anoTurma, ordem),
+                    Respostas = lstRespostas
                 });
             }
         }
 
-        private List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolCA>> agrupamento, int TotalAlunosGeral)
+        private List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolCA>> agrupamento, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas, int TotalAlunosGeral)
         {
             var respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>();
 
@@ -211,9 +237,13 @@ namespace SME.SR.Application
 
             foreach (var item in agrupamentosComValor)
             {
+                var respostaDesc = ConverteTextoPollMatematica(item.Key);
+                var perguntaId = perguntas.FirstOrDefault(p => p.Descricao.Equals(respostaDesc)).Id;
+
                 respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto()
                 {
-                    Resposta = ConverteTextoPollMatematica(item.Key),
+                    PerguntaId = perguntaId,
+                    Resposta = respostaDesc,
                     AlunosQuantidade = item.Count(),
                     AlunosPercentual = ((double)item.Count() / TotalAlunosGeral) * 100
                 });
@@ -225,7 +255,7 @@ namespace SME.SR.Application
                 return null;
         }
 
-        private List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolCM>> agrupamento, int TotalAlunosGeral)
+        private List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolCM>> agrupamento, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas, int TotalAlunosGeral)
         {
             var respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>();
 
@@ -233,9 +263,13 @@ namespace SME.SR.Application
 
             foreach (var item in agrupamentosComValor)
             {
+                var respostaDesc = ConverteTextoPollMatematica(item.Key);
+                var perguntaId = perguntas.FirstOrDefault(p => p.Descricao.Equals(respostaDesc)).Id;
+
                 respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto()
                 {
-                    Resposta = ConverteTextoPollMatematica(item.Key),
+                    PerguntaId = perguntaId,
+                    Resposta = respostaDesc,
                     AlunosQuantidade = item.Count(),
                     AlunosPercentual = ((double)item.Count() / TotalAlunosGeral) * 100
                 });
@@ -260,6 +294,229 @@ namespace SME.SR.Application
                 default:
                     return "";
             }
+        }
+
+        private string ObterTituloOrdem(ProficienciaSondagemEnum proficiencia, int anoTurma, int ordem)
+        {
+            string ordemTitulo = string.Empty;
+
+            switch (anoTurma)
+            {
+                case 1:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            ordemTitulo = "COMPOSIÇÃO";
+                            break;
+                        default:
+                            ordemTitulo = string.Empty;
+                            break;
+                    }
+                    break;
+                case 2:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    ordemTitulo = "COMPOSIÇÃO";
+                                    break;
+                                case 2:
+                                    ordemTitulo = "TRANSFORMAÇÃO";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 3:
+                                    ordemTitulo = "PROPORCIONALIDADE";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 3:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    ordemTitulo = "COMPOSIÇÃO";
+                                    break;
+                                case 2:
+                                    ordemTitulo = "TRANSFORMAÇÃO";
+                                    break;
+                                case 3:
+                                    ordemTitulo = "COMPARAÇÃO";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 4:
+                                    ordemTitulo = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+                                case 5:
+                                    ordemTitulo = "PROPORCIONALIDADE";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 4:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    ordemTitulo = "COMPOSIÇÃO";
+                                    break;
+                                case 2:
+                                    ordemTitulo = "TRANSFORMAÇÃO";
+                                    break;
+                                case 3:
+                                    ordemTitulo = "COMPOSIÇÃO DE TRANSF.";
+                                    break;
+                                case 4:
+                                    ordemTitulo = "COMPARAÇÃO";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 5:
+                                    ordemTitulo = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+                                case 6:
+                                    ordemTitulo = "PROPORCIONALIDADE";
+                                    break;
+                                case 7:
+                                    ordemTitulo = "COMBINATÓRIA";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 5:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    ordemTitulo = "COMPOSIÇÃO";
+                                    break;
+                                case 2:
+                                    ordemTitulo = "TRANSFORMAÇÃO";
+                                    break;
+                                case 3:
+                                    ordemTitulo = "COMPOSIÇÃO DE TRANSF.";
+                                    break;
+                                case 4:
+                                    ordemTitulo = "COMPARAÇÃO";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 5:
+                                    ordemTitulo = "COMBINATÓRIA";
+                                    break;
+                                case 6:
+                                    ordemTitulo = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+                                case 7:
+                                    ordemTitulo = "PROPORCIONALIDADE";
+                                    break;
+                                case 8:
+                                    ordemTitulo = "MULTIPLICAÇÃO COMPARATIVA";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 6:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    ordemTitulo = "COMPOSIÇÃO";
+                                    break;
+                                case 2:
+                                    ordemTitulo = "TRANSFORMAÇÃO";
+                                    break;
+                                case 3:
+                                    ordemTitulo = "COMPOSIÇÃO DE TRANSF.";
+                                    break;
+                                case 4:
+                                    ordemTitulo = "COMPARAÇÃO";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 5:
+                                    ordemTitulo = "COMBINATÓRIA";
+                                    break;
+                                case 6:
+                                    ordemTitulo = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+                                case 7:
+                                    ordemTitulo = "PROPORCIONALIDADE";
+                                    break;
+                                case 8:
+                                    ordemTitulo = "MULTIPLICAÇÃO COMPARATIVA";
+                                    break;
+                                default:
+                                    ordemTitulo = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+
+            }
+
+            return $"ORDEM {ordem} - {ordemTitulo}";
         }
     }
 }
