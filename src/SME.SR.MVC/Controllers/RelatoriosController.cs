@@ -2737,7 +2737,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             var linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto>();
 
-            for (var i = 0; i < 12; i++)
+            for (var i = 0; i < 11; i++)
             {
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
                 {
@@ -2809,7 +2809,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                         {
                             Id = 1,
-                            Nome = "Proficiência"
+                            Nome = "Leitura"
                         },
                     },
                 },
@@ -2827,7 +2827,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             var linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto>();
 
-            for (var i = 0; i < 7; i++)
+            for (var i = 0; i < 6; i++)
             {
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
                 {
@@ -2892,7 +2892,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 PerguntaId = 1
                             },
                         }
-                }); linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
+                }); 
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
@@ -2930,7 +2931,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                         {
                             Id = 1,
-                            Nome = ""
+                            Nome = "Escrita"
                         },
                     },
                 },
@@ -2948,7 +2949,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             var linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto>();
 
-            for (var i = 0; i < 7; i++)
+            for (var i = 0; i < 6; i++)
             {
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhasDto()
                 {
