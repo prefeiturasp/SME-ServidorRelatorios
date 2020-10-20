@@ -18,79 +18,6 @@
 
         }
         return string.Empty;
-
-    }
-
-    string MontaCabecalhoObjetivos()
-    {
-        var str = "";
-        if (montarCabecalhoObj)
-        {
-            str = @"<table>
-<tr>
-<td width='100 %' class=tb-cabecalho>
-OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
-</td>
-</tr>
-</table> ";
-            montarCabecalhoObj = false;
-
-        }
-        return str;
-    }
-
-    string MontaDescricao(string titulo, string descricao)
-    {
-        var str = "<div class='m-30'>";
-
-        if (titulo != "")
-        {
-            str = str + $@"
-<table>
-<tr>
-<td width='100%' class='tb-cabecalho2'>{titulo}</td>
-</tr>
-</table>";
-        }
-
-
-        str = str + @"<table> <tbody>
-<tr class='h-50'>
-<td class='fonte-16 caixa-2'>";
-
-        int tamanho = 0;
-        for (int i = 0; i < descricao.Length; i++)
-        {
-
-            if (tamanho <= 100)
-            {
-                str = str + descricao[i];
-                tamanho = tamanho + 1;
-            }
-            else
-            {
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                var retornoVerificacao = VerificaQuebra();
-                if (retornoVerificacao != string.Empty)
-                {
-                    str = str + $@"</td> </tr> </tbody> </table> {retornoVerificacao} <table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
-                }
-                else
-                {
-                    str = str + retornoVerificacao;
-                }
-
-                tamanho = 0;
-                str = str + descricao[i];
-            }
-        }
-
-        if (!str.Substring(str.Length - 8).Equals("</table>"))
-        {
-            str = str + @" </tr> </tbody> </table>";
-        }
-
-        return str + "</div>";
     }
 
     string MontarCabecalho()
@@ -102,32 +29,35 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
 <div class='titulo-plano-aula'>
-<p style='margin-bottom:0'>PLANO DE AULA - {Model.DataPlanoAula:dd/MM/yyyy} </p>
+<p style='margin-bottom: 0'>RELATÓRIO DE CONTROLE DE GRADE - SINTÉTICO</p>
 </div>
 <div class='fonte-14 header-pagina'>
 <table class='tblTopo'>
 <tbody>
-<tr>
-<td width='35%'>DRE: {Model.Dre}</td>
-<td width='40%'>UE: {Model.Ue}</td>
-<td width='15%'>TURMA: {Model.Turma}</td>
-</tr>
+    <tr>
+        <td width='35%'>DRE: {Model.Filtro.Dre}</td>
+        <td width='40%'>UE: {Model.Filtro.Ue}</td>
+        <td width='15%'>TURMA: {Model.Filtro.Turma}</td>
+    </tr>
 </tbody>
 </table>
 <table>
 <tbody>
-<tr>
-<td class='campo-componente-curricular'>COMPONENTE CURRICULAR: {Model.ComponenteCurricular}</td>
-</tr>
+    <tr>
+        <td class='campo-componente-curricular'>
+            COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
+        </td>
+        <td class='campo-bimestre'>BIMESTRE: {Model.Filtro.Bimestre}</td>
+    </tr>
 </tbody>
 </table>
 <table>
 <tbody>
-<tr>
-<td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
-<td class='campo-rf-data'>RF: {Model.RF}</td>
-<td class='campo-rf-data'>DATA: {Model.Data:dd/MM/yyyy}</td>
-</tr>
+    <tr>
+        <td class='campo-usuario'>PROFESSOR: {Model.Filtro.Usuario}</td>
+        <td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
+        <td class='campo-rf-data'>DATA: {Model.Filtro.Data:dd/MM/yyyy}</td>
+    </tr>
 </tbody>
 </table>
 </div>";
@@ -135,327 +65,352 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS(CURRÍCULO DA CIDADE)
         return str;
 
     }
+
+    string MontaBimestre(string descricao)
+    {
+        return $@"<table class='fixed'>
+            <tr>
+                <td width='100%' class='td-turma-bimestre'>{descricao}</td>
+            </tr>
+        </table>";
+    }
+
+    string MontaEstruturaGrade()
+    {
+        var str = "";
+        var retornoVerificacao = string.Empty;
+
+        var ultimaTurma = Model.Turmas.Last();
+        foreach (var turma in Model.Turmas)
+        {
+            str += $@" <div>
+<table class='fixed'>
+<tr>
+    <td width='100%' class='td-turma-bimestre'>{turma.Nome}</td>
+</tr>
+</table>";
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+            var ultimoBimestre = $"{turma.Nome} - {turma.Bimestres.Last().Descricao}";
+            foreach (var bimestre in turma.Bimestres)
+            {
+                str += MontaBimestre(bimestre.Descricao);
+                str += $@"<table class='fixed'>
+            <tr>
+                <td width='14%' class='td-titulo'></td>
+                <td width='13%' class='td-titulo'>PREVISTAS</td>
+                <td width='22%' colspan='2' class='td-titulo'>CRIADAS</td>
+                <td width='22%' colspan='2' class='td-titulo'>DADAS</td>
+                <td width='14%' class='td-titulo'>RESPOSTAS</td>
+                <td width='15%' class='td-titulo'>DIVERGÊNCIAS</td>
+            </tr>
+            <tr>
+                <td width='12%' class='td-titulo-2'></td>
+                <td width='12%' class='td-titulo-2'></td>
+                <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
+                <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
+                <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
+                <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
+                <td width='12.5%' class='td-titulo-2'></td>
+                <td width='12.5%' class='td-titulo-2'></td>
+            </tr>";
+                contadorQuebrarPagina = contadorQuebrarPagina + 5;
+
+                foreach (var componente in bimestre.ComponentesCurriculares)
+                {
+                    str += $@"<tr>
+                <td width='12.5%' class='td-valor'>{componente.Nome}</td>
+                <td width='12.5%' class='td-valor'>{componente.AulasPrevistas}</td>
+                <td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorTitular}</td>
+                <td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorSubstituto}</td>
+                <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorTitular}</td>
+                <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorSubstituto}</td>
+                <td width='12.5%' class='td-valor'>{componente.Repostas}</td>
+                <td width='12.5%' class='td-valor'>{componente.Divergencias}</td>
+                </tr>
+            ";
+                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                    retornoVerificacao = VerificaQuebra();
+                    if (retornoVerificacao != string.Empty)
+                    {
+                        str = str + $@"</table>{retornoVerificacao} {MontaBimestre(bimestre.Descricao)}<table>";
+                    }
+
+                }
+
+                str += "</table>";
+
+
+                retornoVerificacao = VerificaQuebra();
+                if (retornoVerificacao != string.Empty)
+                {
+                    str = str + $@"{retornoVerificacao}";
+                }
+                else
+                {
+                    if (ultimoBimestre != $"{turma.Nome} - {bimestre.Descricao}")
+                    {
+                        str += "<table><tr><td style='border-top:none;border-bottom:none'><br/></td></tr></table>";
+                    }
+                    str = str + retornoVerificacao;
+                }
+
+            }
+            if (ultimaTurma != turma) {
+                contadorQuebrarPagina = contadorQuebrarPagina + 7;
+                retornoVerificacao = VerificaQuebra();
+                if (retornoVerificacao != string.Empty)
+                {
+                    str = str + $@"{retornoVerificacao}";
+                }
+                else
+                {
+                    str += "<table><tr><td style='border-top:none;border-bottom:none'><br/></td></tr><tr><td style='border-bottom:none'><br/></td></tr></table>";
+                    str = str + retornoVerificacao;
+                }
+            }
+        }
+        str += "</div>";
+
+        return str;
+
+    }
+
 }
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RELATÓRIO DE controle de grade - SINTÉTICO</title>
-</head>
+    <!DOCTYPE html>
+    <html lang='pt-BR'>
+    <head>
+        <meta charset='UTF-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <title>RELATÓRIO DE CONTROLE DE GRADE - SINTÉTICO</title>
+    </head>
 
-<body class="body-rel-faltas-frequencia">
-    <style>
-        .body-rel-faltas-frequencia {
-            margin: 0.5cm auto;
-            font-family: Roboto, sans-serif;
-            width: 21cm;
-            min-height: 29.7cm;
-            background: white;
-            color: #42474a;
-        }
+    <body class='body-rel-faltas-frequencia'>
+        <style>
+            .body-rel-faltas-frequencia {
+                margin: 0.5cm auto;
+                font-family: Roboto, sans-serif;
+                width: 21cm;
+                min-height: 29.7cm;
+                background: white;
+                color: #42474a;
+            }
 
-        .titulo-sgp {
-            text-align: right;
-            font-size: 14px;
-            font-weight: bold;
-        }
+            .titulo-sgp {
+                text-align: right;
+                font-size: 14px;
+                font-weight: bold;
+            }
 
-        .titulo-plano-aula {
-            text-align: right;
-            font-size: 14.5px;
-        }
+            .titulo-plano-aula {
+                text-align: right;
+                font-size: 14.5px;
+            }
 
-        .img-logo-sgp {
-            height: 64px;
-            float: left;
-        }
+            .img-logo-sgp {
+                height: 64px;
+                float: left;
+            }
 
-        .header-pagina {
-            margin-top: 33px;
-            margin-bottom: 22px;
-        }
+            .header-pagina {
+                margin-top: 33px;
+                margin-bottom: 22px;
+            }
 
-            .header-pagina td {
+                .header-pagina td {
+                    text-align: left;
+                    padding-left: 15px;
+                    padding-top: 5px;
+                    padding-bottom: 5px;
+                }
+
+            .campo-dre {
+                width: 25%;
+            }
+
+            .campo-ue {
+                width: 60%;
+            }
+
+            .campo-ano {
+                width: 15%;
+            }
+
+            .campo-componente-curricular {
+                width: 70%;
+                border-top: none;
+            }
+
+            .campo-bimestre {
+                width: 30%;
+                border-top: none;
+            }
+
+            .campo-usuario {
+                width: 60%;
+                border-top: none;
+            }
+
+            .campo-rf-data {
+                width: 15%;
+                border-top: none;
+            }
+
+            table {
+                display: table;
+                width: 100%;
+                border-color: #42474a;
+                empty-cells: show;
+                border: none;
+                border-collapse: collapse;
+            }
+
+            thead {
+                background-color: #f3f3f3;
+            }
+
+            th {
+                border: 1px solid #42474a;
+                font-weight: normal;
+            }
+
+            td {
+                border: 1px solid #42474a;
+            }
+
+            .fonte-16 {
+                font-size: 16px !important;
+            }
+
+            .fonte-14 {
+                font-size: 14px !important;
+            }
+
+            .fonte-12 {
+                font-size: 12px !important;
+            }
+
+            .alinhar-esquerda {
                 text-align: left;
-                padding-left: 15px;
-                padding-top: 5px;
-                padding-bottom: 5px;
             }
 
-        .campo-dre {
-            width: 25%;
-        }
-
-        .campo-ue {
-            width: 60%;
-        }
-
-        .campo-ano {
-            width: 15%;
-        }
-
-        .campo-componente-curricular {
-            width: 70%;
-            border-top: none;
-        }
-
-        .campo-bimestre {
-            width: 30%;
-            border-top: none;
-        }
-
-        .campo-usuario {
-            width: 60%;
-            border-top: none;
-        }
-
-        .campo-rf-data {
-            width: 15%;
-            border-top: none;
-        }
-
-        table {
-            display: table;
-            width: 100%;
-            border-color: #42474a;
-            empty-cells: show;
-            border: none;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background-color: #f3f3f3;
-        }
-
-        th {
-            border: 1px solid #42474a;
-            font-weight: normal;
-        }
-
-        td {
-            border: 1px solid #42474a;
-        }
-
-        .fonte-16 {
-            font-size: 16px !important;
-        }
-
-        .fonte-14 {
-            font-size: 14px !important;
-        }
-
-        .fonte-12 {
-            font-size: 12px !important;
-        }
-
-        .alinhar-esquerda {
-            text-align: left;
-        }
-
-        .rodape-rel-faltas-frequencia {
-            margin-top: 10px;
-            font-size: 9px;
-            font-weight: bold;
-        }
-
-        .titulo-sgp-rodape {
-            float: left;
-        }
-
-        .contador-pagina {
-            float: right;
-            font-size: 15px;
-        }
-
-        .thLimpo {
-            background-color: #ffffff;
-        }
-
-        .tb-head {
-            background-color: #f3f3f3;
-            text-align: left;
-            font-size: 16px;
-            padding: 10px;
-            padding-left: 20px;
-        }
-
-        .td-turma-bimestre {
-            background-color: #f3f3f3;
-            text-align: center;
-            font-size: 16px;
-            font-weight: bold;
-            padding: 10px;
-            border-bottom: none;
-        }
-
-        .td-titulo {
-            background-color: #f3f3f3;
-            text-align: center;
-            font-size: 14px;
-            padding: 10px;
-            border-bottom: none;
-        }
-
-        .td-titulo-2 {
-            background-color: #f3f3f3;
-            text-align: center;
-            font-size: 12px;
-            padding: 2px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            border-bottom: none;
-        }
-
-        .td-valor {
-            text-align: center;
-            font-size: 12px;
-            padding: 2px;
-            padding: 10px;
-        }
-
-        .caixa-1 {
-            text-align: justify;
-            padding: 20px 15px 20px 15px;
-        }
-
-        .caixa-2 {
-            padding: 10px 15px 10px 15px;
-            text-align: justify;
-            border-top: none;
-        }
-
-        .h-50 {
-            height: 50px;
-        }
-
-        .m-30 {
-            margin-top: 30px;
-        }
-
-        .tabela-objetivos-items-tr {
-            height: 50px;
-        }
-
-        .tabela-objetivos-items-titulo {
-            padding: 20px 15px 20px 15px;
-            border-top: none;
-            text-align: center;
-            font-weight: bold;
-            width: 15%;
-        }
-
-        .tabela-objetivos-items-descricao {
-            border-top: none;
-            width: 85%;
-            text-align: justify;
-            padding: 5px 15px 5px 15px;
-            font-size: 14px;
-        }
-
-        table.fixed {
-            table-layout: fixed;
-        }
-
-            table.fixed td {
-                overflow: hidden;
+            .rodape-rel-faltas-frequencia {
+                margin-top: 10px;
+                font-size: 9px;
+                font-weight: bold;
             }
-    </style>
-    <div>
+
+            .titulo-sgp-rodape {
+                float: left;
+            }
+
+            .contador-pagina {
+                float: right;
+                font-size: 15px;
+            }
+
+            .thLimpo {
+                background-color: #ffffff;
+            }
+
+            .tb-head {
+                background-color: #f3f3f3;
+                text-align: left;
+                font-size: 16px;
+                padding: 10px;
+                padding-left: 20px;
+            }
+
+            .td-turma-bimestre {
+                background-color: #f3f3f3;
+                text-align: center;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 10px;
+                border-bottom: none;
+            }
+
+            .td-titulo {
+                background-color: #f3f3f3;
+                text-align: center;
+                font-size: 14px;
+                padding: 2px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border-bottom: none;
+                border-bottom: none;
+            }
+
+            .td-titulo-2 {
+                background-color: #f3f3f3;
+                text-align: center;
+                font-size: 12px;
+                padding: 2px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border-bottom: none;
+            }
+
+            .td-valor {
+                text-align: center;
+                font-size: 12px;
+                padding: 2px;
+                padding: 10px;
+            }
+
+            .caixa-1 {
+                text-align: justify;
+                padding: 20px 15px 20px 15px;
+            }
+
+            .caixa-2 {
+                padding: 10px 15px 10px 15px;
+                text-align: justify;
+                border-top: none;
+            }
+
+            .h-50 {
+                height: 50px;
+            }
+
+            .m-30 {
+                margin-top: 30px;
+            }
+
+            .tabela-objetivos-items-tr {
+                height: 50px;
+            }
+
+            .tabela-objetivos-items-titulo {
+                padding: 20px 15px 20px 15px;
+                border-top: none;
+                text-align: center;
+                font-weight: bold;
+                width: 15%;
+            }
+
+            .tabela-objetivos-items-descricao {
+                border-top: none;
+                width: 85%;
+                text-align: justify;
+                padding: 5px 15px 5px 15px;
+                font-size: 14px;
+            }
+
+            table.fixed {
+                table-layout: fixed;
+            }
+
+                table.fixed td {
+                    overflow: hidden;
+                }
+        </style>
         <div>
-            <img class="img-logo-sgp" src="logoMono.png" alt="Logo SGP" />
+            @Html.Raw(MontarCabecalho())
+            @Html.Raw(MontaEstruturaGrade())
         </div>
-        <div class="titulo-sgp">SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-        <div class="titulo-plano-aula">
-            <p style="margin-bottom: 0">RELATÓRIO DE controle de grade - SINTÉTICO</p>
-        </div>
-        <div class="fonte-14 header-pagina">
-            <table class="tblTopo">
-                <tbody>
-                    <tr>
-                        <td width="35%">DRE:</td>
-                        <td width="40%">UE:</td>
-                        <td width="15%">TURMA:</td>
-                    </tr>
-                </tbody>
-            </table>
-            <table>
-                <tbody>
-                    <tr>
-                        <td class="campo-componente-curricular">
-                            COMPONENTE CURRICULAR:
-                        </td>
-                        <td class="campo-bimestre">BIMESTRE:</td>
-                    </tr>
-                </tbody>
-            </table>
-            <table>
-                <tbody>
-                    <tr>
-                        <td class="campo-usuario">PROFESSOR:</td>
-                        <td class="campo-rf-data">RF:</td>
-                        <td class="campo-rf-data">DATA:</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div>
-            <table class="fixed">
-                <tr>
-                    <td width="100%" class="td-turma-bimestre">1F</td>
-                </tr>
-            </table>
-            <table class="fixed">
-                <tr>
-                    <td width="100%" class="td-turma-bimestre">
-                        1° BIMESTRE - 20/03 À 25/04
-                    </td>
-                </tr>
-            </table>
-            <table class="fixed">
-                <tr>
-                    <td width="14%" class="td-titulo"></td>
-                    <td width="14%" class="td-titulo">PREVISTAS</td>
-                    <td width="22%" colspan="2" class="td-titulo">CRIADAS</td>
-                    <td width="22%" colspan="2" class="td-titulo">DADAS</td>
-                    <td width="14%" class="td-titulo">RESPOSTAS</td>
-                    <td width="14%" class="td-titulo">DIVERGÊNCIAS</td>
-                </tr>
-                <tr>
-                    <td width="12%" class="td-titulo-2"></td>
-                    <td width="12%" class="td-titulo-2"></td>
-                    <td width="12.5%" class="td-titulo-2">PROF. TIT.</td>
-                    <td width="12.5%" class="td-titulo-2">PROF. SUBST.</td>
-                    <td width="12.5%" class="td-titulo-2">PROF. TIT.</td>
-                    <td width="12.5%" class="td-titulo-2">PROF. SUBST.</td>
-                    <td width="12.5%" class="td-titulo-2"></td>
-                    <td width="12.5%" class="td-titulo-2"></td>
-                </tr>
-                <tr>
-                    <td width="12.5%" class="td-valor">INGLÊS</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                </tr>
-                <tr>
-                    <td width="12.5%" class="td-valor">INGLÊS</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                    <td width="12.5%" class="td-valor">10</td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</body>
+    </body>
 </html>
 
 
