@@ -27,7 +27,7 @@ namespace SME.SR.Application
             var perguntas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto>();
 
             MontarPerguntas(perguntas);
-            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Usuario.CodigoRf, request.Usuario.Nome);
+            MontarCabecalho(relatorio, request.Proficiencia, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Usuario.CodigoRf, request.Usuario.Nome);
 
             if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo)
             {
@@ -186,7 +186,7 @@ namespace SME.SR.Application
             }
         }
 
-        private void MontarCabecalho(RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, string rf, string usuario)
+        private void MontarCabecalho(RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto relatorio, ProficienciaSondagemEnum proficiencia, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, string rf, string usuario)
         {
             relatorio.Ano = anoTurma;
             relatorio.AnoLetivo = anoLetivo;
@@ -194,7 +194,7 @@ namespace SME.SR.Application
             relatorio.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
             relatorio.Dre = dre != null ? dre.Abreviacao : "Todas";
             relatorio.Periodo = $"{semestre}º Semestre";
-            relatorio.Proficiencia = int.Parse(anoTurma) > 3 ? "" : "Números";
+            relatorio.Proficiencia = proficiencia == ProficienciaSondagemEnum.CampoAditivo ? "Aditivo" : "Multiplicativo";
             relatorio.RF = rf;
             relatorio.Turma = "Todas";
             relatorio.Ue = ue != null ? ue.NomeComTipoEscola : "Todas";
