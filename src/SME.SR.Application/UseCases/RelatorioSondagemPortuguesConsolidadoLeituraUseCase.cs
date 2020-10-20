@@ -34,7 +34,7 @@ namespace SME.SR.Application
             RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
             {
                 Cabecalho = await ObterCabecalho(filtros, dataDoPeriodo),
-                Planilhas = await ObterPlanilhas(filtros)
+                Planilhas = await ObterPlanilhas(filtros, alunosDaTurma)
             };
 
             if (relatorio == null)
@@ -66,22 +66,24 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>> ObterPlanilhas(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        private async Task<List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>> ObterPlanilhas(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros, IEnumerable<Aluno> alunos)
         {
-            // TODO: Montar planilhas de dados
+            IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto> linhasSondagem = await mediator.Send(new ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery()
+            {
+                DreCodigo = filtros.DreCodigo,
+                UeCodigo = filtros.UeCodigo,
+                TurmaCodigo = filtros.TurmaCodigo,
+                AnoLetivo = filtros.AnoLetivo,
+                AnoTurma = filtros.AnoTurma,
+                Bimestre = filtros.Bimestre,
+            });
+
+            // TODO: Substituir mock
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
             for (int i = 0; i <= 5; i++)
             {
                 var linhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto>();
                 #region Monta dados
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
-                {
-                    Descricao = $"ORDEM { i } - COMPOSIÇÃO",
-                    Ideia = "Ideia",
-                    IdeiaPorcentagem = "%",
-                    Resultado = "Resultado",
-                    ResultadoPorcentagem = "%"
-                });
                 linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
                 {
                     Descricao = "Acertou",
