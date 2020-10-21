@@ -53,6 +53,9 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Update="Views\RelatorioResumosPAP.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\templates\RelatorioAtasComColunaFinal.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>    
