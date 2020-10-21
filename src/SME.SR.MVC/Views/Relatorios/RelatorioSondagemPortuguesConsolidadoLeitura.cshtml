@@ -119,11 +119,7 @@
             <tbody>
                 @{
                     int numeroLinhas = (planilhas.Ordem.Count() / 40);
-                    int count = 0;
-                    //int totalRespostas = planilhas.Perguntas.Count / Model.Perguntas.Count;
-                    //var perguntaIds = planilhas.ObterIdsDasPerguntas();
-                    //string[] descricaoResposta = new string[totalRespostas];
-
+                    
                     if (numeroLinhas > 1)
                     {
                         contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
@@ -134,54 +130,50 @@
                     }
                 }
 
-                @*foreach (var resposta in planilhas.Perguntas.First().Respostas)
-                {
-                    @if (count < totalRespostas)
-                    {
-                        descricaoResposta[count] = @resposta.Resposta;
-                    }
-                    count++;
-                }*@
-
                 @foreach (var resposta in planilhas.Perguntas.First().Respostas)
                 {
                     <tr>
                         <td class="alinhar-esquerda espaco-esquerda-15">@resposta.Resposta</td>
 
-                        @*@foreach (var resposta1 in planilhas.Perguntas)
+                        @foreach (var perguntas in planilhas.Perguntas)
                         {
-                            var alunosPercentual = Math.Round(resposta.AlunosPercentual, 2);
-                            var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
-                            if (resposta.Resposta == descricao)
+                            foreach (var resp in perguntas.Respostas)
                             {
-                                <td>@resposta.AlunosQuantidade</td>
-                                <td>@alunosPercentualAlterado</td>
+                                if (resposta.Resposta == resp.Resposta)
+                                {
+                                    var alunosPercentual = Math.Round(resp.Percentual, 2);
+                                    var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
+
+                                    <td>@resp.Quantidade</td>
+                                    <td>@alunosPercentualAlterado</td>
+                                }
                             }
-                        }*@
+                        }
                     </tr>
                     contadorQuebrarPagina++;
                 }
-                <tr class="fundo-cinza">
-                    <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
 
-                    @*@foreach (var perguntaId in perguntaIds)
-                    {
-                        double totalQuantidade = 0;
-                        double totalPercentual = 0;
-
-                        @foreach (var resposta in perguntaRespostas.Respostas)
-                        {
-                            if (perguntaId == resposta.PerguntaId)
+                 @foreach (var resposta in planilhas.Perguntas.First().Respostas)
+                 {                  
+                      <tr class="fundo-cinza">
+                            <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
+                            @foreach (var perguntas in planilhas.Perguntas)
                             {
-                                totalQuantidade += resposta.AlunosQuantidade;
-                                totalPercentual += resposta.AlunosPercentual;
-                            }
-                        }
+                                foreach (var resp in perguntas.Respostas)
+                                {
+                                    if (resposta.Resposta == resp.Resposta)
+                                    {
+                                        var alunosPercentual = Math.Round(resp.Percentual, 2);
+                                        var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
 
-                        <td>@totalQuantidade</td>
-                        <td>@totalPercentual</td>
-                    }*@
-                </tr>
+                                        <td>@resp.Total</td>
+                                        <td></td>
+                                    }
+                                }
+                             }
+                      </tr>
+                      break;
+                 }
             </tbody>
         </table>
 
