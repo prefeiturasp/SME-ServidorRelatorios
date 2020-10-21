@@ -54,7 +54,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<bool> VerificaExisteAulaCadastrada(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
+        public async Task<bool> VerificaExisteAulaCadastrada(long turmaId, string componenteCurricularId, int bimestre, long tipoCalendarioId)
         {
             var query = @"select distinct 1 from aula a inner join turma on a.turma_id = turma.turma_id 
                 inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id and a.data_aula between p.periodo_inicio and p.periodo_fim
@@ -62,17 +62,15 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { turmaId, componenteCurricularId });
+                return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { turmaId, componenteCurricularId, bimestre, tipoCalendarioId });
             }
         }
 
         public async Task<bool> VerificaExisteMaisAulaCadastradaNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
-            var query = @"select distinct 1
-                          from aula a 
-                            inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id
- 						                                                and a.data_aula between p.periodo_inicio and p.periodo_fim
-                          inner join turma on aula.turma_id = turma.turma_id 
+            var query = @"select distinct 1 from aula a 
+                          inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id and a.data_aula between p.periodo_inicio and p.periodo_fim
+                          inner join turma on a.turma_id = turma.turma_id 
                           where turma.id = @turmaId
                             and a.tipo_calendario_id = @tipoCalendarioId
                             and a.disciplina_id = @componenteCurricularId 

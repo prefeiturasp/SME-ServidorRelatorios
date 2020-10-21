@@ -17,7 +17,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        const string Select = @" select t.nome as TurmaNome, coalesce(cc.descricao_sgp, cc.id as ComponenteCurricularId, cc.descricao) as ComponenteCurricularNome,
+        const string Select = @" select t.nome as TurmaNome, cc.id as ComponenteCurricularId, coalesce(cc.descricao_sgp, cc.descricao) as ComponenteCurricularNome,
                                      p.bimestre, p.periodo_inicio as DataInicio, p.periodo_fim as DataFim, apb.aulas_previstas as Previstas,
                                      SUM(a.quantidade) filter (where a.tipo_aula = 1 and a.aula_cj = false) as CriadasTitular,
                                      SUM(a.quantidade) filter (where a.tipo_aula = 1 and a.aula_cj = true) as CriadasCJ,
