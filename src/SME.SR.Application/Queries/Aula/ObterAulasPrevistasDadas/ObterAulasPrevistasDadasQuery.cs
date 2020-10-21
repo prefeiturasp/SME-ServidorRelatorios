@@ -1,19 +1,18 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterAulasPrevistasDadasQuery : IRequest<AulaPrevista>
+    public class ObterAulasPrevistasDadasQuery : IRequest<IEnumerable<AulaPrevistaBimestreQuantidade>>
     {
-        public ObterAulasPrevistasDadasQuery(long tipoCalendarioId, string turmaId, string disciplinaId)
+        public ObterAulasPrevistasDadasQuery(long turmaId, long componenteCurricularId)
         {
-            TipoCalendarioId = tipoCalendarioId;
             TurmaId = turmaId;
-            DisciplinaId = disciplinaId;
-            DisciplinaId = disciplinaId;
+            ComponenteCurricularId = componenteCurricularId;
         }
-        public long TipoCalendarioId { get; set; }
-        public string TurmaId { get; set; }
-        public string DisciplinaId { get; set; }
+
+        public long TurmaId { get; set; }
+        public long ComponenteCurricularId { get; set; }
     }
 }

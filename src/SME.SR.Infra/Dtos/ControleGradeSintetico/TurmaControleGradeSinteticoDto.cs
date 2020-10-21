@@ -6,8 +6,13 @@ namespace SME.SR.Infra
 {
     public class TurmaControleGradeSinteticoDto
     {
+        public TurmaControleGradeSinteticoDto()
+        {
+            Bimestres = new List<BimestreControleGradeSinteticoDto>();
+        }
+
         public long Id { get; set; }
         public string Nome { get; set; }
-        public IEnumerable<BimestreControleGradeSinteticoDto> Bimestres { get; set; }
+        public List<BimestreControleGradeSinteticoDto> Bimestres { get; set; }
     }
 }
