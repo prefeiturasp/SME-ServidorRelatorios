@@ -1,13 +1,10 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -78,50 +75,45 @@ namespace SME.SR.Application
                 Bimestre = filtros.Bimestre,
             });
 
-            // TODO: Substituir mock
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
-            for (int i = 0; i <= 5; i++)
+
+            var ordens = linhasSondagem.GroupBy(o => o.Ordem).Select(x => x.FirstOrDefault());
+            foreach (var ordem in ordens)
             {
-                var linhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto>();
-                #region Monta dados
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
+                var perguntasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
+
+                var perguntas = linhasSondagem.GroupBy(o => new {o.Ordem, o.Pergunta }).Select(x => x.FirstOrDefault());
+                foreach (var pergunta in perguntas)
                 {
-                    Descricao = "Acertou",
-                    Ideia = "60 alunos",
-                    IdeiaPorcentagem = "60%",
-                    Resultado = "60 alunos",
-                    ResultadoPorcentagem = "60%"
-                });
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
-                {
-                    Descricao = "Errou",
-                    Ideia = "30 alunos",
-                    IdeiaPorcentagem = "30%",
-                    Resultado = "30 alunos",
-                    ResultadoPorcentagem = "30%"
-                });
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
-                {
-                    Descricao = "Não Resolveu",
-                    Ideia = "10 alunos",
-                    IdeiaPorcentagem = "10%",
-                    Resultado = "10 alunos",
-                    ResultadoPorcentagem = "10%"
-                });
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
-                {
-                    Descricao = "Total",
-                    Ideia = "100 alunos",
-                    IdeiaPorcentagem = "100%",
-                    Resultado = "100 alunos",
-                    ResultadoPorcentagem = "100%"
-                });
-                #endregion
+                    var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
+
+                    var respostas = linhasSondagem.Where(o => o.Ordem == ordem.Ordem && o.Pergunta == pergunta.Pergunta);
+                    foreach (var resposta in respostas)
+                    {
+                        var totalRespostas = respostas.Sum(o => o.Quantidade);
+                        respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                        {
+                            Resposta = resposta.Resposta,
+                            Quantidade = resposta.Quantidade,
+                            Total = totalRespostas,
+                            Percentual = resposta.Quantidade / totalRespostas
+                        });
+                    }
+
+                    perguntasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
+                    {
+                        Pergunta = pergunta.Pergunta,
+                        Respostas = respostasDto
+                    });
+                }
+
                 planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
                 {
-                    Linhas = linhas
+                    Ordem = ordem.Ordem,
+                    Perguntas = perguntasDto
                 });
             }
+        
             return await Task.FromResult(planilhas);
         }
     }

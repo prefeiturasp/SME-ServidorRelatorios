@@ -15,18 +15,15 @@ namespace SME.SR.Application
     public class ObterRelatorioSondagemPortuguesConsolidadoLeituraQueryHandler : IRequestHandler<ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery, IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>>
     {
         private readonly IRelatorioSondagemPortuguesConsolidadoLeituraRepository relatorioSondagemPortuguesConsolidadoLeituraRepository;
-        private readonly IMediator mediator;
 
         public ObterRelatorioSondagemPortuguesConsolidadoLeituraQueryHandler(
-            IRelatorioSondagemPortuguesConsolidadoLeituraRepository relatorioSondagemPortuguesConsolidadoLeituraRepository,
-            IMediator mediator)
+            IRelatorioSondagemPortuguesConsolidadoLeituraRepository relatorioSondagemPortuguesConsolidadoLeituraRepository)
         {
             this.relatorioSondagemPortuguesConsolidadoLeituraRepository = relatorioSondagemPortuguesConsolidadoLeituraRepository ?? throw new ArgumentNullException(nameof(relatorioSondagemPortuguesConsolidadoLeituraRepository));
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
         public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> Handle(ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery request, CancellationToken cancellationToken)
         {
-            return await relatorioSondagemPortuguesConsolidadoLeituraRepository.ObterPlanilhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre);
+            return await relatorioSondagemPortuguesConsolidadoLeituraRepository.ObterPlanilha(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre);
         }
     }
 }
