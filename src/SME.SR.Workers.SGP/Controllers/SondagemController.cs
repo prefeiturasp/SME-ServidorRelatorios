@@ -30,7 +30,6 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<string> RelatorioPortuguesConsolidado([FromBody] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemPortuguesConsolidadoUseCase relatorioSondagemPortuguesConsolidadoUseCase)
         {
             return (await relatorioSondagemPortuguesConsolidadoUseCase.Executar(request));
-
         }
     }
 }

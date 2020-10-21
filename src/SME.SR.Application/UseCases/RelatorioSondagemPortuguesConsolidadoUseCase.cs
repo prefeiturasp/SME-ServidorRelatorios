@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    class RelatorioSondagemPortuguesConsolidadoUseCase : IRelatorioSondagemPortuguesConsolidadoUseCase
+    public class RelatorioSondagemPortuguesConsolidadoUseCase : IRelatorioSondagemPortuguesConsolidadoUseCase
     {
         private readonly IMediator mediator;
         public RelatorioSondagemPortuguesConsolidadoUseCase(IMediator mediator)
