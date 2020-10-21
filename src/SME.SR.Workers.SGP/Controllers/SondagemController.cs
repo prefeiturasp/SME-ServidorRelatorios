@@ -15,8 +15,8 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             return await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);
         }
-        [HttpGet("matematica-consolidado")]        
-        public async Task<string> RelatorioMatemicaConsolidade([FromQuery] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemMatemicaConsolidadoUseCase relatorioSondagemMatemicaConsolidadoUseCase)
+        [HttpPost("matematica-consolidado")]        
+        public async Task<string> RelatorioMatemicaConsolidade([FromBody] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemMatemicaConsolidadoUseCase relatorioSondagemMatemicaConsolidadoUseCase)
         {
             return (await relatorioSondagemMatemicaConsolidadoUseCase.Executar(request));
             
