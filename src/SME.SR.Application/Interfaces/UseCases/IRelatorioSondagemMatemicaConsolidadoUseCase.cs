@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public interface IRelatorioSondagemMatemicaConsolidadoUseCase
+    public interface IRelatorioSondagemMatematicaConsolidadoUseCase
     {
         Task<string> Executar(FiltroRelatorioSincronoDto request);
     }

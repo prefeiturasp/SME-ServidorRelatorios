@@ -146,6 +146,5 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioPlanoAulaUseCase.Executar(request);
             return true;
         }    
-        }
     }
 }
