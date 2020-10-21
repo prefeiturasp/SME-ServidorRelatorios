@@ -166,16 +166,29 @@ namespace SME.SR.Application
         {
             foreach (var perguntaResposta in relatorio.PerguntasRespostas)
             {
-                var qntDeAlunosPreencheu = perguntaResposta.Respostas?.Sum(a => a.AlunosQuantidade) ?? 0;
-                var diferencaPreencheuNao = quantidadeTotalAlunos - qntDeAlunosPreencheu;
+                var qntDeAlunosPreencheuIdeia = perguntaResposta.Respostas?.Where(p => p.PerguntaId == 1).Sum(a => a.AlunosQuantidade) ?? 0;
+                var qntDeAlunosPreencheuResultado = perguntaResposta.Respostas?.Where(p => p.PerguntaId == 2).Sum(a => a.AlunosQuantidade) ?? 0;
 
-                var percentualNaoPreencheu = (diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
+                var diferencaPreencheuNaoIdeia = quantidadeTotalAlunos - qntDeAlunosPreencheuIdeia;
+                var diferencaPreencheuNaoResultado = quantidadeTotalAlunos - qntDeAlunosPreencheuResultado;
+
+                var percentualNaoPreencheuIdeia = (diferencaPreencheuNaoIdeia / quantidadeTotalAlunos) * 100;
+                var percentualNaoPreencheuResultado = (diferencaPreencheuNaoResultado / quantidadeTotalAlunos) * 100;
 
                 perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto()
                 {
+                    PerguntaId = 1,
                     Resposta = "Sem preenchimento",
-                    AlunosQuantidade = diferencaPreencheuNao,
-                    AlunosPercentual = percentualNaoPreencheu
+                    AlunosQuantidade = diferencaPreencheuNaoIdeia,
+                    AlunosPercentual = percentualNaoPreencheuIdeia
+                });
+
+                perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto()
+                {
+                    PerguntaId = 2,
+                    Resposta = "Sem preenchimento",
+                    AlunosQuantidade = diferencaPreencheuNaoResultado,
+                    AlunosPercentual = percentualNaoPreencheuResultado
                 });
             }
         }
