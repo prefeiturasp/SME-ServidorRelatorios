@@ -117,6 +117,9 @@ namespace SME.SR.Application
             if (verificaExisteMaisAula)
                 return true;
 
+            if (await mediator.Send(new VerificaExisteAulaTitularECjQuery(turmaId, componenteCurricularId, tipoCalendarioId, bimestre)))
+                return true;
+
             return false;
         }
 
