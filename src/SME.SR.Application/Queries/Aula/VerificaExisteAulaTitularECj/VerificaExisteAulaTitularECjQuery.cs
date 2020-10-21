@@ -5,9 +5,9 @@ using System.Text;
 
 namespace SME.SR.Application
 {
-    public class VerificaExsiteAulaTitularECjQuery : IRequest<bool>
+    public class VerificaExisteAulaTitularECjQuery : IRequest<bool>
     {
-        public VerificaExsiteAulaTitularECjQuery(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre)
+        public VerificaExisteAulaTitularECjQuery(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             TurmaId = turmaId;
             ComponenteCurricularId = componenteCurricularId;

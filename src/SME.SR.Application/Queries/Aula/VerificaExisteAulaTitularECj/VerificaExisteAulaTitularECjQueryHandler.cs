@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class VerificaExsiteAulaTitularECjQueryHandler : IRequestHandler<VerificaExsiteAulaTitularECjQuery, bool>
+    public class VerificaExisteAulaTitularECjQueryHandler : IRequestHandler<VerificaExisteAulaTitularECjQuery, bool>
     {
         private readonly IAulaRepository aulaRepository;
 
-        public VerificaExsiteAulaTitularECjQueryHandler(IAulaRepository aulaRepository)
+        public VerificaExisteAulaTitularECjQueryHandler(IAulaRepository aulaRepository)
         {
             this.aulaRepository = aulaRepository ?? throw new ArgumentNullException(nameof(aulaRepository));
         }
 
-        public async Task<bool> Handle(VerificaExsiteAulaTitularECjQuery request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(VerificaExisteAulaTitularECjQuery request, CancellationToken cancellationToken)
             => await aulaRepository.VerificaExsiteAulaTitularECj(request.TurmaId, request.ComponenteCurricularId, request.TipoCalendarioId, request.Bimestre);
     }
 }
