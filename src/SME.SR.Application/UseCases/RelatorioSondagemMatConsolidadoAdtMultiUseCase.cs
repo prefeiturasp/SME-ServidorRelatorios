@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -79,6 +80,8 @@ namespace SME.SR.Application
                 mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da SME";
                 mensagemTitulo = $"Relatório de Sondagem (Matemática) - SME - {relatorio.Ano}º ano";
             }
+
+            var json = JsonConvert.SerializeObject(relatorio);
 
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false));
         }

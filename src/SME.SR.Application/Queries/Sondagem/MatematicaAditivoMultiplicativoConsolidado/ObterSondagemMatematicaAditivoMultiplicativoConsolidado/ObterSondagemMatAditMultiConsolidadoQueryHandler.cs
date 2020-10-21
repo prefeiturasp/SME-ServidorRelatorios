@@ -49,8 +49,7 @@ namespace SME.SR.Application
 
                         var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
 
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem: 3, 1, respostas, request.QuantidadeTotalAlunos);
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Resultado, ordem: 3, 2, respostas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem3Resultado, ordem: 3, respostas, request.QuantidadeTotalAlunos);
 
                         if (request.TurmaAno != 1 && request.TurmaAno != 3)
                         {
@@ -58,16 +57,13 @@ namespace SME.SR.Application
 
                             var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
 
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem: 4, 1, respostas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Resultado, ordem: 4, 2, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem4Resultado, ordem: 4, respostas, request.QuantidadeTotalAlunos);
 
                         }
                     }
 
-                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem1Ideia, ordem: 1, 1, respostas, request.QuantidadeTotalAlunos);
-                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem1Resultado, ordem: 1, 2, respostas, request.QuantidadeTotalAlunos);
-                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem2Ideia, ordem: 2, 1, respostas, request.QuantidadeTotalAlunos);
-                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem2Resultado, ordem: 2, 2, respostas, request.QuantidadeTotalAlunos);
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem1Ideia, ordem1Resultado, ordem: 1, respostas, request.QuantidadeTotalAlunos);
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem2Ideia, ordem2Resultado, ordem: 2, respostas, request.QuantidadeTotalAlunos);
                 }
             }
             else
@@ -82,8 +78,7 @@ namespace SME.SR.Application
 
                         var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
 
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem: 3, 1, respostas, request.QuantidadeTotalAlunos);
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Resultado, ordem: 3, 2, respostas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem3Resultado, ordem: 3, respostas, request.QuantidadeTotalAlunos);
                     }
                     else
                     {
@@ -93,8 +88,7 @@ namespace SME.SR.Application
 
                             var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
 
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem: 4, 1, respostas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Resultado, ordem: 4, 2, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem4Resultado, ordem: 4, respostas, request.QuantidadeTotalAlunos);
                         }
 
 
@@ -102,8 +96,7 @@ namespace SME.SR.Application
 
                         var ordem5Resultado = listaAlunos.GroupBy(fu => fu.Ordem5Resultado);
 
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem5Ideia, ordem: 5, 1, respostas, request.QuantidadeTotalAlunos);
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem5Resultado, ordem: 5, 2, respostas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem5Ideia, ordem5Resultado, ordem: 5, respostas, request.QuantidadeTotalAlunos);
 
                         if (request.TurmaAno != 3)
                         {
@@ -111,15 +104,13 @@ namespace SME.SR.Application
 
                             var ordem6Resultado = listaAlunos.GroupBy(fu => fu.Ordem6Resultado);
 
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem6Ideia, ordem: 6, 1, respostas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem6Resultado, ordem: 6, 2, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem6Ideia, ordem6Resultado, ordem: 6, respostas, request.QuantidadeTotalAlunos);
 
                             var ordem7Ideia = listaAlunos.GroupBy(fu => fu.Ordem7Ideia);
 
                             var ordem7Resultado = listaAlunos.GroupBy(fu => fu.Ordem6Resultado);
 
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem7Ideia, ordem: 7, 1, respostas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem7Resultado, ordem: 7, 2, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem7Ideia, ordem7Resultado, ordem: 7, respostas, request.QuantidadeTotalAlunos);
                         }
 
                         if (request.TurmaAno != 3 && request.TurmaAno != 4)
@@ -128,8 +119,7 @@ namespace SME.SR.Application
 
                             var ordem8Resultado = listaAlunos.GroupBy(fu => fu.Ordem8Resultado);
 
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem8Ideia, ordem: 8, 1, respostas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem8Resultado, ordem: 8, 2, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem8Ideia, ordem8Resultado, ordem: 8, respostas, request.QuantidadeTotalAlunos);
                         }
 
                     }
@@ -208,9 +198,12 @@ namespace SME.SR.Application
             relatorio.Usuario = usuario;
         }
 
-        private void AdicionarOrdem(ProficienciaSondagemEnum proficiencia, int anoTurma, IEnumerable<IGrouping<string, MathPoolCA>> agrupamento, int ordem, int perguntaId, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> respostas, int totalAlunosGeral)
+        private void AdicionarOrdem(ProficienciaSondagemEnum proficiencia, int anoTurma, IEnumerable<IGrouping<string, MathPoolCA>> agrupamentoIdeia, IEnumerable<IGrouping<string, MathPoolCA>> agrupamentoResultado, int ordem, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> respostas, int totalAlunosGeral)
         {
-            var lstRespostas = ObterRespostas(agrupamento, perguntaId, totalAlunosGeral);
+            var lstRespostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>();
+
+            AdicionarRespostasAgrupamento(lstRespostas, agrupamentoIdeia, 1, totalAlunosGeral);
+            AdicionarRespostasAgrupamento(lstRespostas, agrupamentoResultado, 2, totalAlunosGeral);
 
             respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
             {
@@ -219,15 +212,34 @@ namespace SME.SR.Application
             });
         }
 
-        private void AdicionarOrdem(ProficienciaSondagemEnum proficiencia, int anoTurma, IEnumerable<IGrouping<string, MathPoolCM>> agrupamento, int ordem, int perguntaId, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> respostas, int totalAlunosGeral)
+        private void AdicionarOrdem(ProficienciaSondagemEnum proficiencia, int anoTurma, IEnumerable<IGrouping<string, MathPoolCM>> agrupamentoIdeia, IEnumerable<IGrouping<string, MathPoolCM>> agrupamentoResultado, int ordem, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> respostas, int totalAlunosGeral)
         {
-            var lstRespostas = ObterRespostas(agrupamento, perguntaId, totalAlunosGeral);
+            var lstRespostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>();
+
+            AdicionarRespostasAgrupamento(lstRespostas, agrupamentoIdeia, 1, totalAlunosGeral);
+            AdicionarRespostasAgrupamento(lstRespostas, agrupamentoResultado, 2, totalAlunosGeral);
 
             respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
             {
                 Ordem = ObterTituloOrdem(proficiencia, anoTurma, ordem),
                 Respostas = lstRespostas
             });
+        }
+
+        private void AdicionarRespostasAgrupamento(List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto> lstRespostas, IEnumerable<IGrouping<string, MathPoolCM>> agrupamento, int perguntaId, int totalAlunosGeral)
+        {
+            var respIdeias = ObterRespostas(agrupamento, perguntaId, totalAlunosGeral);
+
+            if (respIdeias != null && respIdeias.Any())
+                lstRespostas.AddRange(respIdeias);
+        }
+
+        private void AdicionarRespostasAgrupamento(List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto> lstRespostas, IEnumerable<IGrouping<string, MathPoolCA>> agrupamento, int perguntaId, int totalAlunosGeral)
+        {
+            var respIdeias = ObterRespostas(agrupamento, perguntaId, totalAlunosGeral);
+
+            if (respIdeias != null && respIdeias.Any())
+                lstRespostas.AddRange(respIdeias);
         }
 
         private List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolCA>> agrupamento, int perguntaId, int totalAlunosGeral)
