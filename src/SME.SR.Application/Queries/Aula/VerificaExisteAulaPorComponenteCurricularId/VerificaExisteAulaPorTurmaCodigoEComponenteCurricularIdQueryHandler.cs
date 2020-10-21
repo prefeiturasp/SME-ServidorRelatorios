@@ -18,6 +18,6 @@ namespace SME.SR.Application
         }
 
         public async Task<bool> Handle(VerificaExisteAulaPorTurmaCodigoEComponenteCurricularIdQuery request, CancellationToken cancellationToken)
-         => await aulaRepository.VerificaExisteAulaCadastrada(request.TurmaId, request.ComponenteCurricularId);
+         => await aulaRepository.VerificaExisteAulaCadastrada(request.TurmaId, request.ComponenteCurricularId, request.Bimestre, request.TipoCalendarioId);
     }
 }
