@@ -131,7 +131,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IPerguntasAutoralRepository), typeof(PerguntasAutoralRepository));
             services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));            
             services.TryAddScoped(typeof(IPeriodoSondagemRepository), typeof(PeriodoSondagemRepository));
-            
+            services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));        
 
         }
 

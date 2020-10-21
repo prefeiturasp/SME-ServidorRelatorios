@@ -3287,7 +3287,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 #region Monta dados
                 linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
                 {
-                    Descricao = $"ORDEM { i } - COMPOSIÇÃO",
+                    Descricao = $"ORDEM { i + 1} - COMPOSIÇÃO",
                     Ideia = "Ideia",
                     IdeiaPorcentagem = "%",
                     Resultado = "Resultado",
@@ -3342,7 +3342,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
                     Dre = "DRE - BT",
                     Periodo = "1º bimestre",
-                    Proficiencia = "Leitura Consolidado",
+                    Proficiencia = "Capacidade de Leitura",
                     Rf = "9879878",
                     Turma = "Todas",
                     Ue = "CEU EMEF BUTANTA",
