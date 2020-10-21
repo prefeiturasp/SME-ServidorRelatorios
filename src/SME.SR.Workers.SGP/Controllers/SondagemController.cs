@@ -19,7 +19,12 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<string> RelatorioMatemicaConsolidade([FromBody] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemMatemicaConsolidadoUseCase relatorioSondagemMatemicaConsolidadoUseCase)
         {
             return (await relatorioSondagemMatemicaConsolidadoUseCase.Executar(request));
-            
+        }
+
+        [HttpGet("matematica-consolidado-aditivo-multiplicativo")]
+        public async Task<string> RelatorioMatemicaConsolidade([FromQuery] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemMatConsolidadoAdtMultiUseCase relatorioSondagemMatConsolidadoAdtMultiUseCase)
+        {
+            return await relatorioSondagemMatConsolidadoAdtMultiUseCase.Executar(request);
         }
 
     }
