@@ -104,6 +104,11 @@ namespace SME.SR.Application
             if (!verificaExisteAula)
                 return true;
 
+            //2 ou mais aulas normais criadas no mesmo dia por um professor de regência de classe do fundamental na mesma turma
+            var verificaAulaCriadaProfessor = await mediator.Send(new VerificarAulasNormaisCriadasProfessorRegenciaQuery(turmaId, componenteCurricularId.ToString()));
+            if (!verificaAulaCriadaProfessor)
+                return true;
+
             return false;
         }
 

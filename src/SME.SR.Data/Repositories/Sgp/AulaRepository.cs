@@ -64,6 +64,16 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(long turmaId, string componenteCurricularId)
+        {
+            var query = @"select distinct 1 from aula inner join turma on aula.turma_id = turma.turma_id where turma.id = @turmaId and disciplina_id = @componenteCurricularId;";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { turmaId, componenteCurricularId });
+            }
+        }
+
         public Task<int> ObterQuantidadeAulas(long turmaId, string componenteCurricularId, string CodigoRF)
         {
             var query = @"select sum(a.quantidade) 
