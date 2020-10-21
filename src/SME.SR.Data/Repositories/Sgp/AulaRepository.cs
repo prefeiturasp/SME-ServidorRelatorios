@@ -42,5 +42,16 @@ namespace SME.SR.Data
             }
         }
 
+        
+
+        public async Task<bool> VerificaExisteAulaCadastrada(string turmaCodigo, string componenteCurricularId)
+        {
+            var query = @"select distinct 1 from aula where turma_id = @turmaCodigo and disciplina_id = @componenteCurricularId;";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { turmaCodigo, componenteCurricularId });
+            }
+        }
     }
 }

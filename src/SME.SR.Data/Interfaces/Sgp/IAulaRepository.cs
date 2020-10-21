@@ -6,5 +6,6 @@ namespace SME.SR.Data.Interfaces
     public interface IAulaRepository
     {
         Task<int> ObterAulasDadas(string codigoTurma, string componenteCurricularCodigo, long tipoCalendarioId, int bimestre);
+        Task<bool> VerificaExisteAulaCadastrada(string turmaCodigo, string componenteCurricularId);
     }
 }
