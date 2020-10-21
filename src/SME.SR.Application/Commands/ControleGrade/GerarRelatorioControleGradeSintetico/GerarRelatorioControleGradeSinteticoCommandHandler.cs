@@ -114,7 +114,7 @@ namespace SME.SR.Application
 
             //Mais de um registro de aula normal do mesmo professor, componente curricular e turma no mesmo dia.
             var verificaExisteMaisAula = await mediator.Send(new VerificaExisteMaisAulaCadastradaNoDiaQuery(turmaId, componenteCurricularId.ToString(), tipoCalendarioId, bimestre));
-            if (!verificaExisteMaisAula)
+            if (verificaExisteMaisAula)
                 return true;
 
             return false;
