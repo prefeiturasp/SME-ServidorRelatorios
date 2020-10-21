@@ -3245,28 +3245,28 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Ue = "CEU EMEF BUTANTA",
                     Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
                     Perguntas = new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
-                            {
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = 1,
-                                    Nome = "Não conseguiu ou não quis ler"
-                                },
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = 2,
-                                    Nome = "Leu com muita dificuldade"
-                                },
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = 3,
-                                    Nome = "Leu com alguma fluência	"
-                                },
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = 4,
-                                    Nome = "Leu com fluência"
-                                },
-                            },
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = 1,
+                            Nome = "Não conseguiu ou não quis ler"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = 2,
+                            Nome = "Leu com muita dificuldade"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = 3,
+                            Nome = "Leu com alguma fluência	"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = 4,
+                            Nome = "Leu com fluência"
+                        },
+                    },
                 },
                 Planilha = new RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
                 {
@@ -3281,56 +3281,55 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public IActionResult SondagemPortuguesConsolidadoLeitura()
         {
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
-            for (int i = 0; i <= 5; i++)
+            #region Monta dados
+            var perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
+            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto() {
+                Pergunta = "Localização",
+                Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
+                {
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Adequada",
+                        Quantidade = 2,
+                        Percentual = 2/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Inadequada",
+                        Quantidade = 1,
+                        Percentual = 1/3,
+                        Total = 3
+                    }
+                }
+            });
+            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
             {
-                var linhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto>();
-                #region Monta dados
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
+                Pergunta = "Reflexão",
+                Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
                 {
-                    Descricao = $"ORDEM { i + 1} - COMPOSIÇÃO",
-                    Ideia = "Ideia",
-                    IdeiaPorcentagem = "%",
-                    Resultado = "Resultado",
-                    ResultadoPorcentagem = "%"
-                });
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
-                {
-                    Descricao = "Acertou",
-                    Ideia = "60 alunos",
-                    IdeiaPorcentagem = "60%",
-                    Resultado = "60 alunos",
-                    ResultadoPorcentagem = "60%"
-                });
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
-                {
-                    Descricao = "Errou",
-                    Ideia = "30 alunos",
-                    IdeiaPorcentagem = "30%",
-                    Resultado = "30 alunos",
-                    ResultadoPorcentagem = "30%"
-                });
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
-                {
-                    Descricao = "Não Resolveu",
-                    Ideia = "10 alunos",
-                    IdeiaPorcentagem = "10%",
-                    Resultado = "10 alunos",
-                    ResultadoPorcentagem = "10%"
-                });
-                linhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto()
-                {
-                    Descricao = "Total",
-                    Ideia = "100 alunos",
-                    IdeiaPorcentagem = "100%",
-                    Resultado = "100 alunos",
-                    ResultadoPorcentagem = "100%"
-                });
-                #endregion
-                planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
-                {
-                    Linhas = linhas
-                });
-            }
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Adequada",
+                        Quantidade = 1,
+                        Percentual = 1/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Não resolveu",
+                        Quantidade = 2,
+                        Percentual = 2/3,
+                        Total = 3
+                    }
+                }
+            });
+            #endregion
+            planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
+            {
+                Ordem = "Ordem do argumentar",
+                Perguntas = perguntas
+            });
 
             var model = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
             {
