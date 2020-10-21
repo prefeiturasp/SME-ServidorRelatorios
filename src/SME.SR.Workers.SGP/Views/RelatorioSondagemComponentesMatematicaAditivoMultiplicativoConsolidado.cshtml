@@ -82,7 +82,7 @@
 
     string MontaCabecalhoSondagem(SME.SR.Infra.RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto perguntaRespostas)
     {
-        var totalPerguntas = perguntaRespostas.ObterIdsDasPerguntas().Count(); 
+        var totalPerguntas = perguntaRespostas.ObterIdsDasPerguntas().Count();
         var widthDescricao = 50 / totalPerguntas;
         var widthPercentual = 16 / totalPerguntas;
 
@@ -121,7 +121,7 @@
                 @{
                     int numeroLinhas = (perguntaRespostas.Ordem.Count() / 40);
                     int count = 0;
-                    int totalRespostas = perguntaRespostas.Respostas.Count / Model.Perguntas.Count;
+                    int totalRespostas = perguntaRespostas.Respostas.Count;
                     var perguntaIds = perguntaRespostas.ObterIdsDasPerguntas();
                     string[] descricaoResposta = new string[totalRespostas];
 
@@ -137,14 +137,11 @@
 
                 @foreach (var resposta in perguntaRespostas.Respostas)
                 {
-                    @if (count < totalRespostas)
-                    {
-                        descricaoResposta[count] = @resposta.Resposta;
-                    }
+                    descricaoResposta[count] = resposta.Resposta;
                     count++;
                 }
 
-                @foreach (var descricao in descricaoResposta)
+                @foreach (var descricao in descricaoResposta.Distinct())
                 {
                     <tr>
                         <td class="alinhar-esquerda espaco-esquerda-15">@descricao</td>
@@ -172,6 +169,7 @@
 
                         @foreach (var resposta in perguntaRespostas.Respostas)
                         {
+
                             if (perguntaId == resposta.PerguntaId)
                             {
                                 totalQuantidade += resposta.AlunosQuantidade;
@@ -179,8 +177,11 @@
                             }
                         }
 
+                        totalPercentual = Math.Round(totalPercentual, 2);
+                        var totalPercentualAlterado = totalPercentual.ToString("0.00").Replace(',', '.');
+
                         <td>@totalQuantidade</td>
-                        <td>@totalPercentual</td>
+                        <td>@totalPercentualAlterado</td>
                     }
                 </tr>
             </tbody>

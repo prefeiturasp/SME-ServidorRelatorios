@@ -2898,10 +2898,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
 
                 return View("RelatorioSondagemComponentesPorTurma", model);
-            }
-        }
-        //    return View("RelatorioSondagemComponentesPorTurma", model);
-        //}
+        }       
 
         [HttpGet("sondagem-consolidado-matematica-aditivo")]
         public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
