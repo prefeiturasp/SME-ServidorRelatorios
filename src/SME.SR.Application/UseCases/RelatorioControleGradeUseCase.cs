@@ -22,29 +22,16 @@ namespace SME.SR.Application
                 var filtros = request.ObterObjetoFiltro<RelatorioControleGradeFiltroDto>();
 
                 // TODO carregar dados do relatório sintético / analítico
-
-                foreach (long turmaId in filtros.Turmas)
+                switch (filtros.Modelo)
                 {
-                    foreach (int bimestre in filtros.Bimestres)
-                    {
-                        foreach (long componenteCurricularId in filtros.ComponentesCurriculares)
-                        {
-                            var turma = await mediator.Send(new ObterTurmaQuery(turmaId.ToString()));
-
-                            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(turma.AnoLetivo, turma.ModalidadeTipoCalendario, bimestre));
-
-                            var aulaPrevista = await mediator.Send(new ObterAulasPrevistasDadasQuery(tipoCalendarioId, turmaId.ToString(), componenteCurricularId.ToString()));
-
-                            //IEnumerable<AulaPrevistaBimestreQuantidade> aulaPrevistaBimestres;
-
-                            // aulaPrevistaBimestres = await mediator.Send(new ObterAulasDadasNoBimestreQuery(turmaId.ToString(), tipoCalendarioId, componenteCurricularId, bimestre));
-
-
-                        }
-                    }
+                    case ModeloRelatorio.Sintetico:
+                        await mediator.Send(new GerarRelatorioControleGradeSinteticoCommand(filtros, request.CodigoCorrelacao));
+                        break;
+                    case ModeloRelatorio.Analitico:
+                        break;
+                    default:
+                        break;
                 }
-
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGrade", null, request.CodigoCorrelacao));
             }
             catch (Exception ex)
             {

@@ -2,20 +2,21 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterAulasPrevistasDadasQueryHandler : IRequestHandler<ObterAulasPrevistasDadasQuery, AulaPrevista>
+    public class ObterAulasPrevistasDadasQueryHandler : IRequestHandler<ObterAulasPrevistasDadasQuery, IEnumerable<AulaPrevistaBimestreQuantidade>>
     {
-        private readonly IAulaRepository aulaRepository;
+        private readonly IAulaPrevistaBimestreRepository aulaPrevistaBimestreRepository;
 
-        public ObterAulasPrevistasDadasQueryHandler(IAulaRepository aulaRepository)
+        public ObterAulasPrevistasDadasQueryHandler(IAulaPrevistaBimestreRepository aulaPrevistaBimestreRepository)
         {
-            this.aulaRepository = aulaRepository ?? throw new ArgumentNullException(nameof(aulaRepository));
+            this.aulaPrevistaBimestreRepository = aulaPrevistaBimestreRepository ?? throw new ArgumentNullException(nameof(aulaPrevistaBimestreRepository));
         }
-        public Task<AulaPrevista> Handle(ObterAulasPrevistasDadasQuery request, CancellationToken cancellationToken)
-                => aulaRepository.ObterAulaPrevistaFiltro(request.TipoCalendarioId, request.TurmaId, request.DisciplinaId);
+        public async Task<IEnumerable<AulaPrevistaBimestreQuantidade>> Handle(ObterAulasPrevistasDadasQuery request, CancellationToken cancellationToken)
+                => await aulaPrevistaBimestreRepository.ObterBimestresAulasPrevistasPorFiltro(request.TurmaId, request.ComponenteCurricularId);
     }
 }

@@ -6,9 +6,14 @@ namespace SME.SR.Infra
 {
     public class ControleGradeSinteticoDto
     {
+        public ControleGradeSinteticoDto()
+        {
+            Filtro = new FiltroGradeSintetico();
+            Turmas = new List<TurmaControleGradeSinteticoDto>();
+        }
 
         public FiltroGradeSintetico Filtro { get; set; }
        
-        public IEnumerable<TurmaControleGradeSinteticoDto> Turmas { get; set; }
+        public List<TurmaControleGradeSinteticoDto> Turmas { get; set; }
     }
 }

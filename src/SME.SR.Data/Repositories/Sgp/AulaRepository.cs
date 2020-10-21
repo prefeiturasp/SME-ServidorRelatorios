@@ -42,16 +42,5 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<AulaPrevista> ObterAulaPrevistaFiltro(long tipoCalendarioId, string turmaId, string disciplinaId)
-        {
-            var query = @"select * from aula_prevista ap
-                         where ap.tipo_calendario_id = @tipoCalendarioId and ap.turma_id = @turmaId and
-                               ap.disciplina_id = @disciplinaId;";            
-
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-            {
-                return await conexao.QueryFirstOrDefaultAsync<AulaPrevista>(query, new { tipoCalendarioId, turmaId, disciplinaId });
-            }
-        }
     }
 }

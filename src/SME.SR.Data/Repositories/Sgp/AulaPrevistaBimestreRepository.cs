@@ -17,17 +17,19 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        const string Select = @"select apb.id, apb.criado_em as CriadoEm, apb.criado_por as CriadoPor, apb.alterado_em as AlteradoEm, apb.alterado_por as AlteradoPor,
-                         apb.alterado_rf as AlteradoRF, apb.criado_rf as CriadoRF, p.bimestre, p.periodo_inicio as inicio, p.periodo_fim as fim,
-                         apb.aulas_previstas as Previstas,
-                         SUM(a.quantidade) filter (where a.tipo_aula = 1 and a.aula_cj = false) as CriadasTitular,
-                         SUM(a.quantidade) filter (where a.tipo_aula = 1 and a.aula_cj = true) as CriadasCJ,
-                         SUM(a.quantidade) filter (where a.tipo_aula = 1 and rf.id is not null) as Cumpridas,
-                         SUM(a.quantidade) filter (where a.tipo_aula = 2 and rf.id is not null) as Reposicoes
+        const string Select = @" select t.nome as TurmaNome, coalesce(cc.descricao_sgp, cc.descricao) as ComponenteCurricularNome,
+                                     p.bimestre, p.periodo_inicio as DataInicio, p.periodo_fim as DataFim, apb.aulas_previstas as Previstas,
+                                     SUM(a.quantidade) filter (where a.tipo_aula = 1 and a.aula_cj = false) as CriadasTitular,
+                                     SUM(a.quantidade) filter (where a.tipo_aula = 1 and a.aula_cj = true) as CriadasCJ,
+                                     SUM(a.quantidade) filter (where a.tipo_aula = 1 and rf.id is not null and a.aula_cj = false) as CumpridasTitular,
+                                     SUM(a.quantidade) filter (where a.tipo_aula = 1 and rf.id is not null and a.aula_cj = true) as CumpridasCj,
+                                     SUM(a.quantidade) filter (where a.tipo_aula = 2 and rf.id is not null ) as Reposicoes
                          from periodo_escolar p
                          inner join tipo_calendario tp on p.tipo_calendario_id = tp.id
                          left join aula_prevista ap on ap.tipo_calendario_id = p.tipo_calendario_id
                          left join aula_prevista_bimestre apb on ap.id = apb.aula_prevista_id and p.bimestre = apb.bimestre
+                         left join turma t on t.turma_id = ap.turma_id
+                         left join componente_curricular cc on cc.id = ap.disciplina_id::bigint
                          left join aula a on a.turma_id = ap.turma_id and
                          				a.disciplina_id = ap.disciplina_id and
 			                            a.tipo_calendario_id = p.tipo_calendario_id and
@@ -35,41 +37,23 @@ namespace SME.SR.Data
                                         and (a.id is null or not a.excluido)
                          left join registro_frequencia rf on a.id = rf.aula_id ";
 
-        const string GroupOrderBy = @" group by p.bimestre, p.periodo_inicio, p.periodo_fim, apb.aulas_previstas, apb.Id,
-                         	   ap.criado_em, ap.criado_por, ap.alterado_em , ap.alterado_por,
-                               ap.alterado_rf, ap.criado_rf; ";
+        const string GroupOrderBy = @" group by t.nome, cc.descricao_sgp, cc.descricao, p.bimestre, p.periodo_inicio, p.periodo_fim, apb.aulas_previstas, apb.Id, p.periodo_inicio, p.periodo_fim ; ";
 
 
 
-        public async Task<IEnumerable<AulaPrevistaBimestreQuantidade>> ObterBimestresAulasPrevistasPorFiltro(long tipoCalendarioId, string turmaId, string disciplinaId)
+        public async Task<IEnumerable<AulaPrevistaBimestreQuantidade>> ObterBimestresAulasPrevistasPorFiltro(long turmaId, long componenteCurricularId)
         {
             StringBuilder query = new StringBuilder();
 
             query.Append(Select);
             query.Append(@" where tp.situacao and not tp.excluido and
-                        p.tipo_calendario_id = @tipoCalendarioId and
-                        ap.turma_id = @turmaId and
-                        ap.disciplina_id = @disciplinaId ");
+                        t.id = @turmaId and
+                        cc.id = @componenteCurricularId ");
             query.Append(GroupOrderBy);
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<AulaPrevistaBimestreQuantidade>(query.ToString(), new { tipoCalendarioId, turmaId, disciplinaId });
-            }            
-        }
-
-        public async Task<IEnumerable<AulaPrevistaBimestreQuantidade>> ObterBimestresAulasPrevistasPorId(long? aulaPrevistaId)
-        {
-            StringBuilder query = new StringBuilder();
-
-            query.Append(Select);
-            query.Append(@" where tp.situacao and not tp.excluido and
-                        ap.id = @aulaPrevistaId ");
-            query.Append(GroupOrderBy);
-
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-            {
-                return await conexao.QueryAsync<AulaPrevistaBimestreQuantidade>(query.ToString(), new { aulaPrevistaId });
+                return await conexao.QueryAsync<AulaPrevistaBimestreQuantidade>(query.ToString(), new { turmaId, componenteCurricularId });
             }            
         }
 
