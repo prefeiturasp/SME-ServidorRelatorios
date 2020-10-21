@@ -6,6 +6,8 @@ namespace SME.SR.Data
     {
         public string TurmaNome { get; set; }
 
+        public long ComponenteCurricularId { get; set; }
+
         public string ComponenteCurricularNome { get; set; }
 
         public int Bimestre { get; set; }
@@ -25,6 +27,8 @@ namespace SME.SR.Data
         public int CumpridasCj { get; set; }
 
         public int Reposicoes { get; set; }
+
+        public bool Divergencias { get; set; }
 
     }
 }
