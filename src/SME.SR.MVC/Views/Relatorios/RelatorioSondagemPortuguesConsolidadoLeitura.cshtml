@@ -81,29 +81,29 @@
 
     string MontaCabecalhoSondagem(SME.SR.Infra.RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto planilhas)
     {
-        //var totalPerguntas = planilhas.Linhas.First().Count;
-        //var widthDescricao = 50 / totalPerguntas;
-        //var widthPercentual = 16 / totalPerguntas;
+        var totalPerguntas = planilhas.Perguntas.Count;
+        var widthDescricao = 50 / totalPerguntas;
+        var widthPercentual = 16 / totalPerguntas;
 
         <thead>
             <tr>
                 <td class="alinhar-esquerda espaco-esquerda-15 negrito" width="34%">
-                    @*@planilhas.Linhas.First().Descricao*@
+                    @planilhas.Ordem
                 </td>
 
                 @{
 //planilhas.Linhas.Count();
                 }
-                @*@foreach (var pergunta in Model.planilhas)
+                @foreach (var pergunta in planilhas.Perguntas)
                 {
                     <td width="@widthDescricao%" class="negrito">
-                        @pergunta.Descricao
+                        @pergunta.Pergunta
                     </td>
                     <td width="@widthPercentual%" class="negrito">
                         %
                     </td>
 
-                }*@
+                }
             </tr>
         </thead>
 
@@ -116,13 +116,13 @@
 
             @Html.Raw(MontaCabecalhoSondagem(planilhas))
 
-            <tbo@*dy>
+            <tbody>
                 @{
-                    int numeroLinhas = (perguntaRespostas.Ordem.Count() / 40);
+                    int numeroLinhas = (planilhas.Ordem.Count() / 40);
                     int count = 0;
-                    int totalRespostas = perguntaRespostas.Respostas.Count / Model.Perguntas.Count;
-                    var perguntaIds = perguntaRespostas.ObterIdsDasPerguntas();
-                    string[] descricaoResposta = new string[totalRespostas];
+                    //int totalRespostas = planilhas.Perguntas.Count / Model.Perguntas.Count;
+                    //var perguntaIds = planilhas.ObterIdsDasPerguntas();
+                    //string[] descricaoResposta = new string[totalRespostas];
 
                     if (numeroLinhas > 1)
                     {
@@ -134,21 +134,21 @@
                     }
                 }
 
-                @foreach (var resposta in perguntaRespostas.Respostas)
+                @*foreach (var resposta in planilhas.Perguntas.First().Respostas)
                 {
                     @if (count < totalRespostas)
                     {
                         descricaoResposta[count] = @resposta.Resposta;
                     }
                     count++;
-                }
+                }*@
 
-                @foreach (var descricao in descricaoResposta)
+                @foreach (var resposta in planilhas.Perguntas.First().Respostas)
                 {
                     <tr>
-                        <td class="alinhar-esquerda espaco-esquerda-15">@descricao</td>
+                        <td class="alinhar-esquerda espaco-esquerda-15">@resposta.Resposta</td>
 
-                        @foreach (var resposta in perguntaRespostas.Respostas)
+                        @*@foreach (var resposta1 in planilhas.Perguntas)
                         {
                             var alunosPercentual = Math.Round(resposta.AlunosPercentual, 2);
                             var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
@@ -157,14 +157,14 @@
                                 <td>@resposta.AlunosQuantidade</td>
                                 <td>@alunosPercentualAlterado</td>
                             }
-                        }
+                        }*@
                     </tr>
                     contadorQuebrarPagina++;
                 }
                 <tr class="fundo-cinza">
                     <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
 
-                    @foreach (var perguntaId in perguntaIds)
+                    @*@foreach (var perguntaId in perguntaIds)
                     {
                         double totalQuantidade = 0;
                         double totalPercentual = 0;
@@ -180,9 +180,9 @@
 
                         <td>@totalQuantidade</td>
                         <td>@totalPercentual</td>
-                    }
+                    }*@
                 </tr>
-            </tbody*@>
+            </tbody>
         </table>
 
         contadorQuebrarPagina++;

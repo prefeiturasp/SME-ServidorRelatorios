@@ -3290,15 +3290,64 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Adequada",
+                        Quantidade = 1,
+                        Percentual = 1/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Inadequada",
                         Quantidade = 2,
                         Percentual = 2/3,
                         Total = 3
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
-                        Resposta = "Inadequada",
+                        Resposta = "Não resolveu",
+                        Quantidade = 3,
+                        Percentual = 3/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Sem preenchimento",
+                        Quantidade = 4,
+                        Percentual = 4/3,
+                        Total = 3
+                    }
+                }
+            });
+            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
+            {
+                Pergunta = "Inferência",
+                Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
+                {
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Adequada",
                         Quantidade = 1,
                         Percentual = 1/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Inadequada",
+                        Quantidade = 2,
+                        Percentual = 2/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Não resolveu",
+                        Quantidade = 3,
+                        Percentual = 3/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Sem preenchimento",
+                        Quantidade = 4,
+                        Percentual = 4/3,
                         Total = 3
                     }
                 }
@@ -3317,9 +3366,23 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
-                        Resposta = "Não resolveu",
+                        Resposta = "Inadequada",
                         Quantidade = 2,
                         Percentual = 2/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Não resolveu",
+                        Quantidade = 3,
+                        Percentual = 3/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Sem preenchimento",
+                        Quantidade = 4,
+                        Percentual = 4/3,
                         Total = 3
                     }
                 }
@@ -3338,7 +3401,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     AnoTurma = 5,
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Português",
-                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                     Dre = "DRE - BT",
                     Periodo = "1º bimestre",
                     Proficiencia = "Capacidade de Leitura",
