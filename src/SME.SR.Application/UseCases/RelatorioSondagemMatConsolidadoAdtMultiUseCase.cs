@@ -80,7 +80,7 @@ namespace SME.SR.Application
                 mensagemTitulo = $"Relatório de Sondagem (Matemática) - SME - {relatorio.Ano}º ano";
             }
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
         }
     }
 }
