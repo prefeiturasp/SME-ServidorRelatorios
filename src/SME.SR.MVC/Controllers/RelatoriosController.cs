@@ -4,11 +4,9 @@ using Microsoft.Extensions.Logging;
 using SME.SR.Application;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
-using SME.SR.MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.Helpers;
 
 namespace SME.SR.MVC.Controllers
 {
@@ -28,50 +26,17 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("graficos")]
         public IActionResult RelatorioGraficosTeste()
         {
+            var grafico = new GraficoBarrasVerticalDto();
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(10, "A"));
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "B"));
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(25, "C"));
 
-            var lstModel = new List<SimpleReportViewModel>();
-            lstModel.Add(new SimpleReportViewModel
-            {
-                DimensionOne = "Technology",
-                Quantity = rnd.Next(10)
-            });
-            lstModel.Add(new SimpleReportViewModel
-            {
-                DimensionOne = "Sales",
-                Quantity = rnd.Next(10)
-            });
-            lstModel.Add(new SimpleReportViewModel
-            {
-                DimensionOne = "Marketing",
-                Quantity = rnd.Next(10)
-            });
-            lstModel.Add(new SimpleReportViewModel
-            {
-                DimensionOne = "Human Resource",
-                Quantity = rnd.Next(10)
-            });
-            lstModel.Add(new SimpleReportViewModel
-            {
-                DimensionOne = "Research and Development",
-                Quantity = rnd.Next(10)
-            });
-            lstModel.Add(new SimpleReportViewModel
-            {
-                DimensionOne = "Acconting",
-                Quantity = rnd.Next(10)
-            });
-            lstModel.Add(new SimpleReportViewModel
-            {
-                DimensionOne = "Support",
-                Quantity = rnd.Next(10)
-            });
-            lstModel.Add(new SimpleReportViewModel
-            {
-                DimensionOne = "Logistics",
-                Quantity = rnd.Next(10)
-            });
 
-            return View("RelatorioGraficoBarrasTeste", lstModel);
+            grafico.EixosY.Add(new GraficoBarrasVerticalEixoYDto(10, "10"));
+            grafico.EixosY.Add(new GraficoBarrasVerticalEixoYDto(50, "50"));
+            grafico.EixosY.Add(new GraficoBarrasVerticalEixoYDto(100, "100"));
+
+            return View("RelatorioGraficoBarrasTeste", grafico);
         }
         [HttpGet("faltas-frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
@@ -2191,7 +2156,7 @@ namespace SME.SR.MVC.Controllers
             return model;
 
         }
-        
+
         //[HttpGet("sondagem-consolidado-matematica-numeros")]
         //public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
         //{
@@ -2573,14 +2538,15 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             for (var i = 0; i < 30; i++)
             {
-                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
-                        Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
-                        {
-                            Codigo = 6197654,
-                            Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
-                            SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
-                        },
-                        OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>()
                         {
                             new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                                 OrdemId = 0,
@@ -2618,8 +2584,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 PerguntaId = 7
                             },
                         }
-                    });
-                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto() {
+                });
+                linhas.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
                         Codigo = 6195479,
@@ -2735,7 +2702,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         {
                             Id = 0,
                             Descricao = "ORDEM 1 - COMPOSIÇÃO"
-                        },                        
+                        },
                     },
                     Perguntas = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>()
                     {
@@ -2946,7 +2913,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
-                return View("RelatorioSondagemComponentesPorTurma", model);
-            }
+            return View("RelatorioSondagemComponentesPorTurma", model);
         }
+    }
 }
+
