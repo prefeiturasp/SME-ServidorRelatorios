@@ -147,28 +147,5 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }    
         }
-        [HttpGet("relatorios/sondagem/matematica-por-turma")]        
-        [Action("relatorios/sondagem/matematica-por-turma", typeof(IRelatorioSondagemComponentesPorTurmaUseCase))]
-        public async Task<bool> RelatorioSondagemComponentesPorTurma([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioSondagemComponentesPorTurmaUseCase relatorioSondagemComponentesPorTurmaUseCase)
-        {
-            await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);
-            return true;
-        }
-
-        [HttpGet("relatorios/sondagem/portugues-por-turma")]
-        [Action("relatorios/sondagem/portugues-por-turma", typeof(IRelatorioSondagemPortuguesPorTurmaUseCase))]
-        public async Task<bool> RelatorioSondagemPortuguesPorTurma([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemPortuguesPorTurmaUseCase relatorioSondagemPortuguesPorTurmaUseCase)
-        {
-            await relatorioSondagemPortuguesPorTurmaUseCase.Executar(request);
-            return true;
-        }
-
-        [HttpGet("relatorios/sondagem/portugues-consolidado-leitura")]
-        [Action("relatorios/sondagem/portugues-consolidado-leitura", typeof(IRelatorioSondagemPortuguesConsolidadoLeituraUseCase))]
-        public async Task<bool> RelatorioSondagemPortuguesConsolidadoLeitura([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemPortuguesConsolidadoLeituraUseCase relatorioSondagemPortuguesConsolidadoLeituraUseCase)
-        {
-            await relatorioSondagemPortuguesConsolidadoLeituraUseCase.Executar(request);
-            return true;
-        }
     }
 }
