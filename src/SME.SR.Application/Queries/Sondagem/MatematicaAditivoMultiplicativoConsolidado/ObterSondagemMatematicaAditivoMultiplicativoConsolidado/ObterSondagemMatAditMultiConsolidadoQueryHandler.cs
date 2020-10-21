@@ -89,12 +89,12 @@ namespace SME.SR.Application
                     {
                         if (request.TurmaAno == 3)
                         {
-                            var ordem3Ideia = listaAlunos.GroupBy(fu => fu.Ordem3Ideia);
+                            var ordem4Ideia = listaAlunos.GroupBy(fu => fu.Ordem4Ideia);
 
-                            var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
+                            var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
 
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem: 3, perguntas, respostas, request.QuantidadeTotalAlunos);
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Resultado, ordem: 3, perguntas, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem: 4, perguntas, respostas, request.QuantidadeTotalAlunos);
+                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Resultado, ordem: 4, perguntas, respostas, request.QuantidadeTotalAlunos);
                         }
 
 
@@ -172,7 +172,7 @@ namespace SME.SR.Application
         {
             foreach (var perguntaResposta in relatorio.PerguntasRespostas)
             {
-                var qntDeAlunosPreencheu = perguntaResposta.Respostas.Sum(a => a.AlunosQuantidade);
+                var qntDeAlunosPreencheu = perguntaResposta.Respostas?.Sum(a => a.AlunosQuantidade) ?? 0;
                 var diferencaPreencheuNao = quantidadeTotalAlunos - qntDeAlunosPreencheu;
 
                 var percentualNaoPreencheu = (diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
@@ -205,28 +205,22 @@ namespace SME.SR.Application
         {
             var lstRespostas = ObterRespostas(agrupamento, perguntas, totalAlunosGeral);
 
-            if (lstRespostas != null && lstRespostas.Any())
+            respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
             {
-                respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
-                {
-                    Ordem = ObterTituloOrdem(proficiencia, anoTurma, ordem),
-                    Respostas = lstRespostas
-                });
-            }
+                Ordem = ObterTituloOrdem(proficiencia, anoTurma, ordem),
+                Respostas = lstRespostas
+            });
         }
 
         private void AdicionarOrdem(ProficienciaSondagemEnum proficiencia, int anoTurma, IEnumerable<IGrouping<string, MathPoolCM>> agrupamento, int ordem, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> respostas, int totalAlunosGeral)
         {
             var lstRespostas = ObterRespostas(agrupamento, perguntas, totalAlunosGeral);
 
-            if (lstRespostas != null && lstRespostas.Any())
+            respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
             {
-                respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
-                {
-                    Ordem = ObterTituloOrdem(proficiencia, anoTurma, ordem),
-                    Respostas = lstRespostas
-                });
-            }
+                Ordem = ObterTituloOrdem(proficiencia, anoTurma, ordem),
+                Respostas = lstRespostas
+            });
         }
 
         private List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolCA>> agrupamento, List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas, int TotalAlunosGeral)
