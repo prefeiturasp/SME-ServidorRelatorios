@@ -3280,7 +3280,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         [HttpGet("sondagem-portugues-consolidado-leitura")]
         public IActionResult SondagemPortuguesConsolidadoLeitura()
         {
-            var planilha = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
+            var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
 
             #region Monta dados
             var perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
@@ -3326,7 +3326,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 }
             });
             #endregion
-            planilha.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
+            planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
             {
                 Ordem = "Ordem do argumentar",
                 Perguntas = perguntas
@@ -3348,7 +3348,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Ue = "CEU EMEF BUTANTA",
                     Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
                 },
-                Planilhas = planilha,
+                Planilhas = planilhas,
             };
             return View("RelatorioSondagemPortuguesConsolidadoLeitura", model);
         }
