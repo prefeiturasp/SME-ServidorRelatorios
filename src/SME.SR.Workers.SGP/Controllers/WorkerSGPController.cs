@@ -86,8 +86,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioHistoricoEscolarUseCase.Executar(request);
             return true;
         }
-        [HttpGet("relatorios/fechamentopendencias")]
-        [Action("relatorios/fechamentopendencias", typeof(IRelatorioFechamentoPendenciasUseCase))]
+        [HttpGet("relatorios/fechamentopendencias")]        
         public async Task<bool> RelatorioFechamentoPendencias([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioFechamentoPendenciasUseCase relatorioFechamentoPendenciasUseCase)
         {
             await relatorioFechamentoPendenciasUseCase.Executar(request);            
@@ -146,6 +145,7 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             await relatorioPlanoAulaUseCase.Executar(request);
             return true;
+        }    
         }
         [HttpGet("relatorios/sondagem/matematica-por-turma")]        
         [Action("relatorios/sondagem/matematica-por-turma", typeof(IRelatorioSondagemComponentesPorTurmaUseCase))]
