@@ -160,7 +160,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioImpressaoCalendarioUseCase, RelatorioImpressaoCalendarioUseCase>();
             services.TryAddScoped<IRelatorioResumoPAPUseCase, RelatorioResumoPAPUseCase>();
             services.TryAddScoped<IRelatorioSondagemMatemicaConsolidadoUseCase, RelatorioSondagemMatemicaConsolidadoUseCase>();
-            services.TryAddScoped<IRelatorioSondagemComponentesPorTurmaUseCase, RelatorioSondagemComponentesPorTurmaUseCase>();
+            services.TryAddScoped<IRelatorioSondagemComponentesPorTurmaUseCase, RelatorioSondagemComponentesPorTurmaUseCase>();     
 
         }
     }
