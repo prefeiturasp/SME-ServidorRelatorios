@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
     public class RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto
     {
-        public List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto> Linhas;
+        public string Ordem;
+
+        public List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto> Perguntas;
         public RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
         {
-            Linhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaLinhaDto>();
+            Perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
         }
     }
 }
