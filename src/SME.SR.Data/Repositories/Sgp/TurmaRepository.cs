@@ -753,8 +753,7 @@ namespace SME.SR.Data
 
         public async Task<TurmaResumoDto> ObterTurmaResumoComDreUePorId(long turmaId)
         {
-            var query = @"select t.id, t.nome, t.ano_letivo as AnoLetivo, t.modalidade_codigo as Modalidade
-	                            , ue.id, ue.ue_id as CodigoUe, ue.nome, dre.id, dre.abreviacao, dre.nome
+            var query = @"select t.id, t.nome, t.ano_letivo as AnoLetivo, t.modalidade_codigo as Modalidade, ue.id, ue.ue_id as CodigoUe, ue.nome, dre.id, dre.abreviacao, dre.nome
                               from turma t
                              inner join ue on ue.id = t.ue_id
                              inner join dre on dre.id = ue.dre_id
@@ -762,14 +761,16 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return (await conexao.QueryAsync<TurmaResumoDto, UeDto, DreDto, TurmaResumoDto>(query, (turmaDto, ueDto, dreDto) =>
+                var turma = (await conexao.QueryAsync<TurmaResumoDto, UeDto, DreDto, TurmaResumoDto>(query, (turmaDto, ueDto, dreDto) =>
                 {
                     ueDto.Dre = dreDto;
                     turmaDto.Ue = ueDto;
 
                     return turmaDto;
                 },
-                new { turmaId })).First();
+                new { turmaId }));
+
+                return turma.First();
             }
         }
     }

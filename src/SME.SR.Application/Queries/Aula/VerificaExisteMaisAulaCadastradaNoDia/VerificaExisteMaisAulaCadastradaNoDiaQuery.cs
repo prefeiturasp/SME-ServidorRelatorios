@@ -5,20 +5,19 @@ using System.Text;
 
 namespace SME.SR.Application
 {
-    public class VerificaExisteAulaPorTurmaCodigoEComponenteCurricularIdQuery : IRequest<bool>
+    public class VerificaExisteMaisAulaCadastradaNoDiaQuery : IRequest<bool>
     {
-        public VerificaExisteAulaPorTurmaCodigoEComponenteCurricularIdQuery(long turmaId, string componenteCurricularId, int bimestre, long tipoCalendarioId)
+        public VerificaExisteMaisAulaCadastradaNoDiaQuery(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             TurmaId = turmaId;
-            Bimestre = bimestre;
             ComponenteCurricularId = componenteCurricularId;
+            Bimestre = bimestre;
             TipoCalendarioId = tipoCalendarioId;
-
         }
 
         public long TurmaId { get; set; }
-        public long TipoCalendarioId { get; set; }
-        public int Bimestre { get; set; }
         public string ComponenteCurricularId { get; set; }
+        public int Bimestre { get; set; }
+        public long TipoCalendarioId { get; set; }
     }
 }
