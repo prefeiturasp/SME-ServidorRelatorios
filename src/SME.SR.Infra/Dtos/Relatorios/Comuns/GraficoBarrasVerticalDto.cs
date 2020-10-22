@@ -8,11 +8,10 @@ namespace SME.SR.Infra
     {
         public GraficoBarrasVerticalDto()
         {
-            EixosX = new List<GraficoBarrasVerticalEixoXDto>();
-            EixosY = new List<GraficoBarrasVerticalEixoYDto>();
+            EixosX = new List<GraficoBarrasVerticalEixoXDto>();            
         }
 
         public List<GraficoBarrasVerticalEixoXDto> EixosX { get; set; }
-        public List<GraficoBarrasVerticalEixoYDto> EixosY { get; set; }
-    }
+        public GraficoBarrasVerticalEixoYDto EixoYConfiguracao { get; set; }
+}
 }

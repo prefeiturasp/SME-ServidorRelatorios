@@ -2,13 +2,19 @@
 {
     public class GraficoBarrasVerticalEixoYDto
     {
-        public GraficoBarrasVerticalEixoYDto(decimal valor, string titulo)
+
+
+        public GraficoBarrasVerticalEixoYDto(decimal valorTotalAltura, string titulo, decimal valorTotalEixo, int divisoesDoEixo)
         {
-            Valor = valor;
+            ValorTotalAltura = valorTotalAltura;
+            ValorTotalEixo = valorTotalEixo;
             Titulo = titulo;
+            DivisoesDoEixo = divisoesDoEixo;
         }
 
-        public decimal Valor { get; set; }
-        public string Titulo { get; set; }
+        public decimal ValorTotalAltura { get; set; }
+        public string Titulo { get; set; }        
+        public decimal ValorTotalEixo { get; set; }
+        public int DivisoesDoEixo { get; set; }
     }
 }

@@ -30,7 +30,7 @@
 
 <svg width="960" height="500">
     <g transform="translate(40,20)">
-        <g class="x axis" transform="translate(0,450)">
+        <g class="x axis" transform="translate(0,@Model.EixoYConfiguracao.ValorTotalAltura)">
             @{
                 var eixoXValorPosicaoInicial = 25.5;
                 var eixoXValorSoma = 34;
@@ -50,6 +50,9 @@
             <path class="domain" d="M0,6V0H900V6"></path>
         </g>
         <g class="y axis">
+
+            
+
             <g class="tick" transform="translate(0,450)" style="opacity: 1;">
                 <line x2="-6" y2="0"></line>
                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">0%</text>
@@ -103,7 +106,7 @@
                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">12%</text>
             </g>
             <path class="domain" d="M-6,0H0V450H-6"></path>
-            <text transform="rotate(-90)" y="6" dy=".71em" style="text-anchor: end;">Frequency</text>
+            <text transform="rotate(-90)" y="6" dy=".71em" style="text-anchor: end;">@Model.EixoYConfiguracao.Titulo</text>
         </g>
 
 
@@ -119,11 +122,31 @@
 
             eixoXValorPosicaoInicial = eixoXValorPosicaoInicial + eixoXValorSoma;
 
-        }*@ 
-        
+            //Soma proprocional para total do (height - 50)
+
+            100 - 450
+            x - 1
+
+            // Total Y = 100
+            // qnd   x = 10 ->
+
+            450 - 100
+            x  -  20
+            9000/100
+            90
+
+
+            450 - 90 = 405
+        }*@
+
         <rect class="bar" x="10" width="31" y="160.66367501180912" height="289.3363249881909"></rect>
         <rect class="bar" x="44" width="31" y="397.1421823334908" height="52.85781766650922"></rect>
         <rect class="bar" x="78" width="31" y="351.4407179971658" height="98.55928200283421"></rect>
+
+        @*<rect class="bar" x="10" width="31" y="405" height="45"></rect>
+        <rect class="bar" x="10" width="31" y="360" height="90"></rect>
+        <rect class="bar" x="44" width="31" y="405" height="45"></rect>*@
+
 
 
     </g>

@@ -31,10 +31,8 @@ namespace SME.SR.MVC.Controllers
             grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "B"));
             grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(25, "C"));
 
-
-            grafico.EixosY.Add(new GraficoBarrasVerticalEixoYDto(10, "10"));
-            grafico.EixosY.Add(new GraficoBarrasVerticalEixoYDto(50, "50"));
-            grafico.EixosY.Add(new GraficoBarrasVerticalEixoYDto(100, "100"));
+            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(450, "Estudantes", 50, 10);
+            
 
             return View("RelatorioGraficoBarrasTeste", grafico);
         }
