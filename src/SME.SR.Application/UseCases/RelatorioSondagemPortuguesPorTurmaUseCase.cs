@@ -20,7 +20,7 @@ namespace SME.SR.Application
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task Executar(FiltroRelatorioDto request)
+        public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesPorTurmaFiltroDto>();
 
@@ -49,7 +49,7 @@ namespace SME.SR.Application
             var mensagemDaNotificacao = $"Este é o relatório de Sondagem de Português ({relatorio.Cabecalho.Proficiencia}) da turma {relatorio.Cabecalho.Turma} da {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre})";
             var mensagemTitulo = $"Relatório de Sondagem (Português) - {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre}) - {relatorio.Cabecalho.Turma}";
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo));
         }
 
         private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)

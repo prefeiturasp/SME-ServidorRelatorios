@@ -8,6 +8,6 @@ namespace SME.SR.Application
 {
     public interface IRelatorioSondagemPortuguesPorTurmaUseCase
     {
-        Task Executar(FiltroRelatorioDto request);
+        Task<string> Executar(FiltroRelatorioSincronoDto request);
     }
 }

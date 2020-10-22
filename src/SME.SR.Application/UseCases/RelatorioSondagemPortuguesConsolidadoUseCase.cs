@@ -9,16 +9,19 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    class RelatorioSondagemPortuguesConsolidadoLeituraUseCase : IRelatorioSondagemPortuguesConsolidadoLeituraUseCase
+    public class RelatorioSondagemPortuguesConsolidadoUseCase : IRelatorioSondagemPortuguesConsolidadoUseCase
     {
         private readonly IMediator mediator;
-        public RelatorioSondagemPortuguesConsolidadoLeituraUseCase(IMediator mediator)
+        public RelatorioSondagemPortuguesConsolidadoUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task Executar(FiltroRelatorioDto request)
+        public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto>();
+
+            if (filtros.ProficienciaId != ProficienciaSondagemEnum.Leitura)
+                throw new NegocioException($"{ filtros.ProficienciaId } fora do esperado.");
 
             var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
 
@@ -40,7 +43,7 @@ namespace SME.SR.Application
             var mensagemDaNotificacao = $"Este é o relatório de Sondagem de Português ({relatorio.Cabecalho.Proficiencia}) da turma {relatorio.Cabecalho.Turma} da {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre})";
             var mensagemTitulo = $"Relatório de Sondagem (Português) - {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre}) - {relatorio.Cabecalho.Turma}";
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoLeitura", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoLeitura", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo));
         }
 
         private async Task<RelatorioSondagemPortuguesConsolidadoLeituraCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros, DateTime periodo)

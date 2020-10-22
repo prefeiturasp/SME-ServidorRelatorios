@@ -14,10 +14,10 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioSondagemPortuguesConsolidadoLeituraQueryHandler : IRequestHandler<ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery, IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>>
     {
-        private readonly IRelatorioSondagemPortuguesConsolidadoLeituraRepository relatorioSondagemPortuguesConsolidadoLeituraRepository;
+        private readonly IRelatorioSondagemPortuguesConsolidadoRepository relatorioSondagemPortuguesConsolidadoLeituraRepository;
 
         public ObterRelatorioSondagemPortuguesConsolidadoLeituraQueryHandler(
-            IRelatorioSondagemPortuguesConsolidadoLeituraRepository relatorioSondagemPortuguesConsolidadoLeituraRepository)
+            IRelatorioSondagemPortuguesConsolidadoRepository relatorioSondagemPortuguesConsolidadoLeituraRepository)
         {
             this.relatorioSondagemPortuguesConsolidadoLeituraRepository = relatorioSondagemPortuguesConsolidadoLeituraRepository ?? throw new ArgumentNullException(nameof(relatorioSondagemPortuguesConsolidadoLeituraRepository));
         }

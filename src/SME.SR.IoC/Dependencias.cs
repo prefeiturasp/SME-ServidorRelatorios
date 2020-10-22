@@ -125,6 +125,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRecuperacaoParalelaRepository), typeof(RecuperacaoParalelaRepository));
             services.TryAddScoped(typeof(IPlanoAulaRepository), typeof(PlanoAulaRepository));
             services.TryAddScoped(typeof(IRelatorioSondagemComponentePorTurmaRepository), typeof(RelatorioSondagemComponentePorTurmaRepository));
+            services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
+            services.TryAddScoped(typeof(IRelatorioSondagemPortuguesConsolidadoRepository), typeof(RelatorioSondagemPortuguesConsolidadoRepository));
             services.TryAddScoped(typeof(IUsuarioRepository), typeof(UsuarioRepository));
             services.TryAddScoped(typeof(ITurmaEolRepository), typeof(TurmaEolRepository));            
             services.TryAddScoped(typeof(IMathPoolNumbersRepository), typeof(MathPoolNumbersRepository));
@@ -159,8 +161,10 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioCompensacaoAusenciaUseCase, RelatorioCompensacaoAusenciaUseCase>();
             services.TryAddScoped<IRelatorioImpressaoCalendarioUseCase, RelatorioImpressaoCalendarioUseCase>();
             services.TryAddScoped<IRelatorioResumoPAPUseCase, RelatorioResumoPAPUseCase>();
-            services.TryAddScoped<IRelatorioSondagemMatemicaConsolidadoUseCase, RelatorioSondagemMatemicaConsolidadoUseCase>();
+            services.TryAddScoped<IRelatorioSondagemMatematicaConsolidadoUseCase, RelatorioSondagemMatematicaConsolidadoUseCase>();
             services.TryAddScoped<IRelatorioSondagemComponentesPorTurmaUseCase, RelatorioSondagemComponentesPorTurmaUseCase>();
+            services.TryAddScoped<IRelatorioSondagemPortuguesPorTurmaUseCase, RelatorioSondagemPortuguesPorTurmaUseCase>();
+            services.TryAddScoped<IRelatorioSondagemPortuguesConsolidadoUseCase, RelatorioSondagemPortuguesConsolidadoUseCase>();
 
         }
     }
