@@ -3314,7 +3314,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         Quantidade = 4,
                         Percentual = 14.23,
                         Total = 3
-                    }
+                    },
                 }
             });
             perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
@@ -3327,29 +3327,29 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         Resposta = "Adequada",
                         Quantidade = 5,
                         Percentual = 15.23,
-                        Total = 3
+                        Total = 4
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Inadequada",
                         Quantidade = 6,
                         Percentual = 16.23,
-                        Total = 3
+                        Total = 4
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Não resolveu",
                         Quantidade = 7,
                         Percentual = 17.23,
-                        Total = 3
+                        Total = 4
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Sem preenchimento",
                         Quantidade = 8,
                         Percentual = 18.23,
-                        Total = 3
-                    }
+                        Total = 4
+                    },
                 }
             });
             perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
@@ -3362,37 +3362,41 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         Resposta = "Adequada",
                         Quantidade = 9,
                         Percentual = 9.23,
-                        Total = 3
+                        Total = 5
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Inadequada",
                         Quantidade = 10,
                         Percentual = 20.23,
-                        Total = 3
+                        Total = 5
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Não resolveu",
                         Quantidade = 11,
                         Percentual = 21.23,
-                        Total = 3
+                        Total = 5
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Sem preenchimento",
                         Quantidade = 12,
                         Percentual = 22.23,
-                        Total = 3
-                    }
+                        Total = 5
+                    },
                 }
             });
             #endregion
-            planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
+
+            for (var i = 0; i < 5; i++)
             {
-                Ordem = "Ordem do argumentar",
-                Perguntas = perguntas
-            });
+                planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
+                {
+                    Ordem = "Ordem do argumentar " + (i + 1),
+                    Perguntas = perguntas
+                });
+            }
 
             var model = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
             {
