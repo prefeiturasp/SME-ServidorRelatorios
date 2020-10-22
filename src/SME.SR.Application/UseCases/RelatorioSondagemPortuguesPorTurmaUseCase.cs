@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -49,26 +48,29 @@ namespace SME.SR.Application
             var mensagemDaNotificacao = $"Este é o relatório de Sondagem de Português ({relatorio.Cabecalho.Proficiencia}) da turma {relatorio.Cabecalho.Turma} da {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre})";
             var mensagemTitulo = $"Relatório de Sondagem (Português) - {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre}) - {relatorio.Cabecalho.Turma}";
 
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false));
         }
 
         private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)
         {
+            var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });
+            var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
+            var turma = await mediator.Send(new ObterTurmaSondagemEolPorCodigoQuery(Int32.Parse(filtros.TurmaCodigo)));
 
             return await Task.FromResult(new RelatorioSondagemPortuguesPorTurmaCabecalhoDto()
             {
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
-                Dre = filtros.DreCodigo,
-                Periodo = periodo.ToString("dd/MM/yyyy"),
+                Dre = dre.Abreviacao,
+                Periodo = $"{ filtros.Bimestre }° Bimestre",
                 Rf = filtros.UsuarioRF,
-                Turma = filtros.TurmaCodigo.ToString(),
-                Ue = filtros.UeCodigo,
+                Turma = turma.Nome,
+                Ue = ue.NomeComTipoEscola,
                 Usuario = usuario.Nome,
                 AnoLetivo = filtros.AnoLetivo,
                 Perguntas = perguntas,
-                AnoTurma = filtros.AnoTurma,
-                ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name(),
+                AnoTurma = filtros.Ano,
+                ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.ShortName(),
                 Proficiencia = filtros.ProficienciaId.ToString()
             });
         }
@@ -78,21 +80,13 @@ namespace SME.SR.Application
             switch (filtros.ProficienciaId)
             {
                 case ProficienciaSondagemEnum.Leitura:
-                    return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
-                        {
-                            new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                            {
-                                Id = 1,
-                                Nome = "Proficiência"
-                            },
-                        });
                 case ProficienciaSondagemEnum.Escrita:
                     return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
                         {
                             new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                             {
                                 Id = 1,
-                                Nome = ""
+                                Nome = "Proficiência"
                             },
                         });
                 case ProficienciaSondagemEnum.LeituraVozAlta:
@@ -133,13 +127,13 @@ namespace SME.SR.Application
                 UeCodigo = filtros.UeCodigo,
                 TurmaCodigo = filtros.TurmaCodigo,
                 AnoLetivo = filtros.AnoLetivo,
-                AnoTurma = filtros.AnoTurma,
+                AnoTurma = filtros.Ano,
                 Bimestre = filtros.Bimestre,
                 Proficiencia = filtros.ProficienciaId,
             });
 
             List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto> linhasPlanilha = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>();
-            foreach (Aluno aluno in alunos)
+            foreach (Aluno aluno in alunos.OrderBy(a => a.NomeAluno).ToList())
             {
                 var sondagem = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString());
 
@@ -148,7 +142,7 @@ namespace SME.SR.Application
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
                     {
                         Codigo = aluno.CodigoAluno,
-                        Nome = aluno.NomeRelatorio,
+                        Nome = aluno.ObterNomeParaRelatorioSondagem(),
                         DataSituacao = aluno.DataSituacao.ToString("dd/MM/yyyy"),
                         SituacaoMatricula = aluno.SituacaoMatricula
                     },
