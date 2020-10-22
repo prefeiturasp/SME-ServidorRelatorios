@@ -61,29 +61,7 @@ namespace SME.SR.Application
                 Proficiencia = filtros.ProficienciaId
             });
 
-
-            string mensagemDaNotificacao, mensagemTitulo;
-
-            if (!string.IsNullOrEmpty(filtros.UeCodigo))
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Ue} ({relatorio.Dre})";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Ue} ({relatorio.Dre}) - {relatorio.Ano}º ano";
-            }
-
-            else if (filtros.DreCodigo > 0)
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Dre}";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Dre.Replace("-", "")} - {relatorio.Ano}º ano";
-            }
-            else
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da SME";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - SME - {relatorio.Ano}º ano";
-            }
-
-            var json = JsonConvert.SerializeObject(relatorio);
-
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
     }
 }
