@@ -10,6 +10,8 @@ namespace SME.SR.Data
 
         public string ComponenteCurricularNome { get; set; }
 
+        public bool Regencia { get; set; }
+
         public int Bimestre { get; set; }
 
         public DateTime DataInicio { get; set; }
