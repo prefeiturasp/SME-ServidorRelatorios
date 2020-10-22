@@ -4,5 +4,7 @@
     {
         public string CodigoUe { get; set; }
         public string Nome { get; set; }
+
+        public DreDto Dre { get; set; }
     }
 }
