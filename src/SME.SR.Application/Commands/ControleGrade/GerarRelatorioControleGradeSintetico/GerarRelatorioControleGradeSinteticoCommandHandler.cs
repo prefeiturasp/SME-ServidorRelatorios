@@ -41,7 +41,7 @@ namespace SME.SR.Application
                     }
                 }
 
-                dto.Turmas.Add(await MapearParaTurmaDto(aulasPrevistasTurma, request.Filtros.Bimestres, turmaId, tipoCalendarioId));
+                dto.Turmas.Add(await MapearParaTurmaDto(aulasPrevistasTurma, request.Filtros.Bimestres, turmaId, tipoCalendarioId, request.Filtros.ModalidadeTurma));
             }
 
             MontarCabecalhoRelatorioDto(dto, request.Filtros);
@@ -49,7 +49,7 @@ namespace SME.SR.Application
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeSintetico", dto, request.CodigoCorrelacao));
         }
 
-        private async Task<TurmaControleGradeSinteticoDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId)
+        private async Task<TurmaControleGradeSinteticoDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
             var turmaDto = new TurmaControleGradeSinteticoDto()
             {
@@ -58,13 +58,13 @@ namespace SME.SR.Application
 
             foreach (var bimestre in bimestres.OrderBy(o => o))
             {
-                turmaDto.Bimestres.Add(await MapearParaBimestreDto(bimestre, aulasPrevistasTurma, turmaId, tipoCalendarioId));
+                turmaDto.Bimestres.Add(await MapearParaBimestreDto(bimestre, aulasPrevistasTurma, turmaId, tipoCalendarioId, modalidadeTurma));
             }
 
             return turmaDto;
         }
 
-        private async Task<BimestreControleGradeSinteticoDto> MapearParaBimestreDto(int bimestre, List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, long turmaId, long tipoCalendarioId)
+        private async Task<BimestreControleGradeSinteticoDto> MapearParaBimestreDto(int bimestre, List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
             var aulasPrevistasBimestre = aulasPrevistasTurma.Where(c => c.Bimestre == bimestre);
 
@@ -78,13 +78,13 @@ namespace SME.SR.Application
 
             foreach (var aulasPrevistasComponente in aulasPrevistasBimestre.OrderBy(c => c.ComponenteCurricularNome))
             {
-                bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(aulasPrevistasComponente, turmaId, tipoCalendarioId));
+                bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(aulasPrevistasComponente, turmaId, tipoCalendarioId, modalidadeTurma));
             }
 
             return bimestreDto;
         }
 
-        private async Task<ComponenteCurricularControleGradeSinteticoDto> MapearParaComponenteDto(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId)
+        private async Task<ComponenteCurricularControleGradeSinteticoDto> MapearParaComponenteDto(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
             var componenteDto = new ComponenteCurricularControleGradeSinteticoDto();
 
@@ -95,13 +95,13 @@ namespace SME.SR.Application
             componenteDto.AulasDadasProfessorTitular = aulasPrevistasComponente.CumpridasTitular;
             componenteDto.AulasDadasProfessorSubstituto = aulasPrevistasComponente.CumpridasCj;
             componenteDto.Repostas = aulasPrevistasComponente.Reposicoes;
-            componenteDto.Divergencias = await VerificarDivergencias(turmaId, aulasPrevistasComponente.Bimestre, aulasPrevistasComponente.ComponenteCurricularId, 
+            componenteDto.Divergencias = await VerificarDivergencias(turmaId, aulasPrevistasComponente.Bimestre, aulasPrevistasComponente.ComponenteCurricularId, aulasPrevistasComponente.Regencia, modalidadeTurma,
                 componenteDto.AulasPrevistas != (aulasPrevistasComponente.CumpridasTitular + aulasPrevistasComponente.CumpridasCj), tipoCalendarioId) ? "Sim" : "Não";
 
             return componenteDto;
         }
 
-        private async Task<bool> VerificarDivergencias(long turmaId, int bimestre, long componenteCurricularId, bool divergenciaNumeroAulas, long tipoCalendarioId)
+        private async Task<bool> VerificarDivergencias(long turmaId, int bimestre, long componenteCurricularId, bool regencia, Modalidade modalidadeTurma, bool divergenciaNumeroAulas, long tipoCalendarioId)
         {
             //Diferença entre aulas previstas X aulas dadas.
             //if (divergenciaNumeroAulas)
@@ -118,6 +118,18 @@ namespace SME.SR.Application
                 return true;
 
             if (await mediator.Send(new VerificaExisteAulaTitularECjQuery(turmaId, componenteCurricularId, tipoCalendarioId, bimestre)))
+                return true;
+
+            if (await VerificaAulasMesmoDiaEProfessor(turmaId, componenteCurricularId, tipoCalendarioId, bimestre, regencia, modalidadeTurma))
+                return true;
+
+            return false;
+        }
+
+        private async Task<bool> VerificaAulasMesmoDiaEProfessor(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre, bool regencia, Modalidade modalidadeTurma)
+        {
+            if (!regencia && !(modalidadeTurma == Modalidade.EJA) &&
+                await mediator.Send(new VerificaExisteAulasMemoDiaEProfessorQuery(turmaId, componenteCurricularId, tipoCalendarioId, bimestre)))
                 return true;
 
             return false;

@@ -17,7 +17,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        const string Select = @" select t.nome as TurmaNome, cc.id as ComponenteCurricularId, coalesce(cc.descricao_sgp, cc.descricao) as ComponenteCurricularNome,
+        const string Select = @" select t.nome as TurmaNome, cc.id as ComponenteCurricularId, coalesce(cc.descricao_sgp, cc.descricao) as ComponenteCurricularNome, cc.eh_regencia as Regencia,
                                      p.bimestre, p.periodo_inicio as DataInicio, p.periodo_fim as DataFim, apb.aulas_previstas as Previstas,
                                      SUM(a.quantidade) filter (where a.tipo_aula = 1 and a.aula_cj = false) as CriadasTitular,
                                      SUM(a.quantidade) filter (where a.tipo_aula = 1 and a.aula_cj = true) as CriadasCJ,
@@ -37,7 +37,7 @@ namespace SME.SR.Data
                                         and (a.id is null or not a.excluido)
                          left join registro_frequencia rf on a.id = rf.aula_id ";
 
-        const string GroupOrderBy = @" group by t.nome, cc.id, cc.descricao_sgp, cc.descricao, p.bimestre, p.periodo_inicio, p.periodo_fim, apb.aulas_previstas, apb.Id, p.periodo_inicio, p.periodo_fim ; ";
+        const string GroupOrderBy = @" group by t.nome, cc.id, cc.descricao_sgp, cc.descricao, cc.eh_regencia, p.bimestre, p.periodo_inicio, p.periodo_fim, apb.aulas_previstas, apb.Id, p.periodo_inicio, p.periodo_fim ; ";
 
 
 

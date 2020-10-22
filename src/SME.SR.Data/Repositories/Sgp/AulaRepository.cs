@@ -92,11 +92,6 @@ namespace SME.SR.Data
             }
         }
 
-        public Task<bool> VerificaExisteAulaCadastrada(long turmaId, string componenteCurricularId, int bimestre, long tipoCalendarioId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> VerificaExsiteAulaTitularECj(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             var query = @" select 1
@@ -106,10 +101,31 @@ namespace SME.SR.Data
                               where not a.excluido
                                 and a.disciplina_id::bigint = @componenteCurricularId
                                 and t.id = @turmaId
-                                and pe.tipo_calendario_id = @tipo_calendario_id
+                                and pe.tipo_calendario_id = @tipoCalendarioId
                                 and pe.bimestre = @bimestre
                               group by a.data_aula
                             having count(distinct a.aula_cj) > 1";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<int>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre })).Any();
+            }
+        }
+
+        public async Task<bool> VerificaExisteAulasMesmoDiaProfessor(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre)
+        {
+            var query = @" select 1
+                           from aula a 
+                          inner join turma t on t.turma_id = a.turma_id
+                          inner join periodo_escolar pe on a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                          where not a.excluido
+                            and a.tipo_aula = 1
+                            and a.disciplina_id::bigint = @componenteCurricularId
+                            and t.id = @turmaId
+                            and pe.tipo_calendario_id = @tipoCalendarioId
+                            and pe.bimestre = @bimestre
+                          group by a.data_aula, a.professor_rf
+                        having sum(a.quantidade) >= 3 ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
