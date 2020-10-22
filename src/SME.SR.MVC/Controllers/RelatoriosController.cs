@@ -3310,5 +3310,81 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
         }
+
+        [HttpGet("sondagem-portugues-consolidado-leitura")]
+        public IActionResult SondagemPortuguesConsolidadoLeitura()
+        {
+            var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
+
+            #region Monta dados
+            var perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
+            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto() {
+                Pergunta = "Localização",
+                Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
+                {
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Adequada",
+                        Quantidade = 2,
+                        Percentual = 2/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Inadequada",
+                        Quantidade = 1,
+                        Percentual = 1/3,
+                        Total = 3
+                    }
+                }
+            });
+            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
+            {
+                Pergunta = "Reflexão",
+                Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
+                {
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Adequada",
+                        Quantidade = 1,
+                        Percentual = 1/3,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Não resolveu",
+                        Quantidade = 2,
+                        Percentual = 2/3,
+                        Total = 3
+                    }
+                }
+            });
+            #endregion
+            planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
+            {
+                Ordem = "Ordem do argumentar",
+                Perguntas = perguntas
+            });
+
+            var model = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesConsolidadoLeituraCabecalhoDto()
+                {
+                    AnoTurma = 5,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Português",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    Dre = "DRE - BT",
+                    Periodo = "1º bimestre",
+                    Proficiencia = "Leitura Consolidado",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                },
+                Planilhas = planilhas,
+            };
+            return View("RelatorioSondagemPortuguesConsolidadoLeitura", model);
+        }
     }
 }

@@ -11,6 +11,8 @@ namespace SME.SR.Infra
         public string Resposta { get { return TransformarSiglaResposta(_resposta); } set { _resposta = value; } }
         private string TransformarSiglaResposta(string sigla)
         {
+            if (sigla == null) return String.Empty;
+
             return (sigla.ToUpper()) switch
             {
                 "PS" => "Pré-silábico",
