@@ -131,6 +131,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IPerguntasAutoralRepository), typeof(PerguntasAutoralRepository));
             services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));            
             services.TryAddScoped(typeof(IPeriodoSondagemRepository), typeof(PeriodoSondagemRepository));
+            services.TryAddScoped(typeof(IAulaPrevistaBimestreRepository), typeof(AulaPrevistaBimestreRepository));
             
 
         }
@@ -161,6 +162,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioResumoPAPUseCase, RelatorioResumoPAPUseCase>();
             services.TryAddScoped<IRelatorioSondagemMatemicaConsolidadoUseCase, RelatorioSondagemMatemicaConsolidadoUseCase>();
             services.TryAddScoped<IRelatorioSondagemComponentesPorTurmaUseCase, RelatorioSondagemComponentesPorTurmaUseCase>();
+            services.TryAddScoped<IRelatorioControleGradeUseCase, RelatorioControleGradeUseCase>();
 
         }
     }
