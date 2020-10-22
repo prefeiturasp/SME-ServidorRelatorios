@@ -27,11 +27,9 @@ namespace SME.SR.Data
                         from
                             plano_aula
                         inner join objetivo_aprendizagem_aula on
-                            plano_aula.id = objetivo_aprendizagem_aula.plano_aula_id
-                        inner join objetivo_aprendizagem_plano on
-                            objetivo_aprendizagem_aula.objetivo_aprendizagem_plano_id = objetivo_aprendizagem_plano.id
+                            objetivo_aprendizagem_aula.plano_aula_id = plano_aula.id
                         inner join objetivo_aprendizagem on
-                            objetivo_aprendizagem_plano.objetivo_aprendizagem_jurema_id = objetivo_aprendizagem.id
+                            objetivo_aprendizagem.id = objetivo_aprendizagem_aula.objetivo_aprendizagem_id
                         where plano_aula.id = @id";
 
             var parametros = new

@@ -86,8 +86,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioHistoricoEscolarUseCase.Executar(request);
             return true;
         }
-        [HttpGet("relatorios/fechamentopendencias")]
-        [Action("relatorios/fechamentopendencias", typeof(IRelatorioFechamentoPendenciasUseCase))]
+        [HttpGet("relatorios/fechamentopendencias")]        
         public async Task<bool> RelatorioFechamentoPendencias([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioFechamentoPendenciasUseCase relatorioFechamentoPendenciasUseCase)
         {
             await relatorioFechamentoPendenciasUseCase.Executar(request);            
@@ -145,21 +144,6 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioPlanoAula([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAulaUseCase relatorioPlanoAulaUseCase)
         {
             await relatorioPlanoAulaUseCase.Executar(request);
-            return true;
-        }
-        [HttpGet("relatorios/sondagem/matematica-por-turma")]        
-        [Action("relatorios/sondagem/matematica-por-turma", typeof(IRelatorioSondagemComponentesPorTurmaUseCase))]
-        public async Task<bool> RelatorioSondagemComponentesPorTurma([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioSondagemComponentesPorTurmaUseCase relatorioSondagemComponentesPorTurmaUseCase)
-        {
-            await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);
-            return true;
-        }
-
-        [HttpGet("relatorios/sondagem/matematica-consolidado")]
-        [Action("relatorios/sondagem/matematica-consolidado", typeof(IRelatorioSondagemMatemicaConsolidadoUseCase))]
-        public async Task<bool> RelatorioMatemicaConsolidade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemMatemicaConsolidadoUseCase relatorioSondagemMatemicaConsolidadoUseCase)
-        {
-            await relatorioSondagemMatemicaConsolidadoUseCase.Executar(request);
             return true;
         }
 

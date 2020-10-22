@@ -3,9 +3,9 @@ using System;
 
 namespace SME.SR.Application
 {
-    public class GerarRelatorioHtmlParaPdfCommand : IRequest<bool>
+    public class GerarRelatorioHtmlParaPdfCommand : IRequest<string>
     {
-        public GerarRelatorioHtmlParaPdfCommand(string nomeTemplate, object model, Guid codigoCorrelacao, string mensagemUsuario = "", string mensagemTitulo = "")
+        public GerarRelatorioHtmlParaPdfCommand(string nomeTemplate, object model, Guid codigoCorrelacao, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true)
         {
             if (!string.IsNullOrWhiteSpace(nomeTemplate))
                 NomeTemplate = nomeTemplate.Replace(".cshtml", "");
@@ -13,6 +13,7 @@ namespace SME.SR.Application
             CodigoCorrelacao = codigoCorrelacao;
             MensagemUsuario = mensagemUsuario;
             MensagemTitulo = mensagemTitulo;
+            EnvioPorRabbit = envioPorRabbit;
         }
 
         public Guid CodigoCorrelacao { get; set; }
@@ -21,5 +22,6 @@ namespace SME.SR.Application
         public object Model { get; }
         public string MensagemUsuario { get; set; }
         public string MensagemTitulo { get; set; }
+        public bool EnvioPorRabbit { get; set; }
     }
 }
