@@ -67,17 +67,27 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(long turmaId, string componenteCurricularId)
+        public async Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(string componenteCurricularId, int bimestre, long tipoCalendarioId)
         {
-            var query = @"select distinct 1 from aula inner join turma on aula.turma_id = turma.turma_id where turma.id = @turmaId and disciplina_id = @componenteCurricularId;";
+            var query = @"select a.data_aula, a.professor_rf, sum(a.quantidade)
+                           from aula a
+                          inner join turma t on t.turma_id = a.turma_id
+                          inner join periodo_escolar pe on a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                          where not a.excluido
+                            and a.disciplina_id::bigint = @componenteCurricularId
+                            and t.id = :turmaId
+                            and pe.tipo_calendario_id = @tipo_calendario_id
+                            and pe.bimestre = @bimestre
+                          group by a.data_aula, a.professor_rf
+                         having sum(a.quantidade) >= 2";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { turmaId, componenteCurricularId });
+                return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { componenteCurricularId, bimestre, tipoCalendarioId });
             }
         }
 
-        public Task<int> ObterQuantidadeAulas(long turmaId, string componenteCurricularId, string CodigoRF)
+       // public Task<int> ObterQuantidadeAulas(long turmaId, string componenteCurricularId, string CodigoRF)
         public async Task<bool> VerificaExisteMaisAulaCadastradaNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             var query = @"select distinct 1 from aula a 
