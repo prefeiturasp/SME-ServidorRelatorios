@@ -2899,6 +2899,63 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
+                return View("RelatorioSondagemComponentesPorTurma", model);
+        }       
+
+        [HttpGet("sondagem-consolidado-matematica-aditivo")]
+        public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
+        {
+
+            var model = new RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto();
+            model.Dre = "DRE-JT";
+            model.Ue = "EMEF - Máximo de Moura";
+            model.AnoLetivo = 2020;
+            model.Ano = "9";
+            model.Turma = "Todas";
+            model.ComponenteCurricular = "Matemática";
+            model.Proficiencia = "Números";
+            model.Periodo = "1º semestre";
+            model.Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque";
+            model.RF = "7777710";
+            model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+            Random randNum = new Random();
+
+            var perguntas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto>();
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto() { Descricao = "Ideia", Id = 1 });
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto() { Descricao = "Resultado", Id = 2 });
+            model.Perguntas = perguntas;
+
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
+            {
+                Ordem = "ORDEM 1 - COMPOSIÇÃO",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 2 },
+                }
+            });
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
+            {
+                Ordem = "ORDEM 2 - COMPOSIÇÃO",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 2 },
+                }
+            });
+
+
+            return View("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", model);
+        }
+    }
             return View("RelatorioSondagemComponentesPorTurma", model);
         }
 
