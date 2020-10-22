@@ -10,7 +10,6 @@ namespace SME.SR.Infra
         public string Ue { get; set; }
         public int AnoLetivo { get; set; }
         public int AnoTurma { get; set; }
-        public string Turma { get; set; }
         public string ComponenteCurricular { get; set; }
         public string Proficiencia { get; set; }
         public string Periodo { get; set; }
