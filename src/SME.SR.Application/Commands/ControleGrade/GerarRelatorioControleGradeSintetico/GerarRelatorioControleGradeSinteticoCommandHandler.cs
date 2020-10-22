@@ -103,8 +103,8 @@ namespace SME.SR.Application
         private async Task<bool> VerificarDivergencias(long turmaId, int bimestre, long componenteCurricularId, bool regencia, Modalidade modalidadeTurma, bool divergenciaNumeroAulas, long tipoCalendarioId)
         {
             //Diferença entre aulas previstas X aulas dadas.
-            //if (divergenciaNumeroAulas)
-            //    return true;
+            if (divergenciaNumeroAulas)
+                return true;
 
             //Não há nenhuma aula criada para o componente curricular.
             var verificaExisteAula = await mediator.Send(new VerificaExisteAulaPorTurmaCodigoEComponenteCurricularIdQuery(turmaId, componenteCurricularId.ToString(),bimestre, tipoCalendarioId));
