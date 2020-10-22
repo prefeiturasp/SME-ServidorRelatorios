@@ -4,12 +4,15 @@ namespace SME.SR.Application
 {
     public class VerificarAulasNormaisCriadasProfessorRegenciaQuery : IRequest<bool>
     {
-        public VerificarAulasNormaisCriadasProfessorRegenciaQuery(long turmaId, string componenteCurricularId)
-        {
-            TurmaId = turmaId;
+        public VerificarAulasNormaisCriadasProfessorRegenciaQuery(string componenteCurricularId, int bimestre, long tipoCalendarioId)
+        {           
             ComponenteCurricularId = componenteCurricularId;
+            Bimestre = bimestre;
+            TipoCalendarioId = tipoCalendarioId;
         }
-        public long TurmaId { get; set; }
+
         public string ComponenteCurricularId { get; set; }
+        public int Bimestre { get; set; }
+        public long TipoCalendarioId { get; set; }
     }
 }

@@ -36,15 +36,14 @@ namespace SME.SR.Application
                     var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId));
 
                     if (aulasPrevistasBimestresComponente != null)
-                    {
                         aulasPrevistasTurma.AddRange(aulasPrevistasBimestresComponente);
-                    }
                 }
 
-                dto.Turmas.Add(await MapearParaTurmaDto(aulasPrevistasTurma, request.Filtros.Bimestres, turmaId, tipoCalendarioId, request.Filtros.ModalidadeTurma));
+                if (aulasPrevistasTurma.Any())
+                    dto.Turmas.Add(await MapearParaTurmaDto(aulasPrevistasTurma, request.Filtros.Bimestres, turmaId, tipoCalendarioId, request.Filtros.ModalidadeTurma));
             }
 
-            MontarCabecalhoRelatorioDto(dto, request.Filtros);
+            await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeSintetico", dto, request.CodigoCorrelacao));
         }
@@ -113,11 +112,14 @@ namespace SME.SR.Application
                 return true;
 
             //2 ou mais aulas normais criadas no mesmo dia por um professor de regência de classe do fundamental na mesma turma
-            var verificaAulaCriadaProfessor = await mediator.Send(new VerificarAulasNormaisCriadasProfessorRegenciaQuery(turmaId, componenteCurricularId.ToString()));
-            if (!verificaAulaCriadaProfessor)
-                return true;
+            if (regencia)
+            {
+                var verificaAulaCriadaProfessor = await mediator.Send(new VerificarAulasNormaisCriadasProfessorRegenciaQuery(componenteCurricularId.ToString(), bimestre, tipoCalendarioId));
+                if (!verificaAulaCriadaProfessor)
+                    return true;
+            }            
 
-            //Mais de um registro de aula normal do mesmo professor, componente curricular e turma no mesmo dia.
+            //Mais de um registro de aula normal do mesmo professor, componente curricular e turma no mesmo dia.           
             var verificaExisteMaisAula = await mediator.Send(new VerificaExisteMaisAulaCadastradaNoDiaQuery(turmaId, componenteCurricularId.ToString(), tipoCalendarioId, bimestre));
             if (verificaExisteMaisAula)
                 return true;
@@ -148,12 +150,23 @@ namespace SME.SR.Application
             dto.Filtro.Dre = turma.Ue.Dre.Abreviacao;
             dto.Filtro.Ue = turma.Ue.Nome;
             dto.Filtro.Turma = filtros.Turmas.Count() > 1 ? "Todas" : turma.Nome;
-            dto.Filtro.Bimestre = filtros.Bimestres.Count() == (turma.Modalidade == Modalidade.EJA ? 2 : 4) ?
+            dto.Filtro.Bimestre = filtros.Bimestres.Count() == QuantidadePeriodosPorModalidade(turma.Modalidade) ?
                                     "Todos" : string.Join(",", filtros.Bimestres);
-            dto.Filtro.ComponenteCurricular = filtros.ComponentesCurriculares.Count() > 1 ?
-                            "Todos" : dto.Turmas.First().Bimestres.First().ComponentesCurriculares.First().Nome;
+            dto.Filtro.ComponenteCurricular = ObterNomeComponente(filtros, dto);
             dto.Filtro.Usuario = filtros.UsuarioNome;
             dto.Filtro.RF = filtros.UsuarioRf;
+        }
+
+        private int QuantidadePeriodosPorModalidade(Modalidade modalidade)
+            => modalidade == Modalidade.EJA ? 2 : 4;
+
+        private string ObterNomeComponente(RelatorioControleGradeFiltroDto filtros, ControleGradeSinteticoDto dto)
+        {
+            return filtros.ComponentesCurriculares.Count() > 1 ?
+                            "Todos" : !dto.Turmas.Any()
+                                   || !dto.Turmas.First().Bimestres.Any()
+                                   || !dto.Turmas.First().Bimestres.First().ComponentesCurriculares.Any() ?
+                                "" : dto.Turmas.First().Bimestres.First().ComponentesCurriculares.First().Nome;
         }
     }
 }

@@ -80,7 +80,7 @@
         var str = "";
         var retornoVerificacao = string.Empty;
 
-        var ultimaTurma = Model.Turmas.Last();
+        var ultimaTurma = Model.Turmas.Any() ? Model.Turmas.Last() : null;
         foreach (var turma in Model.Turmas)
         {
             str += $@" <div>

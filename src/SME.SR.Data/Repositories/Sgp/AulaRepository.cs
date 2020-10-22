@@ -69,21 +69,22 @@ namespace SME.SR.Data
 
         public async Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(string componenteCurricularId, int bimestre, long tipoCalendarioId)
         {
-            var query = @"select a.data_aula, a.professor_rf, sum(a.quantidade)
+            var query = @"select 1
                            from aula a
                           inner join turma t on t.turma_id = a.turma_id
                           inner join periodo_escolar pe on a.data_aula between pe.periodo_inicio and pe.periodo_fim
                           where not a.excluido
+                            and a.tipo_aula = 1
                             and a.disciplina_id::bigint = @componenteCurricularId
                             and t.id = :turmaId
-                            and pe.tipo_calendario_id = @tipo_calendario_id
+                            and pe.tipo_calendario_id = @tipoCalendarioId
                             and pe.bimestre = @bimestre
                           group by a.data_aula, a.professor_rf
                          having sum(a.quantidade) >= 2";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { componenteCurricularId, bimestre, tipoCalendarioId });
+                return (await conexao.QueryAsync<int>(query, new { componenteCurricularId, bimestre, tipoCalendarioId })).Any();
             }
         }
 
