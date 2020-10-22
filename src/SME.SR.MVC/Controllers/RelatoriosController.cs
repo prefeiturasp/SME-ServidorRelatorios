@@ -3450,7 +3450,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
                 Planilhas = planilhas,
             };
-            return View("RelatorioSondagemPortuguesConsolidadoLeitura", model);
+            return View("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", model);
         }
     }
 }
