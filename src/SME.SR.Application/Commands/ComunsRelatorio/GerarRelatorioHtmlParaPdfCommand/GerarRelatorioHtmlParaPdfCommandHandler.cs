@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 {
-    public class GerarRelatorioHtmlParaPdfCommandCommandHandler : IRequestHandler<GerarRelatorioHtmlParaPdfCommand, bool>
+    public class GerarRelatorioHtmlParaPdfCommandCommandHandler : IRequestHandler<GerarRelatorioHtmlParaPdfCommand, string>
     {
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
@@ -24,21 +24,31 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
         }
 
-        public async Task<bool> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
-            html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
-            html = html.Replace("logo.png", SmeConstants.LogoSme);
+            try
+            {
+                var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
+                html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
+                html = html.Replace("logo.png", SmeConstants.LogoSme);
 
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
+                var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+                var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
 
-            PdfGenerator pdfGenerator = new PdfGenerator(converter);
-            pdfGenerator.Converter(html, nomeArquivo);
-
-            servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
-
-            return true;
+                PdfGenerator pdfGenerator = new PdfGenerator(converter);
+                pdfGenerator.Converter(html, nomeArquivo);
+            
+                if (request.EnvioPorRabbit)
+                {
+                    servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
+                    return string.Empty;
+                }
+                else return request.CodigoCorrelacao.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

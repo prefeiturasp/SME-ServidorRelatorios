@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Sgp
 {
-    public class RelatorioSondagemPortuguesConsolidadoLeituraRepository : IRelatorioSondagemPortuguesConsolidadoLeituraRepository
+    public class RelatorioSondagemPortuguesConsolidadoRepository : IRelatorioSondagemPortuguesConsolidadoRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
-        public RelatorioSondagemPortuguesConsolidadoLeituraRepository(VariaveisAmbiente variaveisAmbiente)
+        public RelatorioSondagemPortuguesConsolidadoRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }

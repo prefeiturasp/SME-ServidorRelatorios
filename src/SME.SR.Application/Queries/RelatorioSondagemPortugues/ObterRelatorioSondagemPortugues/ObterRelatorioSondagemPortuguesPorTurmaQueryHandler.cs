@@ -27,8 +27,8 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> Handle(ObterRelatorioSondagemPortuguesPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            if (request.Proficiencia != ProficienciaSondagemEnum.Leitura ||
-                request.Proficiencia != ProficienciaSondagemEnum.Escrita ||
+            if (request.Proficiencia != ProficienciaSondagemEnum.Leitura &&
+                request.Proficiencia != ProficienciaSondagemEnum.Escrita &&
                 request.Proficiencia != ProficienciaSondagemEnum.LeituraVozAlta)
                 throw new NegocioException($"{ request.Proficiencia } fora do esperado.");
 
@@ -44,10 +44,12 @@ namespace SME.SR.Application
         {
             string nomeColunaBimestre = String.Empty;
 
+            if (bimestre == 0) bimestre = 1;
+
             if (proficiencia == ProficienciaSondagemEnum.Leitura)
                 nomeColunaBimestre = $"reading{bimestre}B";
 
-            if (proficiencia == ProficienciaSondagemEnum.Leitura)
+            if (proficiencia == ProficienciaSondagemEnum.Escrita)
                 nomeColunaBimestre = $"writing{bimestre}B";
 
             return nomeColunaBimestre;

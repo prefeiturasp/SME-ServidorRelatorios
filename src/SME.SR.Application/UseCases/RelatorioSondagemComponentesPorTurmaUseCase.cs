@@ -16,7 +16,7 @@ namespace SME.SR.Application
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task Executar(FiltroRelatorioDto request)
+        public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemComponentesPorTurmaFiltroDto>();
 
@@ -37,7 +37,7 @@ namespace SME.SR.Application
             var mensagemDaNotificacao = $"Este é o relatório de Sondagem de Matemática ({(string.IsNullOrEmpty(relatorio.Cabecalho.Proficiencia) ? "Autoral" : relatorio.Cabecalho.Proficiencia)}) da turma {relatorio.Cabecalho.Turma} da {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre})";
             var mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre}) - {relatorio.Cabecalho.Turma}";
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, request.CodigoCorrelacao, mensagemDaNotificacao, mensagemTitulo));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo));
         }
 
         private async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)

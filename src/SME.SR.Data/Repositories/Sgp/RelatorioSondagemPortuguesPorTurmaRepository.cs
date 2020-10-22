@@ -25,7 +25,7 @@ namespace SME.SR.Data.Repositories.Sgp
             {
                 case ProficienciaSondagemEnum.Leitura:
                 case ProficienciaSondagemEnum.Escrita:
-                    sql = $"select {nomeColunaBimestre} Resposta, ";
+                    sql = $"select \"{nomeColunaBimestre}\" Resposta, ";
                     sql += "1 Id, '' Pergunta, ";
                     sql += "\"studentCodeEol\" AlunoEolCode, ";
                     sql += "\"studentNameEol\" AlunoNome, ";
@@ -51,7 +51,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             var componenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name();
 
-            var parametros = new { componenteCurricular, dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
+            var parametros = new { componenteCurricular, dreCodigo, ueCodigo, turmaCodigo, anoLetivo = anoLetivo.ToString(), anoTurma = anoTurma.ToString() };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
