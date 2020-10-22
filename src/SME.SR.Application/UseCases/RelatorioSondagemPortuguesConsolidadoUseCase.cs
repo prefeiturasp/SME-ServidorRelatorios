@@ -53,6 +53,7 @@ namespace SME.SR.Application
                 Usuario = usuario.Nome,
                 AnoLetivo = filtros.AnoLetivo,
                 AnoTurma = filtros.AnoTurma,
+                Turma = "Todas",
                 ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name(),
                 Proficiencia = filtros.ProficienciaId.ToString()
             });
