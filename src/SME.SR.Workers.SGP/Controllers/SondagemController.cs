@@ -27,5 +27,11 @@ namespace SME.SR.Workers.SGP.Controllers
             return await relatorioSondagemMatConsolidadoAdtMultiUseCase.Executar(request);
         }
 
+        [HttpPost("portugues-por-turma-capacidade-leitura")]
+        public async Task<string> RelatorioPortuguesPorTurmaCapacidadeLeitura([FromBody] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemMatConsolidadoAdtMultiUseCase relatorioSondagemMatConsolidadoAdtMultiUseCase)
+        {
+            return await relatorioSondagemMatConsolidadoAdtMultiUseCase.Executar(request);
+        }
+
     }
 }
