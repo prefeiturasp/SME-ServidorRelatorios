@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SME.SR.Infra
@@ -11,8 +12,8 @@ namespace SME.SR.Infra
         }
         public string Pergunta { get; set; }
         
-        public double PercentualTotal { get { return Respostas.Sum(a => a.AlunosPercentual); } }
-        public double AlunosTotal { get { return Respostas.Sum(a => a.AlunosQuantidade); }  }
+        public double PercentualTotal { get { return Math.Floor(Respostas.Sum(a => a.AlunosPercentual)); } }
+        public double AlunosTotal { get { return Math.Floor(Respostas.Sum(a => a.AlunosQuantidade)); }  }
 
         public List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto> Respostas  { get; set; }
     }
