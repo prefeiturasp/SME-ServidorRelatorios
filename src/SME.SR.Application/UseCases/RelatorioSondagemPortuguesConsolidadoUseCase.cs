@@ -74,17 +74,17 @@ namespace SME.SR.Application
 
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
 
-            var ordens = linhasSondagem.GroupBy(o => o.Ordem).Select(x => x.FirstOrDefault());
+            var ordens = linhasSondagem.GroupBy(o => o.Ordem).Select(x => x.FirstOrDefault()).ToList();
             foreach (var ordem in ordens)
             {
                 var perguntasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
 
-                var perguntas = linhasSondagem.GroupBy(o => new {o.Ordem, o.Pergunta }).Select(x => x.FirstOrDefault());
+                var perguntas = linhasSondagem.GroupBy(o => new { o.Ordem, o.Pergunta }).Select(x => x.FirstOrDefault()).ToList();
                 foreach (var pergunta in perguntas)
                 {
                     var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
 
-                    var respostas = linhasSondagem.Where(o => o.Ordem == ordem.Ordem && o.Pergunta == pergunta.Pergunta);
+                    var respostas = linhasSondagem.Where(o => o.Ordem == ordem.Ordem && o.Pergunta == pergunta.Pergunta).ToList();
                     foreach (var resposta in respostas)
                     {
                         var totalRespostas = respostas.Sum(o => o.Quantidade);
