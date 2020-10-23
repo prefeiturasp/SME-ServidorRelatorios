@@ -15,7 +15,7 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, GrupoSondagemEnum grupo)
         {
             var sql = String.Empty;
 
@@ -42,11 +42,10 @@ namespace SME.SR.Data.Repositories.Sgp
             sql += "order by Ordem, Pergunta, Resposta ";
 
             var componenteCurricularId = ComponenteCurricularSondagemEnum.Portugues.Name();
-            var grupoId = GrupoSondagemEnum.CapacidadeLeitura.Name();
 
             var periodo = $"{ bimestre }° Bimestre";
 
-            var parametros = new { grupoId, componenteCurricularId, periodo, dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
+            var parametros = new { grupoId = grupo.Name(), componenteCurricularId, periodo, dreCodigo, ueCodigo, anoLetivo, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 

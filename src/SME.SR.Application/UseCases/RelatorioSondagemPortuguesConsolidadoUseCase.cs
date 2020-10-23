@@ -19,8 +19,8 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto>();
 
-            if (filtros.ProficienciaId != ProficienciaSondagemEnum.Leitura)
-                throw new NegocioException($"{ filtros.ProficienciaId } fora do esperado.");
+            if (filtros.GrupoId != GrupoSondagemEnum.CapacidadeLeitura.Name())
+                throw new NegocioException($"{ filtros.GrupoId } fora do esperado.");
 
             RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
             {
@@ -34,7 +34,7 @@ namespace SME.SR.Application
             var mensagemDaNotificacao = $"Este é o relatório de Sondagem Consolidado de Português ({relatorio.Cabecalho.Proficiencia}) da {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre})";
             var mensagemTitulo = $"Relatório de Sondagem Consolidado (Português) - {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre})";
 
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoLeitura", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false));
         }
 
         private async Task<RelatorioSondagemPortuguesConsolidadoLeituraCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
@@ -52,14 +52,14 @@ namespace SME.SR.Application
                 Ue = ue.NomeComTipoEscola,
                 Usuario = usuario.Nome,
                 AnoLetivo = filtros.AnoLetivo,
-                AnoTurma = filtros.AnoTurma,
+                AnoTurma = filtros.Ano,
                 Turma = "Todas",
-                ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name(),
+                ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.ShortName(),
                 Proficiencia = filtros.ProficienciaId.ToString()
             });
         }
 
-        private async Task<List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>> ObterPlanilhas(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        private async Task<List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>> ObterPlanilhas(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros, GrupoSondagemEnum grupoSondagemEnum = GrupoSondagemEnum.CapacidadeLeitura)
         {
             IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto> linhasSondagem = await mediator.Send(new ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery()
             {
@@ -67,8 +67,9 @@ namespace SME.SR.Application
                 UeCodigo = filtros.UeCodigo,
                 TurmaCodigo = filtros.TurmaCodigo,
                 AnoLetivo = filtros.AnoLetivo,
-                AnoTurma = filtros.AnoTurma,
+                AnoTurma = filtros.Ano,
                 Bimestre = filtros.Bimestre,
+                Grupo = grupoSondagemEnum
             });
 
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
