@@ -2899,7 +2899,566 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
-            return View("RelatorioSondagemComponentesPorTurma", model);
+                return View("RelatorioSondagemComponentesPorTurma", model);
+        }       
+
+        [HttpGet("sondagem-consolidado-matematica-aditivo")]
+        public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
+        {
+
+            var model = new RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto();
+            model.Dre = "DRE-JT";
+            model.Ue = "EMEF - Máximo de Moura";
+            model.AnoLetivo = 2020;
+            model.Ano = "9";
+            model.Turma = "Todas";
+            model.ComponenteCurricular = "Matemática";
+            model.Proficiencia = "Números";
+            model.Periodo = "1º semestre";
+            model.Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque";
+            model.RF = "7777710";
+            model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+            Random randNum = new Random();
+
+            var perguntas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto>();
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto() { Descricao = "Ideia", Id = 1 });
+            perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto() { Descricao = "Resultado", Id = 2 });
+            model.Perguntas = perguntas;
+
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
+            {
+                Ordem = "ORDEM 1 - COMPOSIÇÃO",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 2 },
+                }
+            });
+
+            model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto()
+            {
+                Ordem = "ORDEM 2 - COMPOSIÇÃO",
+                Respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto>() {
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 1 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 1 },
+                        new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 60, AlunosQuantidade = randNum.Next(99999), Resposta = "Acertou" , PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Errou", PerguntaId = 2 },
+                    new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Não resolveu", PerguntaId = 2 },
+                }
+            });
+
+
+            return View("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", model);
+        }
+
+        [HttpGet("controle-grade-sintetico")]
+        public IActionResult RelatorioControleGradeSintetico()
+        {
+
+            var controleGrade = new ControleGradeSinteticoDto()
+            {
+                Filtro = new FiltroGradeSintetico()
+                {
+                    Dre = "DRE - BT",
+                    Ue = "CEU EMEF BUTANTA",
+                    Turma = "Todas",
+                    Bimestre = "Todos",
+                    ComponenteCurricular = "Todos",
+                    RF = "9879878",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                }                
+            };
+
+            controleGrade.Turmas = new List<TurmaControleGradeSinteticoDto>()
+            {
+               new TurmaControleGradeSinteticoDto()
+               {
+                   Nome="1F",
+                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   {
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Descricao = "1° BIMESTRE - 20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   AulasPrevistas = 10,
+                                   AulasCriadasProfessorTitular = 8,
+                                   AulasCriadasProfessorSubstituto = 2,
+                                   AulasDadasProfessorTitular = 8,
+                                   AulasDadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "CIÊNCIAS",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       },
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Descricao = "2° BIMESTRE - 20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   AulasPrevistas = 10,
+                                   AulasCriadasProfessorTitular = 8,
+                                   AulasCriadasProfessorSubstituto = 2,
+                                   AulasDadasProfessorTitular = 8,
+                                   AulasDadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "CIÊNCIAS",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       },
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Descricao = "3° BIMESTRE - 20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   AulasPrevistas = 10,
+                                   AulasCriadasProfessorTitular = 8,
+                                   AulasCriadasProfessorSubstituto = 2,
+                                   AulasDadasProfessorTitular = 8,
+                                   AulasDadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       },
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Descricao = "4° BIMESTRE - 20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   AulasPrevistas = 10,
+                                   AulasCriadasProfessorTitular = 8,
+                                   AulasCriadasProfessorSubstituto = 2,
+                                   AulasDadasProfessorTitular = 8,
+                                   AulasDadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       }
+
+                   }
+               },
+             new TurmaControleGradeSinteticoDto()
+               {
+                   Nome="2F",
+                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   {
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Descricao = "1° BIMESTRE - 20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   AulasPrevistas = 10,
+                                   AulasCriadasProfessorTitular = 8,
+                                   AulasCriadasProfessorSubstituto = 2,
+                                   AulasDadasProfessorTitular = 8,
+                                   AulasDadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "MATEMÁTICA",
+                                   AulasPrevistas = 15,
+                                   AulasCriadasProfessorTitular = 14,
+                                   AulasCriadasProfessorSubstituto = 1,
+                                   AulasDadasProfessorTitular = 14,
+                                   AulasDadasProfessorSubstituto = 1,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       },
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Descricao = "2° BIMESTRE - 20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   AulasPrevistas = 10,
+                                   AulasCriadasProfessorTitular = 8,
+                                   AulasCriadasProfessorSubstituto = 2,
+                                   AulasDadasProfessorTitular = 8,
+                                   AulasDadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       },
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Descricao = "3° BIMESTRE - 20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   AulasPrevistas = 10,
+                                   AulasCriadasProfessorTitular = 8,
+                                   AulasCriadasProfessorSubstituto = 2,
+                                   AulasDadasProfessorTitular = 8,
+                                   AulasDadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 20,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       },
+                       new BimestreControleGradeSinteticoDto()
+                       {
+                           Descricao = "4° BIMESTRE - 20/03 À 25/04",
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           {
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "INGLÊS",
+                                   AulasPrevistas = 12,
+                                   AulasCriadasProfessorTitular = 8,
+                                   AulasCriadasProfessorSubstituto = 2,
+                                   AulasDadasProfessorTitular = 8,
+                                   AulasDadasProfessorSubstituto = 2,
+                                   Repostas = 0,
+                                   Divergencias = "Não"
+                               },
+                               new ComponenteCurricularControleGradeSinteticoDto()
+                               {
+                                   Nome = "PORTUGUÊS",
+                                   AulasPrevistas = 19,
+                                   AulasCriadasProfessorTitular = 16,
+                                   AulasCriadasProfessorSubstituto = 4,
+                                   AulasDadasProfessorTitular = 19,
+                                   AulasDadasProfessorSubstituto = 4,
+                                   Repostas = 3,
+                                   Divergencias = "Não"
+                               }
+                           }
+                       }
+
+                   }
+               }
+            };
+
+            return View("RelatorioControleGradeSintetico", controleGrade);
+
         }
 
         [HttpGet("sondagem-portugues-leitura")]
