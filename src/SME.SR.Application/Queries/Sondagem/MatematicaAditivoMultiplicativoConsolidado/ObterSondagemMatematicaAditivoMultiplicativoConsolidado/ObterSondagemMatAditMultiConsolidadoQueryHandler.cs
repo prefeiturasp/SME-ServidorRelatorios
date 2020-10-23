@@ -130,7 +130,7 @@ namespace SME.SR.Application
                 relatorio.Perguntas = perguntas;
 
             if (respostas.Any())
-                relatorio.PerguntasRespostas = respostas;
+                relatorio.PerguntasRespostas = respostas.OrderBy(r => r.Ordem).ToList();
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
 
