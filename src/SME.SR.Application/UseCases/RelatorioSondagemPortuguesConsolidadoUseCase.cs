@@ -79,7 +79,7 @@ namespace SME.SR.Application
             {
                 var perguntasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
 
-                var perguntas = linhasSondagem.GroupBy(o => new { o.Ordem, o.Pergunta }).Select(x => x.FirstOrDefault()).ToList();
+                var perguntas = linhasSondagem.Where(o => o.Ordem == ordem.Ordem).GroupBy(p => p.Pergunta).Select(x => x.FirstOrDefault()).ToList();
                 foreach (var pergunta in perguntas)
                 {
                     var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
@@ -93,7 +93,7 @@ namespace SME.SR.Application
                             Resposta = resposta.Resposta,
                             Quantidade = resposta.Quantidade,
                             Total = totalRespostas,
-                            Percentual = resposta.Quantidade / totalRespostas
+                            Percentual = Decimal.Divide(resposta.Quantidade, totalRespostas)
                         });
                     }
 
