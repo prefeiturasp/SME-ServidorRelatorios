@@ -17,6 +17,6 @@ namespace SME.SR.Infra
         [Display(Name = "Escrita")]
         Escrita = 5,
         [Display(Name = "Leitura em voz alta")]
-        LeituraVozAlta = 6,
+        LeituraVozAlta = 6
     }
 }

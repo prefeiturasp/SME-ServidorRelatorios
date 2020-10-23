@@ -13,5 +13,6 @@ namespace SME.SR.Application
         public int AnoLetivo { get; set; }
         public int AnoTurma { get; set; }
         public int Bimestre { get; set; }
+        public GrupoSondagemEnum Grupo { get; set; }
     }
 }
