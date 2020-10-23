@@ -9,7 +9,7 @@ namespace SME.SR.Infra
     {
         public string Resposta { get; set; }
         public int Quantidade { get; set; }
-        public double Percentual { get; set; }
+        public decimal Percentual { get; set; }
         public int Total { get; set; }
     }
 }

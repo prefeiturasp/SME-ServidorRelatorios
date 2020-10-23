@@ -139,11 +139,10 @@
                             {
                                 if (resposta.Resposta == resp.Resposta)
                                 {
-                                    var alunosPercentual = Math.Round(resp.Percentual, 2);
-                                    var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
+                                    var alunosPercentual = Math.Round(resp.Percentual*100, 2);
 
                                     <td>@resp.Quantidade</td>
-                                    <td>@alunosPercentualAlterado</td>
+                                    <td>@alunosPercentual.ToString("0.00")</td>
                                 }
                             }
                         }
