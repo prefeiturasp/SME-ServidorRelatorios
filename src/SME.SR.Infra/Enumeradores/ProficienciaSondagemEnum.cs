@@ -4,6 +4,8 @@ namespace SME.SR.Infra
 {
     public enum ProficienciaSondagemEnum
     {
+        [Display(Name = "Autoral")]
+        Autoral = 0,
         [Display(Name = "Aditivo")]
         CampoAditivo = 1,
         [Display(Name = "Multiplicativo")]
