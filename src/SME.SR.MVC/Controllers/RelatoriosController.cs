@@ -26,12 +26,15 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("graficos")]
         public IActionResult RelatorioGraficosTeste()
         {
-            var grafico = new GraficoBarrasVerticalDto();
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(10, "A"));
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "B"));
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(25, "C"));
+            
+            var grafico = new GraficoBarrasVerticalDto(960);
 
-            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(450, "Estudantes", 50, 10);
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(10, "Banana"));
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(38, "Abacate"));
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(2, "D"));
+
+            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(450, "Frutas", 50, 10);
             
 
             return View("RelatorioGraficoBarrasTeste", grafico);
