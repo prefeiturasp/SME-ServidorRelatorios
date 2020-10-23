@@ -24,10 +24,11 @@ namespace SME.SR.Data.Repositories.Sgp
             sql += "p.\"Descricao\" Pergunta, ";
             sql += "r.\"Descricao\" Resposta, ";
             sql += "count(*) Quantidade ";
-            sql += "from \"SondagemAutoral\" sa ";
+            sql += "from \"Sondagem\" sa ";
             sql += "inner join \"ComponenteCurricular\" cc on sa.\"ComponenteCurricularId\" = cc.\"Id\" ";
-            sql += "inner join \"Pergunta\" p on sa.\"PerguntaId\" = p.\"Id\" and p.\"ComponenteCurricularId\" = cc.\"Id\" ";
-            sql += "inner join \"Resposta\" r on sa.\"RespostaId\" = r.\"Id\" ";
+            sql += "inner join \"Pergunta\" p on p.\"ComponenteCurricularId\" = cc.\"Id\" ";
+            sql += "inner join \"PerguntaResposta\" pr on p.\"Id\" = pr.\"PerguntaId\" ";
+            sql += "inner join \"Resposta\" r on pr.\"RespostaId\" = r.\"Id\" ";
             sql += "inner join \"Grupo\" g2 on sa.\"GrupoId\" = g2.\"Id\" ";
             sql += "inner join \"Ordem\" o on sa.\"OrdemId\" = o.\"Id\" and o.\"GrupoId\" = g2.\"Id\" ";
             sql += "inner join \"Periodo\" p2 on sa.\"PeriodoId\" = p2.\"Id\" ";
