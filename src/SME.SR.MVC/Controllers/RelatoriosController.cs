@@ -2955,9 +2955,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", model);
         }
-    }
-            return View("RelatorioSondagemComponentesPorTurma", model);
-        }
 
         [HttpGet("controle-grade-sintetico")]
         public IActionResult RelatorioControleGradeSintetico()
@@ -3462,11 +3459,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioControleGradeSintetico", controleGrade);
 
-        }
-    }
-
-}
-            return View("RelatorioSondagemComponentesPorTurma", model);
         }
 
         [HttpGet("sondagem-portugues-leitura")]
