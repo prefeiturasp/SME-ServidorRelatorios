@@ -26,29 +26,22 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         public async Task<string> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
-                html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
-                html = html.Replace("logo.png", SmeConstants.LogoSme);
+            var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
+            html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
+            html = html.Replace("logo.png", SmeConstants.LogoSme);
 
-                var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-                var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
+            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+            var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
 
-                PdfGenerator pdfGenerator = new PdfGenerator(converter);
-                pdfGenerator.Converter(html, nomeArquivo);
+            PdfGenerator pdfGenerator = new PdfGenerator(converter);
+            pdfGenerator.Converter(html, nomeArquivo);
             
-                if (request.EnvioPorRabbit)
-                {
-                    servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
-                    return string.Empty;
-                }
-                else return request.CodigoCorrelacao.ToString();
-            }
-            catch (Exception ex)
+            if (request.EnvioPorRabbit)
             {
-                throw ex;
+                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
+                return string.Empty;
             }
+            else return request.CodigoCorrelacao.ToString();
         }
     }
 }

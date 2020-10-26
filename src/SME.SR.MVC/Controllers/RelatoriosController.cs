@@ -3884,28 +3884,28 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         Resposta = "Adequada",
                         Quantidade = 1,
-                        Percentual = 11.23,
+                        Percentual = (decimal)11.23,
                         Total = 3
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Inadequada",
                         Quantidade = 2,
-                        Percentual = 12.23,
+                        Percentual = (decimal)12.23,
                         Total = 3
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Não resolveu",
                         Quantidade = 3,
-                        Percentual = 13.23,
+                        Percentual = (decimal)13.23,
                         Total = 3
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Sem preenchimento",
                         Quantidade = 4,
-                        Percentual = 14.23,
+                        Percentual = (decimal)14.23,
                         Total = 3
                     },
                 }
@@ -3919,28 +3919,28 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         Resposta = "Adequada",
                         Quantidade = 5,
-                        Percentual = 15.23,
+                        Percentual = (decimal)15.23,
                         Total = 4
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Inadequada",
                         Quantidade = 6,
-                        Percentual = 16.23,
+                        Percentual = (decimal)16.23,
                         Total = 4
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Não resolveu",
                         Quantidade = 7,
-                        Percentual = 17.23,
+                        Percentual = (decimal)17.23,
                         Total = 4
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Sem preenchimento",
                         Quantidade = 8,
-                        Percentual = 18.23,
+                        Percentual = (decimal)18.23,
                         Total = 4
                     },
                 }
@@ -3954,28 +3954,28 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         Resposta = "Adequada",
                         Quantidade = 9,
-                        Percentual = 9.23,
+                        Percentual = (decimal)9.23,
                         Total = 5
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Inadequada",
                         Quantidade = 10,
-                        Percentual = 20.23,
+                        Percentual = (decimal)20.23,
                         Total = 5
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Não resolveu",
                         Quantidade = 11,
-                        Percentual = 21.23,
+                        Percentual = (decimal)21.23,
                         Total = 5
                     },
                     new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Sem preenchimento",
                         Quantidade = 12,
-                        Percentual = 22.23,
+                        Percentual = (decimal)22.23,
                         Total = 5
                     },
                 }
