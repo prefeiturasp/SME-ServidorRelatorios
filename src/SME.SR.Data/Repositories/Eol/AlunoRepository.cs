@@ -217,7 +217,7 @@ namespace SME.SR.Data
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-            return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString(), parametros, commandTimeout: 120);
+            return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString(), parametros, commandTimeout: 600);
         }
 
         public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
