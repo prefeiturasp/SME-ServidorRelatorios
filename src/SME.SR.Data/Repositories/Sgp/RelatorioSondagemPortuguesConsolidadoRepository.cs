@@ -36,8 +36,13 @@ namespace SME.SR.Data.Repositories.Sgp
             sql += "inner join \"Periodo\" p2 on sa.\"PeriodoId\" = p2.\"Id\" ";
 
             sql += "where cc.\"Id\" = @componenteCurricularId ";
-            sql += "and sa.\"CodigoDre\" = @dreCodigo ";
-            sql += "and sa.\"CodigoUe\" = @ueCodigo ";
+
+            if (dreCodigo != null && dreCodigo != "0")
+                sql += "and sa.\"CodigoDre\" = @dreCodigo ";
+
+            if (ueCodigo != null && ueCodigo != String.Empty)
+                sql += "and sa.\"CodigoUe\" = @ueCodigo ";
+
             sql += "and sa.\"AnoLetivo\" = @anoLetivo ";
             sql += "and sa.\"AnoTurma\" = @anoTurma ";
             sql += "and p2.\"Descricao\" = @periodo ";

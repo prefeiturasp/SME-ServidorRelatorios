@@ -31,22 +31,34 @@ namespace SME.SR.Application
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoLeitura", relatorio, Guid.NewGuid(), "", "", false));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", relatorio, Guid.NewGuid(), "", "", false));
         }
 
         private async Task<RelatorioSondagemPortuguesConsolidadoLeituraCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
         {
-            var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });
-            var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
+
+            string dreAbreviacao = "Todas";
+            if (filtros.DreCodigo != null && filtros.DreCodigo != "0")
+            {
+                var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
+                dreAbreviacao = dre.Abreviacao;
+            }
+
+            string ueNomeComTipoEscola = "Todas";
+            if (filtros.UeCodigo != null & filtros.UeCodigo != String.Empty)
+            {
+                var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
+                ueNomeComTipoEscola = ue.NomeComTipoEscola;
+            }
 
             return await Task.FromResult(new RelatorioSondagemPortuguesConsolidadoLeituraCabecalhoDto()
             {
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
-                Dre = dre.Abreviacao,
+                Dre = dreAbreviacao,
                 Periodo = $"{ filtros.Bimestre }° Bimestre",
                 Rf = filtros.UsuarioRF,
-                Ue = ue.NomeComTipoEscola,
+                Ue = ueNomeComTipoEscola,
                 Usuario = usuario.Nome,
                 AnoLetivo = filtros.AnoLetivo,
                 AnoTurma = filtros.Ano,
