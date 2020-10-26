@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace SME.SR.Application
 {
     public class ObterRelatorioSondagemPortuguesConsolidadoLeituraQueryHandler : IRequestHandler<ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery, IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>>
@@ -23,7 +22,7 @@ namespace SME.SR.Application
         }
         public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> Handle(ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery request, CancellationToken cancellationToken)
         {
-            return await relatorioSondagemPortuguesConsolidadoLeituraRepository.ObterPlanilha(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre);
+            return await relatorioSondagemPortuguesConsolidadoLeituraRepository.ObterPlanilha(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Grupo);
         }
     }
 }
