@@ -72,9 +72,47 @@ namespace SME.SR.Application
                 Grupo = grupoSondagemEnum
             });
 
+            int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
+                filtros.Ano.ToString(),
+                filtros.UeCodigo,
+                filtros.AnoLetivo,
+                DateTime.Now,
+                Convert.ToInt64(filtros.DreCodigo)
+                ));
+
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
 
             var ordens = linhasSondagem.GroupBy(o => o.Ordem).Select(x => x.FirstOrDefault()).ToList();
+            if (ordens.Count == 0)
+            {
+                var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
+                respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                {
+                    Resposta = "Sem preenchimento",
+                    Quantidade = alunosPorAno,
+                    Total = alunosPorAno,
+                    Percentual = 1
+                });
+
+                var ordensSondagem = await mediator.Send(new ObterOrdensSondagemPorGrupoQuery() { Grupo = grupoSondagemEnum } );
+                foreach (var ordem in ordensSondagem)
+                {
+                    planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
+                    {
+                        Ordem = ordem.Descricao,
+                        Perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>()
+                        {
+                            new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
+                            {
+                                Pergunta = String.Empty,
+                                Respostas = respostasDto
+                            }
+                        }
+                    });
+                }
+
+
+            }
             foreach (var ordem in ordens)
             {
                 var perguntasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
@@ -85,17 +123,25 @@ namespace SME.SR.Application
                     var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
 
                     var respostas = linhasSondagem.Where(o => o.Ordem == ordem.Ordem && o.Pergunta == pergunta.Pergunta).ToList();
+                    var totalRespostas = respostas.Sum(o => o.Quantidade);
                     foreach (var resposta in respostas)
                     {
-                        var totalRespostas = respostas.Sum(o => o.Quantidade);
                         respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                         {
                             Resposta = resposta.Resposta,
                             Quantidade = resposta.Quantidade,
-                            Total = totalRespostas,
-                            Percentual = Decimal.Divide(resposta.Quantidade, totalRespostas)
+                            Total = alunosPorAno,
+                            Percentual = Decimal.Divide(resposta.Quantidade, alunosPorAno)
                         });
                     }
+
+                    respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Sem preenchimento",
+                        Quantidade = alunosPorAno - totalRespostas,
+                        Total = alunosPorAno,
+                        Percentual = Decimal.Divide(alunosPorAno - totalRespostas, alunosPorAno)
+                    });
 
                     perguntasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
                     {
