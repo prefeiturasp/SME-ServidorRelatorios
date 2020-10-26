@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioSondagemMatemicaConsolidadoUseCase : IRelatorioSondagemMatemicaConsolidadoUseCase
+    public class RelatorioSondagemMatematicaConsolidadoUseCase : IRelatorioSondagemMatematicaConsolidadoUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioSondagemMatemicaConsolidadoUseCase(IMediator mediator)
+        public RelatorioSondagemMatematicaConsolidadoUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
@@ -79,7 +79,7 @@ namespace SME.SR.Application
                 mensagemTitulo = $"Relatório de Sondagem (Matemática) - SME - {relatorio.Ano}º ano";
             }            
 
-            return (await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false)));
+            return (await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo)));
         }
     }
 }
