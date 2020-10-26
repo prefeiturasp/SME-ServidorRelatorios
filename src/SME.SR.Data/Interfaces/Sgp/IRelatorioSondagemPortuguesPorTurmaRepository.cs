@@ -9,5 +9,7 @@ namespace SME.SR.Data
     public interface IRelatorioSondagemPortuguesPorTurmaRepository
     {
         public Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia, string nomeColunaBimestre);
+
+        public Task<IEnumerable<SondagemAutoralPorAlunoDto>> ObterPorFiltros(string grupoId, string componenteCurricularId, long periodoId, int anoLetivo, long codigoTurma);
     }
 }
