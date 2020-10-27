@@ -45,7 +45,7 @@ namespace SME.SR.Application
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), "", "", false));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
 
         private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)
