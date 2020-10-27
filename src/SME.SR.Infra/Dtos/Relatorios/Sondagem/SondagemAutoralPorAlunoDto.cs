@@ -4,7 +4,7 @@ namespace SME.SR.Infra
 {
     public class SondagemAutoralPorAlunoDto
     {
-        public long OrdemId { get; set; }
+        public string OrdemId { get; set; }
 
         public string OrdemDescricao { get; set; }
 
@@ -12,11 +12,11 @@ namespace SME.SR.Infra
 
         public string NomeAluno { get; set; }
 
-        public Guid PerguntaId { get; set; }
+        public string PerguntaId { get; set; }
 
         public string PerguntaDescricao { get; set; }
 
-        public Guid RespostaId { get; set; }
+        public string RespostaId { get; set; }
 
         public string RespostaDescricao { get; set; }
     }

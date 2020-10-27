@@ -2,7 +2,7 @@
 {
     public class FiltroRelatorioSondagemPortuguesCapacidadeLeituraDto
     {
-        public int Semestre { get; set; }
+        public int Bimestre { get; set; }
 
         public int AnoLetivo { get; set; }
 

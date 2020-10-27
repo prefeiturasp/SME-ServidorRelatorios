@@ -39,9 +39,9 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpPost("portugues-por-turma-capacidade-leitura")]
-        public async Task<string> RelatorioPortuguesPorTurmaCapacidadeLeitura([FromBody] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemMatConsolidadoAdtMultiUseCase relatorioSondagemMatConsolidadoAdtMultiUseCase)
+        public async Task<string> RelatorioPortuguesPorTurmaCapacidadeLeitura([FromBody] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemPtPorTurmaCapLeituraUseCase relatorioSondagemPtPorTurmaCapLeituraUseCase)
         {
-            return await relatorioSondagemMatConsolidadoAdtMultiUseCase.Executar(request);
+            return await relatorioSondagemPtPorTurmaCapLeituraUseCase.Executar(request);
         }
 
     }

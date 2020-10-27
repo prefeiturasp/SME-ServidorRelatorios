@@ -85,7 +85,7 @@ namespace SME.SR.Data.Repositories.Sgp
             		per.""Id"" = s.""PeriodoId""
             	inner join ""ComponenteCurricular"" c on
             		c.""Id"" = s.""ComponenteCurricularId""
-                	inner join ""Ordem"" o on
+                inner join ""Ordem"" o on
                     o.""Id"" = s.""OrdemId""
                 where
             		s.""Id"" in (

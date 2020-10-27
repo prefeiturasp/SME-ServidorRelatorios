@@ -14,7 +14,7 @@ namespace SME.SR.Application
 
         public int TurmaCodigo { get; set; }
 
-        public int Semestre { get; set; }
+        public int Bimestre { get; set; }
 
         public int AnoLetivo { get; set; }
 
