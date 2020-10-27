@@ -45,7 +45,7 @@ namespace SME.SR.Application
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
-            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeSintetico", dto, request.CodigoCorrelacao)));
+            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeSintetico", dto, request.CodigoCorrelacao, "", "Relatório Controle de Grade Sintético")));
         }
 
         private async Task<TurmaControleGradeSinteticoDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
