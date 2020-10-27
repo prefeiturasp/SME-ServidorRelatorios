@@ -2899,8 +2899,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
-                return View("RelatorioSondagemComponentesPorTurma", model);
-        }       
+            return View("RelatorioSondagemComponentesPorTurma", model);
+        }
 
         [HttpGet("sondagem-consolidado-matematica-aditivo")]
         public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
@@ -2956,8 +2956,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", model);
         }
 
+
         [HttpGet("controle-grade-sintetico")]
-        public IActionResult RelatorioControleGradeSintetico()
+        public IActionResult RelatorioControleGradeSintetico([FromQuery] bool analitico)
         {
 
             var controleGrade = new ControleGradeSinteticoDto()
@@ -2971,12 +2972,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     ComponenteCurricular = "Todos",
                     RF = "9879878",
                     Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
-                }                
+                }
             };
 
             controleGrade.Turmas = new List<TurmaControleGradeSinteticoDto>()
             {
-               new TurmaControleGradeSinteticoDto()
+                new TurmaControleGradeSinteticoDto()
                {
                    Nome="1F",
                    Bimestres = new List<BimestreControleGradeSinteticoDto>()
@@ -3188,7 +3189,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
                    }
                },
-             new TurmaControleGradeSinteticoDto()
+                new TurmaControleGradeSinteticoDto()
                {
                    Nome="2F",
                    Bimestres = new List<BimestreControleGradeSinteticoDto>()
@@ -3207,7 +3208,68 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    AulasDadasProfessorTitular = 8,
                                    AulasDadasProfessorSubstituto = 2,
                                    Repostas = 0,
-                                   Divergencias = "Não"
+                                   Divergencias = "Sim",
+                                   DetalhamentoDivergencias = analitico ? new DetalhamentoDivergenciasControleGradeSinteticoDto()
+                                   {
+                                       AulasNormaisExcedido = new List<AulasNormaisExcedidoControleGradeSinteticoDto>()
+                                       {
+                                           new AulasNormaisExcedidoControleGradeSinteticoDto()
+                                           {
+                                               Data = "26/10/2020",
+                                               QuantidadeAulas = 10,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           },
+                                           new AulasNormaisExcedidoControleGradeSinteticoDto()
+                                           {
+                                               Data = "26/10/2020",
+                                               QuantidadeAulas = 5,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           }
+                                       },
+                                       AulasTitularCJ = new List<AulasTitularCJDataControleGradeSinteticoDto>()
+                                       {
+                                           new AulasTitularCJDataControleGradeSinteticoDto() {
+                                               Data = "26/10/2020",
+                                               Divergencias = new List<AulasTitularCJControleGradeSinteticoDto>() 
+                                               {
+                                                  new AulasTitularCJControleGradeSinteticoDto()
+                                                  {
+                                                      QuantidadeAulas = 2,
+                                                      ProfessorTitular =  "SADAKO MORITA (3135535)",
+                                                  },
+                                                  new AulasTitularCJControleGradeSinteticoDto()
+                                                  {
+                                                      QuantidadeAulas = 1,
+                                                      ProfessorCJ =  "CARLA REGIANE (8027129)",
+                                                  },
+                                                  new AulasTitularCJControleGradeSinteticoDto()
+                                                  {
+                                                      QuantidadeAulas = 1,
+                                                      ProfessorCJ =  "ANA CRISTINA (7777710)",
+                                                  }
+                                               }
+                                           }
+                                       },
+                                       AulasDiasNaoLetivos = new List<AulasDiasNaoLetivosControleGradeSinteticoDto>()
+                                       {
+                                           new AulasDiasNaoLetivosControleGradeSinteticoDto() 
+                                           {
+                                                Data = "21/03/2020",
+                                                Professor = "SADAKO MORITA (3135535)",
+                                                Motivo  = "SUSPENSÃO DE ATIVIDADE",
+                                                QuantidadeAulas = 2
+                                           }
+                                       },
+                                       AulasDuplicadas = new List<AulasDuplicadasControleGradeSinteticoDto>()
+                                       {
+                                           new AulasDuplicadasControleGradeSinteticoDto() 
+                                           {
+                                               Data = "21/03/2020",
+                                               QuantidadeDuplicado = 1,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           }
+                                       },
+                                   } : null
                                },
                                new ComponenteCurricularControleGradeSinteticoDto()
                                {
@@ -3253,116 +3315,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               }
                            }
                        },
                        new BimestreControleGradeSinteticoDto()
