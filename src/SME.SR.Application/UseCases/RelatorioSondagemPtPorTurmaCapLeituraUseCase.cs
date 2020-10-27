@@ -55,7 +55,7 @@ namespace SME.SR.Application
                 TurmaCodigo = filtros.TurmaCodigo
             });
 
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
     }
 }
