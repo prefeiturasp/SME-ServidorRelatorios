@@ -6,6 +6,7 @@ using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.MVC.Controllers
@@ -24,18 +25,19 @@ namespace SME.SR.MVC.Controllers
             return View();
         }
         [HttpGet("graficos")]
-        public IActionResult RelatorioGraficosTeste()
+        public async Task<IActionResult> RelatorioGraficosTeste([FromServices]IMediator mediator)
         {
-            
-            var grafico = new GraficoBarrasVerticalDto(960);
+
+
+            //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("", new GraficoBarrasVerticalDto(10), Guid.NewGuid(), envioPorRabbit : false));
+
+            var grafico = new GraficoBarrasVerticalDto(500, "");
 
             grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(10, "Banana"));
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(38, "Abacate"));
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(2, "D"));
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));            
 
-            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(450, "Frutas", 50, 10);
-            
+            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(500, "Frutas", 100, 5);
+
 
             return View("RelatorioGraficoBarrasTeste", grafico);
         }
@@ -2533,7 +2535,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         }
 
         [HttpGet("sondagem-componentes-numeros")]
-        public IActionResult SondagemComponentesNumeros()
+        public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
@@ -2750,6 +2752,27 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
+            foreach (var pergunta in model.Cabecalho.Perguntas)
+            {
+                var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
+           
+                var respostas = model.Planilha.Linhas
+                    .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta.Id)).GroupBy(b => b.Resposta);
+
+                foreach (var resposta in respostas)
+                {
+                    var qntRespostas = resposta.Count();
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, string.IsNullOrEmpty(resposta.Key) ? "Não Respondeu" : resposta.Key));
+                }
+
+                var valorMaximoEixo = respostas.Max(a => a.Count());
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo, 6);
+
+                model.GraficosBarras.Add(grafico);              
+            }
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorios/RelatorioSondagemComponentesPorTurma", model, Guid.NewGuid(), envioPorRabbit: false));
+
             return View("RelatorioSondagemComponentesPorTurma", model);
         }
 
@@ -2914,8 +2937,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
-                return View("RelatorioSondagemComponentesPorTurma", model);
-        }       
+            return View("RelatorioSondagemComponentesPorTurma", model);
+        }
 
         [HttpGet("sondagem-consolidado-matematica-aditivo")]
         public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
@@ -2970,9 +2993,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", model);
         }
-    }
-            return View("RelatorioSondagemComponentesPorTurma", model);
-        }
+
 
         [HttpGet("controle-grade-sintetico")]
         public IActionResult RelatorioControleGradeSintetico()
@@ -2989,7 +3010,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     ComponenteCurricular = "Todos",
                     RF = "9879878",
                     Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
-                }                
+                }
             };
 
             controleGrade.Turmas = new List<TurmaControleGradeSinteticoDto>()

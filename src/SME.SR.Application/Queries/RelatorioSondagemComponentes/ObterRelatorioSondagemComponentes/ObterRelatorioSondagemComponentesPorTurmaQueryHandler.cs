@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -32,11 +33,38 @@ namespace SME.SR.Application
             RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
             RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha = (Int32.Parse(request.Ano) >= 7)? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
 
-            return new RelatorioSondagemComponentesPorTurmaRelatorioDto()
+            var relatorio = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
             {
                 Cabecalho = cabecalho,
                 Planilha = planilha
             };
+
+            foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+            {
+                var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
+
+                var respostas = relatorio.Planilha.Linhas
+                    .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id)).GroupBy(b => b.Resposta);
+
+                foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                {
+                    var qntRespostas = resposta.Count();                    
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, resposta.Key));
+                }
+
+                var qntSemRespostas = respostas.Where(a => string.IsNullOrEmpty(a.Key)).Count();                
+                if (qntSemRespostas > 0)
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, "Não respondeu"));
+
+
+                var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+                
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+
+                relatorio.GraficosBarras.Add(grafico);
+            }
+
+                return relatorio;
         }
 
         private async Task<RelatorioSondagemComponentesPorTurmaCabecalhoDto> ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
