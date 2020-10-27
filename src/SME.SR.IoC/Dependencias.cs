@@ -172,6 +172,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioSondagemMatConsolidadoAdtMultiUseCase, RelatorioSondagemMatConsolidadoAdtMultiUseCase>();
             services.TryAddScoped<IRelatorioSondagemPortuguesPorTurmaUseCase, RelatorioSondagemPortuguesPorTurmaUseCase>();
             services.TryAddScoped<IRelatorioSondagemPortuguesConsolidadoUseCase, RelatorioSondagemPortuguesConsolidadoUseCase>();
+            services.TryAddScoped<IRelatorioSondagemPtPorTurmaCapLeituraUseCase, RelatorioSondagemPtPorTurmaCapLeituraUseCase>();
 
         }
     }
