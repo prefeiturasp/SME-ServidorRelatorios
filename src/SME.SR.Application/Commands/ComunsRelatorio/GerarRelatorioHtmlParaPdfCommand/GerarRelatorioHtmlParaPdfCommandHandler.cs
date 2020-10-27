@@ -40,9 +40,9 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             {
                 servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
                 return string.Empty;
-            }else return request.CodigoCorrelacao.ToString();
-            
-            
+            }
+            else return request.CodigoCorrelacao.ToString();
+
         }
     }
 }
