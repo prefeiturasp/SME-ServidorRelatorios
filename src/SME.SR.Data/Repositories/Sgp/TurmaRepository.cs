@@ -773,5 +773,23 @@ namespace SME.SR.Data
                 return turma.First();
             }
         }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
+        {
+            var query = @"select t.id as Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where t.id = ANY(@ids)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<Turma>(query, new { ids });
+            }
+
+        }
     }
 }
