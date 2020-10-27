@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -189,8 +190,8 @@ namespace SME.SR.Application
             var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
                 
             dto.Filtro.Dre = turma.Ue.Dre.Abreviacao;
-            dto.Filtro.Ue = turma.Ue.Nome;
-            dto.Filtro.Turma = filtros.Turmas.Count() > 1 ? "Todas" : turma.Nome;
+            dto.Filtro.Ue = $"{turma.Ue.CodigoUe} - {turma.Ue.Nome}";
+            dto.Filtro.Turma = filtros.Turmas.Count() > 1 ? "Todas" : $"{turma.Modalidade.ShortName()} - {turma.Nome}";
             dto.Filtro.Bimestre = filtros.Bimestres.Count() == QuantidadePeriodosPorModalidade(turma.Modalidade) ?
                                     "Todos" : string.Join(",", filtros.Bimestres);
             dto.Filtro.ComponenteCurricular = ObterNomeComponente(filtros, dto);
