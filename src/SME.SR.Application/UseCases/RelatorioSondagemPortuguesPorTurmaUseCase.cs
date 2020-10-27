@@ -23,6 +23,9 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesPorTurmaFiltroDto>();
 
+            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && filtros.GrupoId != GrupoSondagemEnum.LeituraVozAlta.Name())
+                throw new NegocioException("Grupo fora do esperado.");
+
             var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
 
             var dataDoPeriodo = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
@@ -86,10 +89,12 @@ namespace SME.SR.Application
                                 Nome = "Proficiência"
                             },
                         });
-                case ProficienciaSondagemEnum.LeituraVozAlta:
-                    return await Task.FromResult(
-                        new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
-                            {
+                case ProficienciaSondagemEnum.Autoral:
+                    if (filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name())
+                    {
+                        return await Task.FromResult(
+                            new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
+                                {
                                 new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                                 {
                                     Id = 1,
@@ -110,7 +115,8 @@ namespace SME.SR.Application
                                     Id = 4,
                                     Nome = "Leu com fluência"
                                 },
-                            });
+                                });
+                    } else return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>());
                 default:
                     return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>());
             }
@@ -127,30 +133,39 @@ namespace SME.SR.Application
                 AnoTurma = filtros.Ano,
                 Bimestre = filtros.Bimestre,
                 Proficiencia = filtros.ProficienciaId,
+                Grupo = GrupoSondagemEnum.LeituraVozAlta
             });
 
             List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto> linhasPlanilha = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>();
             foreach (Aluno aluno in alunos.OrderBy(a => a.NomeAluno).ToList())
             {
-                var sondagem = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString());
+                var alunoDto = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                {
+                    Codigo = aluno.CodigoAluno,
+                    Nome = aluno.ObterNomeParaRelatorioSondagem(),
+                    DataSituacao = aluno.DataSituacao.ToString("dd/MM/yyyy"),
+                    SituacaoMatricula = aluno.SituacaoMatricula
+                };
+
+                var respostasDto = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>();
+
+                var perguntas = await ObterPerguntas(filtros);
+                foreach (var pergunta in perguntas)
+                {
+                    var resposta = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString() && a.Pergunta == pergunta.Nome);
+                    respostasDto.Add(new RelatorioSondagemPortuguesPorTurmaRespostaDto()
+                    {
+                        PerguntaId = pergunta.Id,
+                        Resposta = resposta?.Resposta
+                    });
+
+                }
+
 
                 linhasPlanilha.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
                 {
-                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
-                    {
-                        Codigo = aluno.CodigoAluno,
-                        Nome = aluno.ObterNomeParaRelatorioSondagem(),
-                        DataSituacao = aluno.DataSituacao.ToString("dd/MM/yyyy"),
-                        SituacaoMatricula = aluno.SituacaoMatricula
-                    },
-                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
-                    {
-                        new RelatorioSondagemPortuguesPorTurmaRespostaDto()
-                        {
-                            PerguntaId = 1,
-                            Resposta = sondagem?.Resposta
-                        }
-                    }
+                    Aluno = alunoDto,
+                    Respostas = respostasDto
                 });
             }
             return await Task.FromResult(linhasPlanilha);

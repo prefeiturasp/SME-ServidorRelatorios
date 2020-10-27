@@ -20,6 +20,7 @@ namespace SME.SR.Infra
                 "SCV" => "Silábico com valor sonoro",
                 "SA" => "Sílábico alfabético",
                 "A" => "Alfabético",
+                "TRUE" => "X",
                 _ => sigla,
             };
         }
