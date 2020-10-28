@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    class ObterAulasNormaisExcedidasQueryHandler : IRequestHandler<ObterAulasNormaisExcedidasQuery, IEnumerable<AulaNormalExcedidoControleGradeDto>>
+    class ObterQuantidadeDeAulasQueryHandler : IRequestHandler<ObterQuantidadeDeAulasQuery, IEnumerable<AulaReduzidaDto>>
     {
         private readonly IAulaRepository aulaRepository;
 
-        public ObterAulasNormaisExcedidasQueryHandler(IAulaRepository aulaRepository)
+        public ObterQuantidadeDeAulasQueryHandler(IAulaRepository aulaRepository)
         {
             this.aulaRepository = aulaRepository ?? throw new ArgumentNullException(nameof(aulaRepository));
         }
 
-        public async Task<IEnumerable<AulaNormalExcedidoControleGradeDto>> Handle(ObterAulasNormaisExcedidasQuery request, CancellationToken cancellationToken)
-            => await aulaRepository.ObterAulasExcedidas(request.TurmaId,
+        public async Task<IEnumerable<AulaReduzidaDto>> Handle(ObterQuantidadeDeAulasQuery request, CancellationToken cancellationToken)
+            => await aulaRepository.ObterQuantidadeAulasReduzido(request.TurmaId,
                                                     request.ComponenteCurricularCodigo.ToString(),
                                                     request.TipoCalendarioId,
-                                                    request.Bimestre);
+                                                    request.Bimestre, request.ProfessorCJ);
     }
 }

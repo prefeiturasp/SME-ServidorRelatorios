@@ -4,10 +4,10 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class AulasTitularCJControleGradeSinteticoDto
+    public class AulaNormalExcedidoControleGradeDto
     {
-        public string ProfessorTitular { get; set; }
+        public string Data { get; set; }
         public int QuantidadeAulas { get; set; }
-        public string ProfessorCJ { get; set; }
+        public string Professor { get; set; }
     }
 }

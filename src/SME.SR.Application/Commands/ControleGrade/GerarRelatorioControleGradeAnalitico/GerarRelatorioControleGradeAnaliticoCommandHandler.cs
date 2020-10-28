@@ -143,17 +143,49 @@ namespace SME.SR.Application
             componenteDto.Divergencias = await VerificarDivergencias(turmaId, aulasPrevistasComponente.Bimestre, aulasPrevistasComponente.ComponenteCurricularId, aulasPrevistasComponente.Regencia, modalidadeTurma,
                 componenteDto.AulasPrevistas != (aulasPrevistasComponente.CumpridasTitular + aulasPrevistasComponente.CumpridasCj), tipoCalendarioId, componenteDto.AulasPrevistas == 0) ? "Sim" : "Não";
 
-            componenteDto.DetalhamentoDivergencias = new DetalhamentoDivergenciasControleGradeSinteticoDto()
-            {
-                AulasNormaisExcedido = await mediator.Send(new ObterAulasNormaisExcedidasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre))
-            };
-             
+            var detalhamentoDivergencias = new DetalhamentoDivergenciasControleGradeSinteticoDto();
 
-            var aulasDuplicadas = await mediator.Send(new DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Bimestre));
-            // TODO incluir os dados obtidos no Dto
+            detalhamentoDivergencias.AulasNormaisExcedido = await mediator.Send(new ObterAulasNormaisExcedidasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre));
+            detalhamentoDivergencias.AulasTitularCJ = await ObterAulasTitularCJ(aulasPrevistasComponente, turmaId, tipoCalendarioId, bimestre);
+            detalhamentoDivergencias.AulasDuplicadas = await mediator.Send(new DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Bimestre));
 
             return componenteDto;
         }                
+
+        private async Task<List<AulaTitularCJDataControleGradeDto>> ObterAulasTitularCJ(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, int bimestre)
+        {
+            var aulasTitular = await mediator.Send(new ObterQuantidadeDeAulasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre));
+            var aulasCJ = await mediator.Send(new ObterQuantidadeDeAulasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, true));
+
+            var aulasTitularCJData = new List<AulaTitularCJDataControleGradeDto>();
+            foreach (var aulaTitular in aulasTitular)
+            {
+                var aulasRepetidas = aulasCJ.Where(a => a.Data == aulaTitular.Data);
+                if (aulasRepetidas.Any())
+                {
+                    var aulaTitularCJData = new AulaTitularCJDataControleGradeDto()
+                    {
+                        Data = aulaTitular.Data
+                    };
+
+                    var divergencias = new List<AulaTitularCJControleGradeDto>();
+
+                    foreach (var aula in aulasRepetidas)
+                    {
+                        divergencias.Add(new AulaTitularCJControleGradeDto()
+                        {
+                            QuantidadeAulas = aula.Quantidade + aulaTitular.Quantidade,
+                            ProfessorCJ = aula.Professor,
+                            ProfessorTitular = aulaTitular.Professor
+                        });
+                    }
+                    aulaTitularCJData.Divergencias = divergencias;
+                    aulasTitularCJData.Add(aulaTitularCJData);
+                }
+            }
+
+            return aulasTitularCJData;
+        }
 
         private async Task<bool> VerificarDivergencias(long turmaId, int bimestre, long componenteCurricularId, bool regencia, Modalidade modalidadeTurma, bool divergenciaNumeroAulas, long tipoCalendarioId, bool aulasPrevistasvZero)
         {

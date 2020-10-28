@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class DetalharAulasDuplicadasPorTurmaComponenteEBimestreQueryHandler : IRequestHandler<DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery, IEnumerable<AulaDuplicadaDto>>
+    public class DetalharAulasDuplicadasPorTurmaComponenteEBimestreQueryHandler : IRequestHandler<DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery, IEnumerable<AulaDuplicadaControleGradeDto>>
     {
         private readonly IAulaRepository aulaRepository;
 
@@ -18,7 +18,7 @@ namespace SME.SR.Application
             this.aulaRepository = aulaRepository ?? throw new ArgumentNullException(nameof(aulaRepository));
         }
 
-        public async Task<IEnumerable<AulaDuplicadaDto>> Handle(DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AulaDuplicadaControleGradeDto>> Handle(DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery request, CancellationToken cancellationToken)
             => await aulaRepository.DetalharAulasDuplicadasNoDia(request.TurmaId,
                                                     request.ComponenteCurricularId.ToString(),
                                                     request.TipoCalendarioId,

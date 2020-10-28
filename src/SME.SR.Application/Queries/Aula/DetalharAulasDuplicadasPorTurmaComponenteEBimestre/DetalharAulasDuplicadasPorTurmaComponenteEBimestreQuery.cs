@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SME.SR.Application
 {
-    public class DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery : IRequest<IEnumerable<AulaDuplicadaDto>>
+    public class DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery : IRequest<IEnumerable<AulaDuplicadaControleGradeDto>>
     {
         public DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre)
         {

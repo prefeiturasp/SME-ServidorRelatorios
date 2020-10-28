@@ -3211,38 +3211,38 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Divergencias = "Sim",
                                    DetalhamentoDivergencias = analitico ? new DetalhamentoDivergenciasControleGradeSinteticoDto()
                                    {
-                                       AulasNormaisExcedido = new List<AulasNormaisExcedidoControleGradeSinteticoDto>()
+                                       AulasNormaisExcedido = new List<AulaNormalExcedidoControleGradeDto>()
                                        {
-                                           new AulasNormaisExcedidoControleGradeSinteticoDto()
+                                           new AulaNormalExcedidoControleGradeDto()
                                            {
                                                Data = "26/10/2020",
                                                QuantidadeAulas = 10,
                                                Professor = "SADAKO MORITA (3135535)"
                                            },
-                                           new AulasNormaisExcedidoControleGradeSinteticoDto()
+                                           new AulaNormalExcedidoControleGradeDto()
                                            {
                                                Data = "26/10/2020",
                                                QuantidadeAulas = 5,
                                                Professor = "SADAKO MORITA (3135535)"
                                            }
                                        },
-                                       AulasTitularCJ = new List<AulasTitularCJDataControleGradeSinteticoDto>()
+                                       AulasTitularCJ = new List<AulaTitularCJDataControleGradeDto>()
                                        {
-                                           new AulasTitularCJDataControleGradeSinteticoDto() {
+                                           new AulaTitularCJDataControleGradeDto() {
                                                Data = "26/10/2020",
-                                               Divergencias = new List<AulasTitularCJControleGradeSinteticoDto>() 
+                                               Divergencias = new List<AulaTitularCJControleGradeDto>() 
                                                {
-                                                  new AulasTitularCJControleGradeSinteticoDto()
+                                                  new AulaTitularCJControleGradeDto()
                                                   {
                                                       QuantidadeAulas = 2,
                                                       ProfessorTitular =  "SADAKO MORITA (3135535)",
                                                   },
-                                                  new AulasTitularCJControleGradeSinteticoDto()
+                                                  new AulaTitularCJControleGradeDto()
                                                   {
                                                       QuantidadeAulas = 1,
                                                       ProfessorCJ =  "CARLA REGIANE (8027129)",
                                                   },
-                                                  new AulasTitularCJControleGradeSinteticoDto()
+                                                  new AulaTitularCJControleGradeDto()
                                                   {
                                                       QuantidadeAulas = 1,
                                                       ProfessorCJ =  "ANA CRISTINA (7777710)",
@@ -3250,9 +3250,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                                }
                                            }
                                        },
-                                       AulasDiasNaoLetivos = new List<AulasDiasNaoLetivosControleGradeSinteticoDto>()
+                                       AulasDiasNaoLetivos = new List<AulaDiasNaoLetivosControleGradeDto>()
                                        {
-                                           new AulasDiasNaoLetivosControleGradeSinteticoDto() 
+                                           new AulaDiasNaoLetivosControleGradeDto() 
                                            {
                                                 Data = "21/03/2020",
                                                 Professor = "SADAKO MORITA (3135535)",
@@ -3260,9 +3260,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                                 QuantidadeAulas = 2
                                            }
                                        },
-                                       AulasDuplicadas = new List<AulasDuplicadasControleGradeSinteticoDto>()
+                                       AulasDuplicadas = new List<AulaDuplicadaControleGradeDto>()
                                        {
-                                           new AulasDuplicadasControleGradeSinteticoDto() 
+                                           new AulaDuplicadaControleGradeDto() 
                                            {
                                                Data = "21/03/2020",
                                                QuantidadeDuplicado = 1,
