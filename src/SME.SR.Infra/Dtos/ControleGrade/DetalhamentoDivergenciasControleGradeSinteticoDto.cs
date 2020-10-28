@@ -8,14 +8,14 @@ namespace SME.SR.Infra
     {
         public DetalhamentoDivergenciasControleGradeSinteticoDto()
         {
-            AulasNormaisExcedido = new List<AulasNormaisExcedidoControleGradeSinteticoDto>();
-            AulasTitularCJ = new List<AulasTitularCJDataControleGradeSinteticoDto>();
-            AulasDiasNaoLetivos = new List<AulasDiasNaoLetivosControleGradeSinteticoDto>();
-            AulasDuplicadas = new List<AulasDuplicadasControleGradeSinteticoDto>();
+            AulasNormaisExcedido = new List<AulaNormalExcedidoControleGradeDto>();
+            AulasTitularCJ = new List<AulaTitularCJDataControleGradeDto>();
+            AulasDiasNaoLetivos = new List<AulaDiasNaoLetivosControleGradeDto>();
+            AulasDuplicadas = new List<AulaDuplicadaControleGradeDto>();
         }
-        public IEnumerable<AulasNormaisExcedidoControleGradeSinteticoDto> AulasNormaisExcedido { get; set; }
-        public IEnumerable<AulasTitularCJDataControleGradeSinteticoDto> AulasTitularCJ { get; set; }
-        public IEnumerable<AulasDiasNaoLetivosControleGradeSinteticoDto> AulasDiasNaoLetivos { get; set; }
-        public IEnumerable<AulasDuplicadasControleGradeSinteticoDto> AulasDuplicadas { get; set; }
+        public IEnumerable<AulaNormalExcedidoControleGradeDto> AulasNormaisExcedido { get; set; }
+        public IEnumerable<AulaTitularCJDataControleGradeDto> AulasTitularCJ { get; set; }
+        public IEnumerable<AulaDiasNaoLetivosControleGradeDto> AulasDiasNaoLetivos { get; set; }
+        public IEnumerable<AulaDuplicadaControleGradeDto> AulasDuplicadas { get; set; }
     }
 }

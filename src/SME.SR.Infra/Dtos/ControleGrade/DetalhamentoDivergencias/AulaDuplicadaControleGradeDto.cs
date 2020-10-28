@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class AulasDuplicadasControleGradeSinteticoDto
+    public class AulaDuplicadaControleGradeDto
     {
         public string Data { get; set; }
         public int QuantidadeDuplicado { get; set; }
