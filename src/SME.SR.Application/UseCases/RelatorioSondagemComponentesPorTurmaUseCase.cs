@@ -33,6 +33,7 @@ namespace SME.SR.Application
 
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
+            
 
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
