@@ -2534,7 +2534,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
-        [HttpGet("sondagem-componentes-numeros")]
         public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
@@ -3710,7 +3709,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
         }
-        }
 
         [HttpGet("sondagem-portugues-capacidade-leitura")]
         public IActionResult SondagemPortuguesCapacidadeLeitura()
@@ -3893,6 +3891,67 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     },
                 });
             }
+
+            var model = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaCabecalhoDto()
+                {
+                    Ano = 5.ToString(),
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Matemática",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    Dre = "DRE - BT",
+                    Periodo = "1º Semestre",
+                    Proficiencia = "Campo Aditivo",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    Ordens = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = 1,
+                            Descricao = "ORDEM NO NARRAR"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = 2,
+                            Descricao = "ORDEM DO RELATAR"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = 3,
+                            Descricao = "ORDEM DO ARGUMENTAR"
+                        },
+                    },
+                    Perguntas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = 1,
+                            Nome = "Inferência"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = 2,
+                            Nome = "Localização "
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = 3,
+                            Nome = "Reflexão"
+                        }
+                    },
+                },
+                Planilha = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
+            };
+
+            return View("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", model);
+        }
 
         [HttpGet("sondagem-portugues-leitura-voz-alta")]
         public IActionResult SondagemPortuguesLeituraVozAlta()
@@ -4090,6 +4149,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
         }
+
 
         [HttpGet("sondagem-portugues-capacidade-leitura")]
         public IActionResult SondagemPortuguesCapacidadeLeitura()
@@ -4475,68 +4535,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 Planilhas = planilhas,
             };
             return View("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", model);
-            return View("RelatorioSondagemPortuguesConsolidadoLeitura", model);
-        }
-    }
-            var model = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto()
-            {
-                Cabecalho = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaCabecalhoDto()
-                {
-                    Ano = 5.ToString(),
-                    AnoLetivo = 2020,
-                    ComponenteCurricular = "Matemática",
-                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
-                    Dre = "DRE - BT",
-                    Periodo = "1º Semestre",
-                    Proficiencia = "Campo Aditivo",
-                    Rf = "9879878",
-                    Turma = "Todas",
-                    Ue = "CEU EMEF BUTANTA",
-                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
-                    Ordens = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto>()
-                    {
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
-                        {
-                            Id = 1,
-                            Descricao = "ORDEM NO NARRAR"
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
-                        {
-                            Id = 2,
-                            Descricao = "ORDEM DO RELATAR"
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
-                        {
-                            Id = 3,
-                            Descricao = "ORDEM DO ARGUMENTAR"
-                        },
-                    },
-                    Perguntas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto>()
-                    {
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
-                        {
-                            Id = 1,
-                            Nome = "Inferência"
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
-                        {
-                            Id = 2,
-                            Nome = "Localização "
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
-                        {
-                            Id = 3,
-                            Nome = "Reflexão"
-                        }
-                    },
-                },
-                Planilha = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaDto()
-                {
-                    Linhas = linhas
-                },
-            };
-
-            return View("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", model);
         }
     }
 }
