@@ -2961,9 +2961,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public IActionResult RelatorioControleGradeSintetico([FromQuery] bool analitico)
         {
 
-            var controleGrade = new ControleGradeSinteticoDto()
+            var controleGrade = new ControleGradeDto()
             {
-                Filtro = new FiltroGradeSintetico()
+                Filtro = new FiltroControleGrade()
                 {
                     Dre = "DRE - BT",
                     Ue = "CEU EMEF BUTANTA",
@@ -2975,19 +2975,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 }
             };
 
-            controleGrade.Turmas = new List<TurmaControleGradeSinteticoDto>()
+            controleGrade.Turmas = new List<TurmaControleGradeDto>()
             {
-                new TurmaControleGradeSinteticoDto()
+                new TurmaControleGradeDto()
                {
                    Nome="1F",
-                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   Bimestres = new List<BimestreControleGradeDto>()
                    {
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "1° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -2998,7 +2998,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3009,7 +3009,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3020,7 +3020,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "CIÊNCIAS",
                                    AulasPrevistas = 15,
@@ -3033,12 +3033,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "2° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3049,7 +3049,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3060,7 +3060,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3071,7 +3071,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "CIÊNCIAS",
                                    AulasPrevistas = 15,
@@ -3084,12 +3084,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "3° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3100,7 +3100,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3113,12 +3113,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "4° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3129,7 +3129,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3140,7 +3140,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3151,7 +3151,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3162,7 +3162,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3173,7 +3173,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3189,17 +3189,17 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
                    }
                },
-                new TurmaControleGradeSinteticoDto()
+                new TurmaControleGradeDto()
                {
                    Nome="2F",
-                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   Bimestres = new List<BimestreControleGradeDto>()
                    {
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "1° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3271,7 +3271,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                        },
                                    } : null
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3282,7 +3282,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3293,7 +3293,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3304,7 +3304,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3317,12 +3317,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                },
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "2° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3333,7 +3333,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3346,12 +3346,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "3° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3362,7 +3362,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3375,12 +3375,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "4° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 12,
@@ -3391,7 +3391,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 19,

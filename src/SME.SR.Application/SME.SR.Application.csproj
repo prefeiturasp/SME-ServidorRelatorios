@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Queries\Aula\NewFolder\" />
     <Folder Include="Queries\HistoricoEscolar\MontarHistoricoEscolarTransferenciaEJA\" />
   </ItemGroup>
 

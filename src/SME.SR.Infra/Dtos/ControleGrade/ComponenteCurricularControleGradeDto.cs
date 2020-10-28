@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class ComponenteCurricularControleGradeSinteticoDto
+    public class ComponenteCurricularControleGradeDto
     {
-        public ComponenteCurricularControleGradeSinteticoDto()
+        public ComponenteCurricularControleGradeDto()
         {
             VisaoSemanal = new List<VisaoSemanalControleGradeSinteticoDto>();
         }

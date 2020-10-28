@@ -15,5 +15,6 @@ namespace SME.SR.Data.Interfaces
         Task<bool> VerificaExisteAulasMesmoDiaProfessor(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre);
 
         Task<IEnumerable<AulaDuplicadaDto>> DetalharAulasDuplicadasNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre);
+        Task<IEnumerable<AulasNormaisExcedidoControleGradeSinteticoDto>> ObterAulasExcedidas(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre);
     }
 }

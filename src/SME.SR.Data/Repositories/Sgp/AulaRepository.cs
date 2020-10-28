@@ -184,5 +184,35 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<AulaDuplicadaDto>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<AulasNormaisExcedidoControleGradeSinteticoDto>> ObterAulasExcedidas(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
+        {
+            var query = @"select
+	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as DataAula,
+	                        sum(a.quantidade) as QuantidadeAulas,
+	                        a.criado_por as Professor
+                        from
+	                        aula a
+                        inner join turma t on
+	                        a.turma_id = t.turma_id
+                        inner join periodo_escolar pe on
+	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                        where
+	                        disciplina_id = @componenteCurricularId
+	                        and t.id = @turmaId
+	                        and pe.bimestre = @bimestre
+	                        and not a.excluido 
+                            and pe.tipo_calendario_id = @tipoCalendarioId
+                        group by
+	                        a.data_aula,
+	                        a.criado_por
+                       having sum(a.quantidade) >= 3
+                        order by
+	                        data_aula";
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<AulasNormaisExcedidoControleGradeSinteticoDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre }));
+            }
+        }
     }
 }
