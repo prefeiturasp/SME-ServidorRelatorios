@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Dtos\Aula\" />
+    <Folder Include="Dtos\Aula\" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@ using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -91,14 +92,16 @@ namespace SME.SR.Data
        // public Task<int> ObterQuantidadeAulas(long turmaId, string componenteCurricularId, string CodigoRF)
         public async Task<bool> VerificaExisteMaisAulaCadastradaNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
-            var query = @"select distinct 1 from aula a 
+            var query = @"select distinct 1 
+                            from aula a 
                           inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id and a.data_aula between p.periodo_inicio and p.periodo_fim
                           inner join turma on a.turma_id = turma.turma_id 
-                          where turma.id = @turmaId
+                          where not a.excluido
+                            and turma.id = @turmaId
                             and a.tipo_calendario_id = @tipoCalendarioId
                             and a.disciplina_id = @componenteCurricularId 
                             and p.bimestre = @bimestre 
-                         group by a.data_aula, a.criado_rf having sum(a.quantidade) > 1";
+                         group by a.data_aula, a.tipo_aula, a.criado_rf having count(a.id) > 1";
 
             var parametros = new
             {
@@ -152,6 +155,33 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return (await conexao.QueryAsync<int>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre })).Any();
+            }
+        }
+
+        public async Task<IEnumerable<AulaDuplicadaDto>> DetalharAulasDuplicadasNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
+        {
+            var query = @"select to_char(a.data_aula, 'dd/MM/yyyy') as data, a.criado_rf as Professor, count(a.quantidade) as QuantidadeDuplicado
+                            from aula a 
+                          inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id and a.data_aula between p.periodo_inicio and p.periodo_fim
+                          inner join turma on a.turma_id = turma.turma_id 
+                          where not a.excluido
+                            and turma.id = @turmaId
+                            and a.tipo_calendario_id = @componenteCurricularId
+                            and a.disciplina_id = @componenteCurricularId
+                            and p.bimestre = @bimestre
+                         group by a.data_aula, a.tipo_aula, a.criado_rf having count(a.quantidade) > 1";
+
+            var parametros = new
+            {
+                componenteCurricularId,
+                turmaId,
+                tipoCalendarioId,
+                bimestre
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<AulaDuplicadaDto>(query, parametros);
             }
         }
     }
