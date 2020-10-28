@@ -81,7 +81,7 @@
         var numeroPerguntas = Model.Cabecalho.Perguntas.Count;
         int width = 68 / (numeroOrdens * numeroPerguntas);
 
-        if (Model.Cabecalho.Ordens.First().Id > 0)
+        if (!String.IsNullOrEmpty(Model.Cabecalho.Ordens.First().Id))
         {
             str += $@"<tr><td colspan='2' class='coluna-vazia'>&nbsp;</td>";
         }
@@ -90,7 +90,7 @@
 
         foreach (var ordem in ordensOrdenadas)
         {
-            if (ordem.Id > 0)
+            if (!String.IsNullOrEmpty(ordem.Id))
             {
                 str += $@"<td colspan='{numeroPerguntas}'>{ordem.Descricao}</td>";
 
@@ -153,16 +153,16 @@
                 {
                     if (resposta.OrdemId == ordem.Id)
                     {
-                        var quebraPalavra = ordem.Id == 0 ? "quebra-palavra" : "";
+                        var quebraPalavra = String.IsNullOrEmpty(ordem.Id) ? "quebra-palavra" : "";
 
                         str += $@"<td  class='{quebraPalavra}'>{resposta.Resposta}</td>";
                         preencheu = true;
                     }
                 }
 
-                if (!preencheu && ordem.Id > 0)
+                if (!preencheu && !String.IsNullOrEmpty(ordem.Id))
                 {
-                    for(var k = 0; k < Model.Cabecalho.Perguntas.Count; k++)
+                    for (var k = 0; k < Model.Cabecalho.Perguntas.Count; k++)
                     {
                         str += $@"<td>&nbsp;</td>";
                     }
@@ -180,7 +180,7 @@
                 contadorQuebrarPagina++;
             }
 
-            if (Model.Cabecalho.Ordens.First().Id == 0)
+            if (String.IsNullOrEmpty(Model.Cabecalho.Ordens.First().Id))
             {
                 contadorMaximoLinhasPorPagina = 33;
             }
@@ -242,9 +242,9 @@
             margin-bottom: 22px;
         }
 
-        .header-pagina td {
-            text-align: left;
-        }
+            .header-pagina td {
+                text-align: left;
+            }
 
         table {
             display: table;
