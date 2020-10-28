@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SME.SR.Infra;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Interfaces
@@ -12,5 +13,6 @@ namespace SME.SR.Data.Interfaces
         Task<bool> VerificaExisteMaisAulaCadastradaNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre);
         Task<bool> VerificaExsiteAulaTitularECj(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre);
         Task<bool> VerificaExisteAulasMesmoDiaProfessor(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre);
+        Task<IEnumerable<AulasNormaisExcedidoControleGradeSinteticoDto>> ObterAulasExcedidas(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre);
     }
 }
