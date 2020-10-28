@@ -143,6 +143,9 @@ namespace SME.SR.Application
             };
              
 
+            var aulasDuplicadas = await mediator.Send(new DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Bimestre));
+            // TODO incluir os dados obtidos no Dto
+
             return componenteDto;
         }
 
@@ -169,7 +172,7 @@ namespace SME.SR.Application
                     return true;
             }
 
-            //Mais de um registro de aula normal do mesmo professor, componente curricular e turma no mesmo dia.           
+            //Mais de um registro de aula do mesmo professor, componente curricular e turma no mesmo dia.           
             var verificaExisteMaisAula = await mediator.Send(new VerificaExisteMaisAulaCadastradaNoDiaQuery(turmaId, componenteCurricularId.ToString(), tipoCalendarioId, bimestre));
             if (verificaExisteMaisAula)
                 return true;
