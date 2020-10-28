@@ -14,6 +14,12 @@ namespace SME.SR.Application
         {
             ComponentesCurricularesIds = new long[] { id };
         }
+
+        public ObterComponentesCurricularesPorIdsQuery(long[] ids)
+        {
+            ComponentesCurricularesIds = ids;
+        }
+
         public long[] ComponentesCurricularesIds { get; set; }
     }
 }

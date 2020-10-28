@@ -16,7 +16,7 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia, string nomeColunaBimestre)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia, string nomeColunaBimestre, GrupoSondagemEnum grupo)
         {
             string sql = String.Empty;
 
@@ -25,7 +25,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 case ProficienciaSondagemEnum.Leitura:
                 case ProficienciaSondagemEnum.Escrita:
                     sql = $"select \"{nomeColunaBimestre}\" Resposta, ";
-                    sql += "1 Id, '' Pergunta, ";
+                    sql += "'1' PerguntaId, '' Pergunta, ";
                     sql += "\"studentCodeEol\" AlunoEolCode, ";
                     sql += "\"studentNameEol\" AlunoNome, ";
                     sql += "\"schoolYear\" AnoLetivo, ";
@@ -38,19 +38,44 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "and \"schoolYear\" = @anoLetivo ";
                     sql += "and \"yearClassroom\" = @anoTurma ";
                     break;
-                case ProficienciaSondagemEnum.LeituraVozAlta:
-                    sql = $"select \"CodigoAluno\" AlunoEolCode, \"NomeAluno\" AlunoNome, \"AnoLetivo\", \"AnoTurma\", \"CodigoTurma\" TurmaEolCode, pae.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta";
-                    sql += " from \"SondagemAutoral\" sa inner join \"Pergunta\" p on sa.\"PerguntaId\" = p.\"Id\"";
-                    sql += " inner join \"ComponenteCurricular\" cc on p.\"ComponenteCurricularId\" = cc.\"Id\"";
-                    sql += " inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" and pae.\"AnoEscolar\" = sa.\"AnoTurma\"";
-                    sql += " inner join \"Resposta\" r on sa.\"RespostaId\" = r.\"Id\"";
-                    sql += " where cc.\"Id\" = @componenteCurricular and  \"CodigoDre\" = @dreCodigo and \"CodigoUe\" = @ueCodigo and \"CodigoTurma\" = @turmaCodigo and sa.\"AnoLetivo\" = @anoLetivo and \"AnoTurma\" = @anoTurma order by \"NomeAluno\"";
+                case ProficienciaSondagemEnum.Autoral:
+                    sql += "select distinct sa2.\"CodigoAluno\" AlunoEolCode, sa2.\"NomeAluno\" AlunoNome, sa.\"AnoLetivo\", sa.\"AnoTurma\", sa.\"CodigoTurma\" TurmaEolCode, p.\"Id\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta ";
+
+                    sql += "from \"Sondagem\" sa ";
+                    sql += "inner join \"ComponenteCurricular\" cc on sa.\"ComponenteCurricularId\" = cc.\"Id\"  ";
+                    sql += "inner join \"Periodo\" p2 on sa.\"PeriodoId\" = p2.\"Id\"  ";
+                    sql += "inner join \"SondagemAluno\" sa2 on sa.\"Id\" = sa2.\"SondagemId\"  ";
+                    sql += "inner join \"Pergunta\" p on p.\"ComponenteCurricularId\" = sa.\"ComponenteCurricularId\"  ";
+                    sql += "inner join \"SondagemAlunoRespostas\" pr on pr.\"PerguntaId\" = p.\"Id\" and pr.\"SondagemAlunoId\" = sa2.\"Id\"  ";
+                    sql += "inner join \"Resposta\" r on r.\"Id\" = pr.\"RespostaId\"  ";
+                    sql += "inner join \"OrdemPergunta\" op on op.\"GrupoId\" = sa.\"GrupoId\" ";
+                    sql += "where sa.\"GrupoId\" = @grupoId ";
+                    sql += "and sa.\"CodigoDre\" = @dreCodigo  ";
+                    sql += "and sa.\"CodigoUe\" = @ueCodigo  ";
+                    sql += "and sa.\"CodigoTurma\" = @turmaCodigo ";
+                    sql += "and sa.\"AnoLetivo\" = @anoLetivo  ";
+                    sql += "and sa.\"AnoTurma\" = @anoTurma ";
+                    sql += "and cc.\"Id\" = @componenteCurricular ";
+                    sql += "and p2.\"Descricao\" = @periodo  ";
+                    sql += "order by sa2.\"NomeAluno\" ";
                     break;
             }
 
+            var periodo = $"{ bimestre }° Bimestre";
+
             var componenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name();
 
-            var parametros = new { componenteCurricular, dreCodigo, ueCodigo, turmaCodigo, anoLetivo = anoLetivo.ToString(), anoTurma = anoTurma.ToString() };
+            var grupoId = grupo.Name();
+
+            var parametros = new object();
+
+            if (proficiencia == ProficienciaSondagemEnum.Autoral)
+            {
+                parametros = new { componenteCurricular, dreCodigo, grupoId, ueCodigo, periodo, turmaCodigo, anoLetivo, anoTurma };
+            } else
+            {
+                parametros = new { componenteCurricular, dreCodigo, grupoId, ueCodigo, periodo, turmaCodigo, anoLetivo = anoLetivo.ToString(), anoTurma = anoTurma.ToString() };
+            }
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 

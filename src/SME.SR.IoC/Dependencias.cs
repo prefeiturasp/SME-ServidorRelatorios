@@ -140,6 +140,7 @@ namespace SME.SR.IoC
 
 
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
+            services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)

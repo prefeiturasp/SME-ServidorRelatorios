@@ -33,11 +33,9 @@ namespace SME.SR.Application
 
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
+            
 
-            var mensagemDaNotificacao = $"Este é o relatório de Sondagem de Matemática ({(string.IsNullOrEmpty(relatorio.Cabecalho.Proficiencia) ? "Autoral" : relatorio.Cabecalho.Proficiencia)}) da turma {relatorio.Cabecalho.Turma} da {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre})";
-            var mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Cabecalho.Ue} ({relatorio.Cabecalho.Dre}) - {relatorio.Cabecalho.Turma}";
-
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
 
         private async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)

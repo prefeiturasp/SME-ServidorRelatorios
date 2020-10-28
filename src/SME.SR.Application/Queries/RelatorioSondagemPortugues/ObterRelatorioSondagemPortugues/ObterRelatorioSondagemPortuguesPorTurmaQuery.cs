@@ -14,5 +14,6 @@ namespace SME.SR.Application
         public int AnoTurma { get; set; }
         public int Bimestre { get; set; }
         public ProficienciaSondagemEnum Proficiencia { get; set; }
+        public GrupoSondagemEnum Grupo { get; set; }
     }
 }

@@ -29,15 +29,15 @@ namespace SME.SR.Application
         {
             if (request.Proficiencia != ProficienciaSondagemEnum.Leitura &&
                 request.Proficiencia != ProficienciaSondagemEnum.Escrita &&
-                request.Proficiencia != ProficienciaSondagemEnum.LeituraVozAlta)
+                (request.Proficiencia != ProficienciaSondagemEnum.Autoral && request.Grupo != GrupoSondagemEnum.LeituraVozAlta))
                 throw new NegocioException($"{ request.Proficiencia } fora do esperado.");
 
             string nomeColunaBimestre = ObterNomeColunaBimestre(request.Bimestre, request.Proficiencia);
 
-            if (nomeColunaBimestre == String.Empty)
+            if (nomeColunaBimestre == String.Empty && request.Proficiencia != ProficienciaSondagemEnum.Autoral)
                 throw new NegocioException($"Nome da coluna do bimestre não pode ser vazio.");
 
-            return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia, nomeColunaBimestre);
+            return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia, nomeColunaBimestre, request.Grupo);
         }
 
         private String ObterNomeColunaBimestre(int bimestre, ProficienciaSondagemEnum proficiencia)

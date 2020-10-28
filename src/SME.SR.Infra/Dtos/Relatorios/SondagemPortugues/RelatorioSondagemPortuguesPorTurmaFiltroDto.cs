@@ -10,6 +10,6 @@
         public int Bimestre { get; set; }
         public ProficienciaSondagemEnum ProficienciaId { get; set; }
         public string UsuarioRF { get; set; }
-
+        public string GrupoId { get; set; }
     }
 }

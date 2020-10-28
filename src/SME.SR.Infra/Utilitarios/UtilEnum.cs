@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -26,5 +27,20 @@ namespace SME.SR.Infra.Utilitarios
 
         public static string ShortName(this Enum enumValue)
             => enumValue.GetAttribute<DisplayAttribute>().ShortName;
+        public static string Description(this Enum enumValue)
+            => enumValue.GetAttribute<DisplayAttribute>().Description;
+
+        public static Dictionary<Enum, string> ToDictionary<TEnum>()
+         where TEnum : struct
+        {
+            if (!typeof(TEnum).IsEnum) throw new InvalidOperationException();
+
+            return ((TEnum[])Enum.GetValues(typeof(TEnum))).Cast<Enum>().ToDictionary(key => key, value => value.Name());
+        }
+
+        public static bool EhUmDosValores(this Enum valorEnum, params Enum[] valores)
+        {
+            return valores.Contains(valorEnum);
+        }
     }
 }

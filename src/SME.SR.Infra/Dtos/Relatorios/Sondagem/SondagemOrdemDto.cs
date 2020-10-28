@@ -4,9 +4,10 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class RelatorioSondagemPortuguesPorTurmaPerguntaDto
+    public class SondagemOrdemDto
     {
         public string Id { get; set; }
-        public string Nome { get; set; }
+        public string Descricao { get; set; }
+        public int Ordem { get; set; }
     }
 }

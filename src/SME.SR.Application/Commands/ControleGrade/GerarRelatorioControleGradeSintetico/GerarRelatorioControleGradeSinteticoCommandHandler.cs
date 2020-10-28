@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +29,9 @@ namespace SME.SR.Application
                                                 ModalidadeTipoCalendario.EJA : request.Filtros.ModalidadeTurma == Modalidade.Infantil ?
                                                     ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.Filtros.AnoLetivo, modalidadeCalendario, request.Filtros.Semestre));
-
+            var periodosEscolares = await ObterPeriodosEscolares(request.Filtros.Bimestres, tipoCalendarioId);
+            var componentesCurriculares = await ObterComponentesCurriculares(request.Filtros.ComponentesCurriculares);
+            var turmas = await ObterTurmas(request.Filtros.Turmas);
             foreach (long turmaId in request.Filtros.Turmas)
             {
                 var aulasPrevistasTurma = new List<AulaPrevistaBimestreQuantidade>();
@@ -35,8 +39,25 @@ namespace SME.SR.Application
                 {
                     var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId));
 
-                    if (aulasPrevistasBimestresComponente != null)
+                    if (aulasPrevistasBimestresComponente.Any())
+                    {
                         aulasPrevistasTurma.AddRange(aulasPrevistasBimestresComponente);
+                    } 
+                    else
+                    {
+                        foreach(var periodoEscolar in periodosEscolares)
+                        {
+
+                            aulasPrevistasTurma.Add(new AulaPrevistaBimestreQuantidade() {
+                                
+                                ComponenteCurricularId = componenteCurricularId,
+                                ComponenteCurricularNome = componentesCurriculares.FirstOrDefault(a => a.CodDisciplina == componenteCurricularId)?.Disciplina,
+                                TurmaNome = turmas.FirstOrDefault(a => a.Codigo == turmaId.ToString()).Nome,
+                                Bimestre = periodoEscolar.Bimestre,
+                                DataInicio = periodoEscolar.PeriodoInicio,
+                                DataFim = periodoEscolar.PeriodoFim }); ;
+                        }
+                    }
                 }
 
                 if (aulasPrevistasTurma.Any())
@@ -45,7 +66,25 @@ namespace SME.SR.Application
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
-            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeSintetico", dto, request.CodigoCorrelacao)));
+            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeSintetico", dto, request.CodigoCorrelacao, "", "Relatório Controle de Grade Sintético")));
+        }
+
+        private async Task <IEnumerable<Turma>> ObterTurmas(IEnumerable<long> turmasIds)
+        {
+            var turmas = await mediator.Send(new ObterTurmasPorIdsQuery(turmasIds.ToArray()));
+            return turmas;
+        }
+
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<long> componentesCurriculares)
+        {
+            var componentes = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesCurriculares.ToArray()));
+            return componentes;
+        }
+
+        private async Task<IEnumerable<PeriodoEscolar>> ObterPeriodosEscolares(IEnumerable<int> bimestres, long tipoCalendarioId)
+        {
+            var periodos = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
+            return periodos.Where(a => bimestres.Contains(a.Bimestre));
         }
 
         private async Task<TurmaControleGradeSinteticoDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
@@ -95,13 +134,17 @@ namespace SME.SR.Application
             componenteDto.AulasDadasProfessorSubstituto = aulasPrevistasComponente.CumpridasCj;
             componenteDto.Repostas = aulasPrevistasComponente.Reposicoes;
             componenteDto.Divergencias = await VerificarDivergencias(turmaId, aulasPrevistasComponente.Bimestre, aulasPrevistasComponente.ComponenteCurricularId, aulasPrevistasComponente.Regencia, modalidadeTurma,
-                componenteDto.AulasPrevistas != (aulasPrevistasComponente.CumpridasTitular + aulasPrevistasComponente.CumpridasCj), tipoCalendarioId) ? "Sim" : "Não";
+                componenteDto.AulasPrevistas != (aulasPrevistasComponente.CumpridasTitular + aulasPrevistasComponente.CumpridasCj), tipoCalendarioId, componenteDto.AulasPrevistas == 0) ? "Sim" : "Não";
 
             return componenteDto;
         }
 
-        private async Task<bool> VerificarDivergencias(long turmaId, int bimestre, long componenteCurricularId, bool regencia, Modalidade modalidadeTurma, bool divergenciaNumeroAulas, long tipoCalendarioId)
+        private async Task<bool> VerificarDivergencias(long turmaId, int bimestre, long componenteCurricularId, bool regencia, Modalidade modalidadeTurma, bool divergenciaNumeroAulas, long tipoCalendarioId, bool aulasPrevistasvZero)
         {
+            //Não existe aulas previstas cadastradas.
+            if (aulasPrevistasvZero)
+                return true;
+
             //Diferença entre aulas previstas X aulas dadas.
             if (divergenciaNumeroAulas)
                 return true;
@@ -148,8 +191,8 @@ namespace SME.SR.Application
             var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
                 
             dto.Filtro.Dre = turma.Ue.Dre.Abreviacao;
-            dto.Filtro.Ue = turma.Ue.Nome;
-            dto.Filtro.Turma = filtros.Turmas.Count() > 1 ? "Todas" : turma.Nome;
+            dto.Filtro.Ue = $"{turma.Ue.CodigoUe} - {turma.Ue.Nome}";
+            dto.Filtro.Turma = filtros.Turmas.Count() > 1 ? "Todas" : $"{turma.Modalidade.ShortName()} - {turma.Nome}";
             dto.Filtro.Bimestre = filtros.Bimestres.Count() == QuantidadePeriodosPorModalidade(turma.Modalidade) ?
                                     "Todos" : string.Join(",", filtros.Bimestres);
             dto.Filtro.ComponenteCurricular = ObterNomeComponente(filtros, dto);

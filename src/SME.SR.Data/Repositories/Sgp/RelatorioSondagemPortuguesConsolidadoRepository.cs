@@ -15,7 +15,7 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, GrupoSondagemEnum grupo)
         {
             var sql = String.Empty;
 
@@ -24,17 +24,25 @@ namespace SME.SR.Data.Repositories.Sgp
             sql += "p.\"Descricao\" Pergunta, ";
             sql += "r.\"Descricao\" Resposta, ";
             sql += "count(*) Quantidade ";
-            sql += "from \"Sondagem\" sa ";
-            sql += "inner join \"ComponenteCurricular\" cc on sa.\"ComponenteCurricularId\" = cc.\"Id\" ";
-            sql += "inner join \"Pergunta\" p on p.\"ComponenteCurricularId\" = cc.\"Id\" ";
-            sql += "inner join \"PerguntaResposta\" pr on p.\"Id\" = pr.\"PerguntaId\" ";
-            sql += "inner join \"Resposta\" r on pr.\"RespostaId\" = r.\"Id\" ";
-            sql += "inner join \"Grupo\" g2 on sa.\"GrupoId\" = g2.\"Id\" ";
-            sql += "inner join \"Ordem\" o on sa.\"OrdemId\" = o.\"Id\" and o.\"GrupoId\" = g2.\"Id\" ";
+
+            sql += "from \"Ordem\" o ";
+            sql += "inner join \"GrupoOrdem\" go2 on go2.\"OrdemId\" = o.\"Id\"  ";
+            sql += "inner join \"OrdemPergunta\" op on op.\"GrupoId\" = go2.\"GrupoId\"  ";
+            sql += "inner join \"Pergunta\" p on p.\"Id\" = op.\"PerguntaId\"  ";
+            sql += "inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\"  ";
+            sql += "inner join \"Resposta\" r on r.\"Id\" = pr.\"RespostaId\"  ";
+            sql += "inner join \"ComponenteCurricular\" cc on p.\"ComponenteCurricularId\" = cc.\"Id\"  ";
+            sql += "inner join \"Sondagem\" sa on sa.\"ComponenteCurricularId\" = cc.\"Id\" and sa.\"GrupoId\" = go2.\"GrupoId\" and sa.\"OrdemId\" = o.\"Id\"  ";
             sql += "inner join \"Periodo\" p2 on sa.\"PeriodoId\" = p2.\"Id\" ";
+
             sql += "where cc.\"Id\" = @componenteCurricularId ";
-            sql += "and sa.\"CodigoDre\" = @dreCodigo ";
-            sql += "and sa.\"CodigoUe\" = @ueCodigo ";
+
+            if (dreCodigo != null && dreCodigo != "0")
+                sql += "and sa.\"CodigoDre\" = @dreCodigo ";
+
+            if (ueCodigo != null && ueCodigo != String.Empty)
+                sql += "and sa.\"CodigoUe\" = @ueCodigo ";
+
             sql += "and sa.\"AnoLetivo\" = @anoLetivo ";
             sql += "and sa.\"AnoTurma\" = @anoTurma ";
             sql += "and p2.\"Descricao\" = @periodo ";
@@ -43,11 +51,10 @@ namespace SME.SR.Data.Repositories.Sgp
             sql += "order by Ordem, Pergunta, Resposta ";
 
             var componenteCurricularId = ComponenteCurricularSondagemEnum.Portugues.Name();
-            var grupoId = GrupoSondagemEnum.CapacidadeLeitura.Name();
 
             var periodo = $"{ bimestre }° Bimestre";
 
-            var parametros = new { grupoId, componenteCurricularId, periodo, dreCodigo, ueCodigo, turmaCodigo, anoLetivo, anoTurma };
+            var parametros = new { grupoId = grupo.Name(), componenteCurricularId, periodo, dreCodigo, ueCodigo, anoLetivo, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
