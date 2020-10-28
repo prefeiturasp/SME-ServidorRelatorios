@@ -82,15 +82,15 @@
         newdataAxis.style.strokeWidth = "2px";
 
         svg_@(Model.IdParaLastro).appendChild(newdataAxis);
-
+        </text>
+    }
     }
 
     function drawMarkers_@(Model.IdParaLastro)(x1) {
-
+        @*var labelForLoop = LabelOnYAxis_@(Model.IdParaLastro)
         var numberMarkers = parseInt(maximumDataValue_@(Model.IdParaLastro) / LabelOnYAxis_@(Model.IdParaLastro));
-        var labelForLoop = LabelOnYAxis_@(Model.IdParaLastro)
-        </text>
-    }
+        
+        
          for (var i = 0; i < labelForLoop + 1; i++)
          {
              @{
@@ -120,13 +120,17 @@
              newdataAxis.style.strokeWidth = "1px";
 
                     svg_@(Model.IdParaLastro).appendChild(newdataAxis);
+            </text>
 
+        }*@
 
-        }
+             @{
+                    <text>
         var totalChartBarsForLoop = totalChartBars_@(Model.IdParaLastro)
+                 </text>
+                 }
 
-        </text>
-                }
+       
 
             for (var i = 0; i < totalChartBarsForLoop; i++)
             {
@@ -205,7 +209,7 @@
         rect.setAttributeNS(null, 'y', y);
         rect.setAttributeNS(null, 'width', wd);
         rect.setAttributeNS(null, 'height', ht);
-        rect.setAttributeNS(null, 'fill', "#D3D3D3");
+        rect.setAttributeNS(null, 'fill', "#f3f3f3");
 
         svg_@(Model.IdParaLastro).appendChild(rect);
 

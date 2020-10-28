@@ -31,7 +31,7 @@ namespace SME.SR.Application
         public async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
         {
             RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
-            RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha = (Int32.Parse(request.Ano) >= 7)? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
+            RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha = (Int32.Parse(request.Ano) >= 7) ? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
 
             var relatorio = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
             {
@@ -39,32 +39,49 @@ namespace SME.SR.Application
                 Planilha = planilha
             };
 
-            foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+            GerarGraficoParaNumeros(relatorio, request.Proficiencia);
+
+            return relatorio;
+        }
+
+        private static void GerarGraficoParaNumeros(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, ProficienciaSondagemEnum proficiencia)
+        {
+            if (proficiencia == ProficienciaSondagemEnum.Numeros)
             {
-                var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
-
-                var respostas = relatorio.Planilha.Linhas
-                    .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id)).GroupBy(b => b.Resposta);
-
-                foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                foreach (var pergunta in relatorio.Cabecalho.Perguntas)
                 {
-                    var qntRespostas = resposta.Count();                    
-                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, resposta.Key));
+                    var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
+
+                    var respostas = relatorio.Planilha.Linhas
+                        .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id)).GroupBy(b => b.Resposta);
+
+                    foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                    {
+                        var qntRespostas = resposta.Count();
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, resposta.Key));
+                    }
+
+                    var respostasNulasOuVazias = respostas.Where(a => string.IsNullOrEmpty(a.Key)).ToList();
+                    if (respostasNulasOuVazias.Any())
+                    {
+                        var qntSemRespostas = 0;
+
+                        foreach (var item in respostasNulasOuVazias)
+                        {
+                            qntSemRespostas += item.Count();
+                        }
+
+                        if (qntSemRespostas > 0)
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, "Não respondeu"));
+                    }
+
+                    var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+
+                    grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+
+                    relatorio.GraficosBarras.Add(grafico);
                 }
-
-                var qntSemRespostas = respostas.Where(a => string.IsNullOrEmpty(a.Key)).Count();                
-                if (qntSemRespostas > 0)
-                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, "Não respondeu"));
-
-
-                var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
-                
-                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
-
-                relatorio.GraficosBarras.Add(grafico);
             }
-
-                return relatorio;
         }
 
         private async Task<RelatorioSondagemComponentesPorTurmaCabecalhoDto> ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
@@ -229,7 +246,8 @@ namespace SME.SR.Application
                             PerguntaId = pergunta.Id,
                             Resposta = resposta.Resposta,
                         });
-                    } else
+                    }
+                    else
                     {
                         listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                         {
@@ -263,7 +281,7 @@ namespace SME.SR.Application
                 var respostaDoAluno = listaSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString());
 
                 respostas = await ObterOrdemRespostas(respostaDoAluno, request.Ano, request.Proficiencia);
-                
+
 
                 linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
                 {
@@ -444,7 +462,8 @@ namespace SME.SR.Application
                     PerguntaId = 2,
                     Resposta = linha?.Ordem2Resultado,
                 });
-            } else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
+            }
+            else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
             {
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
@@ -505,7 +524,8 @@ namespace SME.SR.Application
                     PerguntaId = 2,
                     Resposta = linha?.Ordem3Resultado,
                 });
-            } else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
+            }
+            else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
             {
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
@@ -586,7 +606,8 @@ namespace SME.SR.Application
                     PerguntaId = 2,
                     Resposta = linha?.Ordem4Resultado,
                 });
-            } else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
+            }
+            else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
             {
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
@@ -679,7 +700,8 @@ namespace SME.SR.Application
                     PerguntaId = 2,
                     Resposta = linha?.Ordem4Resultado,
                 });
-            } else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
+            }
+            else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
             {
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
@@ -731,7 +753,7 @@ namespace SME.SR.Application
                 });
             }
         }
-        
+
         private static void ObterRespostasAno6(RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto linha, List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> listaRespostas, ProficienciaSondagemEnum proficiencia)
         {
             if (proficiencia == ProficienciaSondagemEnum.CampoAditivo)
@@ -784,7 +806,8 @@ namespace SME.SR.Application
                     PerguntaId = 2,
                     Resposta = linha?.Ordem4Resultado,
                 });
-            } else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
+            }
+            else if (proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
             {
                 listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                 {
