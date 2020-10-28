@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class AulaExcedidaDto
+    public class AulaReduzidaDto
     {
-        public AulaExcedidaDto()
+        public AulaReduzidaDto()
         {
         }
 

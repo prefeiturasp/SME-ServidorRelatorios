@@ -158,7 +158,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AulaDuplicadaDto>> DetalharAulasDuplicadasNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
+        public async Task<IEnumerable<AulaDuplicadaControleGradeDto>> DetalharAulasDuplicadasNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             var query = @"select to_char(a.data_aula, 'dd/MM/yyyy') as data, a.criado_rf as Professor, count(a.quantidade) as QuantidadeDuplicado
                             from aula a 
@@ -181,11 +181,11 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<AulaDuplicadaDto>(query, parametros);
+                return await conexao.QueryAsync<AulaDuplicadaControleGradeDto>(query, parametros);
             }
         }
 
-        public async Task<IEnumerable<AulasNormaisExcedidoControleGradeSinteticoDto>> ObterAulasExcedidas(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
+        public async Task<IEnumerable<AulaNormalExcedidoControleGradeDto>> ObterAulasExcedidas(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             var query = @"select
 	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as DataAula,
@@ -211,7 +211,37 @@ namespace SME.SR.Data
 	                        data_aula";
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return (await conexao.QueryAsync<AulasNormaisExcedidoControleGradeSinteticoDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre }));
+                return (await conexao.QueryAsync<AulaNormalExcedidoControleGradeDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre }));
+            }
+        }
+
+        public async Task<IEnumerable<AulaReduzidaDto>> ObterQuantidadeAulasReduzido(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre, bool professorCJ)
+        {
+            var query = @"select
+	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as DataAula,
+	                        sum(a.quantidade) as QuantidadeAulas,
+	                        a.criado_por as Professor
+                        from
+	                        aula a
+                        inner join turma t on
+	                        a.turma_id = t.turma_id
+                        inner join periodo_escolar pe on
+	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                        where
+	                        disciplina_id = @componenteCurricularId
+	                        and t.id = @turmaId
+	                        and pe.bimestre = @bimestre
+	                        and not a.excluido 
+                            and pe.tipo_calendario_id = @tipoCalendarioId
+                            and a.aula_cj = @professorCJ
+                        group by
+	                        a.data_aula,
+	                        a.criado_por
+                        order by
+	                        data_aula";
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<AulaReduzidaDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre, professorCJ }));
             }
         }
     }
