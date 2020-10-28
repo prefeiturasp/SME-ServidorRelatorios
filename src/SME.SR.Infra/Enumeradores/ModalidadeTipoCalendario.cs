@@ -8,6 +8,10 @@ namespace SME.SR.Infra
         FundamentalMedio = 1,
 
         [Display(Name = "EJA")]
-        EJA = 2
+        EJA = 2,
+
+        [Display(Name = "Infantil")]
+        Infantil = 3
+
     }
 }
