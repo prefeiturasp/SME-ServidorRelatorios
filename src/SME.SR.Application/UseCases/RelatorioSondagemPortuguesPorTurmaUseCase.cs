@@ -85,7 +85,7 @@ namespace SME.SR.Application
                         {
                             new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                             {
-                                Id = String.Empty,
+                                Id = "1",
                                 Nome = "Proficiência"
                             },
                         });
