@@ -6,7 +6,7 @@ namespace SME.SR.Infra
 {
     public class RelatorioSondagemPortuguesPorTurmaPerguntaDto
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Nome { get; set; }
     }
 }
