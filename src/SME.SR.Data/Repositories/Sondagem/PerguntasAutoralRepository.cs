@@ -55,7 +55,7 @@ namespace SME.SR.Data
             query.Append(" inner join \"Pergunta\" p on p.\"Id\" = op.\"PerguntaId\" where 1=1 ");
 
             if (grupoSondagem > 0)
-                query.Append("and g.\"GrupoId\" = @grupoId ");
+                query.Append("and g.\"Id\" = @grupoId ");
 
             if (componenteCurricular > 0)
                 query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");

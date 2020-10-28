@@ -57,7 +57,7 @@ namespace SME.SR.Data.Repositories.Sgp
             return await conexao.QueryAsync<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>(sql, parametros);
         }
 
-        public async Task<IEnumerable<SondagemAutoralPorAlunoDto>> ObterPorFiltros(string grupoId, string componenteCurricularId, long periodoId, int anoLetivo, long codigoTurma)
+        public async Task<IEnumerable<SondagemAutoralPorAlunoDto>> ObterPorFiltros(string grupoId, string componenteCurricularId, string periodoId, int anoLetivo, string codigoTurma)
         {
             StringBuilder query = new StringBuilder();
 
@@ -101,13 +101,13 @@ namespace SME.SR.Data.Repositories.Sgp
             if (!string.IsNullOrEmpty(componenteCurricularId))
                 query.AppendLine(" and s.\"ComponenteCurricularId\" = @ComponenteCurricularId");
 
-            if (periodoId > 0)
+            if (!string.IsNullOrEmpty(periodoId))
                 query.AppendLine(" and s.\"PeriodoId\" = @PeriodoId");
 
             if(anoLetivo > 0)
                 query.AppendLine(" and s.\"AnoLetivo\" = @AnoLetivo");
 
-            if (anoLetivo > 0)
+            if (!string.IsNullOrEmpty(codigoTurma))
                 query.AppendLine(" and s.\"CodigoTurma\" = @CodigoTurma");
 
             query.AppendLine(")");

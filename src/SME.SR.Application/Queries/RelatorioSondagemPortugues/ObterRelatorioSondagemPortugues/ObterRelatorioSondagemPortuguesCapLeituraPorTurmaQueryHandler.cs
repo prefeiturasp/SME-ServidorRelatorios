@@ -30,10 +30,11 @@ namespace SME.SR.Application
             var relatorio = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto();
 
             var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Bimestre, TipoPeriodoSondagem.Bimestre));
+            var turma = await mediator.Send(new ObterTurmaSondagemEolPorCodigoQuery(request.TurmaCodigo));
 
             var semestre = (periodo.Periodo <= 2) ? 1 : 2;
 
-            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, periodo.Periodo, request.Usuario.CodigoRf, request.Usuario.Nome);
+            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), turma.Nome, request.AnoLetivo, periodo.Periodo, request.Usuario.CodigoRf, request.Usuario.Nome);
 
             var dataDoPeriodo = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, request.AnoLetivo));
 
@@ -45,7 +46,7 @@ namespace SME.SR.Application
 
             ObterPerguntas(relatorio, perguntas);
 
-            var dados = await relatorioSondagemPortuguesPorTurmaRepository.ObterPorFiltros(GrupoSondagemEnum.CapacidadeLeitura.Name(), ComponenteCurricularSondagemEnum.Portugues.Name(), 0, request.AnoLetivo, request.TurmaCodigo);
+            var dados = await relatorioSondagemPortuguesPorTurmaRepository.ObterPorFiltros(GrupoSondagemEnum.CapacidadeLeitura.Name(), ComponenteCurricularSondagemEnum.Portugues.Name(), periodo.Id, request.AnoLetivo, request.TurmaCodigo.ToString());
 
             ObterLinhas(relatorio, dados, alunosDaTurma, perguntas);
 
@@ -72,22 +73,28 @@ namespace SME.SR.Application
                 itemRelatorio.Aluno = aluno;
 
                 itemRelatorio.OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>();
-                var alunoRespostas = alunosAgrupados.FirstOrDefault(x => x.Key == aluno.Codigo).ToList();
+                var alunoRespostas = alunosAgrupados.FirstOrDefault(x => x.Key == aluno.Codigo)?.ToList();
 
-                itemRelatorio.OrdensRespostas.AddRange(alunoRespostas.Select(aluno =>
+                if (alunoRespostas != null && alunoRespostas.Any())
                 {
-                    var itemResposta = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto()
+                    itemRelatorio.OrdensRespostas.AddRange(alunoRespostas.Select(aluno =>
                     {
-                        OrdemId = aluno.OrdemId,
-                        PerguntaId = aluno.PerguntaId,
-                        Resposta = aluno.RespostaDescricao
-                    };
+                        var itemResposta = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto()
+                        {
+                            OrdemId = aluno.OrdemId,
+                            PerguntaId = aluno.PerguntaId,
+                            Resposta = aluno.RespostaDescricao
+                        };
 
-                    return itemResposta;
-                }));
+                        return itemResposta;
+                    }));
+                }
 
                 return itemRelatorio;
             }));
+
+            if (relatorio.Planilha.Linhas != null && relatorio.Planilha.Linhas.Any())
+                relatorio.Planilha.Linhas = relatorio.Planilha.Linhas.OrderBy(a => a.Aluno.Nome).ToList();
         }
 
         private void ObterPerguntas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
@@ -104,17 +111,17 @@ namespace SME.SR.Application
             relatorio.Cabecalho.Ordens.AddRange(ordensAgrupado.Select(o => new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
             {
                 Id = o.Key.OrdemId,
-                Descricao = o.Key.Ordem,
+                Descricao = o.Key.Ordem
             }));
 
-            relatorio.Cabecalho.Ordens.AddRange(perguntasAgrupado.Select(o => new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+            relatorio.Cabecalho.Perguntas.AddRange(perguntasAgrupado.Select(o => new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
             {
                 Id = o.Key.PerguntaId,
-                Descricao = o.Key.Pergunta,
+                Nome = o.Key.Pergunta
             }));
         }
 
-        private void MontarCabecalho(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int bimestre, string codigoRf, string usuario)
+        private void MontarCabecalho(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, Dre dre, Ue ue, string anoTurma, string turmaNome, int anoLetivo, int bimestre, string codigoRf, string usuario)
         {
             relatorio.Cabecalho = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaCabecalhoDto()
             {
@@ -126,7 +133,7 @@ namespace SME.SR.Application
                 Periodo = $"{bimestre}º Bimestre",
                 Proficiencia = "Capacidade de Leitura",
                 Rf = codigoRf,
-                Turma = "Todas",
+                Turma = turmaNome,
                 Ue = ue != null ? ue.NomeComTipoEscola : "Todas",
                 Usuario = usuario,
             };
