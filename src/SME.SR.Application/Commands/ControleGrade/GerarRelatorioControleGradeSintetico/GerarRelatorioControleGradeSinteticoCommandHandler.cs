@@ -190,7 +190,7 @@ namespace SME.SR.Application
             var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
                 
             dto.Filtro.Dre = turma.Ue.Dre.Abreviacao;
-            dto.Filtro.Ue = $"{turma.Ue.CodigoUe} - {turma.Ue.Nome}";
+            dto.Filtro.Ue = $"{turma.Ue.CodigoUe} - {turma.Ue.TipoEscola.ShortName()} {turma.Ue.Nome}";
             dto.Filtro.Turma = filtros.Turmas.Count() > 1 ? "Todas" : $"{turma.Modalidade.ShortName()} - {turma.Nome}";
             dto.Filtro.Bimestre = filtros.Bimestres.Count() == QuantidadePeriodosPorModalidade(turma.Modalidade) ?
                                     "Todos" : string.Join(",", filtros.Bimestres);
