@@ -58,18 +58,10 @@
         barchartWidth_@(Model.IdParaLastro) = (svgWidth_@(Model.IdParaLastro) / totalChartBars_@(Model.IdParaLastro)) - barchartMargin_@(Model.IdParaLastro);
 
         maximumDataValue_@(Model.IdParaLastro) = @(Model.EixoYConfiguracao.ValorMaximoEixo);
-        var totalChartBarsLoopPrimeiro = totalChartBars_@(Model.IdParaLastro);
-        </text>
-        }
-        for (var i = 0; i < totalChartBarsLoopPrimeiro; i++) {
-               @{
-        <text>
-            var arrVal = studentexamdata_@(Model.IdParaLastro)[i].split(",");
-            var barVal = parseInt(arrVal[1]);
-            if (parseInt(barVal) > parseInt(maximumDataValue_@(Model.IdParaLastro)))
-                maximumDataValue = barVal;        }
+
 
         LabelOnYAxis_@(Model.IdParaLastro) = @(Model.EixoYConfiguracao.DivisoesDoEixo);
+
         }
 
     function drawAxis_@(Model.IdParaLastro)() {
@@ -90,15 +82,15 @@
         newdataAxis.style.strokeWidth = "2px";
 
         svg_@(Model.IdParaLastro).appendChild(newdataAxis);
-
+        </text>
+    }
     }
 
     function drawMarkers_@(Model.IdParaLastro)(x1) {
-
+        @*var labelForLoop = LabelOnYAxis_@(Model.IdParaLastro)
         var numberMarkers = parseInt(maximumDataValue_@(Model.IdParaLastro) / LabelOnYAxis_@(Model.IdParaLastro));
-        var labelForLoop = LabelOnYAxis_@(Model.IdParaLastro)
-        </text>
-    }
+
+
          for (var i = 0; i < labelForLoop + 1; i++)
          {
              @{
@@ -128,13 +120,17 @@
              newdataAxis.style.strokeWidth = "1px";
 
                     svg_@(Model.IdParaLastro).appendChild(newdataAxis);
+            </text>
 
+        }*@
 
-        }
+             @{
+                    <text>
         var totalChartBarsForLoop = totalChartBars_@(Model.IdParaLastro)
+                 </text>
+                 }
 
-        </text>
-                }
+
 
             for (var i = 0; i < totalChartBarsForLoop; i++)
             {
@@ -145,7 +141,7 @@
                 markerXPosition = MarginSpace_@(Model.IdParaLastro) + barchartMargin_@(Model.IdParaLastro) + (i * (barchartWidth_@(Model.IdParaLastro) + barchartMargin_@(Model.IdParaLastro))) + (barchartWidth_@(Model.IdParaLastro) / 2) + 10;
                 markerYPosition = MarginHeight_@(Model.IdParaLastro) + 20 ;
                 //textelement = document.createElementNS("http://www.w3.org/2000/svg", 'text');
-                       var elementText = createSVGtext(name, markerXPosition, markerYPosition)
+                var elementText = createSVGtext(name, markerXPosition, markerYPosition)
                 </text>
                        }
 
@@ -207,21 +203,21 @@
 
     return svgText;
 }
-    function drawRectangleForChart_@(Model.IdParaLastro)(x, y, wd, ht, fill) {
+    function drawRectangleForChart_@(Model.IdParaLastro)(x, y, wd, ht, fill, i) {
         var rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
         rect.setAttributeNS(null, 'x', x);
         rect.setAttributeNS(null, 'y', y);
         rect.setAttributeNS(null, 'width', wd);
         rect.setAttributeNS(null, 'height', ht);
-        rect.setAttributeNS(null, 'fill', "#D3D3D3");
+        rect.setAttributeNS(null, 'fill', "#f3f3f3");
 
         svg_@(Model.IdParaLastro).appendChild(rect);
 
         //Novo Marcador para exibir numero acima
-        var arrVal = studentexamdata[i].split(",");                
-        var valueOfTextY = arrVal[1];                                        
+        var arrVal = studentexamdata_@(Model.IdParaLastro)[i].split(",");
+        var valueOfTextY = arrVal[1];
         var elementNewTextY = createSVGtext(valueOfTextY, x + (wd/2), y - 2)
-        
+
         svg_@(Model.IdParaLastro).appendChild(elementNewTextY);
 
     }
@@ -249,7 +245,7 @@
             bcY = (MarginHeight_@(Model.IdParaLastro) - bcHt - 2);
             switch (chart) {
                 case "Bar":
-                    drawRectangleForChart_@(Model.IdParaLastro)(bcX, bcY, barchartWidth_@(Model.IdParaLastro), bcHt, true);
+                    drawRectangleForChart_@(Model.IdParaLastro)(bcX, bcY, barchartWidth_@(Model.IdParaLastro), bcHt, true, i);
                     break;
 
                 case "Point":
@@ -265,8 +261,8 @@
 @{
 
     <text>
-        <div id="chartcontainer_@(Model.IdParaLastro)">
-            <h2>@(Model.Titulo)</h2>
+        <div id="chartcontainer_@(Model.IdParaLastro)" style="text-align:left">
+            <h2 style="text-align:center">@(Model.Titulo)</h2>
             <svg id="svgcontainer_@(Model.IdParaLastro)" height="@Model.EixoYConfiguracao.ValorTotalAltura" width="@(Model.LarguraTotal - 50)">
             </svg>
     </text>

@@ -50,7 +50,7 @@ namespace SME.SR.Application
             {
                 foreach (var pergunta in relatorio.Cabecalho.Perguntas)
                 {
-                    var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
+                    var grafico = new GraficoBarrasVerticalDto(420, pergunta.Nome);
 
                     var respostas = relatorio.Planilha.Linhas
                         .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id)).GroupBy(b => b.Resposta);
@@ -72,7 +72,7 @@ namespace SME.SR.Application
                         }
 
                         if (qntSemRespostas > 0)
-                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, "Não respondeu"));
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, "Sem preenchimento"));
                     }
 
                     var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
