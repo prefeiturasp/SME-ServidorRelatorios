@@ -43,7 +43,6 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             }
             else return request.CodigoCorrelacao.ToString();
 
-
         }
     }
 }
