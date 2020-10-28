@@ -85,7 +85,7 @@ namespace SME.SR.Application
                         {
                             new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                             {
-                                Id = 1,
+                                Id = "1",
                                 Nome = "Proficiência"
                             },
                         });
@@ -97,22 +97,22 @@ namespace SME.SR.Application
                                 {
                                 new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                                 {
-                                    Id = 1,
+                                    Id = "0bf845cc-29dc-45ec-8bf2-8981cef616df",
                                     Nome = "Não conseguiu ou não quis ler"
                                 },
                                 new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                                 {
-                                    Id = 2,
+                                    Id = "49c26883-e717-44aa-9aab-1bd8aa870916",
                                     Nome = "Leu com muita dificuldade"
                                 },
                                 new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                                 {
-                                    Id = 3,
-                                    Nome = "Leu com alguma fluência	"
+                                    Id = "0b38221a-9d50-4cdf-abbd-a9ac092dbe70",
+                                    Nome = "Leu com alguma fluência"
                                 },
                                 new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                                 {
-                                    Id = 4,
+                                    Id = "18d148be-d83c-4f24-9d03-dc003a05b9e4",
                                     Nome = "Leu com fluência"
                                 },
                                 });
@@ -152,7 +152,7 @@ namespace SME.SR.Application
                 var perguntas = await ObterPerguntas(filtros);
                 foreach (var pergunta in perguntas)
                 {
-                    var resposta = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString() && a.Pergunta == pergunta.Nome);
+                    var resposta = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString() && a.PerguntaId == pergunta.Id);
                     respostasDto.Add(new RelatorioSondagemPortuguesPorTurmaRespostaDto()
                     {
                         PerguntaId = pergunta.Id,

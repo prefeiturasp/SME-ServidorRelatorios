@@ -40,14 +40,16 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "and \"yearClassroom\" = '@anoTurma' ";
                     break;
                 case ProficienciaSondagemEnum.Autoral:
-                    sql += "select sa2.\"CodigoAluno\" AlunoEolCode, sa2.\"NomeAluno\" AlunoNome, sa.\"AnoLetivo\", sa.\"AnoTurma\", sa.\"CodigoTurma\" TurmaEolCode, pr.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta ";
+                    sql += "select distinct sa2.\"CodigoAluno\" AlunoEolCode, sa2.\"NomeAluno\" AlunoNome, sa.\"AnoLetivo\", sa.\"AnoTurma\", sa.\"CodigoTurma\" TurmaEolCode, p.\"Id\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta ";
+
                     sql += "from \"Sondagem\" sa ";
                     sql += "inner join \"ComponenteCurricular\" cc on sa.\"ComponenteCurricularId\" = cc.\"Id\"  ";
                     sql += "inner join \"Periodo\" p2 on sa.\"PeriodoId\" = p2.\"Id\"  ";
                     sql += "inner join \"SondagemAluno\" sa2 on sa.\"Id\" = sa2.\"SondagemId\"  ";
                     sql += "inner join \"Pergunta\" p on p.\"ComponenteCurricularId\" = sa.\"ComponenteCurricularId\"  ";
-                    sql += "inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\"  ";
+                    sql += "inner join \"SondagemAlunoRespostas\" pr on pr.\"PerguntaId\" = p.\"Id\" and pr.\"SondagemAlunoId\" = sa2.\"Id\"  ";
                     sql += "inner join \"Resposta\" r on r.\"Id\" = pr.\"RespostaId\"  ";
+                    sql += "inner join \"OrdemPergunta\" op on op.\"GrupoId\" = sa.\"GrupoId\" ";
                     sql += "where sa.\"GrupoId\" = @grupoId ";
                     sql += "and sa.\"CodigoDre\" = @dreCodigo  ";
                     sql += "and sa.\"CodigoUe\" = @ueCodigo  ";
