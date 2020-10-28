@@ -26,7 +26,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 case ProficienciaSondagemEnum.Leitura:
                 case ProficienciaSondagemEnum.Escrita:
                     sql = $"select \"{nomeColunaBimestre}\" Resposta, ";
-                    sql += "1 Id, '' Pergunta, ";
+                    sql += "'1' PerguntaId, '' Pergunta, ";
                     sql += "\"studentCodeEol\" AlunoEolCode, ";
                     sql += "\"studentNameEol\" AlunoNome, ";
                     sql += "\"schoolYear\" AnoLetivo, ";
@@ -36,8 +36,8 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "where \"dreCodeEol\" = @dreCodigo ";
                     sql += "and \"schoolCodeEol\" = @ueCodigo ";
                     sql += "and \"classroomCodeEol\" = @turmaCodigo ";
-                    sql += "and \"schoolYear\" = '@anoLetivo' ";
-                    sql += "and \"yearClassroom\" = '@anoTurma' ";
+                    sql += "and \"schoolYear\" = @anoLetivo ";
+                    sql += "and \"yearClassroom\" = @anoTurma ";
                     break;
                 case ProficienciaSondagemEnum.Autoral:
                     sql += "select distinct sa2.\"CodigoAluno\" AlunoEolCode, sa2.\"NomeAluno\" AlunoNome, sa.\"AnoLetivo\", sa.\"AnoTurma\", sa.\"CodigoTurma\" TurmaEolCode, p.\"Id\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta ";
@@ -68,7 +68,15 @@ namespace SME.SR.Data.Repositories.Sgp
 
             var grupoId = grupo.Name();
 
-            var parametros = new { componenteCurricular, dreCodigo, grupoId, ueCodigo, periodo, turmaCodigo, anoLetivo, anoTurma };
+            var parametros = new object();
+
+            if (proficiencia == ProficienciaSondagemEnum.Autoral)
+            {
+                parametros = new { componenteCurricular, dreCodigo, grupoId, ueCodigo, periodo, turmaCodigo, anoLetivo, anoTurma };
+            } else
+            {
+                parametros = new { componenteCurricular, dreCodigo, grupoId, ueCodigo, periodo, turmaCodigo, anoLetivo = anoLetivo.ToString(), anoTurma = anoTurma.ToString() };
+            }
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
