@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioSondagemMatemicaConsolidadoUseCase : IRelatorioSondagemMatemicaConsolidadoUseCase
+    public class RelatorioSondagemMatematicaConsolidadoUseCase : IRelatorioSondagemMatematicaConsolidadoUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioSondagemMatemicaConsolidadoUseCase(IMediator mediator)
+        public RelatorioSondagemMatematicaConsolidadoUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
@@ -60,26 +60,7 @@ namespace SME.SR.Application
                 QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno
             });
 
-
-            string mensagemDaNotificacao, mensagemTitulo;
-
-            if (!string.IsNullOrEmpty(filtros.UeCodigo))
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Ue} ({relatorio.Dre})";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Ue} ({relatorio.Dre}) - {relatorio.Ano}º ano";
-            }
-                
-            else if (filtros.DreCodigo > 0)
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Dre}";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Dre.Replace("-", "")} - {relatorio.Ano}º ano";
-            } else
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da SME";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - SME - {relatorio.Ano}º ano";
-            }            
-
-            return (await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false)));
+            return (await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false)));
         }
     }
 }

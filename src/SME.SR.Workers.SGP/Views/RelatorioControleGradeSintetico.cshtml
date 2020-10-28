@@ -75,6 +75,29 @@
         </table>";
     }
 
+    string MontaCabecalhoGrade()
+    {
+        return $@"<table class='fixed'>
+            <tr>
+                <td width='14%' class='td-titulo'>COMPONENTE</td>
+                <td width='13%' class='td-titulo'>PREVISTAS</td>
+                <td width='22%' colspan='2' class='td-titulo'>CRIADAS</td>
+                <td width='22%' colspan='2' class='td-titulo'>DADAS</td>
+                <td width='14%' class='td-titulo'>REPOSTAS</td>
+                <td width='15%' class='td-titulo'>DIVERGÊNCIAS</td>
+            </tr>
+            <tr>
+                <td width='12%' class='td-titulo-2'></td>
+                <td width='12%' class='td-titulo-2'></td>
+                <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
+                <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
+                <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
+                <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
+                <td width='12.5%' class='td-titulo-2'></td>
+                <td width='12.5%' class='td-titulo-2'></td>
+            </tr>"; ;
+    }
+
     string MontaEstruturaGrade()
     {
         var str = "";
@@ -95,25 +118,8 @@
             foreach (var bimestre in turma.Bimestres)
             {
                 str += MontaBimestre(bimestre.Descricao);
-                str += $@"<table class='fixed'>
-            <tr>
-                <td width='14%' class='td-titulo'></td>
-                <td width='13%' class='td-titulo'>PREVISTAS</td>
-                <td width='22%' colspan='2' class='td-titulo'>CRIADAS</td>
-                <td width='22%' colspan='2' class='td-titulo'>DADAS</td>
-                <td width='14%' class='td-titulo'>REPOSTAS</td>
-                <td width='15%' class='td-titulo'>DIVERGÊNCIAS</td>
-            </tr>
-            <tr>
-                <td width='12%' class='td-titulo-2'></td>
-                <td width='12%' class='td-titulo-2'></td>
-                <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
-                <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
-                <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
-                <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
-                <td width='12.5%' class='td-titulo-2'></td>
-                <td width='12.5%' class='td-titulo-2'></td>
-            </tr>";
+                str += MontaCabecalhoGrade();
+
                 contadorQuebrarPagina = contadorQuebrarPagina + 5;
 
                 foreach (var componente in bimestre.ComponentesCurriculares)
@@ -129,11 +135,12 @@
                 <td width='12.5%' class='td-valor'>{componente.Divergencias}</td>
                 </tr>
             ";
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                    contadorQuebrarPagina = componente.Nome.Length > 11 ? contadorQuebrarPagina + 2 : contadorQuebrarPagina + 1;
                     retornoVerificacao = VerificaQuebra();
                     if (retornoVerificacao != string.Empty)
                     {
-                        str = str + $@"</table>{retornoVerificacao} {MontaBimestre(bimestre.Descricao)}<table>";
+                        str = str + $@"</table>{retornoVerificacao} {MontaBimestre(bimestre.Descricao)}{MontaCabecalhoGrade()}";
+                        contadorQuebrarPagina = contadorQuebrarPagina + 5;
                     }
 
                 }
