@@ -88,6 +88,12 @@ namespace SME.SR.Application
             return periodos.Where(a => bimestres.Contains(a.Bimestre));
         }
 
+        private async Task<List<DiaLetivoDto>> ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivos(IEnumerable<PeriodoEscolar> periodosEscolares, long tipoCalendarioId)
+        {
+            var diasComEvento = await mediator.Send(new ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery(periodosEscolares, tipoCalendarioId));
+            return diasComEvento;
+        }
+
         private async Task<TurmaControleGradeDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
             var turmaDto = new TurmaControleGradeDto()
@@ -147,7 +153,7 @@ namespace SME.SR.Application
             // TODO incluir os dados obtidos no Dto
 
             return componenteDto;
-        }
+        }                
 
         private async Task<bool> VerificarDivergencias(long turmaId, int bimestre, long componenteCurricularId, bool regencia, Modalidade modalidadeTurma, bool divergenciaNumeroAulas, long tipoCalendarioId, bool aulasPrevistasvZero)
         {
