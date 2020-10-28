@@ -1,24 +1,24 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioSondagemMatemicaConsolidadoUseCase : IRelatorioSondagemMatemicaConsolidadoUseCase
+    public class RelatorioSondagemMatConsolidadoAdtMultiUseCase : IRelatorioSondagemMatConsolidadoAdtMultiUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioSondagemMatemicaConsolidadoUseCase(IMediator mediator)
+        public RelatorioSondagemMatConsolidadoAdtMultiUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
-            var filtros = request.ObterObjetoFiltro<FiltroRelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto>();
+            var filtros = request.ObterObjetoFiltro<FiltroRelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidadoDto>();
 
             Dre dre = null;
             Ue ue = null;
@@ -46,10 +46,10 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
             var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
-            
+
             var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo));
 
-            var relatorio = await mediator.Send(new ObterSondagemMatNumAutoralConsolidadoQuery()
+            var relatorio = await mediator.Send(new ObterSondagemMatAditMultiConsolidadoQuery()
             {
                 AnoLetivo = filtros.AnoLetivo,
                 Dre = dre,
@@ -57,29 +57,11 @@ namespace SME.SR.Application
                 Semestre = filtros.Semestre,
                 TurmaAno = int.Parse(filtros.Ano),
                 Usuario = usuario,
-                QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno
+                QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno,
+                Proficiencia = filtros.ProficienciaId
             });
 
-
-            string mensagemDaNotificacao, mensagemTitulo;
-
-            if (!string.IsNullOrEmpty(filtros.UeCodigo))
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Ue} ({relatorio.Dre})";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Ue} ({relatorio.Dre}) - {relatorio.Ano}º ano";
-            }
-                
-            else if (filtros.DreCodigo > 0)
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da {relatorio.Dre}";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - {relatorio.Dre.Replace("-", "")} - {relatorio.Ano}º ano";
-            } else
-            {
-                mensagemDaNotificacao = $"O Relatório de Sondagem de Matemática ({relatorio.Proficiencia}) do {relatorio.Ano}º ano da SME";
-                mensagemTitulo = $"Relatório de Sondagem (Matemática) - SME - {relatorio.Ano}º ano";
-            }            
-
-            return (await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, Guid.NewGuid(), mensagemDaNotificacao, mensagemTitulo, false)));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
     }
 }

@@ -9,3 +9,4 @@ Builds
 |  Master  |  [![Build Status](http://jenkins.sme.prefeitura.sp.gov.br/buildStatus/icon?job=SME-ServidorRelatorios%2Fmaster)](http://jenkins.sme.prefeitura.sp.gov.br/job/SME-ServidorRelatorios/job/master/) |
 
 
+

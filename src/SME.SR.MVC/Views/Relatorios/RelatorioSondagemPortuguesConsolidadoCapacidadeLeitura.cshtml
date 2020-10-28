@@ -1,0 +1,326 @@
+﻿@model SME.SR.Infra.RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 44;
+    int contadorPagina = 0;
+
+    bool VerificaQuebra()
+    {
+        var totalPerguntas = Model.Planilhas.First().Perguntas.Count;
+        var linhasMaisPerguntas = contadorQuebrarPagina + totalPerguntas;
+
+        if (linhasMaisPerguntas >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        var str =
+            $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'> RELATÓRIO DE SONDAGEM</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='20%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {Model.Cabecalho.Dre}</td>
+<td width='60%' class='espaco-esquerda-15 sem-border-bottom'>UE: {Model.Cabecalho.Ue}</td>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO LETIVO: {Model.Cabecalho.AnoLetivo}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Cabecalho.AnoTurma}</td>
+<td width='23%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Cabecalho.Turma}</td>
+<td  width='57%' class='espaco-esquerda-15 sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Cabecalho.ComponenteCurricular}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PROFICIÊNCIA: {Model.Cabecalho.Proficiencia}</td>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Cabecalho.Periodo}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td  width='60%' class='espaco-esquerda-15'>USUÁRIO: {Model.Cabecalho.Usuario}</td>
+<td width='20%' class='espaco-esquerda-15'>RF: {Model.Cabecalho.Rf}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.Cabecalho.DataSolicitacao}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+    string EspacoEmBranco()
+    {
+        <table class="tabela-cabecalho">
+            <thead>
+            <th class="thLimpo" width="100%"></th>
+            </thead>
+        </table>
+
+        return "";
+    }
+
+    string MontaCabecalhoSondagem(SME.SR.Infra.RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto planilhas)
+    {
+        var totalPerguntas = planilhas.Perguntas.Count;
+        var widthDescricao = 50 / totalPerguntas;
+        var widthPercentual = 16 / totalPerguntas;
+
+        <thead>
+            <tr>
+                <td class="alinhar-esquerda espaco-esquerda-15 negrito" width="34%">
+                    @planilhas.Ordem
+                </td>
+
+                @foreach (var pergunta in planilhas.Perguntas)
+                {
+                    <td width="@widthDescricao%" class="negrito">
+                        @pergunta.Pergunta
+                    </td>
+                    <td width="@widthPercentual%" class="negrito">
+                        %
+                    </td>
+                }
+            </tr>
+        </thead>
+
+        return "";
+    }
+
+    string MontaTabelaPerguntasRespostas(SME.SR.Infra.RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto planilhas)
+    {
+        <table class="tabela-cabecalho">
+
+            @Html.Raw(MontaCabecalhoSondagem(planilhas))
+
+            <tbody>
+                @{
+                    int numeroLinhas = (planilhas.Ordem.Count() / 40);
+
+                    if (numeroLinhas > 1)
+                    {
+                        contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+                    }
+                    else
+                    {
+                        contadorQuebrarPagina++;
+                    }
+                }
+
+                @foreach (var resposta in planilhas.Perguntas.First().Respostas)
+                {
+                    <tr>
+                        <td class="alinhar-esquerda espaco-esquerda-15">@resposta.Resposta</td>
+
+                        @foreach (var perguntas in planilhas.Perguntas)
+                        {
+                            foreach (var resp in perguntas.Respostas)
+                            {
+                                if (resposta.Resposta == resp.Resposta)
+                                {
+                                    var alunosPercentual = Math.Round(resp.Percentual, 2);
+                                    var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
+
+                                    <td>@resp.Quantidade</td>
+                                    <td>@alunosPercentualAlterado</td>
+                                }
+                            }
+                        }
+                    </tr>
+                    contadorQuebrarPagina++;
+                }
+
+                @foreach (var resposta in planilhas.Perguntas.First().Respostas)
+                {
+                    <tr class="fundo-cinza">
+                        <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
+                        @foreach (var perguntas in planilhas.Perguntas)
+                        {
+                            foreach (var resp in perguntas.Respostas)
+                            {
+                                if (resposta.Resposta == resp.Resposta)
+                                {
+                                    <td>@resp.Total</td>
+                                    <td>100.00</td>
+                                }
+                            }
+                        }
+                    </tr>
+                    break;
+                }
+            </tbody>
+        </table>
+
+        contadorQuebrarPagina++;
+
+        return "";
+    }
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Relatório Sondagem</title>
+    </head>
+    <body class="body-relatorio">
+        <style>
+
+            .tblTopo th, td {
+                padding: 3px 0;
+                text-align: left;
+            }
+
+            .body-relatorio {
+                margin: 0.5cm auto;
+                font-family: Roboto, sans-serif;
+                width: 21cm;
+                min-height: 29.7cm;
+                background: white;
+                color: #42474a;
+            }
+
+            .titulo-sgp {
+                text-align: right;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .titulo-relatorio {
+                text-align: right;
+                font-size: 14.5px;
+                margin-top: 7px;
+            }
+
+            .header-pagina {
+                margin-top: 33px;
+                margin-bottom: 22px;
+            }
+
+                .header-pagina td {
+                    text-align: left;
+                }
+
+            table {
+                display: table;
+                width: 100%;
+                border-color: #42474a;
+                empty-cells: show;
+                border: none;
+                border-collapse: collapse;
+            }
+
+            thead {
+                background-color: #f3f3f3;
+            }
+
+            th {
+                border: 1px solid #42474a;
+                font-weight: normal;
+            }
+
+            td {
+                border: 1px solid #42474a;
+                text-align: center;
+            }
+
+            .tabela-cabecalho tr {
+                font-size: 12px;
+                height: 24px;
+            }
+
+            .mt-25 {
+                margin-top: 25px;
+            }
+
+            .fonte-14 {
+                font-size: 14px !important;
+            }
+
+            .alinhar-esquerda {
+                text-align: left;
+            }
+
+            .espaco-esquerda-15 {
+                padding-left: 15px;
+            }
+
+            .fundo-cinza {
+                background-color: #f3f3f3;
+            }
+
+            .negrito {
+                font-weight: bold;
+            }
+
+            .sem-border-bottom {
+                border-bottom: 0;
+            }
+
+            .sem-border-top {
+                border-bottom: 0;
+            }
+
+            .thLimpo {
+                background-color: #ffffff;
+                border: 0;
+                height: 22px;
+            }
+
+            .img-logo-sgp {
+                height: 64px;
+                float: left;
+            }
+
+            .centralizar {
+                text-align: center;
+            }
+        </style>
+        <div>
+            @{
+                @Html.Raw(MontarCabecalho())
+
+                for (var i = 0; i < Model.Planilhas.Count; i++)
+                {
+                    var quebra = VerificaQuebra();
+
+                    if (quebra)
+                    {
+                        @Html.Raw("<div style='page-break-before:always'></div>");
+                        @Html.Raw(MontarCabecalho())
+                    }
+
+                    @Html.Raw(MontaTabelaPerguntasRespostas(Model.Planilhas[i]));
+
+                    if (i < Model.Planilhas.Count - 1)
+                    {
+                        @Html.Raw(EspacoEmBranco());
+                        contadorQuebrarPagina++;
+                    }
+                }
+            }
+        </div>
+    </body>
+</html>
+}

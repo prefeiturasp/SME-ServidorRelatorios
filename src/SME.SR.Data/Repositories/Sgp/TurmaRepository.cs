@@ -753,7 +753,9 @@ namespace SME.SR.Data
 
         public async Task<TurmaResumoDto> ObterTurmaResumoComDreUePorId(long turmaId)
         {
-            var query = @"select t.id, t.nome, t.ano_letivo as AnoLetivo, t.modalidade_codigo as Modalidade, ue.id, ue.ue_id as CodigoUe, ue.nome, dre.id, dre.abreviacao, dre.nome
+            var query = @"select t.id, t.nome, t.ano_letivo as AnoLetivo, t.modalidade_codigo as Modalidade
+                                , ue.id, ue.ue_id as CodigoUe, ue.nome, ue.tipo_escola as TipoEscola
+                                , dre.id, dre.abreviacao, dre.nome
                               from turma t
                              inner join ue on ue.id = t.ue_id
                              inner join dre on dre.id = ue.dre_id
@@ -772,6 +774,24 @@ namespace SME.SR.Data
 
                 return turma.First();
             }
+        }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
+        {
+            var query = @"select t.id as Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where t.id = ANY(@ids)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<Turma>(query, new { ids });
+            }
+
         }
     }
 }
