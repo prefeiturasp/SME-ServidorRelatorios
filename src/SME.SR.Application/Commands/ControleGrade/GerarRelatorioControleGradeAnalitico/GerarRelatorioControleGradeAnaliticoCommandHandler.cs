@@ -195,27 +195,22 @@ namespace SME.SR.Application
 
         private int ObtemDiasLetivos(DateTime dataInicio, DateTime dataFim, IEnumerable<Evento> eventosCadastrados)
         {
-            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
-            Calendar cal = dfi.Calendar;
             int diasLetivos = 0;
             for (var data = dataInicio; data <= dataFim; data = data.AddDays(1))
             {
-                if (cal.GetDayOfWeek(data) == DayOfWeek.Saturday || cal.GetDayOfWeek(data) == DayOfWeek.Monday)
+                if (data.DayOfWeek == DayOfWeek.Saturday || data.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    if (eventosCadastrados.FirstOrDefault(a => a.DataInicio == data && a.Letivo == EventoLetivo.Sim) != null)
-                    {
+                    if (eventosCadastrados.FirstOrDefault(a => a.DataInicio == data && a.EhEventoLetivo()) != null)
                         diasLetivos += 1;
-                    }
                 }
                 else
                 {
                     diasLetivos += 1;
-                    if (eventosCadastrados.FirstOrDefault(a => a.DataInicio == data && a.Letivo == EventoLetivo.Nao) != null)
-                    {
+                    if (eventosCadastrados.FirstOrDefault(a => a.DataInicio == data && a.EhEventoNaoLetivo()) != null)
                         diasLetivos -= 1;
-                    }
                 }
             }
+
 
             return diasLetivos;
         }
