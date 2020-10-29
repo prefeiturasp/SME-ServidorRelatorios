@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
@@ -87,7 +88,7 @@ namespace SME.SR.Application
         {
             var periodos = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
             return periodos.Where(a => bimestres.Contains(a.Bimestre));
-        }
+        }       
 
         private async Task<TurmaControleGradeDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
@@ -144,9 +145,37 @@ namespace SME.SR.Application
             detalhamentoDivergencias.AulasTitularCJ = await ObterAulasTitularCJ(aulasPrevistasComponente, turmaId, tipoCalendarioId, bimestre);
             detalhamentoDivergencias.AulasDuplicadas = await mediator.Send(new DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Bimestre));
             componenteDto.VisaoSemanal = await ObterVisaoSemanal(dataInicio, dataFim, turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId);
+            detalhamentoDivergencias.AulasDiasNaoLetivos = await ObterAulasDiasNaoLetivos(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre);
 
             return componenteDto;
-        }
+        } 
+        
+        private async Task<List<AulaDiasNaoLetivosControleGradeDto>> ObterAulasDiasNaoLetivos(long turmaId, long tipoCalendarioId, long componenteCurricularCodigo, int bimestre, bool professorCJ = false)
+        {
+            var data = DateTime.Today;
+
+            var diasComEvento = await mediator.Send(new ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery(tipoCalendarioId));
+
+            var aulas = await mediator.Send(new ObterAulaReduzidaPorTurmaComponenteEBimestreQuery(turmaId, tipoCalendarioId, componenteCurricularCodigo, bimestre));
+
+            var diasComEventosNaoLetivos = diasComEvento.Where(e => e.EhNaoLetivo);
+
+            var aulasDiasNaoLetivos = new List<AulaDiasNaoLetivosControleGradeDto>();
+
+            aulas.Where(a => diasComEventosNaoLetivos.Any(d => d.Data == a.Data)).ToList()
+                .ForEach(aula =>
+                {
+                    foreach(var eventoNaoLetivo in diasComEventosNaoLetivos.Where(d => d.Data == aula.Data))
+                    {
+                        aulasDiasNaoLetivos.Add(new AulaDiasNaoLetivosControleGradeDto()
+                        {
+                            Data = aula.Data.ToString("dd/MM/yyyy"),
+                            Professor = $"{aula.Professor} ({aula.ProfessorRf})",
+                            QuantidadeAulas = aula.Quantidade,
+                            Motivo = eventoNaoLetivo.Motivo
+                        });
+                    }
+                });
 
         private async Task<IEnumerable<VisaoSemanalControleGradeSinteticoDto>> ObterVisaoSemanal(DateTime dataInicio, DateTime dataFim, long turmaId, long componenteCurricularId, long tipoCalendarioId)
         {
@@ -223,8 +252,8 @@ namespace SME.SR.Application
 
         private async Task<List<AulaTitularCJDataControleGradeDto>> ObterAulasTitularCJ(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, int bimestre)
         {
-            var aulasTitular = await mediator.Send(new ObterQuantidadeDeAulasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre));
-            var aulasCJ = await mediator.Send(new ObterQuantidadeDeAulasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, true));
+            var aulasTitular = await mediator.Send(new ObterAulaReduzidaPorTurmaComponenteEBimestreQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre));
+            var aulasCJ = await mediator.Send(new ObterAulaReduzidaPorTurmaComponenteEBimestreQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, true));
 
             var aulasTitularCJData = new List<AulaTitularCJDataControleGradeDto>();
             foreach (var aulaTitular in aulasTitular)
@@ -234,7 +263,7 @@ namespace SME.SR.Application
                 {
                     var aulaTitularCJData = new AulaTitularCJDataControleGradeDto()
                     {
-                        Data = aulaTitular.Data
+                        Data = aulaTitular.Data.ToString("dd/MM/yyyy")
                     };
 
                     var divergencias = new List<AulaTitularCJControleGradeDto>();

@@ -21,11 +21,14 @@ namespace SME.SR.Data
         public async Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioId(long tipoCalendarioId)
         {
             var query = @"select
-	                        data_inicio,
-	                        data_fim,
+	                        data_inicio as DataInicio,
+	                        data_fim as DataFim,
 	                        letivo,
-                            e.ue_id,
-                            e.dre_id
+	                        e.nome,
+	                        e.descricao,
+                            e.ue_id as UeId,
+                            e.dre_id as DreId,
+                            e.tipo_evento as TipoEvento
                         from
 	                        evento e
                         where
