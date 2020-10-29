@@ -4,9 +4,7 @@ using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -68,7 +66,7 @@ namespace SME.SR.Application
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
-            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeAnalitico", dto, request.CodigoCorrelacao, "", "Relatório Controle de Grade Sintético")));
+            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeAnalitico", dto, request.CodigoCorrelacao, "", "Relatório Controle de Grade Analítico")));
         }
 
         private async Task<IEnumerable<Turma>> ObterTurmas(IEnumerable<long> turmasIds)
@@ -144,8 +142,40 @@ namespace SME.SR.Application
             detalhamentoDivergencias.AulasTitularCJ = await ObterAulasTitularCJ(aulasPrevistasComponente, turmaId, tipoCalendarioId, bimestre);
             detalhamentoDivergencias.AulasDuplicadas = await mediator.Send(new DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Bimestre));
             componenteDto.VisaoSemanal = await ObterVisaoSemanal(dataInicio, dataFim, turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId);
+            detalhamentoDivergencias.AulasDiasNaoLetivos = await ObterAulasDiasNaoLetivos(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, dataInicio, dataFim);
 
             return componenteDto;
+        }
+
+        private async Task<List<AulaDiasNaoLetivosControleGradeDto>> ObterAulasDiasNaoLetivos(long turmaId, long tipoCalendarioId, long componenteCurricularCodigo, int bimestre, DateTime dataInicio, DateTime dataFim, bool professorCJ = false)
+        {
+            var data = DateTime.Today;
+
+            var diasComEvento = await mediator.Send(new ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery(tipoCalendarioId, dataInicio, dataFim));
+
+            var aulas = await mediator.Send(new ObterAulaReduzidaPorTurmaComponenteEBimestreQuery(turmaId, tipoCalendarioId, componenteCurricularCodigo, bimestre));
+
+            var diasComEventosNaoLetivos = diasComEvento.Where(e => e.EhNaoLetivo);
+
+            var aulasDiasNaoLetivos = new List<AulaDiasNaoLetivosControleGradeDto>();
+            if (aulas != null)
+            {
+                aulas.Where(a => diasComEventosNaoLetivos.Any(d => d.Data == a.Data)).ToList()
+                    .ForEach(aula =>
+                    {
+                        foreach (var eventoNaoLetivo in diasComEventosNaoLetivos.Where(d => d.Data == aula.Data))
+                        {
+                            aulasDiasNaoLetivos.Add(new AulaDiasNaoLetivosControleGradeDto()
+                            {
+                                Data = aula.Data.ToString("dd/MM/yyyy"),
+                                Professor = $"{aula.Professor} ({aula.ProfessorRf})",
+                                QuantidadeAulas = aula.Quantidade,
+                                Motivo = eventoNaoLetivo.Motivo
+                            });
+                        }
+                    });
+            }
+            return aulasDiasNaoLetivos;
         }
 
         private async Task<IEnumerable<VisaoSemanalControleGradeSinteticoDto>> ObterVisaoSemanal(DateTime dataInicio, DateTime dataFim, long turmaId, long componenteCurricularId, long tipoCalendarioId)
@@ -168,7 +198,7 @@ namespace SME.SR.Application
                         QuantidadeGrade = quantidadeGrade,
                         DiasLetivo = diasLetivos,
                         AulasCriadas = aulasCriadas,
-                        Diferenca = PossuiDiferencaDias(quantidadeGrade,diasLetivos,aulasCriadas)
+                        Diferenca = PossuiDiferencaDias(quantidadeGrade, diasLetivos, aulasCriadas)
                     });
                 }
             }
@@ -177,7 +207,7 @@ namespace SME.SR.Application
 
         private string PossuiDiferencaDias(int quantidadeGrade, int diasLetivos, int aulasCriadas)
         {
-            if(quantidadeGrade > 0)
+            if (quantidadeGrade > 0)
             {
                 if (quantidadeGrade != diasLetivos)
                     return "Sim";
@@ -206,7 +236,7 @@ namespace SME.SR.Application
                 else
                 {
                     diasLetivos += 1;
-                    if (eventosCadastrados.FirstOrDefault(a => a.DataInicio == data && a.EhEventoNaoLetivo()) != null)
+                    if (eventosCadastrados.FirstOrDefault(a => a.DataInicio == data && a.NaoEhEventoLetivo()) != null)
                         diasLetivos -= 1;
                 }
             }
@@ -223,8 +253,8 @@ namespace SME.SR.Application
 
         private async Task<List<AulaTitularCJDataControleGradeDto>> ObterAulasTitularCJ(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, int bimestre)
         {
-            var aulasTitular = await mediator.Send(new ObterQuantidadeDeAulasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre));
-            var aulasCJ = await mediator.Send(new ObterQuantidadeDeAulasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, true));
+            var aulasTitular = await mediator.Send(new ObterAulaReduzidaPorTurmaComponenteEBimestreQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre));
+            var aulasCJ = await mediator.Send(new ObterAulaReduzidaPorTurmaComponenteEBimestreQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, true));
 
             var aulasTitularCJData = new List<AulaTitularCJDataControleGradeDto>();
             foreach (var aulaTitular in aulasTitular)
@@ -234,7 +264,7 @@ namespace SME.SR.Application
                 {
                     var aulaTitularCJData = new AulaTitularCJDataControleGradeDto()
                     {
-                        Data = aulaTitular.Data
+                        Data = aulaTitular.Data.ToString("dd/MM/yyyy")
                     };
 
                     var divergencias = new List<AulaTitularCJControleGradeDto>();

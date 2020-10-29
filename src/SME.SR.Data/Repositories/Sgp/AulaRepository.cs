@@ -220,7 +220,8 @@ namespace SME.SR.Data
             var query = @"select
 	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as DataAula,
 	                        sum(a.quantidade) as QuantidadeAulas,
-	                        a.criado_por as Professor
+	                        a.criado_por as Professor,
+	                        a.criado_rf as ProfessorRf
                         from
 	                        aula a
                         inner join turma t on
@@ -236,7 +237,9 @@ namespace SME.SR.Data
                             and a.aula_cj = @professorCJ
                         group by
 	                        a.data_aula,
-	                        a.criado_por
+	                        a.criado_por,
+                            a.criado_por,
+                            a.criado_rf
                         order by
 	                        data_aula";
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
