@@ -66,7 +66,7 @@ namespace SME.SR.Application
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
-            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeAnalitico", dto, request.CodigoCorrelacao, "", "Relatório Controle de Grade Sintético")));
+            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeAnalitico", dto, request.CodigoCorrelacao, "", "Relatório Controle de Grade Analítico")));
         }
 
         private async Task<IEnumerable<Turma>> ObterTurmas(IEnumerable<long> turmasIds)
@@ -142,37 +142,39 @@ namespace SME.SR.Application
             detalhamentoDivergencias.AulasTitularCJ = await ObterAulasTitularCJ(aulasPrevistasComponente, turmaId, tipoCalendarioId, bimestre);
             detalhamentoDivergencias.AulasDuplicadas = await mediator.Send(new DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Bimestre));
             componenteDto.VisaoSemanal = await ObterVisaoSemanal(dataInicio, dataFim, turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId);
-            detalhamentoDivergencias.AulasDiasNaoLetivos = await ObterAulasDiasNaoLetivos(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre);
+            detalhamentoDivergencias.AulasDiasNaoLetivos = await ObterAulasDiasNaoLetivos(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, dataInicio, dataFim);
 
             return componenteDto;
         }
 
-        private async Task<List<AulaDiasNaoLetivosControleGradeDto>> ObterAulasDiasNaoLetivos(long turmaId, long tipoCalendarioId, long componenteCurricularCodigo, int bimestre, bool professorCJ = false)
+        private async Task<List<AulaDiasNaoLetivosControleGradeDto>> ObterAulasDiasNaoLetivos(long turmaId, long tipoCalendarioId, long componenteCurricularCodigo, int bimestre, DateTime dataInicio, DateTime dataFim, bool professorCJ = false)
         {
             var data = DateTime.Today;
 
-            var diasComEvento = await mediator.Send(new ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery(tipoCalendarioId));
+            var diasComEvento = await mediator.Send(new ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery(tipoCalendarioId, dataInicio, dataFim));
 
             var aulas = await mediator.Send(new ObterAulaReduzidaPorTurmaComponenteEBimestreQuery(turmaId, tipoCalendarioId, componenteCurricularCodigo, bimestre));
 
             var diasComEventosNaoLetivos = diasComEvento.Where(e => e.EhNaoLetivo);
 
             var aulasDiasNaoLetivos = new List<AulaDiasNaoLetivosControleGradeDto>();
-
-            aulas.Where(a => diasComEventosNaoLetivos.Any(d => d.Data == a.Data)).ToList()
-                .ForEach(aula =>
-                {
-                    foreach (var eventoNaoLetivo in diasComEventosNaoLetivos.Where(d => d.Data == aula.Data))
+            if (aulas != null)
+            {
+                aulas.Where(a => diasComEventosNaoLetivos.Any(d => d.Data == a.Data)).ToList()
+                    .ForEach(aula =>
                     {
-                        aulasDiasNaoLetivos.Add(new AulaDiasNaoLetivosControleGradeDto()
+                        foreach (var eventoNaoLetivo in diasComEventosNaoLetivos.Where(d => d.Data == aula.Data))
                         {
-                            Data = aula.Data.ToString("dd/MM/yyyy"),
-                            Professor = $"{aula.Professor} ({aula.ProfessorRf})",
-                            QuantidadeAulas = aula.Quantidade,
-                            Motivo = eventoNaoLetivo.Motivo
-                        });
-                    }
-                });
+                            aulasDiasNaoLetivos.Add(new AulaDiasNaoLetivosControleGradeDto()
+                            {
+                                Data = aula.Data.ToString("dd/MM/yyyy"),
+                                Professor = $"{aula.Professor} ({aula.ProfessorRf})",
+                                QuantidadeAulas = aula.Quantidade,
+                                Motivo = eventoNaoLetivo.Motivo
+                            });
+                        }
+                    });
+            }
             return aulasDiasNaoLetivos;
         }
 
@@ -234,7 +236,7 @@ namespace SME.SR.Application
                 else
                 {
                     diasLetivos += 1;
-                    if (eventosCadastrados.FirstOrDefault(a => a.DataInicio == data && a.EhEventoNaoLetivo()) != null)
+                    if (eventosCadastrados.FirstOrDefault(a => a.DataInicio == data && a.NaoEhEventoLetivo()) != null)
                         diasLetivos -= 1;
                 }
             }

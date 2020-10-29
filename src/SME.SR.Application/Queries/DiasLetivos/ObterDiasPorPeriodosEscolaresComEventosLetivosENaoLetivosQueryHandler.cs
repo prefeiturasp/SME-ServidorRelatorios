@@ -19,9 +19,9 @@ namespace SME.SR.Application
 
         public async Task<List<DiaLetivoDto>> Handle(ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery request, CancellationToken cancellationToken)
         {
-            var DiasLetivos = new List<DiaLetivoDto>();           
+            var DiasLetivos = new List<DiaLetivoDto>();            
 
-            var eventos = await mediator.Send(new ObterEventosPorTipoCalendarioIdQuery(request.TipoCalendarioId));
+            var eventos = await mediator.Send(new ObterEventosPorTipoCalendarioIdQuery(request.TipoCalendarioId, request.PeriodoInicio, request.PeriodoFim));
 
             if (eventos != null)
             {

@@ -18,7 +18,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioId(long tipoCalendarioId)
+        public async Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioId(long tipoCalendarioId, DateTime periodoInicio, DateTime periodoFim)
         {
             var query = @"select
 	                        data_inicio as DataInicio,
@@ -28,15 +28,15 @@ namespace SME.SR.Data
 	                        e.descricao,
                             e.ue_id as UeId,
                             e.dre_id as DreId,
-                            e.tipo_evento as TipoEvento
+                            e.tipo_evento_id as TipoEvento
                         from
 	                        evento e
                         where
                         e.tipo_calendario_id = @tipoCalendarioId
-                        and not e.excluido";
+                        and not e.excluido and data_inicio between @periodoInicio and @periodoFim;";
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<Evento>(query.ToString(), new { tipoCalendarioId });
+                return await conexao.QueryAsync<Evento>(query.ToString(), new { tipoCalendarioId, periodoInicio, periodoFim });
             }
         }
 
