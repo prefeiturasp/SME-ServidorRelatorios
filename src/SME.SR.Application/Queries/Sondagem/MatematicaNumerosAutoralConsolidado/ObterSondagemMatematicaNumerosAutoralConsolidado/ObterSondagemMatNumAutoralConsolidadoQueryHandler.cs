@@ -160,7 +160,7 @@ namespace SME.SR.Application
             {
                 respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
                 {
-                    Resposta = item.Key.Equals("S", StringComparison.InvariantCultureIgnoreCase) ? "Escreve convencionalmente" : "Não escreve convencionalmente",
+                    Resposta = item.Key.Equals("S", StringComparison.InvariantCultureIgnoreCase) ? "Escreve de forma convencional" : "Não escreve de forma convencional",
                     AlunosQuantidade = item.Count(),
                     AlunosPercentual = ((double)item.Count() / TotalAlunosGeral) * 100
                 });
