@@ -5,7 +5,7 @@ namespace SME.SR.Data
 {
     public interface IAulaPrevistaBimestreRepository
     {
-        Task<IEnumerable<AulaPrevistaBimestreQuantidade>> ObterBimestresAulasPrevistasPorFiltro(long turmaId, long componenteCurricularId);
+        Task<IEnumerable<AulaPrevistaBimestreQuantidade>> ObterBimestresAulasPrevistasPorFiltro(long turmaId, long componenteCurricularId, long tipoCalendarioId);
 
     }
 }
