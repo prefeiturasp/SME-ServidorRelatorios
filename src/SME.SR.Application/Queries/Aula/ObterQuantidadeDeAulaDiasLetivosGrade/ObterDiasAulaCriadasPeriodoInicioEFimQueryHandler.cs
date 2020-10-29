@@ -21,12 +21,8 @@ namespace SME.SR.Application
 
         public async Task<int> Handle(ObterDiasAulaCriadasPeriodoInicioEFimQuery request, CancellationToken cancellationToken)
         {
-            var aulas = await aulaRepository.ObterDiasAulaCriadasPeriodoInicioEFim(request.TurmaId,
-                                                    request.ComponenteCurricularId,
-                                                    request.DataInicio,
-                                                    request.DataFim);
-
-            return aulas.Count();
+            return await aulaRepository.ObterDiasAulaCriadasPeriodoInicioEFim(request.TurmaId, request.ComponenteCurricularId, 
+                request.DataInicio, request.DataFim);
         }
             
     }
