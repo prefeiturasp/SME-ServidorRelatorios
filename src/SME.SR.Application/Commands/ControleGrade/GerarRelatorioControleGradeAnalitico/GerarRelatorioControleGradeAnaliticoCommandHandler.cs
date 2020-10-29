@@ -217,9 +217,8 @@ namespace SME.SR.Application
 
         private bool VerificaDataEhSegunda(DateTime data)
         {
-            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
-            Calendar cal = dfi.Calendar;
-            return cal.GetDayOfWeek(data) == DayOfWeek.Monday;
+            return data.DayOfWeek == DayOfWeek.Monday;
+
         }
 
         private async Task<List<AulaTitularCJDataControleGradeDto>> ObterAulasTitularCJ(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, int bimestre)
