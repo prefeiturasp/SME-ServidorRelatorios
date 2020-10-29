@@ -166,7 +166,7 @@ namespace SME.SR.Data
                           inner join turma on a.turma_id = turma.turma_id 
                           where not a.excluido
                             and turma.id = @turmaId
-                            and a.tipo_calendario_id = @componenteCurricularId
+                            and a.tipo_calendario_id = @tipoCalendarioId
                             and a.disciplina_id = @componenteCurricularId
                             and p.bimestre = @bimestre
                          group by a.data_aula, a.tipo_aula, a.criado_rf having count(a.quantidade) > 1";
@@ -242,6 +242,45 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return (await conexao.QueryAsync<AulaReduzidaDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre, professorCJ }));
+            }
+        }
+
+        public async Task<int> ObterQuantidadeAulaGrade(long turmaId, long componenteCurricularId)
+        {
+            var query = @"select
+	                        quantidade_aulas as quantidadeGrade
+                        from
+	                        grade_filtro gf
+                        inner join turma t
+	                        on gf.duracao_turno = t.qt_duracao_aula and gf.modalidade = t.modalidade_codigo 
+                        inner join ue u 
+	                        on t.ue_id = u.id and gf.tipo_escola = u.tipo_escola 
+                        inner join grade_disciplina gd on
+	                        gf.grade_id = gd.grade_id and t.ano = gd.ano::varchar
+                        where
+	                        t.id = @turmaId and 
+	                        gd.componente_curricular_id = @componenteCurricularId ";
+
+            using(var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId }));
+            }
+        }
+
+        public async Task<IEnumerable<DateTime>> ObterDiasAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim)
+        {
+            var query = @"select data_aula from aula a
+	                        inner join turma t on a.turma_id = t.turma_id 
+	                        where 
+		                        disciplina_id = @componenteCurricularId::varchar and 
+		                        data_aula between @dataInicio and @dataFim
+                                and t.id = @turmaId
+		                        and not a.excluido 
+		                        and a.tipo_aula = 1";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<DateTime>(query, new { turmaId, componenteCurricularId, dataInicio, dataFim }));
             }
         }
     }
