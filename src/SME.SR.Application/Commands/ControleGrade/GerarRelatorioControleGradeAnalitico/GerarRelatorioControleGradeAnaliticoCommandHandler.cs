@@ -1,13 +1,10 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using MediatR;
+﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -88,7 +85,7 @@ namespace SME.SR.Application
         {
             var periodos = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
             return periodos.Where(a => bimestres.Contains(a.Bimestre));
-        }       
+        }
 
         private async Task<TurmaControleGradeDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
@@ -148,8 +145,8 @@ namespace SME.SR.Application
             detalhamentoDivergencias.AulasDiasNaoLetivos = await ObterAulasDiasNaoLetivos(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre);
 
             return componenteDto;
-        } 
-        
+        }
+
         private async Task<List<AulaDiasNaoLetivosControleGradeDto>> ObterAulasDiasNaoLetivos(long turmaId, long tipoCalendarioId, long componenteCurricularCodigo, int bimestre, bool professorCJ = false)
         {
             var data = DateTime.Today;
@@ -165,7 +162,7 @@ namespace SME.SR.Application
             aulas.Where(a => diasComEventosNaoLetivos.Any(d => d.Data == a.Data)).ToList()
                 .ForEach(aula =>
                 {
-                    foreach(var eventoNaoLetivo in diasComEventosNaoLetivos.Where(d => d.Data == aula.Data))
+                    foreach (var eventoNaoLetivo in diasComEventosNaoLetivos.Where(d => d.Data == aula.Data))
                     {
                         aulasDiasNaoLetivos.Add(new AulaDiasNaoLetivosControleGradeDto()
                         {
@@ -176,6 +173,8 @@ namespace SME.SR.Application
                         });
                     }
                 });
+            return aulasDiasNaoLetivos;
+        }
 
         private async Task<IEnumerable<VisaoSemanalControleGradeSinteticoDto>> ObterVisaoSemanal(DateTime dataInicio, DateTime dataFim, long turmaId, long componenteCurricularId, long tipoCalendarioId)
         {
@@ -197,7 +196,7 @@ namespace SME.SR.Application
                         QuantidadeGrade = quantidadeGrade,
                         DiasLetivo = diasLetivos,
                         AulasCriadas = aulasCriadas,
-                        Diferenca = PossuiDiferencaDias(quantidadeGrade,diasLetivos,aulasCriadas)
+                        Diferenca = PossuiDiferencaDias(quantidadeGrade, diasLetivos, aulasCriadas)
                     });
                 }
             }
@@ -206,7 +205,7 @@ namespace SME.SR.Application
 
         private string PossuiDiferencaDias(int quantidadeGrade, int diasLetivos, int aulasCriadas)
         {
-            if(quantidadeGrade > 0)
+            if (quantidadeGrade > 0)
             {
                 if (quantidadeGrade != diasLetivos)
                     return "Sim";
