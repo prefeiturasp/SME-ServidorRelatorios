@@ -220,7 +220,8 @@ namespace SME.SR.Data
             var query = @"select
 	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as DataAula,
 	                        sum(a.quantidade) as QuantidadeAulas,
-	                        a.criado_por as Professor
+	                        a.criado_por as Professor,
+	                        a.criado_rf as ProfessorRf
                         from
 	                        aula a
                         inner join turma t on

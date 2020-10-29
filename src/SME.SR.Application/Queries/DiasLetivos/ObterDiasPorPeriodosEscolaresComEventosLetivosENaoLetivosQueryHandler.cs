@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -18,14 +19,7 @@ namespace SME.SR.Application
 
         public async Task<List<DiaLetivoDto>> Handle(ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery request, CancellationToken cancellationToken)
         {
-            var datasDosPeriodosEscolares = new List<DiaLetivoDto>();
-            foreach (var periodoEscolar in request.PeriodosEscolares.OrderBy(c => c.Bimestre))
-            {
-                datasDosPeriodosEscolares.AddRange(periodoEscolar.ObterIntervaloDatas().Select(c => new DiaLetivoDto
-                {
-                    Data = c
-                }));
-            }
+            var DiasLetivos = new List<DiaLetivoDto>();           
 
             var eventos = await mediator.Send(new ObterEventosPorTipoCalendarioIdQuery(request.TipoCalendarioId));
 
@@ -34,14 +28,16 @@ namespace SME.SR.Application
                 var datasComEventos = eventos.SelectMany(evento => evento.ObterIntervaloDatas().Select(data => new DiaLetivoDto
                 {
                     Data = data,
+                    Motivo = evento.TipoEvento.Name(),
                     EhLetivo = evento.EhEventoLetivo(),
+                    EhNaoLetivo = evento.NaoEhEventoLetivo(),
                     UesIds = string.IsNullOrWhiteSpace(evento.UeId) ? new List<string>() : new List<string> { evento.UeId },
                     PossuiEvento = true
                 }));
 
-                datasDosPeriodosEscolares.AddRange(datasComEventos);
+                DiasLetivos.AddRange(datasComEventos);
             }
-            return datasDosPeriodosEscolares;
+            return DiasLetivos;
         }
     }
 }
