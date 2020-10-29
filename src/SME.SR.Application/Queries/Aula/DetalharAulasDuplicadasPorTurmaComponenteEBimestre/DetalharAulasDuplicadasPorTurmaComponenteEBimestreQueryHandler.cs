@@ -13,7 +13,7 @@ namespace SME.SR.Application
     {
         private readonly IAulaRepository aulaRepository;
 
-        public DetalharAulasDuplicadasPorTurmaComponenteEBimestreQueryHandler()
+        public DetalharAulasDuplicadasPorTurmaComponenteEBimestreQueryHandler(IAulaRepository aulaRepository)
         {
             this.aulaRepository = aulaRepository ?? throw new ArgumentNullException(nameof(aulaRepository));
         }
