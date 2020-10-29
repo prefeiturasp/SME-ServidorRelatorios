@@ -280,7 +280,8 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return (await conexao.QueryAsync<DateTime>(query, new { turmaId, componenteCurricularId, dataInicio, dataFim }));
+                return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId, dataInicio, dataFim }));
+
             }
         }
     }
