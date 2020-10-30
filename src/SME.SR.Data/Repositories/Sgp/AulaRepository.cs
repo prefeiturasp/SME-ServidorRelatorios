@@ -188,7 +188,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<AulaNormalExcedidoControleGradeDto>> ObterAulasExcedidas(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             var query = @"select
-	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as DataAula,
+	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as Data,
 	                        sum(a.quantidade) as QuantidadeAulas,
 	                        a.criado_por as Professor
                         from
@@ -218,8 +218,8 @@ namespace SME.SR.Data
         public async Task<IEnumerable<AulaReduzidaDto>> ObterQuantidadeAulasReduzido(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre, bool professorCJ)
         {
             var query = @"select
-	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as DataAula,
-	                        sum(a.quantidade) as QuantidadeAulas,
+	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as Data,
+	                        sum(a.quantidade) as Quantidade,
 	                        a.criado_por as Professor
                         from
 	                        aula a
@@ -268,6 +268,24 @@ namespace SME.SR.Data
         }
 
         public async Task<int> ObterDiasAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim)
+        {
+            var query = @"select coalesce(count(a.quantidade),0) from aula a
+	                        inner join turma t on a.turma_id = t.turma_id 
+	                        where 
+		                        disciplina_id = @componenteCurricularId::varchar and 
+		                        data_aula between @dataInicio and @dataFim
+                                and t.id = @turmaId
+		                        and not a.excluido 
+		                        and a.tipo_aula = 1";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId, dataInicio, dataFim }));
+
+            }
+        }
+
+        public async Task<int> ObterQuantidadeAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim)
         {
             var query = @"select coalesce(sum(a.quantidade),0) from aula a
 	                        inner join turma t on a.turma_id = t.turma_id 

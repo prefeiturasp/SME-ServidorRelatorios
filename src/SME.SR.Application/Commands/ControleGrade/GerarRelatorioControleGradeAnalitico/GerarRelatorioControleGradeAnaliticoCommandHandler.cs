@@ -143,6 +143,7 @@ namespace SME.SR.Application
             detalhamentoDivergencias.AulasNormaisExcedido = await mediator.Send(new ObterAulasNormaisExcedidasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre));
             detalhamentoDivergencias.AulasTitularCJ = await ObterAulasTitularCJ(aulasPrevistasComponente, turmaId, tipoCalendarioId, bimestre);
             detalhamentoDivergencias.AulasDuplicadas = await mediator.Send(new DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Bimestre));
+            componenteDto.DetalhamentoDivergencias = detalhamentoDivergencias;
             componenteDto.VisaoSemanal = await ObterVisaoSemanal(dataInicio, dataFim, turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId);
 
             return componenteDto;
@@ -159,38 +160,20 @@ namespace SME.SR.Application
                 if (VerificaDataEhSegunda(data))
                 {
                     var dataFimSemana = data.AddDays(6) > dataFim ? dataFim : data.AddDays(6);
-                    var aulasCriadas = await mediator.Send(new ObterDiasAulaCriadasPeriodoInicioEFimQuery(turmaId, componenteCurricularId, data, dataFimSemana));
+                    var aulasCriadas = await mediator.Send(new ObterQuantidadeAulasCriadasPeriodoInicioEFimQuery(turmaId, componenteCurricularId, data, dataFimSemana));
                     var diasLetivos = ObtemDiasLetivos(data, dataFimSemana, eventosCadastrados);
 
                     visaoSemanal.Add(new VisaoSemanalControleGradeSinteticoDto()
                     {
-                        Data = data.ToString(),
+                        Data = data.ToString("dd/MM/yyyy"),
                         QuantidadeGrade = quantidadeGrade,
                         DiasLetivo = diasLetivos,
                         AulasCriadas = aulasCriadas,
-                        Diferenca = PossuiDiferencaDias(quantidadeGrade,diasLetivos,aulasCriadas)
+                        Diferenca = quantidadeGrade != aulasCriadas ? "Sim" : "Não"
                     });
                 }
             }
             return visaoSemanal;
-        }
-
-        private string PossuiDiferencaDias(int quantidadeGrade, int diasLetivos, int aulasCriadas)
-        {
-            if(quantidadeGrade > 0)
-            {
-                if (quantidadeGrade != diasLetivos)
-                    return "Sim";
-
-                if (quantidadeGrade != aulasCriadas)
-                    return "Sim";
-
-                if (diasLetivos != aulasCriadas)
-                    return "Sim";
-
-                return "Não";
-            }
-            return "Sim";
         }
 
         private int ObtemDiasLetivos(DateTime dataInicio, DateTime dataFim, IEnumerable<Evento> eventosCadastrados)
@@ -227,31 +210,64 @@ namespace SME.SR.Application
             var aulasCJ = await mediator.Send(new ObterQuantidadeDeAulasQuery(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, true));
 
             var aulasTitularCJData = new List<AulaTitularCJDataControleGradeDto>();
-            foreach (var aulaTitular in aulasTitular)
+
+            var datas = aulasTitular.Select(a => a.Data);
+            datas.Union(aulasCJ.Select(a => a.Data));
+
+            foreach (var data in datas.Distinct())
             {
-                var aulasRepetidas = aulasCJ.Where(a => a.Data == aulaTitular.Data);
-                if (aulasRepetidas.Any())
+                var aulaTitularCJData = new AulaTitularCJDataControleGradeDto()
                 {
-                    var aulaTitularCJData = new AulaTitularCJDataControleGradeDto()
-                    {
-                        Data = aulaTitular.Data
-                    };
+                    Data = data
+                };
 
-                    var divergencias = new List<AulaTitularCJControleGradeDto>();
-
-                    foreach (var aula in aulasRepetidas)
+                var divergencias = new List<AulaTitularCJControleGradeDto>();
+                foreach(var aula in aulasTitular.Where(a => a.Data == data))
+                {
+                    divergencias.Add(new AulaTitularCJControleGradeDto()
                     {
-                        divergencias.Add(new AulaTitularCJControleGradeDto()
-                        {
-                            QuantidadeAulas = aula.Quantidade + aulaTitular.Quantidade,
-                            ProfessorCJ = aula.Professor,
-                            ProfessorTitular = aulaTitular.Professor
-                        });
-                    }
-                    aulaTitularCJData.Divergencias = divergencias;
-                    aulasTitularCJData.Add(aulaTitularCJData);
+                        QuantidadeAulas = aula.Quantidade,
+                        ProfessorTitular = aula.Professor
+                    });
                 }
+
+                foreach (var aula in aulasCJ.Where(a => a.Data == data))
+                {
+                    divergencias.Add(new AulaTitularCJControleGradeDto()
+                    {
+                        QuantidadeAulas = aula.Quantidade,
+                        ProfessorCJ = aula.Professor
+                    });
+                }
+
+                aulaTitularCJData.Divergencias = divergencias;
+                aulasTitularCJData.Add(aulaTitularCJData);
             }
+            //foreach (var aulaTitular in aulasTitular)
+            //{
+            //    var aulasRepetidas = aulasCJ.Where(a => a.Data == aulaTitular.Data);
+            //    if (aulasRepetidas.Any())
+            //    {
+            //        var aulaTitularCJData = new AulaTitularCJDataControleGradeDto()
+            //        {
+            //            Data = aulaTitular.Data
+            //        };
+
+            //        var divergencias = new List<AulaTitularCJControleGradeDto>();
+
+            //        foreach (var aula in aulasRepetidas)
+            //        {
+            //            divergencias.Add(new AulaTitularCJControleGradeDto()
+            //            {
+            //                QuantidadeAulas = aula.Quantidade + aulaTitular.Quantidade,
+            //                ProfessorCJ = aula.Professor,
+            //                ProfessorTitular = aulaTitular.Professor
+            //            });
+            //        }
+            //        aulaTitularCJData.Divergencias = divergencias;
+            //        aulasTitularCJData.Add(aulaTitularCJData);
+            //    }
+            //}
 
             return aulasTitularCJData;
         }
