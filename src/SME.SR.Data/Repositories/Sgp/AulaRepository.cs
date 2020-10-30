@@ -3,6 +3,7 @@ using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -91,14 +92,16 @@ namespace SME.SR.Data
        // public Task<int> ObterQuantidadeAulas(long turmaId, string componenteCurricularId, string CodigoRF)
         public async Task<bool> VerificaExisteMaisAulaCadastradaNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
-            var query = @"select distinct 1 from aula a 
+            var query = @"select distinct 1 
+                            from aula a 
                           inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id and a.data_aula between p.periodo_inicio and p.periodo_fim
                           inner join turma on a.turma_id = turma.turma_id 
-                          where turma.id = @turmaId
+                          where not a.excluido
+                            and turma.id = @turmaId
                             and a.tipo_calendario_id = @tipoCalendarioId
                             and a.disciplina_id = @componenteCurricularId 
                             and p.bimestre = @bimestre 
-                         group by a.data_aula, a.criado_rf having sum(a.quantidade) > 1";
+                         group by a.data_aula, a.tipo_aula, a.criado_rf having count(a.id) > 1";
 
             var parametros = new
             {
@@ -152,6 +155,160 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return (await conexao.QueryAsync<int>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre })).Any();
+            }
+        }
+
+        public async Task<IEnumerable<AulaDuplicadaControleGradeDto>> DetalharAulasDuplicadasNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
+        {
+            var query = @"select to_char(a.data_aula, 'dd/MM/yyyy') as data, a.criado_por  || ' ('  || a.criado_rf  || ')' as Professor, count(a.quantidade) as QuantidadeDuplicado
+                            from aula a 
+                          inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id and a.data_aula between p.periodo_inicio and p.periodo_fim
+                          inner join turma on a.turma_id = turma.turma_id 
+                          where not a.excluido
+                            and turma.id = @turmaId
+                            and a.tipo_calendario_id = @tipoCalendarioId
+                            and a.disciplina_id = @componenteCurricularId
+                            and p.bimestre = @bimestre
+                         group by a.data_aula, a.tipo_aula, a.criado_por, a.criado_rf 
+                         having count(a.quantidade) > 1";
+
+            var parametros = new
+            {
+                componenteCurricularId,
+                turmaId,
+                tipoCalendarioId,
+                bimestre
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<AulaDuplicadaControleGradeDto>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<AulaNormalExcedidoControleGradeDto>> ObterAulasExcedidas(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
+        {
+            var query = @"select
+	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as Data,
+	                        sum(a.quantidade) as QuantidadeAulas,
+	                        a.criado_por as Professor,
+                            a.criado_rf as ProfessorRf
+                        from
+	                        aula a
+                        inner join turma t on
+	                        a.turma_id = t.turma_id
+                        inner join componente_curricular cc on
+	                        a.disciplina_id = cc.id::varchar
+                        inner join periodo_escolar pe on
+	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                        where
+	                        disciplina_id = @componenteCurricularId
+	                        and t.id = @turmaId
+	                        and pe.bimestre = @bimestre
+	                        and not a.excluido 
+                            and pe.tipo_calendario_id = @tipoCalendarioId
+                       group by
+	                        a.data_aula,
+	                        a.criado_por,
+                            a.criado_rf,
+	                        cc.eh_regencia
+                        having (case when cc.eh_regencia then sum(a.quantidade) >= 2 else sum(a.quantidade) >= 3 end)
+                        order by
+	                        data_aula";
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<AulaNormalExcedidoControleGradeDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre }));
+            }
+        }
+
+        public async Task<IEnumerable<AulaReduzidaDto>> ObterQuantidadeAulasReduzido(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre, bool professorCJ)
+        {
+            var query = @"select
+	                        a.data_aula as Data,
+	                        sum(a.quantidade) as Quantidade,
+	                        a.criado_por as Professor,
+	                        a.criado_rf as ProfessorRf
+                        from
+	                        aula a
+                        inner join turma t on
+	                        a.turma_id = t.turma_id
+                        inner join periodo_escolar pe on
+	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                        where
+	                        disciplina_id = @componenteCurricularId
+	                        and t.id = @turmaId
+	                        and pe.bimestre = @bimestre
+	                        and not a.excluido 
+                            and pe.tipo_calendario_id = @tipoCalendarioId
+                            and a.aula_cj = @professorCJ
+                        group by
+	                        a.data_aula,
+	                        a.criado_por,
+                            a.criado_por,
+                            a.criado_rf
+                        order by
+	                        data_aula";
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<AulaReduzidaDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre, professorCJ }));
+            }
+        }
+
+        public async Task<int> ObterQuantidadeAulaGrade(long turmaId, long componenteCurricularId)
+        {
+            var query = @"select
+	                        quantidade_aulas as quantidadeGrade
+                        from
+	                        grade_filtro gf
+                        inner join turma t
+	                        on gf.duracao_turno = t.qt_duracao_aula and gf.modalidade = t.modalidade_codigo 
+                        inner join ue u 
+	                        on t.ue_id = u.id and gf.tipo_escola = u.tipo_escola 
+                        inner join grade_disciplina gd on
+	                        gf.grade_id = gd.grade_id and t.ano = gd.ano::varchar
+                        where
+	                        t.id = @turmaId and 
+	                        gd.componente_curricular_id = @componenteCurricularId ";
+
+            using(var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId }));
+            }
+        }
+
+        public async Task<int> ObterDiasAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim)
+        {
+            var query = @"select coalesce(count(a.quantidade),0) from aula a
+	                        inner join turma t on a.turma_id = t.turma_id 
+	                        where 
+		                        disciplina_id = @componenteCurricularId::varchar and 
+		                        data_aula between @dataInicio and @dataFim
+                                and t.id = @turmaId
+		                        and not a.excluido 
+		                        and a.tipo_aula = 1";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId, dataInicio, dataFim }));
+
+            }
+        }
+
+        public async Task<int> ObterQuantidadeAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim)
+        {
+            var query = @"select coalesce(sum(a.quantidade),0) from aula a
+	                        inner join turma t on a.turma_id = t.turma_id 
+	                        where 
+		                        disciplina_id = @componenteCurricularId::varchar and 
+		                        data_aula between @dataInicio and @dataFim
+                                and t.id = @turmaId
+		                        and not a.excluido 
+		                        and a.tipo_aula = 1";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId, dataInicio, dataFim }));
+
             }
         }
     }

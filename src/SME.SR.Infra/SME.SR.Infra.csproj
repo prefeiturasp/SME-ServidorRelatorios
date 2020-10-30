@@ -17,8 +17,4 @@
     <PackageReference Include="Refit" Version="5.1.67" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\Aula\" />
-  </ItemGroup>
-
 </Project>
