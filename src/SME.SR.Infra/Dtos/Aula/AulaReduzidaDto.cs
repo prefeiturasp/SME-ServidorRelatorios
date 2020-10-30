@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.SR.Infra
 {
@@ -10,8 +8,9 @@ namespace SME.SR.Infra
         {
         }
 
-        public string Data { get; set; }
+        public DateTime Data { get; set; }
         public int Quantidade { get; set; }
         public string Professor { get; set; }
+        public string ProfessorRf { get; set; }
     }
 }
