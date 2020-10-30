@@ -52,6 +52,20 @@ namespace SME.SR.Application
                 ueNomeComTipoEscola = ue.NomeComTipoEscola;
             }
 
+            var proficiencia = !String.IsNullOrEmpty(filtros.GrupoId) ? filtros.GrupoId : filtros.ProficienciaId.ToString();
+            if (proficiencia == GrupoSondagemEnum.CapacidadeLeitura.Name())
+            {
+                proficiencia = GrupoSondagemEnum.CapacidadeLeitura.ShortName();
+            }
+            else if (proficiencia == GrupoSondagemEnum.LeituraVozAlta.Name())
+            {
+                proficiencia = GrupoSondagemEnum.LeituraVozAlta.ShortName();
+            }
+            else if (proficiencia == GrupoSondagemEnum.ProducaoTexto.Name())
+            {
+                proficiencia = GrupoSondagemEnum.ProducaoTexto.ShortName();
+            }
+
             return await Task.FromResult(new RelatorioSondagemPortuguesConsolidadoLeituraCabecalhoDto()
             {
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
@@ -64,7 +78,7 @@ namespace SME.SR.Application
                 AnoTurma = filtros.Ano,
                 Turma = "Todas",
                 ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.ShortName(),
-                Proficiencia = filtros.ProficienciaId.ToString()
+                Proficiencia = proficiencia
             });
         }
 
