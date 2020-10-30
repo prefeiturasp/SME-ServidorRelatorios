@@ -8,9 +8,9 @@ namespace SME.SR.Infra
         {
             Bimestres = new List<RelatorioCompensacaoAusenciaBimestreDto>();
         }
+
         public string Nome { get; set; }
         public List<RelatorioCompensacaoAusenciaBimestreDto> Bimestres { get; set; }
-
     }
 }
 

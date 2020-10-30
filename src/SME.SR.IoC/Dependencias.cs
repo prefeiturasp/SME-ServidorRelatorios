@@ -24,6 +24,23 @@ namespace SME.SR.IoC
 {
     public static class Dependencias
     {
+        public static void AddRabbitMQ(IServiceCollection services, IConfiguration configuration)
+        {
+            var factory = new ConnectionFactory
+            {
+                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
+                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
+                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
+            };
+
+            var conexaoRabbit = factory.CreateConnection();
+            IModel channel = conexaoRabbit.CreateModel();
+
+            services.AddSingleton(conexaoRabbit);
+            services.AddSingleton(channel);
+        }
+
         public static void RegistrarDependencias(this IServiceCollection services, IConfiguration configuration)
         {
             var assembly = AppDomain.CurrentDomain.Load("SME.SR.Application");
@@ -105,13 +122,37 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IParecerConclusivoRepository), typeof(ParecerConclusivoRepository));
             services.TryAddScoped(typeof(ICompensacaoAusenciaRepository), typeof(CompensacaoAusenciaRepository));
             services.TryAddScoped(typeof(ICalendarioEventoRepository), typeof(CalendarioEventoRepository));
+            services.TryAddScoped(typeof(IRecuperacaoParalelaRepository), typeof(RecuperacaoParalelaRepository));
+            services.TryAddScoped(typeof(IPlanoAulaRepository), typeof(PlanoAulaRepository));
+            services.TryAddScoped(typeof(IRelatorioSondagemComponentePorTurmaRepository), typeof(RelatorioSondagemComponentePorTurmaRepository));
+            services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
+            services.TryAddScoped(typeof(IRelatorioSondagemPortuguesConsolidadoRepository), typeof(RelatorioSondagemPortuguesConsolidadoRepository));
+            services.TryAddScoped(typeof(IUsuarioRepository), typeof(UsuarioRepository));
+            services.TryAddScoped(typeof(ITurmaEolRepository), typeof(TurmaEolRepository));            
+            services.TryAddScoped(typeof(IMathPoolNumbersRepository), typeof(MathPoolNumbersRepository));
+            services.TryAddScoped(typeof(IPerguntasAutoralRepository), typeof(PerguntasAutoralRepository));
+            services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));            
+            services.TryAddScoped(typeof(IPeriodoSondagemRepository), typeof(PeriodoSondagemRepository));
+            services.TryAddScoped(typeof(IAulaPrevistaBimestreRepository), typeof(AulaPrevistaBimestreRepository));
+            
+            services.TryAddScoped(typeof(IMathPoolCARepository), typeof(MathPoolCARepository));
+            services.TryAddScoped(typeof(IMathPoolCMRepository), typeof(MathPoolCMRepository));
 
+
+            services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
+            services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
+        }
+
+        private static void RegistrarServicos(IServiceCollection services)
+        {
+            services.TryAddScoped<IServicoFila, FilaRabbit>();
         }
 
         private static void RegistrarUseCase(IServiceCollection services)
         {
             services.TryAddScoped<IRelatorioGamesUseCase, RelatorioGamesUseCase>();
             services.TryAddScoped<IMonitorarStatusRelatorioUseCase, MonitorarStatusRelatorioUseCase>();
+            services.TryAddScoped<IRelatorioPlanoAulaUseCase, RelatorioPlanoAulaUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAlunoUseCase, RelatorioConselhoClasseAlunoUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
@@ -125,30 +166,14 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioNotasEConceitosFinaisUseCase, RelatorioNotasEConceitosFinaisUseCase>();
             services.TryAddScoped<IRelatorioCompensacaoAusenciaUseCase, RelatorioCompensacaoAusenciaUseCase>();
             services.TryAddScoped<IRelatorioImpressaoCalendarioUseCase, RelatorioImpressaoCalendarioUseCase>();
-            
-            
-        }
+            services.TryAddScoped<IRelatorioResumoPAPUseCase, RelatorioResumoPAPUseCase>();
+            services.TryAddScoped<IRelatorioSondagemMatematicaConsolidadoUseCase, RelatorioSondagemMatematicaConsolidadoUseCase>();
+            services.TryAddScoped<IRelatorioSondagemComponentesPorTurmaUseCase, RelatorioSondagemComponentesPorTurmaUseCase>();
+            services.TryAddScoped<IRelatorioControleGradeUseCase, RelatorioControleGradeUseCase>();
+            services.TryAddScoped<IRelatorioSondagemMatConsolidadoAdtMultiUseCase, RelatorioSondagemMatConsolidadoAdtMultiUseCase>();
+            services.TryAddScoped<IRelatorioSondagemPortuguesPorTurmaUseCase, RelatorioSondagemPortuguesPorTurmaUseCase>();
+            services.TryAddScoped<IRelatorioSondagemPortuguesConsolidadoUseCase, RelatorioSondagemPortuguesConsolidadoUseCase>();
 
-        private static void RegistrarServicos(IServiceCollection services)
-        {
-            services.TryAddScoped<IServicoFila, FilaRabbit>();
-        }
-
-
-        public static void AddRabbitMQ(IServiceCollection services, IConfiguration configuration)
-        {
-            var factory = new ConnectionFactory
-            {
-                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
-                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
-                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value
-            };
-
-            var conexaoRabbit = factory.CreateConnection();
-            IModel channel = conexaoRabbit.CreateModel();
-
-            services.AddSingleton(conexaoRabbit);
-            services.AddSingleton(channel);
         }
     }
 }

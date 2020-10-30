@@ -477,10 +477,10 @@ namespace SME.SR.Data
 
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-        
-                return await conexao.QueryAsync<AlunoTurmaRegularRetornoDto>(query, new { codigoTurma = turmaCodigo });
-     
-            
+
+            return await conexao.QueryAsync<AlunoTurmaRegularRetornoDto>(query, new { codigoTurma = turmaCodigo });
+
+
         }
 
         public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadeESemestre(string[] uesCodigos, string[] anos, int modalidade, int? semestre)
@@ -493,12 +493,12 @@ namespace SME.SR.Data
                         inner join ue u on t.ue_id  = u.id
                         where 1=1 ");
 
-                if(anos != null && anos.Length >0)
+                if (anos != null && anos.Length > 0)
                     query.AppendLine("and tca.ano = ANY(@anos) ");
-               
+
                 if (uesCodigos != null && uesCodigos.Length > 0)
                     query.AppendLine("and u.ue_id = ANY(@uesCodigos) ");
-                
+
                 if (modalidade > 0)
                     query.AppendLine("and t.modalidade_codigo = @modalidade ");
 
@@ -707,7 +707,91 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { turmaCodigo = turmaCodigo.ToString()});
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { turmaCodigo = turmaCodigo.ToString() });
+        }
+
+        public async Task<IEnumerable<long>> ObterTurmasCodigoPorUeAnoSondagemAsync(string ano, string ueCodigo, int anoLetivo, long dreCodigo)
+        {
+            try
+            {
+
+                var query = new StringBuilder(@"
+                     SELECT distinct turma.cd_turma_escola  codigoTurma 
+                     FROM turma_escola Turma  
+                     INNER JOIN serie_turma_escola serie_turma
+					 ON serie_turma.cd_turma_escola = turma.cd_turma_escola
+					 INNER JOIN serie_ensino serie_ensino
+					 ON serie_turma.cd_serie_ensino = serie_ensino.cd_serie_ensino
+					 INNER JOIN etapa_ensino etapa_ensino
+					 ON etapa_ensino.cd_etapa_ensino = serie_ensino.cd_etapa_ensino
+                     AND etapa_ensino.cd_modalidade_ensino = 1
+					 AND etapa_ensino.cd_etapa_ensino = 5 AND etapa_ensino.dt_cancelamento is null
+                       INNER JOIN v_cadastro_unidade_educacao cue
+					 on cue.cd_unidade_educacao = turma.cd_escola
+					 WHERE an_letivo = @anoLetivo and Turma.st_turma_escola <> 'E'
+                     AND left(dc_turma_escola, 1) = @ano AND Turma.cd_tipo_turma = 1");
+
+
+                if (!string.IsNullOrEmpty(ueCodigo))
+                    query.AppendLine("AND turma.cd_escola = @ueCodigo");
+
+                if (dreCodigo > 0)
+                    query.AppendLine("AND cue.cd_unidade_administrativa_referencia = @dreCodigo");
+
+
+                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+
+                return await conexao.QueryAsync<long>(query.ToString(), new { ano, ueCodigo, anoLetivo, dreCodigo });
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public async Task<TurmaResumoDto> ObterTurmaResumoComDreUePorId(long turmaId)
+        {
+            var query = @"select t.id, t.nome, t.ano_letivo as AnoLetivo, t.modalidade_codigo as Modalidade
+                                , ue.id, ue.ue_id as CodigoUe, ue.nome, ue.tipo_escola as TipoEscola
+                                , dre.id, dre.abreviacao, dre.nome
+                              from turma t
+                             inner join ue on ue.id = t.ue_id
+                             inner join dre on dre.id = ue.dre_id
+                             where t.id = @turmaId";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                var turma = (await conexao.QueryAsync<TurmaResumoDto, UeDto, DreDto, TurmaResumoDto>(query, (turmaDto, ueDto, dreDto) =>
+                {
+                    ueDto.Dre = dreDto;
+                    turmaDto.Ue = ueDto;
+
+                    return turmaDto;
+                },
+                new { turmaId }));
+
+                return turma.First();
+            }
+        }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
+        {
+            var query = @"select t.id as Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where t.id = ANY(@ids)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<Turma>(query, new { ids });
+            }
+
         }
     }
 }

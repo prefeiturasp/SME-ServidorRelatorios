@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.IoC", "src\SME.SR.Io
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testes", "testes", "{FA28DF5D-AD66-49B6-8EF9-896770157A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.SR.Testes.QueryHandlers", "testes\SME.SR.Testes.QueryHandlers\SME.SR.Testes.QueryHandlers.csproj", "{C0C85753-0700-4D3A-9195-66E8374FB3EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.Testes.QueryHandlers", "testes\SME.SR.Testes.QueryHandlers\SME.SR.Testes.QueryHandlers.csproj", "{C0C85753-0700-4D3A-9195-66E8374FB3EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

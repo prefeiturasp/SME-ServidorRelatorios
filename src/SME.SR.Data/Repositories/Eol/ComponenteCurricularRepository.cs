@@ -106,17 +106,19 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricular>> ListarComponentes()
         {
-            var query = @"SELECT 
-                        cd_componente_curricular AS Codigo, 
-                        RTRIM(LTRIM(dc_componente_curricular)) AS Descricao,
-                        0 as TerritorioSaber,
-                        CASE
-                            WHEN cd_componente_curricular IN (508, 511, 1064, 1065, 1104, 1105, 1112, 1113, 1114, 1115, 1117, 1121, 1124, 1125, 1211, 1212, 1213, 1290, 1301) THEN 1
-                            ELSE 0
-                        END EhRegencia
-                    FROM componente_curricular";
+            var query = @"select cc.id as codigo,
+                               cc.descricao_sgp as descricao,
+                               cc.eh_territorio as territorioSaber,
+                               cc.eh_regencia as ComponentePlanejamentoRegencia,
+                               cc.componente_curricular_pai_id as CodigoComponentePai,
+                               cc.eh_compartilhada as EhCompartilhada,
+                               cc.permite_lancamento_nota as PodeLancarNota,
+                               cc.permite_registro_frequencia as ControlaFrequencia,
+                               cc.eh_base_nacional as EhBaseNacional
+                          from componente_curricular cc 
+                         order by cc.id";
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<ComponenteCurricular>(query);
             }
@@ -301,8 +303,16 @@ namespace SME.SR.Data
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
             return await conexao.QueryAsync<ComponenteCurricular>(query.ToString(), parametros);
+        }
 
+        public async Task<IEnumerable<ComponenteCurricularSondagem>> ObterComponenteCurricularDeSondagemPorId(string componenteCurricularId)
+        {
+            string query = @"select Id, Descicao, Excluido from ComponenteCurricular where Id = @componenteCurricularId";
 
+            var parametros = new { componenteCurricularId };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+            return await conexao.QueryAsync<ComponenteCurricularSondagem>(query, parametros);
         }
     }
 }

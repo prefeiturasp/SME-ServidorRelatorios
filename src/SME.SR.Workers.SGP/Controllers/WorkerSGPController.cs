@@ -86,8 +86,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioHistoricoEscolarUseCase.Executar(request);
             return true;
         }
-        [HttpGet("relatorios/fechamentopendencias")]
-        [Action("relatorios/fechamentopendencias", typeof(IRelatorioFechamentoPendenciasUseCase))]
+        [HttpGet("relatorios/fechamentopendencias")]        
         public async Task<bool> RelatorioFechamentoPendencias([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioFechamentoPendenciasUseCase relatorioFechamentoPendenciasUseCase)
         {
             await relatorioFechamentoPendenciasUseCase.Executar(request);            
@@ -129,6 +128,30 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioImpressaoCalendario([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioImpressaoCalendarioUseCase relatorioImpressaoCalendarioUseCase)
         {
             await relatorioImpressaoCalendarioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/resumopap")]
+        [Action("relatorios/resumopap", typeof(IRelatorioResumoPAPUseCase))]
+        public async Task<bool> RelatorioResumoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioResumoPAPUseCase relatorioResumoPAPUseCase)
+        {
+            await relatorioResumoPAPUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/planoaula")]
+        [Action("relatorios/planoaula", typeof(IRelatorioPlanoAulaUseCase))]
+        public async Task<bool> RelatorioPlanoAula([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAulaUseCase relatorioPlanoAulaUseCase)
+        {
+            await relatorioPlanoAulaUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/controle-grade")]
+        [Action("relatorios/controle-grade", typeof(IRelatorioControleGradeUseCase))]
+        public async Task<bool> ControleGrade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioControleGradeUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
             return true;
         }
     }
