@@ -33,95 +33,89 @@ namespace SME.SR.Application
             {
                 var listaAlunos = await mathPoolCARepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
-                if (listaAlunos != null && listaAlunos.Any())
+                var ordem1Ideia = listaAlunos.GroupBy(fu => fu.Ordem1Ideia);
+
+                var ordem1Resultado = listaAlunos.GroupBy(fu => fu.Ordem1Resultado);
+
+                var ordem2Ideia = listaAlunos.GroupBy(fu => fu.Ordem2Ideia);
+
+                var ordem2Resultado = listaAlunos.GroupBy(fu => fu.Ordem2Resultado);
+
+                if (request.TurmaAno != 2)
                 {
-                    var ordem1Ideia = listaAlunos.GroupBy(fu => fu.Ordem1Ideia);
+                    var ordem3Ideia = listaAlunos.GroupBy(fu => fu.Ordem3Ideia);
 
-                    var ordem1Resultado = listaAlunos.GroupBy(fu => fu.Ordem1Resultado);
+                    var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
 
-                    var ordem2Ideia = listaAlunos.GroupBy(fu => fu.Ordem2Ideia);
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem3Resultado, ordem: 3, respostas, request.QuantidadeTotalAlunos);
 
-                    var ordem2Resultado = listaAlunos.GroupBy(fu => fu.Ordem2Resultado);
-
-                    if (request.TurmaAno != 2)
+                    if (request.TurmaAno != 1 && request.TurmaAno != 3)
                     {
-                        var ordem3Ideia = listaAlunos.GroupBy(fu => fu.Ordem3Ideia);
+                        var ordem4Ideia = listaAlunos.GroupBy(fu => fu.Ordem4Ideia);
 
-                        var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
+                        var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
 
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem3Resultado, ordem: 3, respostas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem4Resultado, ordem: 4, respostas, request.QuantidadeTotalAlunos);
 
-                        if (request.TurmaAno != 1 && request.TurmaAno != 3)
-                        {
-                            var ordem4Ideia = listaAlunos.GroupBy(fu => fu.Ordem4Ideia);
-
-                            var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
-
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem4Resultado, ordem: 4, respostas, request.QuantidadeTotalAlunos);
-
-                        }
                     }
-
-                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem1Ideia, ordem1Resultado, ordem: 1, respostas, request.QuantidadeTotalAlunos);
-                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem2Ideia, ordem2Resultado, ordem: 2, respostas, request.QuantidadeTotalAlunos);
                 }
+
+                AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem1Ideia, ordem1Resultado, ordem: 1, respostas, request.QuantidadeTotalAlunos);
+                AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem2Ideia, ordem2Resultado, ordem: 2, respostas, request.QuantidadeTotalAlunos);
+
             }
             else
             {
                 var listaAlunos = await mathPoolCMRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
-                if (listaAlunos != null && listaAlunos.Any())
+                if (request.TurmaAno == 2)
                 {
-                    if (request.TurmaAno == 2)
+                    var ordem3Ideia = listaAlunos.GroupBy(fu => fu.Ordem3Ideia);
+
+                    var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
+
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem3Resultado, ordem: 3, respostas, request.QuantidadeTotalAlunos);
+                }
+                else
+                {
+                    if (request.TurmaAno == 3)
                     {
-                        var ordem3Ideia = listaAlunos.GroupBy(fu => fu.Ordem3Ideia);
+                        var ordem4Ideia = listaAlunos.GroupBy(fu => fu.Ordem4Ideia);
 
-                        var ordem3Resultado = listaAlunos.GroupBy(fu => fu.Ordem3Resultado);
+                        var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
 
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem3Ideia, ordem3Resultado, ordem: 3, respostas, request.QuantidadeTotalAlunos);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem4Resultado, ordem: 4, respostas, request.QuantidadeTotalAlunos);
                     }
-                    else
+
+
+                    var ordem5Ideia = listaAlunos.GroupBy(fu => fu.Ordem5Ideia);
+
+                    var ordem5Resultado = listaAlunos.GroupBy(fu => fu.Ordem5Resultado);
+
+                    AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem5Ideia, ordem5Resultado, ordem: 5, respostas, request.QuantidadeTotalAlunos);
+
+                    if (request.TurmaAno != 3)
                     {
-                        if (request.TurmaAno == 3)
-                        {
-                            var ordem4Ideia = listaAlunos.GroupBy(fu => fu.Ordem4Ideia);
+                        var ordem6Ideia = listaAlunos.GroupBy(fu => fu.Ordem6Ideia);
 
-                            var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
+                        var ordem6Resultado = listaAlunos.GroupBy(fu => fu.Ordem6Resultado);
 
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem4Resultado, ordem: 4, respostas, request.QuantidadeTotalAlunos);
-                        }
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem6Ideia, ordem6Resultado, ordem: 6, respostas, request.QuantidadeTotalAlunos);
 
+                        var ordem7Ideia = listaAlunos.GroupBy(fu => fu.Ordem7Ideia);
 
-                        var ordem5Ideia = listaAlunos.GroupBy(fu => fu.Ordem5Ideia);
+                        var ordem7Resultado = listaAlunos.GroupBy(fu => fu.Ordem6Resultado);
 
-                        var ordem5Resultado = listaAlunos.GroupBy(fu => fu.Ordem5Resultado);
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem7Ideia, ordem7Resultado, ordem: 7, respostas, request.QuantidadeTotalAlunos);
+                    }
 
-                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem5Ideia, ordem5Resultado, ordem: 5, respostas, request.QuantidadeTotalAlunos);
+                    if (request.TurmaAno != 3 && request.TurmaAno != 4)
+                    {
+                        var ordem8Ideia = listaAlunos.GroupBy(fu => fu.Ordem8Ideia);
 
-                        if (request.TurmaAno != 3)
-                        {
-                            var ordem6Ideia = listaAlunos.GroupBy(fu => fu.Ordem6Ideia);
+                        var ordem8Resultado = listaAlunos.GroupBy(fu => fu.Ordem8Resultado);
 
-                            var ordem6Resultado = listaAlunos.GroupBy(fu => fu.Ordem6Resultado);
-
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem6Ideia, ordem6Resultado, ordem: 6, respostas, request.QuantidadeTotalAlunos);
-
-                            var ordem7Ideia = listaAlunos.GroupBy(fu => fu.Ordem7Ideia);
-
-                            var ordem7Resultado = listaAlunos.GroupBy(fu => fu.Ordem6Resultado);
-
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem7Ideia, ordem7Resultado, ordem: 7, respostas, request.QuantidadeTotalAlunos);
-                        }
-
-                        if (request.TurmaAno != 3 && request.TurmaAno != 4)
-                        {
-                            var ordem8Ideia = listaAlunos.GroupBy(fu => fu.Ordem8Ideia);
-
-                            var ordem8Resultado = listaAlunos.GroupBy(fu => fu.Ordem8Resultado);
-
-                            AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem8Ideia, ordem8Resultado, ordem: 8, respostas, request.QuantidadeTotalAlunos);
-                        }
-
+                        AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem8Ideia, ordem8Resultado, ordem: 8, respostas, request.QuantidadeTotalAlunos);
                     }
                 }
             }

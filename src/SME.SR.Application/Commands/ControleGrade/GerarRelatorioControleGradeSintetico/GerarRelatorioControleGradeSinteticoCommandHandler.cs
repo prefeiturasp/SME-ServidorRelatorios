@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,35 +28,15 @@ namespace SME.SR.Application
                                                 ModalidadeTipoCalendario.EJA : request.Filtros.ModalidadeTurma == Modalidade.Infantil ?
                                                     ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.Filtros.AnoLetivo, modalidadeCalendario, request.Filtros.Semestre));
-            var periodosEscolares = await ObterPeriodosEscolares(request.Filtros.Bimestres, tipoCalendarioId);
-            var componentesCurriculares = await ObterComponentesCurriculares(request.Filtros.ComponentesCurriculares);
-            var turmas = await ObterTurmas(request.Filtros.Turmas);
             foreach (long turmaId in request.Filtros.Turmas)
             {
                 var aulasPrevistasTurma = new List<AulaPrevistaBimestreQuantidade>();
                 foreach (long componenteCurricularId in request.Filtros.ComponentesCurriculares)
                 {
-                    var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId));
+                    var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId, tipoCalendarioId));
 
                     if (aulasPrevistasBimestresComponente.Any())
-                    {
                         aulasPrevistasTurma.AddRange(aulasPrevistasBimestresComponente);
-                    } 
-                    else
-                    {
-                        foreach(var periodoEscolar in periodosEscolares)
-                        {
-
-                            aulasPrevistasTurma.Add(new AulaPrevistaBimestreQuantidade() {
-                                
-                                ComponenteCurricularId = componenteCurricularId,
-                                ComponenteCurricularNome = componentesCurriculares.FirstOrDefault(a => a.CodDisciplina == componenteCurricularId)?.Disciplina,
-                                TurmaNome = turmas.FirstOrDefault(a => a.Codigo == turmaId.ToString()).Nome,
-                                Bimestre = periodoEscolar.Bimestre,
-                                DataInicio = periodoEscolar.PeriodoInicio,
-                                DataFim = periodoEscolar.PeriodoFim }); ;
-                        }
-                    }
                 }
 
                 if (aulasPrevistasTurma.Any())
@@ -190,7 +170,7 @@ namespace SME.SR.Application
             var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
                 
             dto.Filtro.Dre = turma.Ue.Dre.Abreviacao;
-            dto.Filtro.Ue = $"{turma.Ue.CodigoUe} - {turma.Ue.Nome}";
+            dto.Filtro.Ue = $"{turma.Ue.CodigoUe} - {turma.Ue.TipoEscola.ShortName()} {turma.Ue.Nome}";
             dto.Filtro.Turma = filtros.Turmas.Count() > 1 ? "Todas" : $"{turma.Modalidade.ShortName()} - {turma.Nome}";
             dto.Filtro.Bimestre = filtros.Bimestres.Count() == QuantidadePeriodosPorModalidade(turma.Modalidade) ?
                                     "Todos" : string.Join(",", filtros.Bimestres);

@@ -6,6 +6,7 @@ using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.MVC.Controllers
@@ -13,7 +14,7 @@ namespace SME.SR.MVC.Controllers
     public class RelatoriosController : Controller
     {
         private readonly ILogger<RelatoriosController> _logger;
-
+        private Random rnd = new Random();
         public RelatoriosController(ILogger<RelatoriosController> logger)
         {
             _logger = logger;
@@ -23,7 +24,23 @@ namespace SME.SR.MVC.Controllers
         {
             return View();
         }
+        [HttpGet("graficos")]
+        public async Task<IActionResult> RelatorioGraficosTeste([FromServices]IMediator mediator)
+        {
 
+
+            //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("", new GraficoBarrasVerticalDto(10), Guid.NewGuid(), envioPorRabbit : false));
+
+            var grafico = new GraficoBarrasVerticalDto(500, "");
+
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(10, "Banana"));
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));            
+
+            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(500, "Frutas", 100, 5);
+
+
+            return View("RelatorioGraficoBarrasTeste", grafico);
+        }
         [HttpGet("faltas-frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
@@ -2518,7 +2535,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         }
 
         [HttpGet("sondagem-componentes-numeros")]
-        public IActionResult SondagemComponentesNumeros()
+        public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
@@ -2734,6 +2751,27 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Linhas = linhas
                 },
             };
+
+            foreach (var pergunta in model.Cabecalho.Perguntas)
+            {
+                var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
+           
+                var respostas = model.Planilha.Linhas
+                    .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta.Id)).GroupBy(b => b.Resposta);
+
+                foreach (var resposta in respostas)
+                {
+                    var qntRespostas = resposta.Count();
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, string.IsNullOrEmpty(resposta.Key) ? "Não Respondeu" : resposta.Key));
+                }
+
+                var valorMaximoEixo = respostas.Max(a => a.Count());
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo, 6);
+
+                model.GraficosBarras.Add(grafico);              
+            }
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorios/RelatorioSondagemComponentesPorTurma", model, Guid.NewGuid(), envioPorRabbit: false));
 
             return View("RelatorioSondagemComponentesPorTurma", model);
         }
@@ -3432,7 +3470,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "Nível1",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                     }
                 });
@@ -3448,7 +3486,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "Nível3",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                     }
                 });
@@ -3464,7 +3502,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "Nível2",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                     }
                 });
@@ -3489,7 +3527,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                         {
-                            Id = 1,
+                            Id = "1",
                             Nome = "Leitura"
                         },
                     },
@@ -3522,7 +3560,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "Pré-silábico",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                     }
                 });
@@ -3538,7 +3576,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "Silábico sem valor sonoro",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                     }
                 });
@@ -3554,7 +3592,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "Silábico com valor sonoro",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                     }
                 });
@@ -3570,7 +3608,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "Silábico alfabético",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                     }
                 }); 
@@ -3586,7 +3624,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "Alfabético",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                     }
                 });
@@ -3611,7 +3649,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                         {
-                            Id = 1,
+                            Id = "1",
                             Nome = "Escrita"
                         },
                     },
@@ -3644,19 +3682,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "S",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 3
+                            PerguntaId = "3"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 4
+                            PerguntaId = "4"
                         },
                     }
                 });
@@ -3672,19 +3710,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "S",
-                            PerguntaId = 3
+                            PerguntaId = "3"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 4
+                            PerguntaId = "4"
                         },
                     }
                 });
@@ -3700,19 +3738,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 1
+                            PerguntaId = "1"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 2
+                            PerguntaId = "2"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "N",
-                            PerguntaId = 3
+                            PerguntaId = "3"
                         },
                         new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                             Resposta = "S",
-                            PerguntaId = 4
+                            PerguntaId = "4"
                         },
                     }
                 });
@@ -3728,19 +3766,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 {
                                     new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                                         Resposta = "N",
-                                        PerguntaId = 1
+                                        PerguntaId = "1"
                                     },
                                     new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                                         Resposta = "N",
-                                        PerguntaId = 2
+                                        PerguntaId = "2"
                                     },
                                     new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                                         Resposta = "N",
-                                        PerguntaId = 3
+                                        PerguntaId = "3"
                                     },
                                     new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                                         Resposta = "N",
-                                        PerguntaId = 4
+                                        PerguntaId = "4"
                                     },
                                 }
                 }); 
@@ -3756,19 +3794,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 {
                                     new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                                         Resposta = "N",
-                                        PerguntaId = 1
+                                        PerguntaId = "1"
                                     },
                                     new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                                         Resposta = "N",
-                                        PerguntaId = 2
+                                        PerguntaId = "2"
                                     },
                                     new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                                         Resposta = "N",
-                                        PerguntaId = 3
+                                        PerguntaId = "3"
                                     },
                                     new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
                                         Resposta = "S",
-                                        PerguntaId = 4
+                                        PerguntaId = "4"
                                     },
                                 }
                 });
@@ -3793,22 +3831,22 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                         {
-                            Id = 1,
+                            Id = "1",
                             Nome = "Não conseguiu ou não quis ler"
                         },
                         new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                         {
-                            Id = 2,
+                            Id = "2",
                             Nome = "Leu com muita dificuldade"
                         },
                         new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                         {
-                            Id = 3,
+                            Id = "3",
                             Nome = "Leu com alguma fluência	"
                         },
                         new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                         {
-                            Id = 4,
+                            Id = "4",
                             Nome = "Leu com fluência"
                         },
                     },
