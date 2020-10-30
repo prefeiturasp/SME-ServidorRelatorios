@@ -10,8 +10,8 @@
         {
             return (sigla?.ToUpper()) switch
             {
-                "S" => "Escreve convencionalmente",
-                "N" => "Não escreve convencionalmente",
+                "S" => "Escreve de forma convencional",
+                "N" => "Não escreve de forma convencional",
                 "A" => "Acertou",
                 "E" => "Errou",
                 "NR" => "Não resolveu",
