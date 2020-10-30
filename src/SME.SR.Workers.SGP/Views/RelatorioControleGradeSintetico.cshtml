@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 44;
+    int contadorMaximoLinhasPorPagina = 48;
     int contadorPagina = 0;
     bool montarCabecalhoObj = true;
 
@@ -135,7 +135,10 @@
                 <td width='12.5%' class='td-valor'>{componente.Divergencias}</td>
                 </tr>
             ";
-                    contadorQuebrarPagina = componente.Nome.Length > 11 ? contadorQuebrarPagina + 2 : contadorQuebrarPagina + 1;
+
+                    //contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
+
+                    contadorQuebrarPagina = contadorQuebrarPagina + (componente.Nome.Length > 12 ? (int)(componente.Nome.Length / 12) + 1 : 1);
                     retornoVerificacao = VerificaQuebra();
                     if (retornoVerificacao != string.Empty)
                     {
