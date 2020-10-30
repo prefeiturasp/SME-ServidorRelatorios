@@ -248,7 +248,7 @@ namespace SME.SR.Application
             {
                 var aulaTitularCJData = new AulaTitularCJDataControleGradeDto()
                 {
-                    Data = data
+                    Data = data.ToString("dd/MM/yyyy")
                 };
 
                 var divergencias = new List<AulaTitularCJControleGradeDto>();
