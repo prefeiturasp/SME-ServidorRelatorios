@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 41;
+    int contadorMaximoLinhasPorPagina = 35;
     int contadorPagina = 0;
     bool montarCabecalhoObj = true;
 
@@ -22,7 +22,7 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 12;
+        contadorQuebrarPagina = contadorQuebrarPagina + (Model.Filtro.Ue.Length > 41 ? (int)(Model.Filtro.Ue.Length / 41) + 12 : 12);
         var str =
            $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
@@ -406,33 +406,55 @@
         }
 
         str += $@"</table>{LinhaEmBranco()}";
+        contadorQuebrarPagina += 1;
         return str;
     }
 
-    string MontaDivergenciasAulasDiasNaoLetivos(IEnumerable<SME.SR.Infra.AulaDiasNaoLetivosControleGradeDto> aulas)
+    string MontaCabecalhoDivergenciasAulasDiasNaoLetivos()
     {
         return $@"<table class='fixed'>
-  <tr>
-    <td width='100%' class='td-turma-bimestre'>
-      AULAS EM DIAS NÃO LETIVOS
-    </td>
-  </tr>
-</table>
-<table class='fixed'>
+              <tr>
+                <td width='100%' class='td-turma-bimestre'>
+                  AULAS EM DIAS NÃO LETIVOS
+                </td>
+              </tr>
+            </table><table class='fixed'>
   <tr>
     <td width='20%' class='td-titulo'>DATA</td>
     <td width='20%' class='td-titulo'>MOTIVO NÃO LETIVO</td>
     <td width='20%' class='td-titulo'>QUANTIDADE DE AULAS</td>
     <td width='40%' class='td-titulo'>PROFESSOR</td>
-  </tr>
-  <tr>
-    <td width='20%' class='td-valor'>2</td>
-    <td width='20%' class='td-valor'></td>
-    <td width='20%' class='td-valor'></td>
-    <td width='40%' class='td-valor'>SADAKO MORITA (3135535)</td>
-  </tr>
-</table>
-{LinhaEmBranco()}";
+  </tr>";
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+    }
+
+    string MontaDivergenciasAulasDiasNaoLetivos(IEnumerable<SME.SR.Infra.AulaDiasNaoLetivosControleGradeDto> aulas)
+    {
+        var str = MontaCabecalhoDivergenciasAulasDiasNaoLetivos();
+
+        var retornoVerificacao = string.Empty;
+
+        foreach (var aula in aulas)
+        {
+            str += $@"<tr>
+                        <td width='20%' class='td-valor'>{aula.Data}</td>
+                        <td width='20%' class='td-valor'>{aula.Motivo}</td>
+                        <td width='20%' class='td-valor'>{aula.QuantidadeAulas}</td>
+                        <td width='40%' class='td-valor'>{aula.Professor}</td>
+                      </tr>";
+
+            contadorQuebrarPagina = contadorQuebrarPagina + (aula.Motivo.Length > 12 ? (int)(aula.Motivo.Length / 12) + 1 : 1);
+
+            retornoVerificacao = VerificaQuebra();
+            if (retornoVerificacao != string.Empty)
+            {
+                str = str + $@"</table>{retornoVerificacao}{MontaCabecalhoDivergenciasAulasDiasNaoLetivos()}";
+            }
+        }
+
+        str += $@"</table>{LinhaEmBranco()}";
+        contadorQuebrarPagina += 1;
+        return str;
     }
 
     string MontaCabecalhoDivergenciasAulasCriadasXPrevistas()
@@ -452,13 +474,14 @@
     <td width='20%' class='td-titulo'>AULAS CRIADAS</td>
     <td width='20%' class='td-titulo'>DIFERENÇA</td>
   </tr>";
+        contadorQuebrarPagina = contadorQuebrarPagina + 3;
     }
 
     string MontaDivergenciasAulasCriadasXPPrevistas(IEnumerable<SME.SR.Infra.VisaoSemanalControleGradeSinteticoDto> aulas)
     {
         var str = MontaCabecalhoDivergenciasAulasCriadasXPrevistas();
         var retornoVerificacao = string.Empty;
-        contadorQuebrarPagina = contadorQuebrarPagina + 3;
+
 
         foreach (var aula in aulas)
         {
@@ -471,6 +494,9 @@
                   </tr>";
 
             contadorQuebrarPagina = contadorQuebrarPagina + 1;
+            if (aula.Data == "02/06/2020")
+            { var teste = 0;
+            }
 
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
