@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -19,24 +21,28 @@ namespace SME.SR.Application
 
         public async Task<List<DiaLetivoDto>> Handle(ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery request, CancellationToken cancellationToken)
         {
-            var DiasLetivos = new List<DiaLetivoDto>();            
-
+            var DiasLetivos = new List<DiaLetivoDto>();
             var eventos = await mediator.Send(new ObterEventosPorTipoCalendarioIdQuery(request.TipoCalendarioId, request.PeriodoInicio, request.PeriodoFim));
 
             if (eventos != null)
             {
-                var datasComEventos = eventos.SelectMany(evento => evento.ObterIntervaloDatas().Select(data => new DiaLetivoDto
+                foreach (var evento in eventos)
                 {
-                    Data = data,
-                    Motivo = evento.TipoEvento.Name(),
-                    EhLetivo = evento.EhEventoLetivo(),
-                    EhNaoLetivo = evento.NaoEhEventoLetivo(),
-                    UesIds = string.IsNullOrWhiteSpace(evento.UeId) ? new List<string>() : new List<string> { evento.UeId },
-                    PossuiEvento = true
-                }));
-
-                DiasLetivos.AddRange(datasComEventos);
+                    foreach (var data in evento.ObterIntervaloDatas())
+                    {
+                        DiasLetivos.Add(new DiaLetivoDto
+                        {
+                            Data = data,
+                            Motivo = evento.TipoEvento.Name(),
+                            EhLetivo = evento.EhEventoLetivo(),
+                            EhNaoLetivo = evento.NaoEhEventoLetivo(),
+                            UesIds = string.IsNullOrWhiteSpace(evento.UeId) ? new List<string>() : new List<string> { evento.UeId },
+                            PossuiEvento = true
+                        });
+                    }
+                }
             }
+
             return DiasLetivos;
         }
     }

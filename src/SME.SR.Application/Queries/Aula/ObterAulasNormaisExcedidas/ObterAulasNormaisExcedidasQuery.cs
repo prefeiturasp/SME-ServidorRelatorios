@@ -20,5 +20,6 @@ namespace SME.SR.Application
         public long ComponenteCurricularCodigo { get; set; }
         public long TipoCalendarioId { get; set; }
         public int Bimestre { get; set; }
+
     }
 }

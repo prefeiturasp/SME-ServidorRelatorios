@@ -160,7 +160,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AulaDuplicadaControleGradeDto>> DetalharAulasDuplicadasNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
-            var query = @"select to_char(a.data_aula, 'dd/MM/yyyy') as data, a.criado_rf as Professor, count(a.quantidade) as QuantidadeDuplicado
+            var query = @"select to_char(a.data_aula, 'dd/MM/yyyy') as data, a.criado_por  || ' ('  || a.criado_rf  || ')' as Professor, count(a.quantidade) as QuantidadeDuplicado
                             from aula a 
                           inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id and a.data_aula between p.periodo_inicio and p.periodo_fim
                           inner join turma on a.turma_id = turma.turma_id 
@@ -169,7 +169,8 @@ namespace SME.SR.Data
                             and a.tipo_calendario_id = @tipoCalendarioId
                             and a.disciplina_id = @componenteCurricularId
                             and p.bimestre = @bimestre
-                         group by a.data_aula, a.tipo_aula, a.criado_rf having count(a.quantidade) > 1";
+                         group by a.data_aula, a.tipo_aula, a.criado_por, a.criado_rf 
+                         having count(a.quantidade) > 1";
 
             var parametros = new
             {
@@ -190,11 +191,14 @@ namespace SME.SR.Data
             var query = @"select
 	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as Data,
 	                        sum(a.quantidade) as QuantidadeAulas,
-	                        a.criado_por as Professor
+	                        a.criado_por as Professor,
+                            a.criado_rf as ProfessorRf
                         from
 	                        aula a
                         inner join turma t on
 	                        a.turma_id = t.turma_id
+                        inner join componente_curricular cc on
+	                        a.disciplina_id = cc.id::varchar
                         inner join periodo_escolar pe on
 	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
                         where
@@ -203,10 +207,12 @@ namespace SME.SR.Data
 	                        and pe.bimestre = @bimestre
 	                        and not a.excluido 
                             and pe.tipo_calendario_id = @tipoCalendarioId
-                        group by
+                       group by
 	                        a.data_aula,
-	                        a.criado_por
-                       having sum(a.quantidade) >= 3
+	                        a.criado_por,
+                            a.criado_rf,
+	                        cc.eh_regencia
+                        having (case when cc.eh_regencia then sum(a.quantidade) >= 2 else sum(a.quantidade) >= 3 end)
                         order by
 	                        data_aula";
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
@@ -218,8 +224,8 @@ namespace SME.SR.Data
         public async Task<IEnumerable<AulaReduzidaDto>> ObterQuantidadeAulasReduzido(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre, bool professorCJ)
         {
             var query = @"select
-	                        TO_CHAR(a.data_aula,'dd/MM/YYYY') as DataAula,
-	                        sum(a.quantidade) as QuantidadeAulas,
+	                        a.data_aula as Data,
+	                        sum(a.quantidade) as Quantidade,
 	                        a.criado_por as Professor,
 	                        a.criado_rf as ProfessorRf
                         from

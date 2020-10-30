@@ -9,5 +9,6 @@ namespace SME.SR.Infra
         public string Data { get; set; }
         public int QuantidadeAulas { get; set; }
         public string Professor { get; set; }
+        public string ProfessorRf { get; set; }
     }
 }

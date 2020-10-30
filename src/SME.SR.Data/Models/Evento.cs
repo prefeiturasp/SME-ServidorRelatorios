@@ -15,6 +15,11 @@ namespace SME.SR.Data
         public string UeId { get; set; }
         public string DreId { get; set; }
 
+        public bool ExisteTipoEvento()
+        {
+            return Enum.IsDefined(typeof(TipoEvento), TipoEvento);
+        }
+
         public bool EhEventoLetivo()
         {
             return Letivo == EventoLetivo.Sim;
