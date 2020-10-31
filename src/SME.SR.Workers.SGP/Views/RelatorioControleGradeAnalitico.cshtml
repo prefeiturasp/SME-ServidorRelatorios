@@ -459,6 +459,7 @@
 
     string MontaCabecalhoDivergenciasAulasCriadasXPrevistas()
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + 3;
         return $@"<table class='fixed'>
   <tr>
     <td width='100%' class='td-turma-bimestre'>
@@ -474,7 +475,7 @@
     <td width='20%' class='td-titulo'>AULAS CRIADAS</td>
     <td width='20%' class='td-titulo'>DIFERENÇA</td>
   </tr>";
-        contadorQuebrarPagina = contadorQuebrarPagina + 3;
+
     }
 
     string MontaDivergenciasAulasCriadasXPPrevistas(IEnumerable<SME.SR.Infra.VisaoSemanalControleGradeSinteticoDto> aulas)
