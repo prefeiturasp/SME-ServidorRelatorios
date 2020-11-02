@@ -86,9 +86,7 @@
             str += $@"<tr><td colspan='2' class='coluna-vazia'>&nbsp;</td>";
         }
 
-        IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto> ordensOrdenadas = Model.Cabecalho.Ordens.OrderBy(h => h.Id);
-
-        foreach (var ordem in ordensOrdenadas)
+        foreach (var ordem in Model.Cabecalho.Ordens)
         {
             if (!String.IsNullOrEmpty(ordem.Id))
             {
@@ -104,11 +102,9 @@
         str += $@"</tr><tr><td width='7%'>Cod. EOL</td>";
         str += $@"<td width='25%'>Nome do Estudante</td>";
 
-        foreach (var ordem in ordensOrdenadas)
+        foreach (var ordem in Model.Cabecalho.Ordens)
         {
-            IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto> perguntasOrdenadas = Model.Cabecalho.Perguntas.OrderBy(h => h.Id);
-
-            foreach (var pergunta in perguntasOrdenadas)
+            foreach (var pergunta in Model.Cabecalho.Perguntas)
             {
                 str += $@"<td width='{width}%'>{pergunta.Nome}</td>";
             }
@@ -143,28 +139,28 @@
             str += $@"<td>{linha.Aluno.Codigo}</td>";
             str += $@"<td>{linha.Aluno.Nome}</td>";
 
-            IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto> ordensOrdenadas = Model.Cabecalho.Ordens.OrderBy(h => h.Id);
-            IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto> respostasOrdenadas = linha.OrdensRespostas.ToList().OrderBy(h => h.OrdemId).ThenBy(h => h.PerguntaId);
-
-            foreach (var ordem in ordensOrdenadas)
+            foreach (var ordem in Model.Cabecalho.Ordens)
             {
-                bool preencheu = false;
-                foreach (var resposta in respostasOrdenadas)
+                var quebraPalavra = String.IsNullOrEmpty(ordem.Id) ? "quebra-palavra" : "";
+
+                foreach (var pergunta in Model.Cabecalho.Perguntas)
                 {
-                    if (resposta.OrdemId == ordem.Id)
+                    var resp = "";
+                    foreach (var resposta in linha.OrdensRespostas)
                     {
-                        var quebraPalavra = String.IsNullOrEmpty(ordem.Id) ? "quebra-palavra" : "";
-
-                        str += $@"<td  class='{quebraPalavra}'>{resposta.Resposta}</td>";
-                        preencheu = true;
+                        if (resposta.OrdemId == ordem.Id && pergunta.Id == resposta.PerguntaId)
+                        {
+                            resp = resposta.Resposta;
+                        }
                     }
-                }
 
-                if (!preencheu && !String.IsNullOrEmpty(ordem.Id))
-                {
-                    for (var k = 0; k < Model.Cabecalho.Perguntas.Count; k++)
+                    if (String.IsNullOrEmpty(resp) && !String.IsNullOrEmpty(ordem.Id))
                     {
                         str += $@"<td>&nbsp;</td>";
+                    }
+                    else
+                    {
+                        str += $@"<td  class='{quebraPalavra}'>{resp}</td>";
                     }
                 }
             }

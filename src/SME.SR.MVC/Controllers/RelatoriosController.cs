@@ -3713,16 +3713,16 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Resposta = "Inadequada",
                             PerguntaId = "1"
                         },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
-                            OrdemId = "3",
-                            Resposta = "Não resolveu",
-                            PerguntaId = "2"
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
-                            OrdemId = "3",
-                            Resposta = "Não resolveu",
-                            PerguntaId = "3"
-                        },
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "2"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
                     },
                 });
                 linhas.Add(
@@ -3771,16 +3771,16 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Resposta = "Inadequada",
                             PerguntaId = "1"
                         },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
-                            OrdemId = "3",
-                            Resposta = "Não resolveu",
-                            PerguntaId = "2"
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
-                            OrdemId = "3",
-                            Resposta = "Não resolveu",
-                            PerguntaId = "3"
-                        },
+                    //    new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                    //        OrdemId = "3",
+                    //        Resposta = "Não resolveu",
+                    //        PerguntaId = "2"
+                    //    },
+                    //    new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                    //        OrdemId = "3",
+                    //        Resposta = "Não resolveu",
+                    //        PerguntaId = "3"
+                    //    },
                     },
                 });
                 linhas.Add(
@@ -3819,26 +3819,26 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Resposta = "Não resolveu",
                             PerguntaId = "2"
                         },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
-                            OrdemId = "2",
-                            Resposta = "Não resolveu",
-                            PerguntaId = "3"
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
-                            OrdemId = "3",
-                            Resposta = "Inadequada",
-                            PerguntaId = "1"
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
-                            OrdemId = "3",
-                            Resposta = "Não resolveu",
-                            PerguntaId = "2"
-                        },
-                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
-                            OrdemId = "3",
-                            Resposta = "Não resolveu",
-                            PerguntaId = "3"
-                        },
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "2",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Inadequada",
+                        //    PerguntaId = "1"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "2"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
                     },
                 });
             }
