@@ -23,7 +23,7 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesPorTurmaFiltroDto>();
 
-            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && filtros.GrupoId != GrupoSondagemEnum.LeituraVozAlta.Name())
+            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && filtros.GrupoId == GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException("Grupo fora do esperado.");
 
             var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
@@ -57,6 +57,20 @@ namespace SME.SR.Application
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });
             var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
             var turma = await mediator.Send(new ObterTurmaSondagemEolPorCodigoQuery(Int32.Parse(filtros.TurmaCodigo)));
+            
+            var proficiencia = !String.IsNullOrEmpty(filtros.GrupoId) ? filtros.GrupoId : filtros.ProficienciaId.ToString();
+            if(proficiencia == GrupoSondagemEnum.CapacidadeLeitura.Name())
+            {
+                proficiencia = GrupoSondagemEnum.CapacidadeLeitura.ShortName();
+            }
+            else if (proficiencia == GrupoSondagemEnum.LeituraVozAlta.Name())
+            {
+                proficiencia = GrupoSondagemEnum.LeituraVozAlta.ShortName();
+            }
+            else if (proficiencia == GrupoSondagemEnum.ProducaoTexto.Name())
+            {
+                proficiencia = GrupoSondagemEnum.ProducaoTexto.ShortName();
+            }
 
             return await Task.FromResult(new RelatorioSondagemPortuguesPorTurmaCabecalhoDto()
             {
@@ -71,7 +85,7 @@ namespace SME.SR.Application
                 Perguntas = perguntas,
                 AnoTurma = filtros.Ano,
                 ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.ShortName(),
-                Proficiencia = filtros.ProficienciaId.ToString()
+                Proficiencia = proficiencia
             });
         }
 
@@ -115,8 +129,46 @@ namespace SME.SR.Application
                                     Id = "18d148be-d83c-4f24-9d03-dc003a05b9e4",
                                     Nome = "Leu com fluência"
                                 },
-                                });
-                    } else return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>());
+                            });
+                    }
+                    if (filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name())
+                    {
+                        return await Task.FromResult(
+                            new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
+                            {
+                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                {
+                                    Id = "3173bff2-a148-4634-b029-b50c949ae2d6",
+                                    Nome = "Não produziu/entregou em branco"
+                                },
+                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                {
+                                    Id = "98940cdb-d229-4282-a2e1-60e4a17dab64",
+                                    Nome = "Não apresentou dificuldades"
+                                },
+                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                {
+                                    Id = "cfec69be-16fb-453d-8c47-fd5ebc4161ef",
+                                    Nome = "Escrita não alfabética"
+                                },
+                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                {
+                                    Id = "ef0e79cd-dc31-4272-ad04-68f79a3a135d",
+                                    Nome = "Dificuldades com aspectos semânticos"
+                                },
+                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                {
+                                    Id = "f4aae748-bfd8-482e-aee0-07a1cdad71ff",
+                                    Nome = "Dificuldades com aspectos textuais"
+                                },
+                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                {
+                                    Id = "67a791d2-089d-40ee-8ddf-c64454ee5c54",
+                                    Nome = "Dificuldades com aspectos ortográficos e notacionais"
+                                },
+                            });
+                    }
+                    else return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>());
                 default:
                     return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>());
             }
@@ -124,6 +176,8 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>> ObterLinhas(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)
         {
+            var grupo = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ? GrupoSondagemEnum.LeituraVozAlta : GrupoSondagemEnum.ProducaoTexto;
+
             IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto> linhasSondagem = await mediator.Send(new ObterRelatorioSondagemPortuguesPorTurmaQuery()
             {
                 DreCodigo = filtros.DreCodigo,
@@ -133,7 +187,7 @@ namespace SME.SR.Application
                 AnoTurma = filtros.Ano,
                 Bimestre = filtros.Bimestre,
                 Proficiencia = filtros.ProficienciaId,
-                Grupo = GrupoSondagemEnum.LeituraVozAlta
+                Grupo = grupo
             });
 
             List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto> linhasPlanilha = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>();
