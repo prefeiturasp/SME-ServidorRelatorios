@@ -1,11 +1,10 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Sgp
@@ -81,6 +80,68 @@ namespace SME.SR.Data.Repositories.Sgp
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
             return await conexao.QueryAsync<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>(sql, parametros);
+        }
+
+        public async Task<IEnumerable<SondagemAutoralPorAlunoDto>> ObterPorFiltros(string grupoId, string componenteCurricularId, string periodoId, int anoLetivo, string codigoTurma)
+        {
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine(@"
+                    select
+                       s.""OrdemId"",
+                       o.""Descricao"" as ""OrdemDescricao"",
+                       sa.""CodigoAluno"",
+                       sa.""NomeAluno"",
+                       p.""Id"" as ""PerguntaId"",
+                       p.""Descricao"" as ""PerguntaDescricao"",
+                       sar.""RespostaId"",
+                       r.""Descricao"" as ""RespostaDescricao""  
+            	from
+            		""SondagemAlunoRespostas"" sar
+            	inner join ""SondagemAluno"" sa on
+            		sa.""Id"" = ""SondagemAlunoId""
+            	inner join ""Sondagem"" s on
+            		s.""Id"" = sa.""SondagemId""
+            	inner join ""Pergunta"" p on
+            		p.""Id"" = sar.""PerguntaId""
+            	inner join ""Resposta"" r on
+            		r.""Id"" = sar.""RespostaId""
+            	inner join ""Periodo"" per on
+            		per.""Id"" = s.""PeriodoId""
+            	inner join ""ComponenteCurricular"" c on
+            		c.""Id"" = s.""ComponenteCurricularId""
+                inner join ""Ordem"" o on
+                    o.""Id"" = s.""OrdemId""
+                where
+            		s.""Id"" in (
+            		select
+            			s.""Id""
+            		from
+            			""Sondagem"" s
+            		where 1 = 1");
+
+            if (!string.IsNullOrEmpty(grupoId))
+                query.AppendLine(" and s.\"GrupoId\" = @GrupoId");
+
+            if (!string.IsNullOrEmpty(componenteCurricularId))
+                query.AppendLine(" and s.\"ComponenteCurricularId\" = @ComponenteCurricularId");
+
+            if (!string.IsNullOrEmpty(periodoId))
+                query.AppendLine(" and s.\"PeriodoId\" = @PeriodoId");
+
+            if(anoLetivo > 0)
+                query.AppendLine(" and s.\"AnoLetivo\" = @AnoLetivo");
+
+            if (!string.IsNullOrEmpty(codigoTurma))
+                query.AppendLine(" and s.\"CodigoTurma\" = @CodigoTurma");
+
+            query.AppendLine(")");
+
+            var parametros = new { grupoId, componenteCurricularId, periodoId, anoLetivo, codigoTurma };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryAsync<SondagemAutoralPorAlunoDto>(query.ToString(), parametros);
         }
     }
 }

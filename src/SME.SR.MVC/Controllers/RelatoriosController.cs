@@ -25,7 +25,7 @@ namespace SME.SR.MVC.Controllers
             return View();
         }
         [HttpGet("graficos")]
-        public async Task<IActionResult> RelatorioGraficosTeste([FromServices]IMediator mediator)
+        public async Task<IActionResult> RelatorioGraficosTeste([FromServices] IMediator mediator)
         {
 
 
@@ -34,7 +34,7 @@ namespace SME.SR.MVC.Controllers
             var grafico = new GraficoBarrasVerticalDto(500, "");
 
             grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(10, "Banana"));
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));            
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));
 
             grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(500, "Frutas", 100, 5);
 
@@ -2534,7 +2534,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
-        [HttpGet("sondagem-componentes-numeros")]
         public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
@@ -2755,7 +2754,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             foreach (var pergunta in model.Cabecalho.Perguntas)
             {
                 var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
-           
+
                 var respostas = model.Planilha.Linhas
                     .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta.Id)).GroupBy(b => b.Resposta);
 
@@ -2768,7 +2767,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 var valorMaximoEixo = respostas.Max(a => a.Count());
                 grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo, 6);
 
-                model.GraficosBarras.Add(grafico);              
+                model.GraficosBarras.Add(grafico);
             }
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorios/RelatorioSondagemComponentesPorTurma", model, Guid.NewGuid(), envioPorRabbit: false));
@@ -2993,7 +2992,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", model);
         }
-
 
         [HttpGet("controle-grade-sintetico")]
         public IActionResult RelatorioControleGradeSintetico([FromQuery] bool analitico)
@@ -3611,7 +3609,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             PerguntaId = "1"
                         },
                     }
-                }); 
+                });
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
@@ -3661,6 +3659,249 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
+        }
+
+        [HttpGet("sondagem-portugues-capacidade-leitura")]
+        public IActionResult SondagemPortuguesCapacidadeLeitura()
+        {
+            var linhas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto>();
+            for (var i = 0; i < 20; i++)
+            {
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                    },
+                });
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 4650630,
+                        Nome = "MATHEUS GUILHERME NASCIMENTO DA SILVA (RECLASSIFICADO SAÍDA EM 11/04/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                    },
+                });
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "AMANDA ALBUQUERQUE",
+                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                    },
+                });
+            }
+
+            var model = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaCabecalhoDto()
+                {
+                    Ano = 5.ToString(),
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Matemática",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    Dre = "DRE - BT",
+                    Periodo = "1º Semestre",
+                    Proficiencia = "Campo Aditivo",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    Ordens = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "1",
+                            Descricao = "ORDEM NO NARRAR"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "2",
+                            Descricao = "ORDEM DO RELATAR"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "3",
+                            Descricao = "ORDEM DO ARGUMENTAR"
+                        },
+                    },
+                    Perguntas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "1",
+                            Nome = "Inferência"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "2",
+                            Nome = "Localização "
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "3",
+                            Nome = "Reflexão"
+                        }
+                    },
+                },
+                Planilha = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
+            };
+
+            return View("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", model);
         }
 
         [HttpGet("sondagem-portugues-leitura-voz-alta")]
@@ -3781,7 +4022,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                         PerguntaId = "4"
                                     },
                                 }
-                }); 
+                });
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
@@ -3866,7 +4107,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
             #region Monta dados
             var perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
-            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto() {
+            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
+            {
                 Pergunta = "Localização",
                 Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
                 {
