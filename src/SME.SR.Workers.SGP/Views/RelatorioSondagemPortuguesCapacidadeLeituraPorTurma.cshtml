@@ -146,25 +146,29 @@
             IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto> ordensOrdenadas = Model.Cabecalho.Ordens.OrderBy(h => h.Id);
             IOrderedEnumerable<SME.SR.Infra.RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto> respostasOrdenadas = linha.OrdensRespostas.ToList().OrderBy(h => h.OrdemId).ThenBy(h => h.PerguntaId);
 
+
             foreach (var ordem in ordensOrdenadas)
             {
-                bool preencheu = false;
-                foreach (var resposta in respostasOrdenadas)
+                var quebraPalavra = String.IsNullOrEmpty(ordem.Id) ? "quebra-palavra" : "";
+
+                foreach (var pergunta in Model.Cabecalho.Perguntas)
                 {
-                    if (resposta.OrdemId == ordem.Id)
+                    var resp = "";
+                    foreach (var resposta in respostasOrdenadas)
                     {
-                        var quebraPalavra = String.IsNullOrEmpty(ordem.Id) ? "quebra-palavra" : "";
-
-                        str += $@"<td  class='{quebraPalavra}'>{resposta.Resposta}</td>";
-                        preencheu = true;
+                        if (resposta.OrdemId == ordem.Id && pergunta.Id == resposta.PerguntaId)
+                        {
+                            resp = resposta.Resposta;
+                        }
                     }
-                }
 
-                if (!preencheu && !String.IsNullOrEmpty(ordem.Id))
-                {
-                    for (var k = 0; k < Model.Cabecalho.Perguntas.Count; k++)
+                    if (String.IsNullOrEmpty(resp) && !String.IsNullOrEmpty(ordem.Id))
                     {
                         str += $@"<td>&nbsp;</td>";
+                    }
+                    else
+                    {
+                        str += $@"<td  class='{quebraPalavra}'>{resp}</td>";
                     }
                 }
             }
