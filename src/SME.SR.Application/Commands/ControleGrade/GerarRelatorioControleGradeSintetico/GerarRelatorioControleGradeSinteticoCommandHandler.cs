@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace SME.SR.Application
 
         public async Task<bool> Handle(GerarRelatorioControleGradeSinteticoCommand request, CancellationToken cancellationToken)
         {
-            var dto = new ControleGradeSinteticoDto();
+            var dto = new ControleGradeDto();
 
             var modalidadeCalendario = request.Filtros.ModalidadeTurma == Modalidade.EJA ?
                                                 ModalidadeTipoCalendario.EJA : request.Filtros.ModalidadeTurma == Modalidade.Infantil ?
@@ -66,9 +67,9 @@ namespace SME.SR.Application
             return periodos.Where(a => bimestres.Contains(a.Bimestre));
         }
 
-        private async Task<TurmaControleGradeSinteticoDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
+        private async Task<TurmaControleGradeDto> MapearParaTurmaDto(List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
-            var turmaDto = new TurmaControleGradeSinteticoDto()
+            var turmaDto = new TurmaControleGradeDto()
             {
                 Nome = aulasPrevistasTurma.FirstOrDefault().TurmaNome
             };
@@ -81,14 +82,14 @@ namespace SME.SR.Application
             return turmaDto;
         }
 
-        private async Task<BimestreControleGradeSinteticoDto> MapearParaBimestreDto(int bimestre, List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
+        private async Task<BimestreControleGradeDto> MapearParaBimestreDto(int bimestre, List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
             var aulasPrevistasBimestre = aulasPrevistasTurma.Where(c => c.Bimestre == bimestre);
 
             var dataInicio = aulasPrevistasBimestre.FirstOrDefault().DataInicio;
             var dataFim = aulasPrevistasBimestre.FirstOrDefault().DataFim;
 
-            var bimestreDto = new BimestreControleGradeSinteticoDto()
+            var bimestreDto = new BimestreControleGradeDto()
             {
                 Descricao = $"{bimestre}º Bimestre - {dataInicio.ToString("dd/MM")} À {dataFim.ToString("dd/MM")}"
             };
@@ -101,9 +102,9 @@ namespace SME.SR.Application
             return bimestreDto;
         }
 
-        private async Task<ComponenteCurricularControleGradeSinteticoDto> MapearParaComponenteDto(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
+        private async Task<ComponenteCurricularControleGradeDto> MapearParaComponenteDto(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
-            var componenteDto = new ComponenteCurricularControleGradeSinteticoDto();
+            var componenteDto = new ComponenteCurricularControleGradeDto();
 
             componenteDto.Nome = aulasPrevistasComponente.ComponenteCurricularNome;
             componenteDto.AulasPrevistas = aulasPrevistasComponente.Previstas;
@@ -164,7 +165,7 @@ namespace SME.SR.Application
             return false;
         }
 
-        private async Task MontarCabecalhoRelatorioDto(ControleGradeSinteticoDto dto, RelatorioControleGradeFiltroDto filtros)
+        private async Task MontarCabecalhoRelatorioDto(ControleGradeDto dto, RelatorioControleGradeFiltroDto filtros)
         {
             var turmaId = filtros.Turmas.First();
             var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
@@ -182,7 +183,7 @@ namespace SME.SR.Application
         private int QuantidadePeriodosPorModalidade(Modalidade modalidade)
             => modalidade == Modalidade.EJA ? 2 : 4;
 
-        private string ObterNomeComponente(RelatorioControleGradeFiltroDto filtros, ControleGradeSinteticoDto dto)
+        private string ObterNomeComponente(RelatorioControleGradeFiltroDto filtros, ControleGradeDto dto)
         {
             return filtros.ComponentesCurriculares.Count() > 1 ?
                             "Todos" : !dto.Turmas.Any()
