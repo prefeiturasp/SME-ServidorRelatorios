@@ -21,11 +21,11 @@ namespace SME.SR.Infra
         public List<GraficoBarrasLegendaDto> Legendas { get; set; }
 
         public string DescricaoLegenda { 
-            get { 
-                if(Legendas != null && Legendas.Any())
+            get {
+                if (Legendas != null && Legendas.Any())
                     return string.Join(" || ", Legendas.Select(m => $"{m.Chave} - {m.Valor}").ToArray());
                 else
-                    return string.Empty
+                    return string.Empty;
             } 
         }
 

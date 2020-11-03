@@ -17,6 +17,7 @@ namespace SME.SR.Application
         private readonly IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository;
         private readonly IUsuarioRepository usuarioRepository;
         private readonly IMediator mediator;
+        private char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
             IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
@@ -44,21 +45,33 @@ namespace SME.SR.Application
             return relatorio;
         }
 
-        private static void GerarGraficoParaNumeros(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, ProficienciaSondagemEnum proficiencia)
+        private void GerarGraficoParaNumeros(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, ProficienciaSondagemEnum proficiencia)
         {
             if (proficiencia == ProficienciaSondagemEnum.Numeros)
             {
                 foreach (var pergunta in relatorio.Cabecalho.Perguntas)
                 {
+                    var legendas = new List<GraficoBarrasLegendaDto>();
                     var grafico = new GraficoBarrasVerticalDto(420, pergunta.Nome);
 
                     var respostas = relatorio.Planilha.Linhas
                         .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id)).GroupBy(b => b.Resposta);
 
+                    int chaveIndex = 0;
+                    string chave = String.Empty;
+
                     foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
                     {
+                        chave = lstChaves[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                             Chave = chave,
+                             Valor = resposta.Key
+                        });
+
                         var qntRespostas = resposta.Count();
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, resposta.Key));
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
                     }
 
                     var respostasNulasOuVazias = respostas.Where(a => string.IsNullOrEmpty(a.Key)).ToList();
@@ -72,12 +85,23 @@ namespace SME.SR.Application
                         }
 
                         if (qntSemRespostas > 0)
-                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, "Sem preenchimento"));
+                        {
+                            chave = lstChaves[chaveIndex++].ToString();
+
+                            legendas.Add(new GraficoBarrasLegendaDto()
+                            {
+                                Chave = chave,
+                                Valor = "Sem preenchimento"
+                            });
+
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, chave));
+                        }
                     }
 
                     var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
 
                     grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                    grafico.Legendas = legendas;
 
                     relatorio.GraficosBarras.Add(grafico);
                 }
