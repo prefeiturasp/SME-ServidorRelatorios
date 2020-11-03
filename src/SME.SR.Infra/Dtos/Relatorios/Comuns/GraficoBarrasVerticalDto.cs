@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SME.SR.Infra
 {
@@ -16,11 +17,25 @@ namespace SME.SR.Infra
 
         public List<GraficoBarrasVerticalEixoXDto> EixosX { get; set; }
         public GraficoBarrasVerticalEixoYDto EixoYConfiguracao { get; set; }
+
+        public List<GraficoBarrasLegendaDto> Legendas { get; set; }
+
+        public string DescricaoLegenda { 
+            get { 
+                if(Legendas != null && Legendas.Any())
+                    return string.Join(" || ", Legendas.Select(m => $"{m.Chave} - {m.Valor}").ToArray());
+                else
+                    return string.Empty
+            } 
+        }
+
         public decimal LarguraTotal { get; set; }
 
         public string Titulo { get; set; }
 
         public string IdParaLastro { get; set; }
+
+        
 
     }
 }
