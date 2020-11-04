@@ -127,7 +127,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                         <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorTitular}</td>
                         <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorSubstituto}</td>
                         <td width='12.5%' class='td-valor'>{componente.Repostas}</td>
-                        <td width='12.5%' class='td-valor'>{componente.Divergencias} - {contadorQuebrarPagina + 1}</td>
+                        <td width='12.5%' class='td-valor'>{componente.Divergencias}</td>
                         </tr></table>
                         ";
                     contadorQuebrarPagina += 1;
@@ -218,7 +218,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             str += $@"<tr>
                 <td width='25%' class='td-valor'>{aula.Data}</td>
                 <td width='25%' class='td-valor'>{aula.QuantidadeAulas}</td>
-                <td width='50%' class='td-valor'>{aula.Professor} ({aula.ProfessorRf}) - {contadorQuebrarPagina + 1}</td>
+                <td width='50%' class='td-valor'>{aula.Professor} ({aula.ProfessorRf})</td>
               </tr>";
             contadorQuebrarPagina += 1;
             retornoVerificacao = VerificaQuebra();
@@ -291,7 +291,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                 str += $@" <tr>
             <td width='20%' class='td-valor'>{aula.QuantidadeAulas}</td>
             <td width='30%' class='td-valor'>{aula.ProfessorTitular}</td>
-            <td width='30%' class='td-valor'>{aula.ProfessorCJ} - {contadorQuebrarPagina + 1}</td>
+            <td width='30%' class='td-valor'>{aula.ProfessorCJ}</td>
           </tr>";
 
                 contadorQuebrarPagina+= 1;
@@ -353,7 +353,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             str += $@"<tr>
                 <td width='25%' class='td-valor'>{aula.Data}</td>
                 <td width='25%' class='td-valor'>{aula.QuantidadeDuplicado}</td>
-                <td width='50%' class='td-valor'>{aula.Professor} - {contadorQuebrarPagina + 1}</td>
+                <td width='50%' class='td-valor'>{aula.Professor}</td>
               </tr>";
 
             contadorQuebrarPagina += 1;
@@ -425,7 +425,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                         <td width='10%' class='td-valor'>{aula.Data}</td>
                         <td width='20%' class='td-valor'>{aula.Motivo}</td>
                         <td width='15%' class='td-valor'>{aula.QuantidadeAulas}</td>
-                        <td width='55%' class='td-valor'>{aula.Professor} - {contadorQuebrarPagina + 1}</td>
+                        <td width='55%' class='td-valor'>{aula.Professor}</td>
                       </tr>";
 
             contadorQuebrarPagina = contadorQuebrarPagina + (aula.Motivo.Length > 24 ? (int)(aula.Motivo.Length / 24) + 1 : 1);
@@ -520,7 +520,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                     <td width='20%' class='td-valor'>{aula.DiasLetivo}</td>
                     <td width='20%' class='td-valor'>{aula.QuantidadeGrade}</td>
                     <td width='20%' class='td-valor'>{aula.AulasCriadas}</td>
-                    <td width='20%' class='td-valor'>{aula.Diferenca} - {contadorQuebrarPagina + 1}</td>
+                    <td width='20%' class='td-valor'>{aula.Diferenca}</td>
                   </tr>";
 
             if(aula.Data == "09/03/2020")
