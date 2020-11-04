@@ -39,8 +39,8 @@ namespace SME.SR.HtmlPdf
                 FooterSettings = { 
                     FontName="Roboto", 
                     FontSize = 9, Right = "[page] / [toPage]", 
-                    Left = "SGP - Sistema de Gestão Pedagógica" + tituloRelatorioRodape != "" ? $" | {tituloRelatorioRodape}" : "", 
-                    Spacing = -2 }
+                    Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
+                }
             });
 
             converter.Convert(doc);
