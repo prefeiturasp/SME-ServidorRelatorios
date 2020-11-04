@@ -29,7 +29,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
             html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
             html = html.Replace("logo.png", SmeConstants.LogoSme);
-
+            
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
 
