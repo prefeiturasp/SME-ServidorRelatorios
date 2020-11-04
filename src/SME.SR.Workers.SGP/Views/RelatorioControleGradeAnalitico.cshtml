@@ -22,7 +22,7 @@
         {
             var ueLen = Model.Filtro.Ue.Length > 41 ? (int)(Model.Filtro.Ue.Length / 41) : 1;
             var professorLen = Model.Filtro.Usuario.Length > 30 ? (int)(Model.Filtro.Usuario.Length / 30) : 1;
-            contadorQuebrarPagina = contadorQuebrarPagina + ueLen + professorLen + 5;
+            contadorQuebrarPagina = contadorQuebrarPagina + ueLen + professorLen + 6;
         var str =
            $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
@@ -37,7 +37,7 @@
 <tr>
 <td width='20%'>DRE: {Model.Filtro.Dre}</td>
 <td width='60%'>UE: {Model.Filtro.Ue}</td>
-<td width='15%'>TURMA: {Model.Filtro.Turma}</td>
+<td width='20%'>TURMA: {Model.Filtro.Turma}</td>
 </tr>
 </tbody>
 </table>
@@ -66,14 +66,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
     }
 
-    string MontaBimestre(string descricao)
-    {
-        return $@"<table class='fixed'>
-    <tr>
-        <td width='100%' class='td-turma-bimestre'>{descricao}</td>
-    </tr>
-</table>";
-    }
+   
 
     string MontaCabecalhoTurmaOuBimestre(string nome)
     {
@@ -102,8 +95,8 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             var ultimoBimestre = $"{turma.Nome} - {turma.Bimestres.Last().Descricao}";
             foreach (var bimestre in turma.Bimestres)
             {
-                str += MontaBimestre(bimestre.Descricao);
-                contadorQuebrarPagina += 1;
+                str += MontaCabecalhoTurmaOuBimestre(bimestre.Descricao);
+                contadorQuebrarPagina += 2;
                 var ultimoComponente = $"{turma.Nome} - {turma.Bimestres.Last().Descricao} - {bimestre.ComponentesCurriculares.Last().Nome}";
                 foreach (var componente in bimestre.ComponentesCurriculares)
                 {
