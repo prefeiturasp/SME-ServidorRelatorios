@@ -114,7 +114,7 @@ namespace SME.SR.Application
         {
             var data = DateTime.Today;
 
-            var diasComEvento = await mediator.Send(new ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery(tipoCalendarioId, dataInicio, dataFim));
+            var diasComEvento = await mediator.Send(new ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery(tipoCalendarioId, dataInicio, dataFim, turmaId));
 
             var aulas = await mediator.Send(new ObterAulaReduzidaPorTurmaComponenteEBimestreQuery(turmaId, tipoCalendarioId, componenteCurricularCodigo, bimestre));
 
