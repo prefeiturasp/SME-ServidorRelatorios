@@ -24,7 +24,7 @@ namespace SME.SR.Data
         {
             return Letivo == EventoLetivo.Sim;
         }
-        public bool NaoEhEventoLetivo()
+        public bool EhEventoNaoLetivo()
         {
             return Letivo == EventoLetivo.Nao;
         }
