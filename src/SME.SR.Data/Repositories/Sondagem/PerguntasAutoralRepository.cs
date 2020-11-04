@@ -41,5 +41,31 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<PerguntasAutoralDto>(query.ToString(), parametros);
         }
+
+        public async Task<IEnumerable<PerguntasOrdemGrupoAutoralDto>> ObterPerguntasPorGrupo(GrupoSondagemEnum grupoSondagem, ComponenteCurricularSondagemEnum componenteCurricular)
+        {
+            StringBuilder query = new StringBuilder();
+
+            query.Append(" select p.\"Id\" PerguntaId, p.\"Descricao\" Pergunta, o.\"Id\" OrdemId,  o.\"Descricao\" Ordem, ");
+            query.Append(" g.\"Id\" GrupoId, g.\"Descricao\" Grupo ");
+            query.Append(" from \"Grupo\" g ");
+            query.Append(" inner join \"GrupoOrdem\" go on go.\"GrupoId\" = g.\"Id\" ");
+            query.Append(" inner join \"Ordem\" o on o.\"Id\" = go.\"OrdemId\" ");
+            query.Append(" inner join \"OrdemPergunta\" op on op.\"GrupoId\" = g.\"Id\"  ");
+            query.Append(" inner join \"Pergunta\" p on p.\"Id\" = op.\"PerguntaId\" where 1=1 ");
+
+            if (grupoSondagem > 0)
+                query.Append("and g.\"Id\" = @grupoId ");
+
+            if (componenteCurricular > 0)
+                query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");
+
+            query.Append("order by go.\"Ordenacao\" ");
+
+            var parametros = new { grupoId = grupoSondagem.Name(), componenteCurricularId = componenteCurricular.Name() };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+            return await conexao.QueryAsync<PerguntasOrdemGrupoAutoralDto>(query.ToString(), parametros);
+        }
     }
 }

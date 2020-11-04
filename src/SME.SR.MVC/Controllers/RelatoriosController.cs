@@ -25,7 +25,7 @@ namespace SME.SR.MVC.Controllers
             return View();
         }
         [HttpGet("graficos")]
-        public async Task<IActionResult> RelatorioGraficosTeste([FromServices]IMediator mediator)
+        public async Task<IActionResult> RelatorioGraficosTeste([FromServices] IMediator mediator)
         {
 
 
@@ -34,7 +34,7 @@ namespace SME.SR.MVC.Controllers
             var grafico = new GraficoBarrasVerticalDto(500, "");
 
             grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(10, "Banana"));
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));            
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));
 
             grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(500, "Frutas", 100, 5);
 
@@ -2534,7 +2534,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
-        [HttpGet("sondagem-componentes-numeros")]
         public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
@@ -2755,7 +2754,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             foreach (var pergunta in model.Cabecalho.Perguntas)
             {
                 var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
-           
+
                 var respostas = model.Planilha.Linhas
                     .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta.Id)).GroupBy(b => b.Resposta);
 
@@ -2768,7 +2767,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 var valorMaximoEixo = respostas.Max(a => a.Count());
                 grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo, 6);
 
-                model.GraficosBarras.Add(grafico);              
+                model.GraficosBarras.Add(grafico);
             }
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorios/RelatorioSondagemComponentesPorTurma", model, Guid.NewGuid(), envioPorRabbit: false));
@@ -2994,14 +2993,13 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", model);
         }
 
-
         [HttpGet("controle-grade-sintetico")]
-        public IActionResult RelatorioControleGradeSintetico()
+        public IActionResult RelatorioControleGradeSintetico([FromQuery] bool analitico)
         {
 
-            var controleGrade = new ControleGradeSinteticoDto()
+            var controleGrade = new ControleGradeDto()
             {
-                Filtro = new FiltroGradeSintetico()
+                Filtro = new FiltroControleGrade()
                 {
                     Dre = "DRE - BT",
                     Ue = "CEU EMEF BUTANTA",
@@ -3013,19 +3011,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 }
             };
 
-            controleGrade.Turmas = new List<TurmaControleGradeSinteticoDto>()
+            controleGrade.Turmas = new List<TurmaControleGradeDto>()
             {
-               new TurmaControleGradeSinteticoDto()
+                new TurmaControleGradeDto()
                {
                    Nome="1F",
-                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   Bimestres = new List<BimestreControleGradeDto>()
                    {
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "1° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3036,7 +3034,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3047,7 +3045,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3058,7 +3056,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "CIÊNCIAS",
                                    AulasPrevistas = 15,
@@ -3071,12 +3069,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "2° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3087,7 +3085,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3098,7 +3096,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3109,7 +3107,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "CIÊNCIAS",
                                    AulasPrevistas = 15,
@@ -3122,12 +3120,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "3° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3138,7 +3136,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3151,12 +3149,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "4° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3167,7 +3165,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3178,7 +3176,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3189,7 +3187,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3200,7 +3198,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3211,7 +3209,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3227,17 +3225,17 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
                    }
                },
-             new TurmaControleGradeSinteticoDto()
+                new TurmaControleGradeDto()
                {
                    Nome="2F",
-                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   Bimestres = new List<BimestreControleGradeDto>()
                    {
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "1° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3246,9 +3244,70 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    AulasDadasProfessorTitular = 8,
                                    AulasDadasProfessorSubstituto = 2,
                                    Repostas = 0,
-                                   Divergencias = "Não"
+                                   Divergencias = "Sim",
+                                   DetalhamentoDivergencias = analitico ? new DetalhamentoDivergenciasControleGradeSinteticoDto()
+                                   {
+                                       AulasNormaisExcedido = new List<AulaNormalExcedidoControleGradeDto>()
+                                       {
+                                           new AulaNormalExcedidoControleGradeDto()
+                                           {
+                                               Data = "26/10/2020",
+                                               QuantidadeAulas = 10,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           },
+                                           new AulaNormalExcedidoControleGradeDto()
+                                           {
+                                               Data = "26/10/2020",
+                                               QuantidadeAulas = 5,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           }
+                                       },
+                                       AulasTitularCJ = new List<AulaTitularCJDataControleGradeDto>()
+                                       {
+                                           new AulaTitularCJDataControleGradeDto() {
+                                               Data = "26/10/2020",
+                                               Divergencias = new List<AulaTitularCJControleGradeDto>() 
+                                               {
+                                                  new AulaTitularCJControleGradeDto()
+                                                  {
+                                                      QuantidadeAulas = 2,
+                                                      ProfessorTitular =  "SADAKO MORITA (3135535)",
+                                                  },
+                                                  new AulaTitularCJControleGradeDto()
+                                                  {
+                                                      QuantidadeAulas = 1,
+                                                      ProfessorCJ =  "CARLA REGIANE (8027129)",
+                                                  },
+                                                  new AulaTitularCJControleGradeDto()
+                                                  {
+                                                      QuantidadeAulas = 1,
+                                                      ProfessorCJ =  "ANA CRISTINA (7777710)",
+                                                  }
+                                               }
+                                           }
+                                       },
+                                       AulasDiasNaoLetivos = new List<AulaDiasNaoLetivosControleGradeDto>()
+                                       {
+                                           new AulaDiasNaoLetivosControleGradeDto() 
+                                           {
+                                                Data = "21/03/2020",
+                                                Professor = "SADAKO MORITA (3135535)",
+                                                Motivo  = "SUSPENSÃO DE ATIVIDADE",
+                                                QuantidadeAulas = 2
+                                           }
+                                       },
+                                       AulasDuplicadas = new List<AulaDuplicadaControleGradeDto>()
+                                       {
+                                           new AulaDuplicadaControleGradeDto() 
+                                           {
+                                               Data = "21/03/2020",
+                                               QuantidadeDuplicado = 1,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           }
+                                       },
+                                   } : null
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3259,7 +3318,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3270,7 +3329,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3281,7 +3340,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3292,124 +3351,14 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "2° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3420,7 +3369,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3433,12 +3382,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "3° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3449,7 +3398,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3462,12 +3411,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "4° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 12,
@@ -3478,7 +3427,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 19,
@@ -3660,7 +3609,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             PerguntaId = "1"
                         },
                     }
-                }); 
+                });
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
@@ -3710,6 +3659,249 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
+        }
+
+        [HttpGet("sondagem-portugues-capacidade-leitura")]
+        public IActionResult SondagemPortuguesCapacidadeLeitura()
+        {
+            var linhas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto>();
+            for (var i = 0; i < 20; i++)
+            {
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "2"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
+                    },
+                });
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 4650630,
+                        Nome = "MATHEUS GUILHERME NASCIMENTO DA SILVA (RECLASSIFICADO SAÍDA EM 11/04/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                    //    new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                    //        OrdemId = "3",
+                    //        Resposta = "Não resolveu",
+                    //        PerguntaId = "2"
+                    //    },
+                    //    new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                    //        OrdemId = "3",
+                    //        Resposta = "Não resolveu",
+                    //        PerguntaId = "3"
+                    //    },
+                    },
+                });
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "AMANDA ALBUQUERQUE",
+                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "2",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Inadequada",
+                        //    PerguntaId = "1"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "2"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
+                    },
+                });
+            }
+
+            var model = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaCabecalhoDto()
+                {
+                    Ano = 5.ToString(),
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Matemática",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    Dre = "DRE - BT",
+                    Periodo = "1º Semestre",
+                    Proficiencia = "Campo Aditivo",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    Ordens = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "1",
+                            Descricao = "ORDEM NO NARRAR"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "2",
+                            Descricao = "ORDEM DO RELATAR"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "3",
+                            Descricao = "ORDEM DO ARGUMENTAR"
+                        },
+                    },
+                    Perguntas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "1",
+                            Nome = "Inferência"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "2",
+                            Nome = "Localização "
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "3",
+                            Nome = "Reflexão"
+                        }
+                    },
+                },
+                Planilha = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
+            };
+
+            return View("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", model);
         }
 
         [HttpGet("sondagem-portugues-leitura-voz-alta")]
@@ -3830,7 +4022,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                         PerguntaId = "4"
                                     },
                                 }
-                }); 
+                });
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
@@ -3915,7 +4107,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
             #region Monta dados
             var perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
-            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto() {
+            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
+            {
                 Pergunta = "Localização",
                 Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
                 {
@@ -4049,6 +4242,253 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 Planilhas = planilhas,
             };
             return View("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", model);
+        }
+    
+        [HttpGet("sondagem-producao-texto-turma")]
+        public IActionResult SondagemProducaopTextoTurma()
+        {
+            var linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>();
+
+            for (var i = 0; i < 6; i++)
+            {
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "JOÃO MARIA LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "MARCOS ALBERTO FIGUEIRA",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "FERNANDO PIRES",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "6"
+                        },
+                    }
+                }); 
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "JOÃO PEDRO FARIAS",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+            }
+
+            var model = new RelatorioSondagemPortuguesPorTurmaRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesPorTurmaCabecalhoDto()
+                {
+                    AnoTurma = 8,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Português",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                    Dre = "DRE - BT",
+                    Periodo = "4º Bimestre",
+                    Proficiencia = "Produção de texto",
+                    Rf = "9879878",
+                    Turma = "EMEF - 8A",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    Perguntas = new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "1",
+                            Nome = "Não produziu/entregou em branco"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "2",
+                            Nome = "Não apresentou dificuldades"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "3",
+                            Nome = "Escrita não alfabética"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "4",
+                            Nome = "Dificuldades com aspectos semânticos"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "5",
+                            Nome = "Dificuldades com aspectos textuais"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "6",
+                            Nome = "Dificuldades com aspectos ortográficos e notacionais"
+                        },
+                    },
+                },
+                Planilha = new RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
+            };
+
+            return View("RelatorioSondagemPortuguesPorTurma", model);
         }
     }
 }

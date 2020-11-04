@@ -1,4 +1,4 @@
-﻿@model SME.SR.Infra.ControleGradeSinteticoDto
+﻿@model SME.SR.Infra.ControleGradeDto
 
 @{
     int contadorQuebrarPagina = 0;
@@ -75,6 +75,118 @@
         </table>";
     }
 
+
+    string MontaDivergencias()
+    {
+        var str = $@"<table class='fixed'>
+          <tr>
+            <td width='100%' class='td-turma-bimestre'>
+              DIVERGÊNCIAS
+            </td>
+          </tr>
+        </table>
+        <table class='fixed'>
+          <tr>
+            <td width='100%' class='td-turma-bimestre'>
+              NÚMERO DE AULAS NORMAIS POR DIA EXCEDIDO
+            </td>
+          </tr>
+        </table>
+        <table class='fixed'>
+          <tr>
+            <td width='25%' class='td-titulo'>DATA</td>
+            <td width='25%' class='td-titulo'>QUANTIDADE DE AULAS</td>
+            <td width='50%' class='td-titulo'>PROFESSOR</td>
+          </tr>
+          <tr>
+            <td width='25%' class='td-valor'>22/06/2020</td>
+            <td width='25%' class='td-valor'>3</td>
+            <td width='50%' class='td-valor'>SADAKO MORITA (3135535)</td>
+          </tr>
+        </table>
+        {LinhaEmBranco()}
+        <table class='fixed'>
+          <tr>
+            <td width='100%' class='td-turma-bimestre'>
+              DIAS COM AULAS DE TITULAR E CJ
+            </td>
+          </tr>
+        </table>
+        <table class='fixed'>
+          <tr>
+            <td width='100%' class='td-titulo'>
+              22/06/2020
+            </td>
+          </tr>
+        </table>
+        <table class='fixed'>
+          <tr>
+            <td width='20%' class='td-titulo'>QUANTIDADE DE AULAS</td>
+            <td width='30%' class='td-titulo'>PROFESSOR TITULAR</td>
+            <td width='30%' class='td-titulo'>PROFESSOR CJ</td>
+          </tr>
+          <tr>
+            <td width='20%' class='td-valor'>2</td>
+            <td width='30%' class='td-valor'></td>
+            <td width='30%' class='td-valor'>SADAKO MORITA (3135535)</td>
+          </tr>
+          <tr>
+            <td width='20%' class='td-valor'>2</td>
+            <td width='30%' class='td-valor'>SADAKO MORITA (3135535)</td>
+            <td width='30%' class='td-valor'></td>
+            
+          </tr>
+        </table>
+        {LinhaEmBranco()}
+        <table class='fixed'>
+          <tr>
+            <td width='100%' class='td-turma-bimestre'>
+              AULAS EM DIAS NÃO LETIVOS
+            </td>
+          </tr>
+        </table>
+        <table class='fixed'>
+          <tr>
+            <td width='20%' class='td-titulo'>DATA</td>
+            <td width='20%' class='td-titulo'>MOTIVO NÃO LETIVO</td>
+            <td width='20%' class='td-titulo'>QUANTIDADE DE AULAS</td>
+            <td width='40%' class='td-titulo'>PROFESSOR</td>
+          </tr>
+          <tr>
+            <td width='20%' class='td-valor'>2</td>
+            <td width='20%' class='td-valor'></td>
+            <td width='20%' class='td-valor'></td>
+            <td width='40%' class='td-valor'>SADAKO MORITA (3135535)</td>
+          </tr>
+        </table>
+        {LinhaEmBranco()}
+        <table class='fixed'>
+          <tr>
+            <td width='100%' class='td-turma-bimestre'>
+              VISÃO POR SEMANA DE AULAS CRIADAS X PREVISTO NA MATRIZ CURRICULAR
+            </td>
+          </tr>
+        </table>
+        <table class='fixed'>
+          <tr>
+            <td width='20%' class='td-titulo'>SEMANA</td>
+            <td width='20%' class='td-titulo'>QUANTIDADE DE DIAS LETIVOS</td>
+            <td width='20%' class='td-titulo'>AULAS PREVISTAS NA GRADE</td>
+            <td width='20%' class='td-titulo'>AULAS CRIADAS</td>
+            <td width='20%' class='td-titulo'>DIFERENÇA</td>
+          </tr>
+          <tr>
+            <td width='20%' class='td-valor'>2</td>
+            <td width='20%' class='td-valor'></td>
+            <td width='20%' class='td-valor'></td>
+            <td width='20%' class='td-valor'></td>
+            <td width='20%' class='td-valor'></td>
+          </tr>
+        </table>{LinhaEmBranco()}";
+        return str;
+    }
+
+
     string MontaEstruturaGrade()
     {
         var str = "";
@@ -150,7 +262,8 @@
                 {
                     if (ultimoBimestre != $"{turma.Nome} - {bimestre.Descricao}")
                     {
-                        str += "<table><tr><td style='border-top:none;border-bottom:none'><br/></td></tr></table>";
+                        str += LinhaEmBranco();
+                        str += MontaDivergencias();
                     }
                     str = str + retornoVerificacao;
                 }
@@ -174,6 +287,11 @@
 
         return str;
 
+    }
+
+    string LinhaEmBranco()
+    {
+        return "<table><tr><td style='border-top:none;border-bottom:none'><br/></td></tr></table>";
     }
 
 }
