@@ -16,6 +16,6 @@ namespace SME.SR.Application
         }
 
         public Task<IEnumerable<Evento>> Handle(ObterEventosPorTipoCalendarioIdQuery request, CancellationToken cancellationToken)
-                => eventoRepository.ObterEventosPorTipoCalendarioId(request.TipoCalendarioId, request.PeriodoInicio, request.PeriodoFim, request.TurmaId);
+                => eventoRepository.ObterEventosPorTipoCalendarioIdEPeriodoInicioEFim(request.TipoCalendarioId, request.PeriodoInicio, request.PeriodoFim, request.TurmaId);
     }
 }

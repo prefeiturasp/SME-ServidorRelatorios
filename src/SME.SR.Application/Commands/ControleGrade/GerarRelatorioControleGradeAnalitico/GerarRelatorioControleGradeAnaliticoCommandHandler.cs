@@ -145,7 +145,7 @@ namespace SME.SR.Application
         {
             var visaoSemanal = new List<VisaoSemanalControleGradeSinteticoDto>();
             var quantidadeGrade = await mediator.Send(new ObterQuantidadeDeAulaGradeQuery(turmaId, componenteCurricularId));
-            var eventosCadastrados = await mediator.Send(new ObterEventosPorTipoCalendarioIdEPeriodoInicioEFimQuery(tipoCalendarioId, dataInicio, dataFim));
+            var eventosCadastrados = await mediator.Send(new ObterEventosPorTipoCalendarioIdEPeriodoInicioEFimQuery(tipoCalendarioId, dataInicio, dataFim, turmaId));
 
             var dataSegundaFeira = ObterUltimaSegundaFeira(dataInicio);
             visaoSemanal.Add(await ObterVisaoSemanal(dataSegundaFeira, quantidadeGrade, turmaId, componenteCurricularId, eventosCadastrados, dataSegundaFeira));
@@ -173,9 +173,10 @@ namespace SME.SR.Application
 
         private async Task<VisaoSemanalControleGradeSinteticoDto> ObterVisaoSemanal(DateTime dataInicioSemana, int quantidadeGrade, long turmaId, long componenteCurricularId, IEnumerable<Evento> eventosCadastrados, DateTime? dataParaExibicao = null)
         {
-            var dataFimSemana = dataInicioSemana.AddDays(6);
-            var aulasCriadas = await mediator.Send(new ObterDiasAulaCriadasPeriodoInicioEFimQuery(turmaId, componenteCurricularId, dataInicioSemana, dataFimSemana));
-            var diasLetivos = ObtemDiasLetivos(dataInicioSemana, dataFimSemana, eventosCadastrados);
+            var ultimoDomingo = dataInicioSemana.AddDays(-1);
+            var dataFimSemana = ultimoDomingo.AddDays(6);
+            var aulasCriadas = await mediator.Send(new ObterDiasAulaCriadasPeriodoInicioEFimQuery(turmaId, componenteCurricularId, ultimoDomingo, dataFimSemana));
+            var diasLetivos = ObtemDiasLetivos(ultimoDomingo, dataFimSemana, eventosCadastrados);
 
             var dataParaVisao = dataParaExibicao.HasValue ? dataParaExibicao : dataInicioSemana;
             return new VisaoSemanalControleGradeSinteticoDto()

@@ -6,9 +6,8 @@ namespace SME.SR.Data
 {
     public interface IEventoRepository
     {
-        Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioId(long tipoCalendarioId, DateTime periodoInicio, DateTime periodoFim, long? turmaId = null);
+        Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioIdEPeriodoInicioEFim(long tipoCalendarioId, DateTime periodoInicio, DateTime periodoFim, long? turmaId = null);
         Task<bool> EhEventoLetivoPorTipoDeCalendarioDataDreUe(long tipoCalendarioId, DateTime data, string dreId, string ueId);
         Task<bool> EhEventoNaoLetivoPorTipoDeCalendarioDataDreUe(long tipoCalendarioId, DateTime data, string dreId, string ueId);
-        Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioIdEPeriodoInicioEFim(long tipoCalendarioId, DateTime periodoInicio, DateTime periodoFim);
     }
 }
