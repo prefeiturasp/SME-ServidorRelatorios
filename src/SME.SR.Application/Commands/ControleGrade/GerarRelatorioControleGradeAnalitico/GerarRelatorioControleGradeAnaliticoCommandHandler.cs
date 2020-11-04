@@ -46,7 +46,7 @@ namespace SME.SR.Application
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
-            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeAnalitico", dto, request.CodigoCorrelacao, "", "Relatório Controle de Grade Analítico")));
+            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControleGradeAnalitico", dto, request.CodigoCorrelacao, "", "Relatório Controle de Grade Analítico", true, "RELATÓRIO CONTROLE DE GRADE ANALÍTICO")));
         }
 
         private async Task<IEnumerable<Turma>> ObterTurmas(IEnumerable<long> turmasIds)

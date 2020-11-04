@@ -34,7 +34,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
 
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
-            pdfGenerator.Converter(html, nomeArquivo);
+            pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape);
 
             if (request.EnvioPorRabbit)
             {
