@@ -17,7 +17,7 @@ namespace SME.SR.Application
         private readonly IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository;
         private readonly IUsuarioRepository usuarioRepository;
         private readonly IMediator mediator;
-        private char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
             IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
