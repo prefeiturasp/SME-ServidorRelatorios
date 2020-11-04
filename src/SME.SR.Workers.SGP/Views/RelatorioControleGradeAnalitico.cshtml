@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 49;
+    int contadorMaximoLinhasPorPagina = 47;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -20,7 +20,7 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + (Model.Filtro.Ue.Length > 41 ? (int)(Model.Filtro.Ue.Length / 41) + 11 : 11);
+        contadorQuebrarPagina = contadorQuebrarPagina + (Model.Filtro.Ue.Length > 41 ? (int)(Model.Filtro.Ue.Length / 41) + 7 : 7);
         var str =
            $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
@@ -33,8 +33,8 @@
 <table class='tblTopo'>
 <tbody>
 <tr>
-<td width='35%'>DRE: {Model.Filtro.Dre}</td>
-<td width='40%'>UE: {Model.Filtro.Ue}</td>
+<td width='20%'>DRE: {Model.Filtro.Dre}</td>
+<td width='60%'>UE: {Model.Filtro.Ue}</td>
 <td width='15%'>TURMA: {Model.Filtro.Turma}</td>
 </tr>
 </tbody>
@@ -601,6 +601,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         table {
             display: table;
             width: 100%;
+            height: 24px;
             border-color: #42474a;
             empty-cells: show;
             border: none;
@@ -618,6 +619,10 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
         td {
             border: 1px solid #42474a;
+        }
+
+        tr {
+            height: 24px;
         }
 
         .fonte-16 {
