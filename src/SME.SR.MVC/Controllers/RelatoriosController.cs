@@ -4494,43 +4494,41 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         [HttpGet("sondagem-portugues-consolidado")]
         public IActionResult SondagemPortuguesConsolidado()
         {
-            var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
             #region Monta dados
-            var perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
-            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostasDto>();
+            respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
             {
-                Pergunta = "Alunos",
-                Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
+                Respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
                 {
-                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
                     {
                         Resposta = "Pré-Silábico",
                         Quantidade = 1,
                         Percentual = (decimal)11.23,
                         Total = 3
                     },
-                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
                     {
                         Resposta = "Silábico sem Valor",
                         Quantidade = 2,
                         Percentual = (decimal)12.23,
                         Total = 3
                     },
-                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
                     {
                         Resposta = "Silábico com Valor",
                         Quantidade = 3,
                         Percentual = (decimal)13.23,
                         Total = 3
                     },
-                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
                     {
                         Resposta = "Silábico Alfabético",
                         Quantidade = 4,
                         Percentual = (decimal)14.23,
                         Total = 3
                     },
-                    new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
                     {
                         Resposta = "Alfabético",
                         Quantidade = 5,
@@ -4541,15 +4539,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             });
             #endregion
 
-            planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
+            var model = new RelatorioSondagemPortuguesConsolidadoDto()
             {
-                Ordem = "Proficiência",
-                Perguntas = perguntas
-            });
-
-            var model = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
-            {
-                Cabecalho = new RelatorioSondagemPortuguesConsolidadoLeituraCabecalhoDto()
+                Cabecalho = new RelatorioSondagemPortuguesConsolidadoCabecalhoDto()
                 {
                     AnoTurma = 1,
                     AnoLetivo = 2020,
@@ -4562,10 +4554,11 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Turma = "Todas",
                     Ue = "CEU EMEF BUTANTA",
                     Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    EhProducaoTexto = false,
                 },
-                Planilhas = planilhas,
+                Respostas = respostas,
             };
-            return View("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", model);
+            return View("RelatorioSondagemPortuguesConsolidado", model);
         }
     }
 }
