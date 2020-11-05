@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace SME.SR.Application
         private readonly IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository;
         private readonly IPerguntasAutoralRepository perguntasAutoralRepository;
         private readonly IMediator mediator;
+        private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQueryHandler(
             IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository,
@@ -50,7 +52,73 @@ namespace SME.SR.Application
 
             ObterLinhas(relatorio, dados, alunosDaTurma, perguntas);
 
+            GerarGrafico(relatorio);
+
             return relatorio;
+        }
+
+        private void GerarGrafico(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio)
+        {
+            foreach (var ordem in relatorio.Cabecalho.Ordens)
+            {
+                foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+                {
+                    var legendas = new List<GraficoBarrasLegendaDto>();
+                    var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Descricao} - {pergunta.Nome}");
+
+                    var respostas = relatorio.Planilha.Linhas
+                        .SelectMany(l => l.OrdensRespostas.Where(or => or.OrdemId == ordem.Id && or.PerguntaId == pergunta?.Id))
+                        .GroupBy(b => b.Resposta);
+
+                    int chaveIndex = 0;
+                    string chave = String.Empty;
+
+                    foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                    {
+                        chave = lstChaves[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = resposta.Key
+                        });
+
+                        var qntRespostas = resposta.Count();
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
+                    }
+
+                    var respostasNulasOuVazias = respostas.Where(a => string.IsNullOrEmpty(a.Key)).ToList();
+                    if (respostasNulasOuVazias.Any())
+                    {
+                        var qntSemRespostas = 0;
+
+                        foreach (var item in respostasNulasOuVazias)
+                        {
+                            qntSemRespostas += item.Count();
+                        }
+
+                        if (qntSemRespostas > 0)
+                        {
+                            chave = lstChaves[chaveIndex++].ToString();
+
+                            legendas.Add(new GraficoBarrasLegendaDto()
+                            {
+                                Chave = chave,
+                                Valor = "Sem preenchimento"
+                            });
+
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, chave));
+                        }
+                    }
+
+                    var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+
+                    grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                    grafico.Legendas = legendas;
+
+                    relatorio.GraficosBarras.Add(grafico);
+                }
+            }
         }
 
         private void ObterLinhas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<SondagemAutoralPorAlunoDto> dados, IEnumerable<Aluno> alunosDaTurma, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
