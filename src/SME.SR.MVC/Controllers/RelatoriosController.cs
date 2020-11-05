@@ -4490,5 +4490,75 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
         }
+
+        [HttpGet("sondagem-portugues-consolidado")]
+        public IActionResult SondagemPortuguesConsolidado()
+        {
+            #region Monta dados
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostasDto>();
+            respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
+            {
+                Respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
+                {
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Pré-Silábico",
+                        Quantidade = 1,
+                        Percentual = (decimal)11.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Silábico sem Valor",
+                        Quantidade = 2,
+                        Percentual = (decimal)12.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Silábico com Valor",
+                        Quantidade = 3,
+                        Percentual = (decimal)13.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Silábico Alfabético",
+                        Quantidade = 4,
+                        Percentual = (decimal)14.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Alfabético",
+                        Quantidade = 5,
+                        Percentual = (decimal)15.23,
+                        Total = 3
+                    },
+                }
+            });
+            #endregion
+
+            var model = new RelatorioSondagemPortuguesConsolidadoDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesConsolidadoCabecalhoDto()
+                {
+                    AnoTurma = 1,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Português",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                    Dre = "DRE - BT",
+                    Periodo = "1º bimestre",
+                    Proficiencia = "Leitura",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    EhProducaoTexto = false,
+                },
+                Respostas = respostas,
+            };
+            return View("RelatorioSondagemPortuguesConsolidado", model);
+        }
     }
 }
