@@ -30,25 +30,34 @@ namespace SME.SR.Data
     	                or (e.dre_id = x.dre_id and (e.ue_id is null or e.ue_id = x.ue_id))";
 
             var query = $@"select
+                            e.id,
 	                        data_inicio as DataInicio,
 	                        data_fim as DataFim,
-	                        letivo,
+	                        e.letivo,
 	                        e.nome,
 	                        e.descricao,
                             e.ue_id as UeId,
                             e.dre_id as DreId,
-                            e.tipo_evento_id as TipoEvento
+                            e.tipo_evento_id as TipoEvento,
+                            et.id,
+                            et.descricao
                         from
 	                        evento e
+                        inner join evento_tipo et on et.id = e.tipo_evento_id
                         {filtroTurma}
                         where
                         e.tipo_calendario_id = @tipoCalendarioId
                         and not e.excluido and data_inicio between @periodoInicio and @periodoFim;";
 
-
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<Evento>(query.ToString(), new { tipoCalendarioId, periodoInicio, periodoFim, turmaId });
+                return await conexao.QueryAsync<Evento, EventoTipo, Evento>(query.ToString(), 
+                    (evento, eventoTipo) =>
+                    {
+                        evento.EventoTipo = eventoTipo;
+                        return evento;
+                    },
+                    new { tipoCalendarioId, periodoInicio, periodoFim, turmaId });
             }
         }
 
