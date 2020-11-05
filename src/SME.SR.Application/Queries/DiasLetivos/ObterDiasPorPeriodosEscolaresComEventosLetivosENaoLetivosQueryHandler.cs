@@ -33,7 +33,7 @@ namespace SME.SR.Application
                         DiasLetivos.Add(new DiaLetivoDto
                         {
                             Data = data,
-                            Motivo = evento.TipoEvento.Name(),
+                            Motivo = evento.EventoTipo.Descricao,
                             EhLetivo = evento.EhEventoLetivo(),
                             EhNaoLetivo = evento.EhEventoNaoLetivo(),
                             UesIds = string.IsNullOrWhiteSpace(evento.UeId) ? new List<string>() : new List<string> { evento.UeId },
