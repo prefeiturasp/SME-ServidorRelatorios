@@ -11,7 +11,8 @@ namespace SME.SR.Application
         {
             TipoCalendarioId = tipoCalendarioId;
             PeriodoInicio = periodoInicio;
-            PeriodoFim = periodoFim;            
+            PeriodoFim = periodoFim;
+            TurmaId = turmaId;
         }
 
         public long TipoCalendarioId { get; set; }
