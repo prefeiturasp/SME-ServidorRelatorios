@@ -60,7 +60,7 @@ namespace SME.SR.Data
             if (componenteCurricular > 0)
                 query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
-            query.Append("order by go.\"Ordenacao\" ");
+            query.Append("order by op.\"OrdenacaoNaTela\" ");
 
             var parametros = new { grupoId = grupoSondagem.Name(), componenteCurricularId = componenteCurricular.Name() };
 
