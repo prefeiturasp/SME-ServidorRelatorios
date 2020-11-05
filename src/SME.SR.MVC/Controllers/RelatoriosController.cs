@@ -4539,7 +4539,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             });
             #endregion
 
-            var model = new RelatorioSondagemPortuguesConsolidadoDto()
+            var model = new RelatorioSondagemPortuguesConsolidadoRelatorioDto()
             {
                 Cabecalho = new RelatorioSondagemPortuguesConsolidadoCabecalhoDto()
                 {
@@ -4555,6 +4555,90 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Ue = "CEU EMEF BUTANTA",
                     Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
                     EhProducaoTexto = false,
+                },
+                Respostas = respostas,
+            };
+            return View("RelatorioSondagemPortuguesConsolidado", model);
+        }
+
+        [HttpGet("sondagem-portugues-consolidado-producao")]
+        public IActionResult SondagemPortuguesConsolidadoProducao()
+        {
+            #region Monta dados
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostasDto>();
+            respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
+            {
+                Respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
+                {
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Escrita não alfabética",
+                        Quantidade = 1,
+                        Percentual = (decimal)11.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Dificuldades com aspectos semânticos",
+                        Quantidade = 2,
+                        Percentual = (decimal)12.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Dificuldades com aspectos textuais",
+                        Quantidade = 3,
+                        Percentual = (decimal)13.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Dificuldades com aspectos ortográficos e notacionais",
+                        Quantidade = 4,
+                        Percentual = (decimal)14.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Não produziu/entregou em branco",
+                        Quantidade = 5,
+                        Percentual = (decimal)15.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Não apresentou dificuldades",
+                        Quantidade = 6,
+                        Percentual = (decimal)16.23,
+                        Total = 3
+                    },
+                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                    {
+                        Resposta = "Sem preenchimento",
+                        Quantidade = 7,
+                        Percentual = (decimal)17.23,
+                        Total = 3
+                    },
+                }
+            });
+            #endregion
+
+            var model = new RelatorioSondagemPortuguesConsolidadoRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesConsolidadoCabecalhoDto()
+                {
+                    AnoTurma = 1,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Português",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                    Dre = "DRE - BT",
+                    Periodo = "1º bimestre",
+                    Proficiencia = "Produção de texto",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    EhProducaoTexto = true,
                 },
                 Respostas = respostas,
             };
