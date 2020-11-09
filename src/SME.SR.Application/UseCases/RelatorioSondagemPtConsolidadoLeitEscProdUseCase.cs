@@ -91,11 +91,15 @@ namespace SME.SR.Application
             GrupoSondagemEnum grupoSondagemEnum = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ?
                 GrupoSondagemEnum.LeituraVozAlta : GrupoSondagemEnum.LeituraVozAlta;
 
+            var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
+
+            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
+
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                DateTime.Now,
+                dataReferencia,
                 Convert.ToInt64(filtros.DreCodigo)
                 ));
 
@@ -205,18 +209,21 @@ namespace SME.SR.Application
             {
                 DreCodigo = filtros.DreCodigo,
                 UeCodigo = filtros.UeCodigo,
-                TurmaCodigo = filtros.TurmaCodigo,
                 AnoLetivo = filtros.AnoLetivo,
                 AnoTurma = filtros.Ano,
                 Bimestre = filtros.Bimestre,
                 Proficiencia = filtros.ProficienciaId
             });
 
+            var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
+
+            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
+
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                DateTime.Now,
+                dataReferencia,
                 Convert.ToInt64(filtros.DreCodigo)
                 ));
 
@@ -226,15 +233,13 @@ namespace SME.SR.Application
 
             foreach (var item in respAgrupado)
             {
-                if (!item.Label.Trim().Equals(""))
-                {
-                    RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
+                RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
+
                     itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
-                    itemRetorno.Quantidade = item.Value;
-                    itemRetorno.Percentual = (item.Value / alunosPorAno) * 100;
-                    itemRetorno.Total = alunosPorAno;
-                    respostas.Add(itemRetorno);
-                }
+                itemRetorno.Quantidade = item.Value;
+                itemRetorno.Percentual = (item.Value / alunosPorAno) * 100;
+                itemRetorno.Total = alunosPorAno;
+                respostas.Add(itemRetorno);
             }
 
             return await Task.FromResult(respostas);
@@ -244,6 +249,8 @@ namespace SME.SR.Application
         {
             switch (proficiencia)
             {
+                case "":
+                    return "Sem Preenchimento";
                 case "PS":
                     return "Pré-Silábico";
                 case "SSV":
