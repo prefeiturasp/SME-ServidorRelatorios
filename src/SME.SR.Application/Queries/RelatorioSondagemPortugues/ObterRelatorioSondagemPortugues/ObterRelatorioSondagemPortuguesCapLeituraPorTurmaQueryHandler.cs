@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
@@ -15,16 +16,18 @@ namespace SME.SR.Application
     {
         private readonly IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository;
         private readonly IPerguntasAutoralRepository perguntasAutoralRepository;
+        private readonly IAlunoRepository alunoRepository;
         private readonly IMediator mediator;
         private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQueryHandler(
             IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository,
-            IMediator mediator, IPerguntasAutoralRepository perguntasAutoralRepository)
+            IMediator mediator, IPerguntasAutoralRepository perguntasAutoralRepository, IAlunoRepository alunoRepository)
         {
             this.relatorioSondagemPortuguesPorTurmaRepository = relatorioSondagemPortuguesPorTurmaRepository ?? throw new ArgumentNullException(nameof(relatorioSondagemPortuguesPorTurmaRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.perguntasAutoralRepository = perguntasAutoralRepository ?? throw new ArgumentNullException(nameof(perguntasAutoralRepository));
+            this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
         }
 
         public async Task<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto> Handle(ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQuery request, CancellationToken cancellationToken)
@@ -46,11 +49,13 @@ namespace SME.SR.Application
 
             var perguntas = await perguntasAutoralRepository.ObterPerguntasPorGrupo(GrupoSondagemEnum.CapacidadeLeitura, ComponenteCurricularSondagemEnum.Portugues);
 
+            var alunosEol = await alunoRepository.ObterAlunosPorTurmaDataSituacaoMaricula(request.TurmaCodigo, dataDoPeriodo);
+
             ObterPerguntas(relatorio, perguntas);
 
             var dados = await relatorioSondagemPortuguesPorTurmaRepository.ObterPorFiltros(GrupoSondagemEnum.CapacidadeLeitura.Name(), ComponenteCurricularSondagemEnum.Portugues.Name(), periodo.Id, request.AnoLetivo, request.TurmaCodigo.ToString());
 
-            ObterLinhas(relatorio, dados, alunosDaTurma, perguntas);
+            ObterLinhas(relatorio, dados, alunosEol);
 
             GerarGrafico(relatorio);
 
@@ -121,20 +126,20 @@ namespace SME.SR.Application
             }
         }
 
-        private void ObterLinhas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<SondagemAutoralPorAlunoDto> dados, IEnumerable<Aluno> alunosDaTurma, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
+        private void ObterLinhas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<SondagemAutoralPorAlunoDto> dados, IEnumerable<Aluno> alunosEol)
         {
             var alunosAgrupados = dados.GroupBy(x => x.CodigoAluno);
 
             relatorio.Planilha = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaDto();
 
-            relatorio.Planilha.Linhas.AddRange(alunosDaTurma.Select(alunoRetorno =>
+            relatorio.Planilha.Linhas.AddRange(alunosEol.Select(alunoRetorno =>
             {
                 var itemRelatorio = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto();
                 var aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
                 {
                     Codigo = alunoRetorno.CodigoAluno,
                     DataSituacao = alunoRetorno.DataSituacao.ToString("dd/MM/yyyy"),
-                    Nome = alunoRetorno.NomeAluno,
+                    Nome = alunoRetorno.ObterNomeParaRelatorioSondagem(),
                     SituacaoMatricula = alunoRetorno.SituacaoMatricula
                 };
 
