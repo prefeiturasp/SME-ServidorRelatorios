@@ -7,6 +7,7 @@ namespace SME.SR.Infra
 {
     public class RelatorioSondagemPortuguesConsolidadoRespostaDto
     {
+        public string Id { get; set; }
         public string Resposta { get; set; }
         public int Quantidade { get; set; }
         public decimal Percentual { get; set; }

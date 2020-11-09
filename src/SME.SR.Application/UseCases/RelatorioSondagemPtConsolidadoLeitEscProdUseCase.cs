@@ -86,23 +86,10 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostasDto>> ObterRespostasGrupo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostaDto>> ObterRespostasGrupo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
         {
-            IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto> linhasSondagem = null;
-
             GrupoSondagemEnum grupoSondagemEnum = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ?
                 GrupoSondagemEnum.LeituraVozAlta : GrupoSondagemEnum.LeituraVozAlta;
-
-            linhasSondagem = await mediator.Send(new ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery()
-            {
-                DreCodigo = filtros.DreCodigo,
-                UeCodigo = filtros.UeCodigo,
-                TurmaCodigo = filtros.TurmaCodigo,
-                AnoLetivo = filtros.AnoLetivo,
-                AnoTurma = filtros.Ano,
-                Bimestre = filtros.Bimestre,
-                Grupo = grupoSondagemEnum
-            });
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
@@ -112,85 +99,105 @@ namespace SME.SR.Application
                 Convert.ToInt64(filtros.DreCodigo)
                 ));
 
-            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostasDto>();
-
-            var ordens = linhasSondagem.GroupBy(o => o.Ordem).Select(x => x.FirstOrDefault()).ToList();
-            if (ordens.Count == 0)
+            var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(filtros.Bimestre, TipoPeriodoSondagem.Bimestre));
+            var perguntas = await mediator.Send(new ObterPerguntasPorGrupoQuery(grupoSondagemEnum, ComponenteCurricularSondagemEnum.Portugues));
+            var dados = await mediator.Send(new ObterRespostasPorFiltrosQuery()
             {
-                var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
-                respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
-                {
-                    Resposta = "Sem preenchimento",
-                    Quantidade = alunosPorAno,
-                    Total = alunosPorAno,
-                    Percentual = 1
-                });
+                AnoLetivo = filtros.AnoLetivo,
+                TurmaAno = filtros.Ano,
+                DreCodigo = filtros.DreCodigo,
+                UeCodigo = filtros.UeCodigo,
+                GrupoId = filtros.GrupoId,
+                ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues,
+                PeriodoId = periodo.Id
+            });
 
-                var ordensSondagem = await mediator.Send(new ObterOrdensSondagemPorGrupoQuery() { Grupo = grupoSondagemEnum });
-                foreach (var ordem in ordensSondagem)
-                {
-                    respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
-                    {
-                        Respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
-                        {
-                            new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                            {
-                                 Pergunta = String.Empty,
-                                Respostas = respostasDto
-                            }
-                        }
-                    });
-                }
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
+
+            if (dados == null || !dados.Any())
+            {
+                PreencherPerguntasForaLista(respostas, perguntas);
+
+                ObterSemPreenchimento(dados, alunosPorAno, respostas);
+
+                return respostas;
             }
 
-            foreach (var ordem in ordens)
-            {
-                var perguntasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
+            PopularListaRetorno(dados, alunosPorAno, perguntas, respostas);
 
-                var perguntas = linhasSondagem.Where(o => o.Ordem == ordem.Ordem).GroupBy(p => p.Pergunta).Select(x => x.FirstOrDefault()).ToList();
-                foreach (var pergunta in perguntas)
-                {
-                    var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
-
-                    var respostasSondagem = linhasSondagem.Where(o => o.Ordem == ordem.Ordem && o.Pergunta == pergunta.Pergunta).ToList();
-                    var totalRespostas = respostasSondagem.Sum(o => o.Quantidade);
-                    foreach (var resposta in respostasSondagem)
-                    {
-                        respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
-                        {
-                            Resposta = resposta.Resposta,
-                            Quantidade = resposta.Quantidade,
-                            Total = alunosPorAno,
-                            Percentual = Decimal.Divide(resposta.Quantidade, alunosPorAno)
-                        });
-                    }
-
-                    respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
-                    {
-                        Resposta = "Sem preenchimento",
-                        Quantidade = alunosPorAno - totalRespostas,
-                        Total = alunosPorAno,
-                        Percentual = Decimal.Divide(alunosPorAno - totalRespostas, alunosPorAno)
-                    });
-
-                    perguntasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
-                    {
-                        Pergunta = pergunta.Pergunta,
-                        Respostas = respostasDto
-                    });
-                }
-
-                respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
-                {
-                    Ordem = ordem.Ordem,
-                    Perguntas = perguntasDto
-                });
-            }
-
-            return await Task.FromResult(respostas);
+            return respostas;
         }
 
-        private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostasDto>> ObterRespostasProficiencia(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        private void PopularListaRetorno(IEnumerable<SondagemAutoralDto> dados, int alunosPorAno, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas, List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas)
+        {
+            foreach (var pergunta in perguntas)
+            {
+                AdicionarPerguntaSeNaoExistir(respostas, pergunta, dados, alunosPorAno);
+            }
+
+            ObterSemPreenchimento(dados, alunosPorAno, respostas);
+            PreencherPerguntasForaLista(respostas, perguntas);
+        }
+
+        private void AdicionarPerguntaSeNaoExistir(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas, PerguntasOrdemGrupoAutoralDto pergunta, IEnumerable<SondagemAutoralDto> dados, int alunosPorAno)
+        {
+            if (respostas.Any(x => x.Id.Equals(pergunta.PerguntaId)))
+                return;
+
+            var alunosPergunta = dados.Where(x => x.PerguntaId == pergunta.PerguntaId)
+                                                .Select(x => x.CodigoAluno)
+                                                .GroupBy(x => x).OrderBy(x => x.Key);
+
+            var quantidadeAlunosPergunta = alunosPergunta.Select(x => x.Key).Count();
+
+            respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostaDto
+            {
+                Id = pergunta.PerguntaId,
+                Resposta = pergunta.Pergunta,
+                Total = alunosPorAno,
+                Quantidade = quantidadeAlunosPergunta,
+                Percentual = Math.Round(((decimal)quantidadeAlunosPergunta / (decimal)alunosPorAno) * 100, 2)
+            });
+        }
+
+        private void ObterSemPreenchimento(IEnumerable<SondagemAutoralDto> dados, int alunosPorAno, List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas)
+        {
+            var alunosUnicos = dados.GroupBy(x => x.CodigoAluno);
+
+            var quantidadeAlunosUnicos = alunosUnicos.Select(x => x.Key).Count();
+
+            var diferenca = alunosPorAno - quantidadeAlunosUnicos;
+
+            if (diferenca <= 0) return;
+
+            respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostaDto
+            {
+                Resposta = "Sem preenchimento",
+                Total = alunosPorAno,
+                Quantidade = diferenca,
+                Percentual = Math.Round(((decimal)diferenca / (decimal)alunosPorAno) * 100, 2)
+            });
+        }
+
+        private void PreencherPerguntasForaLista(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
+        {
+            foreach (var pergunta in perguntas)
+            {
+                if (respostas.Any(x => x.Id?.Equals(pergunta.PerguntaId) ?? false))
+                    return;
+
+                respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostaDto
+                {
+                    Id = pergunta.PerguntaId,
+                    Resposta = pergunta.Pergunta,
+                    Percentual = 0,
+                    Quantidade = 0,
+                    Total = 0
+                });
+            }
+        }
+
+        private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostaDto>> ObterRespostasProficiencia(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
         {
             IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto> linhasSondagem = null;
 
@@ -213,82 +220,43 @@ namespace SME.SR.Application
                 Convert.ToInt64(filtros.DreCodigo)
                 ));
 
-            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostasDto>();
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
-            var ordens = linhasSondagem.GroupBy(o => o.Ordem).Select(x => x.FirstOrDefault()).ToList();
-            if (ordens.Count == 0)
+            var respAgrupado = linhasSondagem.GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).ToList();
+
+            foreach (var item in respAgrupado)
             {
-                var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
-                respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                if (!item.Label.Trim().Equals(""))
                 {
-                    Resposta = "Sem preenchimento",
-                    Quantidade = alunosPorAno,
-                    Total = alunosPorAno,
-                    Percentual = 1
-                });
-
-                var ordensSondagem = await mediator.Send(new ObterOrdensSondagemPorGrupoQuery() { Grupo = grupoSondagemEnum });
-                foreach (var ordem in ordensSondagem)
-                {
-                    respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
-                    {
-                        Respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
-                        {
-                            new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                            {
-                                 Pergunta = String.Empty,
-                                Respostas = respostasDto
-                            }
-                        }
-                    });
+                    RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
+                    itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
+                    itemRetorno.Quantidade = item.Value;
+                    itemRetorno.Percentual = (item.Value / alunosPorAno) * 100;
+                    itemRetorno.Total = alunosPorAno;
+                    respostas.Add(itemRetorno);
                 }
-            }
-
-            foreach (var ordem in ordens)
-            {
-                var perguntasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
-
-                var perguntas = linhasSondagem.Where(o => o.Ordem == ordem.Ordem).GroupBy(p => p.Pergunta).Select(x => x.FirstOrDefault()).ToList();
-                foreach (var pergunta in perguntas)
-                {
-                    var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
-
-                    var respostasSondagem = linhasSondagem.Where(o => o.Ordem == ordem.Ordem && o.Pergunta == pergunta.Pergunta).ToList();
-                    var totalRespostas = respostasSondagem.Sum(o => o.Quantidade);
-                    foreach (var resposta in respostasSondagem)
-                    {
-                        respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
-                        {
-                            Resposta = resposta.Resposta,
-                            Quantidade = resposta.Quantidade,
-                            Total = alunosPorAno,
-                            Percentual = Decimal.Divide(resposta.Quantidade, alunosPorAno)
-                        });
-                    }
-
-                    respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
-                    {
-                        Resposta = "Sem preenchimento",
-                        Quantidade = alunosPorAno - totalRespostas,
-                        Total = alunosPorAno,
-                        Percentual = Decimal.Divide(alunosPorAno - totalRespostas, alunosPorAno)
-                    });
-
-                    perguntasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
-                    {
-                        Pergunta = pergunta.Pergunta,
-                        Respostas = respostasDto
-                    });
-                }
-
-                respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
-                {
-                    Ordem = ordem.Ordem,
-                    Perguntas = perguntasDto
-                });
             }
 
             return await Task.FromResult(respostas);
+        }
+
+        private string MontarTextoProficiencia(string proficiencia)
+        {
+            switch (proficiencia)
+            {
+                case "PS":
+                    return "Pré-Silábico";
+                case "SSV":
+                    return "Silábico sem valor";
+                case "SCV":
+                    return "Silábico com valor";
+                case "SA":
+                    return "Silábico alfabético";
+                case "A":
+                    return "Alfabético";
+                default:
+                    return proficiencia;
+            }
         }
     }
 }
