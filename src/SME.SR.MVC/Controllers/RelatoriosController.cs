@@ -3536,6 +3536,43 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            model.GraficosBarras.Add(new GraficoBarrasVerticalDto(800, "Português - Leitura")
+            {
+              EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+              {
+                  new GraficoBarrasVerticalEixoXDto(5, "A"),
+                  new GraficoBarrasVerticalEixoXDto(1, "B"),
+                  new GraficoBarrasVerticalEixoXDto(3, "C"),
+                  new GraficoBarrasVerticalEixoXDto(2, "D")
+              } ,
+              Legendas = new List<GraficoBarrasLegendaDto>()
+              {
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "A",
+                      Valor = "Nivel 1"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "B",
+                      Valor = "Nivel 2"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "C",
+                      Valor = "Nivel 3"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "D",
+                      Valor = "Sem preenchimento"
+                  }
+              },
+              EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 5, 10)
+            });
+
             return View("RelatorioSondagemPortuguesPorTurma", model);
         }
 
@@ -3900,6 +3937,42 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Linhas = linhas
                 },
             };
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            model.GraficosBarras.Add(new GraficoBarrasVerticalDto(800, "Português - Leitura")
+            {
+                EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+              {
+                  new GraficoBarrasVerticalEixoXDto(50, "A"),
+                  new GraficoBarrasVerticalEixoXDto(10, "B"),
+                  new GraficoBarrasVerticalEixoXDto(30, "C"),
+                  new GraficoBarrasVerticalEixoXDto(20, "D")
+              },
+                Legendas = new List<GraficoBarrasLegendaDto>()
+              {
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "A",
+                      Valor = "Nivel 1"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "B",
+                      Valor = "Nivel 2"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "C",
+                      Valor = "Nivel 3"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "D",
+                      Valor = "Sem preenchimento"
+                  }
+              },
+                EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 50, 10)
+            });
 
             return View("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", model);
         }
