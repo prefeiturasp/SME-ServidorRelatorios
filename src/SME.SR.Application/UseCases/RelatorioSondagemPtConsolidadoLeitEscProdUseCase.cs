@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Queries;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
@@ -215,9 +216,7 @@ namespace SME.SR.Application
                 Proficiencia = filtros.ProficienciaId
             });
 
-            var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
-
-            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
+            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
@@ -235,7 +234,7 @@ namespace SME.SR.Application
             {
                 RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
-                    itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
+                itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
                 itemRetorno.Quantidade = item.Value;
                 itemRetorno.Percentual = (item.Value / alunosPorAno) * 100;
                 itemRetorno.Total = alunosPorAno;
