@@ -63,11 +63,11 @@ namespace SME.SR.Application
             }
             else if (proficiencia == ProficienciaSondagemEnum.Escrita.Name())
             {
-                proficiencia = ProficienciaSondagemEnum.Escrita.ShortName();
+                proficiencia = ProficienciaSondagemEnum.Escrita.Name();
             }
             else if (proficiencia == ProficienciaSondagemEnum.Leitura.Name())
             {
-                proficiencia = ProficienciaSondagemEnum.Leitura.ShortName();
+                proficiencia = ProficienciaSondagemEnum.Leitura.Name();
             }
 
             return await Task.FromResult(new RelatorioSondagemPortuguesConsolidadoCabecalhoDto()
@@ -90,7 +90,7 @@ namespace SME.SR.Application
         private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostaDto>> ObterRespostasGrupo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
         {
             GrupoSondagemEnum grupoSondagemEnum = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ?
-                GrupoSondagemEnum.LeituraVozAlta : GrupoSondagemEnum.LeituraVozAlta;
+                GrupoSondagemEnum.LeituraVozAlta : GrupoSondagemEnum.ProducaoTexto;
 
             var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
 
@@ -236,12 +236,12 @@ namespace SME.SR.Application
 
                 itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
                 itemRetorno.Quantidade = item.Value;
-                itemRetorno.Percentual = (item.Value / alunosPorAno) * 100;
+                itemRetorno.Percentual = Math.Round(((decimal)item.Value / (decimal)alunosPorAno) * 100, 2);
                 itemRetorno.Total = alunosPorAno;
                 respostas.Add(itemRetorno);
             }
 
-            return await Task.FromResult(respostas);
+            return respostas?.OrderBy(o => o.Resposta).ToList();
         }
 
         private string MontarTextoProficiencia(string proficiencia)
