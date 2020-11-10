@@ -18,7 +18,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<SondagemAutoralDto>> ObterPorFiltros(string codigoDre, string codigoUe, int? anoTurma, int? anoLetivo, ComponenteCurricularSondagemEnum? componenteCurricularSondagem)
+        public async Task<IEnumerable<SondagemAutoralDto>> ObterPorFiltros(string codigoDre, string codigoUe, string grupoId, string periodoId, int? anoTurma, int? anoLetivo, ComponenteCurricularSondagemEnum? componenteCurricularSondagem)
         {
             StringBuilder query = new StringBuilder();
 
@@ -34,6 +34,12 @@ namespace SME.SR.Data
             if (!string.IsNullOrEmpty(codigoUe))
                 query.Append("and \"CodigoUe\" = @codigoUe ");
 
+            if (!string.IsNullOrEmpty(grupoId))
+                query.Append("and s.\"GrupoId\" = @grupoId ");
+
+            if (!string.IsNullOrEmpty(periodoId))
+                query.Append("and s.\"PeriodoId\" = @periodoId ");
+
             if (anoTurma.HasValue && anoTurma > 0)
                 query.Append("and \"AnoTurma\" = @anoTurma ");
 
@@ -43,7 +49,7 @@ namespace SME.SR.Data
             if (componenteCurricularSondagem != null)
                 query.Append("and \"ComponenteCurricularId\" = @componenteCurricularId ");
 
-            var parametros = new { codigoDre, codigoUe, anoTurma, anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name() };
+            var parametros = new { codigoDre, codigoUe, grupoId, periodoId, anoTurma, anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name() };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<SondagemAutoralDto>(query.ToString(), parametros);

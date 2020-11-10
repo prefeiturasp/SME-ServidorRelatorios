@@ -95,11 +95,15 @@ namespace SME.SR.Application
                 Grupo = grupoSondagemEnum
             });
 
+            var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
+
+            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
+
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                DateTime.Now,
+                dataReferencia,
                 Convert.ToInt64(filtros.DreCodigo)
                 ));
 

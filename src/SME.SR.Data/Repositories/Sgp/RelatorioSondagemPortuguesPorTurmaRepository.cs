@@ -32,11 +32,23 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "\"yearClassroom\" AnoTurma, ";
                     sql += "\"classroomCodeEol\" TurmaEolCode ";
                     sql += "from \"PortuguesePolls\" ";
-                    sql += "where \"dreCodeEol\" = @dreCodigo ";
-                    sql += "and \"schoolCodeEol\" = @ueCodigo ";
-                    sql += "and \"classroomCodeEol\" = @turmaCodigo ";
-                    sql += "and \"schoolYear\" = @anoLetivo ";
-                    sql += "and \"yearClassroom\" = @anoTurma ";
+                    sql += "where 1 = 1 ";
+
+                    if (!string.IsNullOrEmpty(dreCodigo))
+                        sql += "and \"dreCodeEol\" = @dreCodigo ";
+
+                    if (!string.IsNullOrEmpty(ueCodigo))
+                        sql += "and \"schoolCodeEol\" = @ueCodigo ";
+
+                    if (!string.IsNullOrEmpty(turmaCodigo))
+                        sql += "and \"classroomCodeEol\" = @turmaCodigo ";
+
+                    if (anoLetivo > 0)
+                        sql += "and \"schoolYear\" = @anoLetivo ";
+
+                    if (anoTurma > 0)
+                        sql += "and \"yearClassroom\" = @anoTurma ";
+
                     break;
                 case ProficienciaSondagemEnum.Autoral:
                     sql += "select distinct sa2.\"CodigoAluno\" AlunoEolCode, sa2.\"NomeAluno\" AlunoNome, sa.\"AnoLetivo\", sa.\"AnoTurma\", sa.\"CodigoTurma\" TurmaEolCode, p.\"Id\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta ";
