@@ -57,12 +57,12 @@ namespace SME.SR.Application
 
             ObterLinhas(relatorio, dados, alunosEol);
 
-            GerarGrafico(relatorio);
+            GerarGrafico(relatorio, alunosEol.Count());
 
             return relatorio;
         }
 
-        private void GerarGrafico(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio)
+        private void GerarGrafico(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, int qtdAlunos)
         {
             foreach (var ordem in relatorio.Cabecalho.Ordens)
             {
@@ -72,11 +72,12 @@ namespace SME.SR.Application
                     var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Descricao} - {pergunta.Nome}");
 
                     var respostas = relatorio.Planilha.Linhas
-                        .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta)))
+                        .SelectMany(l => l.OrdensRespostas.Where(or => or.OrdemId == ordem?.Id && or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta)))
                         .GroupBy(b => b.Resposta).OrderByDescending(a => a.Key.StartsWith("Adequada"));
 
                     int chaveIndex = 0;
                     string chave = String.Empty;
+                    int qtdSemPreenchimento = 0;
 
                     foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
                     {
@@ -92,34 +93,23 @@ namespace SME.SR.Application
                         grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
                     }
 
-                    var respostasNulasOuVazias = relatorio.Planilha.Linhas
-                        .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id && string.IsNullOrEmpty(or.Resposta)))
-                        .GroupBy(b => b.Resposta);
+                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                    qtdSemPreenchimento = qtdAlunos - totalRespostas;
 
-                    if (respostasNulasOuVazias.Any())
+                    if (qtdSemPreenchimento > 0)
                     {
-                        var qntSemRespostas = 0;
+                        chave = lstChaves[chaveIndex++].ToString();
 
-                        foreach (var item in respostasNulasOuVazias)
+                        legendas.Add(new GraficoBarrasLegendaDto()
                         {
-                            qntSemRespostas += item.Count();
-                        }
+                            Chave = chave,
+                            Valor = "Sem preenchimento"
+                        });
 
-                        if (qntSemRespostas > 0)
-                        {
-                            chave = lstChaves[chaveIndex++].ToString();
-
-                            legendas.Add(new GraficoBarrasLegendaDto()
-                            {
-                                Chave = chave,
-                                Valor = "Sem preenchimento"
-                            });
-
-                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, chave));
-                        }
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
                     }
 
-                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())): 0;
+                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
                     grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
                     grafico.Legendas = legendas;
