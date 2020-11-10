@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 49;
+    int contadorMaximoLinhasPorPagina = 46;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -20,7 +20,9 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + (Model.Filtro.Ue.Length > 41 ? (int)(Model.Filtro.Ue.Length / 41) + 11 : 11);
+        var ueLen = Model.Filtro.Ue.Length > 41 ? (int)(Model.Filtro.Ue.Length / 41) : 1;
+        var professorLen = Model.Filtro.Usuario.Length > 30 ? (int)(Model.Filtro.Usuario.Length / 30) : 1;
+        contadorQuebrarPagina = contadorQuebrarPagina + ueLen + professorLen + 6;
         var str =
            $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
@@ -33,9 +35,9 @@
 <table class='tblTopo'>
 <tbody>
 <tr>
-<td width='35%'>DRE: {Model.Filtro.Dre}</td>
-<td width='40%'>UE: {Model.Filtro.Ue}</td>
-<td width='15%'>TURMA: {Model.Filtro.Turma}</td>
+<td width='20%'>DRE: {Model.Filtro.Dre}</td>
+<td width='60%'>UE: {Model.Filtro.Ue}</td>
+<td width='20%'>TURMA: {Model.Filtro.Turma}</td>
 </tr>
 </tbody>
 </table>
@@ -53,8 +55,8 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 <tbody>
 <tr>
 <td class='campo-usuario'>PROFESSOR: {Model.Filtro.Usuario}</td>
-<td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
-<td class='campo-rf-data'>DATA: {Model.Filtro.Data:dd/MM/yyyy}</td>
+<td class='campo-rf'>RF: {Model.Filtro.RF}</td>
+<td class='campo-data'>DATA: {Model.Filtro.Data:dd/MM/yyyy}</td>
 </tr>
 </tbody>
 </table>
@@ -64,14 +66,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
     }
 
-    string MontaBimestre(string descricao)
-    {
-        return $@"<table class='fixed'>
-    <tr>
-        <td width='100%' class='td-turma-bimestre'>{descricao}</td>
-    </tr>
-</table>";
-    }
+
 
     string MontaCabecalhoTurmaOuBimestre(string nome)
     {
@@ -86,6 +81,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
     {
         var str = "";
         var retornoVerificacao = string.Empty;
+        var mudouBimestre = true;
 
         var ultimaTurma = Model.Turmas.Any() ? Model.Turmas.Last() : null;
 
@@ -100,13 +96,13 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             var ultimoBimestre = $"{turma.Nome} - {turma.Bimestres.Last().Descricao}";
             foreach (var bimestre in turma.Bimestres)
             {
-                str += MontaBimestre(bimestre.Descricao);
-                contadorQuebrarPagina += 1;
+                str += MontaCabecalhoTurmaOuBimestre(bimestre.Descricao);
+                contadorQuebrarPagina += 2;
                 var ultimoComponente = $"{turma.Nome} - {turma.Bimestres.Last().Descricao} - {bimestre.ComponentesCurriculares.Last().Nome}";
                 foreach (var componente in bimestre.ComponentesCurriculares)
                 {
                     str += MontaCabecalhoTurmaOuBimestre(componente.Nome);
-                    str += $@"<table class='fixed' style='margin-bottom:22px;'>
+                    str += $@"<table class='fixed' >
                         <tr>
                             <td width='13%' class='td-titulo'>PREVISTAS</td>
                             <td width='22%' colspan='2' class='td-titulo'>CRIADAS</td>
@@ -134,7 +130,9 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                         <td width='12.5%' class='td-valor'>{componente.Divergencias}</td>
                         </tr></table>
                         ";
-                    contadorQuebrarPagina = contadorQuebrarPagina + 2;
+                    contadorQuebrarPagina += 1;
+                    str += "</br>";
+                    contadorQuebrarPagina += 1;
 
                     retornoVerificacao = VerificaQuebra();
                     if (retornoVerificacao != string.Empty)
@@ -193,7 +191,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
     string MontaCabecalhoDivergenciasAulasExcedidas()
     {
-        contadorQuebrarPagina += 3;
+        contadorQuebrarPagina += 2;
         return $@"<table class='fixed'>
               <tr>
                 <td width='100%' class='td-turma-bimestre'>
@@ -204,7 +202,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             <table class='fixed'>
               <tr>
                 <td width='25%' class='td-titulo'>DATA</td>
-                <td width='25%' class='td-titulo'>QUANTIDADE DE AULAS</td>
+                <td width='25%' class='td-titulo'>QUANTIDADE</td>
                 <td width='50%' class='td-titulo'>PROFESSOR</td>
               </tr>";
     }
@@ -234,7 +232,6 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         if(existeProximoNivel)
         {
             str += LinhaEmBranco();
-            contadorQuebrarPagina += 1;
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
             {
@@ -270,7 +267,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         </table>
         <table class='fixed'>
         <tr>
-            <td width='20%' class='td-titulo'>QUANTIDADE DE AULAS</td>
+            <td width='20%' class='td-titulo'>QUANTIDADE</td>
             <td width='30%' class='td-titulo'>PROFESSOR TITULAR</td>
             <td width='30%' class='td-titulo'>PROFESSOR CJ</td>
           </tr>";
@@ -288,7 +285,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         foreach (var data in datas)
         {
             str += MontaCabecalhoDivergenciasDiasAulasTitularCJSomenteData(data.Data);
-
+            var ultimaDivergencia = data.Divergencias.LastOrDefault();
             foreach (var aula in data.Divergencias)
             {
                 str += $@" <tr>
@@ -296,8 +293,20 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             <td width='30%' class='td-valor'>{aula.ProfessorTitular}</td>
             <td width='30%' class='td-valor'>{aula.ProfessorCJ}</td>
           </tr>";
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                //retornoVerificacao = VerificaQuebra();
+
+                contadorQuebrarPagina+= 1;
+                retornoVerificacao = VerificaQuebra();
+                if (retornoVerificacao != string.Empty)
+                {
+                    if(aula != ultimaDivergencia)
+                    {
+                        str += $@"</table>{retornoVerificacao}{MontaCabecalhoDivergenciasDiasAulasTitularCJ()}{MontaCabecalhoDivergenciasDiasAulasTitularCJSomenteData(data.Data)}<table>";
+                    } else
+                    {
+                        str += $@"</table>{retornoVerificacao}<table>";
+                    }
+
+                }
 
             }
 
@@ -305,7 +314,6 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             if (existeProximoNivel)
             {
                 str += LinhaEmBranco();
-                contadorQuebrarPagina += 1;
                 retornoVerificacao = VerificaQuebra();
                 if (retornoVerificacao != string.Empty)
                 {
@@ -319,7 +327,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
     string MontaCabecalhoDivergenciasAulasDuplicadas()
     {
-        contadorQuebrarPagina += 3;
+        contadorQuebrarPagina += 2;
         return $@"<table class='fixed'>
           <tr>
             <td width='100%' class='td-turma-bimestre'>
@@ -330,7 +338,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         <table class='fixed'>
           <tr>
             <td width='25%' class='td-titulo'>DATA</td>
-            <td width='25%' class='td-titulo'>QUANTIDADE DE REGISTROS DUPLICADOS</td>
+            <td width='25%' class='td-titulo'>REGISTROS DUPLICADOS</td>
             <td width='50%' class='td-titulo'>PROFESSOR</td>
           </tr>";
     }
@@ -370,7 +378,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         str += $@"</table>";
         if (existeProximoNivel)
         {
-            if(contadorQuebrarPagina != 12)
+            if(contadorQuebrarPagina >= 7)
             {
                 str += LinhaEmBranco();
             }
@@ -388,7 +396,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
     string MontaCabecalhoDivergenciasAulasDiasNaoLetivos()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 3;
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;
         return $@"<table class='fixed'>
               <tr>
                 <td width='100%' class='td-turma-bimestre'>
@@ -397,10 +405,10 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
               </tr>
             </table><table class='fixed'>
           <tr>
-            <td width='20%' class='td-titulo'>DATA</td>
+            <td width='10%' class='td-titulo'>DATA</td>
             <td width='20%' class='td-titulo'>MOTIVO NÃO LETIVO</td>
-            <td width='20%' class='td-titulo'>QUANTIDADE DE AULAS</td>
-            <td width='40%' class='td-titulo'>PROFESSOR</td>
+            <td width='15%' class='td-titulo'>QUANTIDADE</td>
+            <td width='55%' class='td-titulo'>PROFESSOR</td>
           </tr>";
 
     }
@@ -414,13 +422,13 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         foreach (var aula in aulas)
         {
             str += $@"<tr>
-                        <td width='20%' class='td-valor'>{aula.Data}</td>
+                        <td width='10%' class='td-valor'>{aula.Data}</td>
                         <td width='20%' class='td-valor'>{aula.Motivo}</td>
-                        <td width='20%' class='td-valor'>{aula.QuantidadeAulas}</td>
-                        <td width='40%' class='td-valor'>{aula.Professor}</td>
+                        <td width='15%' class='td-valor'>{aula.QuantidadeAulas}</td>
+                        <td width='55%' class='td-valor'>{aula.Professor}</td>
                       </tr>";
 
-            contadorQuebrarPagina = contadorQuebrarPagina + (aula.Motivo.Length > 12 ? (int)(aula.Motivo.Length / 12) + 1 : 1);
+            contadorQuebrarPagina = contadorQuebrarPagina + (aula.Motivo.Length > 24 ? (int)(aula.Motivo.Length / 24) + 1 : 1);
 
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
@@ -440,7 +448,10 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         str += $@"</table>";
         if (existeProximoNivel)
         {
-            str += LinhaEmBranco();
+            if(contadorQuebrarPagina + 1 < 46)
+            {
+                str += LinhaEmBranco();
+            }
             contadorQuebrarPagina += 1;
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
@@ -455,22 +466,40 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
     string MontaCabecalhoDivergenciasAulasCriadasXPrevistas()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 2;
-        return $@"<table class='fixed'>
+        var str = $@"<table class='fixed'>
   <tr>
     <td width='100%' class='td-turma-bimestre'>
       VISÃO POR SEMANA DE AULAS CRIADAS X PREVISTO NA MATRIZ CURRICULAR
     </td>
   </tr>
-</table>
+</table>";
+
+        if(contadorQuebrarPagina >= 8)
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + 3;
+            return $@"{str}
 <table class='fixed' style='margin-bottom: 22px;'>
   <tr>
     <td width='20%' class='td-titulo'>SEMANA</td>
-    <td width='20%' class='td-titulo'>QUANTIDADE DE DIAS LETIVOS</td>
-    <td width='20%' class='td-titulo'>AULAS PREVISTAS NA GRADE</td>
+    <td width='20%' class='td-titulo'>DIAS LETIVOS</td>
+    <td width='20%' class='td-titulo'>AULAS GRADE</td>
     <td width='20%' class='td-titulo'>AULAS CRIADAS</td>
     <td width='20%' class='td-titulo'>DIFERENÇA</td>
   </tr>";
+        } else
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + 2;
+            return $@"{str}
+<table class='fixed'>
+  <tr>
+    <td width='20%' class='td-titulo'>SEMANA</td>
+    <td width='20%' class='td-titulo'>DIAS LETIVOS</td>
+    <td width='20%' class='td-titulo'>AULAS GRADE</td>
+    <td width='20%' class='td-titulo'>AULAS CRIADAS</td>
+    <td width='20%' class='td-titulo'>DIFERENÇA</td>
+  </tr>";
+        }
+
 
     }
 
@@ -482,6 +511,10 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
         foreach (var aula in aulas)
         {
+            if (aula.Data == "03/02/2020")
+            {
+                var i = 0;
+            }
             str += $@"<tr>
                     <td width='20%' class='td-valor'>{aula.Data}</td>
                     <td width='20%' class='td-valor'>{aula.DiasLetivo}</td>
@@ -490,12 +523,12 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                     <td width='20%' class='td-valor'>{aula.Diferenca}</td>
                   </tr>";
 
-            contadorQuebrarPagina += 1;
-
-            if (aula.Data == "17/11/2020")
+            if(aula.Data == "09/03/2020")
             {
-                var i = 0;
+                var i = 1;
             }
+
+            contadorQuebrarPagina += 1;
 
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
@@ -524,13 +557,14 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <title>RELATÓRIO CONTROLE DE GRADE - ANALÍTICO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet">
 </head>
 
-<body class='body-rel-faltas-frequencia'>
+<body class='body-rel'>
     <style>
-        .body-rel-faltas-frequencia {
+        .body-rel {
             margin: 0.5cm auto;
-            font-family: Roboto, sans-serif;
+            font-family: 'Roboto', sans-serif;
             width: 21cm;
             min-height: 29.7cm;
             background: white;
@@ -588,18 +622,23 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
         }
 
         .campo-usuario {
-            width: 50%;
+            width: 60%;
             border-top: none;
         }
 
-        .campo-rf-data {
+        .campo-data {
             width: 20%;
+            border-top: none;
+        }
+        .campo-rf {
+            width: 15%;
             border-top: none;
         }
 
         table {
             display: table;
             width: 100%;
+            height: 24px;
             border-color: #42474a;
             empty-cells: show;
             border: none;
@@ -617,6 +656,10 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
 
         td {
             border: 1px solid #42474a;
+        }
+
+        tr {
+            height: 24px;
         }
 
         .fonte-16 {
@@ -666,7 +709,6 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             background-color: #f3f3f3;
             text-align: center;
             font-size: 16px;
-            font-weight: bold;
             padding: 5px;
             border-bottom: none;
         }

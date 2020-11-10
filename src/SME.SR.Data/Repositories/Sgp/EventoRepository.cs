@@ -18,25 +18,46 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioId(long tipoCalendarioId, DateTime periodoInicio, DateTime periodoFim)
+        public async Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioIdEPeriodoInicioEFim(long tipoCalendarioId, DateTime periodoInicio, DateTime periodoFim, long? turmaId = null)
         {
-            var query = @"select
+            var filtroTurma = !turmaId.HasValue ? "" :
+                @"inner join (
+    	                select ue.ue_id, dre.dre_id from turma t
+    	                inner join ue on ue.id = t.ue_id
+    	                inner join dre on dre.id = ue.dre_id
+    	                where t.id = @turmaId
+                    ) x on e.dre_id is null 
+    	                or (e.dre_id = x.dre_id and (e.ue_id is null or e.ue_id = x.ue_id))";
+
+            var query = $@"select
+                            e.id,
 	                        data_inicio as DataInicio,
 	                        data_fim as DataFim,
-	                        letivo,
+	                        e.letivo,
 	                        e.nome,
 	                        e.descricao,
                             e.ue_id as UeId,
                             e.dre_id as DreId,
-                            e.tipo_evento_id as TipoEvento
+                            e.tipo_evento_id as TipoEvento,
+                            et.id,
+                            et.descricao
                         from
 	                        evento e
+                        inner join evento_tipo et on et.id = e.tipo_evento_id
+                        {filtroTurma}
                         where
                         e.tipo_calendario_id = @tipoCalendarioId
                         and not e.excluido and data_inicio between @periodoInicio and @periodoFim;";
+
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<Evento>(query.ToString(), new { tipoCalendarioId, periodoInicio, periodoFim });
+                return await conexao.QueryAsync<Evento, EventoTipo, Evento>(query.ToString(), 
+                    (evento, eventoTipo) =>
+                    {
+                        evento.EventoTipo = eventoTipo;
+                        return evento;
+                    },
+                    new { tipoCalendarioId, periodoInicio, periodoFim, turmaId });
             }
         }
 
@@ -105,23 +126,5 @@ namespace SME.SR.Data
             query.AppendLine(queryLetivo);
         }
 
-        public async Task<IEnumerable<Evento>> ObterEventosPorTipoCalendarioIdEPeriodoInicioEFim(long tipoCalendarioId, DateTime periodoInicio, DateTime periodoFim)
-        {
-            var query = @"select
-	                        data_inicio as DataInicio,
-	                        data_fim as DataFim,
-	                        letivo as Letivo,
-                            ue_id as UeId,
-                            dre_id as DreId
-                        from
-	                        evento
-                        where
-                        tipo_calendario_id = @tipoCalendarioId
-                        and not excluido and data_inicio between @periodoInicio and @periodoFim;";
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-            {
-                return await conexao.QueryAsync<Evento>(query.ToString(), new { tipoCalendarioId, periodoInicio, periodoFim });
-            }
-        }
     }
 }

@@ -6,11 +6,14 @@ namespace SME.SR.Data
 {
     public class Evento
     {
+        public long Id { get; set; }
         public string Nome { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public string Descricao { get; set; }
         public TipoEvento TipoEvento { get; set; }
+        public long TipoEventoId { get; set; }
+        public EventoTipo EventoTipo { get; set; }
         public EventoLetivo Letivo { get; set; }
         public string UeId { get; set; }
         public string DreId { get; set; }
@@ -24,7 +27,7 @@ namespace SME.SR.Data
         {
             return Letivo == EventoLetivo.Sim;
         }
-        public bool NaoEhEventoLetivo()
+        public bool EhEventoNaoLetivo()
         {
             return Letivo == EventoLetivo.Nao;
         }

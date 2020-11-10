@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿
+using Dapper;
 using Npgsql;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -60,7 +61,7 @@ namespace SME.SR.Data
             if (componenteCurricular > 0)
                 query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
-            query.Append("order by op.\"OrdenacaoNaTela\" ");
+            query.Append("order by go.\"Ordenacao\", op.\"OrdenacaoNaTela\" ");
 
             var parametros = new { grupoId = grupoSondagem.Name(), componenteCurricularId = componenteCurricular.Name() };
 

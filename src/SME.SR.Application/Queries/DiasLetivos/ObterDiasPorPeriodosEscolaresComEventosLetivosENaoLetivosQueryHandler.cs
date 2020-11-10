@@ -22,7 +22,7 @@ namespace SME.SR.Application
         public async Task<List<DiaLetivoDto>> Handle(ObterDiasPorPeriodosEscolaresComEventosLetivosENaoLetivosQuery request, CancellationToken cancellationToken)
         {
             var DiasLetivos = new List<DiaLetivoDto>();
-            var eventos = await mediator.Send(new ObterEventosPorTipoCalendarioIdQuery(request.TipoCalendarioId, request.PeriodoInicio, request.PeriodoFim));
+            var eventos = await mediator.Send(new ObterEventosPorTipoCalendarioIdQuery(request.TipoCalendarioId, request.PeriodoInicio, request.PeriodoFim, request.TurmaId));
 
             if (eventos != null)
             {
@@ -33,9 +33,9 @@ namespace SME.SR.Application
                         DiasLetivos.Add(new DiaLetivoDto
                         {
                             Data = data,
-                            Motivo = evento.TipoEvento.Name(),
+                            Motivo = evento.EventoTipo.Descricao,
                             EhLetivo = evento.EhEventoLetivo(),
-                            EhNaoLetivo = evento.NaoEhEventoLetivo(),
+                            EhNaoLetivo = evento.EhEventoNaoLetivo(),
                             UesIds = string.IsNullOrWhiteSpace(evento.UeId) ? new List<string>() : new List<string> { evento.UeId },
                             PossuiEvento = true
                         });
