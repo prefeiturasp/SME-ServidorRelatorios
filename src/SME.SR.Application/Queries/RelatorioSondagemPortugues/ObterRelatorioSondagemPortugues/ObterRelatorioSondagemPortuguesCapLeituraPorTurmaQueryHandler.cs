@@ -72,8 +72,8 @@ namespace SME.SR.Application
                     var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Descricao} - {pergunta.Nome}");
 
                     var respostas = relatorio.Planilha.Linhas
-                        .SelectMany(l => l.OrdensRespostas.Where(or => or.OrdemId == ordem.Id && or.PerguntaId == pergunta?.Id))
-                        .GroupBy(b => b.Resposta);
+                        .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta)))
+                        .GroupBy(b => b.Resposta).OrderByDescending(a => a.Key.StartsWith("Adequada"));
 
                     int chaveIndex = 0;
                     string chave = String.Empty;
@@ -92,7 +92,10 @@ namespace SME.SR.Application
                         grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
                     }
 
-                    var respostasNulasOuVazias = respostas.Where(a => string.IsNullOrEmpty(a.Key)).ToList();
+                    var respostasNulasOuVazias = relatorio.Planilha.Linhas
+                        .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id && string.IsNullOrEmpty(or.Resposta)))
+                        .GroupBy(b => b.Resposta);
+
                     if (respostasNulasOuVazias.Any())
                     {
                         var qntSemRespostas = 0;
