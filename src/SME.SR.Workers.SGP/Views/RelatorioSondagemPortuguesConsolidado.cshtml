@@ -98,9 +98,9 @@
     }
 
     string MontaTabelaPerguntasRespostas(SME.SR.Infra.RelatorioSondagemPortuguesConsolidadoRespostaDto resposta)
-    {              
+    {
         var quebra = VerificaQuebra();
-            
+
         if (quebra)
         {
             @Html.Raw("<div style='page-break-before:always'></div>");
@@ -110,7 +110,7 @@
         var alunosPercentual = Math.Round(resposta.Percentual, 2);
         var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
         int numeroLinhas = (resposta.Resposta.Length / 40);
-             
+
         <tr>
             <td class="alinhar-esquerda espaco-esquerda-15">@resposta.Resposta</td>
             <td>@resposta.Quantidade</td>
@@ -126,7 +126,7 @@
             contadorQuebrarPagina++;
         }
 
-            var quebraFinal = VerificaQuebra();
+        var quebraFinal = VerificaQuebra();
 
         if (quebraFinal)
         {
@@ -135,160 +135,160 @@
             @Html.Raw(MontarCabecalho())
             @Html.Raw("<table class='tabela-cabecalho'>");
             @Html.Raw(MontaCabecalhoSondagem());
-        }              
+        }
 
         return "";
     }
 
     <!DOCTYPE html>
     <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Relatório Sondagem</title>
-    </head>
-    <body class="body-relatorio">
-        <style>
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Relatório Sondagem</title>
+        </head>
+        <body class="body-relatorio">
+            <style>
 
-            .tblTopo th, td {
-                padding: 3px 0;
-                text-align: left;
-            }
-
-            .body-relatorio {
-                margin: 0.5cm auto;
-                font-family: Roboto, sans-serif;
-                width: 21cm;
-                min-height: 29.7cm;
-                background: white;
-                color: #42474a;
-            }
-
-            .titulo-sgp {
-                text-align: right;
-                font-size: 14px;
-                font-weight: bold;
-            }
-
-            .titulo-relatorio {
-                text-align: right;
-                font-size: 14.5px;
-                margin-top: 7px;
-            }
-
-            .header-pagina {
-                margin-top: 33px;
-                margin-bottom: 22px;
-            }
-
-                .header-pagina td {
+                .tblTopo th, td {
+                    padding: 3px 0;
                     text-align: left;
                 }
 
-            table {
-                display: table;
-                width: 100%;
-                border-color: #42474a;
-                empty-cells: show;
-                border: none;
-                border-collapse: collapse;
-            }
+                .body-relatorio {
+                    margin: 0.5cm auto;
+                    font-family: Roboto, sans-serif;
+                    width: 21cm;
+                    min-height: 29.7cm;
+                    background: white;
+                    color: #42474a;
+                }
 
-            thead {
-                background-color: #f3f3f3;
-            }
+                .titulo-sgp {
+                    text-align: right;
+                    font-size: 14px;
+                    font-weight: bold;
+                }
 
-            th {
-                border: 1px solid #42474a;
-                font-weight: normal;
-            }
+                .titulo-relatorio {
+                    text-align: right;
+                    font-size: 14.5px;
+                    margin-top: 7px;
+                }
 
-            td {
-                border: 1px solid #42474a;
-                text-align: center;
-            }
+                .header-pagina {
+                    margin-top: 33px;
+                    margin-bottom: 22px;
+                }
 
-            .tabela-cabecalho tr {
-                font-size: 12px;
-                height: 24px;
-            }
-
-            .mt-25 {
-                margin-top: 25px;
-            }
-
-            .fonte-14 {
-                font-size: 14px !important;
-            }
-
-            .alinhar-esquerda {
-                text-align: left;
-            }
-
-            .espaco-esquerda-15 {
-                padding-left: 15px;
-            }
-
-            .fundo-cinza {
-                background-color: #f3f3f3;
-            }
-
-            .negrito {
-                font-weight: bold;
-            }
-
-            .sem-border-bottom {
-                border-bottom: 0;
-            }
-
-            .sem-border-top {
-                border-bottom: 0;
-            }
-
-            .thLimpo {
-                background-color: #ffffff;
-                border: 0;
-                height: 22px;
-            }
-
-            .img-logo-sgp {
-                height: 64px;
-                float: left;
-            }
-
-            .centralizar {
-                text-align: center;
-            }
-        </style>
-        <div>
-            @Html.Raw(MontarCabecalho())
-
-            <table class="tabela-cabecalho">
-                @Html.Raw(MontaCabecalhoSondagem())
-
-                <tbody>
-
-                    @foreach(var resposta in Model.Respostas)
-                    {
-                        @Html.Raw(MontaTabelaPerguntasRespostas(resposta));
+                    .header-pagina td {
+                        text-align: left;
                     }
 
-                <tr class="fundo-cinza">
-                    <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
-                    <td>@Model.Respostas.First().Total</td>
+                table {
+                    display: table;
+                    width: 100%;
+                    border-color: #42474a;
+                    empty-cells: show;
+                    border: none;
+                    border-collapse: collapse;
+                }
 
-                    @if (!Model.Cabecalho.EhProducaoTexto)
-                    {
-                        <td>100.00</td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </body>
-</html>
+                thead {
+                    background-color: #f3f3f3;
+                }
+
+                th {
+                    border: 1px solid #42474a;
+                    font-weight: normal;
+                }
+
+                td {
+                    border: 1px solid #42474a;
+                    text-align: center;
+                }
+
+                .tabela-cabecalho tr {
+                    font-size: 12px;
+                    height: 24px;
+                }
+
+                .mt-25 {
+                    margin-top: 25px;
+                }
+
+                .fonte-14 {
+                    font-size: 14px !important;
+                }
+
+                .alinhar-esquerda {
+                    text-align: left;
+                }
+
+                .espaco-esquerda-15 {
+                    padding-left: 15px;
+                }
+
+                .fundo-cinza {
+                    background-color: #f3f3f3;
+                }
+
+                .negrito {
+                    font-weight: bold;
+                }
+
+                .sem-border-bottom {
+                    border-bottom: 0;
+                }
+
+                .sem-border-top {
+                    border-bottom: 0;
+                }
+
+                .thLimpo {
+                    background-color: #ffffff;
+                    border: 0;
+                    height: 22px;
+                }
+
+                .img-logo-sgp {
+                    height: 64px;
+                    float: left;
+                }
+
+                .centralizar {
+                    text-align: center;
+                }
+            </style>
+            <div>
+                @Html.Raw(MontarCabecalho())
+
+                <table class="tabela-cabecalho">
+                    @Html.Raw(MontaCabecalhoSondagem())
+
+                    <tbody>
+
+                        @foreach (var resposta in Model.Respostas)
+                        {
+                            @Html.Raw(MontaTabelaPerguntasRespostas(resposta));
+                        }
+
+                        <tr class="fundo-cinza">
+                            <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
+                            <td>@Model.Respostas.First().Total</td>
+
+                            @if (!Model.Cabecalho.EhProducaoTexto)
+                            {
+                                <td>100.00</td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </body>
+    </html>
 }

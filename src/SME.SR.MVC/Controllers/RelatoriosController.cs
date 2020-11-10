@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SME.SR.Application;
@@ -4495,48 +4496,40 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public IActionResult SondagemPortuguesConsolidado()
         {
             #region Monta dados
-            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostasDto>();
-            respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
             {
-                Respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
-                {
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Pré-Silábico",
-                        Quantidade = 1,
-                        Percentual = (decimal)11.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Silábico sem Valor",
-                        Quantidade = 2,
-                        Percentual = (decimal)12.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Silábico com Valor",
-                        Quantidade = 3,
-                        Percentual = (decimal)13.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Silábico Alfabético",
-                        Quantidade = 4,
-                        Percentual = (decimal)14.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Alfabético",
-                        Quantidade = 5,
-                        Percentual = (decimal)15.23,
-                        Total = 3
-                    },
-                }
-            });
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Id = "1",
+                    Resposta = "Pré-Silábico",
+                    Quantidade = 1,
+                    Percentual = (decimal)11.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Resposta = "Silábico sem Valor",
+                    Quantidade = 2,
+                    Percentual = (decimal)12.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Resposta = "Silábico com Valor",
+                    Quantidade = 3,
+                    Percentual = (decimal)13.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Resposta = "Silábico Alfabético",
+                    Quantidade = 4,
+                    Percentual = (decimal)14.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Resposta = "Alfabético",
+                    Quantidade = 5,
+                    Percentual = (decimal)15.23,
+                    Total = 3
+                },
+            };
             #endregion
 
             var model = new RelatorioSondagemPortuguesConsolidadoRelatorioDto()
@@ -4565,74 +4558,78 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public IActionResult SondagemPortuguesConsolidadoProducao()
         {
             #region Monta dados
-            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostasDto>();
-            respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostasDto()
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
             {
-                Respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
                 {
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Escrita não alfabética",
-                        Quantidade = 1,
-                        Percentual = (decimal)11.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Dificuldades com aspectos semânticos",
-                        Quantidade = 2,
-                        Percentual = (decimal)12.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Dificuldades com aspectos textuais",
-                        Quantidade = 3,
-                        Percentual = (decimal)13.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Dificuldades com aspectos ortográficos e notacionais",
-                        Quantidade = 4,
-                        Percentual = (decimal)14.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Não produziu/entregou em branco",
-                        Quantidade = 5,
-                        Percentual = (decimal)15.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Não apresentou dificuldades",
-                        Quantidade = 6,
-                        Percentual = (decimal)16.23,
-                        Total = 3
-                    },
-                    new RelatorioSondagemPortuguesConsolidadoRespostaDto()
-                    {
-                        Resposta = "Sem preenchimento",
-                        Quantidade = 7,
-                        Percentual = (decimal)17.23,
-                        Total = 3
-                    },
-                }
-            });
+                    Id = "1",
+                    Resposta = "Escrita não alfabética",
+                    Quantidade = 1,
+                    Percentual = (decimal)11.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "2",
+                    Resposta = "Dificuldades com aspectos semânticos",
+                    Quantidade = 2,
+                    Percentual = (decimal)12.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "3",
+                    Resposta = "Dificuldades com aspectos textuais",
+                    Quantidade = 3,
+                    Percentual = (decimal)13.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "4",
+                    Resposta = "Dificuldades com aspectos ortográficos e notacionais",
+                    Quantidade = 4,
+                    Percentual = (decimal)14.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "5",
+                    Resposta = "Não produziu/entregou em branco",
+                    Quantidade = 5,
+                    Percentual = (decimal)15.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "6",
+                    Resposta = "Não apresentou dificuldades",
+                    Quantidade = 6,
+                    Percentual = (decimal)16.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "7",
+                    Resposta = "Sem preenchimento",
+                    Quantidade = 7,
+                    Percentual = (decimal)17.23,
+                    Total = 3
+                },
+
+            };
             #endregion
 
             var model = new RelatorioSondagemPortuguesConsolidadoRelatorioDto()
             {
                 Cabecalho = new RelatorioSondagemPortuguesConsolidadoCabecalhoDto()
                 {
-                    AnoTurma = 1,
+                    AnoTurma = 4,
                     AnoLetivo = 2020,
                     ComponenteCurricular = "Português",
                     DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                     Dre = "DRE - BT",
-                    Periodo = "1º bimestre",
+                    Periodo = "3º bimestre",
                     Proficiencia = "Produção de texto",
                     Rf = "9879878",
                     Turma = "Todas",
