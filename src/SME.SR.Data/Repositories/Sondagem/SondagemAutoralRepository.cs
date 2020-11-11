@@ -28,7 +28,7 @@ namespace SME.SR.Data
             query.Append(" inner join \"SondagemAlunoRespostas\" sar on sar.\"SondagemAlunoId\" = sa.\"Id\"  ");
             query.Append(" where 1=1 ");
 
-            if (!string.IsNullOrEmpty(codigoDre))
+            if (!string.IsNullOrEmpty(codigoDre) && !codigoDre.Equals("0"))
                 query.Append("and \"CodigoDre\" = @codigoDre ");
 
             if (!string.IsNullOrEmpty(codigoUe))
