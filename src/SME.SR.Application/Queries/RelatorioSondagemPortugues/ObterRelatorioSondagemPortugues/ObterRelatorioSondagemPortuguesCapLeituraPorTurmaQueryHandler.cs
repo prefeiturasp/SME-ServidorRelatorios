@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -14,15 +16,18 @@ namespace SME.SR.Application
     {
         private readonly IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository;
         private readonly IPerguntasAutoralRepository perguntasAutoralRepository;
+        private readonly IAlunoRepository alunoRepository;
         private readonly IMediator mediator;
+        private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQueryHandler(
             IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository,
-            IMediator mediator, IPerguntasAutoralRepository perguntasAutoralRepository)
+            IMediator mediator, IPerguntasAutoralRepository perguntasAutoralRepository, IAlunoRepository alunoRepository)
         {
             this.relatorioSondagemPortuguesPorTurmaRepository = relatorioSondagemPortuguesPorTurmaRepository ?? throw new ArgumentNullException(nameof(relatorioSondagemPortuguesPorTurmaRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.perguntasAutoralRepository = perguntasAutoralRepository ?? throw new ArgumentNullException(nameof(perguntasAutoralRepository));
+            this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
         }
 
         public async Task<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto> Handle(ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQuery request, CancellationToken cancellationToken)
@@ -44,29 +49,90 @@ namespace SME.SR.Application
 
             var perguntas = await perguntasAutoralRepository.ObterPerguntasPorGrupo(GrupoSondagemEnum.CapacidadeLeitura, ComponenteCurricularSondagemEnum.Portugues);
 
+            var alunosEol = await alunoRepository.ObterAlunosPorTurmaDataSituacaoMaricula(request.TurmaCodigo, dataDoPeriodo);
+
             ObterPerguntas(relatorio, perguntas);
 
             var dados = await relatorioSondagemPortuguesPorTurmaRepository.ObterPorFiltros(GrupoSondagemEnum.CapacidadeLeitura.Name(), ComponenteCurricularSondagemEnum.Portugues.Name(), periodo.Id, request.AnoLetivo, request.TurmaCodigo.ToString());
 
-            ObterLinhas(relatorio, dados, alunosDaTurma, perguntas);
+            ObterLinhas(relatorio, dados, alunosEol);
+
+            GerarGrafico(relatorio, alunosEol.Count());
 
             return relatorio;
         }
 
-        private void ObterLinhas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<SondagemAutoralPorAlunoDto> dados, IEnumerable<Aluno> alunosDaTurma, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
+        private void GerarGrafico(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, int qtdAlunos)
+        {
+            foreach (var ordem in relatorio.Cabecalho.Ordens)
+            {
+                foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+                {
+                    var legendas = new List<GraficoBarrasLegendaDto>();
+                    var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Descricao} - {pergunta.Nome}");
+
+                    var respostas = relatorio.Planilha.Linhas
+                        .SelectMany(l => l.OrdensRespostas.Where(or => or.OrdemId == ordem?.Id && or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta)))
+                        .GroupBy(b => b.Resposta).OrderByDescending(a => a.Key.StartsWith("Adequada"));
+
+                    int chaveIndex = 0;
+                    string chave = String.Empty;
+                    int qtdSemPreenchimento = 0;
+
+                    foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                    {
+                        chave = lstChaves[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = resposta.Key
+                        });
+
+                        var qntRespostas = resposta.Count();
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
+                    }
+
+                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                    qtdSemPreenchimento = qtdAlunos - totalRespostas;
+
+                    if (qtdSemPreenchimento > 0)
+                    {
+                        chave = lstChaves[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = "Sem preenchimento"
+                        });
+
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                    }
+
+                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+
+                    grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                    grafico.Legendas = legendas;
+
+                    relatorio.GraficosBarras.Add(grafico);
+                }
+            }
+        }
+
+        private void ObterLinhas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<SondagemAutoralPorAlunoDto> dados, IEnumerable<Aluno> alunosEol)
         {
             var alunosAgrupados = dados.GroupBy(x => x.CodigoAluno);
 
             relatorio.Planilha = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaDto();
 
-            relatorio.Planilha.Linhas.AddRange(alunosDaTurma.Select(alunoRetorno =>
+            relatorio.Planilha.Linhas.AddRange(alunosEol.Select(alunoRetorno =>
             {
                 var itemRelatorio = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto();
                 var aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
                 {
                     Codigo = alunoRetorno.CodigoAluno,
                     DataSituacao = alunoRetorno.DataSituacao.ToString("dd/MM/yyyy"),
-                    Nome = alunoRetorno.NomeAluno,
+                    Nome = alunoRetorno.ObterNomeParaRelatorioSondagem(),
                     SituacaoMatricula = alunoRetorno.SituacaoMatricula
                 };
 
