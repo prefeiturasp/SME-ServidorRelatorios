@@ -8,5 +8,6 @@ namespace SME.SR.Infra
     {
         public RelatorioSondagemPortuguesPorTurmaCabecalhoDto Cabecalho { get; set; }
         public RelatorioSondagemPortuguesPorTurmaPlanilhaDto Planilha { get; set; }
+        public List<GraficoBarrasVerticalDto> GraficosBarras { get; set; }
     }
 }

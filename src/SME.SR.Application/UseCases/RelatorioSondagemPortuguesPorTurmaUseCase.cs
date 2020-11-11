@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace SME.SR.Application
     public class RelatorioSondagemPortuguesPorTurmaUseCase : IRelatorioSondagemPortuguesPorTurmaUseCase
     {
         private readonly IMediator mediator;
+        private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public RelatorioSondagemPortuguesPorTurmaUseCase(IMediator mediator)
         {
@@ -48,10 +50,54 @@ namespace SME.SR.Application
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
+            relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Leitura || filtros.ProficienciaId == ProficienciaSondagemEnum.Escrita)
+            {
+                var tipoRelatorio = filtros.ProficienciaId == ProficienciaSondagemEnum.Leitura ? "Leitura" : "Escrita";
+                GerarGraficoLeituraEscrita(relatorio, tipoRelatorio);
+            }
+
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
 
-        private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)
+        private void GerarGraficoLeituraEscrita(RelatorioSondagemPortuguesPorTurmaRelatorioDto relatorio, string tipoRelatorio)
+        {
+            var grafico = new GraficoBarrasVerticalDto(800, $"Língua Portuguesa - {tipoRelatorio}");
+            int chaveIndex = 0;
+            var legendas = new List<GraficoBarrasLegendaDto>();
+
+            foreach (var aluno in relatorio.Planilha.Linhas)
+            {
+                var resposta = aluno.Respostas[0].Resposta.Trim() != "" ? aluno.Respostas[0].Resposta : "Sem preenchimento";
+                var legendaResposta = legendas.FirstOrDefault(l => l.Valor == resposta);
+                var chave = legendaResposta != null? legendaResposta.Chave : lstChaves[chaveIndex].ToString();
+
+                if (legendaResposta == null)
+                {
+                    legendas.Add(new GraficoBarrasLegendaDto()
+                    {
+                        Chave = chave,
+                        Valor = resposta
+                    });
+                    chaveIndex++;
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(0, chave));
+                }
+
+                var graficoEixoX = grafico.EixosX.FirstOrDefault(g => g.Titulo == chave);
+
+                if(graficoEixoX != null)
+                {
+                    graficoEixoX.Valor++;
+                }
+            }
+            var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+            grafico.Legendas = legendas;
+            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+            relatorio.GraficosBarras.Add(grafico);
+        }
+
+            private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)
         {
             var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });
