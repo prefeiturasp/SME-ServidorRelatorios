@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,7 @@ namespace SME.SR.Application
     {
         private readonly IMathPoolCARepository mathPoolCARepository;
         private readonly IMathPoolCMRepository mathPoolCMRepository;
+        private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public ObterSondagemMatAditMultiConsolidadoQueryHandler(IMathPoolCARepository mathPoolCARepository, IMathPoolCMRepository mathPoolCMRepository)
         {
@@ -29,9 +32,13 @@ namespace SME.SR.Application
             MontarPerguntas(perguntas);
             MontarCabecalho(relatorio, request.Proficiencia, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Usuario.CodigoRf, request.Usuario.Nome);
 
+            int qtdAlunos = 0;
+
             if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo)
             {
                 var listaAlunos = await mathPoolCARepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+
+                qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
 
                 var ordem1Ideia = listaAlunos.GroupBy(fu => fu.Ordem1Ideia);
 
@@ -67,6 +74,8 @@ namespace SME.SR.Application
             else
             {
                 var listaAlunos = await mathPoolCMRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+
+                qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
 
                 if (request.TurmaAno == 2)
                 {
@@ -127,6 +136,8 @@ namespace SME.SR.Application
                 relatorio.PerguntasRespostas = respostas.OrderBy(r => r.Ordem).ToList();
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
+
+            GerarGrafico(relatorio, qtdAlunos);
 
             return relatorio;
         }
