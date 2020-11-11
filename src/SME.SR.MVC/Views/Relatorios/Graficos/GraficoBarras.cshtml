@@ -89,7 +89,7 @@
       //Legendas  verticais
         var textelementLegenda = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 
-        textelementLegenda.setAttributeNS(null, 'transform', 'rotate(90) translate(' + 10 + ' , ' + - 80 + ')');
+        textelementLegenda.setAttributeNS(null, 'transform', 'rotate(90) translate(' + 10 + ' , ' + - 88 + ')');
 
         textelementLegenda.setAttributeNS(null, 'font-size', 13);
         textelementLegenda.setAttributeNS(null, 'font-weight', 'bold');
@@ -99,7 +99,7 @@
 
         //Texts Legendas
 
-        svg_@(Model.IdParaLastro).appendChild(createSVGtextLegendas('@Html.Raw(Model.DescricaoLegenda)', -85, 10));
+        svg_@(Model.IdParaLastro).appendChild(createSVGtextLegendas('@Html.Raw(Model.DescricaoLegenda)', -95, 10));
 
         var totalChartBarsForLoop = totalChartBars_@(Model.IdParaLastro)
                  </text>
@@ -278,10 +278,11 @@
 </script>
 @{
 
-                <text>
-                    <div id="chartcontainer_@(Model.IdParaLastro)" style="text-align:left">
-                        <h2 style="text-align:center">@(Model.Titulo)</h2>
-                        <svg id="svgcontainer_@(Model.IdParaLastro)" height="@Model.EixoYConfiguracao.ValorTotalAltura" width="@(Model.LarguraTotal - 50)">
-                        </svg>
-                </text> }
+    <text>
+        <div id="chartcontainer_@(Model.IdParaLastro)" style="text-align:left">
+            <h2 style="text-align:center; margin-top: 0; margin-bottom: 5px;">@(Model.Titulo)</h2>
+            <svg id="svgcontainer_@(Model.IdParaLastro)" height="@Model.EixoYConfiguracao.ValorTotalAltura" width="@(Model.LarguraTotal - 50)">
+            </svg>
+    </text>
+}
 </div>
