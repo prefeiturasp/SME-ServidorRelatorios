@@ -259,7 +259,7 @@ namespace SME.SR.Application
                 respostas.Add(itemRetorno);
             }
 
-            return respostas?.OrderBy(o => o.Resposta).ToList();
+            return respostas;
         }
 
         private string MontarTextoProficiencia(string proficiencia)
