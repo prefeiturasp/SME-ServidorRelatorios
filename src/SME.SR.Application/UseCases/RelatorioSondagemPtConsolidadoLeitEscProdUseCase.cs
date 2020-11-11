@@ -232,11 +232,29 @@ namespace SME.SR.Application
 
             foreach (var item in respAgrupado)
             {
+                if (!string.IsNullOrEmpty(item.Label))
+                {
+                    RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
+
+                    itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
+                    itemRetorno.Quantidade = item.Value;
+                    itemRetorno.Percentual = Math.Round(((decimal)item.Value / (decimal)alunosPorAno) * 100, 2);
+                    itemRetorno.Total = alunosPorAno;
+                    respostas.Add(itemRetorno);
+                }
+            }
+
+            var totalRespostas = respostas.Sum(r => r.Quantidade);
+
+            if (alunosPorAno > totalRespostas)
+            {
+                var totalSemPreenchimento = alunosPorAno - totalRespostas;
+
                 RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
-                itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
-                itemRetorno.Quantidade = item.Value;
-                itemRetorno.Percentual = Math.Round(((decimal)item.Value / (decimal)alunosPorAno) * 100, 2);
+                itemRetorno.Resposta = MontarTextoProficiencia(string.Empty);
+                itemRetorno.Quantidade = totalSemPreenchimento;
+                itemRetorno.Percentual = Math.Round(((decimal)totalSemPreenchimento / (decimal)alunosPorAno) * 100, 2);
                 itemRetorno.Total = alunosPorAno;
                 respostas.Add(itemRetorno);
             }
