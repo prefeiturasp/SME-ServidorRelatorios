@@ -8,11 +8,15 @@ namespace SME.SR.Infra
     {
         public RelatorioNotificacaoDto()
         {
-            Filtro = new FiltroNotificacaoDto();
             DREs = new List<DreNotificacaoDto>();
         }
 
-        public FiltroNotificacaoDto Filtro { get; set; }
+        public string CabecalhoDRE { get; set; }
+        public string CabecalhoUE { get; set; }
+        public string CabecalhoUsuario { get; set; }
+        public string CabecalhoUsuarioRF { get; set; }
+
+        public DateTime DataRelatorio { get => DateTime.Now; }
 
         public List<DreNotificacaoDto> DREs { get; set; }
     }
