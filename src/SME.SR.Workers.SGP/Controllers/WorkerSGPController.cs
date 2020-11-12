@@ -154,5 +154,14 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/notificacoes")]
+        [Action("relatorios/notificacoes", typeof(IRelatorioNotificacaoUseCase))]
+        public async Task<bool> ControleGrade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioNotificacaoUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+        
     }
 }

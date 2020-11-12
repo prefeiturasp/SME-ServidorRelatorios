@@ -25,33 +25,33 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 1;
         var str =
            $@"<div>
-            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-        </div>
-        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-        <div class='titulo-plano-aula'>
-            <p style='margin-bottom: 0'>
-                RELATÓRIO DE NOTIFICAÇÕES
-            </p>
-        </div>
-        <div class='fonte-14 header-pagina'>
-            <table class='tblTopo'>
-                <tbody>
-                    <tr>
-                        <td width='50%'>DRE: {Model.CabecalhoDRE}</td>
-                        <td width='50%'>UE: {Model.CabecalhoUE}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <table>
-                <tbody>
-                    <tr>
-                        <td class='campo-usuario'>PROFESSOR: {Model.CabecalhoUsuario}</td>
-                        <td class='campo-rf-data'>RF: {Model.CabecalhoUsuarioRF}</td>
-                        <td class='campo-rf-data'>DATA: {Model.DataRelatorio}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>";
+    <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-plano-aula'>
+    <p style='margin-bottom: 0'>
+        RELATÓRIO DE NOTIFICAÇÕES
+    </p>
+</div>
+<div class='fonte-14 header-pagina'>
+    <table class='tblTopo'>
+        <tbody>
+            <tr>
+                <td width='50%'>DRE: {Model.CabecalhoDRE}</td>
+                <td width='50%'>UE: {Model.CabecalhoUE}</td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                <td class='campo-usuario'>PROFESSOR: {Model.CabecalhoUsuario}</td>
+                <td class='campo-rf-data'>RF: {Model.CabecalhoUsuarioRF}</td>
+                <td class='campo-rf-data'>DATA: {Model.DataRelatorio}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>";
         return str;
 
     }
@@ -59,16 +59,16 @@
     string MontaTitulo(string descricao)
     {
         return $@"<table class='fixed'>
-                <tr>
-                    <td width='100%' class='td-turma-bimestre'>{descricao}</td>
-                </tr>
-            </table>";
+        <tr>
+            <td width='100%' class='td-turma-bimestre'>{descricao}</td>
+        </tr>
+    </table>";
     }
 
     string MontaEstrutura()
     {
         var str = "";
-        foreach(var dre in Model.DREs)
+        foreach (var dre in Model.DREs)
         {
             str += MontaTitulo(dre.Nome);
             foreach (var ue in dre.UEs)
@@ -78,26 +78,26 @@
                 {
                     str += MontaTitulo(usuario.Nome);
                     str += $@"<table class='fixed'>
-                        <tr>
-                            <td width='14%' class='td-titulo'>CÓDIGO DA NOTIFICAÇÃO</td>
-                            <td width='14%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
-                            <td width='14%' class='td-titulo'>CATEGORIA</td>
-                            <td width='14%' class='td-titulo'>TIPO</td>
-                            <td width='14%' class='td-titulo'>SITUAÇÃO</td>
-                            <td width='15%' class='td-titulo'>DATA DE RECEBIMENTO</td>
-                            <td width='15%' class='td-titulo'>DATA DE LEITURA/AÇÃO</td>
-                        </tr>";
+                <tr>
+                    <td width='14%' class='td-titulo'>CÓDIGO DA NOTIFICAÇÃO</td>
+                    <td width='14%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
+                    <td width='14%' class='td-titulo'>CATEGORIA</td>
+                    <td width='14%' class='td-titulo'>TIPO</td>
+                    <td width='14%' class='td-titulo'>SITUAÇÃO</td>
+                    <td width='15%' class='td-titulo'>DATA DE RECEBIMENTO</td>
+                    <td width='15%' class='td-titulo'>DATA DE LEITURA/AÇÃO</td>
+                </tr>";
                     foreach (var notificacao in usuario.Notificacoes)
                     {
                         str += $@"<tr>
-                                <td width='14%' class='td-valor'>{notificacao.Codigo}</td>
-                                <td width='14%' class='td-valor'>{notificacao.Titulo}</td>
-                                <td width='14%' class='td-valor'>{notificacao.Categoria}</td>
-                                <td width='14%' class='td-valor'>{notificacao.Tipo}</td>
-                                <td width='14%' class='td-valor'>{notificacao.Situacao}</td>
-                                <td width='14%' class='td-valor'>{notificacao.DataRecebimento}</td>
-                                <td width='14%' class='td-valor'>{notificacao.DataLeitura}</td>
-                            </tr>";
+                        <td width='14%' class='td-valor'>{notificacao.Codigo}</td>
+                        <td width='14%' class='td-valor'>{notificacao.Titulo}</td>
+                        <td width='14%' class='td-valor'>{notificacao.Categoria}</td>
+                        <td width='14%' class='td-valor'>{notificacao.Tipo}</td>
+                        <td width='14%' class='td-valor'>{notificacao.Situacao}</td>
+                        <td width='14%' class='td-valor'>{notificacao.DataRecebimento}</td>
+                        <td width='14%' class='td-valor'>{notificacao.DataLeitura}</td>
+                    </tr>";
                     }
                     str += "</table>";
                     str += LinhaEmBranco();

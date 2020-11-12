@@ -4647,13 +4647,11 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             var model = new RelatorioNotificacaoDto
             {
-                Filtro = new FiltroNotificacaoDto()
-                {
-                    Dre = "TODAS",
-                    Ue = "TODAS",
-                    Professor = "ALANA FERREIRA DE OLIVEIRA",
-                    RF = "1234567"
-                },
+
+                CabecalhoDRE = "TODAS",
+                CabecalhoUE = "TODAS",
+                CabecalhoUsuario = "ALANA FERREIRA DE OLIVEIRA",
+                CabecalhoUsuarioRF = "1234567",
                 DREs = new List<DreNotificacaoDto>()
                 {
                     new DreNotificacaoDto()
