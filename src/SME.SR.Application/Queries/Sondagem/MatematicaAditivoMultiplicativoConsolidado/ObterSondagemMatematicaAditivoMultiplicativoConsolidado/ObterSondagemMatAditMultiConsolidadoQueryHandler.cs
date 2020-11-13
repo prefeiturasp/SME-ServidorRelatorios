@@ -13,6 +13,7 @@ namespace SME.SR.Application
     {
         private readonly IMathPoolCARepository mathPoolCARepository;
         private readonly IMathPoolCMRepository mathPoolCMRepository;
+        private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public ObterSondagemMatAditMultiConsolidadoQueryHandler(IMathPoolCARepository mathPoolCARepository, IMathPoolCMRepository mathPoolCMRepository)
         {
