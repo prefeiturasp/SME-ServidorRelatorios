@@ -25,6 +25,7 @@ namespace SME.SR.Application
         {
             var dto = new RelatorioNotificacaoDto();
 
+            var notificacoes = await mediator.Send(new ObterNotificacoesPorAnoEUsuarioRfQuery(request.Filtros.AnoLetivo, request.Filtros.UsuarioBuscaRf));
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
@@ -35,22 +36,22 @@ namespace SME.SR.Application
         {
             var nomeDre = "TODAS";
             var nomeUe = "TODAS";
-            if (filtros.DREs.Count() == 1)
+            if (filtros.DRE != -99)
             {
-                var dre = await mediator.Send(new ObterDrePorIdQuery(filtros.DREs.FirstOrDefault()));
+                var dre = await mediator.Send(new ObterDrePorIdQuery(filtros.DRE));
                 nomeDre = dre.Abreviacao;
             }
 
-            if (filtros.UEs.Count() == 1)
+            if (filtros.UE != -99)
             {
-                var ue = await mediator.Send(new ObterUePorIdQuery(filtros.UEs.FirstOrDefault()));
+                var ue = await mediator.Send(new ObterUePorIdQuery(filtros.UE));
                 nomeUe = $"{ue.Codigo} - {ue.TipoEscola.ShortName()} {ue.Nome}";
             }
 
             dto.CabecalhoDRE = nomeDre;
             dto.CabecalhoUE = nomeUe;
-            dto.CabecalhoUsuario = filtros.Professor;
-            dto.CabecalhoUsuarioRF = filtros.RF;
+            dto.CabecalhoUsuario = filtros.UsuarioNome;
+            dto.CabecalhoUsuarioRF = filtros.UsuarioRf;
         }
     }
 }
