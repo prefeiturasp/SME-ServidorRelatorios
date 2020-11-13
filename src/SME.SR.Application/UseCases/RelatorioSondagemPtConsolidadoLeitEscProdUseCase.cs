@@ -228,7 +228,7 @@ namespace SME.SR.Application
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
-            var respAgrupado = linhasSondagem.GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).ToList();
+            var respAgrupado = linhasSondagem.GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
 
             foreach (var item in respAgrupado)
             {
