@@ -142,6 +142,11 @@ namespace SME.SR.Application
             return relatorio;
         }
 
+        private void GerarGrafico(RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto relatorio, int qtdAlunos)
+        {
+            throw new NotImplementedException();
+        }
+
         private void MontarPerguntas(List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas)
         {
             perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto()
