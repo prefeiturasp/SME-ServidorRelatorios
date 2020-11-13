@@ -15,7 +15,6 @@ namespace SME.SR.Application
     public class RelatorioSondagemPortuguesPorTurmaUseCase : IRelatorioSondagemPortuguesPorTurmaUseCase
     {
         private readonly IMediator mediator;
-        private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public RelatorioSondagemPortuguesPorTurmaUseCase(IMediator mediator)
         {
@@ -57,6 +56,11 @@ namespace SME.SR.Application
                 var tipoRelatorio = filtros.ProficienciaId == ProficienciaSondagemEnum.Leitura ? "Leitura" : "Escrita";
                 GerarGraficoLeituraEscrita(relatorio, tipoRelatorio);
             }
+            if(filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && (filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() 
+                || filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name())){
+                var tipoRelatorio = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ? "Leitura em voz alta" : "Produção de texto";
+                GerarGraficoLeituraEmVozAltaProducaoTexto(relatorio, tipoRelatorio);
+            }
 
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
@@ -71,7 +75,7 @@ namespace SME.SR.Application
             {
                 var resposta = aluno.Respostas[0].Resposta.Trim() != "" ? aluno.Respostas[0].Resposta : "Sem preenchimento";
                 var legendaResposta = legendas.FirstOrDefault(l => l.Valor == resposta);
-                var chave = legendaResposta != null? legendaResposta.Chave : lstChaves[chaveIndex].ToString();
+                var chave = legendaResposta != null? legendaResposta.Chave : Constantes.ListaChavesGraficos[chaveIndex].ToString();
 
                 if (legendaResposta == null)
                 {
@@ -97,7 +101,59 @@ namespace SME.SR.Application
             relatorio.GraficosBarras.Add(grafico);
         }
 
-            private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)
+        private void GerarGraficoLeituraEmVozAltaProducaoTexto(RelatorioSondagemPortuguesPorTurmaRelatorioDto relatorio, string tipoRelatorio)
+        {
+            var grafico = new GraficoBarrasVerticalDto(800, $"Língua Portuguesa - {tipoRelatorio}");
+            int chaveIndex = 0;
+            var legendas = new List<GraficoBarrasLegendaDto>();
+
+            foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+            {
+                var chave = Constantes.ListaChavesGraficos[chaveIndex].ToString();
+                legendas.Add(new GraficoBarrasLegendaDto()
+                {
+                    Chave = chave,
+                    Valor = pergunta.Nome
+                });
+                grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(0, chave));
+                chaveIndex++;
+            }
+
+            var chaveLegendaSemPreenchimento = Constantes.ListaChavesGraficos[chaveIndex].ToString();
+            legendas.Add(new GraficoBarrasLegendaDto()
+            {
+                Chave = chaveLegendaSemPreenchimento,
+                Valor = "Sem preenchimento"
+            });
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(0, chaveLegendaSemPreenchimento));
+
+            foreach (var aluno in relatorio.Planilha.Linhas)
+            {
+                var totalRespostas = 0;
+                foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+                {
+                    var respostaAluno = aluno.Respostas.FirstOrDefault(r => r.PerguntaId == pergunta.Id && !string.IsNullOrEmpty(r.Resposta));
+                    if(respostaAluno != null)
+                    {
+                        var legenda = legendas.FirstOrDefault(l => l.Valor == pergunta.Nome);
+                        var valorEixoX = grafico.EixosX.FirstOrDefault(e => e.Titulo == legenda.Chave);
+                        valorEixoX.Valor++;
+                        totalRespostas++;
+                    }
+                }
+                if(totalRespostas == 0)
+                {
+                    var valorEixoX = grafico.EixosX.FirstOrDefault(e => e.Titulo == chaveLegendaSemPreenchimento);
+                    valorEixoX.Valor++;
+                }
+            }
+            var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+            grafico.Legendas = legendas;
+            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(320, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+            relatorio.GraficosBarras.Add(grafico);
+        }
+
+        private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)
         {
             var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });
