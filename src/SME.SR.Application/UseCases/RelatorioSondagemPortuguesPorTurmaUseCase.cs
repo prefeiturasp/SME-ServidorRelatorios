@@ -15,7 +15,6 @@ namespace SME.SR.Application
     public class RelatorioSondagemPortuguesPorTurmaUseCase : IRelatorioSondagemPortuguesPorTurmaUseCase
     {
         private readonly IMediator mediator;
-        private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         public RelatorioSondagemPortuguesPorTurmaUseCase(IMediator mediator)
         {
@@ -76,7 +75,7 @@ namespace SME.SR.Application
             {
                 var resposta = aluno.Respostas[0].Resposta.Trim() != "" ? aluno.Respostas[0].Resposta : "Sem preenchimento";
                 var legendaResposta = legendas.FirstOrDefault(l => l.Valor == resposta);
-                var chave = legendaResposta != null? legendaResposta.Chave : lstChaves[chaveIndex].ToString();
+                var chave = legendaResposta != null? legendaResposta.Chave : Constantes.ListaChavesGraficos[chaveIndex].ToString();
 
                 if (legendaResposta == null)
                 {
@@ -110,7 +109,7 @@ namespace SME.SR.Application
 
             foreach (var pergunta in relatorio.Cabecalho.Perguntas)
             {
-                var chave = lstChaves[chaveIndex].ToString();
+                var chave = Constantes.ListaChavesGraficos[chaveIndex].ToString();
                 legendas.Add(new GraficoBarrasLegendaDto()
                 {
                     Chave = chave,
@@ -120,7 +119,7 @@ namespace SME.SR.Application
                 chaveIndex++;
             }
 
-            var chaveLegendaSemPreenchimento = lstChaves[chaveIndex].ToString();
+            var chaveLegendaSemPreenchimento = Constantes.ListaChavesGraficos[chaveIndex].ToString();
             legendas.Add(new GraficoBarrasLegendaDto()
             {
                 Chave = chaveLegendaSemPreenchimento,

@@ -6,6 +6,7 @@ namespace SME.SR.Infra
     {
         public RelatorioSondagemPortuguesConsolidadoCabecalhoDto Cabecalho { get; set; }
         public List<RelatorioSondagemPortuguesConsolidadoRespostaDto> Respostas { get; set; }
+        public List<GraficoBarrasVerticalDto> GraficosBarras { get; set; }
         public RelatorioSondagemPortuguesConsolidadoRelatorioDto()
         {
             this.Respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();

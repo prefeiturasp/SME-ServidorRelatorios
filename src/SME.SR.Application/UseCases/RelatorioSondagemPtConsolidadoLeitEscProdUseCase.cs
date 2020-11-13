@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Application.Queries;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,34 @@ namespace SME.SR.Application
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
+            var tipoRelatorio = filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name() ? "Produção de texto" : "Leitura em voz alta";
+            GerarGrafico(relatorio, tipoRelatorio);
+
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false));
+        }
+
+        private void GerarGrafico(RelatorioSondagemPortuguesConsolidadoRelatorioDto relatorio, string tipoRelatorio)
+        {
+            relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+            var grafico = new GraficoBarrasVerticalDto(800, $"Língua Portuguesa - {tipoRelatorio}");
+            int chaveIndex = 0;
+            var legendas = new List<GraficoBarrasLegendaDto>();
+
+            foreach (var resposta in relatorio.Respostas)
+            {
+                var chave = Constantes.ListaChavesGraficos[chaveIndex].ToString();
+                legendas.Add(new GraficoBarrasLegendaDto()
+                {
+                    Chave = chave,
+                    Valor = resposta.Resposta
+                });
+                chaveIndex++;
+                grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(resposta.Quantidade, chave));
+            }
+            var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+            grafico.Legendas = legendas;
+            grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+            relatorio.GraficosBarras.Add(grafico);
         }
 
         private async Task<RelatorioSondagemPortuguesConsolidadoCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
