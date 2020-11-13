@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +32,13 @@ namespace SME.SR.Application
             MontarPerguntas(perguntas);
             MontarCabecalho(relatorio, request.Proficiencia, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Usuario.CodigoRf, request.Usuario.Nome);
 
+            int qtdAlunos = 0;
+
             if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo)
             {
                 var listaAlunos = await mathPoolCARepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+
+                qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
 
                 var ordem1Ideia = listaAlunos.GroupBy(fu => fu.Ordem1Ideia);
 
@@ -68,6 +74,8 @@ namespace SME.SR.Application
             else
             {
                 var listaAlunos = await mathPoolCMRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+
+                qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
 
                 if (request.TurmaAno == 2)
                 {
@@ -129,7 +137,68 @@ namespace SME.SR.Application
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
 
+            GerarGrafico(relatorio, qtdAlunos);
+
             return relatorio;
+        }
+
+        private void GerarGrafico(RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto relatorio, int qtdAlunos)
+        {
+            var ordens = relatorio.PerguntasRespostas.Select(o => o.Ordem);
+
+            foreach (var ordem in ordens)
+            {
+                foreach (var pergunta in relatorio.Perguntas)
+                {
+                    var legendas = new List<GraficoBarrasLegendaDto>();
+                    var grafico = new GraficoBarrasVerticalDto(420, $"{ordem} - {pergunta.Descricao}");
+
+                    var respostas = relatorio.PerguntasRespostas
+                        .FirstOrDefault(o => o.Ordem == ordem).Respostas.Where(p => p.PerguntaId == pergunta.Id && !string.IsNullOrEmpty(p.Resposta))
+                        .GroupBy(b => b.Resposta).OrderBy(a => a.Key);
+
+                    int chaveIndex = 0;
+                    string chave = String.Empty;
+                    int qtdSemPreenchimento = 0;
+
+                    foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                    {
+                        chave = lstChaves[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = resposta.Key
+                        });
+
+                        var qntRespostas = resposta.Sum(r => r.AlunosQuantidade);
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto((decimal)qntRespostas, chave));
+                    }
+
+                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                    qtdSemPreenchimento = qtdAlunos - totalRespostas;
+
+                    if (qtdSemPreenchimento > 0)
+                    {
+                        chave = lstChaves[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = "Sem preenchimento"
+                        });
+
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                    }
+
+                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+
+                    grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                    grafico.Legendas = legendas;
+
+                    relatorio.GraficosBarras.Add(grafico);
+                }
+            }
         }
 
         private void MontarPerguntas(List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas)
