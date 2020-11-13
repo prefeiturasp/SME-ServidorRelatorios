@@ -144,7 +144,61 @@ namespace SME.SR.Application
 
         private void GerarGrafico(RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto relatorio, int qtdAlunos)
         {
-            throw new NotImplementedException();
+            var ordens = relatorio.PerguntasRespostas.Select(o => o.Ordem);
+
+            foreach (var ordem in ordens)
+            {
+                foreach (var pergunta in relatorio.Perguntas)
+                {
+                    var legendas = new List<GraficoBarrasLegendaDto>();
+                    var grafico = new GraficoBarrasVerticalDto(420, $"{ordem} - {pergunta.Descricao}");
+
+                    var respostas = relatorio.PerguntasRespostas
+                        .FirstOrDefault(o => o.Ordem == ordem).Respostas.Where(p => p.PerguntaId == pergunta.Id && !string.IsNullOrEmpty(p.Resposta))
+                        .GroupBy(b => b.Resposta).OrderBy(a => a.Key);
+
+                    int chaveIndex = 0;
+                    string chave = String.Empty;
+                    int qtdSemPreenchimento = 0;
+
+                    foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                    {
+                        chave = lstChaves[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = resposta.Key
+                        });
+
+                        var qntRespostas = resposta.Sum(r => r.AlunosQuantidade);
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto((decimal)qntRespostas, chave));
+                    }
+
+                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                    qtdSemPreenchimento = qtdAlunos - totalRespostas;
+
+                    if (qtdSemPreenchimento > 0)
+                    {
+                        chave = lstChaves[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = "Sem preenchimento"
+                        });
+
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                    }
+
+                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+
+                    grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                    grafico.Legendas = legendas;
+
+                    relatorio.GraficosBarras.Add(grafico);
+                }
+            }
         }
 
         private void MontarPerguntas(List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> perguntas)
