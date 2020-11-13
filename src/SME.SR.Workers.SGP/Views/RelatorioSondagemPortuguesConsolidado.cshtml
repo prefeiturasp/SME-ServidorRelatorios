@@ -276,7 +276,14 @@
                         <tr class="fundo-cinza">
                             <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
                             <td>@Model.Respostas.First().Total</td>
-                            <td></td>
+                            @if (Model.Cabecalho.EhProducaoTexto)
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td>100.00</td>
+                            }
                         </tr>
                     </tbody>
                 </table>
