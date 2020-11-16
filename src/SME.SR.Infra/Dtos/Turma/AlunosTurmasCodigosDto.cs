@@ -12,5 +12,6 @@ namespace SME.SR.Infra
         public int Ano { get; set; }
         public int EtapaEJA { get; set; }
         public string Ciclo { get; set; }
+        public string ParecerConclusivo { get; set; }
     }
 }

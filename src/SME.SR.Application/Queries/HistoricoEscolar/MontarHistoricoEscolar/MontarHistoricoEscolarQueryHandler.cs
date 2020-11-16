@@ -55,6 +55,8 @@ namespace SME.SR.Application
 
                     var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
 
+                    var uesHistorico = request.HistoricoUes.FirstOrDefault(ue => ue.Key.ToString() == aluno.Key).ToList();
+
                     var historicoDto = new HistoricoEscolarDTO()
                     {
                         NomeDre = request.Dre.Nome,
@@ -65,6 +67,7 @@ namespace SME.SR.Application
                         Legenda = request.Legenda,
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
+                        EstudosRealizados = ObterHistoricoUes(uesHistorico)?.ToList(),
                         DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
                     };
 
@@ -75,6 +78,18 @@ namespace SME.SR.Application
             listaRetorno = listaRetorno.OrderBy(a => a.InformacoesAluno.Nome).ToList();
 
             return await Task.FromResult(listaRetorno);
+        }
+
+        private IEnumerable<UeConclusaoDto> ObterHistoricoUes(List<UeConclusaoPorAlunoAno> uesHistorico)
+        {
+            foreach (var ue in uesHistorico)
+            {
+                yield return new UeConclusaoDto()
+                {
+                    Ano = ue.TurmaAno,
+                    UeNome = ue.UeNome
+                };
+            }
         }
 
         private HistoricoEscolarNotasFrequenciaDto ObterDadosHistorico(List<GruposComponentesCurricularesDto> diversificadosDto, BaseNacionalComumDto baseNacionalDto, List<ComponenteCurricularHistoricoEscolarDto> enriquecimentoDto, List<ComponenteCurricularHistoricoEscolarDto> projetosDto, TiposNotaDto tiposNotaDto, ParecerConclusivoDto pareceresDto)

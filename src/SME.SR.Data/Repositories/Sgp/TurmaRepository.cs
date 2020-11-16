@@ -181,7 +181,8 @@ namespace SME.SR.Data
                             t.modalidade_codigo Modalidade,
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        t.ano,
-                            t.etapa_eja as EtapaEJA
+                            t.etapa_eja as EtapaEJA,
+                            cca.conselho_classe_parecer_id as ParecerConclusivo
                         from
 	                        fechamento_turma ft
                         inner join conselho_classe cc on
