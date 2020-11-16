@@ -19,8 +19,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-
-            //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioUsuarios", dtoRelatorio, request.CodigoCorrelacao));
+            //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioUsuarios", RelatorioUsuarioDto, request.CodigoCorrelacao));
         }
     }
 }

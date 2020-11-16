@@ -4642,7 +4642,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemPortuguesConsolidado", model);
         }
 
-        [HttpGet("controle-grade-sintetico")]
+        [HttpGet("Usuarios")]
         public IActionResult RelatorioUsuarios()
         {
             var model = new RelatorioUsuarioDto() 
