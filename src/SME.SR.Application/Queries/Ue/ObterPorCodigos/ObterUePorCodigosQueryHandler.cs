@@ -22,7 +22,7 @@ namespace SME.SR.Application
         {
             var ues = await ueRepository.ObterPorCodigos(request.UeCodigos);
 
-            if (ues == null || ues.Any())
+            if (ues == null || !ues.Any())
             {
                 throw new NegocioException("Não foi possível localizar as ues");
             }
