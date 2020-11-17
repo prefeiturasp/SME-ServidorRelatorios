@@ -5,18 +5,19 @@
     int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
 
-    bool VerificaQuebra()
+    string  VerificaQuebra(bool devePular = false)
     {
         var totalPerguntas = Model.Planilhas.First().Perguntas.Count;
         var linhasMaisPerguntas = contadorQuebrarPagina + totalPerguntas;
 
-        if (linhasMaisPerguntas >= contadorMaximoLinhasPorPagina)
+        if (linhasMaisPerguntas >= contadorMaximoLinhasPorPagina || devePular)
         {
             contadorQuebrarPagina = 0;
             contadorPagina = contadorPagina + 1;
-            return true;
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always'></div>" + str;
         }
-        return false;
+        return "";
     }
 
     string MontarCabecalho()
@@ -139,11 +140,10 @@
                             {
                                 if (resposta.Resposta == resp.Resposta)
                                 {
-                                    var alunosPercentual = Math.Round(resp.Percentual, 2);
-                                    var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
+                                    var alunosPercentual = Math.Round(resp.Percentual*100, 2);
 
                                     <td>@resp.Quantidade</td>
-                                    <td>@alunosPercentualAlterado</td>
+                                    <td>@alunosPercentual.ToString("0.00")</td>
                                 }
                             }
                         }
@@ -303,13 +303,7 @@
 
                 for (var i = 0; i < Model.Planilhas.Count; i++)
                 {
-                    var quebra = VerificaQuebra();
-
-                    if (quebra)
-                    {
-                        @Html.Raw("<div style='page-break-before:always'></div>");
-                        @Html.Raw(MontarCabecalho())
-                    }
+                    @Html.Raw(VerificaQuebra(false));
 
                     @Html.Raw(MontaTabelaPerguntasRespostas(Model.Planilhas[i]));
 
@@ -319,8 +313,66 @@
                         contadorQuebrarPagina++;
                     }
                 }
-            }
+
+                if (Model.GraficosBarras != null && Model.GraficosBarras.Any())
+                    {
+                        var paginaAtual = contadorPagina;
+                        int groupings = 2;
+                        var grouped = Model.GraficosBarras.Select((x, i) => new { x, i = i / groupings })
+                                      .GroupBy(x => x.i, x => x.x);
+
+                        var maxTabelasPorPagina = 2;
+                        var iCount = 0;
+
+                        //Verificando página inicial que irá receber os primeiros relatórios
+                        if(contadorPagina == paginaAtual && iCount == 2)
+                            @Html.Raw(VerificaQuebra(true))
+                            iCount = 1;
+                        if (contadorQuebrarPagina <= 29)
+                            iCount = 1;
+                        else if (contadorQuebrarPagina > 29)
+                            iCount = 2;
+
+
+                        @foreach (var items in grouped)
+                        {
+                            if (iCount >= maxTabelasPorPagina)
+                            {
+                                @Html.Raw(VerificaQuebra(true))
+                                iCount = 1;
+                            }
+                            else
+                            {
+                                iCount++;
+                            }
+
+                            <table style="border:none; border-color: #ffffff!important; margin-top:30px; ">
+                                <tbody>
+                                    <tr>
+                                        @foreach (var item in items)
+                                        {
+                                            <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("Graficos/GraficoBarras", item)</td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+                    }
+                 }
         </div>
     </body>
+    <script>
+    window.onload = function () {
+    @{
+        foreach (var item in Model.GraficosBarras)
+        {
+        <text>
+             drawBarChart_@(item.IdParaLastro)();
+        </text>
+        }
+    }
+
+    }
+    </script>
 </html>
 }
