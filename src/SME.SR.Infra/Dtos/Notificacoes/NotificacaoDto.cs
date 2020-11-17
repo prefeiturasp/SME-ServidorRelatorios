@@ -18,7 +18,7 @@ namespace SME.SR.Infra
         public string UsuarioNome { get; set; }
         public string UsuarioRf { get; set; }
         public DateTime DataRecebimento { get; set; }
-        public DateTime DataLeitura { get; set; }
+        public DateTime? DataLeitura { get; set; }
         public long DreId { get; set; }
         public string DreNome { get; set; }
         public long UeId { get; set; }

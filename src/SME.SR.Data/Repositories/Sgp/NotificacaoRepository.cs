@@ -17,6 +17,44 @@ namespace SME.SR.Data.Repositories.Sgp
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
+        public async Task<IEnumerable<NotificacaoDto>> ObterComFiltros(long ano, string usuarioRf, long[] categorias, long[] tipos, long[] situacoes, bool exibirDescricao = false, bool exibirExcluidas = false)
+        {
+			var query = $@"select 
+							n.id as Codigo
+							,titulo
+							,categoria
+							,tipo
+							,status as Situacao
+							,u.nome as UsuarioNome
+							,u.rf_codigo as UsuarioRf
+							,n.criado_em as DataRecebimento
+							,n.alterado_em as DataLeitura
+							,dre.id as DreId
+							,dre.nome as DreNome
+							,ue.id as UeId
+							,ue.nome as UeNome";
+
+			if (exibirDescricao)
+				query += ",n.mensagem as Descricao";
+			query += $@" from notificacao n 
+						inner join usuario u  on n.usuario_id = u.id
+						inner join dre on n.dre_id = dre.dre_id 
+						inner join ue on n.ue_id = ue.ue_id 
+						where ano = @ano 
+						and tipo = ANY(@tipos) 
+						and categoria = ANY(@categorias)
+						and n.status = ANY(@situacoes) ";
+			if (!exibirExcluidas)
+				query += " and n.excluida = false";
+			if (usuarioRf != "")
+				query += $" and u.rf_codigo = '{usuarioRf}'";
+
+			using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+			{
+				return await conexao.QueryAsync<NotificacaoDto>(query, new { ano, tipos, categorias, situacoes });
+			};
+		}
+
         public async Task<IEnumerable<NotificacaoDto>> ObterPorAnoEUsuarioRf(long ano, string usuarioRf)
 		{
             var query = $@"select 

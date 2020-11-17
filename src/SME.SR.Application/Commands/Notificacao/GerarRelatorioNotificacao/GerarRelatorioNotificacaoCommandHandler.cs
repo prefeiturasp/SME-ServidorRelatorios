@@ -25,11 +25,101 @@ namespace SME.SR.Application
         {
             var dto = new RelatorioNotificacaoDto();
 
-            var notificacoes = await mediator.Send(new ObterNotificacoesPorAnoEUsuarioRfQuery(request.Filtros.AnoLetivo, request.Filtros.UsuarioBuscaRf));
+            long[] situacoes = new long[] { };
+            long[] categorias = new long[] { };
+            long[] tipos = new long[] { };
+
+            if (request.Filtros.Situacoes.Contains(-99))
+            {
+                situacoes = new long[] {
+                        (long)NotificacaoStatus.Aceita,
+                        (long)NotificacaoStatus.Lida,
+                        (long)NotificacaoStatus.Pendente,
+                        (long)NotificacaoStatus.Reprovada
+                    };
+            } else
+            {
+                situacoes = request.Filtros.Situacoes.ToArray();
+            }
+
+            if (request.Filtros.Categorias.Contains(-99))
+            {
+                categorias = new long[] {
+                        (long)NotificacaoCategoria.Alerta,
+                        (long)NotificacaoCategoria.Aviso,
+                        (long)NotificacaoCategoria.Workflow_Aprovacao
+                    };
+            }
+            else
+            {
+                categorias = request.Filtros.Categorias.ToArray();
+            }
+
+            if (request.Filtros.Tipos.Contains(-99))
+            {
+                tipos = new long[] {
+                        (long)NotificacaoTipo.Calendario,
+                        (long)NotificacaoTipo.Fechamento,
+                        (long)NotificacaoTipo.Frequencia,
+                        (long)NotificacaoTipo.Notas,
+                        (long)NotificacaoTipo.Sondagem,
+                        (long)NotificacaoTipo.PlanoDeAula,
+                        (long)NotificacaoTipo.Relatorio,
+                        (long)NotificacaoTipo.Worker,
+                        (long)NotificacaoTipo.Planejamento
+                    };
+            }
+            else
+            {
+                tipos = request.Filtros.Tipos.ToArray();
+            }
+
+            var notificacoes = await mediator.Send(new ObterNotificacoesFiltrosQuery(request.Filtros.AnoLetivo, request.Filtros.UsuarioBuscaRf,
+                categorias, tipos, situacoes, request.Filtros.ExibirDescricao, request.Filtros.ExibirNotificacoesExcluidas));
+
+            dto = MapearNotificacoesDto(notificacoes);
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
             return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotificacoes", dto, request.CodigoCorrelacao, "", "Relatório de Notificações", true, "RELATÓRIO DE NOTIFICAÇÕES")));
+        }
+
+        private RelatorioNotificacaoDto MapearNotificacoesDto(IEnumerable<NotificacaoDto> notificacoes)
+        {
+            RelatorioNotificacaoDto relatorioNotificacaoDto = new RelatorioNotificacaoDto();
+            var dres = notificacoes.Select(n => n.DreId).Distinct();
+
+            foreach(var dre in dres)
+            {
+                DreNotificacaoDto dreNotificacaoDto = new DreNotificacaoDto();
+                dreNotificacaoDto.Nome = notificacoes.FirstOrDefault(c => c.DreId == dre).DreNome;
+
+                var ues = notificacoes.Where(c => c.DreId == dre).Select(c => c.UeId).Distinct();
+
+                foreach(var ue in ues)
+                {
+                    UeNotificacaoDto ueNotificacaoDto = new UeNotificacaoDto();
+
+                    ueNotificacaoDto.Nome = notificacoes.FirstOrDefault(c => c.UeId == ue).UeNome;
+
+                    var usuarios = notificacoes.Where(c => c.UeId == ue && c.DreId == dre).Select(c => c.UsuarioRf).Distinct();
+
+                    foreach(var usuario in usuarios)
+                    {
+                        UsuarioNotificacaoDto usuarioNotificacaoDto = new UsuarioNotificacaoDto();
+                        var nome = notificacoes.FirstOrDefault(c => c.UsuarioRf == usuario).UsuarioNome;
+                        usuarioNotificacaoDto.Nome = nome != null ? nome : notificacoes.FirstOrDefault(c => c.UsuarioRf == usuario).UsuarioRf;
+                        usuarioNotificacaoDto.Notificacoes.AddRange(notificacoes.Where(c => c.UeId == ue && c.DreId == dre && c.UsuarioRf == usuario).OrderBy(n => n.Codigo));
+                        ueNotificacaoDto.Usuarios.Add(usuarioNotificacaoDto);
+                    }
+
+                    dreNotificacaoDto.UEs.Add(ueNotificacaoDto);
+                }
+
+                relatorioNotificacaoDto.DREs.Add(dreNotificacaoDto);
+            }
+            
+            return relatorioNotificacaoDto;
         }
 
         private async Task MontarCabecalhoRelatorioDto(RelatorioNotificacaoDto dto, FiltroNotificacaoDto filtros)
