@@ -32,7 +32,9 @@ namespace SME.SR.Application
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
-            var tipoRelatorio = filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name() ? "Produção de texto" : "Leitura em voz alta";
+            var tipoRelatorio = !string.IsNullOrEmpty(filtros.GrupoId) ?
+                (filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name() ? "Produção de texto" : "Leitura em voz alta") :
+                (filtros.ProficienciaId == ProficienciaSondagemEnum.Leitura ? "Leitura" : "Escrita");
             GerarGrafico(relatorio, tipoRelatorio);
 
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false));
