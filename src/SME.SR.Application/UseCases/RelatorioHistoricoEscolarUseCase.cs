@@ -62,7 +62,10 @@ namespace SME.SR.Application
             var turmasCodigo = todasTurmas.Select(a => a.Codigo);
             var alunosCodigo = todosAlunos.Select(a => a.Codigo);
 
-            var historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
+            IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes = null;
+
+            if (alunosTurmas != null && alunosTurmas.Any())
+               historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
 
@@ -279,7 +282,7 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusao(long[] alunosCodigo,  Modalidade modalidade)
+        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusao(long[] alunosCodigo, Modalidade modalidade)
         {
             return await mediator.Send(new ObterUesConclusaoQuery()
             {

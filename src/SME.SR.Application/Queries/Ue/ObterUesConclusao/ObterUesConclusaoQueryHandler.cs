@@ -45,7 +45,8 @@ namespace SME.SR.Application
             {
                 var turmaAlunoEol = informacoesDosAlunos.FirstOrDefault(a => a.CodigoAluno == turmaAluno.AlunoCodigo &&
                                                                              a.CodigoTurma.ToString() == turmaAluno.TurmaCodigo &&
-                                                                             a.ParecerConclusivo == turmaAluno.ParecerConclusivo);
+                                                                             ((a.AnoLetivo < DateTime.Now.Year && a.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Concluido) ||
+                                                                             (a.AnoLetivo == DateTime.Now.Year && a.EstaAtivo(DateTime.Now))));
 
                 if (turmaAlunoEol != null)
                 {
@@ -73,8 +74,7 @@ namespace SME.SR.Application
 
             informacoesDosAlunos = informacoesDosAlunos.GroupBy(d => d.CodigoAluno)
                                   .SelectMany(g => g.OrderByDescending(d => d.AnoLetivo)
-                                                    .ThenByDescending(m => m.DataSituacao)
-                                                    .Take(1));
+                                                    .ThenByDescending(m => m.DataSituacao));
 
             return informacoesDosAlunos;
         }

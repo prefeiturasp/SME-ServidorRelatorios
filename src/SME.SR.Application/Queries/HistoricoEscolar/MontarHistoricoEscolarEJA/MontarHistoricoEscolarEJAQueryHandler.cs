@@ -55,7 +55,7 @@ namespace SME.SR.Application
 
                     var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
 
-                    var uesHistorico = request.HistoricoUes.FirstOrDefault(ue => ue.Key.ToString() == aluno.Key).ToList();
+                    var uesHistorico = request.HistoricoUes.FirstOrDefault(ue => ue.Key.ToString() == aluno.Key)?.ToList();
 
                     var historicoDto = new HistoricoEscolarEJADto()
                     {
@@ -81,13 +81,16 @@ namespace SME.SR.Application
 
         private IEnumerable<UeConclusaoDto> ObterHistoricoUes(List<UeConclusaoPorAlunoAno> uesHistorico)
         {
-            foreach (var ue in uesHistorico)
+            if (uesHistorico != null && uesHistorico.Any())
             {
-                yield return new UeConclusaoDto()
+                foreach (var ue in uesHistorico)
                 {
-                    Ano = ue.TurmaAno,
-                    UeNome = ue.UeNome
-                };
+                    yield return new UeConclusaoDto()
+                    {
+                        Ano = ue.TurmaAno,
+                        UeNome = ue.UeNome
+                    };
+                }
             }
         }
 

@@ -12,7 +12,6 @@ namespace SME.SR.Data
         public string RG { get; set; }
         public string ExpedicaoOrgaoEmissor { get; set; }
         public string ExpedicaoUF { get; set; }
-        public string ParecerConclusivo { get; set; }
         public string CodigoEscola { get; set; }
         public int AnoLetivo { get; set; }
         public DateTime ExpedicaoData { get; set; }
