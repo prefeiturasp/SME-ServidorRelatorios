@@ -42,7 +42,7 @@ namespace SME.SR.Application
 
                     var turmasHistorico = agrupamentoTurmas.Where(t => request.Transferencias == null || !request.Transferencias.Any(tt => tt.CodigoTurma == t.Codigo && tt.CodigoAluno == aluno.Key));
 
-                    var notasAluno = request.Notas.Where(n => turmasHistorico.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w =>  w.CodigoAluno == aluno.Key && w.PeriodoEscolar == null);
+                    var notasAluno = request.Notas.Where(n => turmasHistorico.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Key && w.PeriodoEscolar == null);
                     var frequenciasAluno = request.Frequencias.Where(f => turmasHistorico.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Key);
 
                     var baseNacionalDto = ObterBaseNacionalComum(turmasHistorico, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);
@@ -55,6 +55,8 @@ namespace SME.SR.Application
 
                     var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
 
+                    var uesHistorico = request.HistoricoUes.FirstOrDefault(ue => ue.Key.ToString() == aluno.Key)?.ToList();
+
                     var historicoDto = new HistoricoEscolarDTO()
                     {
                         NomeDre = request.Dre.Nome,
@@ -65,6 +67,7 @@ namespace SME.SR.Application
                         Legenda = request.Legenda,
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
+                        EstudosRealizados = ObterHistoricoUes(uesHistorico)?.ToList(),
                         DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
                     };
 
@@ -77,11 +80,26 @@ namespace SME.SR.Application
             return await Task.FromResult(listaRetorno);
         }
 
+        private IEnumerable<UeConclusaoDto> ObterHistoricoUes(List<UeConclusaoPorAlunoAno> uesHistorico)
+        {
+            if (uesHistorico != null && uesHistorico.Any())
+            {
+                foreach (var ue in uesHistorico)
+                {
+                    yield return new UeConclusaoDto()
+                    {
+                        Ano = ue.TurmaAno,
+                        UeNome = ue.UeNome
+                    };
+                }
+            }
+        }
+
         private HistoricoEscolarNotasFrequenciaDto ObterDadosHistorico(List<GruposComponentesCurricularesDto> diversificadosDto, BaseNacionalComumDto baseNacionalDto, List<ComponenteCurricularHistoricoEscolarDto> enriquecimentoDto, List<ComponenteCurricularHistoricoEscolarDto> projetosDto, TiposNotaDto tiposNotaDto, ParecerConclusivoDto pareceresDto)
         {
-            if ((diversificadosDto == null || !diversificadosDto.Any(d => d.PossuiNotaValida)) && 
+            if ((diversificadosDto == null || !diversificadosDto.Any(d => d.PossuiNotaValida)) &&
                 (baseNacionalDto == null || baseNacionalDto.ObterComNotaValida == null) &&
-                (enriquecimentoDto == null || !enriquecimentoDto.Any(d => d.PossuiNotaValida)) && 
+                (enriquecimentoDto == null || !enriquecimentoDto.Any(d => d.PossuiNotaValida)) &&
                 (projetosDto == null || !projetosDto.Any(d => d.PossuiNotaValida)))
                 return null;
             else

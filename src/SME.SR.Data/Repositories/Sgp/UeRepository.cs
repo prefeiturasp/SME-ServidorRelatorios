@@ -73,5 +73,13 @@ namespace SME.SR.Data
 
 
         }
+
+        public async Task<IEnumerable<Ue>> ObterPorCodigos(string[] ueCodigos)
+        {
+            var query = @"select Id, ue_id Codigo, Nome, tipo_escola TipoEscola from ue where ue_id = any(@ueCodigos)";
+            var parametros = new { ueCodigos };
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<Ue>(query, parametros);
+        }
     }
 }
