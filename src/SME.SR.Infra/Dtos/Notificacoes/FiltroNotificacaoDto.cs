@@ -6,10 +6,21 @@ namespace SME.SR.Infra
 {
     public class FiltroNotificacaoDto
     {
-        public IEnumerable<long> DREs { get; set; }
-        public IEnumerable<long> UEs { get; set; }
-        public string Professor { get; set; }
-        public string RF { get; set; }
         public DateTime Data => DateTime.Now;
+        public string UsuarioNome { get; set; }
+        public string UsuarioRf { get; set; }
+        public long AnoLetivo { get; set; }
+        public long DRE { get; set; }
+        public long UE { get; set; }
+        public Modalidade ModalidadeTurma { get; set; }
+        public int Semestre { get; set; }
+        public long Turma { get; set; }
+        public string UsuarioBuscaNome { get; set; }
+        public string UsuarioBuscaRf { get; set; }
+        public IEnumerable<long> Categorias { get; set; }
+        public IEnumerable<long> Tipos { get; set; }
+        public IEnumerable<long> Situacoes { get; set; }
+        public bool ExibirDescricao { get; set; }
+        public bool ExibirNotificacoesExcluidas { get; set; }
     }
 }

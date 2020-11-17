@@ -12,10 +12,16 @@ namespace SME.SR.Infra
 
         public long Codigo { get; set; }
         public string Titulo { get; set; }
-        public string Categoria { get; set; }
-        public string Tipo { get; set; }
-        public string Situacao { get; set; }
+        public NotificacaoCategoria Categoria { get; set; }
+        public NotificacaoTipo Tipo { get; set; }
+        public NotificacaoStatus Situacao { get; set; }
+        public string UsuarioNome { get; set; }
+        public string UsuarioRf { get; set; }
         public DateTime DataRecebimento { get; set; }
-        public DateTime DataLeitura { get; set; }
+        public DateTime? DataLeitura { get; set; }
+        public long DreId { get; set; }
+        public string DreNome { get; set; }
+        public long UeId { get; set; }
+        public string UeNome { get; set; }
     }
 }

@@ -22,7 +22,7 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        contadorQuebrarPagina += 7;
         var str =
            $@"<div>
     <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
@@ -58,6 +58,7 @@
 
     string MontaTitulo(string descricao)
     {
+        contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
         <tr>
             <td width='100%' class='td-turma-bimestre'>{descricao}</td>
@@ -65,46 +66,92 @@
     </table>";
     }
 
+    string MontaCabecalhoEstrutura()
+    {
+        contadorQuebrarPagina += 2;
+        return $@"<table class='fixed'>
+                <tr>
+                    <td width='14%' class='td-titulo'>CÓDIGO DA NOTIFICAÇÃO</td>
+                    <td width='26%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
+                    <td width='10%' class='td-titulo'>CATEGORIA</td>
+                    <td width='12%' class='td-titulo'>TIPO</td>
+                    <td width='12%' class='td-titulo'>SITUAÇÃO</td>
+                    <td width='12%' class='td-titulo'>DATA DE RECEBIMENTO</td>
+                    <td width='12%' class='td-titulo'>DATA DE LEITURA/AÇÃO</td>
+                </tr>";
+    }
+
     string MontaEstrutura()
     {
         var str = "";
+        var retornoVerificacao = string.Empty;
+
+        var ultimaDre = Model.DREs.Last();
         foreach (var dre in Model.DREs)
         {
             str += MontaTitulo(dre.Nome);
+            var ultimaUe = dre.UEs.Last();
             foreach (var ue in dre.UEs)
             {
                 str += MontaTitulo(ue.Nome);
+                var ultimoUsuario = ue.Usuarios.Last();
                 foreach (var usuario in ue.Usuarios)
                 {
                     str += MontaTitulo(usuario.Nome);
-                    str += $@"<table class='fixed'>
-                <tr>
-                    <td width='14%' class='td-titulo'>CÓDIGO DA NOTIFICAÇÃO</td>
-                    <td width='14%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
-                    <td width='14%' class='td-titulo'>CATEGORIA</td>
-                    <td width='14%' class='td-titulo'>TIPO</td>
-                    <td width='14%' class='td-titulo'>SITUAÇÃO</td>
-                    <td width='15%' class='td-titulo'>DATA DE RECEBIMENTO</td>
-                    <td width='15%' class='td-titulo'>DATA DE LEITURA/AÇÃO</td>
-                </tr>";
+                    str += MontaCabecalhoEstrutura();
+                    var ultimaNotificacao = usuario.Notificacoes.Last();
                     foreach (var notificacao in usuario.Notificacoes)
                     {
                         str += $@"<tr>
                         <td width='14%' class='td-valor'>{notificacao.Codigo}</td>
-                        <td width='14%' class='td-valor'>{notificacao.Titulo}</td>
-                        <td width='14%' class='td-valor'>{notificacao.Categoria}</td>
-                        <td width='14%' class='td-valor'>{notificacao.Tipo}</td>
-                        <td width='14%' class='td-valor'>{notificacao.Situacao}</td>
-                        <td width='14%' class='td-valor'>{notificacao.DataRecebimento}</td>
-                        <td width='14%' class='td-valor'>{notificacao.DataLeitura}</td>
+                        <td width='26%' class='td-valor'>{notificacao.Titulo}</td>
+                        <td width='10%' class='td-valor'>{notificacao.Categoria}</td>
+                        <td width='12%' class='td-valor'>{notificacao.Tipo}</td>
+                        <td width='12%' class='td-valor'>{notificacao.Situacao}</td>
+                        <td width='12%' class='td-valor'>{notificacao.DataRecebimento}</td>
+                        <td width='12%' class='td-valor'>{notificacao.DataLeitura}</td>
                     </tr>";
+
+                        if((int)(notificacao.DataRecebimento.ToString().Length / 29) > 2)
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 29 ? (int)(notificacao.DataRecebimento.ToString().Length / 29) + 1 : 1);
+                        } else
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 11 ? (int)(notificacao.DataRecebimento.ToString().Length / 11) + 1 : 1);
+                        }
+
+                        retornoVerificacao = VerificaQuebra();
+                        if (retornoVerificacao != string.Empty)
+                        {
+                            if(notificacao == ultimaNotificacao)
+                            {
+                                str = str + $@"</table>{retornoVerificacao}<table>";
+                            } else
+                            {
+                                str = str + $@"</table>{retornoVerificacao}{MontaTitulo(usuario.Nome)}{MontaCabecalhoEstrutura()}";
+                            }
+
+                        }
                     }
                     str += "</table>";
-                    str += LinhaEmBranco();
+                    if (usuario != ultimoUsuario && contadorQuebrarPagina != 7)
+                    {
+                        str += LinhaEmBranco();
+                        contadorQuebrarPagina += 1;
+                    }
                 }
-                str += LinhaEmBranco();
+
+                if (ue != ultimaUe)
+                {
+                    str += LinhaEmBranco();
+                    contadorQuebrarPagina += 1;
+                }
             }
-            str += LinhaEmBranco();
+            if (dre != ultimaDre)
+            {
+                str += LinhaEmBranco();
+                contadorQuebrarPagina += 1;
+            }
         }
         return str;
     }
@@ -266,7 +313,7 @@
             text-align: center;
             font-size: 16px;
             font-weight: bold;
-            padding: 10px;
+            padding: 5px;
             border-bottom: none;
         }
 
