@@ -111,7 +111,7 @@ namespace SME.SR.Application
                 Turma = "Todas",
                 ComponenteCurricular = ComponenteCurricularSondagemEnum.Portugues.ShortName(),
                 Proficiencia = proficiencia,
-                EhProducaoTexto = proficiencia == GrupoSondagemEnum.ProducaoTexto.Name()
+                EhProducaoTexto = filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name()
             });
         }
 
