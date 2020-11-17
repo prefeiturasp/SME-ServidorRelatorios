@@ -134,60 +134,10 @@ namespace SME.SR.Data
         public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia)
         {
             StringBuilder query = new StringBuilder();
-
-            query.AppendLine(@"
-					SELECT sum(Total) from (	
-					 SELECT
-	                    count(DISTINCT matricula.cd_aluno) Total
-                    FROM
-	                    v_matricula_cotic matricula
-                    left JOIN matricula_turma_escola matrTurma ON
-	                    matricula.cd_matricula = matrTurma.cd_matricula and matrTurma.nr_chamada_aluno is not null
-                    INNER JOIN turma_escola turesc ON
-	                    matrTurma.cd_turma_escola = turesc.cd_turma_escola
-                    INNER JOIN v_cadastro_unidade_educacao vue ON
-	                    vue.cd_unidade_educacao = turesc.cd_escola
-                    INNER JOIN (
-	                    SELECT
-		                    v_ua.cd_unidade_educacao, v_ua.nm_unidade_educacao, v_ua.nm_exibicao_unidade
-	                    FROM
-		                    unidade_administrativa ua
-	                    INNER JOIN v_cadastro_unidade_educacao v_ua ON
-		                    v_ua.cd_unidade_educacao = ua.cd_unidade_administrativa
-	                    WHERE
-		                    tp_unidade_administrativa = 24) dre ON
-	                    dre.cd_unidade_educacao = vue.cd_unidade_administrativa_referencia
-	                    --Serie Ensino
-                    left join serie_turma_escola ste ON
-	                    ste.cd_turma_escola = turesc.cd_turma_escola
-                    left join serie_turma_grade ON
-	                    serie_turma_grade.cd_turma_escola = ste.cd_turma_escola
-                    left join escola_grade ON
-	                    serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
-                    left join grade ON
-	                    escola_grade.cd_grade = grade.cd_grade
-                    left join serie_ensino se ON
-	                    grade.cd_serie_ensino = se.cd_serie_ensino
-                    where
-	                  	turesc.an_letivo = @anoLetivo
-	                    and turesc.cd_tipo_turma = 1
-	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  ) 
-						and se.sg_resumida_serie = @anoTurma
-	                    and se.cd_etapa_ensino in (5, 13)");
-
-            if (!string.IsNullOrEmpty(ueCodigo))
-                query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
-
-            if (dreCodigo > 0)
-                query.Append("and dre.cd_unidade_educacao = @dreCodigo ");
-
-            if (!string.IsNullOrEmpty(anoTurma))
-                query.Append("and se.sg_resumida_serie = @anoTurma ");
-
-
-            query.AppendLine(@" and se.cd_etapa_ensino in (5, 13)
-	                UNION 
-	                SELECT
+			if (anoLetivo < DateTime.Now.Date.Year)
+			{
+				query.AppendLine(@"
+					SELECT
 	                    count(DISTINCT matricula.cd_aluno) Total
                     FROM
 	                    v_historico_matricula_cotic matricula
@@ -233,16 +183,66 @@ namespace SME.SR.Data
 	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) 
 						and matricula.dt_status_matricula > @dataFim)  ) ");
 
-            if (!string.IsNullOrEmpty(ueCodigo))
-                query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
+				if (!string.IsNullOrEmpty(ueCodigo))
+					query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
 
-            if (dreCodigo > 0)
-                query.Append("and dre.cd_unidade_educacao = @dreCodigo ");
+				if (dreCodigo > 0)
+					query.Append("and dre.cd_unidade_educacao = @dreCodigo ");
 
-            if (!string.IsNullOrEmpty(anoTurma))
-                query.Append("and se.sg_resumida_serie = @anoTurma ");
+				if (!string.IsNullOrEmpty(anoTurma))
+					query.Append("and se.sg_resumida_serie = @anoTurma ");
 
-            query.AppendLine(" and se.cd_etapa_ensino in (5, 13) ) x");
+				query.AppendLine(" and se.cd_etapa_ensino in (5, 13)");
+			}
+			else
+			{
+				query.AppendLine(@"
+					SELECT
+	                    count(DISTINCT matricula.cd_aluno) Total
+                    FROM
+	                    v_matricula_cotic matricula
+                    left JOIN matricula_turma_escola matrTurma ON
+	                    matricula.cd_matricula = matrTurma.cd_matricula and matrTurma.nr_chamada_aluno is not null
+                    INNER JOIN turma_escola turesc ON
+	                    matrTurma.cd_turma_escola = turesc.cd_turma_escola
+                    INNER JOIN v_cadastro_unidade_educacao vue ON
+	                    vue.cd_unidade_educacao = turesc.cd_escola
+                    INNER JOIN (
+	                    SELECT
+		                    v_ua.cd_unidade_educacao, v_ua.nm_unidade_educacao, v_ua.nm_exibicao_unidade
+	                    FROM
+		                    unidade_administrativa ua
+	                    INNER JOIN v_cadastro_unidade_educacao v_ua ON
+		                    v_ua.cd_unidade_educacao = ua.cd_unidade_administrativa
+	                    WHERE
+		                    tp_unidade_administrativa = 24) dre ON
+	                    dre.cd_unidade_educacao = vue.cd_unidade_administrativa_referencia
+	                    --Serie Ensino
+                    left join serie_turma_escola ste ON
+	                    ste.cd_turma_escola = turesc.cd_turma_escola
+                    left join serie_turma_grade ON
+	                    serie_turma_grade.cd_turma_escola = ste.cd_turma_escola
+                    left join escola_grade ON
+	                    serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
+                    left join grade ON
+	                    escola_grade.cd_grade = grade.cd_grade
+                    left join serie_ensino se ON
+	                    grade.cd_serie_ensino = se.cd_serie_ensino
+                    where
+	                  	turesc.an_letivo = @anoLetivo
+	                    and turesc.cd_tipo_turma = 1
+	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  ) 
+	                    and se.cd_etapa_ensino in (5, 13)");
+
+				if (!string.IsNullOrEmpty(ueCodigo))
+					query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
+
+				if (dreCodigo > 0)
+					query.Append("and dre.cd_unidade_educacao = @dreCodigo ");
+
+				if (!string.IsNullOrEmpty(anoTurma))
+					query.Append("and se.sg_resumida_serie = @anoTurma ");
+			}
 
             var parametros = new { dreCodigo, ueCodigo, anoTurma, anoLetivo, dataFim = dataReferencia };
 
