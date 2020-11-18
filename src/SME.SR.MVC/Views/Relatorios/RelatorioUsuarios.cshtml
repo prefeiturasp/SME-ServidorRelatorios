@@ -23,8 +23,9 @@
     string MontarCabecalho()
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        
         var str =
-            $@"<div>
+    $@"<div>
       <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
    </div>
    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
@@ -89,7 +90,7 @@
                         {
                             str += $@"</table>{retornoVerificacao}";
                             EhUltimoUsuario = true;
-                        }                       
+                        }
                     }
                 }
                 str += $@"</table>";
@@ -197,6 +198,11 @@
                         str += $@"</table>{retornoVerificacao}";
                         EhUltimohistorico = true;
                     }
+                }
+                else
+                {
+                    if (historico == ultimohistorico)
+                        EhUltimohistorico = true;
                 }
             }
             str += $@"</table>";
