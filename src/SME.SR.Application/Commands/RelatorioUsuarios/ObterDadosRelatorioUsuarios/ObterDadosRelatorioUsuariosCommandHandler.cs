@@ -33,20 +33,23 @@ namespace SME.SR.Application
             if (request.FiltroRelatorio.Situacoes.Any())
                 FiltrarSituacoesUsuario(usuarios, request.FiltroRelatorio.Situacoes);
 
-            return await ObterUsuariosPorDre(usuarios);
+            return await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico);
         }
 
-        private async Task<IEnumerable<DreUsuarioDto>> ObterUsuariosPorDre(IEnumerable<DadosUsuarioDto> usuarios)
+        private async Task<IEnumerable<DreUsuarioDto>> ObterUsuariosPorDre(IEnumerable<DadosUsuarioDto> usuarios, bool exibirHistorico)
         {
             var listaDresDto = new List<DreUsuarioDto>();
 
-            foreach (var grupoDre in usuarios.GroupBy(a => a.Dre))
+            foreach (var grupoDre in usuarios.GroupBy(a => (a.DreCodigo, a.Dre)))
             {
                 var dreDto = new DreUsuarioDto();
-                dreDto.Nome = grupoDre.Key;
+                dreDto.Nome = grupoDre.Key.Dre;
 
                 dreDto.Perfis = ObterUsuariosPorPerfil(ObterUsuariosDre(grupoDre));
                 dreDto.Ues = await ObterUes(grupoDre);
+
+                if (exibirHistorico)
+                    dreDto.HistoricoReinicioSenha = await ObterHistoricoReinicioSenhaDre(grupoDre.Key.DreCodigo);
 
                 listaDresDto.Add(dreDto);
             }
@@ -54,7 +57,10 @@ namespace SME.SR.Application
             return listaDresDto;
         }
 
-        private async Task<IEnumerable<UePorPerfilUsuarioDto>> ObterUes(IGrouping<string, DadosUsuarioDto> usuarios)
+        private async Task<IEnumerable<HistoricoReinicioSenhaDto>> ObterHistoricoReinicioSenhaDre(string DreCodigo)
+            => await mediator.Send(new ObterHistoricoReinicioSenhaUsuarioPorDreQuery(DreCodigo));
+
+        private async Task<IEnumerable<UePorPerfilUsuarioDto>> ObterUes(IGrouping<(string DreCodigo, string Dre), DadosUsuarioDto> usuarios)
         {
             var listaUesDto = new List<UePorPerfilUsuarioDto>();
             foreach (var grupoUe in usuarios.GroupBy(c => c.Ue))
@@ -134,7 +140,7 @@ namespace SME.SR.Application
                 };
         }
 
-        private IEnumerable<DadosUsuarioDto> ObterUsuariosDre(IGrouping<string, DadosUsuarioDto> usuariosDre)
+        private IEnumerable<DadosUsuarioDto> ObterUsuariosDre(IGrouping<(string DreCodigo, string Dre), DadosUsuarioDto> usuariosDre)
         {
             return usuariosDre.Where(c => new[] { TipoPerfil.SME, TipoPerfil.DRE }.Contains(c.TipoPerfil));
         }

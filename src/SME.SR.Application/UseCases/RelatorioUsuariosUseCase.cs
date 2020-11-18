@@ -28,7 +28,6 @@ namespace SME.SR.Application
                 await ObterDadosRelatorioUsuarios(relatorioDto, filtro);
 
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioUsuarios", relatorioDto, request.CodigoCorrelacao));
-
             }
             catch (Exception ex)
             {

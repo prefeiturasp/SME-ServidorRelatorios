@@ -58,7 +58,8 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<DadosUsuarioDto>> ObterUsuariosAbrangenciaPorAcesso(string dreCodigo, string ueCodigo, string usuarioRf, Guid[] perfis, int diasSemAcesso)
         {
-            var query = new StringBuilder(@"select distinct a.dre_abreviacao as Dre
+            var query = new StringBuilder(@"select distinct a.dre_codigo as DreCodigo
+	                                        , a.dre_abreviacao as Dre
 	                                        , ue.Nome as Ue
 	                                        , a.usuario_perfil as PerfilGuid
 	                                        , pp.nome_perfil as Perfil
@@ -95,8 +96,9 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<HistoricoReinicioSenhaDto>> ObterHistoricoReinicioSenhaUsuarioPorDre(string codigoDre)
         {
-            string query = @"select hrs.ue_codigo, hrs.usuario_rf, hrs.criado_em as Senha_Reiniciada, hrs.criado_por as senha_reiniciada_por
+            string query = @"select hrs.usuario_rf Rf, u.Nome , hrs.criado_em as SenhaReiniciada, hrs.criado_por as SenhaReiniciadaPor
                               from historico_reinicio_senha hrs
+                             inner join usuario u on u.rf_codigo = hrs.usuario_rf
                              where dre_codigo = @codigoDre
                                and hrs.id in (select hrs1.id 
 				                                from historico_reinicio_senha hrs1
@@ -110,9 +112,16 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<HistoricoReinicioSenhaDto>(query, new { codigoDre });
             }
         }
+
+        public async Task<IEnumerable<PrioridadePerfil>> ObterListaPrioridadePerfil()
+        {
+            string query = @"select codigo_perfil as CodigoPerfil, nome_perfil as NomePerfil, ordem, tipo
+                            from public.prioridade_perfil";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<PrioridadePerfil>(query);
+            }
+        }
     }
 }
-
-        
-    
-

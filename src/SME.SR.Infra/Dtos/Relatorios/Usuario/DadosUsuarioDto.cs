@@ -7,6 +7,7 @@ namespace SME.SR.Infra
 {
     public class DadosUsuarioDto
     {
+        public string DreCodigo { get; set; }
         public string Dre { get; set; }
         public string Ue { get; set; }
         public Guid PerfilGuid { get; set; }
