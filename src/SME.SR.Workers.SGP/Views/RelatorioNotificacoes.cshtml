@@ -1,17 +1,19 @@
 ﻿@model SME.SR.Infra.RelatorioNotificacaoDto
+@using System.Text.RegularExpressions;
+@using SME.SR.Infra.Utilitarios;
 
 @{
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
-    bool montarCabecalhoObj = true;
+    bool montarCabecalho = true;
 
     string VerificaQuebra()
     {
         if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
         {
             contadorQuebrarPagina = 0;
-            montarCabecalhoObj = true;
+            montarCabecalho = true;
 
             var str = MontarCabecalho();
             return $@"<div style='page-break-before:always' />" + str;
@@ -22,35 +24,35 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina += 7;
+        contadorQuebrarPagina += 6;
         var str =
            $@"<div>
-    <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
 <div class='titulo-plano-aula'>
-    <p style='margin-bottom: 0'>
-        RELATÓRIO DE NOTIFICAÇÕES
-    </p>
+<p style='margin-bottom: 0'>
+RELATÓRIO DE NOTIFICAÇÕES
+</p>
 </div>
 <div class='fonte-14 header-pagina'>
-    <table class='tblTopo'>
-        <tbody>
-            <tr>
-                <td width='50%'>DRE: {Model.CabecalhoDRE}</td>
-                <td width='50%'>UE: {Model.CabecalhoUE}</td>
-            </tr>
-        </tbody>
-    </table>
-    <table>
-        <tbody>
-            <tr>
-                <td class='campo-usuario'>PROFESSOR: {Model.CabecalhoUsuario}</td>
-                <td class='campo-rf-data'>RF: {Model.CabecalhoUsuarioRF}</td>
-                <td class='campo-rf-data'>DATA: {Model.DataRelatorio}</td>
-            </tr>
-        </tbody>
-    </table>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td width='50%'>DRE: {Model.CabecalhoDRE}</td>
+<td width='50%'>UE: {Model.CabecalhoUE}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td class='campo-usuario'>PROFESSOR: {Model.CabecalhoUsuario}</td>
+<td class='campo-rf-data'>RF: {Model.CabecalhoUsuarioRF}</td>
+<td class='campo-rf-data'>DATA: {Model.DataRelatorio:dd/MM/yyyy}</td>
+</tr>
+</tbody>
+</table>
 </div>";
         return str;
 
@@ -60,25 +62,25 @@
     {
         contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
-        <tr>
-            <td width='100%' class='td-turma-bimestre'>{descricao}</td>
-        </tr>
-    </table>";
+<tr>
+<td width='100%' class='td-turma-bimestre'>{descricao}</td>
+</tr>
+</table>";
     }
 
     string MontaCabecalhoEstrutura()
     {
-        contadorQuebrarPagina += 2;
+        contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
-                <tr>
-                    <td width='14%' class='td-titulo'>CÓDIGO DA NOTIFICAÇÃO</td>
-                    <td width='26%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
-                    <td width='10%' class='td-titulo'>CATEGORIA</td>
-                    <td width='12%' class='td-titulo'>TIPO</td>
-                    <td width='12%' class='td-titulo'>SITUAÇÃO</td>
-                    <td width='12%' class='td-titulo'>DATA DE RECEBIMENTO</td>
-                    <td width='12%' class='td-titulo'>DATA DE LEITURA/AÇÃO</td>
-                </tr>";
+<tr>
+    <td width='12%' class='td-titulo'>CÓDIGO</td>
+    <td width='26%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
+    <td width='11%' class='td-titulo'>CATEGORIA</td>
+    <td width='12%' class='td-titulo'>TIPO</td>
+    <td width='12%' class='td-titulo'>SITUAÇÃO</td>
+    <td width='14%' class='td-titulo'>RECEBIMENTO</td>
+    <td width='14%' class='td-titulo'>LEITURA/AÇÃO</td>
+</tr>";
     }
 
     string MontaEstrutura()
@@ -98,47 +100,110 @@
                 foreach (var usuario in ue.Usuarios)
                 {
                     str += MontaTitulo(usuario.Nome);
-                    str += MontaCabecalhoEstrutura();
+
                     var ultimaNotificacao = usuario.Notificacoes.Last();
                     foreach (var notificacao in usuario.Notificacoes)
                     {
-                        str += $@"<tr>
-                        <td width='14%' class='td-valor'>{notificacao.Codigo}</td>
-                        <td width='26%' class='td-valor'>{notificacao.Titulo}</td>
-                        <td width='10%' class='td-valor'>{notificacao.Categoria}</td>
-                        <td width='12%' class='td-valor'>{notificacao.Tipo}</td>
-                        <td width='12%' class='td-valor'>{notificacao.Situacao}</td>
-                        <td width='12%' class='td-valor'>{notificacao.DataRecebimento}</td>
-                        <td width='12%' class='td-valor'>{notificacao.DataLeitura}</td>
-                    </tr>";
-
-                        if((int)(notificacao.DataRecebimento.ToString().Length / 29) > 2)
+                        if (montarCabecalho)
                         {
-                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 29 ? (int)(notificacao.DataRecebimento.ToString().Length / 29) + 1 : 1);
-                        } else
+                            str += MontaCabecalhoEstrutura();
+                            montarCabecalho = false;
+                        }
+                        str += $@"<tr>
+                            <td width='14%' class='td-valor'>{notificacao.Codigo}</td>
+                            <td width='26%' class='td-valor'>{notificacao.Titulo}</td>
+                            <td width='10%' class='td-valor'>{notificacao.Categoria}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Tipo}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Situacao}</td>
+                            <td width='12%' class='td-valor'>{notificacao.DataRecebimento}</td>
+                            <td width='12%' class='td-valor'>{notificacao.DataLeitura}</td>
+                        </tr>";
+
+                        if ((int)(notificacao.Titulo.ToString().Length / 29) > 2)
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 29 ? (int)(notificacao.Titulo.ToString().Length / 29) + 1 : 1);
+                        }
+                        else
                         {
                             contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 11 ? (int)(notificacao.DataRecebimento.ToString().Length / 11) + 1 : 1);
+                        }
+                        if(notificacao.Codigo == 243081)
+                        {
+                            var i = 0;
                         }
 
                         retornoVerificacao = VerificaQuebra();
                         if (retornoVerificacao != string.Empty)
                         {
-                            if(notificacao == ultimaNotificacao)
+                            if (notificacao == ultimaNotificacao)
                             {
                                 str = str + $@"</table>{retornoVerificacao}<table>";
-                            } else
+                            }
+                            else
                             {
-                                str = str + $@"</table>{retornoVerificacao}{MontaTitulo(usuario.Nome)}{MontaCabecalhoEstrutura()}";
+                                if (notificacao.Mensagem != "")
+                                {
+                                    str += $@"</table>{retornoVerificacao}";
+                                    str += MontaTitulo(usuario.Nome);
+                                    str += $@"<table class='fixed'>";
+                                } else
+                                {
+                                    str = str + $@"</table>{retornoVerificacao}{MontaTitulo(usuario.Nome)}{MontaCabecalhoEstrutura()}";
+                                }
+
                             }
 
                         }
+                        if (notificacao.Mensagem != "")
+                        {
+                            str += $@"<tr><td colspan='7' width='100%' class='td-titulo'>DESCRIÇÃO</td></tr>";
+                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                            int tamanho = 0;
+                            var mensagem = Regex.Replace(notificacao.Mensagem, @"<[^>]*>", String.Empty);
+                            mensagem = Regex.Replace(mensagem, @"&nbsp;", " ").Trim();
+                            str += "<tr><td colspan='7' style='padding:5px;font-size: 14.5px'>";
+                            for (int i = 0; i < mensagem.Length; i++)
+                            {
+
+                                if (tamanho <= 90)
+                                {
+                                    str += mensagem[i];
+                                    tamanho = tamanho + 1;
+                                }
+                                else
+                                {
+                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                                    retornoVerificacao = VerificaQuebra();
+                                    if (retornoVerificacao != string.Empty)
+                                    {
+                                        str += $@"</td></tr></table>{retornoVerificacao}";
+                                        str += MontaTitulo(usuario.Nome);
+                                        str += $@"<table class='fixed'><tr><td colspan='7' width='100%' class='td-titulo'>DESCRIÇÃO</td></tr><tr><td colspan='7' style='padding:5px;font-size: 14.5px'>";
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                                    }
+                                    else
+                                    {
+                                        str += retornoVerificacao;
+                                    }
+
+                                    tamanho = 0;
+                                    str += mensagem[i];
+                                }
+                            }
+
+                            str += "</td></tr><tr><td colspan='7' style='border-top:none;border-bottom:none'><br/></td></tr>";
+                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                        }
                     }
                     str += "</table>";
-                    if (usuario != ultimoUsuario && contadorQuebrarPagina != 7)
+                    if (usuario != ultimoUsuario && contadorQuebrarPagina != 6)
                     {
                         str += LinhaEmBranco();
                         contadorQuebrarPagina += 1;
                     }
+                    montarCabecalho = true;
                 }
 
                 if (ue != ultimaUe)
@@ -320,8 +385,8 @@
         .td-titulo {
             background-color: #f3f3f3;
             text-align: center;
-            font-size: 12px;
-            padding: 10px;
+            font-size: 14px;
+            padding: 5px;
             border-bottom: none;
         }
 

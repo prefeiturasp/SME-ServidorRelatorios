@@ -10,8 +10,8 @@ namespace SME.SR.Infra
         public string UsuarioNome { get; set; }
         public string UsuarioRf { get; set; }
         public long AnoLetivo { get; set; }
-        public long DRE { get; set; }
-        public long UE { get; set; }
+        public string DRE { get; set; }
+        public string UE { get; set; }
         public Modalidade ModalidadeTurma { get; set; }
         public int Semestre { get; set; }
         public long Turma { get; set; }
