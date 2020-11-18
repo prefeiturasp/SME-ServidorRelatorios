@@ -93,8 +93,6 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<DadosUsuarioDto>(query.ToString(), new { dreCodigo, ueCodigo, usuarioRf, perfis, diasSemAcesso });
             }
         }
-    }
-}
 
         public async Task<IEnumerable<HistoricoReinicioSenhaDto>> ObterHistoricoReinicioSenhaUsuarioPorDre(string codigoDre)
         {
@@ -106,7 +104,7 @@ namespace SME.SR.Data
 				                               where hrs1.usuario_rf = hrs.usuario_rf
 				                               order by criado_em desc 
 				                               limit 10)
-                                order by hrs.ue_codigo, hrs.usuario_rf, hrs.criado_em desc";            
+                                order by hrs.ue_codigo, hrs.usuario_rf, hrs.criado_em desc";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -115,3 +113,7 @@ namespace SME.SR.Data
         }
     }
 }
+
+        
+    
+
