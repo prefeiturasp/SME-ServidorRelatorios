@@ -56,12 +56,11 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<DadosUsuarioDto>> ObterUsuariosAbrangenciaPorAcesso(string dreCodigo, string ueCodigo, string usuarioRf, string[] perfis, int diasSemAcesso)
+        public async Task<IEnumerable<DadosUsuarioDto>> ObterUsuariosAbrangenciaPorAcesso(string dreCodigo, string ueCodigo, string usuarioRf, Guid[] perfis, int diasSemAcesso)
         {
             var query = new StringBuilder(@"select distinct a.dre_abreviacao as Dre
-	                                        , ue.tipo_escola as TipoEscola
 	                                        , ue.Nome as Ue
-	                                        , a.usuario_perfil as CodigoPerfil
+	                                        , a.usuario_perfil as PerfilGuid
 	                                        , pp.nome_perfil as Perfil
 	                                        , pp.tipo as TipoPerfil
 	                                        , u.rf_codigo as Rf
@@ -73,10 +72,10 @@ namespace SME.SR.Data
                                          inner join prioridade_perfil pp on pp.codigo_perfil = a.usuario_perfil
                                           where true ");
 
-            if (!string.IsNullOrEmpty(dreCodigo))
+            if (!string.IsNullOrEmpty(dreCodigo) && !dreCodigo.Equals("-99"))
                 query.AppendLine("and a.dre_codigo = @dreCodigo");
 
-            if (!string.IsNullOrEmpty(ueCodigo))
+            if (!string.IsNullOrEmpty(ueCodigo) && !ueCodigo.Equals("-99"))
                 query.AppendLine("and a.ue_codigo = @ueCodigo");
 
             if (!string.IsNullOrEmpty(usuarioRf))

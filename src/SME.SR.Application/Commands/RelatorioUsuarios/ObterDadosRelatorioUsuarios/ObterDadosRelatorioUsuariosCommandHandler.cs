@@ -106,7 +106,8 @@ namespace SME.SR.Application
 
         private IEnumerable<DadosUsuarioDto> FiltrarProfessores(IGrouping<string, DadosUsuarioDto> usuarios)
         {
-            return usuarios.Where(c => EhPerfilProfessor(c.PerfilGuid));
+            return usuarios.Where(c => EhPerfilProfessor(c.PerfilGuid))
+                        .DistinctBy(a => a.Nome);
         }
 
         private IEnumerable<PerfilUsuarioDto> ObterUsuariosPorPerfil(IEnumerable<DadosUsuarioDto> usuarios)

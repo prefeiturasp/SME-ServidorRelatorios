@@ -19,13 +19,21 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtro = request.ObterObjetoFiltro<FiltroRelatorioUsuariosDto>();
-            var relatorioDto = new RelatorioUsuarioDto();
+            try
+            {
+                var filtro = request.ObterObjetoFiltro<FiltroRelatorioUsuariosDto>();
+                var relatorioDto = new RelatorioUsuarioDto();
 
-            await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
-            await ObterDadosRelatorioUsuarios(relatorioDto, filtro);
+                await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
+                await ObterDadosRelatorioUsuarios(relatorioDto, filtro);
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioUsuarios", relatorioDto, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioUsuarios", relatorioDto, request.CodigoCorrelacao));
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }        
         }
 
         private async Task ObterDadosRelatorioUsuarios(RelatorioUsuarioDto relatorioDto, FiltroRelatorioUsuariosDto filtro)
