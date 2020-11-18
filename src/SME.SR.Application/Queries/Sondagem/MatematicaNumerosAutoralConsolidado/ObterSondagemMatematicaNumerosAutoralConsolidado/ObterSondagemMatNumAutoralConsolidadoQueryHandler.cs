@@ -95,13 +95,18 @@ namespace SME.SR.Application
                 
                 var percentualNaoPreencheu = (diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
 
-                perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
-                {
-                    Resposta = "Sem preenchimento", 
-                    AlunosQuantidade = diferencaPreencheuNao,
-                    AlunosPercentual = percentualNaoPreencheu
+                var existePerguntasSemPreenchimento = perguntaResposta.Respostas.FirstOrDefault(p => p.Resposta == "Sem preenchimento");
 
-                });
+                if (existePerguntasSemPreenchimento == null)
+                {
+                    perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
+                    {
+                        Resposta = "Sem preenchimento",
+                        AlunosQuantidade = diferencaPreencheuNao,
+                        AlunosPercentual = percentualNaoPreencheu
+
+                    });
+                }
             }
         }
 
@@ -130,6 +135,22 @@ namespace SME.SR.Application
                 {
                     Pergunta = grupo,
                     Respostas = respostas
+                });
+            }
+            else
+            {
+                perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+                {
+                    Pergunta = grupo,
+                    Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>()
+                    {
+                        new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
+                        {
+                            AlunosPercentual = 100,
+                            AlunosQuantidade = TotalAlunosGeral,
+                            Resposta = "Sem preenchimento"
+                        }
+                    }
                 });
             }
         }
