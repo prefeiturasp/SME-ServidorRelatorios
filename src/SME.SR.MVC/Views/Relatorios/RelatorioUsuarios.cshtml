@@ -23,32 +23,32 @@
     string MontarCabecalho()
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 9;
-        
-        var str =
-    $@"<div>
-      <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-   </div>
-   <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-   <div class='titulo-relatorio'> RELATÓRIO DE USUÁRIOS</div>
-    <div class='fonte-14 header-pagina'>
-        <table class='tblTopo'>
-          <tbody>
-            <tr>
-              <td width ='50%'>DRE: {Model.Filtro.Dre}</td>
-              <td width ='50%'>UE: {Model.Filtro.Ue}</td>
-            </tr>
-          </tbody>
-        </table>
-        <table>
-          <tbody>
-            <tr>
-              <td class='campo-usuario'>USUÁRIO: {Model.Filtro.Usuario}</td>
-              <td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
-              <td class='campo-data-cabecalho'>DATA DE IMPRESSÃO: {Model.Filtro.Data:dd/MM/yyyy}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>";
+
+        var str = $@"<div>
+                      <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+                   </div>
+                   <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+                   <div class='titulo-relatorio'> RELATÓRIO DE USUÁRIOS</div>
+                    <div class='fonte-14 header-pagina'>
+                        <table class='tblTopo'>
+                          <tbody>
+                            <tr>
+                              <td width ='50%'>DRE: {Model.Filtro.Dre}</td>
+                              <td width ='50%'>UE: {Model.Filtro.Ue}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td class='campo-usuario'>USUÁRIO: {Model.Filtro.Usuario}</td>
+                              <td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
+                              <td class='campo-data-cabecalho'>DATA DE IMPRESSÃO: {Model.Filtro.Data:dd/MM/yyyy}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>";
+
         return str;
     }
 
