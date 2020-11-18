@@ -139,6 +139,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/graficopap")]
+        [Action("relatorios/graficopap", typeof(IRelatorioResumoPAPUseCase))]
+        public async Task<bool> RelatorioGraficoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGraficoPAPUseCase relatorioGraficoPAPUseCase)
+        {
+            await relatorioGraficoPAPUseCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorios/planoaula")]
         [Action("relatorios/planoaula", typeof(IRelatorioPlanoAulaUseCase))]
         public async Task<bool> RelatorioPlanoAula([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAulaUseCase relatorioPlanoAulaUseCase)
