@@ -32,6 +32,20 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<UsuarioCoreSSO> ObterDadosCoreSSO(string codigoRf)
+        {
+            string query = @"select usu_senha AS Senha
+                                , usu_criptografia AS TipoCriptografia
+                                , usu_situacao as Situacao 
+                                from SYS_Usuario 
+                               where usu_login = @codigoRf";
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringCoreSso))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<UsuarioCoreSSO>(query, new { codigoRf });
+            }
+        }
+
         public async Task<SituacaoUsuario> ObterSituacaoUsuarioPorRf(string usuarioRf)
         {
             string query = @"select usu_situacao from SYS_Usuario where usu_login = @usuarioRf";
