@@ -26,6 +26,18 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<Dre>(query, parametros);
             }
         }
+
+        public async Task<Dre> ObterPorId(long dreId)
+        {
+            var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre where id = @dreId";
+            var parametros = new { dreId };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<Dre>(query, parametros);
+            }
+        }
+
         public async Task<IEnumerable<Dre>> ObterTodas()
         {
             var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre";
