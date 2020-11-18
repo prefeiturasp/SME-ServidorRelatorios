@@ -140,7 +140,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/graficopap")]
-        [Action("relatorios/graficopap", typeof(IRelatorioResumoPAPUseCase))]
+        [Action("relatorios/graficopap", typeof(IRelatorioGraficoPAPUseCase))]
         public async Task<bool> RelatorioGraficoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGraficoPAPUseCase relatorioGraficoPAPUseCase)
         {
             await relatorioGraficoPAPUseCase.Executar(request);

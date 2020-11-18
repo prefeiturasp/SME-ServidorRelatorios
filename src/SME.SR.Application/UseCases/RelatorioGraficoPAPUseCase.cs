@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.UseCases
+namespace SME.SR.Application
 {
     public class RelatorioGraficoPAPUseCase : IRelatorioGraficoPAPUseCase
     {
@@ -93,35 +93,110 @@ namespace SME.SR.Application.UseCases
 
         private void AdicionarResultado(IEnumerable<ResumoPAPTotalResultadoDto> resultados, List<ResumoPAPGraficoDto> graficos)
         {
-
             foreach (var resultado in resultados)
             {
-                var grafico = new ResumoPAPGraficoDto();
-                grafico.Titulo = resultado.EixoDescricao;
-
                 foreach (var objetivo in resultado.Objetivos)
                 {
+                    var grafico = new ResumoPAPGraficoDto();
+                    grafico.Titulo = $"{resultado.EixoDescricao} - {objetivo.ObjetivoDescricao}" ;
+
                     foreach (var ano in objetivo.Anos)
                     {
+                        var graficoAno = new ResumoPAPGraficoAnoDto(ano.AnoDescricao);
 
+                        foreach (var resposta in ano.Respostas)
+                        {
+                            graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(resposta.Quantidade, (decimal)resposta.Porcentagem, resposta.RespostaDescricao));
+                        }
+
+                        var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+
+                        graficoAno.EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+
+                        grafico.Graficos.Add(graficoAno);
                     }
+
+                    graficos.Add(grafico);
                 }
             }
         }
 
-        private void AdicionarEncaminhamento(IEnumerable<ResumoPAPTotalResultadoDto> encaminhamento, List<ResumoPAPGraficoDto> graficos)
+        private void AdicionarEncaminhamento(IEnumerable<ResumoPAPTotalResultadoDto> encaminhamentos, List<ResumoPAPGraficoDto> graficos)
         {
-            throw new NotImplementedException();
+            foreach (var encaminhamento in encaminhamentos)
+            {
+                foreach (var objetivo in encaminhamento.Objetivos)
+                {
+                    var grafico = new ResumoPAPGraficoDto();
+                    grafico.Titulo = $"{encaminhamento.EixoDescricao} - {objetivo.ObjetivoDescricao}" ;
+
+                    foreach (var ano in objetivo.Anos)
+                    {
+                        var graficoAno = new ResumoPAPGraficoAnoDto(ano.AnoDescricao);
+
+                        foreach (var resposta in ano.Respostas)
+                        {
+                            graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(resposta.Quantidade, (decimal)resposta.Porcentagem, resposta.RespostaDescricao));
+                        }
+
+                        var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+
+                        graficoAno.EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+
+                        grafico.Graficos.Add(graficoAno);
+                    }
+
+                    graficos.Add(grafico);
+                }
+            }
         }
 
         private void AdicionarTotalFrequencia(ResumoPAPTotalEstudantePorFrequenciaDto totalFrequencia, List<ResumoPAPGraficoDto> graficos)
         {
-            throw new NotImplementedException();
+            var grafico = new ResumoPAPGraficoDto();
+            grafico.Titulo = "Frequência";
+
+            foreach (var frequencia in totalFrequencia.Frequencia)
+            {
+                foreach (var linha in frequencia.Linhas)
+                {
+                    var graficoAno = new ResumoPAPGraficoAnoDto("Frequência");
+
+                    foreach (var ano in linha.Anos)
+                    {
+                        graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(ano.Quantidade, (decimal)ano.Porcentagem, ano.DescricaoAno));
+                    }
+
+                    var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+
+                    graficoAno.EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+
+                    grafico.Graficos.Add(graficoAno);
+                }
+
+                graficos.Add(grafico);
+            }
         }
 
         private void AdicionarTotalEstudantes(ResumoPAPTotalEstudantesDto totalEstudantes, List<ResumoPAPGraficoDto> graficos)
         {
-            throw new NotImplementedException();
+            var grafico = new ResumoPAPGraficoDto();
+            grafico.Titulo = "Total Estudantes";
+
+            var graficoAno = new ResumoPAPGraficoAnoDto("Total Estudante");
+
+            foreach (var ano in totalEstudantes.Anos)
+            {
+                graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(ano.Quantidade, (decimal)ano.Porcentagem, ano.AnoDescricao));
+            }
+
+            var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+
+            graficoAno.EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+
+            grafico.Graficos.Add(graficoAno);
+
+            graficos.Add(grafico);
         }
 
         private async Task<IEnumerable<ResumoPAPTotalResultadoDto>> ObterResultados(FiltroRelatorioResumoPAPDto filtros)

@@ -4,7 +4,7 @@ namespace SME.SR.Infra
 {
     public class ResumoPAPGraficoAnoDto
     {
-        public ResumoPAPGraficoAnoDto(decimal larguraTotal, string titulo)
+        public ResumoPAPGraficoAnoDto(string titulo)
         {
             EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>();
             EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(10, "", 10, 10);
