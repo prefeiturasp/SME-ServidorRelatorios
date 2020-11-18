@@ -4641,5 +4641,184 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
             return View("RelatorioSondagemPortuguesConsolidado", model);
         }
+
+       [HttpGet("graficos-pap")]
+       public IActionResult RelatorioGraficosPAP() {
+
+
+            var graficosDto = new List<ResumoPAPGraficoDto>() { 
+                new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                    {
+                       new ResumoPAPGraficoAnoDto(800, "")
+                       {
+                           Titulo =  "3º Ano",
+                           EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                           {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico com valor sonoro"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Pré silábico"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico sem valor sonoro"),
+
+
+                           },
+                           EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                       }
+                    }
+                },
+                new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                    {
+                       new ResumoPAPGraficoAnoDto(800, "")
+                       {
+                           Titulo =  "4º Ano",
+                           EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                           {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico com valor sonoro"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Pré silábico"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico sem valor sonoro"),
+
+
+                           },
+                           EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                       }
+                    }
+                },
+                new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                    {
+                       new ResumoPAPGraficoAnoDto(800, "")
+                       {
+                           Titulo =  "5º Ano",
+                           EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                           {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico com valor sonoro"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Pré silábico"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico sem valor sonoro"),
+
+
+                           },
+                           EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                       }
+                    }
+                },
+                new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                    {
+                       new ResumoPAPGraficoAnoDto(800, "")
+                       {
+                           Titulo =  "6º Ano",
+                           EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                           {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico com valor sonoro"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Pré silábico"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico sem valor sonoro"),
+
+
+                           },
+                           EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                       }
+                    }
+                },
+                new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                    {
+                        new ResumoPAPGraficoAnoDto(800, "")
+                        {
+                            Titulo =  "7º Ano",
+                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                            {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico com valor sonoro"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Pré silábico"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico sem valor sonoro"),
+
+
+                            },
+                            EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                        }
+                    }
+                },
+                new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                    {
+                       new ResumoPAPGraficoAnoDto(800, "")
+                       {
+                           Titulo =  "8º Ano",
+                           EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                           {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico com valor sonoro"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Pré silábico"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico sem valor sonoro"),
+
+
+                           },
+                           EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                       }
+                    }
+                },
+                new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                    {
+                       new ResumoPAPGraficoAnoDto(800, "")
+                       {
+                           Titulo =  "9º Ano",
+                           EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                           {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico com valor sonoro"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Pré silábico"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico alfabético"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "Silábico sem valor sonoro"),
+
+
+                           },
+                           EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                       }
+                    }
+                },
+            };
+
+            var model = new GraficoPAPDto()
+            {
+                DreNome = "DRE - BT",
+                AnoLetivo = 2020,
+                Ciclo = "INTERDISCIPLINAR",
+                Ano = "4",
+                Turma = "Todas",
+                Periodo = "3º bimestre",
+                UsuarioNome = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                UsuarioRF = "9879878",
+                Data = DateTime.Now.ToString("dd/MM/yyyy"),
+                EhEncaminhamento = false,
+                GraficosDto = graficosDto
+            };
+            
+            return View("RelatorioGraficosPAP", model);
+       }
     }
 }
