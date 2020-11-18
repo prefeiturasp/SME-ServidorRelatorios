@@ -75,7 +75,7 @@ namespace SME.SR.Application
             }
 
             var notificacoes = await mediator.Send(new ObterNotificacoesFiltrosQuery(request.Filtros.AnoLetivo, request.Filtros.UsuarioBuscaRf,
-                categorias, tipos, situacoes, request.Filtros.ExibirDescricao, request.Filtros.ExibirNotificacoesExcluidas));
+                categorias, tipos, situacoes, request.Filtros.ExibirDescricao, request.Filtros.ExibirNotificacoesExcluidas, request.Filtros.DRE, request.Filtros.UE));
 
             dto = MapearNotificacoesDto(notificacoes);
 
@@ -126,15 +126,15 @@ namespace SME.SR.Application
         {
             var nomeDre = "TODAS";
             var nomeUe = "TODAS";
-            if (filtros.DRE != -99)
+            if (filtros.DRE != "-99")
             {
-                var dre = await mediator.Send(new ObterDrePorIdQuery(filtros.DRE));
+                var dre = await mediator.Send(new ObterDrePorCodigoQuery(filtros.DRE));
                 nomeDre = dre.Abreviacao;
             }
 
-            if (filtros.UE != -99)
+            if (filtros.UE != "-99")
             {
-                var ue = await mediator.Send(new ObterUePorIdQuery(filtros.UE));
+                var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UE));
                 nomeUe = $"{ue.Codigo} - {ue.TipoEscola.ShortName()} {ue.Nome}";
             }
 

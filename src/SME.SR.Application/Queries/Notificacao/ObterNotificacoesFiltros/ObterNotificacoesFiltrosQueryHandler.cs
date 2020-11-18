@@ -20,7 +20,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<NotificacaoDto>> Handle(ObterNotificacoesFiltrosQuery request, CancellationToken cancellationToken)
         {
             return await notificacaoRepository.ObterComFiltros(request.Ano, request.UsuarioRf, request.Categorias, request.Tipos, 
-                request.Situacoes, request.ExibirDescricao, request.ExibirExcluidas);
+                request.Situacoes, request.ExibirDescricao, request.ExibirExcluidas, request.DRE, request.UE);
         }
     }
 }

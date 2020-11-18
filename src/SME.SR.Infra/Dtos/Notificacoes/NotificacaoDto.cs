@@ -17,6 +17,7 @@ namespace SME.SR.Infra
         public NotificacaoStatus Situacao { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRf { get; set; }
+        public string Mensagem { get; set; }
         public DateTime DataRecebimento { get; set; }
         public DateTime? DataLeitura { get; set; }
         public long DreId { get; set; }

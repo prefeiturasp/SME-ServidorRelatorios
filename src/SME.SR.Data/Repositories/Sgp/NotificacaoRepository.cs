@@ -17,7 +17,8 @@ namespace SME.SR.Data.Repositories.Sgp
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<NotificacaoDto>> ObterComFiltros(long ano, string usuarioRf, long[] categorias, long[] tipos, long[] situacoes, bool exibirDescricao = false, bool exibirExcluidas = false)
+        public async Task<IEnumerable<NotificacaoDto>> ObterComFiltros(long ano, string usuarioRf, long[] categorias, long[] tipos, long[] situacoes, 
+			bool exibirDescricao = false, bool exibirExcluidas = false, string dre = "-99", string ue = "-99")
         {
 			var query = $@"select 
 							n.id as Codigo
@@ -35,7 +36,7 @@ namespace SME.SR.Data.Repositories.Sgp
 							,ue.nome as UeNome";
 
 			if (exibirDescricao)
-				query += ",n.mensagem as Descricao";
+				query += ",n.mensagem as Mensagem";
 			query += $@" from notificacao n 
 						inner join usuario u  on n.usuario_id = u.id
 						inner join dre on n.dre_id = dre.dre_id 
@@ -46,6 +47,10 @@ namespace SME.SR.Data.Repositories.Sgp
 						and n.status = ANY(@situacoes) ";
 			if (!exibirExcluidas)
 				query += " and n.excluida = false";
+			if (dre != "-99")
+				query += $" and n.dre_id = '{dre}'";
+			if (ue != "-99")
+				query += $" and n.ue_id = '{ue}'";
 			if (usuarioRf != "")
 				query += $" and u.rf_codigo = '{usuarioRf}'";
 

@@ -4671,9 +4671,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                             {
                                                 Codigo = 153726,
                                                 Titulo = "Relatório de Notas e Conceitos Finais",
-                                                Categoria = "Aviso",
-                                                Tipo = "Relatório",
-                                                Situacao = "Lida",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
                                                 DataRecebimento = DateTime.Now,
                                                 DataLeitura = DateTime.Now
                                             },
@@ -4681,9 +4681,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                             {
                                                 Codigo = 153726,
                                                 Titulo = "Relatório de Notas e Conceitos Finais",
-                                                Categoria = "Aviso",
-                                                Tipo = "Relatório",
-                                                Situacao = "Lida",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
                                                 DataRecebimento = DateTime.Now,
                                                 DataLeitura = DateTime.Now
                                             },
@@ -4691,9 +4691,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                             {
                                                 Codigo = 153726,
                                                 Titulo = "Relatório de Notas e Conceitos Finais",
-                                                Categoria = "Aviso",
-                                                Tipo = "Relatório",
-                                                Situacao = "Lida",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
                                                 DataRecebimento = DateTime.Now,
                                                 DataLeitura = DateTime.Now
                                             },
@@ -4701,9 +4701,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                             {
                                                 Codigo = 153726,
                                                 Titulo = "Relatório de Notas e Conceitos Finais",
-                                                Categoria = "Aviso",
-                                                Tipo = "Relatório",
-                                                Situacao = "Lida",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
                                                 DataRecebimento = DateTime.Now,
                                                 DataLeitura = DateTime.Now
                                             }
@@ -4723,9 +4723,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                             {
                                                 Codigo = 153726,
                                                 Titulo = "Relatório de Notas e Conceitos Finais",
-                                                Categoria = "Aviso",
-                                                Tipo = "Relatório",
-                                                Situacao = "Lida",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
                                                 DataRecebimento = DateTime.Now,
                                                 DataLeitura = DateTime.Now
                                             },
@@ -4733,9 +4733,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                             {
                                                 Codigo = 153726,
                                                 Titulo = "Relatório de Notas e Conceitos Finais",
-                                                Categoria = "Aviso",
-                                                Tipo = "Relatório",
-                                                Situacao = "Lida",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
                                                 DataRecebimento = DateTime.Now,
                                                 DataLeitura = DateTime.Now
                                             },
@@ -4743,9 +4743,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                             {
                                                 Codigo = 153726,
                                                 Titulo = "Relatório de Notas e Conceitos Finais",
-                                                Categoria = "Aviso",
-                                                Tipo = "Relatório",
-                                                Situacao = "Lida",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
                                                 DataRecebimento = DateTime.Now,
                                                 DataLeitura = DateTime.Now
                                             },
@@ -4753,9 +4753,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                             {
                                                 Codigo = 153726,
                                                 Titulo = "Relatório de Notas e Conceitos Finais",
-                                                Categoria = "Aviso",
-                                                Tipo = "Relatório",
-                                                Situacao = "Lida",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
                                                 DataRecebimento = DateTime.Now,
                                                 DataLeitura = DateTime.Now
                                             }
