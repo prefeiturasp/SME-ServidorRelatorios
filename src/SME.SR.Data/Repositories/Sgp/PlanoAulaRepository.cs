@@ -91,5 +91,19 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryFirstOrDefaultAsync<PlanoAulaDto>(query, parametros);
         }
+
+        public async Task<DateTime> ObterUltimoPlanoAulaProfessor(string professorRf)
+        {
+            var query = @"select max(pa.criado_em)
+                      from aula a 
+                      inner join plano_aula pa on pa.aula_id = a.id
+                     where not a.excluido
+                       and a.professor_rf = @professorRf";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<DateTime>(query, new { professorRf });
+            }
+        }
     }
 }
