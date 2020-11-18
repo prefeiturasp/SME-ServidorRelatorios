@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -74,6 +74,13 @@
                                 <td width='20%' class='td-valor'>{usuario.Situacao}</td>
                                 <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
                               </tr>";
+                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                    retornoVerificacao = VerificaQuebra();
+                    if(retornoVerificacao != string.Empty)
+                    {
+                        str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
+                    }
                 }
                 str += $@"</table>";
                 str += LinhaEmBranco();
@@ -93,6 +100,13 @@
                                     <td width='20%' class='td-valor'>{usuario.Situacao}</td>
                                     <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
                                   </tr>";
+                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                        retornoVerificacao = VerificaQuebra();
+                        if (retornoVerificacao != string.Empty)
+                        {
+                            str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
+                        }
                     }
                     str += $@"</table>";
                     str += LinhaEmBranco();
@@ -109,6 +123,13 @@
                                 <td width='30%' class='td-valor'>{professor.UltimoPlanoAulaRegistrado}</td>
                                 <td width='30%' class='td-valor'>{professor.UltimaFrequenciaRegistrada}</td>
                               </tr>";
+                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                    retornoVerificacao = VerificaQuebra();
+                    if (retornoVerificacao != string.Empty)
+                    {
+                        str += $@"</table>{retornoVerificacao}{MontarCabecalhoProfessor()}";
+                    }
                 }
                 str += $@"</table>";
                 str += LinhaEmBranco();
@@ -122,7 +143,7 @@
                            <td width='25%' class='td-valor'>{historico.Perfil}</td>
                            <td width='35%' class='td-valor'>{historico.SenhaReiniciada}</td>
                            <td width='35%' class='td-valor'>{historico.SenhaReiniciadaPor}</td>
-                           <td width='35%' class='td-valor'>{historico.UtilizaSenhaPadao}/td>                    
+                           <td width='35%' class='td-valor'>{historico.UtilizaSenhaPadao}</td>                    
                          </tr>";
             }
             str += $@"</table>";
@@ -133,6 +154,7 @@
 
     string MontarCabecalhoHistoricoReinicioSenha()
     {
+        contadorQuebrarPagina += 3;
         var str = $@"<table class='fixed'>
                         <tr>
                           <td width='100%' class='td-turma-bimestre'>
@@ -154,6 +176,7 @@
     }
     string MontaCabecalhoDREeUE(string descricao)
     {
+        contadorQuebrarPagina += 2;
         return $@"<table class='fixed'>
                     <tr>
                       <td width='100%' class='td-turma-bimestre'>{descricao}</td>
@@ -163,6 +186,7 @@
 
     string MontarCabecalhoPerfil(string descricao)
     {
+        contadorQuebrarPagina += 4;
         return $@"<table class='fixed'>
             <tr>
                 <td width='100%' class='td-turma-bimestre'>{descricao}</td>
@@ -179,6 +203,7 @@
 
     string MontarCabecalhoProfessor()
     {
+        contadorQuebrarPagina += 3;
         return $@"<table class='fixed'>
                     <tr>
                       <td width='100%' class='td-turma-bimestre'>
@@ -200,6 +225,7 @@
 
     string LinhaEmBranco()
     {
+        contadorQuebrarPagina += 1;
         return "<table><tr><td style='border-top:none;border-bottom:none'><br/></td></tr></table>";
     }
 }

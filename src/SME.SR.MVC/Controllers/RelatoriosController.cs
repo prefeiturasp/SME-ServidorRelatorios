@@ -4716,7 +4716,21 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     Nome = "Ana Luiza Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },                                
+                                },
+                                new UsuarioDto()
+                                {
+                                    Rf = "153726",
+                                    Nome = "Ana Luiza Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Rf = "153726",
+                                    Nome = "Ana Luiza Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
                             }
                         }
                     },
@@ -4724,7 +4738,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new UePorPerfilUsuarioDto()
                         {
-                            Nome = "",
+                            Nome = "CEU EMEF BUTANTA",
                             Perfis = new List<PerfilUsuarioDto>()
                             {
                                 new PerfilUsuarioDto()
