@@ -162,8 +162,6 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
-    }
-}
 
         [HttpGet("relatorios/notificacoes")]
         [Action("relatorios/notificacoes", typeof(IRelatorioNotificacaoUseCase))]

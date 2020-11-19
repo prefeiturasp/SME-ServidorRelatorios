@@ -51,7 +51,7 @@ namespace SME.SR.Data.Repositories.Sgp
 				query += $" and n.dre_id = '{dre}'";
 			if (ue != "-99")
 				query += $" and n.ue_id = '{ue}'";
-			if (usuarioRf != "")
+			if (!String.IsNullOrEmpty(usuarioRf))
 				query += $" and u.rf_codigo = '{usuarioRf}'";
 
 			using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
