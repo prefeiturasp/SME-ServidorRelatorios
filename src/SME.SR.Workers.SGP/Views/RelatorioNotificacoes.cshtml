@@ -154,7 +154,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                             }
 
                         }
-                        if (notificacao.Mensagem != "")
+                        if (notificacao.Mensagem != "" && notificacao.Mensagem != null)
                         {
                             str += $@"<tr><td colspan='7' width='100%' class='td-titulo'>DESCRIÇÃO</td></tr>";
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;
