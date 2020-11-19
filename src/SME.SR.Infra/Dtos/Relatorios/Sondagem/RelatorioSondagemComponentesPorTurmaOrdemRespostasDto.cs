@@ -6,6 +6,7 @@
         public int OrdemId { get; set; }
         public int PerguntaId { get; set; }
         public string Resposta { get { return TransformarSiglaResposta(_resposta); } set { _resposta = value; } }
+        public int OrdenacaoResposta { get; set; }
         private string TransformarSiglaResposta(string sigla)
         {
             return (sigla?.ToUpper()) switch
