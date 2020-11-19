@@ -142,6 +142,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
             services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
             services.TryAddScoped(typeof(IEventoRepository), typeof(EventoRepository));
+            services.TryAddScoped(typeof(INotificacaoRepository), typeof(NotificacaoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -176,6 +177,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioSondagemPortuguesConsolidadoUseCase, RelatorioSondagemPortuguesConsolidadoUseCase>();
             services.TryAddScoped<IRelatorioSondagemPtPorTurmaCapLeituraUseCase, RelatorioSondagemPtPorTurmaCapLeituraUseCase>();
             services.TryAddScoped<IRelatorioSondagemPtConsolidadoLeitEscProdUseCase, RelatorioSondagemPtConsolidadoLeitEscProdUseCase>();
+            services.TryAddScoped<IRelatorioNotificacaoUseCase, RelatorioNotificacaoUseCase>();
 
         }
     }
