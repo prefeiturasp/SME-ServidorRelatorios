@@ -5,9 +5,7 @@ using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -56,8 +54,9 @@ namespace SME.SR.Application
                 var tipoRelatorio = filtros.ProficienciaId == ProficienciaSondagemEnum.Leitura ? "Leitura" : "Escrita";
                 GerarGraficoLeituraEscrita(relatorio, tipoRelatorio);
             }
-            if(filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && (filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() 
-                || filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name())){
+            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && (filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name()
+                || filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name()))
+            {
                 var tipoRelatorio = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ? "Leitura em voz alta" : "Produção de texto";
                 GerarGraficoLeituraEmVozAltaProducaoTexto(relatorio, tipoRelatorio);
             }
@@ -70,30 +69,55 @@ namespace SME.SR.Application
             var grafico = new GraficoBarrasVerticalDto(800, $"Língua Portuguesa - {tipoRelatorio}");
             int chaveIndex = 0;
             var legendas = new List<GraficoBarrasLegendaDto>();
+            var respostasAgrupadas = new List<RepostaTotalDto>();
+            var totalSemPreenchimento = 0;
 
             foreach (var aluno in relatorio.Planilha.Linhas)
             {
-                var resposta = aluno.Respostas[0].Resposta.Trim() != "" ? aluno.Respostas[0].Resposta : "Sem preenchimento";
-                var legendaResposta = legendas.FirstOrDefault(l => l.Valor == resposta);
-                var chave = legendaResposta != null? legendaResposta.Chave : Constantes.ListaChavesGraficos[chaveIndex].ToString();
-
-                if (legendaResposta == null)
+                var resposta = aluno.Respostas[0].Resposta;
+                if (!string.IsNullOrEmpty(resposta))
                 {
-                    legendas.Add(new GraficoBarrasLegendaDto()
+                    var respostaAgrupada = respostasAgrupadas.FirstOrDefault(r => r.Resposta == resposta);
+                    if (respostaAgrupada != null)
                     {
-                        Chave = chave,
-                        Valor = resposta
-                    });
-                    chaveIndex++;
-                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(0, chave));
+                        respostaAgrupada.Quantidade++;
+                    }
+                    else
+                    {
+                        respostasAgrupadas.Add(new RepostaTotalDto()
+                        {
+                            Resposta = resposta,
+                            Quantidade = 1,
+                        });
+                    }
                 }
-
-                var graficoEixoX = grafico.EixosX.FirstOrDefault(g => g.Titulo == chave);
-
-                if(graficoEixoX != null)
+                else
                 {
-                    graficoEixoX.Valor++;
+                    totalSemPreenchimento++;
                 }
+            }
+
+            respostasAgrupadas = respostasAgrupadas.OrderBy(r => r.Resposta).ToList();
+
+            if (totalSemPreenchimento > 0)
+            {
+                respostasAgrupadas.Add(new RepostaTotalDto()
+                {
+                    Resposta= "Sem Preenchimento",
+                    Quantidade = totalSemPreenchimento
+                });
+            }
+
+            foreach (var resposta in respostasAgrupadas)
+            {
+                var chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                legendas.Add(new GraficoBarrasLegendaDto()
+                {
+                    Chave = chave,
+                    Valor = resposta.Resposta
+                });
+                chaveIndex++;
+                grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(resposta.Quantidade, chave));
             }
             var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
             grafico.Legendas = legendas;
@@ -133,7 +157,7 @@ namespace SME.SR.Application
                 foreach (var pergunta in relatorio.Cabecalho.Perguntas)
                 {
                     var respostaAluno = aluno.Respostas.FirstOrDefault(r => r.PerguntaId == pergunta.Id && !string.IsNullOrEmpty(r.Resposta));
-                    if(respostaAluno != null)
+                    if (respostaAluno != null)
                     {
                         var legenda = legendas.FirstOrDefault(l => l.Valor == pergunta.Nome);
                         var valorEixoX = grafico.EixosX.FirstOrDefault(e => e.Titulo == legenda.Chave);
@@ -141,7 +165,7 @@ namespace SME.SR.Application
                         totalRespostas++;
                     }
                 }
-                if(totalRespostas == 0)
+                if (totalRespostas == 0)
                 {
                     var valorEixoX = grafico.EixosX.FirstOrDefault(e => e.Titulo == chaveLegendaSemPreenchimento);
                     valorEixoX.Valor++;
@@ -159,9 +183,9 @@ namespace SME.SR.Application
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });
             var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
             var turma = await mediator.Send(new ObterTurmaSondagemEolPorCodigoQuery(Int32.Parse(filtros.TurmaCodigo)));
-            
+
             var proficiencia = !String.IsNullOrEmpty(filtros.GrupoId) ? filtros.GrupoId : filtros.ProficienciaId.ToString();
-            if(proficiencia == GrupoSondagemEnum.CapacidadeLeitura.Name())
+            if (proficiencia == GrupoSondagemEnum.CapacidadeLeitura.Name())
             {
                 proficiencia = GrupoSondagemEnum.CapacidadeLeitura.ShortName();
             }

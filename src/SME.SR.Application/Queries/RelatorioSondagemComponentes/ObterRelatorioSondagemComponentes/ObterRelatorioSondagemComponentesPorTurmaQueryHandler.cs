@@ -176,38 +176,46 @@ namespace SME.SR.Application
         {
             relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
 
-
             foreach (var pergunta in relatorio.Cabecalho.Perguntas)
             {
+                var respostasPorPergunta = new List<RepostaTotalDto>();
                 var grafico = new GraficoBarrasVerticalDto(420, pergunta.Nome);
                 var legendas = new List<GraficoBarrasLegendaDto>();
                 int chaveIndex = 0;
-                string chave = String.Empty;
                 foreach (var linha in relatorio.Planilha.Linhas)
                 {
                     var resposta = linha.OrdensRespostas.FirstOrDefault(r => r.PerguntaId == pergunta.Id);
                     if (resposta != null)
                     {
-                        var legenda = legendas.FirstOrDefault(l => l.Valor == (string.IsNullOrEmpty(resposta.Resposta) ? "Sem Preenchimento" : resposta.Resposta));
-                        if (legenda == null)
+                        var perguntaResposta = respostasPorPergunta.FirstOrDefault(pr => pr.Resposta == resposta.Resposta);
+                        if (perguntaResposta != null)
                         {
-                            chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
-                            legenda = new GraficoBarrasLegendaDto()
-                            {
-                                Chave = chave,
-                                Valor = string.IsNullOrEmpty(resposta.Resposta) ? "Sem Preenchimento" : resposta.Resposta
-                            };
-                            legendas.Add(legenda);
+                            perguntaResposta.Quantidade++;
                         }
-                        var dadoEixoX = grafico.EixosX.FirstOrDefault(g => g.Titulo == legenda.Chave);
-                        if (dadoEixoX != null)
-                            dadoEixoX.Valor++;
                         else
-                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(1, chave));
+                        {
+                            respostasPorPergunta.Add(new RepostaTotalDto()
+                            {
+                                OrdenacaoResposta = string.IsNullOrEmpty(resposta.Resposta) ? 99 : resposta.OrdenacaoResposta,
+                                Quantidade = 1,
+                                Resposta = resposta.Resposta
+                            });
+                        }
                     }
                 }
-                var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
+                foreach (var resposta in respostasPorPergunta.OrderBy(r => r.OrdenacaoResposta))
+                {
+                    var chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                    legendas.Add(new GraficoBarrasLegendaDto()
+                    {
+                        Chave = chave,
+                        Valor = string.IsNullOrEmpty(resposta.Resposta) ? "Sem Preenchimento" : resposta.Resposta
+                    });
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(resposta.Quantidade, chave));
+                }
+
+                var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
                 grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
                 grafico.Legendas = legendas;
                 relatorio.GraficosBarras.Add(grafico);
@@ -375,6 +383,7 @@ namespace SME.SR.Application
                             OrdemId = 0,
                             PerguntaId = pergunta.Id,
                             Resposta = resposta.Resposta,
+                            OrdenacaoResposta = resposta.OrdenacaoResposta
                         });
                     }
                     else
