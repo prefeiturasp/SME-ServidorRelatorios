@@ -18,7 +18,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<DateTime> ObterUltimoDiarioBordoProfessor(string professorRf)
+        public async Task<DateTime?> ObterUltimoDiarioBordoProfessor(string professorRf)
         {
             var query = @"select max(d.criado_em)
                           from aula a 

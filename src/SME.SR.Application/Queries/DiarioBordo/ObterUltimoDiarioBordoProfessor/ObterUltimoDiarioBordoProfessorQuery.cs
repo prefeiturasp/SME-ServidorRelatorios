@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SME.SR.Application
 {
-    public class ObterUltimoDiarioBordoProfessorQuery : IRequest<DateTime>
+    public class ObterUltimoDiarioBordoProfessorQuery : IRequest<DateTime?>
     {
         public ObterUltimoDiarioBordoProfessorQuery(string professorRf)
         {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterUltimaFrequenciaRegistradaProfessorQueryHandler : IRequestHandler<ObterUltimaFrequenciaRegistradaProfessorQuery, DateTime>
+    public class ObterUltimaFrequenciaRegistradaProfessorQueryHandler : IRequestHandler<ObterUltimaFrequenciaRegistradaProfessorQuery, DateTime?>
     {
         private readonly IFrequenciaAlunoRepository frequenciaRepository;
 
@@ -17,7 +17,7 @@ namespace SME.SR.Application
             this.frequenciaRepository = frequenciaRepository ?? throw new ArgumentNullException(nameof(frequenciaRepository));
         }
 
-        public async Task<DateTime> Handle(ObterUltimaFrequenciaRegistradaProfessorQuery request, CancellationToken cancellationToken)
+        public async Task<DateTime?> Handle(ObterUltimaFrequenciaRegistradaProfessorQuery request, CancellationToken cancellationToken)
             => await frequenciaRepository.ObterUltimaFrequenciaRegistradaProfessor(request.ProfessorRf);
     }
 }

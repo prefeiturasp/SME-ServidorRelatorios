@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterUltimaAulaCadastradaProfessorQueryHandler : IRequestHandler<ObterUltimaAulaCadastradaProfessorQuery, DateTime>
+    public class ObterUltimaAulaCadastradaProfessorQueryHandler : IRequestHandler<ObterUltimaAulaCadastradaProfessorQuery, DateTime?>
     {
         private readonly IAulaRepository aulaRepository;
 
@@ -17,7 +17,7 @@ namespace SME.SR.Application
             this.aulaRepository = aulaRepository ?? throw new ArgumentNullException(nameof(aulaRepository));
         }
 
-        public async Task<DateTime> Handle(ObterUltimaAulaCadastradaProfessorQuery request, CancellationToken cancellationToken)
+        public async Task<DateTime?> Handle(ObterUltimaAulaCadastradaProfessorQuery request, CancellationToken cancellationToken)
             => await aulaRepository.ObterUltimaAulaCadastradaProfessor(request.ProfessorRf);
     }
 }

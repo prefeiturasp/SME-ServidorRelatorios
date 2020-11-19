@@ -7,6 +7,6 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IDiarioBordoRepository
     {
-        Task<DateTime> ObterUltimoDiarioBordoProfessor(string professorRf);
+        Task<DateTime?> ObterUltimoDiarioBordoProfessor(string professorRf);
     }
 }

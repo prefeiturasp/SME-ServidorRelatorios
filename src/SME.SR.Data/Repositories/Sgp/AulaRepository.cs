@@ -312,13 +312,13 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<DateTime> ObterUltimaAulaCadastradaProfessor(string professorRf)
+        public async Task<DateTime?> ObterUltimaAulaCadastradaProfessor(string professorRf)
         {
             var query = @"select max(criado_em) from aula where not excluido and professor_rf = @professorRf";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<DateTime>(query, new { professorRf });
+                return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }
         }
     }

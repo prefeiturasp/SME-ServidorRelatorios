@@ -95,9 +95,9 @@ namespace SME.SR.Application
                     Nome = usuario.Nome,
                     Situacao = usuario.Situacao.Name(),
                     UltimoAcesso = usuario.UltimoAcesso.ToString("dd/MM/yyyy HH:mm"),
-                    UltimaAulaRegistrada = ultimaAulaRegistrada.ToString("dd/MM/yyyy HH:mm"),
-                    UltimaFrequenciaRegistrada = ultimaFrequenciaRegistrada.ToString("dd/MM/yyyy HH:mm"),
-                    UltimoPlanoAulaRegistrado = ultimoPlanoAulaCadastrado.ToString("dd/MM/yyyy HH:mm")
+                    UltimaAulaRegistrada = ultimaAulaRegistrada?.ToString("dd/MM/yyyy HH:mm"),
+                    UltimaFrequenciaRegistrada = ultimaFrequenciaRegistrada?.ToString("dd/MM/yyyy HH:mm"),
+                    UltimoPlanoAulaRegistrado = ultimoPlanoAulaCadastrado?.ToString("dd/MM/yyyy HH:mm") 
                 }); ;
             }
 

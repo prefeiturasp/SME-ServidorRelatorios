@@ -22,7 +22,7 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        contadorQuebrarPagina = contadorQuebrarPagina + 10;
 
         var str = $@"<div>
                       <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
@@ -82,7 +82,7 @@
                     retornoVerificacao = VerificaQuebra();
                     if (retornoVerificacao != string.Empty)
                     {
-                        if(usuario != ultimoUsuario)
+                        if(!usuario.Nome.Equals(ultimoUsuario.Nome) && !usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
                         {
                             str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
                         }
@@ -144,7 +144,7 @@
                     retornoVerificacao = VerificaQuebra();
                     if (retornoVerificacao != string.Empty)
                     {
-                        if (professor != ultimoProfessor)
+                        if(!professor.Nome.Equals(ultimoProfessor.Nome) && !professor.UltimoAcesso.Equals(ultimoProfessor.UltimoAcesso))
                         {
                             str += $@"</table>{retornoVerificacao}{MontarCabecalhoProfessor()}";
                         }
@@ -157,15 +157,20 @@
                     }
                 }
                 str += $@"</table>";
-                if(!EhUltimoProfessor)
+                if(!EhUltimoProfessor && dre.HistoricoReinicioSenha != null)
                     str += LinhaEmBranco();
             }
-            str += MontarCabecalhoHistoricoReinicioSenha();
-            var ultimohistorico = dre.HistoricoReinicioSenha.LastOrDefault();
-            var EhUltimohistorico = false;
-            foreach (var historico in dre.HistoricoReinicioSenha)
+
+            if(dre.HistoricoReinicioSenha != null)
             {
-                str += $@"<tr>
+                var ultimohistorico = dre.HistoricoReinicioSenha.LastOrDefault();
+                var EhUltimohistorico = false;
+                if (ultimohistorico != null)
+                {
+                    str += MontarCabecalhoHistoricoReinicioSenha();
+                    foreach (var historico in dre.HistoricoReinicioSenha)
+                    {
+                        str += $@"<tr>
                    <td width='20%' class='td-valor'>{historico.Rf}</td>
                    <td width='30%' class='td-valor'>{historico.Nome}</td>
                    <td width='25%' class='td-valor'>{historico.Perfil}</td>
@@ -173,41 +178,46 @@
                    <td width='35%' class='td-valor'>{historico.SenhaReiniciadaPor}</td>
                    <td width='35%' class='td-valor'>{historico.UtilizaSenhaPadao}</td>
                  </tr>";
-                if(historico.Nome.Length > 16)
-                {
-                    contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.Nome.Length / 16) + 1;
-                }
-                else if (historico.SenhaReiniciadaPor.Length > 16)
-                {
-                    contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.SenhaReiniciadaPor.Length / 16) + 1;
-                }
-                else
-                {
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                }
 
-                retornoVerificacao = VerificaQuebra();
-                if (retornoVerificacao != string.Empty)
-                {
-                    if(historico != ultimohistorico)
-                    {
-                        str += $@"</table>{retornoVerificacao}{MontarCabecalhoHistoricoReinicioSenha()}";
+
+                        if (historico.Nome != null && historico.Nome.Length > 16)
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.Nome.Length / 16) + 1;
+                        }
+                        else if (historico.SenhaReiniciadaPor != null && historico.SenhaReiniciadaPor.Length > 16)
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.SenhaReiniciadaPor.Length / 16) + 1;
+                        }
+                        else
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                        }
+
+                        retornoVerificacao = VerificaQuebra();
+                        if (retornoVerificacao != string.Empty)
+                        {
+                            if (!historico.SenhaReiniciada.Equals(ultimohistorico.SenhaReiniciada))
+                            {
+                                str += $@"</table>{retornoVerificacao}{MontarCabecalhoHistoricoReinicioSenha()}";
+                            }
+                            else
+                            {
+                                str += $@"</table>{retornoVerificacao}";
+                                EhUltimohistorico = true;
+                            }
+                        }
+                        else
+                        {
+                            if (!historico.SenhaReiniciada.Equals(ultimohistorico.SenhaReiniciada))
+                                EhUltimohistorico = true;
+                        }
                     }
-                    else
-                    {
-                        str += $@"</table>{retornoVerificacao}";
-                        EhUltimohistorico = true;
-                    }
-                }
-                else
-                {
-                    if (historico == ultimohistorico)
-                        EhUltimohistorico = true;
+                    str += $@"</table>";
+                    if (!EhUltimohistorico)
+                        str += LinhaEmBranco();
                 }
             }
-            str += $@"</table>";
-            if(!EhUltimohistorico)
-                str += LinhaEmBranco();
+
 
         }
 
@@ -216,7 +226,7 @@
 
     string MontarCabecalhoHistoricoReinicioSenha()
     {
-        contadorQuebrarPagina += 3;
+        contadorQuebrarPagina += 3;        
         var str = $@"<table class='fixed'>
                 <tr>
                   <td width='100%' class='td-turma-bimestre'>

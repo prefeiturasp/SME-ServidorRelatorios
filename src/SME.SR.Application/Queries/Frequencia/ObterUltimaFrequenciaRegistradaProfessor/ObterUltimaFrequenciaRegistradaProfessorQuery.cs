@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SME.SR.Application
 {
-    public class ObterUltimaFrequenciaRegistradaProfessorQuery : IRequest<DateTime>
+    public class ObterUltimaFrequenciaRegistradaProfessorQuery : IRequest<DateTime?>
     {
         public ObterUltimaFrequenciaRegistradaProfessorQuery(string professorRf)
         {

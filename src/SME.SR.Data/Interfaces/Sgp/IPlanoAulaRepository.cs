@@ -11,7 +11,7 @@ namespace SME.SR.Data.Interfaces
         Task<PlanoAulaDto> ObterPorId(long planoAulaId);
 
         Task<IEnumerable<ObjetivoAprendizagemDto>> ObterObjetivoAprendizagemPorPlanoAulaId(long planoAulaId);
-        Task<DateTime> ObterUltimoPlanoAulaProfessor(string professorRf);
+        Task<DateTime?> ObterUltimoPlanoAulaProfessor(string professorRf);
     }
 }
 

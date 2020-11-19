@@ -12,7 +12,7 @@ namespace SME.SR.Data.Interfaces
         Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(string componenteCurricularId, int bimestre, long tipoCalendarioId);
         Task<bool> VerificaExisteAulaCadastrada(long turmaId, string componenteCurricularId, int bimestre, long tipoCalendarioId);
         Task<bool> VerificaExisteMaisAulaCadastradaNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre);
-        Task<DateTime> ObterUltimaAulaCadastradaProfessor(string professorRf);
+        Task<DateTime?> ObterUltimaAulaCadastradaProfessor(string professorRf);
         Task<int> ObterDiasAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim);
         Task<int> ObterQuantidadeAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim);
         Task<int> ObterQuantidadeAulaGrade(long turmaId, long componenteCurricularCodigo);
