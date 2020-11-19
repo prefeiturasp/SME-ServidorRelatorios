@@ -3267,7 +3267,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                        {
                                            new AulaTitularCJDataControleGradeDto() {
                                                Data = "26/10/2020",
-                                               Divergencias = new List<AulaTitularCJControleGradeDto>() 
+                                               Divergencias = new List<AulaTitularCJControleGradeDto>()
                                                {
                                                   new AulaTitularCJControleGradeDto()
                                                   {
@@ -3289,7 +3289,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                        },
                                        AulasDiasNaoLetivos = new List<AulaDiasNaoLetivosControleGradeDto>()
                                        {
-                                           new AulaDiasNaoLetivosControleGradeDto() 
+                                           new AulaDiasNaoLetivosControleGradeDto()
                                            {
                                                 Data = "21/03/2020",
                                                 Professor = "SADAKO MORITA (3135535)",
@@ -3299,7 +3299,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                        },
                                        AulasDuplicadas = new List<AulaDuplicadaControleGradeDto>()
                                        {
-                                           new AulaDuplicadaControleGradeDto() 
+                                           new AulaDuplicadaControleGradeDto()
                                            {
                                                Data = "21/03/2020",
                                                QuantidadeDuplicado = 1,
@@ -4244,7 +4244,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
             return View("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", model);
         }
-    
+
         [HttpGet("sondagem-producao-texto-turma")]
         public IActionResult SondagemProducaopTextoTurma()
         {
@@ -4395,7 +4395,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             PerguntaId = "6"
                         },
                     }
-                }); 
+                });
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
@@ -6013,6 +6013,137 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 }
             };
             return View("RelatorioUsuarios", model);
+        }
+
+        [HttpGet("notificacoes")]
+        public IActionResult Notificacoes()
+        {
+            var model = new RelatorioNotificacaoDto
+            {
+
+                CabecalhoDRE = "TODAS",
+                CabecalhoUE = "TODAS",
+                CabecalhoUsuario = "ALANA FERREIRA DE OLIVEIRA",
+                CabecalhoUsuarioRF = "1234567",
+                DREs = new List<DreNotificacaoDto>()
+                {
+                    new DreNotificacaoDto()
+                    {
+                        Nome = "CAPELA DO SOCORRO",
+                        UEs = new List<UeNotificacaoDto>()
+                        {
+                            new UeNotificacaoDto() {
+                                Nome = "CEU EMEF JARDIM ELIANA",
+                                Usuarios = new List<UsuarioNotificacaoDto>()
+                                {
+                                    new UsuarioNotificacaoDto()
+                                    {
+                                        Nome = "Irêne de Carvalho (1234567)", Notificacoes = new List<NotificacaoDto>()
+                                        {
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            new UeNotificacaoDto() {
+                                Nome = "CEU EMEF JARDIM ELIANA",
+                                Usuarios = new List<UsuarioNotificacaoDto>()
+                                {
+                                    new UsuarioNotificacaoDto()
+                                    {
+                                        Nome = "Irêne de Carvalho (1234567)", Notificacoes = new List<NotificacaoDto>()
+                                        {
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+
+
+            return View("RelatorioNotificacoes", model);
         }
     }
 }
