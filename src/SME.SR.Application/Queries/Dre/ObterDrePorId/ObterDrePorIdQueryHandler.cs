@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using SME.SR.Data;
-using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,16 +16,8 @@ namespace SME.SR.Application
         {
             this.dreRepository = dreRepository ?? throw new ArgumentNullException(nameof(dreRepository));
         }
+
         public async Task<Dre> Handle(ObterDrePorIdQuery request, CancellationToken cancellationToken)
-        {
-            var dre = await dreRepository.ObterPorId(request.DreId);
-
-            if (dre == null)
-            {
-                throw new NegocioException("Não foi possível localizar a Dre");
-            }
-
-            return dre;
-        }
+            => await dreRepository.ObterPorId(request.DreId);
     }
 }

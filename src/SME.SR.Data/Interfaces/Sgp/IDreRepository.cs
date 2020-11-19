@@ -1,5 +1,4 @@
-﻿using SME.SR.Data.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data

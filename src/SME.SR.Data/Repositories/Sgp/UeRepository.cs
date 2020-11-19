@@ -76,6 +76,16 @@ namespace SME.SR.Data
 
         public async Task<Ue> ObterPorId(long ueId)
         {
+            var query = @"select Id, ue_id Codigo, Nome, tipo_escola TipoEscola from ue where ue_id = @ueId";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryFirstOrDefaultAsync<Ue>(query, new { ueId });
+        }
+    }
+}
+
+        public async Task<Ue> ObterPorId(long ueId)
+        {
             var query = @"select Id, ue_id Codigo, Nome, tipo_escola TipoEscola from ue where id = @ueId";
             var parametros = new { ueId };
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
