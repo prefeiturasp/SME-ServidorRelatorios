@@ -73,13 +73,13 @@ RELATÓRIO DE NOTIFICAÇÕES
         contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
 <tr>
-    <td width='12%' class='td-titulo'>CÓDIGO</td>
-    <td width='26%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
-    <td width='11%' class='td-titulo'>CATEGORIA</td>
+    <td width='11%' class='td-titulo'>CÓDIGO</td>
+    <td width='25%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
+    <td width='12%' class='td-titulo'>CATEGORIA</td>
     <td width='12%' class='td-titulo'>TIPO</td>
     <td width='12%' class='td-titulo'>SITUAÇÃO</td>
-    <td width='14%' class='td-titulo'>RECEBIMENTO</td>
-    <td width='14%' class='td-titulo'>LEITURA/AÇÃO</td>
+    <td width='15%' class='td-titulo'>RECEBIMENTO</td>
+    <td width='15%' class='td-titulo'>LEITURA/AÇÃO</td>
 </tr>";
     }
 
@@ -110,13 +110,13 @@ RELATÓRIO DE NOTIFICAÇÕES
                             montarCabecalho = false;
                         }
                         str += $@"<tr>
-                            <td width='14%' class='td-valor'>{notificacao.Codigo}</td>
-                            <td width='26%' class='td-valor'>{notificacao.Titulo}</td>
-                            <td width='10%' class='td-valor'>{notificacao.Categoria}</td>
+                            <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
+                            <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Categoria}</td>
                             <td width='12%' class='td-valor'>{notificacao.Tipo}</td>
                             <td width='12%' class='td-valor'>{notificacao.Situacao}</td>
-                            <td width='12%' class='td-valor'>{notificacao.DataRecebimento}</td>
-                            <td width='12%' class='td-valor'>{notificacao.DataLeitura}</td>
+                            <td width='15%' class='td-valor'>{notificacao.DataRecebimento}</td>
+                            <td width='15%' class='td-valor'>{notificacao.DataLeitura}</td>
                         </tr>";
 
                         if ((int)(notificacao.Titulo.ToString().Length / 29) > 2)
@@ -154,7 +154,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                             }
 
                         }
-                        if (notificacao.Mensagem != "")
+                        if (!String.IsNullOrEmpty(notificacao.Mensagem))
                         {
                             str += $@"<tr><td colspan='7' width='100%' class='td-titulo'>DESCRIÇÃO</td></tr>";
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;

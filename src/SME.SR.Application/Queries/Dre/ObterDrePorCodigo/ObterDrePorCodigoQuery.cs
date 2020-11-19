@@ -5,10 +5,8 @@ namespace SME.SR.Application
 {
     public class ObterDrePorCodigoQuery : IRequest<Dre>
     {
-        public ObterDrePorCodigoQuery()
-        {
+        public ObterDrePorCodigoQuery() { }
 
-        }
         public ObterDrePorCodigoQuery(string dreCodigo)
         {
             DreCodigo = dreCodigo;

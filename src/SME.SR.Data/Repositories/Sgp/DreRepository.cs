@@ -25,7 +25,7 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryFirstOrDefaultAsync<Dre>(query, parametros);
             }
-        }
+        }  
 
         public async Task<Dre> ObterPorId(long dreId)
         {
