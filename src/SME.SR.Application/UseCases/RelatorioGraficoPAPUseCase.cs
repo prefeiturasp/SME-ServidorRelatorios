@@ -195,17 +195,17 @@ namespace SME.SR.Application
                 var legendas = new List<GraficoBarrasLegendaDto>();
                 int chaveIndex = 0;
 
-                foreach (var frequencia in totalFrequencia.Frequencia.GroupBy(f => f.FrequenciaDescricao))
+                foreach (var frequencia in totalFrequencia.Frequencia)
                 {
                     string chave = lstChaves[chaveIndex++].ToString();
 
                     legendas.Add(new GraficoBarrasLegendaDto()
                     {
                         Chave = chave,
-                        Valor = $"{frequencia.Key}"
+                        Valor = $"{frequencia.FrequenciaDescricao}"
                     });
 
-                    var itemFrequencia = frequencia.SelectMany(t => t.Linhas).FirstOrDefault().Anos.FirstOrDefault(d => d.CodigoAno == ano.CodigoAno);
+                    var itemFrequencia = frequencia.Linhas.FirstOrDefault().Anos.FirstOrDefault(d => d.CodigoAno == ano.CodigoAno);
 
                     graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(itemFrequencia.Quantidade, (decimal)Math.Round(itemFrequencia.Porcentagem, 0), chave));
                 }
