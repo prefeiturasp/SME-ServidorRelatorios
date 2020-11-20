@@ -87,6 +87,10 @@ RELATÓRIO DE NOTIFICAÇÕES
     {
         var str = "";
         var retornoVerificacao = string.Empty;
+        if(Model.DREs.Count() == 0)
+        {
+            return "";
+        }
 
         var ultimaDre = Model.DREs.Last();
         foreach (var dre in Model.DREs)
@@ -127,11 +131,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                         {
                             contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 11 ? (int)(notificacao.DataRecebimento.ToString().Length / 11) + 1 : 1);
                         }
-                        if(notificacao.Codigo == 243081)
-                        {
-                            var i = 0;
-                        }
-
+                       
                         retornoVerificacao = VerificaQuebra();
                         if (retornoVerificacao != string.Empty)
                         {
