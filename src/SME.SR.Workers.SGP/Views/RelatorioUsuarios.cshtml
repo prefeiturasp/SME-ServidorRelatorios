@@ -26,28 +26,29 @@
 
         var str = $@"<div>
                       <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-                   </div>
-                   <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-                   <div class='titulo-relatorio'> RELATÓRIO DE USUÁRIOS</div>
-                    <div class='fonte-14 header-pagina'>
-                        <table class='tblTopo'>
-                          <tbody>
-                            <tr>
-                              <td width ='50%'>DRE: {Model.Filtro.Dre}</td>
-                              <td width ='50%'>UE: {Model.Filtro.Ue}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td class='campo-usuario'>USUÁRIO: {Model.Filtro.Usuario}</td>
-                              <td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
-                              <td class='campo-data-cabecalho'>DATA DE IMPRESSÃO: {Model.Filtro.Data:dd/MM/yyyy}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>";
+                    </div>                    
+                    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>                    
+                    <div class='titulo-plano-aula'>
+                       <p style='margin-bottom: 0'>RELATÓRIO DE USUÁRIOS</p>                                              
+                        <div class='fonte-14 header-pagina'>                            
+                            <table >
+                              <tbody>
+                                <tr>
+                                  <td width ='50%'>DRE: {Model.Filtro.Dre}</td>
+                                  <td width ='50%'>UE: {Model.Filtro.Ue}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td class='campo-usuario'>USUÁRIO: {Model.Filtro.Usuario}</td>
+                                  <td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
+                                  <td class='campo-data-cabecalho'>DATA DE IMPRESSÃO: {Model.Filtro.Data:dd/MM/yyyy}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>";
 
         return str;
     }
@@ -226,7 +227,7 @@
 
     string MontarCabecalhoHistoricoReinicioSenha()
     {
-        contadorQuebrarPagina += 3;        
+        contadorQuebrarPagina += 3;
         var str = $@"<table class='fixed'>
                 <tr>
                   <td width='100%' class='td-turma-bimestre'>
@@ -453,8 +454,7 @@
         .td-turma-bimestre {
             background-color: #f3f3f3;
             text-align: center;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 16px;            
             padding: 10px;
             border-bottom: none;
         }
