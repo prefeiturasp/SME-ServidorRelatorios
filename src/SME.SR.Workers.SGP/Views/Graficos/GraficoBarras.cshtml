@@ -89,7 +89,7 @@
       //Legendas  verticais
         var textelementLegenda = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 
-        textelementLegenda.setAttributeNS(null, 'transform', 'rotate(90) translate(' + 10 + ' , ' + - 88 + ')');
+        textelementLegenda.setAttributeNS(null, 'transform', 'rotate(-90) translate(' + - 250 + ' , ' + 10 + ')');
 
         textelementLegenda.setAttributeNS(null, 'font-size', 13);
         textelementLegenda.setAttributeNS(null, 'font-weight', 'bold');
@@ -99,7 +99,7 @@
 
         //Texts Legendas
 
-        svg_@(Model.IdParaLastro).appendChild(createSVGtextLegendas('@Html.Raw(Model.DescricaoLegenda)', -95, 10));
+        svg_@(Model.IdParaLastro).appendChild(createSVGtextLegendas('@Html.Raw(Model.DescricaoLegenda)', 265, -250));
 
         var totalChartBarsForLoop = totalChartBars_@(Model.IdParaLastro)
                  </text>
@@ -131,7 +131,7 @@
         //svgText.setAttributeNS(null, 'transform', 'rotate(90) translate(' + y + ' , ' + - x + ')');
         // svgText.setAttributeNS(null, 'x', x);
         // svgText.setAttributeNS(null, 'y', y);
-        svgText.setAttributeNS(null, 'transform', 'rotate(90) translate(' + y + ' , ' + x + ')');
+        svgText.setAttributeNS(null, 'transform', 'rotate(-90) translate(' + y + ' , ' + x + ')');
         svgText.setAttributeNS(null, 'font-size', 10);
         //svgText.setAttributeNS(null, 'fill', '#FFFFFF');         //  White text
         //svgText.setAttributeNS(null, 'text-anchor', 'middle');   //  Center the text
