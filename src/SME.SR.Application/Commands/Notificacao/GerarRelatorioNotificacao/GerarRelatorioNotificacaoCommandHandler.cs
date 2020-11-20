@@ -77,6 +77,9 @@ namespace SME.SR.Application
             var notificacoes = await mediator.Send(new ObterNotificacoesFiltrosQuery(request.Filtros.AnoLetivo, request.Filtros.UsuarioBuscaRf,
                 categorias, tipos, situacoes, request.Filtros.ExibirDescricao, request.Filtros.ExibirNotificacoesExcluidas, request.Filtros.DRE, request.Filtros.UE));
 
+            if (!notificacoes.Any())
+                throw new NegocioException("<b>O relatório com o filtro solicitado não possui informações.</b>");
+
             dto = MapearNotificacoesDto(notificacoes);
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
