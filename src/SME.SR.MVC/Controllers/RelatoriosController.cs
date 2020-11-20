@@ -4652,7 +4652,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
                     Graficos = new List<ResumoPAPGraficoAnoDto>()
                     {
-                       new ResumoPAPGraficoAnoDto(800, "")
+                       new ResumoPAPGraficoAnoDto(395, "")
                        {
                            Titulo =  "3º Ano",
                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
@@ -4674,7 +4674,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
                     Graficos = new List<ResumoPAPGraficoAnoDto>()
                     {
-                       new ResumoPAPGraficoAnoDto(800, "")
+                       new ResumoPAPGraficoAnoDto(395, "")
                        {
                            Titulo =  "4º Ano",
                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
@@ -4696,7 +4696,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
                     Graficos = new List<ResumoPAPGraficoAnoDto>()
                     {
-                       new ResumoPAPGraficoAnoDto(800, "")
+                       new ResumoPAPGraficoAnoDto(395, "")
                        {
                            Titulo =  "5º Ano",
                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
@@ -4718,7 +4718,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
                     Graficos = new List<ResumoPAPGraficoAnoDto>()
                     {
-                       new ResumoPAPGraficoAnoDto(800, "")
+                       new ResumoPAPGraficoAnoDto(395, "")
                        {
                            Titulo =  "6º Ano",
                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
@@ -4740,7 +4740,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
                     Graficos = new List<ResumoPAPGraficoAnoDto>()
                     {
-                        new ResumoPAPGraficoAnoDto(800, "")
+                        new ResumoPAPGraficoAnoDto(395, "")
                         {
                             Titulo =  "7º Ano",
                             EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
@@ -4762,7 +4762,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
                     Graficos = new List<ResumoPAPGraficoAnoDto>()
                     {
-                       new ResumoPAPGraficoAnoDto(800, "")
+                       new ResumoPAPGraficoAnoDto(396, "")
                        {
                            Titulo =  "8º Ano",
                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
@@ -4784,7 +4784,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
                     Graficos = new List<ResumoPAPGraficoAnoDto>()
                     {
-                       new ResumoPAPGraficoAnoDto(800, "")
+                       new ResumoPAPGraficoAnoDto(395, "")
                        {
                            Titulo =  "9º Ano",
                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()

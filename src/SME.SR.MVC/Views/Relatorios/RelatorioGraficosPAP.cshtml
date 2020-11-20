@@ -14,7 +14,6 @@
 
             var str = MontarCabecalho();
             return $@"<div style='page-break-before:always'></div>" + str;
-
         }
         return string.Empty;
     }
@@ -27,7 +26,7 @@
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-relatorio'> RELATÓRIO DE SONDAGEM</div>
+<div class='titulo-relatorio'>RELATÓRIO DE ACOMPANHAMENTO PAP - GRÁFICOS</div>
 <div class='fonte-14 header-pagina'>
 <table class='tblTopo'>
 <tbody>
@@ -72,6 +71,19 @@
         return str;
     }
 
+    string MontarCabecalhoGrafico()
+    {
+        <table class="tabela-cabecalho">
+            <thead>
+                <tr>
+                    <td width="75%" class="alinhar-esquerda espaco-esquerda-15">@Model.GraficosDto.First().Titulo</td>
+                    <td width="25%">Ciclo: @Model.Ciclo</td>
+                </tr>
+            </thead>
+        </table>
+
+        return "";
+    }
 }
 
 <!DOCTYPE html>
@@ -82,8 +94,6 @@
     <title>Relatório de acompanhamento PAP - GRÁFICOS</title>
 </head>
 <body class="body-relatorio">
-
-
     <style>
 
         .tblTopo th, td {
@@ -145,8 +155,9 @@
         }
 
         .tabela-cabecalho tr {
-            font-size: 10px;
+            font-size: 12px;
             height: 24px;
+            line-height: 18.75px;
         }
 
         .mt-25 {
@@ -210,39 +221,39 @@
             int groupings = 2;
             var grouped = Model.GraficosDto.Select((x, i) => new { x, i = i / groupings })
                             .GroupBy(x => x.i, x => x.x);
+           
+            @MontarCabecalhoGrafico();
 
-            var maxTabelasPorPagina = 3;
-            var iCount = 0;
+            <table>
+                <tbody>
+                    @{ 
+                        var maxTabelasPorPagina = 2;
+                        int count = 0;
+                    }
+                    @foreach (var items in grouped)
+                    {                     
+                        if (count >= maxTabelasPorPagina)
+                        {
+                            @Html.Raw(@VerificaQuebra(true));
+                            @MontarCabecalhoGrafico();
 
-            //Verificando página inicial que irá receber os primeiros relatórios
-            if (contadorQuebrarPagina >= 13)
-                iCount = 1;
-            else if (contadorQuebrarPagina >= 26)
-                iCount = 2;
+                            count = 1;
+                        }
+                        else
+                        {
+                            count += 1;
+                        }
 
-            @foreach (var items in grouped)
-            {
-                if (iCount >= maxTabelasPorPagina)
-                {
-                    @Html.Raw(@VerificaQuebra(true))
-                    iCount = 1;
-                }
-                else
-                {
-                    iCount += 1;
-                }
-
-                <table style="border:none; border-color: #ffffff!important; margin-top:15px;">
-                    <tbody>
                         <tr>
                             @foreach (var item in items)
                             {
-                                <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("Graficos/GraficoBarras", item)</td>
+                                var grafico = item.Graficos[0];
+                                <td style="border-top:0;" width={@grafico.LarguraTotal}>@await Html.PartialAsync("Graficos/GraficoBarrasPAP", grafico) @count</td>
                             }
                         </tr>
-                    </tbody>
-                </table>
-            }            
+                    }
+                </tbody>
+            </table>
         }
     </div>
 
