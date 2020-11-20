@@ -24,6 +24,62 @@
         "Codigo": "7384321"
       },
       "ciclos": null,
+	  "estudosRealizados":[
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		}
+	  ],
       "historicoEscolar": {
         "baseNacionalComum": {
           "areasDeConhecimento": [
@@ -801,6 +857,32 @@
         "Codigo": "3891801"
       },
       "ciclos": null,
+	  "estudosRealizados":[
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		},
+		{
+			"ano":2020,
+			"ueNome": "Alcides",
+			"ueMunicipio": "São Paulo",
+			"ueUf": "SP"
+		}
+	  ],
       "historicoEscolar": null,
       "legenda": {
         "texto": "TEste"
