@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,8 +83,39 @@ namespace SME.SR.Application
 
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
+            GerarGraficos(relatorio);
 
             return relatorio;
+        }
+
+        private void GerarGraficos(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio)
+        {
+            relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            foreach(var pergunta in relatorio.PerguntasRespostas)
+            {
+                string chave = String.Empty;
+                int chaveIndex = 0;
+                var grafico = new GraficoBarrasVerticalDto(420, $"{pergunta.Pergunta}");
+                var legendas = new List<GraficoBarrasLegendaDto>();
+
+                foreach (var resposta in pergunta.Respostas)
+                {
+                    chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                    legendas.Add(new GraficoBarrasLegendaDto()
+                    {
+                        Chave = chave,
+                        Valor = resposta.Resposta
+                    });
+
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(decimal.Parse(resposta.AlunosQuantidade.ToString()), chave));
+                }
+                var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                grafico.Legendas = legendas;
+                relatorio.GraficosBarras.Add(grafico);
+            }
         }
 
         private void TrataAlunosQueNaoResponderam(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, int quantidadeTotalAlunos)
