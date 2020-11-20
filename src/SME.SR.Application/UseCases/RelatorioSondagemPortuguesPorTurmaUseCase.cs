@@ -116,7 +116,6 @@ namespace SME.SR.Application
                     Chave = chave,
                     Valor = resposta.Resposta
                 });
-                chaveIndex++;
                 grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(resposta.Quantidade, chave));
             }
             var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
