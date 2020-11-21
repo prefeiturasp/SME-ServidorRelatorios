@@ -138,7 +138,7 @@ namespace SME.SR.Application
             if (filtros.UE != "-99")
             {
                 var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UE));
-                nomeUe = $"{ue.Codigo} - {ue.TipoEscola.ShortName()} {ue.Nome}";
+                nomeUe = $"{ue.TipoEscola.ShortName()} {ue.Nome}";
             }
 
             dto.CabecalhoDRE = nomeDre;
