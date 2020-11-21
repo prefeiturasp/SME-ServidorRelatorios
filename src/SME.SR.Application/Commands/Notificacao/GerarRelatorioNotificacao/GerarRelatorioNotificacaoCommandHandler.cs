@@ -111,7 +111,7 @@ namespace SME.SR.Application
                     {
                         UsuarioNotificacaoDto usuarioNotificacaoDto = new UsuarioNotificacaoDto();
                         var nome = notificacoes.FirstOrDefault(c => c.UsuarioRf == usuario).UsuarioNome;
-                        usuarioNotificacaoDto.Nome = nome != null ? nome : notificacoes.FirstOrDefault(c => c.UsuarioRf == usuario).UsuarioRf;
+                        usuarioNotificacaoDto.Nome = nome != null ? $"{nome} ({usuario})"  : usuario;
                         usuarioNotificacaoDto.Notificacoes.AddRange(notificacoes.Where(c => c.UeId == ue && c.DreId == dre && c.UsuarioRf == usuario).OrderBy(n => n.Codigo));
                         ueNotificacaoDto.Usuarios.Add(usuarioNotificacaoDto);
                     }
