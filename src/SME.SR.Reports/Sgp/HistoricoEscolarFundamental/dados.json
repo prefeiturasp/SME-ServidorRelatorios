@@ -2721,7 +2721,7 @@
             "estado": "",
             "Codigo": "4195861"
          },
-         "ciclos": null,,
+         "ciclos": null,
 		 "estudosRealizados":[
 		{
 			"ano":2020,
@@ -2778,7 +2778,6 @@
 			"ueUf": "SP"
 		}
 	  ],
-		 "estudosRealizados":null,
          "historicoEscolar": null,
          "legenda": {
             "texto": "P = Plenamente Satisfatório, S = Satisfatório, NS = Não Satisfatório"
