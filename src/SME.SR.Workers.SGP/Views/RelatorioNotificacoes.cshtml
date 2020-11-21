@@ -24,7 +24,7 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina += 6;
+        contadorQuebrarPagina = contadorQuebrarPagina + (Model.CabecalhoUE.ToString().Length > 37 ? (int)(Model.CabecalhoUE.ToString().Length / 37) + 6 : 6);
         var str =
            $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
@@ -131,7 +131,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                         {
                             contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 11 ? (int)(notificacao.DataRecebimento.ToString().Length / 11) + 1 : 1);
                         }
-                       
+
                         retornoVerificacao = VerificaQuebra();
                         if (retornoVerificacao != string.Empty)
                         {
