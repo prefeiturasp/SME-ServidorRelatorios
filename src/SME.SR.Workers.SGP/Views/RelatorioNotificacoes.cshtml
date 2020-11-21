@@ -116,9 +116,9 @@ RELATÓRIO DE NOTIFICAÇÕES
                         str += $@"<tr>
                             <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
                             <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Categoria}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Tipo}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Situacao}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
                             <td width='15%' class='td-valor'>{notificacao.DataRecebimento}</td>
                             <td width='15%' class='td-valor'>{notificacao.DataLeitura}</td>
                         </tr>";
