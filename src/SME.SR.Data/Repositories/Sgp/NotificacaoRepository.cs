@@ -54,6 +54,8 @@ namespace SME.SR.Data.Repositories.Sgp
 			if (!String.IsNullOrEmpty(usuarioRf))
 				query += $" and u.rf_codigo = '{usuarioRf}'";
 
+			query += " order by u.nome";
+
 			using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
 			{
 				return await conexao.QueryAsync<NotificacaoDto>(query, new { ano, tipos, categorias, situacoes });
