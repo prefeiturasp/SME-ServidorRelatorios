@@ -95,11 +95,19 @@ RELATÓRIO DE NOTIFICAÇÕES
         var ultimaDre = Model.DREs.Last();
         foreach (var dre in Model.DREs)
         {
-            str += MontaTitulo(dre.Nome);
+            if(Model.DREs.Count > 1)
+            {
+                str += MontaTitulo(dre.Nome);
+            }
+
             var ultimaUe = dre.UEs.Last();
             foreach (var ue in dre.UEs)
             {
-                str += MontaTitulo(ue.Nome);
+                if (dre.UEs.Count > 1)
+                {
+                    str += MontaTitulo(ue.Nome);
+                }
+
                 var ultimoUsuario = ue.Usuarios.Last();
                 foreach (var usuario in ue.Usuarios)
                 {
@@ -131,7 +139,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                         {
                             contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 11 ? (int)(notificacao.DataRecebimento.ToString().Length / 11) + 1 : 1);
                         }
-                       
+
                         retornoVerificacao = VerificaQuebra();
                         if (retornoVerificacao != string.Empty)
                         {
