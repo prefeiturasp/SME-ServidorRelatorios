@@ -28,7 +28,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<DateTime>(query, new { professorRf });
+                return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }
         }
     }

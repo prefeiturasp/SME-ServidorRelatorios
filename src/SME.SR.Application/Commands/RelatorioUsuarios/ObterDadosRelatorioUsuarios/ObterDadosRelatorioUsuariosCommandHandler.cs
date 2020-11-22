@@ -83,15 +83,15 @@ namespace SME.SR.Application
 
             foreach(var usuario in usuarios)
             {
-                var ultimaAulaRegistrada = await mediator.Send(new ObterUltimaAulaCadastradaProfessorQuery(usuario.Rf));
-                var ultimaFrequenciaRegistrada = await mediator.Send(new ObterUltimaFrequenciaRegistradaProfessorQuery(usuario.Rf));
+                var ultimaAulaRegistrada = await mediator.Send(new ObterUltimaAulaCadastradaProfessorQuery(usuario.Login));
+                var ultimaFrequenciaRegistrada = await mediator.Send(new ObterUltimaFrequenciaRegistradaProfessorQuery(usuario.Login));
                 var ultimoPlanoAulaCadastrado = EhPerfilInfantil(usuario.PerfilGuid) ? 
-                    await mediator.Send(new ObterUltimoDiarioBordoProfessorQuery(usuario.Rf)) :
-                    await mediator.Send(new ObterUltimoPlanoAulaProfessorQuery(usuario.Rf));
+                    await mediator.Send(new ObterUltimoDiarioBordoProfessorQuery(usuario.Login)) :
+                    await mediator.Send(new ObterUltimoPlanoAulaProfessorQuery(usuario.Login));
 
                 listaProfessoresDto.Add(new UsuarioProfessorDto()
                 {
-                    Rf = usuario.Rf,
+                    Login = usuario.Login,
                     Nome = usuario.Nome,
                     Situacao = usuario.Situacao.Name(),
                     UltimoAcesso = usuario.UltimoAcesso.ToString("dd/MM/yyyy HH:mm"),
@@ -133,7 +133,7 @@ namespace SME.SR.Application
             foreach (var usuario in usuarios)
                 yield return new UsuarioDto()
                 {
-                    Rf = usuario.Rf,
+                    Login = usuario.Login,
                     Nome = usuario.Nome,
                     Situacao = usuario.Situacao.Name(),
                     UltimoAcesso = usuario.UltimoAcesso.ToString("dd/MM/yyyy HH:mm")
@@ -172,7 +172,7 @@ namespace SME.SR.Application
         private async Task ObterSituacaoUsuarios(IEnumerable<DadosUsuarioDto> usuarios)
         {
             foreach (var usuario in usuarios)
-                usuario.Situacao = await mediator.Send(new ObterSituacaoUsuarioPorRfQuery(usuario.Rf));
+                usuario.Situacao = await mediator.Send(new ObterSituacaoUsuarioPorRfQuery(usuario.Login));
         }
     }
 }

@@ -72,7 +72,7 @@
                 foreach (var usuario in perfil.Usuarios)
                 {
                     str += $@"<tr>
-                                <td width='20%' class='td-valor'>{usuario.Rf}</td>
+                                <td width='20%' class='td-valor'>{usuario.Login}</td>
                                 <td width='30%' class='td-valor'>{usuario.Nome}</td>
                                 <td width='20%' class='td-valor'>{usuario.Situacao}</td>
                                 <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
@@ -108,7 +108,7 @@
                     foreach (var usuario in perfil.Usuarios)
                     {
                         str += $@"<tr>
-                            <td width='20%' class='td-valor'>{usuario.Rf}</td>
+                            <td width='20%' class='td-valor'>{usuario.Login}</td>
                             <td width='30%' class='td-valor'>{usuario.Nome}</td>
                             <td width='20%' class='td-valor'>{usuario.Situacao}</td>
                             <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
@@ -131,7 +131,7 @@
                 foreach (var professor in ue.Professores)
                 {
                     str += $@"<tr>
-                        <td width='20%' class='td-valor'>{professor.Rf}</td>
+                        <td width='20%' class='td-valor'>{professor.Login}</td>
                         <td width='30%' class='td-valor'>{professor.Nome}</td>
                         <td width='20%' class='td-valor'>{professor.Situacao}</td>
                         <td width='30%' class='td-valor'>{professor.UltimoAcesso}</td>
@@ -172,7 +172,7 @@
                     foreach (var historico in dre.HistoricoReinicioSenha)
                     {
                         str += $@"<tr>
-                   <td width='20%' class='td-valor'>{historico.Rf}</td>
+                   <td width='20%' class='td-valor'>{historico.Login}</td>
                    <td width='30%' class='td-valor'>{historico.Nome}</td>
                    <td width='25%' class='td-valor'>{historico.Perfil}</td>
                    <td width='35%' class='td-valor'>{historico.SenhaReiniciada}</td>
@@ -237,7 +237,7 @@
              </table>
             <table class='fixed'>
                 <tr>
-                  <td width='20%' class='td-titulo'>RF</td>
+                  <td width='20%' class='td-titulo'>LOGIN</td>
                   <td width='30%' class='td-titulo'>NOME</td>
                   <td width='25%' class='td-titulo'>PERFIL</td>
                   <td width='35%' class='td-titulo'>SENHA REINICIADA</td>
@@ -267,7 +267,7 @@
 </table>
 <table class='fixed'>
     <tr>
-        <td width='20%' class='td-titulo'>RF</td>
+        <td width='20%' class='td-titulo'>LOGIN</td>
         <td width='30%' class='td-titulo'>NOME</td>
         <td width='20%' class='td-titulo'>SITUAÇÃO</td>
         <td width='30%' class='td-titulo'>ÚLTIMO ACESSO</td>
@@ -286,7 +286,7 @@
           </table>
           <table class='fixed'>
             <tr>
-              <td width='20%' class='td-titulo'>RF</td>
+              <td width='20%' class='td-titulo'>LOGIN</td>
               <td width='30%' class='td-titulo'>NOME</td>
               <td width='25%' class='td-titulo'>SITUAÇÃO</td>
               <td width='30%' class='td-titulo'>ÚLTIMO ACESSO</td>
