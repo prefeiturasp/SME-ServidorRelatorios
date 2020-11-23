@@ -92,24 +92,28 @@ RELATÓRIO DE NOTIFICAÇÕES
             return "";
         }
 
-        var ultimaDre = Model.DREs.Last();
-        foreach (var dre in Model.DREs)
+        var dres = Model.DREs.OrderBy(u => u.Nome);
+        var ultimaDre = dres.Last();
+
+        foreach (var dre in dres)
         {
             if(Model.DREs.Count > 1)
             {
                 str += MontaTitulo(dre.Nome);
             }
 
-            var ultimaUe = dre.UEs.Last();
-            foreach (var ue in dre.UEs)
+            var ues = dre.UEs.OrderBy(u => u.Nome);
+            var ultimaUe = ues.Last();
+            foreach (var ue in ues)
             {
                 if (dre.UEs.Count > 1)
                 {
                     str += MontaTitulo(ue.Nome);
                 }
 
-                var ultimoUsuario = ue.Usuarios.Last();
-                foreach (var usuario in ue.Usuarios)
+                var usuarios = ue.Usuarios.OrderBy(c => c.Nome);
+                var ultimoUsuario = usuarios.Last();
+                foreach (var usuario in usuarios)
                 {
                     str += MontaTitulo(usuario.Nome);
 

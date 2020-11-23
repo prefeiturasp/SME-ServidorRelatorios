@@ -121,10 +121,10 @@ namespace SME.SR.Application
                         usuarioNotificacaoDto.Notificacoes.AddRange(notificacoes.Where(c => c.UeId == ue && c.DreId == dre && c.UsuarioRf == usuario).OrderBy(n => n.Codigo));
                         ueNotificacaoDto.Usuarios.Add(usuarioNotificacaoDto);
                     }
-
+                    
                     dreNotificacaoDto.UEs.Add(ueNotificacaoDto);
                 }
-
+                
                 relatorioNotificacaoDto.DREs.Add(dreNotificacaoDto);
             }
             
