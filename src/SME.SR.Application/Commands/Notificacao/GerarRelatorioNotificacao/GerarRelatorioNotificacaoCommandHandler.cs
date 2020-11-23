@@ -84,7 +84,7 @@ namespace SME.SR.Application
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
-            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotificacoes", dto, request.CodigoCorrelacao, "", "Relatório de Notificações", true, "RELATÓRIO DE NOTIFICAÇÕES")));
+            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotificacoes", dto, request.CodigoCorrelacao, "", "Relatório de Notificações", true)));
         }
 
         private RelatorioNotificacaoDto MapearNotificacoesDto(IEnumerable<NotificacaoDto> notificacoes)
