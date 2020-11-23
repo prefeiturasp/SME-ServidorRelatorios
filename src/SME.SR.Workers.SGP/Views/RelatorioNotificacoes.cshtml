@@ -131,9 +131,9 @@ RELATÓRIO DE NOTIFICAÇÕES
                             <td width='15%' class='td-valor'>{notificacao.DataLeitura}</td>
                         </tr>";
 
-                        if ((int)(notificacao.Titulo.ToString().Length / 24) > 2)
+                        if ((int)(notificacao.Titulo.ToString().Length / 22) > 2)
                         {
-                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 24 ? (int)(notificacao.Titulo.ToString().Length / 24) + 1 : 1);
+                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 22 ? (int)(notificacao.Titulo.ToString().Length / 22) + 1 : 1);
                         }
                         else
                         {
