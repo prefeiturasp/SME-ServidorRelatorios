@@ -21,8 +21,6 @@ namespace SME.SR.Infra
         public string Turma { get; set; }
 
         public List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> PerguntasRespostas { get; set; }
-
-
-
+        public List<GraficoBarrasVerticalDto> GraficosBarras { get; set; }
     }
 }

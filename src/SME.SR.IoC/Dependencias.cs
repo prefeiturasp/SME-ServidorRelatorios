@@ -142,6 +142,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
             services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
             services.TryAddScoped(typeof(IEventoRepository), typeof(EventoRepository));
+            services.TryAddScoped(typeof(IDiarioBordoRepository), typeof(DiarioBordoRepository));
+            services.TryAddScoped(typeof(INotificacaoRepository), typeof(NotificacaoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -168,6 +170,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioCompensacaoAusenciaUseCase, RelatorioCompensacaoAusenciaUseCase>();
             services.TryAddScoped<IRelatorioImpressaoCalendarioUseCase, RelatorioImpressaoCalendarioUseCase>();
             services.TryAddScoped<IRelatorioResumoPAPUseCase, RelatorioResumoPAPUseCase>();
+            services.TryAddScoped<IRelatorioGraficoPAPUseCase, RelatorioGraficoPAPUseCase>();
             services.TryAddScoped<IRelatorioSondagemMatematicaConsolidadoUseCase, RelatorioSondagemMatematicaConsolidadoUseCase>();
             services.TryAddScoped<IRelatorioSondagemComponentesPorTurmaUseCase, RelatorioSondagemComponentesPorTurmaUseCase>();
             services.TryAddScoped<IRelatorioControleGradeUseCase, RelatorioControleGradeUseCase>();
@@ -176,6 +179,8 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioSondagemPortuguesConsolidadoUseCase, RelatorioSondagemPortuguesConsolidadoUseCase>();
             services.TryAddScoped<IRelatorioSondagemPtPorTurmaCapLeituraUseCase, RelatorioSondagemPtPorTurmaCapLeituraUseCase>();
             services.TryAddScoped<IRelatorioSondagemPtConsolidadoLeitEscProdUseCase, RelatorioSondagemPtConsolidadoLeitEscProdUseCase>();
+            services.TryAddScoped<IRelatorioNotificacaoUseCase, RelatorioNotificacaoUseCase>();
+            services.TryAddScoped<IRelatorioUsuariosUseCase, RelatorioUsuariosUseCase>();
 
         }
     }

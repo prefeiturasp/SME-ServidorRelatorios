@@ -140,7 +140,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/graficopap")]
-        [Action("relatorios/graficopap", typeof(IRelatorioResumoPAPUseCase))]
+        [Action("relatorios/graficopap", typeof(IRelatorioGraficoPAPUseCase))]
         public async Task<bool> RelatorioGraficoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGraficoPAPUseCase relatorioGraficoPAPUseCase)
         {
             await relatorioGraficoPAPUseCase.Executar(request);
@@ -162,5 +162,22 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/usuarios")]
+        [Action("relatorios/usuarios", typeof(IRelatorioUsuariosUseCase))]
+        public async Task<bool> Usuarios([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioUsuariosUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/notificacoes")]
+        [Action("relatorios/notificacoes", typeof(IRelatorioNotificacaoUseCase))]
+        public async Task<bool> ControleGrade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioNotificacaoUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+        
     }
 }
