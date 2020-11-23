@@ -181,15 +181,20 @@ namespace SME.SR.Data
                             t.modalidade_codigo Modalidade,
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        t.ano,
-                            t.etapa_eja as EtapaEJA
+                            t.etapa_eja as EtapaEJA,
+                            cca.conselho_classe_parecer_id as ParecerConclusivo,
+                            c.descricao Ciclo
                         from
 	                        fechamento_turma ft
                         inner join conselho_classe cc on
 	                        cc.fechamento_turma_id = ft.id
                         inner join conselho_classe_aluno cca on
 	                        cca.conselho_classe_id = cc.id
-	                     inner join turma t 
+	                    inner join turma t 
 	                     	on ft.turma_id = t.id
+                        inner join tipo_ciclo_ano a on a.modalidade = t.modalidade_codigo 
+ 							 and a.ano = t.ano
+                        inner join tipo_ciclo c on c.id = a.tipo_ciclo_id
                         where
                             not ft.excluido 
                             and not cc.excluido 
