@@ -221,29 +221,29 @@
             int groupings = 2;
             var grouped = Model.GraficosDto.Select((x, i) => new { x, i = i / groupings })
                             .GroupBy(x => x.i, x => x.x);
-           
+
             @MontarCabecalhoGrafico();
 
-            <table>
-                <tbody>
-                    @{ 
-                        var maxTabelasPorPagina = 2;
-                        int count = 0;
-                    }
-                    @foreach (var items in grouped)
-                    {                     
-                        if (count >= maxTabelasPorPagina)
-                        {
-                            @Html.Raw(@VerificaQuebra(true));
-                            @MontarCabecalhoGrafico();
 
-                            count = 1;
-                        }
-                        else
-                        {
-                            count += 1;
-                        }
+            
+                var maxTabelasPorPagina = 2;
+                int count = 0;
+            }
+            @foreach (var items in grouped)
+            {
+                if (count >= maxTabelasPorPagina)
+                {
+                    @Html.Raw(@VerificaQuebra(true));
+                    @MontarCabecalhoGrafico();                    
 
+                    count += 1;
+                }
+                else
+                {
+                    count += 1;
+                }
+                <table>
+                    <tbody>
                         <tr>
                             @foreach (var item in items)
                             {
@@ -251,9 +251,10 @@
                                 <td style="border-top:0;" width={@grafico.LarguraTotal}>@await Html.PartialAsync("Graficos/GraficoBarrasPAP", grafico) @count</td>
                             }
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            }
+
         }
     </div>
 
