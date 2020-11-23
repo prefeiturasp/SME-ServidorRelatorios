@@ -362,7 +362,7 @@
          },
          "estudosRealizados":[
             {
-               "ano":3,
+               "ano":"3",
                "ueNome":"EMEFM - DERVILLE ALLEGRETTI, PROF.",
                "ueMunicipio":"São Paulo",
                "ueUf":"SP"

@@ -42,7 +42,7 @@
 		<queryString language="json">
 			<![CDATA[relatorioHistoricoEscolar.estudosRealizados]]>
 		</queryString>
-		<field name="ano" class="java.lang.Integer">
+		<field name="ano" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="ano"/>
 			<fieldDescription><![CDATA[ano]]></fieldDescription>
 		</field>

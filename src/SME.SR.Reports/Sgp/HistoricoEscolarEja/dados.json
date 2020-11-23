@@ -841,7 +841,7 @@
          },
          "estudosRealizados":[
             {
-               "ano":3,
+               "ano":"3",
                "ueNome":"EMEF - MAXIMO DE MOURA SANTOS, PROF.",
                "ueMunicipio":"São Paulo",
                "ueUf":"SP"
