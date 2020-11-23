@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,30 +52,27 @@ namespace SME.SR.Application
             {
                 var listaAlunos = await mathPoolNumbersRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
-                if (listaAlunos != null && listaAlunos.Any())
-                {
-                    var familiaresAgrupados = listaAlunos.GroupBy(fu => fu.Familiares);
+                var familiaresAgrupados = listaAlunos.GroupBy(fu => fu.Familiares);
 
-                    var opacosAgrupados = listaAlunos.GroupBy(fu => fu.Opacos);
+                var opacosAgrupados = listaAlunos.GroupBy(fu => fu.Opacos);
 
-                    var transparentesAgrupados = listaAlunos.GroupBy(fu => fu.Transparentes);
+                var transparentesAgrupados = listaAlunos.GroupBy(fu => fu.Transparentes);
 
-                    var terminamZeroAgrupados = listaAlunos.GroupBy(fu => fu.TerminamZero);
+                var terminamZeroAgrupados = listaAlunos.GroupBy(fu => fu.TerminamZero);
 
-                    var algarismosAgrupados = listaAlunos.GroupBy(fu => fu.Algarismos);
+                var algarismosAgrupados = listaAlunos.GroupBy(fu => fu.Algarismos);
 
-                    var processoAgrupados = listaAlunos.GroupBy(fu => fu.Processo);
+                var processoAgrupados = listaAlunos.GroupBy(fu => fu.Processo);
 
-                    var zeroIntercaladosAgrupados = listaAlunos.GroupBy(fu => fu.ZeroIntercalados);
+                var zeroIntercaladosAgrupados = listaAlunos.GroupBy(fu => fu.ZeroIntercalados);
 
-                    AdicionarPergunta(familiaresAgrupados, grupo: "Familiares/Frequentes", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarPergunta(opacosAgrupados, grupo: "Opacos", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarPergunta(transparentesAgrupados, grupo: "Transparentes", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarPergunta(terminamZeroAgrupados, grupo: "Terminam em zero", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarPergunta(algarismosAgrupados, grupo: "Algarismos iguais", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarPergunta(processoAgrupados, grupo: "Processo de generalização", perguntas, request.QuantidadeTotalAlunos);
-                    AdicionarPergunta(zeroIntercaladosAgrupados, grupo: "Zero intercalado", perguntas, request.QuantidadeTotalAlunos);
-                }
+                AdicionarPergunta(familiaresAgrupados, grupo: "Familiares/Frequentes", perguntas, request.QuantidadeTotalAlunos);
+                AdicionarPergunta(opacosAgrupados, grupo: "Opacos", perguntas, request.QuantidadeTotalAlunos);
+                AdicionarPergunta(transparentesAgrupados, grupo: "Transparentes", perguntas, request.QuantidadeTotalAlunos);
+                AdicionarPergunta(terminamZeroAgrupados, grupo: "Terminam em zero", perguntas, request.QuantidadeTotalAlunos);
+                AdicionarPergunta(algarismosAgrupados, grupo: "Algarismos iguais", perguntas, request.QuantidadeTotalAlunos);
+                AdicionarPergunta(processoAgrupados, grupo: "Processo de generalização", perguntas, request.QuantidadeTotalAlunos);
+                AdicionarPergunta(zeroIntercaladosAgrupados, grupo: "Zero intercalado", perguntas, request.QuantidadeTotalAlunos);
             }
 
             if (perguntas.Any())
@@ -82,8 +80,39 @@ namespace SME.SR.Application
 
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
+            GerarGraficos(relatorio);
 
             return relatorio;
+        }
+
+        private void GerarGraficos(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio)
+        {
+            relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            foreach(var pergunta in relatorio.PerguntasRespostas)
+            {
+                string chave = String.Empty;
+                int chaveIndex = 0;
+                var grafico = new GraficoBarrasVerticalDto(420, $"{pergunta.Pergunta}");
+                var legendas = new List<GraficoBarrasLegendaDto>();
+
+                foreach (var resposta in pergunta.Respostas)
+                {
+                    chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                    legendas.Add(new GraficoBarrasLegendaDto()
+                    {
+                        Chave = chave,
+                        Valor = resposta.Resposta
+                    });
+
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(decimal.Parse(resposta.AlunosQuantidade.ToString()), chave));
+                }
+                var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                grafico.Legendas = legendas;
+                relatorio.GraficosBarras.Add(grafico);
+            }
         }
 
         private void TrataAlunosQueNaoResponderam(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, int quantidadeTotalAlunos)
@@ -92,16 +121,21 @@ namespace SME.SR.Application
             {
                 var qntDeAlunosPreencheu = perguntaResposta.Respostas.Sum(a => a.AlunosQuantidade);
                 var diferencaPreencheuNao = quantidadeTotalAlunos - qntDeAlunosPreencheu;
-                
+
                 var percentualNaoPreencheu = (diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
 
-                perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
-                {
-                    Resposta = "Sem preenchimento", 
-                    AlunosQuantidade = diferencaPreencheuNao,
-                    AlunosPercentual = percentualNaoPreencheu
+                var existePerguntasSemPreenchimento = perguntaResposta.Respostas.FirstOrDefault(p => p.Resposta == "Sem preenchimento");
 
-                });
+                if (existePerguntasSemPreenchimento == null)
+                {
+                    perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
+                    {
+                        Resposta = "Sem preenchimento",
+                        AlunosQuantidade = diferencaPreencheuNao,
+                        AlunosPercentual = percentualNaoPreencheu
+
+                    });
+                }
             }
         }
 
@@ -130,6 +164,22 @@ namespace SME.SR.Application
                 {
                     Pergunta = grupo,
                     Respostas = respostas
+                });
+            }
+            else
+            {
+                perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+                {
+                    Pergunta = grupo,
+                    Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>()
+                    {
+                        new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
+                        {
+                            AlunosPercentual = 100,
+                            AlunosQuantidade = TotalAlunosGeral,
+                            Resposta = "Sem preenchimento"
+                        }
+                    }
                 });
             }
         }
@@ -178,9 +228,9 @@ namespace SME.SR.Application
 
             var agrupamentosComValor = agrupamento?.Where(a => !string.IsNullOrEmpty(a.RespostaId));
 
-            var totalAlunos =  agrupamentosComValor?.Count() ?? 0;
+            var totalAlunos = agrupamentosComValor?.Count() ?? 0;
 
-            var agrupamentosComValorAgrupado = agrupamentosComValor?.GroupBy(g => g.RespostaId );
+            var agrupamentosComValorAgrupado = agrupamentosComValor?.GroupBy(g => g.RespostaId);
 
             foreach (var item in pergunta)
             {

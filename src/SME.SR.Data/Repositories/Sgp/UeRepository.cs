@@ -71,7 +71,6 @@ namespace SME.SR.Data
                 anos = anos.ToList()
             });
 
-
         }
 
         public async Task<IEnumerable<Ue>> ObterPorCodigos(string[] ueCodigos)
@@ -91,6 +90,14 @@ namespace SME.SR.Data
                 return ue;
             }
             , parametros, splitOn: "Id,Id"));
+        }
+
+        public async Task<Ue> ObterPorId(long ueId)
+        {
+            var query = @"select Id, ue_id Codigo, Nome, tipo_escola TipoEscola from ue where id = @ueId";
+            var parametros = new { ueId };
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryFirstOrDefaultAsync<Ue>(query, parametros);
         }
     }
 }
