@@ -8,7 +8,7 @@
 
         public string UeNome { get; set; }
 
-        public int TurmaAno { get; set; }
+        public string TurmaAno { get; set; }
 
         public string UeMunicipio
         {

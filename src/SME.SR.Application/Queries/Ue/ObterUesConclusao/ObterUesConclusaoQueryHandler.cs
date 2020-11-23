@@ -55,7 +55,7 @@ namespace SME.SR.Application
                     uesConclusao.Add(new UeConclusaoPorAlunoAno()
                     {
                         AlunoCodigo = turmaAluno.AlunoCodigo,
-                        TurmaAno = turmaAluno.Ano,
+                        TurmaAno = turmaAluno.DescricaoAno,
                         UeCodigo = ue.Codigo,
                         UeNome = ue.NomeComTipoEscolaEDre
                     

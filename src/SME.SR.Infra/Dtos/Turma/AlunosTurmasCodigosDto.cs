@@ -13,5 +13,6 @@ namespace SME.SR.Infra
         public int EtapaEJA { get; set; }
         public string Ciclo { get; set; }
         public string ParecerConclusivo { get; set; }
+        public string DescricaoAno => Modalidade == Modalidade.EJA ?  $"{Ciclo} - {(EtapaEJA == 1 ? "I" : "II")}" : $"{Ano}º ano"; 
     }
 }

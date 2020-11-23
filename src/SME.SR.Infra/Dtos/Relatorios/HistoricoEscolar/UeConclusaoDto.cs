@@ -5,7 +5,7 @@ namespace SME.SR.Infra
     public  class UeConclusaoDto
     {
         [JsonProperty("ano")]
-        public int Ano { get; set; }
+        public string Ano { get; set; }
         [JsonProperty("ueNome")]
         public string UeNome { get; set; }
         [JsonProperty("ueMunicipio")]
