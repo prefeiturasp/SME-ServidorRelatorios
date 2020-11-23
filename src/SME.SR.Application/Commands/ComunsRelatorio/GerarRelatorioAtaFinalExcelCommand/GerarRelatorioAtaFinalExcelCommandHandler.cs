@@ -32,27 +32,34 @@ namespace SME.SR.Application
         {
             try
             {
-                using (var workbook = new XLWorkbook())
+                var dadosAgrupadosTurma = request.ObjetoExportacao.GroupBy(g => g.Cabecalho);
+
+                for (int i = 0; i < dadosAgrupadosTurma.Count(); i++)
                 {
-                    var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
 
-                    if (!request.ObjetoExportacao.Any())
-                        throw new NegocioException("Não foi possível localizar o objeto de consulta.");
+                        if (!request.ObjetoExportacao.Any())
+                            throw new NegocioException("Não foi possível localizar o objeto de consulta.");
 
-                    var objetoExportacao = request.ObjetoExportacao.FirstOrDefault();
+                        var objetoExportacao = request.ObjetoExportacao.FirstOrDefault();
 
-                    MontarCabecalho(worksheet, objetoExportacao.Cabecalho, request.TabelaDados.Columns.Count);
+                        var tabelaDados = request.TabelasDados.ElementAt(i);
 
-                    worksheet.Cell(LINHA_GRUPOS, 1).InsertData(request.TabelaDados);
+                        MontarCabecalho(worksheet, dadosAgrupadosTurma.ElementAt(i).Key, tabelaDados.Columns.Count);
 
-                    MergearTabela(worksheet, request.TabelaDados);
+                        worksheet.Cell(LINHA_GRUPOS, 1).InsertData(tabelaDados);
 
-                    AdicionarEstilo(worksheet, request.TabelaDados);
+                        MergearTabela(worksheet, tabelaDados);
 
-                    var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-                    var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
+                        AdicionarEstilo(worksheet, tabelaDados);
 
-                    workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
+                        var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+                        var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
+
+                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
+                    }
                 }
 
                 servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));

@@ -10,28 +10,37 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioConselhoClasseAtaFinalExcelQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalExcelQuery, DataTable>
+    public class ObterRelatorioConselhoClasseAtaFinalExcelQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalExcelQuery, IEnumerable<DataTable>>
     {
-        public async Task<DataTable> Handle(ObterRelatorioConselhoClasseAtaFinalExcelQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<DataTable>> Handle(ObterRelatorioConselhoClasseAtaFinalExcelQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                DataTable dt = new DataTable();
+                var lstDatatables = new List<DataTable>();
 
-                var gruposMatriz = request.ObjetoExportacao.SelectMany(e => e.GruposMatriz);
+                var dt = new DataTable();
 
-                var gruposMatrizPorId = gruposMatriz.DistinctBy(d => d.Id);
-                var componentesCurriculares = gruposMatriz.SelectMany(e => e.ComponentesCurriculares).GroupBy(gm => gm.IdGrupoMatriz);
+                var agrupamentoTurmas = request.ObjetoExportacao.GroupBy(g => g.Cabecalho);
 
-                MontarColunas(gruposMatrizPorId, componentesCurriculares, dt);
+                foreach (var turma in agrupamentoTurmas)
+                {
+                    var gruposMatriz = turma.SelectMany(e => e.GruposMatriz);
 
-                MontarComponentes(gruposMatrizPorId, componentesCurriculares, dt);
+                    var gruposMatrizPorId = gruposMatriz.DistinctBy(d => d.Id);
+                    var componentesCurriculares = gruposMatriz.SelectMany(e => e.ComponentesCurriculares).GroupBy(gm => gm.IdGrupoMatriz);
 
-                var linhas = request.ObjetoExportacao.SelectMany(l => l.Linhas);
+                    MontarColunas(gruposMatrizPorId, componentesCurriculares, dt);
 
-                MontarLinhas(linhas, dt);
+                    MontarComponentes(gruposMatrizPorId, componentesCurriculares, dt);
 
-                return await Task.FromResult(dt);
+                    var linhas = turma.SelectMany(l => l.Linhas);
+
+                    MontarLinhas(linhas, dt);
+
+                    lstDatatables.Add(dt);
+                }
+
+                return await Task.FromResult(lstDatatables);
             }
             catch (System.Exception ex)
             {
