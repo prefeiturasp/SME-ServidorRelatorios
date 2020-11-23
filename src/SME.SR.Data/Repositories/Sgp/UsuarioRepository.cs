@@ -34,10 +34,13 @@ namespace SME.SR.Data
 
         public async Task<UsuarioCoreSSO> ObterDadosCoreSSO(string codigoRf)
         {
-            string query = @"select usu_senha AS Senha
+            string query = @"select 
+                                  pes_nome as Nome
+                                , usu_senha AS Senha
                                 , usu_criptografia AS TipoCriptografia
                                 , usu_situacao as Situacao 
                                 from SYS_Usuario 
+                               inner join SYS_Pessoa on SYS_Usuario.pes_id = SYS_Pessoa.pes_id
                                where usu_login = @codigoRf";
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringCoreSso))

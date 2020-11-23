@@ -80,14 +80,14 @@ namespace SME.SR.Application
             if (!notificacoes.Any())
                 throw new NegocioException("<b>O relatório com o filtro solicitado não possui informações.</b>");
 
-            dto = MapearNotificacoesDto(notificacoes);
+            dto = await MapearNotificacoesDto(notificacoes);
 
             await MontarCabecalhoRelatorioDto(dto, request.Filtros);
 
             return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotificacoes", dto, request.CodigoCorrelacao, "", "Relatório de Notificações", true)));
         }
 
-        private RelatorioNotificacaoDto MapearNotificacoesDto(IEnumerable<NotificacaoDto> notificacoes)
+        private async Task<RelatorioNotificacaoDto> MapearNotificacoesDto(IEnumerable<NotificacaoDto> notificacoes)
         {
             RelatorioNotificacaoDto relatorioNotificacaoDto = new RelatorioNotificacaoDto();
             var dres = notificacoes.Select(n => n.DreId).Distinct();
@@ -111,6 +111,12 @@ namespace SME.SR.Application
                     {
                         UsuarioNotificacaoDto usuarioNotificacaoDto = new UsuarioNotificacaoDto();
                         var nome = notificacoes.FirstOrDefault(c => c.UsuarioRf == usuario).UsuarioNome;
+                        if(String.IsNullOrEmpty(nome))
+                        {
+                            var usuarioCoreSSO = await mediator.Send(new ObterDadosUsuarioCoreSSOPorRfQuery(usuario));
+                            if(usuarioCoreSSO != null)
+                                nome = usuarioCoreSSO.Nome;
+                        }
                         usuarioNotificacaoDto.Nome = nome != null ? $"{nome} ({usuario})"  : usuario;
                         usuarioNotificacaoDto.Notificacoes.AddRange(notificacoes.Where(c => c.UeId == ue && c.DreId == dre && c.UsuarioRf == usuario).OrderBy(n => n.Codigo));
                         ueNotificacaoDto.Usuarios.Add(usuarioNotificacaoDto);
