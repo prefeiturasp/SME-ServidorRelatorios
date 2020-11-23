@@ -66,10 +66,10 @@
 		<band splitType="Stretch"/>
 	</background>
 	<columnHeader>
-		<band height="37" splitType="Stretch">
+		<band height="47" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="555" height="22" backcolor="#F3F3F3" uuid="bbdb7cf1-1e22-4c6b-a346-9fa731c7925f">
+				<reportElement mode="Opaque" x="0" y="10" width="555" height="22" backcolor="#F3F3F3" uuid="bbdb7cf1-1e22-4c6b-a346-9fa731c7925f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -80,10 +80,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ESTUDOS RELALIZADOS]]></text>
+				<text><![CDATA[ESTUDOS REALIZADOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="22" width="70" height="15" uuid="d07fc4d4-611a-4282-b206-9b33939cd886"/>
+				<reportElement x="0" y="32" width="70" height="15" uuid="d07fc4d4-611a-4282-b206-9b33939cd886"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -93,7 +93,7 @@
 				<text><![CDATA[Ano]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="70" y="22" width="295" height="15" uuid="90cc6239-82fe-46c1-b970-7c95dc1daaaf"/>
+				<reportElement x="70" y="32" width="295" height="15" uuid="90cc6239-82fe-46c1-b970-7c95dc1daaaf"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -103,7 +103,7 @@
 				<text><![CDATA[Estabelecimento]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="365" y="22" width="150" height="15" uuid="be22932f-ec5f-4c3b-9d16-f363967109f6"/>
+				<reportElement x="365" y="32" width="150" height="15" uuid="be22932f-ec5f-4c3b-9d16-f363967109f6"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -113,7 +113,7 @@
 				<text><![CDATA[Município]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="515" y="22" width="40" height="15" uuid="d2ed7538-ee67-4db0-9fb9-d3d266f965c2"/>
+				<reportElement x="515" y="32" width="40" height="15" uuid="d2ed7538-ee67-4db0-9fb9-d3d266f965c2"/>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>

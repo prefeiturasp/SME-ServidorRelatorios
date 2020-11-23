@@ -80,7 +80,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ESTUDOS RELALIZADOS]]></text>
+				<text><![CDATA[ESTUDOS REALIZADOS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="22" width="70" height="15" uuid="d07fc4d4-611a-4282-b206-9b33939cd886"/>
