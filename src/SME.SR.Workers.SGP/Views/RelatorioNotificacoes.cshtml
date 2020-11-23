@@ -124,9 +124,9 @@ RELATÓRIO DE NOTIFICAÇÕES
                         str += $@"<tr>
                             <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
                             <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Categoria}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Tipo}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Situacao}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
+                            <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
                             <td width='15%' class='td-valor'>{notificacao.DataRecebimento}</td>
                             <td width='15%' class='td-valor'>{notificacao.DataLeitura}</td>
                         </tr>";
@@ -242,6 +242,7 @@ RELATÓRIO DE NOTIFICAÇÕES
 <head>
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <title>RELATÓRIO DE NOTIFICAÇÕES</title>
 </head>
 
@@ -249,7 +250,7 @@ RELATÓRIO DE NOTIFICAÇÕES
     <style>
         .body-rel-faltas-frequencia {
             margin: 0.5cm auto;
-            font-family: Roboto, sans-serif;
+            font-family: 'Roboto', sans-serif;
             width: 21cm;
             min-height: 29.7cm;
             background: white;
