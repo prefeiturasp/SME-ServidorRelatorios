@@ -7,6 +7,7 @@ namespace SME.SR.Data
 {
     public class UsuarioCoreSSO
     {
+        public string Nome { get; set; }
         public string Senha { get; set; }
         public TipoCriptografia TipoCriptografia { get; set; }
         public SituacaoUsuario Situacao { get; set; }
