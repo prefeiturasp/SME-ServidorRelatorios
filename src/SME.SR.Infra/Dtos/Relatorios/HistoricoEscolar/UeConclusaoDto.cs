@@ -1,10 +1,16 @@
-﻿namespace SME.SR.Infra
+﻿using Newtonsoft.Json;
+
+namespace SME.SR.Infra
 {
     public  class UeConclusaoDto
     {
+        [JsonProperty("ano")]
         public int Ano { get; set; }
+        [JsonProperty("ueNome")]
         public string UeNome { get; set; }
+        [JsonProperty("ueMunicipio")]
         public string UeMunicipio { get { return "São Paulo"; }  }
+        [JsonProperty("ueUf")]
         public string UeUf { get { return "SP"; } }
     }
 }
