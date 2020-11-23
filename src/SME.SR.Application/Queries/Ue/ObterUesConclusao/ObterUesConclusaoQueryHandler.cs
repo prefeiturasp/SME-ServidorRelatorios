@@ -57,7 +57,8 @@ namespace SME.SR.Application
                         AlunoCodigo = turmaAluno.AlunoCodigo,
                         TurmaAno = turmaAluno.Ano,
                         UeCodigo = ue.Codigo,
-                        UeNome = ue.NomeComTipoEscola
+                        UeNome = ue.NomeComTipoEscolaEDre
+                    
                     });
                 }
             }
