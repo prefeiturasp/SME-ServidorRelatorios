@@ -289,17 +289,27 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         private static void OrdenarAlunos(FiltroRelatorioFaltasFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFaltaFrequenciaComponenteDto componente)
         {
-            componente.Alunos = (from a in componente.Alunos
-                                 where
-                                 ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos) ?
-                                    operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.ValorCondicao)
-                                 :
-                                    operacao[filtro.Condicao](a.Frequencia, filtro.ValorCondicao))
-                                 select a)
-                                 .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
+            if (!filtro.TodosEstudantes)
+            {
+                componente.Alunos = (from a in componente.Alunos
+                                     where
+                                     ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos) ?
+                                        operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.ValorCondicao)
+                                     :
+                                        operacao[filtro.Condicao](a.Frequencia, filtro.ValorCondicao))
+                                     select a)
+                                     .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
+                                     .ThenBy(c => c.NomeTurma)
+                                     .ThenBy(c => c.NomeAluno)
+                                     .ToList();
+            }
+            else
+            {
+                componente.Alunos = (from a in componente.Alunos select a).OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
                                  .ThenBy(c => c.NomeTurma)
                                  .ThenBy(c => c.NomeAluno)
                                  .ToList();
+            }
         }
 
         private async Task AjustarBimestresSemFaltas(int anoLetivo, int semestre, List<RelatorioFaltaFrequenciaComponenteDto> componentes, Modalidade modalidade, List<RelatorioFaltaFrequenciaBimestreDto> bimestres)
