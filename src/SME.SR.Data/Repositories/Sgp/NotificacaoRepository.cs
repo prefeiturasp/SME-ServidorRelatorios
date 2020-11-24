@@ -41,16 +41,16 @@ namespace SME.SR.Data.Repositories.Sgp
 						inner join usuario u  on n.usuario_id = u.id
 						left join dre on n.dre_id = dre.dre_id 
 						left join ue on n.ue_id = ue.ue_id 
-						where (ano = @ano or ano = 0) 
+						where ano = @ano
 						and tipo = ANY(@tipos) 
 						and categoria = ANY(@categorias)
 						and n.status = ANY(@situacoes) ";
 			if (!exibirExcluidas)
 				query += " and n.excluida = false";
 			if (dre != "-99")
-				query += $" and (n.dre_id = '{dre}' or n.dre_id = null or n.dre_id = '')";
+				query += $" and n.dre_id = '{dre}'";
 			if (ue != "-99")
-				query += $" and (n.ue_id = '{ue}' or n.ue_id = null or n.ue_id = '')";
+				query += $" and n.ue_id = '{ue}'";
 			if (!String.IsNullOrEmpty(usuarioRf))
 				query += $" and u.rf_codigo = '{usuarioRf}'";
 

@@ -131,8 +131,8 @@ RELATÓRIO DE NOTIFICAÇÕES
                             <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
                             <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
                             <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
-                            <td width='15%' class='td-valor'>{notificacao.DataRecebimento}</td>
-                            <td width='15%' class='td-valor'>{notificacao.DataLeitura}</td>
+                            <td width='15%' class='td-valor'>{notificacao.DataRecebimento:dd/MM/yyyy HH:mm:ss}</td>
+                            <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
                         </tr>";
 
                         if ((int)(notificacao.Titulo.ToString().Length / 22) > 2)
@@ -166,7 +166,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                             }
 
                         }
-                        if (!String.IsNullOrEmpty(notificacao.Mensagem))
+                        if (!String.IsNullOrEmpty(notificacao.Mensagem) && notificacao.Tipo != SME.SR.Infra.NotificacaoTipo.Relatorio)
                         {
                             str += $@"<tr><td colspan='7' width='100%' class='td-titulo'>DESCRIÇÃO</td></tr>";
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;
