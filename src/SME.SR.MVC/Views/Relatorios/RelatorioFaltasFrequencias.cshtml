@@ -19,17 +19,8 @@
 </table>
 <table class='tabela-alunos'>
 <thead>
-<tr>
-<th>{componenteNome}</th>
-</tr>
+    <tr><th>{componenteNome}</th></tr>
 </thead>
-</table>
-<table class='tabela-alunos'>
-<tbody>
-<tr>
-<td colspan='4' style='border-bottom: none; border-top: none;'></td>
-</tr>
-</tbody>
 </table>";
         return Html.Raw(str);
     }
@@ -40,17 +31,25 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 2;
         var colunaFaltas = Model.ExibeFaltas ? "<th style='width: 10%;'>FALTAS</th>" : "";
         var colunaFrequencia = Model.ExibeFrequencia ? "<th style='width: 10%;'>FREQ. %</th>" : "";
-        var str = $@"<table class='tabela-alunos'>
-<thead>
-<tr>
-<th style='width: 10%;'>Nº</th>
-<th style='width: 10%;'>Turma</th>
-<th style='width: 60%;' class='alinhar-esquerda'>NOME</th>
-{colunaFaltas}
-{colunaFrequencia}
-</tr>
-</thead>
-<tbody>";
+        var str = $@"
+        <table class='tabela-alunos'>
+        <tbody>
+            <tr>
+                <td colspan='4' style='border-bottom: none; border-top: none;'></td>
+            </tr>
+        </tbody>
+        </table>
+        <table class='tabela-alunos'>
+        <thead>
+        <tr>
+        <th style='width: 10%;'>Nº</th>
+        <th style='width: 10%;'>Turma</th>
+        <th style='width: 60%;' class='alinhar-esquerda'>NOME</th>
+        {colunaFaltas}
+        {colunaFrequencia}
+        </tr>
+        </thead>
+        <tbody>";
         return Html.Raw(str);
     }
 
@@ -99,7 +98,7 @@ SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
     {
         var str =
            $@"<div>
-<img class='img-logo-sgp' src='logo.png' alt='Logo SGP' />
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
 <div class='titulo-faltas-frequencia'>FALTAS</div>
@@ -280,114 +279,135 @@ COMPONENTE CURRICULAR: {componenteCurricular}
         {
             for (int d = 0; d < Model.Dres.Count; d++)
             {
-                //foreach (var dre in Model.Dres)
-                //{
+                var dre = Model.Dres[d];
                 @if (Model.Dres[d].Ues != null)
                 {
-                    foreach (var ue in Model.Dres[d].Ues)
+                    for (int u = 0; u < Model.Dres[d].Ues.Count; u++)
                     {
+                        var ue = Model.Dres[d].Ues[u];
                         if (ue.Anos != null)
                         {
-                            foreach (var ano in ue.Anos)
+                            for (int a = 0; a < ue.Anos.Count; a++)
                             {
+                                var ano = ue.Anos[a];
                                 if (ano.Bimestres != null)
                                 {
-                                    @*@foreach (var bimestre in ano.Bimestres)*@
                                     for (int b = 0; b < ano.Bimestres.Count; b++)
                                     {
+                                        var bimestre = ano.Bimestres[b];
+
                                         @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
 
-                                        @if (ano.Bimestres[b].Componentes != null)
+                                        @if (bimestre.Componentes != null)
                                         {
                                             <table class="tabela-alunos">
                                                 <thead>
                                                     @if (Model.Dre == "Todas")
                                                     {
                                                         <tr>
-                                                            <th>@Model.Dres[d].NomeDre</th>
+                                                            <th>@dre.NomeDre</th>
                                                         </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                     }
                                                     @if (Model.Ue == "Todas")
                                                     {
                                                         <tr>
                                                             <th>@ue.NomeUe</th>
                                                         </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                     }
                                                     <tr>
                                                         <th>@Model.Modalidade</th>
                                                     </tr>
-                                                    <tr>
-                                                        <th>@string.Format("{0}º Ano", ano.NomeAno)</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>@ano.Bimestres[b].NomeBimestre</th>
-                                                    </tr>
+                                                    @{contadorQuebrarPagina = contadorQuebrarPagina + 1;}
+                                                    @if (string.IsNullOrWhiteSpace(Model.Ano) || Model.Ano == "Todos")
+                                                    {
+                                                        <tr>
+                                                            <th>@ano.NomeAno</th>
+                                                        </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                                    }
+                                                    @if (Model.Bimestre == "Todos")
+                                                    {
+                                                        <tr>
+                                                            <th>@bimestre.NomeBimestre</th>
+                                                        </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                                    }
                                                 </thead>
                                             </table>
 
                                             // CONTAR
-                                            contadorQuebrarPagina = contadorQuebrarPagina + 5;
+                                            //contadorQuebrarPagina = contadorQuebrarPagina + 5;
                                             var terminouListaAluno = false;
-                                            foreach (var componente in ano.Bimestres[b].Componentes)
+                                            // foreach (var componente in ano.Bimestres[b].Componentes)
+                                            for (int c = 0; c < ano.Bimestres[b].Componentes.Count; c++)
                                             {
+                                                var componente = ano.Bimestres[b].Componentes[c];
 
                                                 if ((contadorQuebrarPagina + 6) > contadorMaximoLinhasPorPagina)
                                                 {
                                                     @MontarQuebrarPagina();
                                                     @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
                                                     contadorQuebrarPagina = 0;
-                                                    @MontarComponente(componente.NomeComponente)
-                                                }
-                                                else
-                                                {
-                                                    @MontarComponente(componente.NomeComponente, !terminouListaAluno)
-                                                }
-
-                                                terminouListaAluno = false;
-
-                                                @if (componente.Alunos != null)
-                                                {
-
-                                                    @AbrirTabelaAluno()
-                                                    for (int i = 0; i < componente.Alunos.Count; i++)
+                                                    if (Model.ComponenteCurricular == "Todos")
+                                                        @MontarComponente(componente.NomeComponente)
+                                                    }
+                                                    else
                                                     {
-                                                        var aluno = componente.Alunos[i];
-                                                        @MontarLinhaAluno(aluno.NumeroChamada, aluno.NomeTurma, aluno.NomeAluno, aluno.NumeroFaltasNaoCompensadas, aluno.Frequencia)
+                                                        if (Model.ComponenteCurricular == "Todos")
+                                                            @MontarComponente(componente.NomeComponente, !terminouListaAluno)
+                                                        }
 
-                                                        var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
+                                                        terminouListaAluno = false;
 
-                                                        terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Alunos.Count == i + 1;
-
-                                                        @if (atigiuLimiteDadosPorPagina)
+                                                        @if (componente.Alunos != null)
                                                         {
-                                                            @FecharTabelaAluno()
-                                                            @MontarQuebrarPagina();
-                                                            contadorQuebrarPagina = 0;
-                                                            @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                                                            var stiloBorderTop = terminouListaAluno ? "border-top: none;" : "";
+                                                            @AbrirTabelaAluno()
+                                                            for (int i = 0; i < componente.Alunos.Count; i++)
+                                                            {
+                                                                var aluno = componente.Alunos[i];
+                                                                @MontarLinhaAluno(aluno.NumeroChamada, aluno.NomeTurma, aluno.NomeAluno, aluno.NumeroFaltasNaoCompensadas, aluno.Frequencia)
+
+                                                                var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
+
+                                                                terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Alunos.Count == i + 1;
+
+                                                                @if (atigiuLimiteDadosPorPagina)
+                                                                {
+                                                                    @FecharTabelaAluno()
+                                                                    @MontarQuebrarPagina();
+                                                                    contadorQuebrarPagina = 0;
+                                                                    @MontarCabecalho(Model.Dre, Model.Ue, Model.Ano, Model.Bimestre, Model.ComponenteCurricular, Model.Usuario, Model.RF, Model.Data)
+                                                                    if (!terminouListaAluno)
+                                                                    {
+                                                                        @MontarComponente(componente.NomeComponente)
+                                                                        @AbrirTabelaAluno()
+                                                                    }
+                                                                }
+                                                            }
                                                             if (!terminouListaAluno)
                                                             {
-                                                                @MontarComponente(componente.NomeComponente)
-                                                                @AbrirTabelaAluno()
+                                                                @FecharTabelaAluno()
                                                             }
                                                         }
                                                     }
-                                                    if (!terminouListaAluno)
-                                                    {
-                                                        @FecharTabelaAluno()
-                                                    }
                                                 }
-                                            }
-                                        }
-                                        contadorQuebrarPagina = 0;
-                                        if ((d + 1 <= Model.Dres.Count) && (b + 1 <= ano.Bimestres.Count))
+                                        if (((d + 1 != Model.Dres.Count) ||
+                                             (u + 1 != dre.Ues.Count) ||
+                                             (a + 1 != ue.Anos.Count) ||
+                                             (b + 1 != ano.Bimestres.Count)))
+                                        {
                                             @MontarQuebrarPagina();
+                                            contadorQuebrarPagina = 0;
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                //}
+                }
             }
         }
 
