@@ -1,0 +1,316 @@
+﻿@model SME.SR.Infra.GraficoPAPDto
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 47;
+    int contadorPagina = 0;
+
+    string VerificaQuebra(bool devePular = false)
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina || devePular)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always'></div>" + str;
+        }
+        return string.Empty;
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        var str =
+            $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'>RELATÓRIO DE ACOMPANHAMENTO PAP - GRÁFICOS</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='35%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {Model.DreNome}</td>
+<td width='45%' class='espaco-esquerda-15 sem-border-bottom'>UE: {Model.UeNome}</td>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO LETIVO: {Model.AnoLetivo}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='57%' class='espaco-esquerda-15 sem-border-bottom'>CICLO: {Model.Ciclo}</td>
+<td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO: {Model.Ano}</td>
+<td width='23%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Turma}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='100%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: {Model.Periodo}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td  width='60%' class='espaco-esquerda-15'>USUÁRIO: {Model.UsuarioNome}</td>
+<td width='20%' class='espaco-esquerda-15'>RF: {Model.UsuarioRF}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.Data}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+    string MontarCabecalhoGrafico(string titulo)
+    {
+        <table class="tabela-cabecalho">
+            <thead>
+                <tr>
+                    <td width="75%" class="alinhar-esquerda espaco-esquerda-15">@titulo</td>
+                </tr>
+            </thead>
+        </table>
+
+        return "";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de acompanhamento PAP - GRÁFICOS</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 12px;
+            height: 24px;
+            line-height: 18.75px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-bottom: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border-top: 0;
+            border-bottom: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .coluna-vazia {
+            border: 0;
+            background: white;
+        }
+
+        .quebra-palavra {
+            word-break: break-word;
+        }
+
+        .grafico-vazio {
+            position: absolute;
+            right: 0;
+            left: 0;
+            top: 3px;
+        }
+
+        .titulo-grafico {
+            font-size: 12px;
+            height: 24px;
+            line-height: 18.75px;
+            border: 1px solid #42474a;
+            border-left: 0;
+            border-right: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f3f3f3;
+            margin-top: -5px;
+            padding-top: 5px;
+        }
+    </style>
+    <div>
+
+        @Html.Raw(MontarCabecalho())
+
+        @{
+            int groupings = 2;
+            var grouped = Model.GraficosDto.Select((x, i) => new { x, i = i / groupings })
+                            .GroupBy(x => x.i, x => x.x);
+
+            var maxTabelasPorPagina = 2;
+            int count = 0;
+            int numGraficos = 0;
+        }
+
+        @foreach (var items in grouped)
+        {
+            foreach (var item in items)
+            {
+                if (count >= maxTabelasPorPagina)
+                {
+                    @Html.Raw(VerificaQuebra(true));
+
+                    count = 1;
+                }
+                else
+                {
+                    count += 1;
+                }
+                
+                MontarCabecalhoGrafico(item.Titulo);
+
+                <table>
+                    <tbody>
+                        <tr>
+                            @foreach (var grafico in item.Graficos)
+                            {
+                                <td style="border-top:0;" width="50%">
+                                    <div class="titulo-grafico">
+                                        <span style="font-size:13px">@grafico.Titulo</span>
+                                    </div>
+                                    @await Html.PartialAsync("Graficos/GraficoBarrasPAP", grafico)
+                                </td>
+
+                                if (item.Graficos.Count() < 2 && numGraficos > 0)
+                                {
+                                    <td style="border-top:0;position:relative" width="50%">
+                                        <div class="grafico-vazio">
+                                            <div class="titulo-grafico">
+                                                <span>A</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                }
+                                numGraficos++;
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        }
+    </div>
+
+
+</body>
+<script>
+    window.onload = function () {
+        @{
+            foreach (var items in Model.GraficosDto)
+            {
+                foreach (var item in items.Graficos)
+                {
+                    <text>
+                         drawBarChart_@(item.IdParaLastro)();
+                    </text>
+                }
+            }
+        }
+    }
+</script>
+</html>

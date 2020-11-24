@@ -9,6 +9,7 @@ namespace SME.SR.Infra
         public ResumoPAPGraficoAnoDto(decimal larguraTotal, string titulo)
         {
             EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>();
+            LarguraTotal = larguraTotal;
             EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(10, "", 10, 10);
             Titulo = titulo;
             LarguraTotal = larguraTotal;
@@ -18,8 +19,10 @@ namespace SME.SR.Infra
         public List<GraficoBarrasPAPVerticalEixoXDto> EixosX { get; set; }
 
         public GraficoBarrasPAPVerticalEixoYDto EixoYConfiguracao { get; set; }
+        public decimal LarguraTotal { get; set; }
 
         public string Titulo { get; set; }
+        public string IdParaLastro { get; set; }
 
         public List<GraficoBarrasLegendaDto> Legendas { get; set; }
 
@@ -33,10 +36,5 @@ namespace SME.SR.Infra
                     return string.Empty;
             }
         }
-
-        public decimal LarguraTotal { get; set; }
-
-        public string IdParaLastro { get; set; }
-
     }
 }
