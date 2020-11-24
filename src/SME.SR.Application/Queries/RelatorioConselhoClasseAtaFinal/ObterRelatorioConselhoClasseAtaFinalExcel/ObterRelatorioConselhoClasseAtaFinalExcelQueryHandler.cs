@@ -18,12 +18,14 @@ namespace SME.SR.Application
             {
                 var lstDatatables = new List<DataTable>();
 
-                var dt = new DataTable();
+                DataTable dt;
 
                 var agrupamentoTurmas = request.ObjetoExportacao.GroupBy(g => g.Cabecalho);
 
                 foreach (var turma in agrupamentoTurmas)
                 {
+                    dt = new DataTable();
+
                     var gruposMatriz = turma.SelectMany(e => e.GruposMatriz);
 
                     var gruposMatrizPorId = gruposMatriz.DistinctBy(d => d.Id);
