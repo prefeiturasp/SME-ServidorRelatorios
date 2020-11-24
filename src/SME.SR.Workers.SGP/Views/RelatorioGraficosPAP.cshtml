@@ -77,7 +77,6 @@
             <thead>
                 <tr>
                     <td width="75%" class="alinhar-esquerda espaco-esquerda-15">@titulo</td>
-                    <td width="25%">Ciclo: @Model.Ciclo</td>
                 </tr>
             </thead>
         </table>
@@ -224,9 +223,9 @@
             height: 24px;
             line-height: 18.75px;
             border: 1px solid #42474a;
-            width: 100%;
             border-left: 0;
             border-right: 0;
+            width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -250,49 +249,50 @@
         }
 
         @foreach (var items in grouped)
-        {           
-            if (count >= maxTabelasPorPagina)
+        {
+            foreach (var item in items)
             {
-                @Html.Raw(VerificaQuebra(true));
+                if (count >= maxTabelasPorPagina)
+                {
+                    @Html.Raw(VerificaQuebra(true));
 
-                count = 1;
-            }
-            else
-            {
-                count += 1;
-            }
+                    count = 1;
+                }
+                else
+                {
+                    count += 1;
+                }
+                
+                MontarCabecalhoGrafico(item.Titulo);
 
-            MontarCabecalhoGrafico(items.First().Titulo);
-
-            <table>
-                <tbody>
-                    <tr>
-                        @foreach (var graficos in items)
-                        {
-                            var grafico = graficos.Graficos[0];
-                            <td style="border-top:0;" width="50%">
-                                <div class="titulo-grafico">
-                                    <span style="font-size:13px">@grafico.Titulo</span>
-                                </div>
-                                @await Html.PartialAsync("Graficos/GraficoBarrasPAP", grafico)
-                            </td>
-
-                            if (items.Count() < 2 && numGraficos > 0)
+                <table>
+                    <tbody>
+                        <tr>
+                            @foreach (var grafico in item.Graficos)
                             {
-                                <td style="border-top:0;position:relative" width="50%">
-                                    <div class="grafico-vazio">
-                                        <div class="titulo-grafico">
-                                            <span></span>
-                                        </div>
+                                <td style="border-top:0;" width="50%">
+                                    <div class="titulo-grafico">
+                                        <span style="font-size:13px">@grafico.Titulo</span>
                                     </div>
+                                    @await Html.PartialAsync("Graficos/GraficoBarrasPAP", grafico)
                                 </td>
+
+                                if (item.Graficos.Count() < 2 && numGraficos > 0)
+                                {
+                                    <td style="border-top:0;position:relative" width="50%">
+                                        <div class="grafico-vazio">
+                                            <div class="titulo-grafico">
+                                                <span>A</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                }
+                                numGraficos++;
                             }
-                            numGraficos++;
-                        }
-                    </tr>
-                </tbody>
-            </table>
-            
+                        </tr>
+                    </tbody>
+                </table>
+            }
         }
     </div>
 
