@@ -32,6 +32,9 @@ namespace SME.SR.Application
         {
             try
             {
+                if (!request.ObjetoExportacao.Any())
+                    throw new NegocioException("Não foi possível localizar o objeto de consulta.");
+
                 var dadosAgrupadosTurma = request.ObjetoExportacao.GroupBy(g => g.Cabecalho);
 
                 for (int i = 0; i < dadosAgrupadosTurma.Count(); i++)
@@ -40,14 +43,11 @@ namespace SME.SR.Application
                     {
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
 
-                        if (!request.ObjetoExportacao.Any())
-                            throw new NegocioException("Não foi possível localizar o objeto de consulta.");
-
-                        var objetoExportacao = request.ObjetoExportacao.FirstOrDefault();
+                        var objetoExportacao = dadosAgrupadosTurma.ElementAt(i);
 
                         var tabelaDados = request.TabelasDados.ElementAt(i);
 
-                        MontarCabecalho(worksheet, dadosAgrupadosTurma.ElementAt(i).Key, tabelaDados.Columns.Count);
+                        MontarCabecalho(worksheet, objetoExportacao.Key, tabelaDados.Columns.Count);
 
                         worksheet.Cell(LINHA_GRUPOS, 1).InsertData(tabelaDados);
 
@@ -56,7 +56,7 @@ namespace SME.SR.Application
                         AdicionarEstilo(worksheet, tabelaDados);
 
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-                        var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
+                        var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{request.CodigoCorrelacao}_{objetoExportacao.Key.Turma}_{objetoExportacao.Key.AnoLetivo}");
 
                         workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
                     }
