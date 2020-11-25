@@ -22,33 +22,33 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        contadorQuebrarPagina = contadorQuebrarPagina + 10;
 
         var str = $@"<div>
-                      <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-                    </div>                    
-                    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>                    
-                    <div class='titulo-plano-aula'>
-                       <p style='margin-bottom: 0'>RELATÓRIO DE USUÁRIOS</p>                                              
-                        <div class='fonte-14 header-pagina'>                            
-                            <table >
-                              <tbody>
-                                <tr>
-                                  <td width ='50%'>DRE: {Model.Filtro.Dre}</td>
-                                  <td width ='50%'>UE: {Model.Filtro.Ue}</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                            <table>
-                              <tbody>
-                                <tr>
-                                  <td class='campo-usuario'>USUÁRIO: {Model.Filtro.Usuario}</td>
-                                  <td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
-                                  <td class='campo-data-cabecalho'>DATA DE IMPRESSÃO: {Model.Filtro.Data:dd/MM/yyyy}</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>";
+      <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+    </div>
+    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+    <div class='titulo-plano-aula'>
+       <p style='margin-bottom: 0'>RELATÓRIO DE USUÁRIOS</p>
+        <div class='fonte-14 header-pagina'>
+            <table >
+              <tbody>
+                <tr>
+                  <td width ='50%'>DRE: {Model.Filtro.Dre}</td>
+                  <td width ='50%'>UE: {Model.Filtro.Ue}</td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <tbody>
+                <tr>
+                  <td class='campo-usuario'>USUÁRIO: {Model.Filtro.Usuario}</td>
+                  <td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
+                  <td class='campo-data-cabecalho'>DATA DE IMPRESSÃO: {Model.Filtro.Data:dd/MM/yyyy}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>";
 
         return str;
     }
@@ -64,74 +64,78 @@
 
             contadorQuebrarPagina = contadorQuebrarPagina + 1;
 
-            foreach (var perfil in dre.Perfis)
+            if (dre.Perfis != null)
             {
-                str += MontarCabecalhoPerfil(perfil.Nome);
-                var ultimoUsuario = perfil.Usuarios.LastOrDefault();
-                var EhUltimoUsuario = false;
-                foreach (var usuario in perfil.Usuarios)
+                foreach (var perfil in dre.Perfis)
                 {
-                    str += $@"<tr>
-                                <td width='20%' class='td-valor'>{usuario.Rf}</td>
-                                <td width='30%' class='td-valor'>{usuario.Nome}</td>
-                                <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                                <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
-                              </tr>";
-
-                    contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 35 ? (int)(usuario.Nome.Length / 35) + 1 : 1);
-
-                    retornoVerificacao = VerificaQuebra();
-                    if (retornoVerificacao != string.Empty)
+                    str += MontarCabecalhoPerfil(perfil.Nome);
+                    var ultimoUsuario = perfil.Usuarios.LastOrDefault();
+                    var EhUltimoUsuario = false;
+                    foreach (var usuario in perfil.Usuarios)
                     {
-                        if(usuario != ultimoUsuario)
+                        str += $@"<tr>
+                <td width='20%' class='td-valor'>{usuario.Login}</td>
+                <td width='30%' class='td-valor'>{usuario.Nome}</td>
+                <td width='20%' class='td-valor'>{usuario.Situacao}</td>
+                <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
+              </tr>";
+
+                        contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 35 ? (int)(usuario.Nome.Length / 35) + 1 : 1);
+
+                        retornoVerificacao = VerificaQuebra();
+                        if (retornoVerificacao != string.Empty)
                         {
-                            str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
-                        }
-                        else
-                        {
-                            str += $@"</table>{retornoVerificacao}";
-                            EhUltimoUsuario = true;
+                            if (!usuario.Nome.Equals(ultimoUsuario.Nome) && !usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                            {
+                                str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
+                            }
+                            else
+                            {
+                                str += $@"</table>{retornoVerificacao}";
+                                EhUltimoUsuario = true;
+                            }
                         }
                     }
+                    str += $@"</table>";
+                    if (!EhUltimoUsuario)
+                        str += LinhaEmBranco();
                 }
-                str += $@"</table>";
-                if(!EhUltimoUsuario)
-                    str += LinhaEmBranco();
             }
 
             foreach (var ue in dre.Ues)
             {
                 str += MontaCabecalhoDREeUE(ue.Nome);
-                foreach (var perfil in ue.Perfis)
-                {
-                    str += MontarCabecalhoPerfil(perfil.Nome);
-                    foreach (var usuario in perfil.Usuarios)
+                if (ue.Perfis != null)
+                    foreach (var perfil in ue.Perfis)
                     {
-                        str += $@"<tr>
-                            <td width='20%' class='td-valor'>{usuario.Rf}</td>
-                            <td width='30%' class='td-valor'>{usuario.Nome}</td>
-                            <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                            <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
-                          </tr>";
-
-                        contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 16 ? (int)(usuario.Nome.Length / 16) + 1 : 1);
-
-                        retornoVerificacao = VerificaQuebra();
-                        if (retornoVerificacao != string.Empty)
+                        str += MontarCabecalhoPerfil(perfil.Nome);
+                        foreach (var usuario in perfil.Usuarios)
                         {
-                            str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
+                            str += $@"<tr>
+                                <td width='20%' class='td-valor'>{usuario.Login}</td>
+                                <td width='30%' class='td-valor'>{usuario.Nome}</td>
+                                <td width='20%' class='td-valor'>{usuario.Situacao}</td>
+                                <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                              </tr>";
+
+                            contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 16 ? (int)(usuario.Nome.Length / 16) + 1 : 1);
+
+                            retornoVerificacao = VerificaQuebra();
+                            if (retornoVerificacao != string.Empty)
+                            {
+                                str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
+                            }
                         }
+                        str += $@"</table>";
+                        str += LinhaEmBranco();
                     }
-                    str += $@"</table>";
-                    str += LinhaEmBranco();
-                }
                 str += MontarCabecalhoProfessor();
                 var ultimoProfessor = ue.Professores.LastOrDefault();
                 var EhUltimoProfessor = false;
                 foreach (var professor in ue.Professores)
                 {
                     str += $@"<tr>
-                        <td width='20%' class='td-valor'>{professor.Rf}</td>
+                        <td width='20%' class='td-valor'>{professor.Login}</td>
                         <td width='30%' class='td-valor'>{professor.Nome}</td>
                         <td width='20%' class='td-valor'>{professor.Situacao}</td>
                         <td width='30%' class='td-valor'>{professor.UltimoAcesso}</td>
@@ -145,7 +149,7 @@
                     retornoVerificacao = VerificaQuebra();
                     if (retornoVerificacao != string.Empty)
                     {
-                        if (professor != ultimoProfessor)
+                        if (!professor.Nome.Equals(ultimoProfessor.Nome) && !professor.UltimoAcesso.Equals(ultimoProfessor.UltimoAcesso))
                         {
                             str += $@"</table>{retornoVerificacao}{MontarCabecalhoProfessor()}";
                         }
@@ -158,57 +162,67 @@
                     }
                 }
                 str += $@"</table>";
-                if(!EhUltimoProfessor)
+                if (!EhUltimoProfessor && dre.HistoricoReinicioSenha != null)
                     str += LinhaEmBranco();
             }
-            str += MontarCabecalhoHistoricoReinicioSenha();
-            var ultimohistorico = dre.HistoricoReinicioSenha.LastOrDefault();
-            var EhUltimohistorico = false;
-            foreach (var historico in dre.HistoricoReinicioSenha)
-            {
-                str += $@"<tr>
-                   <td width='20%' class='td-valor'>{historico.Rf}</td>
-                   <td width='30%' class='td-valor'>{historico.Nome}</td>
-                   <td width='25%' class='td-valor'>{historico.Perfil}</td>
-                   <td width='35%' class='td-valor'>{historico.SenhaReiniciada}</td>
-                   <td width='35%' class='td-valor'>{historico.SenhaReiniciadaPor}</td>
-                   <td width='35%' class='td-valor'>{historico.UtilizaSenhaPadao}</td>
-                 </tr>";
-                if(historico.Nome.Length > 16)
-                {
-                    contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.Nome.Length / 16) + 1;
-                }
-                else if (historico.SenhaReiniciadaPor.Length > 16)
-                {
-                    contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.SenhaReiniciadaPor.Length / 16) + 1;
-                }
-                else
-                {
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                }
 
-                retornoVerificacao = VerificaQuebra();
-                if (retornoVerificacao != string.Empty)
+            if (dre.HistoricoReinicioSenha != null)
+            {
+                var ultimohistorico = dre.HistoricoReinicioSenha.LastOrDefault();
+                var EhUltimohistorico = false;
+                if (ultimohistorico != null)
                 {
-                    if(historico != ultimohistorico)
+                    str += MontarCabecalhoHistoricoReinicioSenha();
+                    foreach (var historico in dre.HistoricoReinicioSenha)
                     {
-                        str += $@"</table>{retornoVerificacao}{MontarCabecalhoHistoricoReinicioSenha()}";
+                        str += $@"<tr>
+   <td width='20%' class='td-valor'>{historico.Login}</td>
+   <td width='30%' class='td-valor'>{historico.Nome}</td>
+   <td width='25%' class='td-valor'>{historico.Perfil}</td>
+   <td width='35%' class='td-valor'>{historico.SenhaReiniciada}</td>
+   <td width='35%' class='td-valor'>{historico.SenhaReiniciadaPor}</td>
+   <td width='35%' class='td-valor'>{historico.UtilizaSenhaPadao}</td>
+ </tr>";
+
+
+                        if (historico.Nome != null && historico.Nome.Length > 16)
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.Nome.Length / 16) + 1;
+                        }
+                        else if (historico.SenhaReiniciadaPor != null && historico.SenhaReiniciadaPor.Length > 16)
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.SenhaReiniciadaPor.Length / 16) + 1;
+                        }
+                        else
+                        {
+                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                        }
+
+                        retornoVerificacao = VerificaQuebra();
+                        if (retornoVerificacao != string.Empty)
+                        {
+                            if (!historico.SenhaReiniciada.Equals(ultimohistorico.SenhaReiniciada))
+                            {
+                                str += $@"</table>{retornoVerificacao}{MontarCabecalhoHistoricoReinicioSenha()}";
+                            }
+                            else
+                            {
+                                str += $@"</table>{retornoVerificacao}";
+                                EhUltimohistorico = true;
+                            }
+                        }
+                        else
+                        {
+                            if (!historico.SenhaReiniciada.Equals(ultimohistorico.SenhaReiniciada))
+                                EhUltimohistorico = true;
+                        }
                     }
-                    else
-                    {
-                        str += $@"</table>{retornoVerificacao}";
-                        EhUltimohistorico = true;
-                    }
-                }
-                else
-                {
-                    if (historico == ultimohistorico)
-                        EhUltimohistorico = true;
+                    str += $@"</table>";
+                    if (!EhUltimohistorico)
+                        str += LinhaEmBranco();
                 }
             }
-            str += $@"</table>";
-            if(!EhUltimohistorico)
-                str += LinhaEmBranco();
+
 
         }
 
@@ -219,21 +233,21 @@
     {
         contadorQuebrarPagina += 3;
         var str = $@"<table class='fixed'>
-                <tr>
-                  <td width='100%' class='td-turma-bimestre'>
-                    HISTORICO DE REINICIO DE SENHA
-                  </td>
-                </tr>
-             </table>
-            <table class='fixed'>
-                <tr>
-                  <td width='20%' class='td-titulo'>RF</td>
-                  <td width='30%' class='td-titulo'>NOME</td>
-                  <td width='25%' class='td-titulo'>PERFIL</td>
-                  <td width='35%' class='td-titulo'>SENHA REINICIADA</td>
-                  <td width='35%' class='td-titulo'>SENHA REINICIADA POR</td>
-                  <td width='35%' class='td-titulo'>UTILIZA SENHA PADRÃO</td>
-                </tr>";
+<tr>
+  <td width='100%' class='td-turma-bimestre'>
+    HISTORICO DE REINICIO DE SENHA
+  </td>
+</tr>
+</table>
+<table class='fixed'>
+<tr>
+  <td width='20%' class='td-titulo'>LOGIN</td>
+  <td width='30%' class='td-titulo'>NOME</td>
+  <td width='25%' class='td-titulo'>PERFIL</td>
+  <td width='35%' class='td-titulo'>SENHA REINICIADA</td>
+  <td width='35%' class='td-titulo'>SENHA REINICIADA POR</td>
+  <td width='35%' class='td-titulo'>UTILIZA SENHA PADRÃO</td>
+</tr>";
 
         return str;
     }
@@ -241,49 +255,49 @@
     {
         contadorQuebrarPagina += 2;
         return $@"<table class='fixed'>
-            <tr>
-              <td width='100%' class='td-turma-bimestre'>{descricao}</td>
-            </tr>
-          </table>";
+<tr>
+<td width='100%' class='td-turma-bimestre'>{descricao}</td>
+</tr>
+</table>";
     }
 
     string MontarCabecalhoPerfil(string descricao)
     {
         contadorQuebrarPagina += 4;
         return $@"<table class='fixed'>
-    <tr>
-        <td width='100%' class='td-turma-bimestre'>{descricao}</td>
-    </tr>
+<tr>
+<td width='100%' class='td-turma-bimestre'>{descricao}</td>
+</tr>
 </table>
 <table class='fixed'>
-    <tr>
-        <td width='20%' class='td-titulo'>RF</td>
-        <td width='30%' class='td-titulo'>NOME</td>
-        <td width='20%' class='td-titulo'>SITUAÇÃO</td>
-        <td width='30%' class='td-titulo'>ÚLTIMO ACESSO</td>
-    </tr>";
+<tr>
+<td width='20%' class='td-titulo'>LOGIN</td>
+<td width='30%' class='td-titulo'>NOME</td>
+<td width='20%' class='td-titulo'>SITUAÇÃO</td>
+<td width='30%' class='td-titulo'>ÚLTIMO ACESSO</td>
+</tr>";
     }
 
     string MontarCabecalhoProfessor()
     {
         contadorQuebrarPagina += 4;
         return $@"<table class='fixed'>
-            <tr>
-              <td width='100%' class='td-turma-bimestre'>
-                PROFESSOR
-              </td>
-            </tr>
-          </table>
-          <table class='fixed'>
-            <tr>
-              <td width='20%' class='td-titulo'>RF</td>
-              <td width='30%' class='td-titulo'>NOME</td>
-              <td width='25%' class='td-titulo'>SITUAÇÃO</td>
-              <td width='30%' class='td-titulo'>ÚLTIMO ACESSO</td>
-              <td width='30%' class='td-titulo'>ÚLTIMA AULA REGISTRADA</td>
-              <td width='35%' class='td-titulo'>ÚLTIMO PLANO DE AULA REGISTRADO</td>
-              <td width='35%' class='td-titulo'>ÚLTIMA FREQUÊNCIA REGISTRADA</td>
-            </tr>";
+    <tr>
+      <td width='100%' class='td-turma-bimestre'>
+        PROFESSOR
+      </td>
+    </tr>
+  </table>
+  <table class='fixed'>
+    <tr>
+      <td width='20%' class='td-titulo'>LOGIN</td>
+      <td width='30%' class='td-titulo'>NOME</td>
+      <td width='25%' class='td-titulo'>SITUAÇÃO</td>
+      <td width='30%' class='td-titulo'>ÚLTIMO ACESSO</td>
+      <td width='30%' class='td-titulo'>ÚLTIMA AULA REGISTRADA</td>
+      <td width='35%' class='td-titulo'>ÚLTIMO PLANO DE AULA REGISTRADO</td>
+      <td width='35%' class='td-titulo'>ÚLTIMA FREQUÊNCIA REGISTRADA</td>
+    </tr>";
     }
 
     string LinhaEmBranco()
@@ -444,7 +458,7 @@
         .td-turma-bimestre {
             background-color: #f3f3f3;
             text-align: center;
-            font-size: 16px;            
+            font-size: 16px;
             padding: 10px;
             border-bottom: none;
         }

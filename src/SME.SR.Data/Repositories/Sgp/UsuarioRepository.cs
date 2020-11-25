@@ -59,6 +59,16 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<string> ObterNomeUsuarioPorLogin(string usuarioLogin)
+        {
+            string query = @"select pes_nome as nome from PES_Pessoa pp where pes_nome_abreviado = @usuarioLogin";
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringCoreSso))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<string>(query, new { usuarioLogin });
+            }
+        }
+
         public async Task<IEnumerable<DadosUsuarioDto>> ObterUsuariosAbrangenciaPorAcesso(string dreCodigo, string ueCodigo, string usuarioRf, Guid[] perfis, int diasSemAcesso)
         {
             var query = new StringBuilder(@"select distinct a.dre_codigo as DreCodigo
@@ -67,7 +77,7 @@ namespace SME.SR.Data
 	                                        , a.usuario_perfil as PerfilGuid
 	                                        , pp.nome_perfil as Perfil
 	                                        , pp.tipo as TipoPerfil
-	                                        , u.rf_codigo as Rf
+	                                        , u.login
 	                                        , u.Nome
 	                                        , u.ultimo_login as UltimoAcesso
                                         from public.v_abrangencia a 
@@ -99,7 +109,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<HistoricoReinicioSenhaDto>> ObterHistoricoReinicioSenhaUsuarioPorDre(string codigoDre)
         {
-            string query = @"select hrs.usuario_rf Rf, u.Nome , hrs.criado_em as SenhaReiniciada, hrs.criado_por as SenhaReiniciadaPor
+            string query = @"select u.login, u.Nome , to_char(hrs.criado_em, 'DD/MM/YYYY HH24:MI:SS') as SenhaReiniciada, hrs.criado_por as SenhaReiniciadaPor
                               from historico_reinicio_senha hrs
                              inner join usuario u on u.rf_codigo = hrs.usuario_rf
                              where dre_codigo = @codigoDre
