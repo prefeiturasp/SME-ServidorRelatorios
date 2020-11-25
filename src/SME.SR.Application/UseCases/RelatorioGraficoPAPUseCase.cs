@@ -112,7 +112,7 @@ namespace SME.SR.Application
                         var legendas = new List<GraficoBarrasLegendaDto>();
                         int chaveIndex = 0;
 
-                        foreach (var resposta in ano.Respostas.OrderBy(o => o.Ordem))
+                        foreach (var resposta in ano.Respostas.Where(r => r.Quantidade > 0)?.OrderBy(o => o.Ordem))
                         {
                             string chave = lstChaves[chaveIndex++].ToString();
 
@@ -125,12 +125,15 @@ namespace SME.SR.Application
                             graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(resposta.Quantidade, (decimal)Math.Round(resposta.Porcentagem, 0), chave));
                         }
 
-                        var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+                        if (graficoAno.EixosX.Any())
+                        {
+                            var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
 
-                        graficoAno.EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
-                        graficoAno.Legendas = legendas;
+                            graficoAno.EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                            graficoAno.Legendas = legendas;
 
-                        grafico.Graficos.Add(graficoAno);
+                            grafico.Graficos.Add(graficoAno);
+                        }
                     }
 
                     graficos.Add(grafico);
@@ -154,7 +157,7 @@ namespace SME.SR.Application
                         var graficoAno = new ResumoPAPGraficoAnoDto(420, $"{ano.AnoDescricao} ANO");
                         int chaveIndex = 0;
 
-                        foreach (var resposta in ano.Respostas.OrderBy(o => o.Ordem))
+                        foreach (var resposta in ano.Respostas.Where(r => r.Quantidade > 0)?.OrderBy(o => o.Ordem))
                         {
                             string chave = lstChaves[chaveIndex++].ToString();
 
@@ -167,12 +170,16 @@ namespace SME.SR.Application
                             graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(resposta.Quantidade, (decimal)Math.Round(resposta.Porcentagem, 0), chave));
                         }
 
-                        var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+                        if (graficoAno.EixosX.Any())
+                        {
 
-                        graficoAno.EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
-                        graficoAno.Legendas = legendas;
+                            var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
 
-                        grafico.Graficos.Add(graficoAno);
+                            graficoAno.EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                            graficoAno.Legendas = legendas;
+
+                            grafico.Graficos.Add(graficoAno);
+                        }
                     }
 
                     graficos.Add(grafico);
@@ -191,7 +198,7 @@ namespace SME.SR.Application
 
             foreach (var ano in anos)
             {
-                var graficoAno = new ResumoPAPGraficoAnoDto(420, $"{ano.DescricaoAno} ANO" );
+                var graficoAno = new ResumoPAPGraficoAnoDto(420, $"{ano.DescricaoAno} ANO");
                 var legendas = new List<GraficoBarrasLegendaDto>();
                 int chaveIndex = 0;
 
