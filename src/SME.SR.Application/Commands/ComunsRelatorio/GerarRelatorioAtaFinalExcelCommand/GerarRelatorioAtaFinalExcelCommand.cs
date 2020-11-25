@@ -11,14 +11,14 @@ namespace SME.SR.Application
         public IList<ConselhoClasseAtaFinalPaginaDto> ObjetoExportacao { get; }
         public string NomeWorkSheet { get; set; }
         public IEnumerable<DataTable> TabelasDados { get; set; }
-        public Guid CodigoCorrelacao { get; set; }
+        public string UsuarioRf { get; set; }
 
-        public GerarRelatorioAtaFinalExcelCommand(IEnumerable<DataTable> tabelaDados, IList<ConselhoClasseAtaFinalPaginaDto> objetoExportacaoExcel, string nomeWorkSheet, Guid codigoCorrelacao)
+        public GerarRelatorioAtaFinalExcelCommand(IEnumerable<DataTable> tabelaDados, IList<ConselhoClasseAtaFinalPaginaDto> objetoExportacaoExcel, string nomeWorkSheet, string usuarioRf)
         {
             TabelasDados = tabelaDados;
             ObjetoExportacao = objetoExportacaoExcel;
             NomeWorkSheet = nomeWorkSheet;
-            CodigoCorrelacao = codigoCorrelacao;
+            UsuarioRf = usuarioRf;
         }
 
     }

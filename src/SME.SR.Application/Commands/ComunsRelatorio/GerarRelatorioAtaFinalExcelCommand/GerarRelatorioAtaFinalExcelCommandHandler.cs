@@ -3,7 +3,9 @@ using MediatR;
 using Sentry;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -37,7 +39,10 @@ namespace SME.SR.Application
                 if (!request.ObjetoExportacao.Any())
                     throw new NegocioException("Não foi possível localizar o objeto de consulta.");
 
+                var lstCodigosCorrelacao = new Dictionary<Guid, string>();
+
                 var dadosAgrupadosTurma = request.ObjetoExportacao.GroupBy(g => g.Cabecalho);
+                var modalidade = request.ObjetoExportacao.Select(o => o.Modalidade).FirstOrDefault();
 
                 for (int i = 0; i < dadosAgrupadosTurma.Count(); i++)
                 {
@@ -64,10 +69,15 @@ namespace SME.SR.Application
 
                         workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
 
-                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(request.TipoRelatorio, TipoFormatoRelatorio.Pdf);
-                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao)));
+                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+
+                        lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
                 }
+
+                foreach (var codigoCorrelacao in lstCodigosCorrelacao)
+                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, codigoCorrelacao.Key));
 
                 return await Task.FromResult(Unit.Value);
             }
@@ -76,6 +86,14 @@ namespace SME.SR.Application
                 SentrySdk.CaptureException(ex);
                 throw ex;
             }
+        }
+
+        private MensagemRelatorioProntoDto ObterNotificacao(Modalidade modalidade, string turma)
+        {
+            return new MensagemRelatorioProntoDto()
+            {
+                MensagemTitulo = $"Relatório Conselho Classe Ata Final - {modalidade.ShortName()} - {turma}"
+            };
         }
 
         private void AdicionarEstilo(IXLWorksheet worksheet, DataTable tabelaDados)

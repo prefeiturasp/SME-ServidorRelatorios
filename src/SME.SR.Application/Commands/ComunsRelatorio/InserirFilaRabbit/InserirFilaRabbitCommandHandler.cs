@@ -30,7 +30,7 @@ namespace SME.SR.Application
 
         private static byte[] FormataBodyWorker(PublicaFilaDto adicionaFilaDto)
         {
-            var request = new MensagemRabbit(adicionaFilaDto.Rota, adicionaFilaDto.Dados, adicionaFilaDto.CodigoCorrelacao);
+            var request = new MensagemRabbit(adicionaFilaDto.Rota, adicionaFilaDto.Dados, adicionaFilaDto.CodigoCorrelacao, adicionaFilaDto.UsuarioLogadoRF);
             var mensagem = JsonConvert.SerializeObject(request);
             var body = Encoding.UTF8.GetBytes(mensagem);
             return body;
