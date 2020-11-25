@@ -64,7 +64,8 @@ namespace SME.SR.Application
 
                         workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
 
-                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, null, codigoCorrelacao)));
+                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(request.TipoRelatorio, TipoFormatoRelatorio.Pdf);
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao)));
                     }
                 }
 
