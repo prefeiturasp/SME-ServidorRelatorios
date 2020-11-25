@@ -239,18 +239,19 @@
         @Html.Raw(MontarCabecalho())
 
         @{
-            int groupings = 2;
-            var grouped = Model.GraficosDto.Select((x, i) => new { x, i = i / groupings })
-                            .GroupBy(x => x.i, x => x.x);
+            int groupings = 2;            
 
             var maxTabelasPorPagina = 2;
             int count = 0;
             int numGraficos = 0;
         }
 
-        @foreach (var items in grouped)
+        @foreach (var GraficosDto in Model.GraficosDto)
         {
-            foreach (var item in items)
+            var grouped = GraficosDto.Graficos.Select((x, i) => new { x, i = i / groupings })
+                            .GroupBy(x => x.i, x => x.x);
+
+            foreach (var items in grouped)
             {
                 if (count >= maxTabelasPorPagina)
                 {
@@ -262,13 +263,13 @@
                 {
                     count += 1;
                 }
-                
-                MontarCabecalhoGrafico(item.Titulo);
+
+                MontarCabecalhoGrafico(GraficosDto.Titulo);
 
                 <table>
                     <tbody>
                         <tr>
-                            @foreach (var grafico in item.Graficos)
+                            @foreach (var grafico in items)
                             {
                                 <td style="border-top:0;" width="50%">
                                     <div class="titulo-grafico">
@@ -277,12 +278,12 @@
                                     @await Html.PartialAsync("Graficos/GraficoBarrasPAP", grafico)
                                 </td>
 
-                                if (item.Graficos.Count() < 2 && numGraficos > 0)
+                                if (items.Count() < 2 && numGraficos > 0)
                                 {
                                     <td style="border-top:0;position:relative" width="50%">
                                         <div class="grafico-vazio">
                                             <div class="titulo-grafico">
-                                                <span>A</span>
+                                                <span></span>
                                             </div>
                                         </div>
                                     </td>
