@@ -5761,7 +5761,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5770,7 +5770,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5779,7 +5779,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5788,7 +5788,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5797,7 +5797,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5806,7 +5806,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5815,7 +5815,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5824,7 +5824,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5833,7 +5833,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5842,240 +5842,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
