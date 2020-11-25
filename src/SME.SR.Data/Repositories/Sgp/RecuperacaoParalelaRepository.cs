@@ -159,7 +159,7 @@ namespace SME.SR.Data
         {
             var query = @"select id, nome, descricao, bimestre_edicao from recuperacao_paralela_periodo
                          where not excluido and id = @Id";
-            var parametros = new { Id = id } ;
+            var parametros = new { Id = id };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -169,7 +169,8 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<RetornoResumoPAPRespostasPorObjetivosIds>> ObterRespostasPorObjetivosIdsAsync(int[] idsObjetivos)
         {
-            var query = @"select distinct resposta_id as respostaId, rpr.descricao as respostaDescricao, rppor.objetivo_id as objetivoId from recuperacao_paralela_periodo_objetivo_resposta rppor
+            var query = @"select distinct resposta_id as respostaId, rpr.nome as respostaNome, rpr.descricao as respostaDescricao, 
+                                          rpr.ordem as respostaOrdem, rppor.objetivo_id as objetivoId from recuperacao_paralela_periodo_objetivo_resposta rppor
                             inner join recuperacao_paralela_resposta rpr 
                             on rpr.id  = rppor.resposta_id 
                             where rppor.objetivo_id = ANY(@idsObjetivos)";
