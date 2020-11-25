@@ -170,6 +170,14 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
-        
+
+        [HttpGet("relatorios/alteracao-notas-bimestre")]
+        [Action("relatorios/alteracao-notas-bimestre", typeof(IRelatorioAlteracaoNotasBimestreUseCase))]
+        public async Task<bool> AlteracaoNotasBimestre([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAlteracaoNotasBimestreUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
     }
 }
