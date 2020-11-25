@@ -4715,6 +4715,82 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemPortuguesConsolidado", model);
         }
 
+       [HttpGet("graficos-pap")]
+       public IActionResult RelatorioGraficosPAP() {
+            var graficosDto = new List<ResumoPAPGraficoDto>();
+
+            for (var i = 0; i < 7; i++)
+            {
+                var grafico = new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                        {
+                        new ResumoPAPGraficoAnoDto(395, "")
+                        {
+                            Titulo =  (3 + i) + "º Ano",
+                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                            {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "A"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "B"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "C"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "D"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "E"),
+                            },
+                            Legendas = new List<GraficoBarrasLegendaDto>()
+                            {
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "A",
+                                    Valor = "Alfabético"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "B",
+                                    Valor = "Silábico com valor sonoro"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "C",
+                                    Valor = "Pré silábico"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "D",
+                                    Valor = "Silábico alfabético"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "E",
+                                    Valor = "Silábico sem valor sonoro"
+                                },
+                            },
+                            EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                        }
+                    }
+                };
+
+                graficosDto.Add(grafico);
+            }
+
+            var model = new GraficoPAPDto()
+            {
+                DreNome = "DRE - BT",
+                AnoLetivo = 2020,
+                Ciclo = "INTERDISCIPLINAR",
+                Ano = "4",
+                Turma = "Todas",
+                Periodo = "Acompanhamento 2º Semestre",
+                UeNome = "Todas",
+                UsuarioNome = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                UsuarioRF = "9879878",
+                Data = DateTime.Now.ToString("dd/MM/yyyy"),
+                EhEncaminhamento = false,
+                GraficosDto = graficosDto
+            };
+            
+            return View("RelatorioGraficosPAP", model);
+       }
         [HttpGet("Usuarios")]
         public IActionResult RelatorioUsuarios()
         {
