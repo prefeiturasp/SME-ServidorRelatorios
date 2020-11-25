@@ -15,6 +15,7 @@ namespace SME.SR.Application
 {
     public class GerarRelatorioAtaFinalExcelCommandHandler : IRequestHandler<GerarRelatorioAtaFinalExcelCommand, Unit>
     {
+        private readonly IMediator mediator;
         private readonly IServicoFila servicoFila;
 
         private const int LINHA_CABECALHO_DRE = 6;
@@ -23,8 +24,9 @@ namespace SME.SR.Application
         private const int LINHA_GRUPOS = 9;
         private const int LINHA_COMPONENTES = 10;
 
-        public GerarRelatorioAtaFinalExcelCommandHandler(IServicoFila servicoFila)
+        public GerarRelatorioAtaFinalExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
         {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
 
@@ -55,14 +57,16 @@ namespace SME.SR.Application
 
                         AdicionarEstilo(worksheet, tabelaDados);
 
+                        var codigoCorrelacao = Guid.NewGuid();
+
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-                        var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{request.CodigoCorrelacao}_{objetoExportacao.Key.Turma}_{objetoExportacao.Key.AnoLetivo}");
+                        var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
                         workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
+
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, null, codigoCorrelacao)));
                     }
                 }
-
-                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
 
                 return await Task.FromResult(Unit.Value);
             }
