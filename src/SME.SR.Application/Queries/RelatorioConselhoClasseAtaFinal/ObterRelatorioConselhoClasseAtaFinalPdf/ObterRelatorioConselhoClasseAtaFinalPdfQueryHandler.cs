@@ -89,7 +89,7 @@ namespace SME.SR.Application
 
                     ConselhoClasseAtaFinalPaginaDto modelPagina = new ConselhoClasseAtaFinalPaginaDto
                     {
-                        EhEJA = dadosRelatorio.EhEJA,
+                        Modalidade = dadosRelatorio.Modalidade,
                         Cabecalho = dadosRelatorio.Cabecalho,
                         NumeroPagina = contPagina++,
                         FinalHorizontal = ehPaginaFinal,
@@ -156,7 +156,7 @@ namespace SME.SR.Application
         private async Task<ConselhoClasseAtaFinalDto> MontarEstruturaRelatorio(Modalidade modalidadeCodigo, ConselhoClasseAtaFinalCabecalhoDto cabecalho, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares, string turmaCodigo)
         {
             var relatorio = new ConselhoClasseAtaFinalDto();
-            relatorio.EhEJA = modalidadeCodigo == Modalidade.EJA;
+            relatorio.Modalidade = modalidadeCodigo;
 
             relatorio.Cabecalho = cabecalho;
             var gruposMatrizes = componentesCurriculares.Where(c => c.GrupoMatriz != null).GroupBy(c => c.GrupoMatriz);
@@ -246,7 +246,7 @@ namespace SME.SR.Application
 
             var frequenciaGlobalAluno = frequenciaAlunosGeral
                                             .FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString());
-                                          
+
             // Anual
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);

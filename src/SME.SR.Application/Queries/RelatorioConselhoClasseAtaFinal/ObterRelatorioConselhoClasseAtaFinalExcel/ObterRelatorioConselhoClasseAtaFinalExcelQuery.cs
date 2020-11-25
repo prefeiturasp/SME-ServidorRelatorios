@@ -5,7 +5,7 @@ using System.Data;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioConselhoClasseAtaFinalExcelQuery : IRequest<DataTable>
+    public class ObterRelatorioConselhoClasseAtaFinalExcelQuery : IRequest<IEnumerable<DataTable>>
     {
         public IEnumerable<ConselhoClasseAtaFinalPaginaDto> ObjetoExportacao { get; set; }
     }
