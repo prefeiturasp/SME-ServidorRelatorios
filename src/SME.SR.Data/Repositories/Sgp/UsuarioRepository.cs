@@ -40,7 +40,7 @@ namespace SME.SR.Data
                                 , usu_criptografia AS TipoCriptografia
                                 , usu_situacao as Situacao 
                                 from SYS_Usuario 
-                               inner join SYS_Pessoa on SYS_Usuario.pes_id = SYS_Pessoa.pes_id
+                               inner join PES_Pessoa on SYS_Usuario.pes_id = PES_Pessoa.pes_id
                                where usu_login = @codigoRf";
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringCoreSso))
