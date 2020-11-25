@@ -109,7 +109,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<HistoricoReinicioSenhaDto>> ObterHistoricoReinicioSenhaUsuarioPorDre(string codigoDre)
         {
-            string query = @"select u.login, u.Nome , to_char(hrs.criado_em, 'DD/MM/YYYY HH:mm') as SenhaReiniciada, hrs.criado_por as SenhaReiniciadaPor
+            string query = @"select u.login, u.Nome , to_char(hrs.criado_em, 'DD/MM/YYYY HH24:MI:SS') as SenhaReiniciada, hrs.criado_por as SenhaReiniciadaPor
                               from historico_reinicio_senha hrs
                              inner join usuario u on u.rf_codigo = hrs.usuario_rf
                              where dre_codigo = @codigoDre

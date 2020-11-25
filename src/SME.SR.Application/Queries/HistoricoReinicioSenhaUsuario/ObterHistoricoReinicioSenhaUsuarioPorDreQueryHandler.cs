@@ -29,11 +29,16 @@ namespace SME.SR.Application
             {
                 var perfisPrioritarios = await mediator.Send(new ObterPerfisPrioritariosQuery());
                 foreach (var historico in historicoReinicioSenha)
-                {
+                {                    
                     historico.UtilizaSenhaPadao = await mediator.Send(new UsuarioPossuiSenhaPadraoQuery(historico.Login)) ? "Sim" : "Não";
                     historico.Perfil = await ObterPerfilPrioritario(historico.Login, perfisPrioritarios);
+
                     if (string.IsNullOrEmpty(historico.Nome))
-                        historico.Nome = await mediator.Send(new ObterNomeUsuarioPorLoginQuery(historico.Login));
+                    {
+                        var usuarioCoreSSO = await mediator.Send(new ObterDadosUsuarioCoreSSOPorRfQuery(historico.Login));
+                        historico.Nome = usuarioCoreSSO.Nome;
+
+                    }                        
                 }
             }
 
