@@ -57,7 +57,7 @@ namespace SME.SR.Application
             var dre = dreCodigo.Equals("-99") ? null :
                 await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
 
-            return dre != null ? dre.Nome : "Todas";
+            return dre != null ? dre.Abreviacao : "Todas";
         }
 
         private async Task<string> ObterNomeUe(string ueCodigo)
