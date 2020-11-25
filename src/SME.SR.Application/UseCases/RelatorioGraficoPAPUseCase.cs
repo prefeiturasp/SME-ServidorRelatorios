@@ -112,14 +112,14 @@ namespace SME.SR.Application
                         var legendas = new List<GraficoBarrasLegendaDto>();
                         int chaveIndex = 0;
 
-                        foreach (var resposta in ano.Respostas)
+                        foreach (var resposta in ano.Respostas.OrderBy(o => o.Ordem))
                         {
                             string chave = lstChaves[chaveIndex++].ToString();
 
                             legendas.Add(new GraficoBarrasLegendaDto()
                             {
                                 Chave = chave,
-                                Valor = $"{resposta.RespostaDescricao}"
+                                Valor = $"{resposta.RespostaNome}"
                             });
 
                             graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(resposta.Quantidade, (decimal)Math.Round(resposta.Porcentagem, 0), chave));
@@ -154,14 +154,14 @@ namespace SME.SR.Application
                         var graficoAno = new ResumoPAPGraficoAnoDto(420, $"{ano.AnoDescricao} ANO");
                         int chaveIndex = 0;
 
-                        foreach (var resposta in ano.Respostas)
+                        foreach (var resposta in ano.Respostas.OrderBy(o => o.Ordem))
                         {
                             string chave = lstChaves[chaveIndex++].ToString();
 
                             legendas.Add(new GraficoBarrasLegendaDto()
                             {
                                 Chave = chave,
-                                Valor = $"{resposta.RespostaDescricao}"
+                                Valor = $"{resposta.RespostaNome}"
                             });
 
                             graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(resposta.Quantidade, (decimal)Math.Round(resposta.Porcentagem, 0), chave));
