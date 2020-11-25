@@ -64,7 +64,7 @@
 
             contadorQuebrarPagina = contadorQuebrarPagina + 1;
 
-            if (dre.Perfis.Any())
+            if (dre.Perfis != null)
             {
                 foreach (var perfil in dre.Perfis)
                 {
@@ -105,7 +105,7 @@
             foreach (var ue in dre.Ues)
             {
                 str += MontaCabecalhoDREeUE(ue.Nome);
-                if (ue.Perfis != null)
+                if (ue.Perfis != null) 
                     foreach (var perfil in ue.Perfis)
                     {
                         str += MontarCabecalhoPerfil(perfil.Nome);
