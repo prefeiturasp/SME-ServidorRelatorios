@@ -22,7 +22,7 @@ namespace SME.SR.Application
         public async Task<bool> Handle(UsuarioPossuiSenhaPadraoQuery request, CancellationToken cancellationToken)
         {
             var rf = request.UsuarioRf;
-            var senhaPadrao = $"Sgp@{rf.Substring(rf.Length - 4)}";
+            var senhaPadrao = $"Sgp{rf.Substring(rf.Length - 4)}";
 
             var usuario = await usuarioRepository.ObterDadosCoreSSO(rf);
             return senhaPadrao.CriptografarSenha(usuario.TipoCriptografia).Equals(usuario.Senha);
