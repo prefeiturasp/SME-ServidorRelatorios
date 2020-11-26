@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioAlteracaoNotasBimestreUseCase : IRelatorioAlteracaoNotasBimestreUseCase
+    public class RelatorioAlteracaoNotasUseCase : IRelatorioAlteracaoNotasUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioAlteracaoNotasBimestreUseCase(IMediator mediator)
+        public RelatorioAlteracaoNotasUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
@@ -21,8 +21,8 @@ namespace SME.SR.Application
         {
             try
             {
-                var filtros = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasBimestreDto>();
-                await mediator.Send(new GerarRelatorioAlteracaoNotasBimestreCommand(filtros, request.CodigoCorrelacao));
+                var filtros = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
+                await mediator.Send(new GerarRelatorioAlteracaoNotasCommand(filtros, request.CodigoCorrelacao));
             }
             catch (Exception ex)
             {

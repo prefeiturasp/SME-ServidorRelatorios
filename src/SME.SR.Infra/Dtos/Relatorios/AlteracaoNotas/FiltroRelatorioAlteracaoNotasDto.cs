@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
-    public class FiltroRelatorioAlteracaoNotasBimestreDto
+    public class FiltroRelatorioAlteracaoNotasDto
     {
         public DateTime Data => DateTime.Now;
         public string CodigoDre { get; set; }

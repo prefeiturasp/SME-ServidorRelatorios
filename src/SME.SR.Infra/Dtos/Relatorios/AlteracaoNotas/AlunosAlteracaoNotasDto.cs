@@ -1,10 +1,10 @@
 ﻿namespace SME.SR.Infra
 {
-    public class AlunosAlteracaoNotasBimestreDto
+    public class AlunosAlteracaoNotasDto
     {
         public long Numero { get; set; }
         public string Nome { get; set; }
-        public TipoAlteracaoNota TipoNota { get; set; }
+        public string TipoNota { get; set; }
         public string NotaAnterior { get; set; }
         public string NotaAtribuida { get; set; }
         public string DataAlteracao { get; set; }

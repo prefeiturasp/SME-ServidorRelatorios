@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class GerarRelatorioAlteracaoNotasBimestreCommandHandler : IRequestHandler<GerarRelatorioAlteracaoNotasBimestreCommand, bool>
+    public class GerarRelatorioAlteracaoNotasCommandHandler : IRequestHandler<GerarRelatorioAlteracaoNotasCommand, bool>
     {
         private readonly IMediator mediator;
 
-        public GerarRelatorioAlteracaoNotasBimestreCommandHandler(IMediator mediator)
+        public GerarRelatorioAlteracaoNotasCommandHandler(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<bool> Handle(GerarRelatorioAlteracaoNotasBimestreCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(GerarRelatorioAlteracaoNotasCommand request, CancellationToken cancellationToken)
         {
-            var dto = new RelatorioAlteracaoNotasBimestreDto();
+            var dto = new RelatorioAlteracaoNotasDto();
 
             return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAlteracaoNotasBimestre", dto, request.CodigoCorrelacao, "", "Relatório de Alteração de Notas", true)));
         }
