@@ -104,6 +104,9 @@
 
             foreach (var ue in dre.Ues)
             {
+                if (!ue.Professores.Any() && !ue.Perfis.Any(a => a.Usuarios.Any()))
+                    continue;
+
                 str += MontaCabecalhoDREeUE(ue.Nome);
                 if (ue.Perfis != null)
                     foreach (var perfil in ue.Perfis)
