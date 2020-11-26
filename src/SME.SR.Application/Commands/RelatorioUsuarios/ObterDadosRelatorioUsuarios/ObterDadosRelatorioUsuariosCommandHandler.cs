@@ -75,7 +75,12 @@ namespace SME.SR.Application
 
                 ueDto.Nome = grupoUe.Key;
                 if (exibirPerfilsDreUe)
-                    ueDto.Perfis = ObterUsuariosPorPerfil(ObterUsuariosUe(grupoUe));
+                {
+                    var usuariosUe = ObterUsuariosUe(grupoUe);
+                    var usuariosPerfil = ObterUsuariosPorPerfil(usuariosUe);
+                    ueDto.Perfis = usuariosPerfil;
+                }
+                    
 
                 ueDto.Professores = await ObterProfessores(FiltrarProfessores(grupoUe));
 
@@ -131,12 +136,12 @@ namespace SME.SR.Application
                 yield return new PerfilUsuarioDto()
                 {
                     Nome = grupoPerfil.Key,
-                    Usuarios = ObterUsuariosDto(grupoPerfil)
+                    Usuarios = ObterUsuariosDto(grupoPerfil.DistinctBy(c => c.Login))
                 };
             }
         }
 
-        private IEnumerable<UsuarioDto> ObterUsuariosDto(IGrouping<string, DadosUsuarioDto> usuarios)
+        private IEnumerable<UsuarioDto> ObterUsuariosDto(IEnumerable<DadosUsuarioDto> usuarios)
         {
             foreach (var usuario in usuarios)
                 yield return new UsuarioDto()
@@ -179,7 +184,7 @@ namespace SME.SR.Application
 
         private async Task ObterSituacaoUsuarios(IEnumerable<DadosUsuarioDto> usuarios)
         {
-            foreach (var usuario in usuarios)
+            foreach (var usuario in usuarios.DistinctBy(c => c.Login))
                 usuario.Situacao = await mediator.Send(new ObterSituacaoUsuarioPorRfQuery(usuario.Login));
         }
     }

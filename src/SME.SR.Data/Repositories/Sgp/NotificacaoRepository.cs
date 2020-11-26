@@ -21,7 +21,7 @@ namespace SME.SR.Data.Repositories.Sgp
 			bool exibirDescricao = false, bool exibirExcluidas = false, string dre = "-99", string ue = "-99")
         {
 			var query = $@"select 
-							n.id as Codigo
+							n.codigo as Codigo
 							,titulo
 							,categoria
 							,tipo
@@ -39,9 +39,9 @@ namespace SME.SR.Data.Repositories.Sgp
 				query += ",n.mensagem as Mensagem";
 			query += $@" from notificacao n 
 						inner join usuario u  on n.usuario_id = u.id
-						inner join dre on n.dre_id = dre.dre_id 
-						inner join ue on n.ue_id = ue.ue_id 
-						where ano = @ano 
+						left join dre on n.dre_id = dre.dre_id 
+						left join ue on n.ue_id = ue.ue_id 
+						where ano = @ano
 						and tipo = ANY(@tipos) 
 						and categoria = ANY(@categorias)
 						and n.status = ANY(@situacoes) ";
