@@ -171,9 +171,9 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet("relatorios/alteracao-notas-bimestre")]
-        [Action("relatorios/alteracao-notas-bimestre", typeof(IRelatorioAlteracaoNotasBimestreUseCase))]
-        public async Task<bool> AlteracaoNotasBimestre([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAlteracaoNotasBimestreUseCase relatorioUseCase)
+        [HttpGet("relatorios/alteracao-notas")]
+        [Action("relatorios/alteracao-notas", typeof(IRelatorioAlteracaoNotasUseCase))]
+        public async Task<bool> AlteracaoNotasBimestre([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAlteracaoNotasUseCase relatorioUseCase)
         {
             await relatorioUseCase.Executar(request);
             return true;

@@ -3541,14 +3541,14 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             model.GraficosBarras.Add(new GraficoBarrasVerticalDto(800, "Português - Leitura")
             {
-              EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+                EixosX = new List<GraficoBarrasVerticalEixoXDto>()
               {
                   new GraficoBarrasVerticalEixoXDto(5, "A"),
                   new GraficoBarrasVerticalEixoXDto(1, "B"),
                   new GraficoBarrasVerticalEixoXDto(3, "C"),
                   new GraficoBarrasVerticalEixoXDto(2, "D")
-              } ,
-              Legendas = new List<GraficoBarrasLegendaDto>()
+              },
+                Legendas = new List<GraficoBarrasLegendaDto>()
               {
                   new GraficoBarrasLegendaDto()
                   {
@@ -3571,7 +3571,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                       Valor = "Sem preenchimento"
                   }
               },
-              EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 5, 10)
+                EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 5, 10)
             });
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
@@ -4718,12 +4718,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         [HttpGet("Usuarios")]
         public IActionResult RelatorioUsuarios()
         {
-            var model = new RelatorioUsuarioDto() 
+            var model = new RelatorioUsuarioDto()
             {
                 Filtro = new FiltroUsuarioDto()
                 {
                     Dre = "DRE - BT",
-                    Ue = "CEU EMEF BUTANTA",                    
+                    Ue = "CEU EMEF BUTANTA",
                     RF = "9879878",
                     Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
                 }
@@ -4994,7 +4994,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),                                    
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioProfessorDto()
                                 {
@@ -5156,7 +5156,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 }
-                            }                            
+                            }
                         },
                         new UePorPerfilUsuarioDto()
                         {
@@ -5766,7 +5766,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                             SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",                            
+                            UtilizaSenhaPadao = "Sim",
                         },
                         new HistoricoReinicioSenhaDto()
                         {
@@ -6082,7 +6082,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
                             UtilizaSenhaPadao = "Sim",
                         }
-                    }                    
+                    }
                 }
             };
             return View("RelatorioUsuarios", model);
@@ -6218,5 +6218,112 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioNotificacoes", model);
         }
+
+        [HttpGet("alteracao-notas")]
+        public IActionResult AlteracaoNotas()
+        {
+            var model = new RelatorioAlteracaoNotasDto()
+            {
+                Filtro = new FiltroAlteracaoNotasDto()
+                {
+                    Dre = "TODAS",
+                    Ue = "TODAS",
+                    Usuario = "ALANA FERREIRA DE OLIVEIRA",
+                    RF = "1234567",
+                    Bimestre = "TODOS",
+                    Turma = "EF-1F"
+                }
+            };
+
+            model.Turmas = new List<TurmaAlteracaoNotasDto>()
+            {
+                new TurmaAlteracaoNotasDto()
+                {
+                    Id = 1,
+                    Nome = "1F-EF",
+                    Bimestres = new List<BimestreAlteracaoNotasDto>()
+                    {
+                        new BimestreAlteracaoNotasDto()
+                        {
+                           Descricao = "1",
+                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+                           {
+                               new ComponenteCurricularAlteracaoNotasDto()
+                               {
+                                   Nome = "Arte",
+                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+                                   {
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       }
+                                   }
+                               }
+                           }
+
+                        }
+                    }
+
+                }
+            };
+            return View("RelatorioAlteracaoNotas", model);
+        }
     }
 }
+

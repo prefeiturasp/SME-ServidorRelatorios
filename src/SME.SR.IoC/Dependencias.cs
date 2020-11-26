@@ -180,7 +180,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioSondagemPtConsolidadoLeitEscProdUseCase, RelatorioSondagemPtConsolidadoLeitEscProdUseCase>();
             services.TryAddScoped<IRelatorioNotificacaoUseCase, RelatorioNotificacaoUseCase>();
             services.TryAddScoped<IRelatorioUsuariosUseCase, RelatorioUsuariosUseCase>();
-            services.TryAddScoped<IRelatorioAlteracaoNotasBimestreUseCase, RelatorioAlteracaoNotasBimestreUseCase>();
+            services.TryAddScoped<IRelatorioAlteracaoNotasUseCase, RelatorioAlteracaoNotasUseCase>();
 
         }
     }
