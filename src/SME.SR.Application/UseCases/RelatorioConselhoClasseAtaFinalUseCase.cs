@@ -33,7 +33,7 @@ namespace SME.SR.Application
                     if (relatorioDto == null)
                         throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
 
-                    await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
                     break;
                 case TipoFormatoRelatorio.Pdf:
                     await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
