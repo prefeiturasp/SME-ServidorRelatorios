@@ -6231,7 +6231,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Usuario = "ALANA FERREIRA DE OLIVEIRA",
                     RF = "1234567",
                     Bimestre = "TODOS",
-                    Turma = "EF-1F"
+                    Turma = "EF-1F",
+                    ComponenteCurricular = "TODOS"
                 }
             };
 
