@@ -92,24 +92,28 @@ RELATÓRIO DE NOTIFICAÇÕES
             return "";
         }
 
-        var ultimaDre = Model.DREs.Last();
-        foreach (var dre in Model.DREs)
+        var dres = Model.DREs.OrderBy(u => u.Nome);
+        var ultimaDre = dres.Last();
+
+        foreach (var dre in dres)
         {
             if(Model.DREs.Count > 1)
             {
                 str += MontaTitulo(dre.Nome);
             }
 
-            var ultimaUe = dre.UEs.Last();
-            foreach (var ue in dre.UEs)
+            var ues = dre.UEs.OrderBy(u => u.Nome);
+            var ultimaUe = ues.Last();
+            foreach (var ue in ues)
             {
                 if (dre.UEs.Count > 1)
                 {
                     str += MontaTitulo(ue.Nome);
                 }
 
-                var ultimoUsuario = ue.Usuarios.Last();
-                foreach (var usuario in ue.Usuarios)
+                var usuarios = ue.Usuarios.OrderBy(c => c.Nome);
+                var ultimoUsuario = usuarios.Last();
+                foreach (var usuario in usuarios)
                 {
                     str += MontaTitulo(usuario.Nome);
 
@@ -127,13 +131,13 @@ RELATÓRIO DE NOTIFICAÇÕES
                             <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
                             <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
                             <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
-                            <td width='15%' class='td-valor'>{notificacao.DataRecebimento}</td>
-                            <td width='15%' class='td-valor'>{notificacao.DataLeitura}</td>
+                            <td width='15%' class='td-valor'>{notificacao.DataRecebimento:dd/MM/yyyy HH:mm:ss}</td>
+                            <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
                         </tr>";
 
-                        if ((int)(notificacao.Titulo.ToString().Length / 24) > 2)
+                        if ((int)(notificacao.Titulo.ToString().Length / 22) > 2)
                         {
-                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 24 ? (int)(notificacao.Titulo.ToString().Length / 24) + 1 : 1);
+                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 22 ? (int)(notificacao.Titulo.ToString().Length / 22) + 1 : 1);
                         }
                         else
                         {
@@ -162,7 +166,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                             }
 
                         }
-                        if (!String.IsNullOrEmpty(notificacao.Mensagem))
+                        if (!String.IsNullOrEmpty(notificacao.Mensagem) && notificacao.Tipo != SME.SR.Infra.NotificacaoTipo.Relatorio)
                         {
                             str += $@"<tr><td colspan='7' width='100%' class='td-titulo'>DESCRIÇÃO</td></tr>";
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;
@@ -411,8 +415,7 @@ RELATÓRIO DE NOTIFICAÇÕES
         .td-valor {
             text-align: center;
             font-size: 12px;
-            padding: 2px;
-            padding: 10px;
+            padding: 5px;
         }
 
         .caixa-1 {
