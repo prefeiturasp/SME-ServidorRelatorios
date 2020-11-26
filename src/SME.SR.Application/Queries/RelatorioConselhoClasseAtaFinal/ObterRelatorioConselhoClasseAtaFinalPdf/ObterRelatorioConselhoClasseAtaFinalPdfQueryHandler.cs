@@ -32,11 +32,12 @@ namespace SME.SR.Application
                 }
                 catch (Exception e)
                 {
-                    mensagensErro.AppendLine($"Erro na carga de cados da turma [{turmaCodigo}]: {e.Message}");
+                    var turma = await ObterTurma(turmaCodigo);
+                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
                 }
             }
 
-            if (mensagensErro.Length > 0)
+            if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
                 throw new NegocioException(mensagensErro.ToString());
 
             return relatoriosTurmas;

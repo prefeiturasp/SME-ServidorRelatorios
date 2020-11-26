@@ -92,7 +92,7 @@ namespace SME.SR.Application
         {
             return new MensagemRelatorioProntoDto()
             {
-                MensagemTitulo = $"Relatório Conselho Classe Ata Final - {modalidade.ShortName()} - {turma}"
+                MensagemTitulo = $"Relatório Ata final de resultados - {modalidade.ShortName()} - {turma}"
             };
         }
 
