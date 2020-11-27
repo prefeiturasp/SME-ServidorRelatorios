@@ -6,15 +6,17 @@ namespace SME.SR.Application
 {
     public class ObterTurmasPorUeCicloAnoQuery : IRequest<IEnumerable<TurmaFiltradaUeCicloAnoDto>>
     {
-        public ObterTurmasPorUeCicloAnoQuery(long tipoCicloId, string ano, long ueId)
+        public ObterTurmasPorUeCicloAnoQuery(long tipoCicloId, string ano, long ueId, int anoLetivo)
         {
             TipoCicloId = tipoCicloId;
             Ano = ano;
             UeId = ueId;
+            AnoLetivo = anoLetivo;
         }
 
         public long TipoCicloId { get; set; }
         public string Ano { get; set; }
         public long UeId { get; set; }
+        public int AnoLetivo { get; set; }
     }
 }
