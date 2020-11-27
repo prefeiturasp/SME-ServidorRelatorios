@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Commands;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -21,13 +22,50 @@ namespace SME.SR.Application
         {
             try
             {
-                var filtros = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
-                await mediator.Send(new GerarRelatorioAlteracaoNotasCommand(filtros, request.CodigoCorrelacao));
+                var filtro = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
+                var relatorioDto = new RelatorioAlteracaoNotasDto();
+
+                await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
+                await ObterDadosRelatorio(relatorioDto, filtro);
+
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAlteracaoNotas", relatorioDto, request.CodigoCorrelacao));                
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+        private async Task ObterDadosRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioAlteracaoNotasDto filtro)
+        {
+            relatorioDto.Turmas = await mediator.Send(new ObterDadosRelatorioAlteracaoNotasCommand(filtro));
+        }
+
+        private async Task ObterFiltroRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioAlteracaoNotasDto filtro, string usuarioLogadoRF)
+        {
+            var filtroRelatorio = new FiltroAlteracaoNotasDto();
+
+            filtroRelatorio.Dre = await ObterNomeDre(filtro.CodigoDre);
+            filtroRelatorio.Ue = await ObterNomeUe(filtro.CodigoUe);
+            filtroRelatorio.Usuario = filtro.NomeUsuario;
+            filtroRelatorio.RF = usuarioLogadoRF;
+
+            relatorioDto.Filtro = filtroRelatorio;
+        }
+
+        private async Task<string> ObterNomeDre(string dreCodigo)
+        {
+            var dre = dreCodigo.Equals("-99") ? null :
+                await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
+
+            return dre != null ? dre.Nome : "Todas";
+        }
+
+        private async Task<string> ObterNomeUe(string ueCodigo)
+        {
+            var ue = ueCodigo.Equals("-99") ? null :
+                await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
+
+            return ue != null ? ue.NomeRelatorio : "Todas";
         }
     }
 }
