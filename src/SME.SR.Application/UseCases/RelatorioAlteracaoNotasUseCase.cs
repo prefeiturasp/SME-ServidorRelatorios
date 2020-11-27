@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Commands;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -24,21 +25,24 @@ namespace SME.SR.Application
                 var filtro = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
                 var relatorioDto = new RelatorioAlteracaoNotasDto();
 
-                await mediator.Send(new GerarRelatorioAlteracaoNotasCommand(filtro, request.CodigoCorrelacao));
+                await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
+                await ObterDadosRelatorio(relatorioDto, filtro);
+
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAlteracaoNotas", relatorioDto, request.CodigoCorrelacao));                
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-        private async Task ObterDadosRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioUsuariosDto filtro)
+        private async Task ObterDadosRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioAlteracaoNotasDto filtro)
         {
-            relatorioDto.Turmas = await mediator.Send(new ObterDadosRelatorioUsuariosCommand(filtro));
+            relatorioDto.Turmas = await mediator.Send(new ObterDadosRelatorioAlteracaoNotasCommand(filtro));
         }
 
-        private async Task ObterFiltroRelatorio(RelatorioUsuarioDto relatorioDto, FiltroRelatorioUsuariosDto filtro, string usuarioLogadoRF)
+        private async Task ObterFiltroRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioAlteracaoNotasDto filtro, string usuarioLogadoRF)
         {
-            var filtroRelatorio = new FiltroUsuarioDto();
+            var filtroRelatorio = new FiltroAlteracaoNotasDto();
 
             filtroRelatorio.Dre = await ObterNomeDre(filtro.CodigoDre);
             filtroRelatorio.Ue = await ObterNomeUe(filtro.CodigoUe);
