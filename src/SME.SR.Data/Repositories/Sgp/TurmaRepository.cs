@@ -798,7 +798,7 @@ namespace SME.SR.Data
             }
 
         }
-        public async Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, int anoLetivo)
+        public async Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, long anoLetivo)
         {
             var query = @"   select t.id as Codigo
                                     , t.nome
