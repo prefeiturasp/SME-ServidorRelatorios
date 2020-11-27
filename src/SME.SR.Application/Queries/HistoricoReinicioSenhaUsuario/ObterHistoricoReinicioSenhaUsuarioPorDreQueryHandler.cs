@@ -23,34 +23,24 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<HistoricoReinicioSenhaDto>> Handle(ObterHistoricoReinicioSenhaUsuarioPorDreQuery request, CancellationToken cancellationToken)
         {
-            List<HistoricoReinicioSenhaDto> historicoReinicioSenha = new List<HistoricoReinicioSenhaDto>();
-
-            var consultaHistorico = await usuarioRepository.ObterHistoricoReinicioSenhaUsuarioPorDre(request.CodigoDre);
-            if (consultaHistorico != null)
+            var historicoReinicioSenha = await usuarioRepository.ObterHistoricoReinicioSenhaUsuarioPorDre(request.CodigoDre);
+            if (historicoReinicioSenha != null)
             {
-                historicoReinicioSenha = consultaHistorico.ToList();
-
                 var perfisPrioritarios = await mediator.Send(new ObterPerfisPrioritariosQuery());
                 foreach (var historico in historicoReinicioSenha)
                 {                    
                     historico.UtilizaSenhaPadao = await mediator.Send(new UsuarioPossuiSenhaPadraoQuery(historico.Login)) ? "Sim" : "Não";
                     historico.Perfil = await ObterPerfilPrioritario(historico.Login, perfisPrioritarios);
 
-                    if (string.IsNullOrEmpty(historico.Perfil))
-                    {
-                        historicoReinicioSenha.Remove(historico);
-                        continue;
-                    }
-
-                    if (string.IsNullOrEmpty(historico.Nome))
+                    if (string.IsNullOrEmpty(historico.Nome) && !string.IsNullOrEmpty(historico.Perfil))
                     {
                         var usuarioCoreSSO = await mediator.Send(new ObterDadosUsuarioCoreSSOPorRfQuery(historico.Login));
                         historico.Nome = usuarioCoreSSO.Nome;
-                    }                        
+                    }
                 }
             }
 
-            return historicoReinicioSenha;
+            return historicoReinicioSenha.Where(c => !string.IsNullOrEmpty(c.Perfil));
         }
 
         private async Task<string> ObterPerfilPrioritario(string usuarioRf, IEnumerable<PrioridadePerfil> perfisPrioritarios)
