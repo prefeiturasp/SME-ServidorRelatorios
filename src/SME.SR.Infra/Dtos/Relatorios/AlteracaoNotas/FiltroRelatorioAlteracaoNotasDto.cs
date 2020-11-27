@@ -11,7 +11,7 @@ namespace SME.SR.Infra
         public long AnoLetivo { get; set; }
         public Modalidade ModalidadeTurma { get; set; }
         public int Semestre { get; set; }
-        public long Turma { get; set; }
+        public IEnumerable<long> Turmas { get; set; }
         public IEnumerable<long> ComponentesCurriculares { get; set; }
         public List<int> Bimestres { get; set; }
         public TipoAlteracaoNota TipoAlteracaoNota { get; set; }
