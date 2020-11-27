@@ -35,9 +35,6 @@ namespace SME.SR.Application
             return await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico);
         }
 
-        private bool FiltrouTodasUes(string codigoUe)
-            => codigoUe == "-99";
-
         private async Task<IEnumerable<DreUsuarioDto>> ObterUsuariosPorDre(IEnumerable<DadosUsuarioDto> usuarios, bool exibirHistorico)
         {
             var listaDresDto = new List<DreUsuarioDto>();
@@ -179,8 +176,14 @@ namespace SME.SR.Application
 
         private async Task ObterSituacaoUsuarios(IEnumerable<DadosUsuarioDto> usuarios)
         {
-            foreach (var usuario in usuarios.DistinctBy(c => c.Login))
-                usuario.Situacao = await mediator.Send(new ObterSituacaoUsuarioPorRfQuery(usuario.Login));
+            foreach (var usuariosPorLogin in usuarios.GroupBy(c => c.Login))
+            {
+                var situacao = await mediator.Send(new ObterSituacaoUsuarioPorRfQuery(usuariosPorLogin.Key));
+
+                foreach (var usuario in usuariosPorLogin)
+                    usuario.Situacao = situacao;
+
+            }
         }
     }
 }
