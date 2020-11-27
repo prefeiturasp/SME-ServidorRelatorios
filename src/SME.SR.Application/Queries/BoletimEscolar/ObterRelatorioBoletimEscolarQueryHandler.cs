@@ -23,7 +23,7 @@ namespace SME.SR.Application
         {
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
-            var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
+            var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
 
             var mediasFrequencia = await ObterMediasFrequencia();
@@ -56,7 +56,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string turmaCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario)
+        private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string turmaCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
         {
             return await mediator.Send(new ObterTurmasRelatorioBoletimQuery()
             {
@@ -65,7 +65,8 @@ namespace SME.SR.Application
                 Modalidade = modalidade,
                 AnoLetivo = anoLetivo,
                 Semestre = semestre,
-                Usuario = usuario
+                Usuario = usuario,
+                ConsideraHistorico = consideraHistorico
             });
         }
 
