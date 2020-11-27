@@ -30,7 +30,7 @@ namespace SME.SR.Application
             }
             else
             {
-                var turmasFiltro = await ObterTurmasPorFiltro(request.CodigoUe, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario);
+                var turmasFiltro = await ObterTurmasPorFiltro(request.CodigoUe, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
 
                 if (turmasFiltro != null && turmasFiltro.Any())
                     turmas = turmas.Concat(turmasFiltro);
@@ -58,7 +58,7 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
         {
             return await mediator.Send(new ObterTurmasPorAbrangenciaFiltroQuery()
             {
@@ -68,7 +68,7 @@ namespace SME.SR.Application
                 Semestre = semestre,
                 Login = usuario.Login,
                 Perfil = usuario.PerfilAtual,
-                ConsideraHistorico = false,
+                ConsideraHistorico = consideraHistorico,
                 PossuiFechamento = true,
                 SomenteEscolarizadas = true
             });
