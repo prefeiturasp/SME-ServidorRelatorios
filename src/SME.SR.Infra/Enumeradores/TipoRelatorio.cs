@@ -4,7 +4,7 @@ namespace SME.SR.Infra
 {
     public enum TipoRelatorio
     {
-        [Display(Name = "relatorios/conselhoclasseatafinal", ShortName = "RelatorioConselhoClasseAtaFinal", Description = "Ata final de resultados")]
+        [Display(Name = "relatorios/atafinalresultados", ShortName = "RelatorioAtaFinalResultados", Description = "Ata final de resultados")]
         ConselhoClasseAtaFinal = 5,
     }
 }
