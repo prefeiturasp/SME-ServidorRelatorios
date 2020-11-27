@@ -63,6 +63,9 @@ namespace SME.SR.Data
                 if (cicloId > 0)
                     query.AppendLine(" and tc.id = @cicloId ");
 
+                if (anoLetivo > 0)
+                    query.AppendLine(" and t.ano_letivo = @anoLetivo ");
+
                 if (anos != null && anos.Length > 0)
                     query.AppendLine(" and t.ano = ANY(@anos) ");
 
@@ -91,7 +94,7 @@ namespace SME.SR.Data
                     semestre = semestre ?? 0,
                     cicloId,
                     parecerConclusivoId,
-                    anos = anos?.ToList()                  
+                    anos = anos?.ToList(),
                 };
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
