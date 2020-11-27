@@ -23,21 +23,29 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<HistoricoReinicioSenhaDto>> Handle(ObterHistoricoReinicioSenhaUsuarioPorDreQuery request, CancellationToken cancellationToken)
         {
-            var historicoReinicioSenha = await usuarioRepository.ObterHistoricoReinicioSenhaUsuarioPorDre(request.CodigoDre);            
+            List<HistoricoReinicioSenhaDto> historicoReinicioSenha = new List<HistoricoReinicioSenhaDto>();
 
-            if (historicoReinicioSenha != null)
+            var consultaHistorico = await usuarioRepository.ObterHistoricoReinicioSenhaUsuarioPorDre(request.CodigoDre);
+            if (consultaHistorico != null)
             {
+                historicoReinicioSenha = consultaHistorico.ToList();
+
                 var perfisPrioritarios = await mediator.Send(new ObterPerfisPrioritariosQuery());
                 foreach (var historico in historicoReinicioSenha)
                 {                    
                     historico.UtilizaSenhaPadao = await mediator.Send(new UsuarioPossuiSenhaPadraoQuery(historico.Login)) ? "Sim" : "Não";
                     historico.Perfil = await ObterPerfilPrioritario(historico.Login, perfisPrioritarios);
 
+                    if (string.IsNullOrEmpty(historico.Perfil))
+                    {
+                        historicoReinicioSenha.Remove(historico);
+                        continue;
+                    }
+
                     if (string.IsNullOrEmpty(historico.Nome))
                     {
                         var usuarioCoreSSO = await mediator.Send(new ObterDadosUsuarioCoreSSOPorRfQuery(historico.Login));
                         historico.Nome = usuarioCoreSSO.Nome;
-
                     }                        
                 }
             }
