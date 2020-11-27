@@ -32,15 +32,10 @@ namespace SME.SR.Application
             if (request.FiltroRelatorio.Situacoes.Any())
                 FiltrarSituacoesUsuario(usuarios, request.FiltroRelatorio.Situacoes);
 
-            var exibirPerfilsDreUe = FiltrouTodasUes(request.FiltroRelatorio.CodigoUe);
-
-            return await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico, exibirPerfilsDreUe);
+            return await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico);
         }
 
-        private bool FiltrouTodasUes(string codigoUe)
-            => codigoUe == "-99";
-
-        private async Task<IEnumerable<DreUsuarioDto>> ObterUsuariosPorDre(IEnumerable<DadosUsuarioDto> usuarios, bool exibirHistorico, bool exibirPerfilsDreUe)
+        private async Task<IEnumerable<DreUsuarioDto>> ObterUsuariosPorDre(IEnumerable<DadosUsuarioDto> usuarios, bool exibirHistorico)
         {
             var listaDresDto = new List<DreUsuarioDto>();
 
@@ -49,13 +44,14 @@ namespace SME.SR.Application
                 var dreDto = new DreUsuarioDto();
                 dreDto.Nome = grupoDre.Key.Dre;
 
-                if (exibirPerfilsDreUe)
-                    dreDto.Perfis = ObterUsuariosPorPerfil(ObterUsuariosDre(grupoDre));
+                dreDto.Perfis = ObterUsuariosPorPerfil(ObterUsuariosDre(grupoDre)) ??
+                    new List<PerfilUsuarioDto>();
 
-                dreDto.Ues = await ObterUes(grupoDre, exibirPerfilsDreUe);
+                dreDto.Ues = await ObterUes(grupoDre);
 
-                if (exibirHistorico)
-                    dreDto.HistoricoReinicioSenha = await ObterHistoricoReinicioSenhaDre(grupoDre.Key.DreCodigo);
+                dreDto.HistoricoReinicioSenha = exibirHistorico ? 
+                    await ObterHistoricoReinicioSenhaDre(grupoDre.Key.DreCodigo) :
+                    new List<HistoricoReinicioSenhaDto>();
 
                 listaDresDto.Add(dreDto);
             }
@@ -66,7 +62,7 @@ namespace SME.SR.Application
         private async Task<IEnumerable<HistoricoReinicioSenhaDto>> ObterHistoricoReinicioSenhaDre(string DreCodigo)
             => await mediator.Send(new ObterHistoricoReinicioSenhaUsuarioPorDreQuery(DreCodigo));
 
-        private async Task<IEnumerable<UePorPerfilUsuarioDto>> ObterUes(IGrouping<(string DreCodigo, string Dre), DadosUsuarioDto> usuarios, bool exibirPerfilsDreUe)
+        private async Task<IEnumerable<UePorPerfilUsuarioDto>> ObterUes(IGrouping<(string DreCodigo, string Dre), DadosUsuarioDto> usuarios)
         {
             var listaUesDto = new List<UePorPerfilUsuarioDto>();
             foreach (var grupoUe in usuarios.GroupBy(c => c.Ue))
@@ -74,13 +70,9 @@ namespace SME.SR.Application
                 var ueDto = new UePorPerfilUsuarioDto();
 
                 ueDto.Nome = grupoUe.Key;
-                if (exibirPerfilsDreUe)
-                {
-                    var usuariosUe = ObterUsuariosUe(grupoUe);
-                    var usuariosPerfil = ObterUsuariosPorPerfil(usuariosUe);
-                    ueDto.Perfis = usuariosPerfil;
-                }
-                    
+                var usuariosUe = ObterUsuariosUe(grupoUe);
+                var usuariosPerfil = ObterUsuariosPorPerfil(usuariosUe);
+                ueDto.Perfis = usuariosPerfil;
 
                 ueDto.Professores = await ObterProfessores(FiltrarProfessores(grupoUe));
 
@@ -184,8 +176,14 @@ namespace SME.SR.Application
 
         private async Task ObterSituacaoUsuarios(IEnumerable<DadosUsuarioDto> usuarios)
         {
-            foreach (var usuario in usuarios.DistinctBy(c => c.Login))
-                usuario.Situacao = await mediator.Send(new ObterSituacaoUsuarioPorRfQuery(usuario.Login));
+            foreach (var usuariosPorLogin in usuarios.GroupBy(c => c.Login))
+            {
+                var situacao = await mediator.Send(new ObterSituacaoUsuarioPorRfQuery(usuariosPorLogin.Key));
+
+                foreach (var usuario in usuariosPorLogin)
+                    usuario.Situacao = situacao;
+
+            }
         }
     }
 }
