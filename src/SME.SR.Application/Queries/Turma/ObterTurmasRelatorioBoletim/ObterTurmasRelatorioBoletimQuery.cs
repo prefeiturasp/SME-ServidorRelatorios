@@ -18,5 +18,6 @@ namespace SME.SR.Application
         public int Semestre { get; set; }
 
         public Usuario Usuario { get; set; }
+        public bool ConsideraHistorico { get; set; }
     }
 }
