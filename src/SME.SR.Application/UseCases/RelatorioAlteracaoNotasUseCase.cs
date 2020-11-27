@@ -21,13 +21,47 @@ namespace SME.SR.Application
         {
             try
             {
-                var filtros = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
-                await mediator.Send(new GerarRelatorioAlteracaoNotasCommand(filtros, request.CodigoCorrelacao));
+                var filtro = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
+                var relatorioDto = new RelatorioAlteracaoNotasDto();
+
+                await mediator.Send(new GerarRelatorioAlteracaoNotasCommand(filtro, request.CodigoCorrelacao));
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+        private async Task ObterDadosRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioUsuariosDto filtro)
+        {
+            relatorioDto.Turmas = await mediator.Send(new ObterDadosRelatorioUsuariosCommand(filtro));
+        }
+
+        private async Task ObterFiltroRelatorio(RelatorioUsuarioDto relatorioDto, FiltroRelatorioUsuariosDto filtro, string usuarioLogadoRF)
+        {
+            var filtroRelatorio = new FiltroUsuarioDto();
+
+            filtroRelatorio.Dre = await ObterNomeDre(filtro.CodigoDre);
+            filtroRelatorio.Ue = await ObterNomeUe(filtro.CodigoUe);
+            filtroRelatorio.Usuario = filtro.NomeUsuario;
+            filtroRelatorio.RF = usuarioLogadoRF;
+
+            relatorioDto.Filtro = filtroRelatorio;
+        }
+
+        private async Task<string> ObterNomeDre(string dreCodigo)
+        {
+            var dre = dreCodigo.Equals("-99") ? null :
+                await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
+
+            return dre != null ? dre.Nome : "Todas";
+        }
+
+        private async Task<string> ObterNomeUe(string ueCodigo)
+        {
+            var ue = ueCodigo.Equals("-99") ? null :
+                await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
+
+            return ue != null ? ue.NomeRelatorio : "Todas";
         }
     }
 }
