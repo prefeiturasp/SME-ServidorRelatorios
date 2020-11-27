@@ -6226,13 +6226,13 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             {
                 Filtro = new FiltroAlteracaoNotasDto()
                 {
-                    Dre = "TODAS",
-                    Ue = "TODAS",
+                    Dre = "Todas",
+                    Ue = "Todas",
                     Usuario = "ALANA FERREIRA DE OLIVEIRA",
                     RF = "1234567",
-                    Bimestre = "TODOS",
-                    Turma = "EF-1F",
-                    ComponenteCurricular = "TODOS"
+                    Bimestre = "Todos",
+                    Turma = "Todas",
+                    ComponenteCurricular = "Todos"
                 }
             };
 
@@ -6320,10 +6320,506 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
                         }
                     }
+                },
+                new TurmaAlteracaoNotasDto()
+                {
+                    Id = 1,
+                    Nome = "1F-EF",
+                    Bimestres = new List<BimestreAlteracaoNotasDto>()
+                    {
+                        new BimestreAlteracaoNotasDto()
+                        {
+                           Descricao = "1",
+                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+                           {
+                               new ComponenteCurricularAlteracaoNotasDto()
+                               {
+                                   Nome = "Arte",
+                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+                                   {
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       }
+                                   }
+                               },
+                               new ComponenteCurricularAlteracaoNotasDto()
+                               {
+                                   Nome = "Matemática",
+                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+                                   {
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       }
+                                   }
+                               },
 
-                }
+
+                           }
+
+                        }
+                    }
+                },
+                new TurmaAlteracaoNotasDto()
+                {
+                    Id = 1,
+                    Nome = "1F-EF",
+                    Bimestres = new List<BimestreAlteracaoNotasDto>()
+                    {
+                        new BimestreAlteracaoNotasDto()
+                        {
+                           Descricao = "1",
+                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+                           {
+                               new ComponenteCurricularAlteracaoNotasDto()
+                               {
+                                   Nome = "Arte",
+                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+                                   {
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       }
+                                   }
+                               }
+                           }
+
+                        }
+                    }
+                },
+                new TurmaAlteracaoNotasDto()
+                {
+                    Id = 1,
+                    Nome = "1F-EF",
+                    Bimestres = new List<BimestreAlteracaoNotasDto>()
+                    {
+                        new BimestreAlteracaoNotasDto()
+                        {
+                           Descricao = "1",
+                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+                           {
+                               new ComponenteCurricularAlteracaoNotasDto()
+                               {
+                                   Nome = "Arte",
+                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+                                   {
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       }
+                                   }
+                               }
+                           }
+
+                        }
+                    }
+                },
+                new TurmaAlteracaoNotasDto()
+                {
+                    Id = 1,
+                    Nome = "1F-EF",
+                    Bimestres = new List<BimestreAlteracaoNotasDto>()
+                    {
+                        new BimestreAlteracaoNotasDto()
+                        {
+                           Descricao = "1",
+                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+                           {
+                               new ComponenteCurricularAlteracaoNotasDto()
+                               {
+                                   Nome = "Arte",
+                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+                                   {
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       },
+                                       new AlunosAlteracaoNotasDto()
+                                       {
+                                           Numero = 1,
+                                           Nome = "Arthur Santos de Oliveira",
+                                           TipoNota = "Conselho de classe",
+                                           NotaAnterior = "6,7",
+                                           NotaAtribuida = "7",
+                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+                                           Situacao = "Ativo",
+                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+                                       }
+                                   }
+                               }
+                           }
+
+                        }
+                    }
+                },
             };
-            return View("RelatorioAlteracaoNotas", model);
+            return View("RelatorioHistoricoAlteracoesNotas", model);
         }
     }
 }

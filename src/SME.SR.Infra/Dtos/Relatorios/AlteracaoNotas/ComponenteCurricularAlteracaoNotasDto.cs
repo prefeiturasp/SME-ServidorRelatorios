@@ -9,6 +9,6 @@ namespace SME.SR.Infra
             AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>();
         }
         public string Nome { get; set; }
-        public IEnumerable<AlunosAlteracaoNotasDto> AlunosAlteracaoNotasBimestre { get; set; }
+        public List<AlunosAlteracaoNotasDto> AlunosAlteracaoNotasBimestre { get; set; }
     }
 }
