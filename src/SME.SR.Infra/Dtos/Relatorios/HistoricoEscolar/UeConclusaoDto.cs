@@ -9,8 +9,8 @@ namespace SME.SR.Infra
         [JsonProperty("ueNome")]
         public string UeNome { get; set; }
         [JsonProperty("ueMunicipio")]
-        public string UeMunicipio { get { return "São Paulo"; }  }
+        public string UeMunicipio { get; set; }
         [JsonProperty("ueUf")]
-        public string UeUf { get { return "SP"; } }
+        public string UeUf { get; set; }
     }
 }

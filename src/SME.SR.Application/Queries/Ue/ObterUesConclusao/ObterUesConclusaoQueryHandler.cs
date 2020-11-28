@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +40,8 @@ namespace SME.SR.Application
 
             var uesConclusao = new List<UeConclusaoPorAlunoAno>();
 
+            var ciclos = await mediator.Send(new ObterCiclosPorModalidadeQuery(request.Modalidade));
+
             foreach (var turmaAluno in turmasDosAlunos)
             {
                 var turmaAlunoEol = informacoesDosAlunos.FirstOrDefault(a => a.CodigoAluno == turmaAluno.AlunoCodigo &&
@@ -52,18 +53,71 @@ namespace SME.SR.Application
                 {
                     var ue = ues.FirstOrDefault(ue => ue.Codigo == turmaAlunoEol.CodigoEscola);
 
-                    uesConclusao.Add(new UeConclusaoPorAlunoAno()
+                    foreach (var ciclo in ciclos)
                     {
-                        AlunoCodigo = turmaAluno.AlunoCodigo,
-                        TurmaAno = turmaAluno.DescricaoAno,
-                        UeCodigo = ue.Codigo,
-                        UeNome = ue.NomeComTipoEscolaEDre
-                    
-                    });
+                        var descricaoAno = request.Modalidade == Modalidade.EJA ? $"{ciclo.Descricao} - {(turmaAluno.EtapaEJA == 1 ? "I" : "II")}" : $"{ciclo.Ano}º ano";
+                        var existeRegistro = uesConclusao.FirstOrDefault(u => u.TurmaAno == descricaoAno && u.AlunoCodigo == turmaAluno.AlunoCodigo) != null;
+                        if (!existeRegistro)
+                        {
+                            if (request.Modalidade == Modalidade.EJA)
+                            {
+                                descricaoAno = $"{ciclo.Descricao} - I";
+                                uesConclusao.Add(new UeConclusaoPorAlunoAno()
+                                {
+                                    AlunoCodigo = turmaAluno.AlunoCodigo,
+                                    TurmaAno = descricaoAno,
+                                    UeCodigo = null,
+                                    UeNome = null,
+                                });
+                                descricaoAno = $"{ciclo.Descricao} - II";
+                                uesConclusao.Add(new UeConclusaoPorAlunoAno()
+                                {
+                                    AlunoCodigo = turmaAluno.AlunoCodigo,
+                                    TurmaAno = descricaoAno,
+                                    UeCodigo = null,
+                                    UeNome = null,
+                                });
+                            }
+                            else
+                            {
+                                uesConclusao.Add(new UeConclusaoPorAlunoAno()
+                                {
+                                    AlunoCodigo = turmaAluno.AlunoCodigo,
+                                    TurmaAno = descricaoAno,
+                                    UeCodigo = null,
+                                    UeNome = null,
+                                });
+                            }
+                        }
+                    }
+
+                    var ueConclusao = uesConclusao.FirstOrDefault(u => u.TurmaAno == turmaAluno.DescricaoAno && u.AlunoCodigo == turmaAluno.AlunoCodigo);
+
+                    if (ueConclusao != null)
+                    {
+                        ueConclusao.AlunoCodigo = turmaAluno.AlunoCodigo;
+                        ueConclusao.TurmaAno = turmaAluno.DescricaoAno;
+                        ueConclusao.UeCodigo = ue.Codigo;
+                        ueConclusao.UeNome = ue.NomeComTipoEscolaEDre;
+                        ueConclusao.UeMunicipio = "São Paulo";
+                        ueConclusao.UeUF = "SP";
+                    }
+                    else
+                    {
+                        uesConclusao.Add(new UeConclusaoPorAlunoAno()
+                        {
+                            AlunoCodigo = turmaAluno.AlunoCodigo,
+                            TurmaAno = turmaAluno.DescricaoAno,
+                            UeCodigo = ue.Codigo,
+                            UeNome = ue.NomeComTipoEscolaEDre,
+                            UeMunicipio = "São Paulo",
+                            UeUF = "SP"
+                        });
+                    }
                 }
             }
-
-            return uesConclusao.GroupBy(g => g.AlunoCodigo);
+            var alunosAgrupados = uesConclusao.GroupBy(g => g.AlunoCodigo);
+            return alunosAgrupados;
 
         }
 

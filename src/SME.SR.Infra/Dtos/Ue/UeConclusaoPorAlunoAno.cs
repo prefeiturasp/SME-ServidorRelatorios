@@ -10,20 +10,8 @@
 
         public string TurmaAno { get; set; }
 
-        public string UeMunicipio
-        {
-            get
-            {
-                return "São Paulo";
-            }
-        }
- 
-        public string UeUF
-        {
-            get
-            {
-                return "SP";
-            }
-        }
+        public string UeMunicipio { get; set; }
+
+        public string UeUF { get; set; }
     }
 }

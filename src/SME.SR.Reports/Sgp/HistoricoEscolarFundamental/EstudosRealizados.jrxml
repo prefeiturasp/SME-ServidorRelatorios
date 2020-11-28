@@ -144,7 +144,9 @@
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="70" height="15" uuid="337bda3c-6b38-4bad-b56c-c260c1b2add6"/>
+								<reportElement x="0" y="0" width="70" height="15" uuid="337bda3c-6b38-4bad-b56c-c260c1b2add6">
+									<printWhenExpression><![CDATA[$F{ano} != null]]></printWhenExpression>
+								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
@@ -156,7 +158,9 @@
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="295" height="15" uuid="b4d44205-7db3-4e49-9374-735b40d25133"/>
+								<reportElement x="0" y="0" width="295" height="15" uuid="b4d44205-7db3-4e49-9374-735b40d25133">
+									<printWhenExpression><![CDATA[$F{ueNome} != null]]></printWhenExpression>
+								</reportElement>
 								<box leftPadding="10"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font size="6"/>
@@ -169,7 +173,9 @@
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="150" height="15" uuid="fa7eda51-7326-486b-a889-87eab960e0f4"/>
+								<reportElement x="0" y="0" width="150" height="15" uuid="fa7eda51-7326-486b-a889-87eab960e0f4">
+									<printWhenExpression><![CDATA[$F{ueMunicipio} != null]]></printWhenExpression>
+								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
@@ -181,7 +187,9 @@
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="40" height="15" uuid="2487862b-6c97-446d-a0f1-b80939d1d615"/>
+								<reportElement x="0" y="0" width="40" height="15" uuid="2487862b-6c97-446d-a0f1-b80939d1d615">
+									<printWhenExpression><![CDATA[$F{ueUf} != null]]></printWhenExpression>
+								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
