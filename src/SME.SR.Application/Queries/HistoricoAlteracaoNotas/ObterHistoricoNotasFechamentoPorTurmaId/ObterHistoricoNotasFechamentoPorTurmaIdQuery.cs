@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterHistoricoNotasFechamentoPorTurmaIdQuery : IRequest<IEnumerable<HistoricoAlteracaoNotasFechamentoDto>>
+    public class ObterHistoricoNotasFechamentoPorTurmaIdQuery : IRequest<IEnumerable<HistoricoAlteracaoNotasDto>>
     {
         public ObterHistoricoNotasFechamentoPorTurmaIdQuery(long turmaId)
         {

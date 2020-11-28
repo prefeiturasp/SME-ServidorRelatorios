@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterHistoricoNotasFechamentoPorTurmaIdQueryHandler : IRequestHandler<ObterHistoricoNotasFechamentoPorTurmaIdQuery, IEnumerable<HistoricoAlteracaoNotasFechamentoDto>>
+    public class ObterHistoricoNotasFechamentoPorTurmaIdQueryHandler : IRequestHandler<ObterHistoricoNotasFechamentoPorTurmaIdQuery, IEnumerable<HistoricoAlteracaoNotasDto>>
     {
         private readonly IFechamentoNotaRepository fechamentoNotaRepository;
 
@@ -17,7 +17,7 @@ namespace SME.SR.Application
             this.fechamentoNotaRepository = fechamentoNotaRepository ?? throw new ArgumentNullException(nameof(fechamentoNotaRepository));
         }
 
-        public Task<IEnumerable<HistoricoAlteracaoNotasFechamentoDto>> Handle(ObterHistoricoNotasFechamentoPorTurmaIdQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<HistoricoAlteracaoNotasDto>> Handle(ObterHistoricoNotasFechamentoPorTurmaIdQuery request, CancellationToken cancellationToken)
                 => fechamentoNotaRepository.ObterHistoricoAlteracaoNotasFechamento(request.TurmaId);
     }
 }

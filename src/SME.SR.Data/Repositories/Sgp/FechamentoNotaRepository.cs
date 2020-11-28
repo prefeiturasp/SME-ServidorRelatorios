@@ -28,7 +28,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<HistoricoAlteracaoNotasFechamentoDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId)
+        public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId)
         {
             var query = @"select hn.id as historicoNotaId,
 	                             hnf.fechamento_nota_id as fechamentoNotaId,
@@ -50,7 +50,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<HistoricoAlteracaoNotasFechamentoDto>(query, new { turmaId });
+                return await conexao.QueryAsync<HistoricoAlteracaoNotasDto>(query, new { turmaId });
             }
         }
     }
