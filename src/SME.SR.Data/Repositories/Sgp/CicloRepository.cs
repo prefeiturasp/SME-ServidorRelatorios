@@ -71,5 +71,24 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<TipoCiclo>(query, parametros);
 
         }
+
+        public async Task<IEnumerable<TipoCiclo>> ObterCiclosPorModalidadeAsync(Modalidade modalidade)
+        {
+
+
+            var query = @"select tc.id, 
+	                             tc.descricao,
+	                             tca.ano,
+	                             tca.modalidade from tipo_ciclo tc 
+                          inner join tipo_ciclo_ano tca on tca.tipo_ciclo_id = tc.id 
+                          where tca.modalidade = @modalidade
+                          order by ano, tc.descricao";
+
+            var parametros = new { modalidade };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<TipoCiclo>(query, parametros);
+
+        }
     }
 }

@@ -91,7 +91,9 @@ namespace SME.SR.Application
                     yield return new UeConclusaoDto()
                     {
                         Ano = ue.TurmaAno,
-                        UeNome = ue.UeNome
+                        UeNome = ue.UeNome,
+                        UeMunicipio = ue.UeMunicipio,
+                        UeUf = ue.UeUF
                     };
                 }
             }
