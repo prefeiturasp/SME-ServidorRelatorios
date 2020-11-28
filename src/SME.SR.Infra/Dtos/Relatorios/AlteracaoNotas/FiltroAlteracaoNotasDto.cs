@@ -11,6 +11,6 @@ namespace SME.SR.Infra
         public string Bimestre { get; set; }
         public string Usuario { get; set; }
         public string RF { get; set; }
-        public DateTime Data => DateTime.Now;
+        public string Data => DateTime.Now.ToString("dd/MM/yyyy");
     }
 }

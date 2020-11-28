@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterHistoricoNotasConselhoClasseQueryHandler : IRequestHandler<ObterHistoricoNotasFechamentoPorTurmaIdQuery, IEnumerable<HistoricoAlteracaoNotasDto>>
+    public class ObterHistoricoNotasConselhoClassePorTurmaIdQueryHandler : IRequestHandler<ObterHistoricoNotasFechamentoPorTurmaIdQuery, IEnumerable<HistoricoAlteracaoNotasDto>>
     {
         private readonly IConselhoClasseRepository conselhoClasseRepository;
 
-        public ObterHistoricoNotasConselhoClasseQueryHandler(IConselhoClasseRepository conselhoClasseRepository)
+        public ObterHistoricoNotasConselhoClassePorTurmaIdQueryHandler(IConselhoClasseRepository conselhoClasseRepository)
         {
             this.conselhoClasseRepository = conselhoClasseRepository ?? throw new ArgumentNullException(nameof(conselhoClasseRepository));
         }

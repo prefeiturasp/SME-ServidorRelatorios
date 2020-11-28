@@ -30,9 +30,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId)
         {
-            var query = @"select hn.id as historicoNotaId,
-	                             hnf.fechamento_nota_id as fechamentoNotaId,
-	                             fa.aluno_codigo as codigoAluno,
+            var query = @"select fa.aluno_codigo as codigoAluno,
 	                             hn.nota_anterior as notaAnterior,
 	                             hn.nota_nova as notaAtribuida,
 	                             hn.conceito_anterior_id as conceitoAnteriorId,
