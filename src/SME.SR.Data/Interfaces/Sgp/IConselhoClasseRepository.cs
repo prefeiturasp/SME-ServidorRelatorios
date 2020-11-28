@@ -8,5 +8,6 @@ namespace SME.SR.Data.Interfaces
     {
         Task<long> ObterConselhoPorFechamentoTurmaId(long fechamentoTurmaId);
         Task<IEnumerable<long>> ObterPareceresConclusivosPorTipoAprovacao(bool aprovado);
+        Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(long turmaId);
     }
 }
