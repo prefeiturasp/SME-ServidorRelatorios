@@ -85,7 +85,11 @@
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
         paginaAtual++;
-        var str = $@"<footer class='rodape-rel-faltas-frequencia' />
+        var str = $@"<footer class='rodape-rel-faltas-frequencia'>
+                        <div class='titulo-sgp-rodape'>
+                           
+                        </div>
+                      </footer>
                      <div style='page-break-before:always' />";
         return Html.Raw(str);
     }
@@ -351,7 +355,7 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                                     }
                                                     else
                                                     {
-                                                        if (Model.ComponenteCurricular == "")
+                                                        if (Model.ComponenteCurricular == "Todos" || Model.ComponenteCurricular == "")
                                                             @MontarComponente(componente.NomeComponente, !terminouListaAluno)
                                                         }
 
