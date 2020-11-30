@@ -76,8 +76,10 @@ namespace SME.SR.Application
             }
 
             if (perguntas.Any())
+            {
+                perguntas.ForEach(pergunta => pergunta.Respostas = pergunta.Respostas.OrderBy(r => r.Resposta).ToList());
                 relatorio.PerguntasRespostas = perguntas;
-
+            }
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
             GerarGraficos(relatorio);
@@ -89,7 +91,7 @@ namespace SME.SR.Application
         {
             relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
 
-            foreach(var pergunta in relatorio.PerguntasRespostas)
+            foreach (var pergunta in relatorio.PerguntasRespostas)
             {
                 string chave = String.Empty;
                 int chaveIndex = 0;
