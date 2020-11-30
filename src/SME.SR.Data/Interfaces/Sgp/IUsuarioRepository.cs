@@ -9,7 +9,8 @@ namespace SME.SR.Data.Interfaces
     {
         Task<Usuario> ObterDados(string codigoRf);
         Task<IEnumerable<DadosUsuarioDto>> ObterUsuariosAbrangenciaPorAcesso(string dreCodigo, string ueCodigo, string usuarioRf, Guid[] perfis, int diasSemAcesso);
-        Task<SituacaoUsuario> ObterSituacaoUsuarioPorRf(string usuarioRf);
+        Task<SituacaoUsuario> ObterSituacaoUsuarioPorRf(string usuarioLogin);
+        Task<string> ObterNomeUsuarioPorLogin(string usuarioLogin);
         Task<UsuarioCoreSSO> ObterDadosCoreSSO(string codigoRf);
         Task<IEnumerable<HistoricoReinicioSenhaDto>> ObterHistoricoReinicioSenhaUsuarioPorDre(string CodigoDre);
         Task<IEnumerable<PrioridadePerfil>> ObterListaPrioridadePerfil();

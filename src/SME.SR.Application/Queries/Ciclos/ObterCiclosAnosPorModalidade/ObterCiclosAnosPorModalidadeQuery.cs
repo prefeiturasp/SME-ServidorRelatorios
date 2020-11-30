@@ -7,6 +7,11 @@ namespace SME.SR.Application
 {
     public class ObterCiclosAnosPorModalidadeQuery : IRequest<IEnumerable<TipoCiclo>>
     {
+        public ObterCiclosAnosPorModalidadeQuery(string[] anos, Modalidade modalidade)
+        {
+            Anos = anos;
+            Modalidade = modalidade;
+        }
         public string[] Anos { get; set; }
         public Modalidade Modalidade { get; set; }
     }

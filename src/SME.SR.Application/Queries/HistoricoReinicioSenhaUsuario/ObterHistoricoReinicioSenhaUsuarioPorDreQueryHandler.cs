@@ -23,19 +23,26 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<HistoricoReinicioSenhaDto>> Handle(ObterHistoricoReinicioSenhaUsuarioPorDreQuery request, CancellationToken cancellationToken)
         {
-            var historicoReinicioSenha = await usuarioRepository.ObterHistoricoReinicioSenhaUsuarioPorDre(request.CodigoDre);            
-
+            var historicoReinicioSenha = await usuarioRepository.ObterHistoricoReinicioSenhaUsuarioPorDre(request.CodigoDre);
             if (historicoReinicioSenha != null)
             {
                 var perfisPrioritarios = await mediator.Send(new ObterPerfisPrioritariosQuery());
                 foreach (var historico in historicoReinicioSenha)
-                {
-                    historico.UtilizaSenhaPadao = await mediator.Send(new UsuarioPossuiSenhaPadraoQuery(historico.Rf)) ? "Sim" : "Não";
-                    historico.Perfil = await ObterPerfilPrioritario(historico.Rf, perfisPrioritarios);
+                {                    
+                    historico.UtilizaSenhaPadao = await mediator.Send(new UsuarioPossuiSenhaPadraoQuery(historico.Login)) ? "Sim" : "Não";
+                    historico.Perfil = await ObterPerfilPrioritario(historico.Login, perfisPrioritarios);
+
+                    if (string.IsNullOrEmpty(historico.Nome) && !string.IsNullOrEmpty(historico.Perfil))
+                    {
+                        var usuarioCoreSSO = await mediator.Send(new ObterDadosUsuarioCoreSSOPorRfQuery(historico.Login));
+                        historico.Nome = usuarioCoreSSO.Nome;
+
+                        historico.SenhaReiniciadaPorPerfil = await ObterPerfilPrioritario(historico.SenhaReiniciadaPorRf, perfisPrioritarios);
+                    }
                 }
             }
 
-            return historicoReinicioSenha;
+            return historicoReinicioSenha.Where(c => !string.IsNullOrEmpty(c.Perfil));
         }
 
         private async Task<string> ObterPerfilPrioritario(string usuarioRf, IEnumerable<PrioridadePerfil> perfisPrioritarios)

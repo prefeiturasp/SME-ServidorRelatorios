@@ -63,8 +63,8 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet("relatorios/conselhoclasseatafinal")]
-        [Action("relatorios/conselhoclasseatafinal", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
+        [HttpGet("relatorios/atafinalresultados")]
+        [Action("relatorios/atafinalresultados", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
         public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase)
         {
             await relatorioConselhoClasseAtaFinalUseCase.Executar(request);
@@ -136,6 +136,14 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioResumoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioResumoPAPUseCase relatorioResumoPAPUseCase)
         {
             await relatorioResumoPAPUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/graficopap")]
+        [Action("relatorios/graficopap", typeof(IRelatorioGraficoPAPUseCase))]
+        public async Task<bool> RelatorioGraficoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGraficoPAPUseCase relatorioGraficoPAPUseCase)
+        {
+            await relatorioGraficoPAPUseCase.Executar(request);
             return true;
         }
 

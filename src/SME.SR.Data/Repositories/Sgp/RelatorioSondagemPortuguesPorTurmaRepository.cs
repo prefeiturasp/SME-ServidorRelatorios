@@ -34,10 +34,10 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "from \"PortuguesePolls\" ";
                     sql += "where 1 = 1 ";
 
-                    if (!string.IsNullOrEmpty(dreCodigo))
+                    if (!string.IsNullOrEmpty(dreCodigo) && int.Parse(dreCodigo) > 0)
                         sql += "and \"dreCodeEol\" = @dreCodigo ";
 
-                    if (!string.IsNullOrEmpty(ueCodigo))
+                    if (!string.IsNullOrEmpty(ueCodigo) && int.Parse(ueCodigo) > 0)
                         sql += "and \"schoolCodeEol\" = @ueCodigo ";
 
                     if (!string.IsNullOrEmpty(turmaCodigo))
@@ -62,8 +62,15 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "inner join \"Resposta\" r on r.\"Id\" = pr.\"RespostaId\"  ";
                     sql += "inner join \"OrdemPergunta\" op on op.\"GrupoId\" = sa.\"GrupoId\" ";
                     sql += "where sa.\"GrupoId\" = @grupoId ";
-                    sql += "and sa.\"CodigoDre\" = @dreCodigo  ";
-                    sql += "and sa.\"CodigoUe\" = @ueCodigo  ";
+
+                    if(!string.IsNullOrEmpty(dreCodigo) && int.Parse(dreCodigo) > 0)
+                    {
+                        sql += "and sa.\"CodigoDre\" = @dreCodigo  ";
+                    }
+                    if (!string.IsNullOrEmpty(ueCodigo) != null && int.Parse(ueCodigo) > 0)
+                    {
+                        sql += "and sa.\"CodigoUe\" = @ueCodigo  ";
+                    }
                     sql += "and sa.\"CodigoTurma\" = @turmaCodigo ";
                     sql += "and sa.\"AnoLetivo\" = @anoLetivo  ";
                     sql += "and sa.\"AnoTurma\" = @anoTurma ";

@@ -38,7 +38,7 @@ namespace SME.SR.Application
         {
             var retorno = new ResumoPAPTotalEstudantePorFrequenciaDto
             {
-                Frequencia = items.GroupBy(fg => new { fg.RespostaId, fg.Frequencia, fg.Ciclo }).Select(freq => new ResumoPAPTotalEstudanteFrequenciaDto
+                Frequencia = items.GroupBy(fg => new { fg.RespostaId, fg.Frequencia }).Select(freq => new ResumoPAPTotalEstudanteFrequenciaDto
                 {
                     FrequenciaDescricao = freq.Key.Frequencia,
                     PorcentagemTotalFrequencia = (double)(freq.Sum(x => x.Total) * 100) / total,

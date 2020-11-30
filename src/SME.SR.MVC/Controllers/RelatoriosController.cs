@@ -3537,6 +3537,43 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            model.GraficosBarras.Add(new GraficoBarrasVerticalDto(800, "Português - Leitura")
+            {
+              EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+              {
+                  new GraficoBarrasVerticalEixoXDto(5, "A"),
+                  new GraficoBarrasVerticalEixoXDto(1, "B"),
+                  new GraficoBarrasVerticalEixoXDto(3, "C"),
+                  new GraficoBarrasVerticalEixoXDto(2, "D")
+              } ,
+              Legendas = new List<GraficoBarrasLegendaDto>()
+              {
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "A",
+                      Valor = "Nivel 1"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "B",
+                      Valor = "Nivel 2"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "C",
+                      Valor = "Nivel 3"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "D",
+                      Valor = "Sem preenchimento"
+                  }
+              },
+              EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 5, 10)
+            });
+
             return View("RelatorioSondagemPortuguesPorTurma", model);
         }
 
@@ -3901,6 +3938,42 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Linhas = linhas
                 },
             };
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            model.GraficosBarras.Add(new GraficoBarrasVerticalDto(800, "Português - Leitura")
+            {
+                EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+              {
+                  new GraficoBarrasVerticalEixoXDto(50, "A"),
+                  new GraficoBarrasVerticalEixoXDto(10, "B"),
+                  new GraficoBarrasVerticalEixoXDto(30, "C"),
+                  new GraficoBarrasVerticalEixoXDto(20, "D")
+              },
+                Legendas = new List<GraficoBarrasLegendaDto>()
+              {
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "A",
+                      Valor = "Nivel 1"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "B",
+                      Valor = "Nivel 2"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "C",
+                      Valor = "Nivel 3"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "D",
+                      Valor = "Sem preenchimento"
+                  }
+              },
+                EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 50, 10)
+            });
 
             return View("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", model);
         }
@@ -4642,6 +4715,82 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemPortuguesConsolidado", model);
         }
 
+       [HttpGet("graficos-pap")]
+       public IActionResult RelatorioGraficosPAP() {
+            var graficosDto = new List<ResumoPAPGraficoDto>();
+
+            for (var i = 0; i < 7; i++)
+            {
+                var grafico = new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                        {
+                        new ResumoPAPGraficoAnoDto(395, "")
+                        {
+                            Titulo =  (3 + i) + "º Ano",
+                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                            {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "A"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "B"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "C"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "D"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "E"),
+                            },
+                            Legendas = new List<GraficoBarrasLegendaDto>()
+                            {
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "A",
+                                    Valor = "Alfabético"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "B",
+                                    Valor = "Silábico com valor sonoro"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "C",
+                                    Valor = "Pré silábico"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "D",
+                                    Valor = "Silábico alfabético"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "E",
+                                    Valor = "Silábico sem valor sonoro"
+                                },
+                            },
+                            EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                        }
+                    }
+                };
+
+                graficosDto.Add(grafico);
+            }
+
+            var model = new GraficoPAPDto()
+            {
+                DreNome = "DRE - BT",
+                AnoLetivo = 2020,
+                Ciclo = "INTERDISCIPLINAR",
+                Ano = "4",
+                Turma = "Todas",
+                Periodo = "Acompanhamento 2º Semestre",
+                UeNome = "Todas",
+                UsuarioNome = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                UsuarioRF = "9879878",
+                Data = DateTime.Now.ToString("dd/MM/yyyy"),
+                EhEncaminhamento = false,
+                GraficosDto = graficosDto
+            };
+            
+            return View("RelatorioGraficosPAP", model);
+       }
         [HttpGet("Usuarios")]
         public IActionResult RelatorioUsuarios()
         {
@@ -4670,56 +4819,56 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alice Gonçalves de Almeida Souza de Freitas",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Ana lucia de Freitas",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Ana lucia de Freitas",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Jessica de Oliveira",
                                     Situacao = "5 - Expirado",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Jessica de Oliveira",
                                     Situacao = "5 - Expirado",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Jessica de Oliveira",
                                     Situacao = "5 - Expirado",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Jessica de Oliveira",
                                     Situacao = "5 - Expirado",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Jessica de Oliveira",
                                     Situacao = "5 - Expirado",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4734,49 +4883,49 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Carmen Mendes",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Ana Luiza Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Ana Luiza Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Ana Luiza Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Ana Luiza Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Ana Luiza Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Ana Luiza Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4798,56 +4947,56 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     {
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Jessica de Oliveira",
                                             Situacao = "5 - Expirado",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Jessica de Oliveira",
                                             Situacao = "5 - Expirado",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4861,49 +5010,49 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     {
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                          new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4915,7 +5064,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4925,7 +5074,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4935,7 +5084,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4945,7 +5094,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4955,7 +5104,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4965,7 +5114,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4975,7 +5124,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4985,7 +5134,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -4995,7 +5144,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5005,7 +5154,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5015,7 +5164,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5025,7 +5174,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5035,7 +5184,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5045,7 +5194,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5055,7 +5204,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5065,7 +5214,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5075,7 +5224,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5097,56 +5246,56 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     {
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Jessica de Oliveira",
                                             Situacao = "5 - Expirado",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Jessica de Oliveira",
                                             Situacao = "5 - Expirado",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5160,49 +5309,49 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     {
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                          new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5214,7 +5363,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5224,7 +5373,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5234,7 +5383,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5244,7 +5393,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5254,7 +5403,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5264,7 +5413,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5274,7 +5423,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5284,7 +5433,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5294,7 +5443,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5304,7 +5453,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5314,7 +5463,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5324,7 +5473,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5334,7 +5483,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5344,7 +5493,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5354,7 +5503,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5364,7 +5513,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5374,7 +5523,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5396,56 +5545,56 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     {
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Jessica de Oliveira",
                                             Situacao = "5 - Expirado",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana lucia de Freitas",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Jessica de Oliveira",
                                             Situacao = "5 - Expirado",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5459,49 +5608,49 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     {
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Carmen Mendes",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                         new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                         },
                                          new UsuarioDto()
                                         {
-                                            Rf = "153726",
+                                            Login = "153726",
                                             Nome = "Ana Luiza Souza",
                                             Situacao = "1 - Ativo",
                                             UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5513,7 +5662,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5523,7 +5672,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5533,7 +5682,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5543,7 +5692,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5553,7 +5702,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5563,7 +5712,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5573,7 +5722,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5583,7 +5732,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5593,7 +5742,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5603,7 +5752,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5613,7 +5762,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5623,7 +5772,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5633,7 +5782,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5643,7 +5792,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5653,7 +5802,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5663,7 +5812,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5673,7 +5822,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 },
                                 new UsuarioProfessorDto()
                                 {
-                                    Rf = "153726",
+                                    Login = "153726",
                                     Nome = "Alexandre Barros de Souza",
                                     Situacao = "1 - Ativo",
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5688,7 +5837,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     {
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5697,7 +5846,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5706,7 +5855,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5715,7 +5864,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5724,7 +5873,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5733,7 +5882,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5742,7 +5891,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5751,7 +5900,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5760,7 +5909,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
@@ -5769,240 +5918,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         },
                         new HistoricoReinicioSenhaDto()
                         {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
+                            Login = "153726",
                             Nome = "Ana de Souza",
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),

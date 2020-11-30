@@ -34,13 +34,14 @@ namespace SME.SR.Data.Repositories.Sgp
 
             if (anoTurma >= 7)
             {
-                sql.AppendLine("select \"CodigoAluno\" AlunoEolCode, \"NomeAluno\" AlunoNome, \"AnoLetivo\", \"AnoTurma\", \"CodigoTurma\", pae.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta");
+                sql.AppendLine("select \"CodigoAluno\" AlunoEolCode, \"NomeAluno\" AlunoNome, \"AnoLetivo\", \"AnoTurma\", \"CodigoTurma\", pae.\"Ordenacao\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta, pr.\"Ordenacao\" OrdenacaoResposta ");
                 sql.AppendLine(" from \"Sondagem\" s inner join \"SondagemAluno\" sa on sa.\"SondagemId\" = s.\"Id\" ");
                 sql.AppendLine(" inner join \"SondagemAlunoRespostas\" sar on sar.\"SondagemAlunoId\" = sa.\"Id\"  ");
                 sql.AppendLine(" inner join \"Pergunta\" p on sar.\"PerguntaId\" = p.\"Id\"  ");
                 sql.AppendLine(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" and pae.\"AnoEscolar\" = s.\"AnoTurma\"");
                 sql.AppendLine(" inner join \"Resposta\" r on sar.\"RespostaId\" = r.\"Id\" ");
-                sql.AppendLine(" where s.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\" ");
+                sql.AppendLine(" inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\" and pr.\"RespostaId\" = r.\"Id\" ");
+                sql.AppendLine(" where s.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\" , pr.\"Ordenacao\"");
             }
             else
             {

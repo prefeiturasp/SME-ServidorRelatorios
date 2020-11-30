@@ -71,7 +71,25 @@ namespace SME.SR.Data
                 anos = anos.ToList()
             });
 
+        }
 
+        public async Task<IEnumerable<Ue>> ObterPorCodigos(string[] ueCodigos)
+        {
+            var query = @"select ue.Id, ue.ue_id Codigo, ue.Nome, ue.tipo_escola TipoEscola,
+                          dre.id Id, dre.dre_id Codigo, dre.abreviacao, dre.nome
+                          from ue
+                          inner join dre on ue.dre_id = dre.id
+                          where ue_id = any(@ueCodigos)";
+
+            var parametros = new { ueCodigos };
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return (await conexao.QueryAsync<Ue, Dre, Ue>(query, (ue, dre) =>
+            {
+                ue.Dre = dre;
+                return ue;
+            }
+            , parametros, splitOn: "Id,Id"));
         }
 
         public async Task<Ue> ObterPorId(long ueId)
