@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosRelatorioAlteracaoNotasCommand : IRequest<IEnumerable<TurmaAlteracaoNotasDto>>
+    public class ObterDadosRelatorioAlteracaoNotasCommand : IRequest<List<TurmaAlteracaoNotasDto>>
     {
         public ObterDadosRelatorioAlteracaoNotasCommand(FiltroRelatorioAlteracaoNotasDto filtroRelatorio)
         {

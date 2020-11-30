@@ -7,7 +7,6 @@ namespace SME.SR.Data.Interfaces
     public interface IConselhoClasseRepository
     {
         Task<long> ObterConselhoPorFechamentoTurmaId(long fechamentoTurmaId);
-        Task<IEnumerable<long>> ObterPareceresConclusivosPorTipoAprovacao(bool aprovado);
-        Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(long turmaId);
+        Task<IEnumerable<long>> ObterPareceresConclusivosPorTipoAprovacao(bool aprovado);        
     }
 }

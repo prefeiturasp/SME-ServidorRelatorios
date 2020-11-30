@@ -784,6 +784,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
         {
             var query = @"select t.id as Codigo
+                            , t.turma_id 
                             , t.nome
                             , t.modalidade_codigo  ModalidadeCodigo
                             , t.semestre
@@ -796,53 +797,8 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryAsync<Turma>(query, new { ids });
             }
-
         }
-
-        //public async Task<TurmaResumoDto> ObterTurmaResumoComDreUePorId(long turmaId)
-        //{
-        //    var temp = turmaId.ToString();
-        //    var query = @"select t.id, t.nome, t.ano_letivo as AnoLetivo, t.modalidade_codigo as Modalidade
-        //                        , ue.id, ue.ue_id as CodigoUe, ue.nome, ue.tipo_escola as TipoEscola
-        //                        , dre.id, dre.abreviacao, dre.nome
-        //                      from turma t
-        //                     inner join ue on ue.id = t.ue_id
-        //                     inner join dre on dre.id = ue.dre_id
-        //                     where t.turma_id = @turmaId";
-
-        //    using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-        //    {
-        //        var turma = (await conexao.QueryAsync<TurmaResumoDto, UeDto, DreDto, TurmaResumoDto>(query, (turmaDto, ueDto, dreDto) =>
-        //        {
-        //            ueDto.Dre = dreDto;
-        //            turmaDto.Ue = ueDto;
-
-        //            return turmaDto;
-        //        },
-        //        new { temp }));
-
-        //        return turma.First();
-        //    }
-        //}
-
-        //public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
-        //{
-        //    var temp = ids.FirstOrDefault().ToString();
-        //    var query = @"select t.id as Codigo
-        //                    , t.nome
-        //                    , t.modalidade_codigo  ModalidadeCodigo
-        //                    , t.semestre
-        //                    , t.ano
-        //                    , t.ano_letivo AnoLetivo
-        //                from turma t
-        //               where t.turma_id = @temp";
-
-        //    using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-        //    {
-        //        return await conexao.QueryAsync<Turma>(query, new { temp });
-        //    }
-
-        //}
+        
         public async Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, long anoLetivo)
         {
             var query = @"select t.id as Codigo
@@ -867,8 +823,7 @@ namespace SME.SR.Data
             {
 
                 throw ex;
-            }
-            
+            }           
 
         }
     }

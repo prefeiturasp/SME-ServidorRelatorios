@@ -6,11 +6,14 @@ namespace SME.SR.Application
 {
     public class ObterHistoricoNotasFechamentoPorTurmaIdQuery : IRequest<IEnumerable<HistoricoAlteracaoNotasDto>>
     {
-        public ObterHistoricoNotasFechamentoPorTurmaIdQuery(long turmaId)
+        public ObterHistoricoNotasFechamentoPorTurmaIdQuery(long turmaId, long tipocalendarioId)
         {
             TurmaId = turmaId;
+            this.tipocalendarioId = tipocalendarioId;
         }
 
         public long TurmaId { get; set; }
+        public long tipocalendarioId { get; set; }
+
     }
 }

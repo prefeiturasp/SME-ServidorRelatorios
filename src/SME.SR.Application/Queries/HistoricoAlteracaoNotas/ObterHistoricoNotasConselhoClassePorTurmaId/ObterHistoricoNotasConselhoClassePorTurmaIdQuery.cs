@@ -6,11 +6,13 @@ namespace SME.SR.Application
 {
     public class ObterHistoricoNotasConselhoClassePorTurmaIdQuery : IRequest<IEnumerable<HistoricoAlteracaoNotasDto>>
     {
-        public ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long turmaId)
+        public ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long turmaId, long tipoCalendarioId)
         {
             TurmaId = turmaId;
+            this.tipoCalendarioId = tipoCalendarioId;
         }
 
         public long TurmaId { get; set; }
+        public long tipoCalendarioId { get; set; }
     }
 }

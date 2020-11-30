@@ -10,14 +10,14 @@ namespace SME.SR.Application
 {
     public class ObterHistoricoNotasConselhoClassePorTurmaIdQueryHandler : IRequestHandler<ObterHistoricoNotasFechamentoPorTurmaIdQuery, IEnumerable<HistoricoAlteracaoNotasDto>>
     {
-        private readonly IConselhoClasseRepository conselhoClasseRepository;
-
-        public ObterHistoricoNotasConselhoClassePorTurmaIdQueryHandler(IConselhoClasseRepository conselhoClasseRepository)
+        private readonly IConselhoClasseNotaRepository conselhoClasseNotaRepository;
+        
+        public ObterHistoricoNotasConselhoClassePorTurmaIdQueryHandler(IConselhoClasseNotaRepository conselhoClasseNotaRepository)
         {
-            this.conselhoClasseRepository = conselhoClasseRepository ?? throw new ArgumentNullException(nameof(conselhoClasseRepository));
+            this.conselhoClasseNotaRepository = conselhoClasseNotaRepository ?? throw new ArgumentNullException(nameof(conselhoClasseNotaRepository));
         }
 
         public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> Handle(ObterHistoricoNotasFechamentoPorTurmaIdQuery request, CancellationToken cancellationToken)
-                => await conselhoClasseRepository.ObterHistoricoAlteracaoNotasConselhoClasse(request.TurmaId);
+                => await conselhoClasseNotaRepository.ObterHistoricoAlteracaoNotasConselhoClasse(request.TurmaId, request.tipocalendarioId);
     }
 }
