@@ -133,7 +133,10 @@ namespace SME.SR.Application
                 relatorio.Perguntas = perguntas;
 
             if (respostas.Any())
+            {
+                respostas.ForEach(resposta => resposta.Respostas = resposta.Respostas.OrderBy(r => r.Resposta).ToList());
                 relatorio.PerguntasRespostas = respostas.OrderBy(r => r.Ordem).ToList();
+            }
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
 
