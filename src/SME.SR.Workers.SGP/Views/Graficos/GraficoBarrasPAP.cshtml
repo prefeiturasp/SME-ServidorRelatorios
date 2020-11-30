@@ -44,7 +44,7 @@
     function ChartSettings_@(Model.IdParaLastro)() {
         var numLegendas = '@Html.Raw(Model.DescricaoLegenda)'.split("||").length;
         var multiLegendas = numLegendas - 5;
-        var posicaoLegendas = numLegendas > 5 ? multiLegendas * 8 : 0;
+        var espacoLegendas = numLegendas > 5 ? multiLegendas * 8 : 0;
 
         svgMargin_@(Model.IdParaLastro) = 40;
         svgSpace_@(Model.IdParaLastro) = 60;
@@ -53,7 +53,7 @@
         svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
         svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
 
-        MarginSpace_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgSpace_@(Model.IdParaLastro) + posicaoLegendas;
+        MarginSpace_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgSpace_@(Model.IdParaLastro) + espacoLegendas;
         MarginHeight_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgHeight_@(Model.IdParaLastro);
 
         barchartMargin_@(Model.IdParaLastro) = 15;
