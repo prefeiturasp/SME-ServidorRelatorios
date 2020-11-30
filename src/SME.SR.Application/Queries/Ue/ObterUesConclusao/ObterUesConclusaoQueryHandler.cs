@@ -123,9 +123,9 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<AlunoHistoricoEscolar>> ObterInformacoesDosAlunos(long[] codigoAlunos)
         {
-            var informacoesDosAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(codigoAlunos));
+            var informacoesDosAlunos = await mediator.Send(new ObterDadosHistoricoAlunosPorCodigosQuery(codigoAlunos));
             if (!informacoesDosAlunos.Any())
-                throw new NegocioException("Não foi possíve obter os dados dos alunos");
+                throw new NegocioException("Não foi possível obter os dados dos alunos");
 
             informacoesDosAlunos = informacoesDosAlunos.GroupBy(d => d.CodigoAluno)
                                   .SelectMany(g => g.OrderByDescending(d => d.AnoLetivo)
