@@ -47,8 +47,10 @@ namespace SME.SR.Application
 
                 foreach (var historicoNota in historicoAlteracaoNotas)
                 {
-                    historicoNota.NomeAluno = alunos.Where(a => a.CodigoAluno == int.Parse(historicoNota.CodigoAluno)).Select(a => a.NomeAluno).ToString();
-                    historicoNota.NumeroChamada = alunos.Where(a => a.CodigoAluno == int.Parse(historicoNota.CodigoAluno)).Select(a => a.NumeroAlunoChamada).ToString();
+                    var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == int.Parse(historicoNota.CodigoAluno));
+
+                    historicoNota.NomeAluno = alunoAtual.NomeAluno; 
+                    historicoNota.NumeroChamada = alunoAtual.NumeroAlunoChamada; 
                     historicoNota.NomeTurma = nomeTurma;
                 }
 
@@ -131,7 +133,7 @@ namespace SME.SR.Application
                 Descricao = $"{bimestre}º Bimestre"
             };
 
-            foreach (var historicoAlteracaoNotasComponente in historicoAlteracaoNotasBimestre.OrderBy(c => c))
+            foreach (var historicoAlteracaoNotasComponente in historicoAlteracaoNotasBimestre)
             {
                 bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(historicoAlteracaoNotas, turmaId, tipoCalendarioId, modalidadeTurma));
             }

@@ -9,10 +9,10 @@ namespace SME.SR.Application
         public ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long turmaId, long tipoCalendarioId)
         {
             TurmaId = turmaId;
-            this.tipoCalendarioId = tipoCalendarioId;
+            this.TipoCalendarioId = tipoCalendarioId;
         }
 
         public long TurmaId { get; set; }
-        public long tipoCalendarioId { get; set; }
+        public long TipoCalendarioId { get; set; }
     }
 }

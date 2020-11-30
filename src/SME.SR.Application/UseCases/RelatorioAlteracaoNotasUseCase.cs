@@ -23,7 +23,7 @@ namespace SME.SR.Application
             try
             {
                 var filtro = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
-                var relatorioDto = new RelatorioAlteracaoNotasDto();
+                var relatorioDto = new RelatorioAlteracaoNotasDto();                
 
                 await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
                 await ObterDadosRelatorio(relatorioDto, filtro);

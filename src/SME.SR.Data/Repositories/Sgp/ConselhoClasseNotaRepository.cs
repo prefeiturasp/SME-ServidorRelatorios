@@ -277,17 +277,17 @@ namespace SME.SR.Data
         public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(long turmaId, long tipocalendarioId)
         {
             var query = @"select cca.aluno_codigo as codigoAluno,
-                                   hn.nota_anterior as notaAnterior,
-                                   hn.nota_nova as notaAtribuida,
-                                   hn.conceito_anterior_id as conceitoAnteriorId,
-                                   hn.conceito_novo_id as conceitoAtribuidoId,
-                                   3 as TipoNota,
-                                   hn.criado_por as usuarioAlteracao,
-                                   hn.criado_rf as RfAlteracao,
-                                   hn.criado_em as DataAlteracao,
-                                   ftd.disciplina_id as DisciplinaId,
-                                   pe.bimestre,
-                                   coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome
+                                 hn.nota_anterior as notaAnterior,
+                                 hn.nota_nova as notaAtribuida,
+                                 hn.conceito_anterior_id as conceitoAnteriorId,
+                                 hn.conceito_novo_id as conceitoAtribuidoId, 
+                                 hn.criado_por as usuarioAlteracao,
+                                 2 as TipoNota,
+                                 hn.criado_rf as rfAlteracao,
+                                 hn.criado_em as dataAlteracao,
+                                 ftd.disciplina_id as disciplinaId,
+                                 pe.bimestre,
+                                 coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome
                               from historico_nota hn
                              inner join historico_nota_conselho_classe hncc on hn.id = hncc.historico_nota_id
                              inner join conselho_classe_nota ccn on hncc.conselho_classe_nota_id = ccn.id 

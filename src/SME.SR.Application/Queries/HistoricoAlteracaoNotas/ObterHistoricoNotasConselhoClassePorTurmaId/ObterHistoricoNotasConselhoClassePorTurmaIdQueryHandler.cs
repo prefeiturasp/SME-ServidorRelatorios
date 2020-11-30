@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterHistoricoNotasConselhoClassePorTurmaIdQueryHandler : IRequestHandler<ObterHistoricoNotasFechamentoPorTurmaIdQuery, IEnumerable<HistoricoAlteracaoNotasDto>>
+    public class ObterHistoricoNotasConselhoClassePorTurmaIdQueryHandler : IRequestHandler<ObterHistoricoNotasConselhoClassePorTurmaIdQuery, IEnumerable<HistoricoAlteracaoNotasDto>>
     {
         private readonly IConselhoClasseNotaRepository conselhoClasseNotaRepository;
         
@@ -17,7 +17,7 @@ namespace SME.SR.Application
             this.conselhoClasseNotaRepository = conselhoClasseNotaRepository ?? throw new ArgumentNullException(nameof(conselhoClasseNotaRepository));
         }
 
-        public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> Handle(ObterHistoricoNotasFechamentoPorTurmaIdQuery request, CancellationToken cancellationToken)
-                => await conselhoClasseNotaRepository.ObterHistoricoAlteracaoNotasConselhoClasse(request.TurmaId, request.tipocalendarioId);
+        public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> Handle(ObterHistoricoNotasConselhoClassePorTurmaIdQuery request, CancellationToken cancellationToken)
+                => await conselhoClasseNotaRepository.ObterHistoricoAlteracaoNotasConselhoClasse(request.TurmaId, request.TipoCalendarioId);
     }
 }
