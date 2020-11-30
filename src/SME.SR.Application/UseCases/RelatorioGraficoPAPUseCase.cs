@@ -43,12 +43,7 @@ namespace SME.SR.Application
 
             var resultado = await ObterResultados(filtros);
 
-            if ((resultado == null || !resultado.Any()) && (encaminhamento == null || !encaminhamento.Any()))
-                throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
-
             var graficos = ObterGraficos(totalEstudantes, totalFrequencia, encaminhamento, resultado);
-
-            var json = JsonSerializer.Serialize(graficos);
 
             var relatorioGraficoPAPDto = new GraficoPAPDto()
             {
