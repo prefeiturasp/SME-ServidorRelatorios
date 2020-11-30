@@ -204,17 +204,24 @@ namespace SME.SR.Application
 
                 foreach (var frequencia in totalFrequencia.Frequencia)
                 {
-                    string chave = lstChaves[chaveIndex++].ToString();
-
-                    legendas.Add(new GraficoBarrasLegendaDto()
+                    if (frequencia.FrequenciaDescricao.ToLower() != "total")
                     {
-                        Chave = chave,
-                        Valor = $"{frequencia.FrequenciaDescricao}"
-                    });
+                        string chave = lstChaves[chaveIndex++].ToString();
 
-                    var itemFrequencia = frequencia.Linhas.FirstOrDefault().Anos.FirstOrDefault(d => d.CodigoAno == ano.CodigoAno);
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = $"{frequencia.FrequenciaDescricao}"
+                        });
 
-                    graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(itemFrequencia.Quantidade, (decimal)Math.Round(itemFrequencia.Porcentagem, 0), chave));
+                        var itemFrequencia = frequencia.Linhas.FirstOrDefault().Anos.FirstOrDefault(d => d.CodigoAno == ano.CodigoAno);
+
+                        if (itemFrequencia == null)
+                            itemFrequencia = new ResumoPAPTotalFrequenciaAnoDto() { Quantidade = 0, Porcentagem = 0 };
+
+                        graficoAno.EixosX.Add(new GraficoBarrasPAPVerticalEixoXDto(itemFrequencia.Quantidade, (decimal)Math.Round(itemFrequencia.Porcentagem, 0), chave));
+                    }
+                
                 }
 
                 var valorMaximoEixo = graficoAno.EixosX.Max(a => int.Parse(a.Valor.ToString()));
