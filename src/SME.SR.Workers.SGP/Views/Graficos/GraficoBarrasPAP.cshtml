@@ -32,8 +32,6 @@
     var barchartWidth_@(Model.IdParaLastro), barchartMargin_@(Model.IdParaLastro), totalChartBars_@(Model.IdParaLastro), maximumDataValue_@(Model.IdParaLastro);
     var LabelOnYAxis_@(Model.IdParaLastro);
 
-
-
     function drawBarChart_@(Model.IdParaLastro)() {
 
         svg_@(Model.IdParaLastro) = document.getElementById('svgcontainer_@(Model.IdParaLastro)');
@@ -44,13 +42,18 @@
     }
 
     function ChartSettings_@(Model.IdParaLastro)() {
+        var numLegendas = '@Html.Raw(Model.DescricaoLegenda)'.split("||").length;
+        var multiLegendas = numLegendas - 5;
+        var espacoLegendas = numLegendas > 5 ? multiLegendas * 8 : 0;
+
         svgMargin_@(Model.IdParaLastro) = 40;
         svgSpace_@(Model.IdParaLastro) = 60;
+
 
         svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
         svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
 
-        MarginSpace_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgSpace_@(Model.IdParaLastro);
+        MarginSpace_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgSpace_@(Model.IdParaLastro) + espacoLegendas;
         MarginHeight_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgHeight_@(Model.IdParaLastro);
 
         barchartMargin_@(Model.IdParaLastro) = 15;
@@ -89,7 +92,8 @@
     function drawMarkers_@(Model.IdParaLastro)(x1) {
         //Legendas  verticais
         var numeroLegendas = '@Html.Raw(Model.DescricaoLegenda)'.split("||").length;
-        var posicaoLegendas = numeroLegendas * 12;
+        var multiLegendas = numeroLegendas * 12;
+        var posicaoLegendas = numeroLegendas > 5 ? multiLegendas - 8 : multiLegendas;
         var textelementLegenda = document.createElementNS("http://www.w3.org/2000/svg", 'text');
         textelementLegenda.setAttributeNS(null, 'transform', 'rotate(-90) translate(' + -250 + ' , ' + (74 - posicaoLegendas) + ')');
 
@@ -288,7 +292,7 @@
 </script>
 @{
     <text>
-        <div id="chartcontainer_@(Model.IdParaLastro)"  style="text-align:center;">                    
+        <div id="chartcontainer_@(Model.IdParaLastro)"  style="text-align:center;">
             <svg id="svgcontainer_@(Model.IdParaLastro)" height="@Model.EixoYConfiguracao.ValorTotalAltura" width="@(Model.LarguraTotal - 50)" style="margin-top:10px">
             </svg>
         </div>
