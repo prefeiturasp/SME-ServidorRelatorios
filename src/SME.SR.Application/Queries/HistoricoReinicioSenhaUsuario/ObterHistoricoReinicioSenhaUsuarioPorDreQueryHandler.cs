@@ -36,6 +36,8 @@ namespace SME.SR.Application
                     {
                         var usuarioCoreSSO = await mediator.Send(new ObterDadosUsuarioCoreSSOPorRfQuery(historico.Login));
                         historico.Nome = usuarioCoreSSO.Nome;
+
+                        historico.SenhaReiniciadaPorPerfil = await ObterPerfilPrioritario(historico.SenhaReiniciadaPorRf, perfisPrioritarios);
                     }
                 }
             }

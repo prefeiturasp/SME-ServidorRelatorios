@@ -9,6 +9,8 @@ namespace SME.SR.Infra
         public string Perfil { get; set; }
         public string SenhaReiniciada { get; set; }
         public string SenhaReiniciadaPor { get; set; }
+        public string SenhaReiniciadaPorRf { get; set; }
+        public string SenhaReiniciadaPorPerfil { get; set; }
         public string UtilizaSenhaPadao { get; set; }
     }
 }
