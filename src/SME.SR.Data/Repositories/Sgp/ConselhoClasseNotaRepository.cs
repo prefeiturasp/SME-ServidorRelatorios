@@ -273,6 +273,38 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<RetornoNotaConceitoBimestreComponenteDto>(query.ToString(), new { bimestres, dresCodigos, uesCodigos, semestre, modalidade, anos, anoLetivo, componentesCurricularesCodigos });
         }
+
+        public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(long turmaId, long tipocalendarioId)
+        {
+            var query = @"select cca.aluno_codigo as codigoAluno,
+                                 hn.nota_anterior as notaAnterior,
+                                 hn.nota_nova as notaAtribuida,
+                                 hn.conceito_anterior_id as conceitoAnteriorId,
+                                 hn.conceito_novo_id as conceitoAtribuidoId, 
+                                 hn.criado_por as usuarioAlteracao,
+                                 2 as TipoNota,
+                                 hn.criado_rf as rfAlteracao,
+                                 hn.criado_em as dataAlteracao,
+                                 ftd.disciplina_id as disciplinaId,
+                                 pe.bimestre,
+                                 coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome
+                              from historico_nota hn
+                             inner join historico_nota_conselho_classe hncc on hn.id = hncc.historico_nota_id
+                             inner join conselho_classe_nota ccn on hncc.conselho_classe_nota_id = ccn.id 
+                             inner join conselho_classe_aluno cca on ccn.conselho_classe_aluno_id = cca.id 
+                             inner join conselho_classe cc on cca.conselho_classe_id = cc.id 
+                             inner join fechamento_turma ft on cc.fechamento_turma_id = ft.id
+                             inner join fechamento_turma_disciplina ftd on ft.id = ftd.fechamento_turma_id 
+                             inner join periodo_escolar pe on ft.periodo_escolar_id = pe.id
+                             inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id 
+                             where ft.turma_id = @turmaId
+                               and pe.tipo_calendario_id = @tipocalendarioId";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<HistoricoAlteracaoNotasDto>(query, new { turmaId, tipocalendarioId });
+            }
+        }
     }
 }
     

@@ -18,6 +18,6 @@ namespace SME.SR.Application
         }
 
         public Task<IEnumerable<HistoricoAlteracaoNotasDto>> Handle(ObterHistoricoNotasFechamentoPorTurmaIdQuery request, CancellationToken cancellationToken)
-                => fechamentoNotaRepository.ObterHistoricoAlteracaoNotasFechamento(request.TurmaId);
+                => fechamentoNotaRepository.ObterHistoricoAlteracaoNotasFechamento(request.TurmaId, request.tipocalendarioId);
     }
 }

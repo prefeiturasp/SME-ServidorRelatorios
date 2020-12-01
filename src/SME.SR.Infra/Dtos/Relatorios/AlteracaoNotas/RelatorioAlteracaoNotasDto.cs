@@ -9,9 +9,8 @@ namespace SME.SR.Infra
             Filtro = new FiltroAlteracaoNotasDto();
             Turmas = new List<TurmaAlteracaoNotasDto>();
         }
-
+                
         public FiltroAlteracaoNotasDto Filtro { get; set; }
-
-        public IEnumerable<TurmaAlteracaoNotasDto> Turmas { get; set; }
+        public List<TurmaAlteracaoNotasDto> Turmas { get; set; }
     }
 }

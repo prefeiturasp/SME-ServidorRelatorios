@@ -11,6 +11,6 @@ namespace SME.SR.Infra
 
         public long Id { get; set; }
         public string Nome { get; set; }
-        public IEnumerable<BimestreAlteracaoNotasDto> Bimestres { get; set; }
+        public List<BimestreAlteracaoNotasDto> Bimestres { get; set; }
     }
 }
