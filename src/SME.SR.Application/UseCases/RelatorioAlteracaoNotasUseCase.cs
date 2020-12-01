@@ -28,7 +28,7 @@ namespace SME.SR.Application
                 await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
                 await ObterDadosRelatorio(relatorioDto, filtro);
 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAlteracaoNotas", relatorioDto, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioHistoricoAlteracoesNotas", relatorioDto, request.CodigoCorrelacao));
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace SME.SR.Application
             filtroRelatorio.RF = usuarioLogadoRF;
             filtroRelatorio.Bimestre = ObterNomeBimestre(filtro.Bimestres);
             filtroRelatorio.ComponenteCurricular = await ObterComponenteCurricular(filtro.ComponentesCurriculares);
-            filtroRelatorio.Turma = await ObterNomeTurma(filtro.Turma);
+            filtroRelatorio.Turma = ""; // await ObterNomeTurma(filtro.Turma);
 
             relatorioDto.Filtro = filtroRelatorio;
         }

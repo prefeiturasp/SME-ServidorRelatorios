@@ -282,7 +282,7 @@ namespace SME.SR.Data
                                  hn.conceito_anterior_id as conceitoAnteriorId,
                                  hn.conceito_novo_id as conceitoAtribuidoId, 
                                  hn.criado_por as usuarioAlteracao,
-                                 2 as TipoNota,
+                                 3 as TipoNota,
                                  hn.criado_rf as rfAlteracao,
                                  hn.criado_em as dataAlteracao,
                                  ftd.disciplina_id as disciplinaId,
