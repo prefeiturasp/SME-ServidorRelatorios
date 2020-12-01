@@ -9,7 +9,7 @@ namespace SME.SR.Infra
             Bimestres = new List<BimestreAlteracaoNotasDto>();
         }
 
-        public long Id { get; set; }
+        public bool AnoAtual { get; set; }
         public string Nome { get; set; }
         public List<BimestreAlteracaoNotasDto> Bimestres { get; set; }
     }

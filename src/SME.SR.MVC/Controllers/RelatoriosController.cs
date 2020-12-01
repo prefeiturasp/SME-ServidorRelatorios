@@ -4715,1378 +4715,1378 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemPortuguesConsolidado", model);
         }
 
-        [HttpGet("Usuarios")]
-        public IActionResult RelatorioUsuarios()
-        {
-            var model = new RelatorioUsuarioDto()
-            {
-                Filtro = new FiltroUsuarioDto()
-                {
-                    Dre = "DRE - BT",
-                    Ue = "CEU EMEF BUTANTA",
-                    RF = "9879878",
-                    Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
-                }
-            };
+        //[HttpGet("Usuarios")]
+        //public IActionResult RelatorioUsuarios()
+        //{
+        //    var model = new RelatorioUsuarioDto()
+        //    {
+        //        Filtro = new FiltroUsuarioDto()
+        //        {
+        //            Dre = "DRE - BT",
+        //            Ue = "CEU EMEF BUTANTA",
+        //            RF = "9879878",
+        //            Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
+        //        }
+        //    };
 
-            model.Dres = new List<DreUsuarioDto>()
-            {
-                new DreUsuarioDto()
-                {
-                    Nome = "DRE - BT",
-                    Perfis = new List<PerfilUsuarioDto>()
-                    {
-                        new PerfilUsuarioDto()
-                        {
-                            Nome = "ADM DRE",
-                            Usuarios = new List<UsuarioDto>()
-                            {
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alice Gonçalves de Almeida Souza de Freitas",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Ana lucia de Freitas",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Ana lucia de Freitas",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Jessica de Oliveira",
-                                    Situacao = "5 - Expirado",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Jessica de Oliveira",
-                                    Situacao = "5 - Expirado",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Jessica de Oliveira",
-                                    Situacao = "5 - Expirado",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Jessica de Oliveira",
-                                    Situacao = "5 - Expirado",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Jessica de Oliveira",
-                                    Situacao = "5 - Expirado",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
+        //    model.Dres = new List<DreUsuarioDto>()
+        //    {
+        //        new DreUsuarioDto()
+        //        {
+        //            Nome = "DRE - BT",
+        //            Perfis = new List<PerfilUsuarioDto>()
+        //            {
+        //                new PerfilUsuarioDto()
+        //                {
+        //                    Nome = "ADM DRE",
+        //                    Usuarios = new List<UsuarioDto>()
+        //                    {
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alice Gonçalves de Almeida Souza de Freitas",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Ana lucia de Freitas",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Ana lucia de Freitas",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Jessica de Oliveira",
+        //                            Situacao = "5 - Expirado",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Jessica de Oliveira",
+        //                            Situacao = "5 - Expirado",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Jessica de Oliveira",
+        //                            Situacao = "5 - Expirado",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Jessica de Oliveira",
+        //                            Situacao = "5 - Expirado",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Jessica de Oliveira",
+        //                            Situacao = "5 - Expirado",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
 
-                            }
-                        },
-                        new PerfilUsuarioDto()
-                        {
-                            Nome = "DIPED",
-                            Usuarios = new List<UsuarioDto>()
-                            {
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Carmen Mendes",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Ana Luiza Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Ana Luiza Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Ana Luiza Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Ana Luiza Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Ana Luiza Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Ana Luiza Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                            }
-                        }
-                    },
-                    Ues = new List<UePorPerfilUsuarioDto>()
-                    {
-                        new UePorPerfilUsuarioDto()
-                        {
-                            Nome = "CEU EMEF BUTANTA",
-                            Perfis = new List<PerfilUsuarioDto>()
-                            {
-                                new PerfilUsuarioDto()
-                                {
-                                    Nome = "CP",
-                                    Usuarios = new List<UsuarioDto>()
-                                    {
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Jessica de Oliveira",
-                                            Situacao = "5 - Expirado",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Jessica de Oliveira",
-                                            Situacao = "5 - Expirado",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                    }
-                                },
-                                new PerfilUsuarioDto()
-                                {
-                                    Nome = "DIRETOR",
-                                    Usuarios = new List<UsuarioDto>()
-                                    {
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                         new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        }
-                                    }
-                                }
-                            },
-                            Professores = new List<UsuarioProfessorDto>()
-                            {
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                }
-                            }
-                        },
-                        new UePorPerfilUsuarioDto()
-                        {
-                            Nome = "CEU EMEF BUTANTA",
-                            Perfis = new List<PerfilUsuarioDto>()
-                            {
-                                new PerfilUsuarioDto()
-                                {
-                                    Nome = "CP",
-                                    Usuarios = new List<UsuarioDto>()
-                                    {
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Jessica de Oliveira",
-                                            Situacao = "5 - Expirado",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Jessica de Oliveira",
-                                            Situacao = "5 - Expirado",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                    }
-                                },
-                                new PerfilUsuarioDto()
-                                {
-                                    Nome = "DIRETOR",
-                                    Usuarios = new List<UsuarioDto>()
-                                    {
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                         new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        }
-                                    }
-                                }
-                            },
-                            Professores = new List<UsuarioProfessorDto>()
-                            {
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                }
-                            }
-                        },
-                        new UePorPerfilUsuarioDto()
-                        {
-                            Nome = "CEU EMEF BUTANTA",
-                            Perfis = new List<PerfilUsuarioDto>()
-                            {
-                                new PerfilUsuarioDto()
-                                {
-                                    Nome = "CP",
-                                    Usuarios = new List<UsuarioDto>()
-                                    {
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Jessica de Oliveira",
-                                            Situacao = "5 - Expirado",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana lucia de Freitas",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Jessica de Oliveira",
-                                            Situacao = "5 - Expirado",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                    }
-                                },
-                                new PerfilUsuarioDto()
-                                {
-                                    Nome = "DIRETOR",
-                                    Usuarios = new List<UsuarioDto>()
-                                    {
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Carmen Mendes",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                        new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        },
-                                         new UsuarioDto()
-                                        {
-                                            Rf = "153726",
-                                            Nome = "Ana Luiza Souza",
-                                            Situacao = "1 - Ativo",
-                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                        }
-                                    }
-                                }
-                            },
-                            Professores = new List<UsuarioProfessorDto>()
-                            {
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                },
-                                new UsuarioProfessorDto()
-                                {
-                                    Rf = "153726",
-                                    Nome = "Alexandre Barros de Souza",
-                                    Situacao = "1 - Ativo",
-                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                }
-                            }
-                        }
-                    },
-                    HistoricoReinicioSenha = new List<HistoricoReinicioSenhaDto>()
-                    {
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Não",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        },
-                        new HistoricoReinicioSenhaDto()
-                        {
-                            Rf = "153726",
-                            Nome = "Ana de Souza",
-                            Perfil = "CP",
-                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",
-                        }
-                    }
-                }
-            };
-            return View("RelatorioUsuarios", model);
-        }
+        //                    }
+        //                },
+        //                new PerfilUsuarioDto()
+        //                {
+        //                    Nome = "DIPED",
+        //                    Usuarios = new List<UsuarioDto>()
+        //                    {
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Carmen Mendes",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Ana Luiza Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Ana Luiza Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Ana Luiza Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Ana Luiza Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Ana Luiza Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Ana Luiza Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                    }
+        //                }
+        //            },
+        //            Ues = new List<UePorPerfilUsuarioDto>()
+        //            {
+        //                new UePorPerfilUsuarioDto()
+        //                {
+        //                    Nome = "CEU EMEF BUTANTA",
+        //                    Perfis = new List<PerfilUsuarioDto>()
+        //                    {
+        //                        new PerfilUsuarioDto()
+        //                        {
+        //                            Nome = "CP",
+        //                            Usuarios = new List<UsuarioDto>()
+        //                            {
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Jessica de Oliveira",
+        //                                    Situacao = "5 - Expirado",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Jessica de Oliveira",
+        //                                    Situacao = "5 - Expirado",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                            }
+        //                        },
+        //                        new PerfilUsuarioDto()
+        //                        {
+        //                            Nome = "DIRETOR",
+        //                            Usuarios = new List<UsuarioDto>()
+        //                            {
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                 new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                }
+        //                            }
+        //                        }
+        //                    },
+        //                    Professores = new List<UsuarioProfessorDto>()
+        //                    {
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        }
+        //                    }
+        //                },
+        //                new UePorPerfilUsuarioDto()
+        //                {
+        //                    Nome = "CEU EMEF BUTANTA",
+        //                    Perfis = new List<PerfilUsuarioDto>()
+        //                    {
+        //                        new PerfilUsuarioDto()
+        //                        {
+        //                            Nome = "CP",
+        //                            Usuarios = new List<UsuarioDto>()
+        //                            {
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Jessica de Oliveira",
+        //                                    Situacao = "5 - Expirado",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Jessica de Oliveira",
+        //                                    Situacao = "5 - Expirado",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                            }
+        //                        },
+        //                        new PerfilUsuarioDto()
+        //                        {
+        //                            Nome = "DIRETOR",
+        //                            Usuarios = new List<UsuarioDto>()
+        //                            {
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                 new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                }
+        //                            }
+        //                        }
+        //                    },
+        //                    Professores = new List<UsuarioProfessorDto>()
+        //                    {
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        }
+        //                    }
+        //                },
+        //                new UePorPerfilUsuarioDto()
+        //                {
+        //                    Nome = "CEU EMEF BUTANTA",
+        //                    Perfis = new List<PerfilUsuarioDto>()
+        //                    {
+        //                        new PerfilUsuarioDto()
+        //                        {
+        //                            Nome = "CP",
+        //                            Usuarios = new List<UsuarioDto>()
+        //                            {
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Jessica de Oliveira",
+        //                                    Situacao = "5 - Expirado",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana lucia de Freitas",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Jessica de Oliveira",
+        //                                    Situacao = "5 - Expirado",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                            }
+        //                        },
+        //                        new PerfilUsuarioDto()
+        //                        {
+        //                            Nome = "DIRETOR",
+        //                            Usuarios = new List<UsuarioDto>()
+        //                            {
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Carmen Mendes",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                },
+        //                                 new UsuarioDto()
+        //                                {
+        //                                    Rf = "153726",
+        //                                    Nome = "Ana Luiza Souza",
+        //                                    Situacao = "1 - Ativo",
+        //                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                                }
+        //                            }
+        //                        }
+        //                    },
+        //                    Professores = new List<UsuarioProfessorDto>()
+        //                    {
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        },
+        //                        new UsuarioProfessorDto()
+        //                        {
+        //                            Rf = "153726",
+        //                            Nome = "Alexandre Barros de Souza",
+        //                            Situacao = "1 - Ativo",
+        //                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                            UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                        }
+        //                    }
+        //                }
+        //            },
+        //            HistoricoReinicioSenha = new List<HistoricoReinicioSenhaDto>()
+        //            {
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Não",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Não",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Não",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Não",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                },
+        //                new HistoricoReinicioSenhaDto()
+        //                {
+        //                    Rf = "153726",
+        //                    Nome = "Ana de Souza",
+        //                    Perfil = "CP",
+        //                    SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+        //                    SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+        //                    UtilizaSenhaPadao = "Sim",
+        //                }
+        //            }
+        //        }
+        //    };
+        //    return View("RelatorioUsuarios", model);
+        //}
 
         [HttpGet("notificacoes")]
         public IActionResult Notificacoes()
@@ -6219,608 +6219,608 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioNotificacoes", model);
         }
 
-        [HttpGet("alteracao-notas")]
-        public IActionResult AlteracaoNotas()
-        {
-            var model = new RelatorioAlteracaoNotasDto()
-            {
-                Filtro = new FiltroAlteracaoNotasDto()
-                {
-                    Dre = "Todas",
-                    Ue = "Todas",
-                    Usuario = "ALANA FERREIRA DE OLIVEIRA",
-                    RF = "1234567",
-                    Bimestre = "Todos",
-                    Turma = "Todas",
-                    ComponenteCurricular = "Todos"
-                }
-            };
+        //[HttpGet("alteracao-notas")]
+        //public IActionResult AlteracaoNotas()
+        //{
+        //    var model = new RelatorioAlteracaoNotasDto()
+        //    {
+        //        Filtro = new FiltroAlteracaoNotasDto()
+        //        {
+        //            Dre = "Todas",
+        //            Ue = "Todas",
+        //            Usuario = "ALANA FERREIRA DE OLIVEIRA",
+        //            RF = "1234567",
+        //            Bimestre = "Todos",
+        //            Turma = "Todas",
+        //            ComponenteCurricular = "Todos"
+        //        }
+        //    };
 
-            model.Turmas = new List<TurmaAlteracaoNotasDto>()
-            {
-                new TurmaAlteracaoNotasDto()
-                {
-                    Id = 1,
-                    Nome = "1F-EF",
-                    Bimestres = new List<BimestreAlteracaoNotasDto>()
-                    {
-                        new BimestreAlteracaoNotasDto()
-                        {
-                           Descricao = "1",
-                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
-                           {
-                               new ComponenteCurricularAlteracaoNotasDto()
-                               {
-                                   Nome = "Arte",
-                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
-                                   {
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       }
-                                   }
-                               }
-                           }
+        //    model.Turmas = new List<TurmaAlteracaoNotasDto>()
+        //    {
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       }
+        //                   }
 
-                        }
-                    }
-                },
-                new TurmaAlteracaoNotasDto()
-                {
-                    Id = 1,
-                    Nome = "1F-EF",
-                    Bimestres = new List<BimestreAlteracaoNotasDto>()
-                    {
-                        new BimestreAlteracaoNotasDto()
-                        {
-                           Descricao = "1",
-                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
-                           {
-                               new ComponenteCurricularAlteracaoNotasDto()
-                               {
-                                   Nome = "Arte",
-                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
-                                   {
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       }
-                                   }
-                               },
-                               new ComponenteCurricularAlteracaoNotasDto()
-                               {
-                                   Nome = "Matemática",
-                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
-                                   {
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       }
-                                   }
-                               },
+        //                }
+        //            }
+        //        },
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       },
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Matemática",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       },
 
 
-                           }
+        //                   }
 
-                        }
-                    }
-                },
-                new TurmaAlteracaoNotasDto()
-                {
-                    Id = 1,
-                    Nome = "1F-EF",
-                    Bimestres = new List<BimestreAlteracaoNotasDto>()
-                    {
-                        new BimestreAlteracaoNotasDto()
-                        {
-                           Descricao = "1",
-                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
-                           {
-                               new ComponenteCurricularAlteracaoNotasDto()
-                               {
-                                   Nome = "Arte",
-                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
-                                   {
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       }
-                                   }
-                               }
-                           }
+        //                }
+        //            }
+        //        },
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       }
+        //                   }
 
-                        }
-                    }
-                },
-                new TurmaAlteracaoNotasDto()
-                {
-                    Id = 1,
-                    Nome = "1F-EF",
-                    Bimestres = new List<BimestreAlteracaoNotasDto>()
-                    {
-                        new BimestreAlteracaoNotasDto()
-                        {
-                           Descricao = "1",
-                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
-                           {
-                               new ComponenteCurricularAlteracaoNotasDto()
-                               {
-                                   Nome = "Arte",
-                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
-                                   {
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       }
-                                   }
-                               }
-                           }
+        //                }
+        //            }
+        //        },
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       }
+        //                   }
 
-                        }
-                    }
-                },
-                new TurmaAlteracaoNotasDto()
-                {
-                    Id = 1,
-                    Nome = "1F-EF",
-                    Bimestres = new List<BimestreAlteracaoNotasDto>()
-                    {
-                        new BimestreAlteracaoNotasDto()
-                        {
-                           Descricao = "1",
-                           ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
-                           {
-                               new ComponenteCurricularAlteracaoNotasDto()
-                               {
-                                   Nome = "Arte",
-                                   AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
-                                   {
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       },
-                                       new AlunosAlteracaoNotasDto()
-                                       {
-                                           Numero = 1,
-                                           Nome = "Arthur Santos de Oliveira",
-                                           TipoNota = "Conselho de classe",
-                                           NotaAnterior = "6,7",
-                                           NotaAtribuida = "7",
-                                           DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
-                                           UsuarioAlteracao = "José fernades de Oliveira (1256356)",
-                                           Situacao = "Ativo",
-                                           UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
-                                       }
-                                   }
-                               }
-                           }
+        //                }
+        //            }
+        //        },
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       }
+        //                   }
 
-                        }
-                    }
-                },
-            };
-            return View("RelatorioHistoricoAlteracoesNotas", model);
-        }
+        //                }
+        //            }
+        //        },
+        //    };
+        //    return View("RelatorioHistoricoAlteracoesNotas", model);
+        //}
     }
 }
 

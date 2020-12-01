@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,13 +49,13 @@ namespace SME.SR.Application
                 {
                     var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == int.Parse(historicoNota.CodigoAluno));
 
-                    historicoNota.NomeAluno = alunoAtual.NomeAluno; 
-                    historicoNota.NumeroChamada = alunoAtual.NumeroAlunoChamada; 
+                    historicoNota.NomeAluno = alunoAtual.NomeAluno;
+                    historicoNota.NumeroChamada = alunoAtual.NumeroAlunoChamada;
                     historicoNota.NomeTurma = nomeTurma;
                 }
 
                 if (historicoAlteracaoNotas.Any())
-                    listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, long.Parse(turma.turma_id), tipoCalendarioId, request.FiltroRelatorio.ModalidadeTurma));
+                    listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, tipoCalendarioId));
             }
             return listaTurmaAlteracaoNotasDto;
         }
@@ -106,42 +106,47 @@ namespace SME.SR.Application
                  => await mediator.Send(new ObterHistoricoNotasFechamentoPorTurmaIdQuery(long.Parse(turmaCodigo), tipoCalendarioId));
 
         private async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(string turmaCodigo, long tipoCalendarioId)
-                 => await mediator.Send(new ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long.Parse(turmaCodigo), tipoCalendarioId));    
+                 => await mediator.Send(new ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long.Parse(turmaCodigo), tipoCalendarioId));
 
 
-        private async Task<TurmaAlteracaoNotasDto> MapearParaTurmaDto(List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas, IEnumerable<int> bimestres, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
+        private async Task<TurmaAlteracaoNotasDto> MapearParaTurmaDto(List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas, IEnumerable<int> bimestres, int anoLetivo, long tipoCalendarioId)
         {
             var turmaDto = new TurmaAlteracaoNotasDto()
             {
-                Nome = historicoAlteracaoNotas.FirstOrDefault().NomeTurma
+                Nome = historicoAlteracaoNotas.FirstOrDefault().NomeTurma,
+                AnoAtual = anoLetivo == DateTime.Now.Year ? true : false,
             };
+
+            if (bimestres.Any(c => c == -99))
+                bimestres = new int[] { 0, 1, 2, 3, 4 };
+
 
             foreach (var bimestre in bimestres.OrderBy(o => o))
             {
-                turmaDto.Bimestres.Add(await MapearParaBimestreDto(bimestre, historicoAlteracaoNotas, turmaId, tipoCalendarioId, modalidadeTurma));
+                turmaDto.Bimestres.Add(await MapearParaBimestreDto(bimestre, historicoAlteracaoNotas, tipoCalendarioId));
             }
 
             return turmaDto;
         }
 
-        private async Task<BimestreAlteracaoNotasDto> MapearParaBimestreDto(int bimestre, List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
+        private async Task<BimestreAlteracaoNotasDto> MapearParaBimestreDto(int bimestre, List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas, long tipoCalendarioId)
         {
             var historicoAlteracaoNotasBimestre = historicoAlteracaoNotas.Where(c => c.Bimestre == bimestre);
 
             var bimestreDto = new BimestreAlteracaoNotasDto()
             {
-                Descricao = $"{bimestre}º Bimestre"
+                Descricao = bimestre == 0 ? $"Bimestre Final" : $"{bimestre}º Bimestre"
             };
 
             foreach (var historicoAlteracaoNotasComponente in historicoAlteracaoNotasBimestre)
             {
-                bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(historicoAlteracaoNotas, turmaId, tipoCalendarioId, modalidadeTurma));
+                bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(historicoAlteracaoNotas, tipoCalendarioId));
             }
 
             return bimestreDto;
         }
 
-        private async Task<ComponenteCurricularAlteracaoNotasDto> MapearParaComponenteDto(List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
+        private async Task<ComponenteCurricularAlteracaoNotasDto> MapearParaComponenteDto(List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas, long tipoCalendarioId)
         {
 
             var componenteCurricularDto = new ComponenteCurricularAlteracaoNotasDto()
@@ -150,31 +155,36 @@ namespace SME.SR.Application
             };
             foreach (var historicoAlteracaoNotasAluno in historicoAlteracaoNotas.OrderBy(c => c.NumeroChamada))
             {
-                componenteCurricularDto.AlunosAlteracaoNotasBimestre.Add(await MapearParaAlunoDto(historicoAlteracaoNotasAluno, turmaId, tipoCalendarioId, modalidadeTurma));
+                componenteCurricularDto.AlunosAlteracaoNotasBimestre.Add(await MapearParaAlunoDto(historicoAlteracaoNotasAluno, tipoCalendarioId));
             }
 
             return componenteCurricularDto;
         }
 
 
-        private async Task<AlunosAlteracaoNotasDto> MapearParaAlunoDto(HistoricoAlteracaoNotasDto historicoAlteracaoNotas, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
+        private async Task<AlunosAlteracaoNotasDto> MapearParaAlunoDto(HistoricoAlteracaoNotasDto historicoAlteracaoNotas, long tipoCalendarioId)
         {
             var AlunoDto = new AlunosAlteracaoNotasDto();
 
             AlunoDto.NumeroChamada = historicoAlteracaoNotas.NumeroChamada;
-            AlunoDto.Nome = historicoAlteracaoNotas.NomeAluno;
+            AlunoDto.Nome = ToTitleCase(historicoAlteracaoNotas.NomeAluno);
             AlunoDto.TipoNota = historicoAlteracaoNotas.TipoNota;
             AlunoDto.NotaAnterior = historicoAlteracaoNotas.NotaAnterior.ToString();
             AlunoDto.NotaAtribuida = historicoAlteracaoNotas.NotaAtribuida.ToString();
             AlunoDto.DataAlteracao = historicoAlteracaoNotas.DataAlteracao.ToString("dd/MM/yyy HH:mm");
-            AlunoDto.UsuarioAlteracao = $"{historicoAlteracaoNotas.UsuarioAlteracao} ({historicoAlteracaoNotas.RfAlteracao})";
+            AlunoDto.UsuarioAlteracao = ToTitleCase($"{historicoAlteracaoNotas.UsuarioAlteracao} ({historicoAlteracaoNotas.RfAlteracao})");
             AlunoDto.Situacao = historicoAlteracaoNotas.Situacao;
-            AlunoDto.UsuarioAprovacao = $"{historicoAlteracaoNotas.UsuarioAprovacao} ({historicoAlteracaoNotas.RfAprovacao})";
+            AlunoDto.UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : "";
             AlunoDto.TipoNotaConceito = historicoAlteracaoNotas.TipoNotaConceito;
             AlunoDto.ConceitoAnterior = historicoAlteracaoNotas.ConceitoAnteriorId;
             AlunoDto.ConceitoAtribuido = historicoAlteracaoNotas.ConceitoAtribuidoId;
 
             return AlunoDto;
+        }
+
+        public string ToTitleCase(string str)
+        {
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
         }
     }
 }
