@@ -318,12 +318,12 @@ namespace SME.SR.Data
         public async Task<string> ObterNomeComponenteCurricularPorId(long componenteCurricularId)
         {
             string query = @"select coalesce(descricao_sgp,descricao) as Nome 
-                               from ComponenteCurricular 
+                               from Componente_Curricular 
                               where Id = @componenteCurricularId";
 
             var parametros = new { componenteCurricularId };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryFirstOrDefaultAsync<string>(query, parametros);
         }
 
