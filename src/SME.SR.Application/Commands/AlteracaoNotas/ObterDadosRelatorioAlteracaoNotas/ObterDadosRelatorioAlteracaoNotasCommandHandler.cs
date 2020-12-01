@@ -185,6 +185,6 @@ namespace SME.SR.Application
         public string ToTitleCase(string str)
         {
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
-        }
+        }      
     }
 }

@@ -129,6 +129,6 @@ namespace SME.SR.Application
             var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
 
             return $"{turma.Modalidade.ShortName()} - {turma.Nome}";
-        }
+        }        
     }    
 }
