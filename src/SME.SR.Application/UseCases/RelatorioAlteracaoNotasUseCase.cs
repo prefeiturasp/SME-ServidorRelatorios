@@ -51,7 +51,7 @@ namespace SME.SR.Application
             filtroRelatorio.RF = usuarioLogadoRF;
             filtroRelatorio.Bimestre = ObterNomeBimestre(filtro.Bimestres);
             filtroRelatorio.ComponenteCurricular = await ObterComponenteCurricular(filtro.ComponentesCurriculares);
-            filtroRelatorio.Turma = ""; // await ObterNomeTurma(filtro.Turma);
+            filtroRelatorio.Turma = await ObterNomeTurma(filtro.Turma);
 
             relatorioDto.Filtro = filtroRelatorio;
         }

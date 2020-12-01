@@ -9,6 +9,8 @@ namespace SME.SR.Infra
             Bimestres = new List<BimestreAlteracaoNotasDto>();
         }
 
+        public string TipoNotaConceitoDesc { get; set; }
+        public TipoNota TipoNotaConceito { get; set; }
         public bool AnoAtual { get; set; }
         public string Nome { get; set; }
         public List<BimestreAlteracaoNotasDto> Bimestres { get; set; }

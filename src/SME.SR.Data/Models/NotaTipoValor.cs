@@ -1,7 +1,7 @@
 ﻿using SME.SR.Infra;
 using System;
 
-namespace SME.SR.Data.Models
+namespace SME.SR.Data
 {
     public class NotaTipoValor
     {

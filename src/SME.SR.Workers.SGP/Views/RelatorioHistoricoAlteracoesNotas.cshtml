@@ -3,28 +3,28 @@
 @{
 
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 39;
+    int contadorMaximoLinhasPorPagina = 43;
 
     string VerificaQuebra(int valorAdicionalParaSoma)
     {
-      if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)
-      {
-        contadorQuebrarPagina = 0;
+        if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
 
-        var str = MontarCabecalho();
-        str = $@"<div style='page-break-before:always' />" + str;
-        return str;
+            var str = MontarCabecalho();
+            str = $@"<div style='page-break-before:always' />" + str;
+            return str;
 
-      }
-      return string.Empty;
+        }
+        return string.Empty;
 
     }
 
     string MontarCabecalho()
     {
-      contadorQuebrarPagina = contadorQuebrarPagina + 7;
-      var str =
-         $@"<div>
+        contadorQuebrarPagina = contadorQuebrarPagina + 7;
+        var str =
+           $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
@@ -60,85 +60,86 @@
 </div>
 ";
 
-      return str;
+        return str;
     }
 
-    string MontarCabecalhoTabela(string quebra, string componente, bool anoAtual)
+    string MontarCabecalhoTabela(string quebra, string componente, SME.SR.Infra.TurmaAlteracaoNotasDto turma)
     {
 
-      var str = "";
+        var ehNota = turma.TipoNotaConceito == SME.SR.Infra.TipoNota.Nota;
+        var descHeaderNotaAtribuida = ehNota ? " ATRIBUÍDA" : " ATRIBUÍDO";
 
-      if (!String.IsNullOrEmpty(quebra) && componente != "")
-      {
-        str += $@"<table class='tabela-alunos'>
+        var str = "";
+
+        if (!String.IsNullOrEmpty(quebra) && componente != "")
+        {
+            str += $@"<table class='tabela-alunos'>
 <thead>
   <tr>
     <th>{componente}</th>
   </tr>
 </thead>
 </table>";
-      }
+        }
 
-      str += $@"
+        str += $@"
 <table class='tabela-alunos'>
 <thead>
 <th class='sem-border-bottom' width='5%'>Nº</th>
 <th class='sem-border-bottom' width='15%'>NOME DO ALUNO</th>
-<th class='sem-border-bottom' width='10%'>TIPO DE NOTA</th>
-<th class='sem-border-bottom' width='10%'>NOTA ANTERIOR</th>
-<th class='sem-border-bottom' width='10%'>NOTA ATRIBUÍDA</th>
+<th class='sem-border-bottom' width='10%'>TIPO DE {turma.TipoNotaConceitoDesc}</th>
+<th class='sem-border-bottom' width='10%'>{turma.TipoNotaConceitoDesc} ANTERIOR</th>
+<th class='sem-border-bottom' width='10%'>{turma.TipoNotaConceitoDesc + descHeaderNotaAtribuida} </th>
 <th class='sem-border-bottom' width='10%'>DATA DA ALTERAÇÃO</th>
 <th class='sem-border-bottom' width='15%'>USUÁRIO QUE ALTEROU</th>";
 
-      if (!anoAtual)
-      {
-        str += $@" 
+        if (!turma.AnoAtual)
+        {
+            str += $@" 
                     <th class='sem-border-bottom' width='10%'>SITUAÇÃO</th>
                     <th class='sem-border-bottom' width='15%'>USUÁRIO QUE APROVOU</th>";
-      }
+        }
 
-      str += $@"
+        str += $@"
                   </thead>
                   </table>";
-      return str;
+        return str;
     }
 
-    string MontarDadosTabela(List<SME.SR.Infra.AlunosAlteracaoNotasDto> alunosAlteracaoNotas, string componente, bool anoAtual)
+    string MontarDadosTabela(List<SME.SR.Infra.AlunosAlteracaoNotasDto> alunosAlteracaoNotas, string componente, SME.SR.Infra.TurmaAlteracaoNotasDto turma)
     {
-      var str = $@"<table class='tabela-alunos' style='border-bottom:none;'><tbody>";
-      for (int i = 0; i < alunosAlteracaoNotas.Count; i++)
-      {
-        var aluno = alunosAlteracaoNotas[i];        
-        var notaConceitoAnterior = SME.SR.Infra.TipoNota.Nota == aluno.TipoNotaConceito ? aluno.ConceitoAnterior : aluno.NotaAnterior;
-        var notaConceitoAtribuido = SME.SR.Infra.TipoNota.Nota == aluno.TipoNotaConceito ? aluno.ConceitoAnterior : aluno.NotaAtribuida;
-        str += $@"
+        var str = $@"<table class='tabela-alunos' style='border-bottom:none;'><tbody>";
+        for (int i = 0; i < alunosAlteracaoNotas.Count; i++)
+        {
+            var aluno = alunosAlteracaoNotas[i];
+            str += $@"
 <tr>
 <th style='text-align:center' width='5%'>{aluno.NumeroChamada}</th>
 <th style='text-align:center' width='15%'>{aluno.Nome}</th>
-<th style='text-align:center' width='10%'>{aluno.TipoNota}</th>
-<th style='text-align:center' width='10%'>{notaConceitoAnterior}</th>
-<th style='text-align:center' width='10%'>{notaConceitoAtribuido}</th>
+<th style='text-align:center' width='10%'>{aluno.TipoAlteracaoNota}</th>
+<th style='text-align:center' width='10%'>{aluno.NotaConceitoAnterior}</th>
+<th style='text-align:center' width='10%'>{aluno.NotaConceitoAtribuido}</th>
 <th style='text-align:center' width='10%'>{aluno.DataAlteracao}</th>
 <th style='text-align:center' width='15%'>{aluno.UsuarioAlteracao}</th>";
 
-        if (!anoAtual)
-        {
-          str += $@"
+            if (!turma.AnoAtual)
+            {
+                str += $@"
                 <th style='text-align:center' width='10%'>{aluno.Situacao}</th>
                 <th style='text-align:center' width='15%'>{aluno.UsuarioAprovacao}</th>
               ";
+            }
+
+            str += $@"</tr>";
+
+            contadorQuebrarPagina++;
+            var quebra = VerificaQuebra(0);
+
+            var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, turma) : "");
+            str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}<table class='tabela-alunos'><tbody>" : "";
         }
-
-        str += $@"</tr>";
-
-        contadorQuebrarPagina++;
-        var quebra = VerificaQuebra(0);
-
-        var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, anoAtual) : "");
-        str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}<table class='tabela-alunos'><tbody>" : "";
-      }
-      str += $@"</tbody></table>";
-      return str;
+        str += $@"</tbody></table>";
+        return str;
     }
 
 
@@ -327,10 +328,10 @@
 
                                 if (componente.AlunosAlteracaoNotasBimestre.Count() > 0)
                                 {
-                                    @Html.Raw(MontarCabecalhoTabela(quebra, componente.Nome, turma.AnoAtual))
+                                    @Html.Raw(MontarCabecalhoTabela(quebra, componente.Nome, turma))
                                     contadorQuebrarPagina++;
                                 }
-                                @Html.Raw(MontarDadosTabela(componente.AlunosAlteracaoNotasBimestre, componente.Nome, turma.AnoAtual))
+                                @Html.Raw(MontarDadosTabela(componente.AlunosAlteracaoNotasBimestre, componente.Nome, turma))
 
                                 <table class="tabela-alunos">
                                     <thead>
