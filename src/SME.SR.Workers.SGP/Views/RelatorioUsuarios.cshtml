@@ -212,11 +212,10 @@
                     {
                         str += $@"<tr>
                <td width='8%' class='td-valor-historico'>{historico.Login}</td>
-               <td width='20%' class='td-valor-historico'>{historico.Nome}</td>
+               <td width='24%' class='td-valor-historico'>{historico.Nome}</td>
                <td width='15%' class='td-valor-historico'>{historico.Perfil}</td>
-               <td width='20%' class='td-valor-historico'>{historico.SenhaReiniciada}</td>
-               <td width='25%' class='td-valor-historico'>{historico.SenhaReiniciadaPor} ({historico.SenhaReiniciadaPorRf}) - {historico.SenhaReiniciadaPorPerfil}</td>
-               <td width='12%' class='td-valor-historico'>{historico.UtilizaSenhaPadao}</td>
+               <td width='45%' class='td-valor-historico'>{historico.SenhaReiniciada} - {historico.SenhaReiniciadaPor} ({historico.SenhaReiniciadaPorRf}) - {historico.SenhaReiniciadaPorPerfil}</td>
+               <td width='8%' class='td-valor-historico'>{historico.UtilizaSenhaPadao}</td>
              </tr>";
 
 
@@ -277,11 +276,10 @@
         <table class='fixed'>
             <tr>
               <td width='8%' class='td-titulo'>LOGIN</td>
-              <td width='20%' class='td-titulo'>NOME</td>
+              <td width='24%' class='td-titulo'>NOME</td>
               <td width='15%' class='td-titulo'>PERFIL</td>
-              <td width='20%' class='td-titulo'>SENHA REINICIADA</td>
-              <td width='25%' class='td-titulo'>SENHA REINICIADA POR</td>
-              <td width='12%' class='td-titulo'>SENHA PADRÃO</td>
+              <td width='45%' class='td-titulo'>SENHA REINICIADA POR</td>
+              <td width='8%' class='td-titulo'>SENHA PADRÃO</td>
             </tr>";
 
         return str;
