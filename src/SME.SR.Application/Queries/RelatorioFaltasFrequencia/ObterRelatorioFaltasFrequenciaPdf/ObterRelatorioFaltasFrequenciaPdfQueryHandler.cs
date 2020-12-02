@@ -31,6 +31,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
         {
             var model = new RelatorioFaltasFrequenciaDto();
             var filtro = request.Filtro;
+            if (filtro.TurmasPrograma)
+                filtro.AnosEscolares = filtro.AnosEscolares.Concat(new[] { new string("0") });
+
+
+            //items.Concat(new[] {new T("msg2")})
 
             var dres = await relatorioFaltasFrequenciaRepository.ObterFaltasFrequenciaPorAno(filtro.AnoLetivo,
                                                                                           filtro.CodigoDre,
@@ -70,6 +75,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 {
                     foreach (var ano in ue.Anos)
                     {
+                        ano.NomeAno = ano.NomeAno.Equals("0º ano") ? "Turma de Programa" : ano.NomeAno;
                         foreach (var bimestre in ano.Bimestres)
                         {
                             bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre";
@@ -289,7 +295,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         private static void OrdenarAlunos(FiltroRelatorioFaltasFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFaltaFrequenciaComponenteDto componente)
         {
-            if (!filtro.TodosEstudantes)
+            if (filtro.Condicao != CondicoesRelatorioFaltasFrequencia.TodosEstudantes)
             {
                 componente.Alunos = (from a in componente.Alunos
                                      where
