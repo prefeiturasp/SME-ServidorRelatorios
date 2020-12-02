@@ -32,12 +32,12 @@ namespace SME.SR.Application
                                                     ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
 
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.FiltroRelatorio.AnoLetivo, modalidadeCalendario, request.FiltroRelatorio.Semestre));
-            
+
             var turmas = await ObterTurmas(request.FiltroRelatorio.Turma, request.FiltroRelatorio.CodigoUe, request.FiltroRelatorio.AnoLetivo);
 
             foreach (var turma in turmas)
             {
-                var notaTipoValor = await mediator.Send(new ObterTipoNotaPorTurmaQuery(turma, request.FiltroRelatorio.AnoLetivo));                
+                var notaTipoValor = await mediator.Send(new ObterTipoNotaPorTurmaQuery(turma, request.FiltroRelatorio.AnoLetivo));
 
                 var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery()
                 {
@@ -46,7 +46,7 @@ namespace SME.SR.Application
 
                 var historicoAlteracaoNotas = await ObterHistoricoAlteracaoNotas(turma.Codigo, tipoCalendarioId, request.FiltroRelatorio.TipoAlteracaoNota);
 
-                var nomeTurma = turma.NomeRelatorio;                
+                var nomeTurma = turma.NomeRelatorio;
 
                 foreach (var historicoNota in historicoAlteracaoNotas)
                 {
@@ -120,47 +120,48 @@ namespace SME.SR.Application
                 AnoAtual = anoLetivo == DateTime.Now.Year ? true : false,
                 TipoNotaConceitoDesc = tiponota.Name().ToUpper(),
                 TipoNotaConceito = tiponota,
-            };
+            };          
 
-            if (bimestres.Any(c => c == -99))
-                bimestres = new int[] { 0, 1, 2, 3, 4 };
-
-
-            foreach (var bimestre in bimestres.OrderBy(o => o))
-            {
-                turmaDto.Bimestres.Add(await MapearParaBimestreDto(bimestre, historicoAlteracaoNotas));
-            }
+            turmaDto.Bimestres.AddRange(await MapearParaBimestreDto(historicoAlteracaoNotas));
 
             return turmaDto;
         }
 
-        private async Task<BimestreAlteracaoNotasDto> MapearParaBimestreDto(int bimestre, List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas)
+        private async Task<List<BimestreAlteracaoNotasDto>> MapearParaBimestreDto(List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas)
         {
-            var historicoAlteracaoNotasBimestre = historicoAlteracaoNotas.Where(c => c.Bimestre == bimestre);
+            var bimestresDto = new List<BimestreAlteracaoNotasDto>();
+                      
 
-            var bimestreDto = new BimestreAlteracaoNotasDto()
+            foreach (var historicoAlteracaoNotasComponente in historicoAlteracaoNotas.GroupBy(c => c.Bimestre).OrderBy(d => d.Key))
             {
-                Descricao = bimestre == 0 ? $"Bimestre Final" : $"{bimestre}º Bimestre"
-            };
 
-            foreach (var historicoAlteracaoNotasComponente in historicoAlteracaoNotasBimestre)
-            {
-                bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(historicoAlteracaoNotas));
+                var bimestreDto = new BimestreAlteracaoNotasDto();
+
+                bimestreDto.Descricao = historicoAlteracaoNotasComponente.FirstOrDefault().Bimestre == 0 ?
+                                        $"Bimestre Final"
+                                        :
+                                        $"{historicoAlteracaoNotasComponente.FirstOrDefault().Bimestre}º Bimestre";
+                
+                foreach (var historicoAlteracaoNotasAluno in historicoAlteracaoNotasComponente.GroupBy(c => c.DisciplinaId))
+                {
+                    bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(historicoAlteracaoNotasAluno));
+                }
+
+                bimestresDto.Add(bimestreDto);
             }
 
-            return bimestreDto;
+            return bimestresDto;
         }
 
-        private async Task<ComponenteCurricularAlteracaoNotasDto> MapearParaComponenteDto(List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas)
+        private async Task<ComponenteCurricularAlteracaoNotasDto> MapearParaComponenteDto(IGrouping<long, HistoricoAlteracaoNotasDto> historicoAlteracaoNotasComponente)
         {
-
             var componenteCurricularDto = new ComponenteCurricularAlteracaoNotasDto()
             {
-                Nome = historicoAlteracaoNotas.FirstOrDefault().ComponenteCurricularNome
+                Nome = historicoAlteracaoNotasComponente.FirstOrDefault().ComponenteCurricularNome
             };
-            foreach (var historicoAlteracaoNotasAluno in historicoAlteracaoNotas.OrderBy(c => c.NumeroChamada))
+            foreach (var historicoAlteracaoNotasAluno in historicoAlteracaoNotasComponente)
             {
-                componenteCurricularDto.AlunosAlteracaoNotasBimestre.Add(await MapearParaAlunoDto(historicoAlteracaoNotasAluno));
+                componenteCurricularDto.AlunosAlteracaoNotasBimestre.Add(await MapearParaAlunoDto(historicoAlteracaoNotasAluno));               
             }
 
             return componenteCurricularDto;
@@ -169,24 +170,25 @@ namespace SME.SR.Application
 
         private async Task<AlunosAlteracaoNotasDto> MapearParaAlunoDto(HistoricoAlteracaoNotasDto historicoAlteracaoNotas)
         {
-            var AlunoDto = new AlunosAlteracaoNotasDto();
+            var AlunosAlteracaoNotasDto = new AlunosAlteracaoNotasDto()
+            {
+                NumeroChamada = historicoAlteracaoNotas.NumeroChamada,
+                Nome = ToTitleCase(historicoAlteracaoNotas.NomeAluno),
+                TipoAlteracaoNota = historicoAlteracaoNotas.TipoNota.Name(),
+                DataAlteracao = historicoAlteracaoNotas.DataAlteracao.ToString("dd/MM/yyy HH:mm"),
+                UsuarioAlteracao = ToTitleCase($"{historicoAlteracaoNotas.UsuarioAlteracao} ({historicoAlteracaoNotas.RfAlteracao})"),
+                Situacao = historicoAlteracaoNotas.Situacao.Name(),
+                UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : "",
+                NotaConceitoAnterior = historicoAlteracaoNotas.TipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAnterior.ToString() : historicoAlteracaoNotas.ConceitoAnteriorId.Name(),
+                NotaConceitoAtribuido = historicoAlteracaoNotas.TipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAtribuida.ToString() : historicoAlteracaoNotas.ConceitoAtribuidoId.Name(),
+            };
 
-            AlunoDto.NumeroChamada = historicoAlteracaoNotas.NumeroChamada;
-            AlunoDto.Nome = ToTitleCase(historicoAlteracaoNotas.NomeAluno);
-            AlunoDto.TipoAlteracaoNota = historicoAlteracaoNotas.TipoNota.Name();            
-            AlunoDto.DataAlteracao = historicoAlteracaoNotas.DataAlteracao.ToString("dd/MM/yyy HH:mm");
-            AlunoDto.UsuarioAlteracao = ToTitleCase($"{historicoAlteracaoNotas.UsuarioAlteracao} ({historicoAlteracaoNotas.RfAlteracao})");
-            AlunoDto.Situacao = historicoAlteracaoNotas.Situacao.Name();
-            AlunoDto.UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : "";            
-            AlunoDto.NotaConceitoAnterior = historicoAlteracaoNotas.TipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAnterior.ToString() : historicoAlteracaoNotas.ConceitoAnteriorId.Name();
-            AlunoDto.NotaConceitoAtribuido = historicoAlteracaoNotas.TipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAtribuida.ToString() : historicoAlteracaoNotas.ConceitoAtribuidoId.Name();
-
-            return AlunoDto;
+            return AlunosAlteracaoNotasDto;
         }
 
         public string ToTitleCase(string str)
         {
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
-        }      
+        }
     }
 }

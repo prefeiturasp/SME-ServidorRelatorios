@@ -260,7 +260,7 @@
     <div>
         @{
             @Html.Raw(MontarCabecalho())
-            
+            var bimestreDescricaoAnt = "";
             foreach (var turma in Model.Turmas)
             {
 
@@ -292,9 +292,11 @@
                                     </table>
                                 }
 
-                               // BIMESTRE
-                               if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
-                                {
+                                // BIMESTRE
+                                if(!bimestreDescricaoAnt.Equals(bimestre.Descricao))
+                                {                               
+                                    if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
+                                    {
                                     contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                     @Html.Raw(VerificaQuebra(3))
 
@@ -305,9 +307,11 @@
                                             </tr>
                                         </thead>
                                     </table>
+                                    }
+                                    bimestreDescricaoAnt = bimestre.Descricao;
                                 }
 
-                               // COMPONENTE CURRICULAR
+                                // COMPONENTE CURRICULAR
                                 if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
                                 {
                                     contadorQuebrarPagina = contadorQuebrarPagina + 1;
