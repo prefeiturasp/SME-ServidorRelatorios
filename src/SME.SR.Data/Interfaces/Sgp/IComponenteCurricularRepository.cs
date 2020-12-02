@@ -28,5 +28,6 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorCodigoETurma(string turmaCodigo, long[] componentesCodigo);
 
         Task<IEnumerable<ComponenteCurricularSondagem>> ObterComponenteCurricularDeSondagemPorId(string componenteCurricularId);
+        Task<string> ObterNomeComponenteCurricularPorId(long componenteCurricularId);
     }
 }
