@@ -314,5 +314,20 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<ComponenteCurricularSondagem>(query, parametros);
         }
+
+        public async Task<string> ObterNomeComponenteCurricularPorId(long componenteCurricularId)
+        {
+            string query = @"select coalesce(descricao_sgp,descricao) as Nome 
+                               from Componente_Curricular 
+                              where Id = @componenteCurricularId";
+
+            var parametros = new { componenteCurricularId };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryFirstOrDefaultAsync<string>(query, parametros);
+        }
+
+
+
     }
 }
