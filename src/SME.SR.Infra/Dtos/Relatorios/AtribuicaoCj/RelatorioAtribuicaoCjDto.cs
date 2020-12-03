@@ -14,5 +14,7 @@ namespace SME.SR.Infra
         public string Professor { get; set; }
         public string Usuario { get; set; }
         public string DataImpressao { get { return DateTime.Today.ToString("dd/MM/yyyy"); } }
+        public List<AtribuicaoCjDto> AtribuicoesCj { get; set; }
+        public List<AtribuicaoEsporadicaDto> AtribuicoesEsporadicas { get; set; }
     }
 }
