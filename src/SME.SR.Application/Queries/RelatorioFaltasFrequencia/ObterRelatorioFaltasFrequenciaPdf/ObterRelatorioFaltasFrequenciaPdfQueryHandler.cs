@@ -32,10 +32,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             var model = new RelatorioFaltasFrequenciaDto();
             var filtro = request.Filtro;
             if (filtro.TurmasPrograma)
-                filtro.AnosEscolares = filtro.AnosEscolares.Concat(new[] { new string("0") });
-
-
-            //items.Concat(new[] {new T("msg2")})
+                filtro.AnosEscolares = filtro.AnosEscolares.Concat(new[] { new string("0") });            
 
             var dres = await relatorioFaltasFrequenciaRepository.ObterFaltasFrequenciaPorAno(filtro.AnoLetivo,
                                                                                           filtro.CodigoDre,
