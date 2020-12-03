@@ -784,6 +784,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
         {
             var query = @"select t.id as Codigo
+                            , t.turma_id 
                             , t.nome
                             , t.modalidade_codigo  ModalidadeCodigo
                             , t.semestre
@@ -796,6 +797,33 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryAsync<Turma>(query, new { ids });
             }
+        }
+        
+        public async Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, long anoLetivo)
+        {
+            var query = @"select t.id as Codigo
+   		                        , t.turma_id 
+                                , t.nome
+                                , t.modalidade_codigo  ModalidadeCodigo
+                                , t.semestre
+                                , t.ano
+                                , t.ano_letivo AnoLetivo
+                            from turma t
+                           inner join ue on ue.id = t.ue_id 
+                           where ue.ue_id = @ueCodigo
+                             and t.ano_letivo = @anoLetivo";
+            try
+            {
+                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+                {
+                    return await conexao.QueryAsync<Turma>(query, new { ueCodigo, anoLetivo });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }           
 
         }
     }
