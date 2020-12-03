@@ -2936,6 +2936,55 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Linhas = linhas
                 },
             };
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            var graficoBarras1 = new GraficoBarrasVerticalDto(500, "Teste - gráfico de matemática");
+
+            graficoBarras1.Legendas = new List<GraficoBarrasLegendaDto>() {
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="A",
+                    Valor= "Não identificou nomes de figuras e não determinou elementos de poliedros corretamente"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="B",
+                    Valor= "Identificou os nomes das figuras e não determinou elementos de poliedros corretamente"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="C",
+                    Valor= "Resolveu corretamente"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="D",
+                    Valor= "Não resolveu"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="E",
+                    Valor= "Identificou os nomes das figuras e não determinou elementos de poliedros corretamente"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="F",
+                    Valor= "Identificou os nomes das figuras e não determinou elementos de poliedros corretamente"
+                },
+            };
+
+            graficoBarras1.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 10, 10);
+
+            graficoBarras1.EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+            {
+                new GraficoBarrasVerticalEixoXDto(10, "A"),
+                new GraficoBarrasVerticalEixoXDto(7, "B"),
+                new GraficoBarrasVerticalEixoXDto(2, "C"),
+                new GraficoBarrasVerticalEixoXDto(5, "D"),
+                new GraficoBarrasVerticalEixoXDto(5, "E"),
+                new GraficoBarrasVerticalEixoXDto(5, "F")
+            };
+            model.GraficosBarras.Add(graficoBarras1);
 
             return View("RelatorioSondagemComponentesPorTurma", model);
         }
