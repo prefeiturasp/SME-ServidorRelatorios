@@ -61,18 +61,22 @@ namespace SME.SR.Application
                             historicoNota.NomeTurma = nomeTurma;
                         }
 
-                        if (historicoAlteracaoNotas.Any())
-                            listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
+                        if (historicoAlteracaoNotas == null && !historicoAlteracaoNotas.Any())
+                        {
+                            throw new NegocioException("Nenhuma informação para os filtros informados.");
+                        }
+
+                        listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
 
                     throw ex;
                 }
-                
-                
+
+
             }
             return listaTurmaAlteracaoNotasDto;
         }
@@ -134,7 +138,7 @@ namespace SME.SR.Application
                 AnoAtual = anoLetivo == DateTime.Now.Year ? true : false,
                 TipoNotaConceitoDesc = tiponota.Name().ToUpper(),
                 TipoNotaConceito = tiponota,
-            };          
+            };
 
             turmaDto.Bimestres.AddRange(await MapearParaBimestreDto(historicoAlteracaoNotas, tiponota));
 
@@ -144,7 +148,7 @@ namespace SME.SR.Application
         private async Task<List<BimestreAlteracaoNotasDto>> MapearParaBimestreDto(List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas, TipoNota tiponota)
         {
             var bimestresDto = new List<BimestreAlteracaoNotasDto>();
-                      
+
 
             foreach (var historicoAlteracaoNotasComponente in historicoAlteracaoNotas.GroupBy(c => c.Bimestre).OrderBy(d => d.Key))
             {
@@ -155,7 +159,7 @@ namespace SME.SR.Application
                                         $"Bimestre Final"
                                         :
                                         $"{historicoAlteracaoNotasComponente.FirstOrDefault().Bimestre}º Bimestre";
-                
+
                 foreach (var historicoAlteracaoNotasAluno in historicoAlteracaoNotasComponente.GroupBy(c => c.DisciplinaId))
                 {
                     bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(historicoAlteracaoNotasAluno, tiponota));
@@ -175,7 +179,7 @@ namespace SME.SR.Application
             };
             foreach (var historicoAlteracaoNotasAluno in historicoAlteracaoNotasComponente)
             {
-                componenteCurricularDto.AlunosAlteracaoNotasBimestre.Add(await MapearParaAlunoDto(historicoAlteracaoNotasAluno, tiponota));               
+                componenteCurricularDto.AlunosAlteracaoNotasBimestre.Add(await MapearParaAlunoDto(historicoAlteracaoNotasAluno, tiponota));
             }
 
             return componenteCurricularDto;
