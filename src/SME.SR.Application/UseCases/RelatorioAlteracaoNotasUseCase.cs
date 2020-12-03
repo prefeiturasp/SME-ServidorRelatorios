@@ -114,7 +114,7 @@ namespace SME.SR.Application
             var selecionouTodos = turmas.Any(c => c == -99);
 
             turmaNome = selecionouTodos ?
-                "Todos"
+                "Todas"
                 :
                 turmas.Count() > 1 ?
                 string.Empty

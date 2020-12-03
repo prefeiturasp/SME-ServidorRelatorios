@@ -71,7 +71,7 @@
 
         var str = "";
 
-        if (!String.IsNullOrEmpty(quebra) && componente != "")
+        if (!String.IsNullOrEmpty(quebra) && componente != "" && (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos"))
         {
             str += $@"<table class='tabela-alunos'>
 <thead>
@@ -266,10 +266,10 @@
 
                 @if (turma.Bimestres != null || !turma.Bimestres.Any())
                 {
+                     bimestreDescricaoAnt = "";
 
                     foreach (var bimestre in turma.Bimestres)
                     {
-
                         @if (bimestre.ComponentesCurriculares != null)
                         {
 
@@ -277,7 +277,7 @@
                             {
                                 var componente = bimestre.ComponentesCurriculares[c];
 
-                               // TURMA
+                                // TURMA
                                 if (Model.Filtro.Turma == "Todas" || Model.Filtro.Turma == "")
                                 {
                                     contadorQuebrarPagina = contadorQuebrarPagina + 1;
@@ -294,10 +294,10 @@
 
                                 // BIMESTRE
                                 if(!bimestreDescricaoAnt.Equals(bimestre.Descricao))
-                                {                               
+                                {
                                     if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
                                     {
-                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                     @Html.Raw(VerificaQuebra(3))
 
                                     <table class="tabela-alunos">
