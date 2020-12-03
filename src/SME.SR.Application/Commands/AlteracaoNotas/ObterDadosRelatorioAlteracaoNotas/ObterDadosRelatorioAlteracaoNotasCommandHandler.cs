@@ -59,12 +59,7 @@ namespace SME.SR.Application
                             historicoNota.NomeAluno = alunoAtual.NomeAluno;
                             historicoNota.NumeroChamada = alunoAtual.NumeroAlunoChamada;
                             historicoNota.NomeTurma = nomeTurma;
-                        }
-
-                        if (historicoAlteracaoNotas == null || !historicoAlteracaoNotas.Any())
-                        {
-                            throw new NegocioException("Nenhuma informação para os filtros informados.");
-                        }                        
+                        }                                             
 
                         listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
                     }
@@ -77,6 +72,11 @@ namespace SME.SR.Application
                 }
 
 
+            }
+
+            if (listaTurmaAlteracaoNotasDto == null || !listaTurmaAlteracaoNotasDto.Any())
+            {
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
             }
             return listaTurmaAlteracaoNotasDto;
         }
