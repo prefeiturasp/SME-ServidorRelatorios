@@ -21,7 +21,7 @@ namespace SME.SR.Application
         public async Task<NotaTipoValor> Handle(ObterTipoNotaPorTurmaQuery request, CancellationToken cancellationToken)
         {
 
-            var ciclo = await mediator.Send(new ObterCicloPorModalidadeQuery(request.turma.Ano, request.turma.ModalidadeCodigo));
+            var ciclo = await mediator.Send(new ObterCicloPorModalidadeQuery(request.Turma.Ano, request.Turma.ModalidadeCodigo));
 
             var dataAvaliacao = new DateTime(request.AnoLetivo, 3, 1);
 
