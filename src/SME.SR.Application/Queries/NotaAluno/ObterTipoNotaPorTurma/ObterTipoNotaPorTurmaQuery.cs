@@ -7,11 +7,11 @@ namespace SME.SR.Application
     {
         public ObterTipoNotaPorTurmaQuery(Turma turma, int anoLetivo)
         {
-            this.turma = turma;
+            Turma = turma;
             AnoLetivo = anoLetivo;
         }
 
-        public Turma turma { get; set; }
+        public Turma Turma { get; set; }
         public int AnoLetivo { get; set; }
     }
 }
