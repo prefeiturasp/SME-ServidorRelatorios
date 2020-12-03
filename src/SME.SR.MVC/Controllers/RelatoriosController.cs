@@ -2936,6 +2936,91 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Linhas = linhas
                 },
             };
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            var graficoBarras1 = new GraficoBarrasVerticalDto(350, "Teste - gráfico de matemática");
+
+            graficoBarras1.Legendas = new List<GraficoBarrasLegendaDto>() {
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="A",
+                    Valor= "dentificou corretamente a proporcionalidade e indicou a porcentagem corretamente, maserrou os cálculos  tes te ste steste  ste ste set se"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="B",
+                    Valor= "Não identificou corretamente a proporcionalidade e indicou incorretamente a porcentagem tes te ste steste  ste ste set se"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="C",
+                    Valor= "dentificou corretamente a proporcionalidade e indicou a porcentagem corretamente, maserrou os cálculos  tes te ste steste  ste ste set se"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="D",
+                    Valor= "Não resolveu"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="E",
+                    Valor= "Sem preenchimento"
+                },
+            };
+
+            graficoBarras1.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 10, 10);
+
+            graficoBarras1.EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+            {
+                new GraficoBarrasVerticalEixoXDto(10, "A"),
+                new GraficoBarrasVerticalEixoXDto(7, "B"),
+                new GraficoBarrasVerticalEixoXDto(2, "C"),
+                new GraficoBarrasVerticalEixoXDto(5, "D"),
+                new GraficoBarrasVerticalEixoXDto(5, "E"),
+            };
+
+            var graficoBarras2 = new GraficoBarrasVerticalDto(350, "Teste - gráfico de matemática");
+
+            graficoBarras2.Legendas = new List<GraficoBarrasLegendaDto>() {
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="A",
+                    Valor= "dentificou corretamente a proporcionalidade e indicou a porcentagem corretamente, maserrou os cálculos"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="B",
+                    Valor= "Não identificou corretamente a proporcionalidade e indicou incorretamente a porcentagem"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="C",
+                    Valor= "Resolveu corretamente"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="D",
+                    Valor= "Não resolveu"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="E",
+                    Valor= "Sem preenchimento"
+                },
+            };
+
+            graficoBarras2.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 10, 10);
+
+            graficoBarras2.EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+            {
+                new GraficoBarrasVerticalEixoXDto(10, "A"),
+                new GraficoBarrasVerticalEixoXDto(7, "B"),
+                new GraficoBarrasVerticalEixoXDto(2, "C"),
+                new GraficoBarrasVerticalEixoXDto(5, "D"),
+                new GraficoBarrasVerticalEixoXDto(5, "E"),
+            };
+            model.GraficosBarras.Add(graficoBarras1);
+            model.GraficosBarras.Add(graficoBarras2);
 
             return View("RelatorioSondagemComponentesPorTurma", model);
         }
