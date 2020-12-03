@@ -45,15 +45,15 @@
 
     function ChartSettings_@(Model.IdParaLastro)() {
         svgMargin_@(Model.IdParaLastro) = 20;
-        svgSpace_@(Model.IdParaLastro) = 80;
+        svgSpace_@(Model.IdParaLastro) = (studentexamdata_@(Model.IdParaLastro).length * 12) + 75;
 
-        svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
-        svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
+        svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - ((svg_@(Model.IdParaLastro).height.baseVal.value/100) * 33);
+        svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - svgSpace_@(Model.IdParaLastro) - 35;
 
         MarginSpace_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgSpace_@(Model.IdParaLastro);
         MarginHeight_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgHeight_@(Model.IdParaLastro);
 
-        barchartMargin_@(Model.IdParaLastro) = 15;
+        barchartMargin_@(Model.IdParaLastro) = 10;
         totalChartBars_@(Model.IdParaLastro) = studentexamdata_@(Model.IdParaLastro).length;
         barchartWidth_@(Model.IdParaLastro) = (svgWidth_@(Model.IdParaLastro) / totalChartBars_@(Model.IdParaLastro)) - barchartMargin_@(Model.IdParaLastro);
 
