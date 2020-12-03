@@ -61,10 +61,10 @@ namespace SME.SR.Application
                             historicoNota.NomeTurma = nomeTurma;
                         }
 
-                        if (historicoAlteracaoNotas == null && !historicoAlteracaoNotas.Any())
+                        if (historicoAlteracaoNotas == null || !historicoAlteracaoNotas.Any())
                         {
                             throw new NegocioException("Nenhuma informação para os filtros informados.");
-                        }
+                        }                        
 
                         listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
                     }
