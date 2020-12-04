@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SME.SR.Application;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6056,10 +6057,35 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     }
                 }
             };
-
-
-
             return View("RelatorioNotificacoes", model);
         }
+
+        [HttpGet("relatorio-atribuicoes-cj")]
+        public IActionResult RelatorioAtribuioesCj()
+        {
+            var model = new RelatorioAtribuicaoCjDto() {
+                DreNome = "CAPELA DO SOCORRO",
+                UeNome = "CEU EMEF JARDIM ELIANA",
+                Modalidade = Modalidade.Fundamental.Name(),
+                Semestre = "1º",
+                Turma = "TODAS",
+                Professor = "ALANA FERRIRA OLIVEIRA",
+                Usuario = "RITA DE CASSIA FREITAS",
+                AtribuicoesCj = new List<AtribuicaoCjDto>(),
+                AtribuicoesEsporadicas = new List<AtribuicaoEsporadicaDto>()
+                {
+                    new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = ""
+                    }
+                }
+        };
+
+            return View("RelatorioAtribuioesCj", model);
+        }
     }
+
 }
