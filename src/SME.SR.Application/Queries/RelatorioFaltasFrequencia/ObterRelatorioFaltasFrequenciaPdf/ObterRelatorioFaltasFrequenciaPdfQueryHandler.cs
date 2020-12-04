@@ -114,6 +114,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     }).ToList();
                                     componente.Alunos.AddRange(sem);
                                 }
+
+                                model.UltimoAluno = componente.Alunos.LastOrDefault().CodigoAluno.ToString();
                             }
                         }
 
@@ -173,6 +175,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         ano.Bimestres = ano.Bimestres.OrderBy(c => c.NomeBimestre).ToList();
                     }
                 }
+                model.UltimoAluno = $"{dre.NomeDre}{model.UltimoAluno}";
             }
 
             DefinirCabecalho(request, model, filtro, dres, componentes);
