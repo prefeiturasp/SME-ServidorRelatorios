@@ -1,10 +1,10 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SME.SR.Application;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -3541,14 +3541,14 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             model.GraficosBarras.Add(new GraficoBarrasVerticalDto(800, "Português - Leitura")
             {
-              EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+                EixosX = new List<GraficoBarrasVerticalEixoXDto>()
               {
                   new GraficoBarrasVerticalEixoXDto(5, "A"),
                   new GraficoBarrasVerticalEixoXDto(1, "B"),
                   new GraficoBarrasVerticalEixoXDto(3, "C"),
                   new GraficoBarrasVerticalEixoXDto(2, "D")
-              } ,
-              Legendas = new List<GraficoBarrasLegendaDto>()
+              },
+                Legendas = new List<GraficoBarrasLegendaDto>()
               {
                   new GraficoBarrasLegendaDto()
                   {
@@ -3571,7 +3571,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                       Valor = "Sem preenchimento"
                   }
               },
-              EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 5, 10)
+                EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 5, 10)
             });
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
@@ -4715,8 +4715,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemPortuguesConsolidado", model);
         }
 
-       [HttpGet("graficos-pap")]
-       public IActionResult RelatorioGraficosPAP() {
+        [HttpGet("graficos-pap")]
+        public IActionResult RelatorioGraficosPAP()
+        {
             var graficosDto = new List<ResumoPAPGraficoDto>();
 
             for (var i = 0; i < 7; i++)
@@ -4788,18 +4789,18 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 EhEncaminhamento = false,
                 GraficosDto = graficosDto
             };
-            
+
             return View("RelatorioGraficosPAP", model);
-       }
+        }
         [HttpGet("Usuarios")]
         public IActionResult RelatorioUsuarios()
         {
-            var model = new RelatorioUsuarioDto() 
+            var model = new RelatorioUsuarioDto()
             {
                 Filtro = new FiltroUsuarioDto()
                 {
                     Dre = "DRE - BT",
-                    Ue = "CEU EMEF BUTANTA",                    
+                    Ue = "CEU EMEF BUTANTA",
                     RF = "9879878",
                     Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
                 }
@@ -5070,7 +5071,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),                                    
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioProfessorDto()
                                 {
@@ -5232,7 +5233,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 }
-                            }                            
+                            }
                         },
                         new UePorPerfilUsuarioDto()
                         {
@@ -5842,7 +5843,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                             SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",                            
+                            UtilizaSenhaPadao = "Sim",
                         },
                         new HistoricoReinicioSenhaDto()
                         {
@@ -5925,7 +5926,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
                             UtilizaSenhaPadao = "Sim",
                         }
-                    }                    
+                    }
                 }
             };
             return View("RelatorioUsuarios", model);
@@ -6056,10 +6057,115 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     }
                 }
             };
-
-
-
             return View("RelatorioNotificacoes", model);
         }
+
+        [HttpGet("relatorio-atribuicoes-cj")]
+        public IActionResult RelatorioAtribuioesCj()
+        {
+            var model = new RelatorioAtribuicaoCjDto()
+            {
+                DreNome = "CAPELA DO SOCORRO",
+                UeNome = "CEU EMEF JARDIM ELIANA",
+                Modalidade = Modalidade.Fundamental.Name(),
+                Semestre = "1º",
+                Turma = "TODAS",
+                Professor = "ALANA FERRIRA OLIVEIRA",
+                Usuario = "RITA DE CASSIA FREITAS",
+                AtribuicoesCjPorProfessor = new List<AtribuicaoCjPorProfessorDto>()
+                    {
+                        new AtribuicaoCjPorProfessorDto()
+                        {
+                            NomeProfessor = "PRISCILA MELLO DE ANDRADE(12345678) - ESPORÁDICO",
+                            AtribuiicoesCjTurma = new List<AtribuicaoCjTurmaDto>()
+                            {
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "24/03/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                }
+                            }
+                        },
+                        new AtribuicaoCjPorProfessorDto()
+                        {
+                            NomeProfessor = "PRISCILA MELLO DE ANDRADE(12345678) - ESPORÁDICO",
+                            AtribuiicoesCjTurma = new List<AtribuicaoCjTurmaDto>()
+                            {
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "24/03/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                }
+                            }
+                        }
+                    },
+                AtribuicoesEsporadicas = new List<AtribuicaoEsporadicaDto>()
+                {
+                    new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },
+                    new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    }
+                }
+            };
+
+            return View("RelatorioAtribuioesCj", model);
+        }
     }
+
 }
