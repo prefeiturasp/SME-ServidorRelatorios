@@ -17,6 +17,7 @@ namespace SME.SR.Data.Interfaces
         Task<int> ObterQuantidadeAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim);
         Task<int> ObterQuantidadeAulaGrade(long turmaId, long componenteCurricularCodigo);
         Task<IEnumerable<AulaReduzidaDto>> ObterQuantidadeAulasReduzido(long turmaId, string v, long tipoCalendarioId, int bimestre, bool professorCJ);
+        Task<IEnumerable<AulaReduzidaDto>> ObterAulasReduzido(long[] turmasId, string[] componenteCurricularesId, bool professorCJ);
         Task<bool> VerificaExsiteAulaTitularECj(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre);
         Task<bool> VerificaExisteAulasMesmoDiaProfessor(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre);
 

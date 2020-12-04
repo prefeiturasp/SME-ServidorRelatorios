@@ -321,5 +321,35 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }
         }
+
+        public async Task<IEnumerable<AulaReduzidaDto>> ObterAulasReduzido(long[] turmasId, string[] componenteCurricularesId, bool professorCJ)
+        {
+            var query = @"select
+	                        a.data_aula as Data,
+	                        a.criado_por as Professor,
+	                        a.criado_rf as ProfessorRf
+                        from
+	                        aula a
+                        inner join turma t on
+	                        a.turma_id = t.turma_id
+                        inner join periodo_escolar pe on
+	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                        where
+	                        disciplina_id = ANY(@componenteCurricularesId)
+	                        and t.id = ANY(@turmasId)
+	                        and not a.excluido 
+                            and a.aula_cj = @professorCJ
+                        group by
+	                        a.data_aula,
+	                        a.criado_por,
+                            a.criado_por,
+                            a.criado_rf
+                        order by
+	                        data_aula";
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<AulaReduzidaDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
+            }
+        }
     }
 }

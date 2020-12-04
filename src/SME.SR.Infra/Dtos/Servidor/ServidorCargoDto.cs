@@ -6,7 +6,11 @@
         public string CodigoRF { get; set; }
         public string NomeCargo { get; set; }
         public string CodigoCargo { get; set; }
+        public string CodigoTipoFuncao { get; set; }
         public string NomeCargoSobreposto { get; set; }
         public string CodigoCargoSobreposto { get; set; }
+        public bool Sobreposto { get; set; }
+        public string CodigoCargoBase { get; set; }
+        public string CodigoComponenteCurricular { get; set; }
     }
 }
