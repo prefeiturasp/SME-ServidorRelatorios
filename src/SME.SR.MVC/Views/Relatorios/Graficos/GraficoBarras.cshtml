@@ -45,10 +45,10 @@
 
     function ChartSettings_@(Model.IdParaLastro)() {
         svgMargin_@(Model.IdParaLastro) = 20;
-        svgSpace_@(Model.IdParaLastro) = (studentexamdata_@(Model.IdParaLastro).length * 12) + 75;
+        svgSpace_@(Model.IdParaLastro) = (studentexamdata_@(Model.IdParaLastro).length * 12) + 85;
 
         svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - ((svg_@(Model.IdParaLastro).height.baseVal.value/100) * 33);
-        svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - svgSpace_@(Model.IdParaLastro) - 35;
+        svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - svgSpace_@(Model.IdParaLastro) - 45;
 
         MarginSpace_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgSpace_@(Model.IdParaLastro);
         MarginHeight_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgHeight_@(Model.IdParaLastro);
