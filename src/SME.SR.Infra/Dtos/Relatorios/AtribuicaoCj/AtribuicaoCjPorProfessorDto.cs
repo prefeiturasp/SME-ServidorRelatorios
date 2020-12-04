@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class ProfessorAtribuicaoCjPorTurmaDto
+    public class AtribuicaoCjPorProfessorDto
     {
         public string NomeProfessor { get; set; }
         public List<AtribuicaoCjTurmaDto> AtribuiicoesCjTurma { get; set; }

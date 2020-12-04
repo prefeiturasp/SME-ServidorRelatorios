@@ -11,5 +11,8 @@ namespace SME.SR.Infra
         public string NomeProfessorTitular { get; set; }
         public string DataAtribuicao { get; set; }
         public string TipoProfessorCj { get; set; }
+        public string DataAula { get; set; }
+        public bool AulaDada { get; set; }
+        public string Observacoes { get; set; }
     }
 }
