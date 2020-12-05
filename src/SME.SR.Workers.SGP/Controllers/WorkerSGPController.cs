@@ -180,8 +180,8 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/atribuicoes-cj")]
-        [Action("relatorios/atribuicoes-cj", typeof(IRelatorioNotificacaoUseCase))]
-        public async Task<bool> AtribuicoesCJ([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioNotificacaoUseCase relatorioUseCase)
+        [Action("relatorios/atribuicoes-cj", typeof(IRelatorioAtribuicaoCJUseCase))]
+        public async Task<bool> AtribuicoesCJ([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAtribuicaoCJUseCase relatorioUseCase)
         {
             await relatorioUseCase.Executar(request);
             return true;

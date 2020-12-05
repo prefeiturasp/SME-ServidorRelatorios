@@ -24,10 +24,11 @@ namespace SME.SR.Data
         {
             var query = new StringBuilder();
 
-            query.AppendLine("select a.disciplina_id DisciplinaId,");
-            query.AppendLine("a.dre_id DreId, a.ue_id UeId, a.migrado, ");
+            query.AppendLine("select a.disciplina_id ComponenteCurricularId,");
+            query.AppendLine("a.dre_id DreId, a.ue_id UeId, a.migrado, a.criado_em CriadoEm, ");
+            query.AppendLine("cc.descricao ComponenteCurricularNome,");
             query.AppendLine("t.modalidade_codigo Modalidade, ");
-            query.AppendLine("a.professor_rf professorrf, a.substituir, ");
+            query.AppendLine("a.professor_rf professorrf, u.nome ProfessorNome, a.substituir, ");
             query.AppendLine("t.turma_id Codigo, t.nome, ");
             query.AppendLine("t.modalidade_codigo ModalidadeCodigo, ");
             query.AppendLine("t.semestre, t.ano, t.ano_letivo AnoLetivo");
@@ -35,6 +36,8 @@ namespace SME.SR.Data
             query.AppendLine("atribuicao_cj a");
             query.AppendLine("inner join turma t");
             query.AppendLine("on t.turma_id = a.turma_id");
+            query.AppendLine("left join componente_curricular cc");
+            query.AppendLine("on a.disciplina_id = cc.id");
             query.AppendLine("left join usuario u");
             query.AppendLine("on u.rf_codigo = a.professor_rf");
             query.AppendLine("where 1 = 1");
@@ -98,7 +101,7 @@ namespace SME.SR.Data
                     componentesCurricularresId,
                     anoLetivo,
                     semestre
-                }, splitOn: "DisciplinaId,Codigo"));
+                }, splitOn: "ComponenteCurricularId,Codigo"));
             }
         }
     }

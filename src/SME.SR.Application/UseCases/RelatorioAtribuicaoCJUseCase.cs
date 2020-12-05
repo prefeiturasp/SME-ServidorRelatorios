@@ -56,55 +56,76 @@ namespace SME.SR.Application
                 Semestre = filtros.Semestre
             });
 
-            AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, filtros.TipoVisualizacao);
+            var turmasId = lstAtribuicaoCJ.Select(t => t.TurmaId);
+
+            var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery()
+            {
+                 CodigosTurma = turmasId.ToArray()
+            });
+
+            AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, filtros.TipoVisualizacao);
 
         }
 
-        private void AdicionarAtribuicoesCJ(RelatorioAtribuicaoCjDto relatorio, IEnumerable<AtribuicaoCJ> lstAtribuicaoCJ, TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao)
+        private void AdicionarAtribuicoesCJ(RelatorioAtribuicaoCjDto relatorio, IEnumerable<AtribuicaoCJ> lstAtribuicaoCJ, IEnumerable<ProfessorTitularComponenteCurricularDto> lstProfTitulares, TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao)
         {
-            if (tipoVisualizacao == TipoVisualizacaoRelatorioAtribuicaoCJ.Professor) 
+            if (tipoVisualizacao == TipoVisualizacaoRelatorioAtribuicaoCJ.Professor)
             {
-                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => cj.ProfessorRf);
+                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => new { cj.ProfessorRf, cj.ProfessorNome });
 
                 relatorio.AtribuicoesCjPorProfessor.AddRange(
-                lstAtribuicaoEsporadica.Select(atribuicao =>
-                {
-                    var cargo = cargosServidor.FirstOrDefault(cargo => cargo.CodigoRF == atribuicao.ProfessorRf);
-
-                    var retorno = new AtribuicaoEsporadicaDto()
+                    agrupamento.Select(professor =>
                     {
-                        AtribuidoPor = atribuicao.CriadoPor,
-                        DataAtribuicao = atribuicao.CriadoEm.ToString("dd/MM/yyyy"),
-                        DataInicio = atribuicao.DataInicio.ToString("dd/MM/yyyy"),
-                        DataFim = atribuicao.DataFim.ToString("dd/MM/yyyy"),
-                        NomeUsuario = cargo.NomeRelatorio,
-                        Cargo = cargo.CargoRelatorio
-                    };
+                        var retorno = new AtribuicaoCjPorProfessorDto();
 
-                    return retorno;
-                }));
+                        retorno.NomeProfessor = $"{professor.Key.ProfessorNome} ({professor.Key.ProfessorRf})";
+                        retorno.AtribuiicoesCjTurma.AddRange(
+                             professor.Select(t =>
+                             {
+                                 var titular = lstProfTitulares.FirstOrDefault(p => p.TurmaCodigo == t.TurmaId && 
+                                                                                    p.ComponenteCurricularId == t.ComponenteCurricularId.ToString());
+
+                                 var retorno = new AtribuicaoCjTurmaDto()
+                                 {
+                                     ComponenteCurricular = t.ComponenteCurricularNome,
+                                     DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
+                                     NomeProfessorTitular = titular.NomeProfessor,
+                                     NomeTurma = t.Turma.Nome
+                                 };
+                                 return retorno;
+                             }));
+
+                        return retorno;
+                    }));
             }
             else
             {
-                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => cj.TurmaId);
+                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => new { cj.TurmaId, cj.Turma.Nome});
 
                 relatorio.AtribuicoesCjPorTurma.AddRange(
-                lstAtribuicaoEsporadica.Select(atribuicao =>
-                {
-                    var cargo = cargosServidor.FirstOrDefault(cargo => cargo.CodigoRF == atribuicao.ProfessorRf);
+                   agrupamento.Select(turma =>
+                   {
+                       var retorno = new AtribuicaoCjPorTurmaDto();
 
-                    var retorno = new AtribuicaoEsporadicaDto()
-                    {
-                        AtribuidoPor = atribuicao.CriadoPor,
-                        DataAtribuicao = atribuicao.CriadoEm.ToString("dd/MM/yyyy"),
-                        DataInicio = atribuicao.DataInicio.ToString("dd/MM/yyyy"),
-                        DataFim = atribuicao.DataFim.ToString("dd/MM/yyyy"),
-                        NomeUsuario = cargo.NomeRelatorio,
-                        Cargo = cargo.CargoRelatorio
-                    };
+                       retorno.NomeTurma = $"{turma.Key.Nome}";
+                       retorno.AtribuicoesCjProfessor.AddRange(
+                            turma.Select(t =>
+                            {
+                                var titular = lstProfTitulares.FirstOrDefault(p => p.TurmaCodigo == t.TurmaId &&
+                                                                                   p.ComponenteCurricularId == t.ComponenteCurricularId.ToString());
 
-                    return retorno;
-                }));
+                                var retorno = new AtribuicaoCjProfessorDto()
+                                {
+                                    ComponenteCurricular = t.ComponenteCurricularNome,
+                                    DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
+                                    NomeProfessorTitular = titular.NomeProfessor,
+                                    NomeProfessorCj = t.ProfessorNome
+                                };
+                                return retorno;
+                            }));
+
+                       return retorno;
+                   }));
             }
         }
 
