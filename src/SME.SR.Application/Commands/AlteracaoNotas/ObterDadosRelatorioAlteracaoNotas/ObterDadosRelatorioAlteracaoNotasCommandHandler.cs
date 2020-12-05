@@ -61,23 +61,20 @@ namespace SME.SR.Application
                             historicoNota.NomeTurma = nomeTurma;
                         }
 
-                        if (historicoAlteracaoNotas == null && !historicoAlteracaoNotas.Any())
-                        {
-                            throw new NegocioException("Nenhuma informação para os filtros informados.");
-                        }
-
-                        listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
+                        if (listaTurmaAlteracaoNotasDto != null && listaTurmaAlteracaoNotasDto.Any())
+                            listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
                     }
 
                 }
                 catch (Exception ex)
                 {
-
                     throw ex;
                 }
-
-
             }
+
+            if (listaTurmaAlteracaoNotasDto == null || !listaTurmaAlteracaoNotasDto.Any())
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
+
             return listaTurmaAlteracaoNotasDto;
         }
 
