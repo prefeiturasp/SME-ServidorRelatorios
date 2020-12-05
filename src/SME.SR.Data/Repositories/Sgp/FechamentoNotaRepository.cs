@@ -44,7 +44,7 @@ namespace SME.SR.Data
                                  ftd.disciplina_id as disciplinaId,
                                  pe.bimestre,
                                  coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome,
-                                 ap.status_aprovacao,
+                                 ap.status_aprovacao as situacao,
                                  ap.usuarioaprovacao,
                                  ap.rfaprovacao
                             from historico_nota hn 
