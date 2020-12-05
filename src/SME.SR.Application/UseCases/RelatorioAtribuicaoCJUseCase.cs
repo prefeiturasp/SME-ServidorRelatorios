@@ -26,7 +26,7 @@ namespace SME.SR.Application
 
             await MontarCabecalho(relatorio, filtros.DreCodigo, filtros.UeCodigo, filtros.Modalidade,
                                   filtros.Semestre, filtros.TurmaCodigo, filtros.UsuarioRf,
-                                  filtros.Usuario.CodigoRf);
+                                  request.UsuarioLogadoRF);
 
             if (filtros.ExibirAtribuicoesExporadicas)
             {
@@ -56,7 +56,7 @@ namespace SME.SR.Application
                 Semestre = filtros.Semestre
             });
 
-            var turmasId = lstAtribuicaoCJ.Select(t => t.TurmaId);
+            var turmasId = lstAtribuicaoCJ.Select(t => t.Turma.Codigo);
 
             var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery()
             {
@@ -82,7 +82,7 @@ namespace SME.SR.Application
                         retorno.AtribuiicoesCjTurma.AddRange(
                              professor.Select(t =>
                              {
-                                 var titular = lstProfTitulares.FirstOrDefault(p => p.TurmaCodigo == t.TurmaId && 
+                                 var titular = lstProfTitulares.FirstOrDefault(p => p.TurmaCodigo == t.Turma.Codigo && 
                                                                                     p.ComponenteCurricularId == t.ComponenteCurricularId.ToString());
 
                                  var retorno = new AtribuicaoCjTurmaDto()
@@ -111,7 +111,7 @@ namespace SME.SR.Application
                        retorno.AtribuicoesCjProfessor.AddRange(
                             turma.Select(t =>
                             {
-                                var titular = lstProfTitulares.FirstOrDefault(p => p.TurmaCodigo == t.TurmaId &&
+                                var titular = lstProfTitulares.FirstOrDefault(p => p.TurmaCodigo == t.Turma.Codigo &&
                                                                                    p.ComponenteCurricularId == t.ComponenteCurricularId.ToString());
 
                                 var retorno = new AtribuicaoCjProfessorDto()

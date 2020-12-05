@@ -20,9 +20,11 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularComponenteCurricularPorTurma(string[] codigosTurma)
         {
-            StringBuilder query = new StringBuilder();
+            try
+            {
+                StringBuilder query = new StringBuilder();
 
-            query.AppendLine(@"
+                query.AppendLine(@"
 				select coalesce(cc_pro.cd_componente_curricular, cc_ser.cd_componente_curricular) as ComponenteCurricularId,
 					   coalesce(cc_pro.dc_componente_curricular, cc_ser.dc_componente_curricular) as ComponenteCurricular,
 					   coalesce(serv.cd_registro_funcional, '')                                   as ProfessorRF,
@@ -67,16 +69,21 @@ namespace SME.SR.Data
                                                                atb_pro.cd_cargo_base_servidor = vcbc.cd_cargo_base_servidor)
                     and vcbc.dt_cancelamento is null and vcbc.dt_fim_nomeacao is null
                          left join v_servidor_cotic serv on serv.cd_servidor = vcbc.cd_servidor
-                    WHERE tur.cd_turma_escola in (@codigosTurma)");
+                    WHERE tur.cd_turma_escola in @codigosTurma");
 
-            var parametros = new { codigosTurma };
+                var parametros = new { codigosTurma };
 
-            using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+                using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+                {
+                    var result = await conn.QueryAsync<ProfessorTitularComponenteCurricularDto>(
+                                                  query.ToString(),
+                                                  parametros);
+                    return result.ToList();
+                }
+            }
+            catch (Exception ex)
             {
-                var result = await conn.QueryAsync<ProfessorTitularComponenteCurricularDto>(
-                                              query.ToString(),
-                                              parametros);
-                return result.ToList();
+                throw ex;
             }
         }
     }
