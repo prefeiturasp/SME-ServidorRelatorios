@@ -12,5 +12,7 @@
         public bool Sobreposto { get; set; }
         public string CodigoCargoBase { get; set; }
         public string CodigoComponenteCurricular { get; set; }
+        public string NomeRelatorio => $"{NomeServidor} ({CodigoRF})";
+        public string CargoRelatorio => $"{NomeCargo} ({CodigoCargo})";
     }
 }

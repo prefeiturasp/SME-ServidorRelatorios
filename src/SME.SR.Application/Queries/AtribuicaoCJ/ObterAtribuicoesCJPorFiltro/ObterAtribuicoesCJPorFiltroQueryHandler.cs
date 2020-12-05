@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,8 +20,7 @@ namespace SME.SR.Application
         {
             var lstAtribuicoes = await atribuicaoCJRepository.ObterPorFiltros(request.Modalidade,
                                                         request.TurmaId, request.UeId, request.ComponenteCurricularId, request.UsuarioRf,
-                                                        request.UsuarioNome, request.Substituir, request.DreCodigo, request.TurmasId,
-                                                        request.ComponentesCurricularesId, request.AnoLetivo);
+                                                        request.UsuarioNome, false, anoLetivo: request.AnoLetivo);
 
             return lstAtribuicoes;
         }

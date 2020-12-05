@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterAtribuicoesCJPorFiltroQuery: IRequest<IEnumerable<AtribuicaoCJ>>
+    public class ObterAtribuicoesCJPorFiltroQuery : IRequest<IEnumerable<AtribuicaoCJ>>
     {
         public Modalidade Modalidade { get; set; }
 
@@ -28,5 +28,7 @@ namespace SME.SR.Application
         public long[] ComponentesCurricularesId { get; set; }
 
         public int AnoLetivo { get; set; }
+
+        public int? Semestre { get; set; }
     }
 }

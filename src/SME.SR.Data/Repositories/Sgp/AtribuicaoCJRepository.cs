@@ -18,7 +18,9 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, long[] componentesCurricularresId = null, int? anoLetivo = null)
+        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, 
+                                                                     string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, 
+                                                                     long[] componentesCurricularresId = null, int? anoLetivo = null, int? semestre = null)
         {
             var query = new StringBuilder();
 
@@ -73,6 +75,9 @@ namespace SME.SR.Data
             if (anoLetivo != null)
                 query.AppendLine("and t.ano_letivo = @anoLetivo");
 
+            if (semestre.HasValue)
+                query.AppendLine("and t.semestre = @semestre");
+
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return (await conexao.QueryAsync<AtribuicaoCJ, Turma, AtribuicaoCJ>(query.ToString(), (atribuicaoCJ, turma) =>
@@ -91,7 +96,8 @@ namespace SME.SR.Data
                     dreCodigo,
                     turmaIds,
                     componentesCurricularresId,
-                    anoLetivo
+                    anoLetivo,
+                    semestre
                 }, splitOn: "DisciplinaId,Codigo"));
             }
         }
