@@ -145,31 +145,29 @@
 
         var words = caption.split("||");
         var line = "";
+        var svgDiv = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
 
         for (var n = 0; n < words.length; n++) {
             //if (testLine.length > MAXIMUM_CHARS_PER_LINE) {
-                //  Add a new <tspan> element
-            var svgSpan = document.createElementNS('http://www.w3.org/1999/xhtml', 'span');
-            svgSpan.setAttributeNS(null, 'style', 'margin-bottom: 2px; display: inline-block');
-            var svgBr = document.createElementNS('http://www.w3.org/1999/xhtml', 'br');
-                //svgTSpan.setAttributeNS(null, 'transform', 'rotate(90) translate(' + y + ' , ' + x + ')');
+            //  Add a new <p> element
+            var svgP = document.createElementNS('http://www.w3.org/1999/xhtml', 'p');
+            svgP.setAttributeNS(null, 'style', 'margin-bottom: 2px; margin-top: 2px;');
 
             var tSpanTextNode = document.createTextNode(line);
-            svgSpan.appendChild(tSpanTextNode);
-                //svgSwitch.appendChild(svgTSpan);
+            svgP.appendChild(tSpanTextNode);
 
-            svgForeignObject.appendChild(svgSpan);
-            svgForeignObject.appendChild(svgBr);
+            svgForeignObject.appendChild(svgP);
 
                 line = words[n] + " ";
                 y += LINE_HEIGHT;
             //}
         }
 
-        var svgSpan = document.createElementNS('http://www.w3.org/1999/xhtml', 'span');
+        var svgP = document.createElementNS('http://www.w3.org/1999/xhtml', 'p');
+        svgP.setAttributeNS(null, 'style', 'margin-bottom: 2px; margin-top: 2px;');
         var tSpanTextNode = document.createTextNode(line);
-        svgSpan.appendChild(tSpanTextNode);
-        svgForeignObject.appendChild(svgSpan);
+        svgP.appendChild(tSpanTextNode);
+        svgForeignObject.appendChild(svgP);
 
         svgSwitch.appendChild(svgForeignObject);
 
