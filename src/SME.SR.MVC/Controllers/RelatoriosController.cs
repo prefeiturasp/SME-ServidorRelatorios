@@ -6117,6 +6117,23 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             }
                         }
                     },
+                AtribuicoesCjPorTurma = new List<AtribuicaoCjPorTurmaDto>()
+                {
+                    new AtribuicaoCjPorTurmaDto()
+                    {
+                        NomeTurma =  "1A",
+                        AtribuicoesCjProfessor = new List<AtribuicaoCjProfessorDto>()
+                        {
+                            new AtribuicaoCjProfessorDto()
+                            {
+                                NomeProfessorCj = "Priscila Mello",
+                                ComponenteCurricular = "Biologia",
+                                NomeProfessorTitular = "Ana Paula Souza",
+                                
+                            }
+                        }
+                    }
+                },
                 AtribuicoesEsporadicas = new List<AtribuicaoEsporadicaDto>()
                 {
                     new AtribuicaoEsporadicaDto()
