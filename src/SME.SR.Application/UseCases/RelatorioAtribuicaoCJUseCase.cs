@@ -224,11 +224,13 @@ namespace SME.SR.Application
                 var professor = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(professorRf));
 
                 relatorio.Professor = professor.NomeRelatorio;
+                relatorio.RfProfessor = professor.CodigoRf;
             }
 
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(usuarioRf));
 
             relatorio.Usuario = usuario.NomeRelatorio;
+            relatorio.RfUsuario = usuario.CodigoRf;
         }
     }
 }
