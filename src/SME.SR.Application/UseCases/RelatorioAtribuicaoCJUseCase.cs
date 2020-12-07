@@ -45,25 +45,22 @@ namespace SME.SR.Application
                 Semestre = filtros.Semestre
             });
 
-            var lstServidores = lstAtribuicaoEsporadica.Select(s => s.ProfessorRf).ToList();
+            var lstServidores = new List<string>();
 
+            lstServidores.AddRange(lstAtribuicaoEsporadica.Select(s => s.ProfessorRf));
             lstServidores.AddRange(lstAtribuicaoCJ.Select(cj => cj.ProfessorRf));
+
             lstServidores = lstServidores.Distinct().ToList();
 
             var cargosServidores = await mediator.Send(new ObterCargosServidoresPorAnoLetivoQuery(filtros.AnoLetivo, lstServidores.ToArray()));
 
             if (filtros.ExibirAtribuicoesExporadicas)
-            {
                 AdicionarAtribuicoesEsporadicas(relatorio, lstAtribuicaoEsporadica, cargosServidores);
-            }
 
             var turmasId = lstAtribuicaoCJ.Select(t => t.Turma.Codigo)?.ToArray();
             var componentesId = lstAtribuicaoCJ.Select(t => t.ComponenteCurricularId.ToString())?.ToArray();
 
-            var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery()
-            {
-                CodigosTurma = turmasId
-            });
+            var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmasId));
 
             var aulas = await mediator.Send(new ObterAulaVinculosPorTurmaComponenteQuery(turmasId.Select(long.Parse).ToArray(), componentesId, true));
 

@@ -7,5 +7,10 @@ namespace SME.SR.Application
     public class ObterProfessorTitularComponenteCurricularPorTurmaQuery : IRequest<IEnumerable<ProfessorTitularComponenteCurricularDto>>
     {
         public string[] CodigosTurma { get; set; }
+
+        public ObterProfessorTitularComponenteCurricularPorTurmaQuery(string[] codigosTurma)
+        {
+            CodigosTurma = codigosTurma;
+        }
     }
 }
