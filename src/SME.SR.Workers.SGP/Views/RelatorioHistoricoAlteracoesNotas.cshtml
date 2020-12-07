@@ -3,7 +3,7 @@
 @{
 
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 43;
+    int contadorMaximoLinhasPorPagina = 48;
 
     string VerificaQuebra(int valorAdicionalParaSoma)
     {
@@ -132,7 +132,23 @@
 
             str += $@"</tr>";
 
-            contadorQuebrarPagina++;
+
+            if ((int)(aluno.Nome.ToString().Length) > 38)
+            {                
+                contadorQuebrarPagina = contadorQuebrarPagina + 2;
+            }
+            else if((int)(aluno.UsuarioAlteracao.ToString().Length) > 38)
+            {                
+                contadorQuebrarPagina = contadorQuebrarPagina + 2;
+            }
+            else if (!turma.AnoAtual && (aluno.UsuarioAprovacao.ToString().Length) > 38)
+            {                
+                contadorQuebrarPagina = contadorQuebrarPagina + 2;
+            }
+            else
+            {
+                contadorQuebrarPagina++;
+            }
             var quebra = VerificaQuebra(0);
 
             var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, turma) : "");
