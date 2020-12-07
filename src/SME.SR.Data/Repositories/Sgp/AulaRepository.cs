@@ -357,48 +357,37 @@ namespace SME.SR.Data
             var query = @"select
 	                        a.data_aula as Data,
 	                        a.criado_por as Professor,
-	                        a.criado_rf as ProfessorRf
+	                        a.criado_rf as ProfessorRf,
                             a.turma_id as TurmaCodigo,
                             a.disciplina_id as ComponenteCurricularId,
-                            CASE 
-                                  WHEN rf.id is not null THEN 1
-                                  ELSE 0
-                            END FrequenciaRegistrada,
                             cc.permite_registro_frequencia ControlaFrequencia,
-                            CASE 
-                                  WHEN aa.id is not null THEN 1
-                                  ELSE 0
-                            END PossuiAtividadeAvaliativa,
-                            CASE 
-                                  WHEN n.id is not null THEN 1
-                                  ELSE 0
-                            END PossuiNotaLancada
+                            EXISTS (SELECT 1 FROM registro_frequencia where aula_id = a.id)::int FrequenciaRegistrada,
+                            EXISTS (SELECT 1  from
+				                        atividade_avaliativa aa
+			                        inner join atividade_avaliativa_disciplina aad on
+				                        aad.atividade_avaliativa_id = aa.id 
+				                    where  aa.turma_id = a.turma_id
+					                       and aa.data_avaliacao::date = a.data_aula::date
+					                       and aad.disciplina_id = a.disciplina_id)::int PossuiAtividadeAvaliativa,
+					         EXISTS (SELECT 1  from
+				                        atividade_avaliativa aa
+			                        inner join atividade_avaliativa_disciplina aad on
+				                        aad.atividade_avaliativa_id = aa.id 
+				                    inner join notas_conceito n on
+	                        		    aa.id = n.atividade_avaliativa
+				                    where  aa.turma_id = a.turma_id
+					                       and aa.data_avaliacao::date = a.data_aula::date
+					                       and aad.disciplina_id = a.disciplina_id)::int PossuiNotaLancada         
                         from
 	                        aula a
                         inner join turma t on
 	                        a.turma_id = t.turma_id
-                        inner join periodo_escolar pe on
-	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
-                        left join registro_frequencia rf on a.id = rf.aula_id
-                        left join componente_curricular cc on a.disciplina_id = cc.id
-                        left join atividade_avaliativa aa on
-	                        aa.turma_id = a.turma_id
-	                        and aa.data_avaliacao::date = a.data_aula::date
-                        left join atividade_avaliativa_disciplina aad on
-	                        aad.atividade_avaliativa_id = aa.id 
-                            and aad.disciplina_id = a.disciplina_id
-                        left join notas_conceito n on
-	                        aa.id = n.atividade_avaliativa
+                        inner join componente_curricular cc on a.disciplina_id = cc.id::varchar
                         where
 	                        disciplina_id = ANY(@componenteCurricularesId)
 	                        and t.id = ANY(@turmasId)
 	                        and not a.excluido 
                             and a.aula_cj = @professorCJ
-                        group by
-	                        a.data_aula,
-	                        a.criado_por,
-                            a.criado_por,
-                            a.criado_rf
                         order by
 	                        data_aula";
 
