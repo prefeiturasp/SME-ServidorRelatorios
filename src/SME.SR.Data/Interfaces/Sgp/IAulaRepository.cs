@@ -23,5 +23,7 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<AulaDuplicadaControleGradeDto>> DetalharAulasDuplicadasNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre);
         Task<IEnumerable<AulaNormalExcedidoControleGradeDto>> ObterAulasExcedidas(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre);
+
+        Task<IEnumerable<AulaVinculosDto>> ObterAulasVinculos(long[] turmasId, string[] componenteCurricularesId, bool professorCJ);
     }
 }

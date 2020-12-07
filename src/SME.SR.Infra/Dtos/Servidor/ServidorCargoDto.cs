@@ -14,5 +14,12 @@
         public string CodigoComponenteCurricular { get; set; }
         public string NomeRelatorio => $"{NomeServidor} ({CodigoRF})";
         public string CargoRelatorio => $"{NomeCargo} ({CodigoCargo})";
+
+        public bool PossuiCargoSobrepostoGestao()
+        {
+            return CodigoCargoSobreposto == ((int)Cargo.AD).ToString() ||
+                   CodigoCargoSobreposto == ((int)Cargo.CP).ToString() ||
+                   CodigoCargoSobreposto == ((int)Cargo.Diretor).ToString();
+        }
     }
 }
