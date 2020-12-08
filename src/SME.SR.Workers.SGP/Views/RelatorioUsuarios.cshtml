@@ -73,7 +73,7 @@
                     var EhUltimoUsuario = false;
                     foreach (var usuario in perfil.Usuarios)
                     {
-                       
+
                         str += $@"<tr>
                             <td width='10%' class='td-valor'>{usuario.Login}</td>
                             <td width='40%' class='td-valor'>{usuario.Nome}</td>
@@ -95,6 +95,10 @@
                                 str += $@"</table>{retornoVerificacao}<table class='fixed'>";
                                 EhUltimoUsuario = true;
                             }
+                        }
+                        else if (usuario.Nome.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                        {
+                            EhUltimoUsuario = true;
                         }
                     }
                     str += $@"</table>";
@@ -118,7 +122,7 @@
                         str += MontarCabecalhoPerfil(perfil.Nome);
                         foreach (var usuario in perfil.Usuarios)
                         {
-                          
+
                             str += $@"<tr>
                                             <td width='10%' class='td-valor'>{usuario.Login}</td>
                                             <td width='40%' class='td-valor'>{usuario.Nome}</td>
