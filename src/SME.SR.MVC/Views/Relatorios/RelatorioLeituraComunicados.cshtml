@@ -1,5 +1,5 @@
 ﻿@page
-@model SME.SR.MVC.Views.Relatorios.RelatorioLeituraComunicadosModel
+@model SME.SR.Infra.RelatorioLeituraComunicadosDto
 @{ int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 43;
 
@@ -31,9 +31,8 @@
                 <table class='tblTopo'>
                     <tbody>
                         <tr>
-                            <td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
-                            <td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
-                            <td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
+                            <td  width='50%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+                            <td width='50%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>                            
                         </tr>
                     </tbody>
                 </table>
@@ -102,21 +101,21 @@
         return str;
     }
 
-    string MontarDadosTabela(List<SME.SR.Infra.AlunosAlteracaoNotasDto> alunosAlteracaoNotas, string componente, SME.SR.Infra.TurmaAlteracaoNotasDto turma)
+    string MontarDadosTabelaComunicado(List<SME.SR.Infra.LeituraComunicadoDto> leituraComunicado, List<SME.SR.Infra.LeituraComunicadoTurmaDto> leituraComunicadoTurma, List<SME.SR.Infra.LeituraComunicadoEstudanteDto> leituraComunicadoEstudante)
     {
         var str = $@"<table class='tabela-alunos' style='border-bottom:none;'><tbody>";
         for (int i = 0; i < alunosAlteracaoNotas.Count; i++)
         {
             var aluno = alunosAlteracaoNotas[i];
             str += $@"
-<tr>
-<th style='text-align:center' width='5%'>{aluno.NumeroChamada}</th>
-<th style='text-align:center' width='15%'>{aluno.Nome}</th>
-<th style='text-align:center' width='10%'>{aluno.TipoAlteracaoNota}</th>
-<th style='text-align:center' width='10%'>{aluno.NotaConceitoAnterior}</th>
-<th style='text-align:center' width='10%'>{aluno.NotaConceitoAtribuido}</th>
-<th style='text-align:center' width='10%'>{aluno.DataAlteracao}</th>
-<th style='text-align:center' width='15%'>{aluno.UsuarioAlteracao}</th>";
+                    <tr>
+                    <th style='text-align:center' width='5%'>{aluno.NumeroChamada}</th>
+                    <th style='text-align:center' width='15%'>{aluno.Nome}</th>
+                    <th style='text-align:center' width='10%'>{aluno.TipoAlteracaoNota}</th>
+                    <th style='text-align:center' width='10%'>{aluno.NotaConceitoAnterior}</th>
+                    <th style='text-align:center' width='10%'>{aluno.NotaConceitoAtribuido}</th>
+                    <th style='text-align:center' width='10%'>{aluno.DataAlteracao}</th>
+                    <th style='text-align:center' width='15%'>{aluno.UsuarioAlteracao}</th>";
 
             if (!turma.AnoAtual)
             {
