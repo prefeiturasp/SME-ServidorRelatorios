@@ -57,23 +57,26 @@ namespace SME.SR.Application
             if (filtros.ExibirAtribuicoesExporadicas)
                 AdicionarAtribuicoesEsporadicas(relatorio, lstAtribuicaoEsporadica, cargosServidores);
 
-            var turmasId = lstAtribuicaoCJ.Select(t => t.Turma.Codigo)?.ToArray();
-            var componentesId = lstAtribuicaoCJ.Select(t => t.ComponenteCurricularId.ToString())?.ToArray();
+            var turmasId = lstAtribuicaoCJ.Select(t => t.Turma.Codigo)?.Distinct().ToArray();
+            var componentesId = lstAtribuicaoCJ.Select(t => t.ComponenteCurricularId.ToString())?.Distinct().ToArray();
 
             var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmasId));
 
-            var aulas = await mediator.Send(new ObterAulaVinculosPorTurmaComponenteQuery(turmasId.Select(long.Parse).ToArray(), componentesId, true));
+            var aulas = Enumerable.Empty<AulaVinculosDto>();
 
-            AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas, 
+            if (filtros.ExibirAulas)
+                aulas = await mediator.Send(new ObterAulaVinculosPorTurmaComponenteQuery(turmasId, componentesId, true));
+
+            AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas,
                                    filtros.TipoVisualizacao, filtros.ExibirAulas);
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtribuioesCj", relatorio, request.CodigoCorrelacao));
 
         }
 
-        private void AdicionarAtribuicoesCJ(RelatorioAtribuicaoCjDto relatorio, IEnumerable<AtribuicaoCJ> lstAtribuicaoCJ, 
-                                            IEnumerable<ProfessorTitularComponenteCurricularDto> lstProfTitulares, 
-                                            IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica, IEnumerable<ServidorCargoDto> cargosServidores, 
+        private void AdicionarAtribuicoesCJ(RelatorioAtribuicaoCjDto relatorio, IEnumerable<AtribuicaoCJ> lstAtribuicaoCJ,
+                                            IEnumerable<ProfessorTitularComponenteCurricularDto> lstProfTitulares,
+                                            IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica, IEnumerable<ServidorCargoDto> cargosServidores,
                                             IEnumerable<AulaVinculosDto> aulas, TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao, bool exibirAulas)
         {
             if (tipoVisualizacao == TipoVisualizacaoRelatorioAtribuicaoCJ.Professor)
@@ -141,7 +144,7 @@ namespace SME.SR.Application
 
         private IEnumerable<AtribuicaoCjAulaDto> ObterAulasDadas(string professorRf, string codigoTurma, long componenteCurricularId, IEnumerable<AulaVinculosDto> aulas)
         {
-            return aulas.Where(aula => aula.ProfessorRf == professorRf && aula.TurmaCodigo == codigoTurma && 
+            return aulas.Where(aula => aula.ProfessorRf == professorRf && aula.TurmaCodigo == codigoTurma &&
                                        aula.ComponenteCurricularId == componenteCurricularId.ToString()).Select(aula =>
                 {
                     return new AtribuicaoCjAulaDto()
@@ -153,12 +156,12 @@ namespace SME.SR.Application
                 });
         }
 
-        private string ObterTipoProfessorCJ(string professorRf, IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica, 
+        private string ObterTipoProfessorCJ(string professorRf, IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica,
                                             IEnumerable<ProfessorTitularComponenteCurricularDto> lstProfTitulares, IEnumerable<ServidorCargoDto> cargosServidores)
         {
             List<int> idsComponentesCurricularesCj = new List<int> { 514, 526, 527, 528, 529, 530, 531, 532, 533 };
 
-            if (idsComponentesCurricularesCj.Any(componenteCJ => cargosServidores.Any(cargo => cargo.CodigoRF == professorRf && 
+            if (idsComponentesCurricularesCj.Any(componenteCJ => cargosServidores.Any(cargo => cargo.CodigoRF == professorRf &&
                                                                                                cargo.CodigoComponenteCurricular == componenteCJ.ToString())))
                 return "CJ da UE";
             else if (lstProfTitulares.Any(titular => titular.ProfessorRf == professorRf))
@@ -172,7 +175,7 @@ namespace SME.SR.Application
 
         }
 
-        private void AdicionarAtribuicoesEsporadicas(RelatorioAtribuicaoCjDto relatorio, IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica, 
+        private void AdicionarAtribuicoesEsporadicas(RelatorioAtribuicaoCjDto relatorio, IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica,
                                                      IEnumerable<ServidorCargoDto> cargosServidor)
         {
             relatorio.AtribuicoesEsporadicas.AddRange(
