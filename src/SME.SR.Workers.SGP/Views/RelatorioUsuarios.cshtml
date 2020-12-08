@@ -1,7 +1,7 @@
 ﻿@model SME.SR.Infra.RelatorioUsuarioDto
 
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 44;
+    int contadorMaximoLinhasPorPagina = 46;
     int contadorPagina = 0;
     bool realizouQuebra = false;
 
@@ -75,13 +75,13 @@
                     {
                        
                         str += $@"<tr>
-                            <td width='20%' class='td-valor'>{usuario.Login}</td>
-                            <td width='30%' class='td-valor'>{usuario.Nome}</td>
+                            <td width='10%' class='td-valor'>{usuario.Login}</td>
+                            <td width='40%' class='td-valor'>{usuario.Nome}</td>
                             <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                            <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                            <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
                           </tr>";
 
-                        contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 35 ? (int)(usuario.Nome.Length / 35) + 1 : 1);
+                        contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
 
                         retornoVerificacao = VerificaQuebra();
                         if (retornoVerificacao != string.Empty)
@@ -120,13 +120,13 @@
                         {
                           
                             str += $@"<tr>
-                                            <td width='20%' class='td-valor'>{usuario.Login}</td>
-                                            <td width='30%' class='td-valor'>{usuario.Nome}</td>
+                                            <td width='10%' class='td-valor'>{usuario.Login}</td>
+                                            <td width='40%' class='td-valor'>{usuario.Nome}</td>
                                             <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                                            <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                                            <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
                                           </tr>";
 
-                            contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 16 ? (int)(usuario.Nome.Length / 16) + 1 : 1);
+                            contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
 
                             retornoVerificacao = VerificaQuebra();
                             if (retornoVerificacao != string.Empty)
@@ -286,7 +286,7 @@
     }
     string MontaCabecalhoDREeUE(string descricao)
     {
-        contadorQuebrarPagina += 2;
+        contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
         <tr>
           <td width='100%' class='td-turma-bimestre'>{descricao}</td>
@@ -296,7 +296,7 @@
 
     string MontarCabecalhoPerfil(string descricao)
     {
-        contadorQuebrarPagina += 1;
+        contadorQuebrarPagina += 2;
         return $@"<table class='fixed'>
 <tr>
 <td width='100%' class='td-turma-bimestre'>{descricao}</td>
@@ -304,10 +304,10 @@
 </table>
 <table class='fixed'>
         <tr>
-            <td width='20%' class='td-titulo'>LOGIN</td>
-            <td width='30%' class='td-titulo'>NOME</td>
+            <td width='10%' class='td-titulo'>LOGIN</td>
+            <td width='40%' class='td-titulo'>NOME</td>
             <td width='20%' class='td-titulo'>SITUAÇÃO</td>
-            <td width='30%' class='td-titulo'>ÚLTIMO ACESSO</td>
+            <td width='20%' class='td-titulo'>ÚLTIMO ACESSO</td>
         </tr>";
     }
 
@@ -520,6 +520,7 @@
             text-align: center;
             font-size: 12px;
             padding: 4px;
+            min-height: 25px;
         }
 
         .td-valor-historico {

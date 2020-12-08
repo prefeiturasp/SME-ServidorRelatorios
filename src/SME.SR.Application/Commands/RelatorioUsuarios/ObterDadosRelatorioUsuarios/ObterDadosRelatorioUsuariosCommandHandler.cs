@@ -69,7 +69,7 @@ namespace SME.SR.Application
             {
                 var ueDto = new UePorPerfilUsuarioDto();
 
-                ueDto.Nome = grupoUe.Key;
+                ueDto.Nome = $"{usuarios.FirstOrDefault(c => c.Ue == grupoUe.Key).TipoEscola.ShortName()} - {grupoUe.Key}";
                 var usuariosUe = ObterUsuariosUe(grupoUe);
                 var usuariosPerfil = ObterUsuariosPorPerfil(usuariosUe);
                 ueDto.Perfis = usuariosPerfil;

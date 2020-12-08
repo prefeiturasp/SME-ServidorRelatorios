@@ -73,6 +73,7 @@ namespace SME.SR.Data
         {
             var query = new StringBuilder(@"select distinct a.dre_codigo as DreCodigo
 	                                        , a.dre_abreviacao as Dre
+                                            , ue.tipo_escola as TipoEscola
 	                                        , ue.Nome as Ue
 	                                        , a.usuario_perfil as PerfilGuid
 	                                        , pp.nome_perfil as Perfil
