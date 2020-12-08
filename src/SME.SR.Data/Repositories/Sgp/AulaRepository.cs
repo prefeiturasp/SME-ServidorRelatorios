@@ -362,15 +362,15 @@ namespace SME.SR.Data
                             a.disciplina_id as ComponenteCurricularId,
                             cc.permite_registro_frequencia ControlaFrequencia,
                            CASE
-						        WHEN rf.id is null THEN 1
+						        WHEN rf.id is not null THEN 1
 						        ELSE 0
 						    END  FrequenciaRegistrada,
                             CASE
-						        WHEN aa.id is null THEN 1
+						        WHEN aa.id is not null THEN 1
 						        ELSE 0
 						    END PossuiAtividadeAvaliativa,
 					        CASE
-						        WHEN n.id is null THEN 1
+						        WHEN n.id is not null THEN 1
 						        ELSE 0
 						    END PossuiNotaLancada       
                         from

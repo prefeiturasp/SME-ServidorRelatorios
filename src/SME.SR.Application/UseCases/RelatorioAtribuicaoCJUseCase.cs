@@ -111,7 +111,7 @@ namespace SME.SR.Application
             }
             else
             {
-                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => new { cj.TurmaId, cj.Turma.Nome });
+                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => new { cj.Turma.Codigo, cj.Turma.Nome });
 
                 relatorio.AtribuicoesCjPorTurma.AddRange(
                    agrupamento.Select(turma =>
