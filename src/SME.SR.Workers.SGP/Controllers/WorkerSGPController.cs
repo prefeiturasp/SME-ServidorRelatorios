@@ -187,5 +187,13 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/dados-leitura")]
+        [Action("relatorios/dados-leitura", typeof(IRelatorioLeituraComunicadosUseCase))]
+        public async Task<bool> LeituraComunicados([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioLeituraComunicadosUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
     }
 }
