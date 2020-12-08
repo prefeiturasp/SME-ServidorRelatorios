@@ -2936,6 +2936,50 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Linhas = linhas
                 },
             };
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            var graficoBarras1 = new GraficoBarrasVerticalDto(600, "Teste - gráfico de matemática");
+
+            graficoBarras1.Legendas = new List<GraficoBarrasLegendaDto>() {
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="A",
+                    Valor= "Não conseguiu ou não quis ler aaaa nmnnnn kkkk ssss"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="B",
+                    Valor= "Leu com muita dificuldade"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="C",
+                    Valor= "Leu com alguma fluencia"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="D",
+                    Valor= "Leu com fluencia"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="E",
+                    Valor= "Sem preenchimento"
+                },
+            };
+
+            graficoBarras1.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 24, 10);
+
+            graficoBarras1.EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+            {
+                new GraficoBarrasVerticalEixoXDto(2, "A"),
+                new GraficoBarrasVerticalEixoXDto(2, "B"),
+                new GraficoBarrasVerticalEixoXDto(2, "C"),
+                new GraficoBarrasVerticalEixoXDto(1, "D"),
+                new GraficoBarrasVerticalEixoXDto(24, "E"),
+            };
+
+            model.GraficosBarras.Add(graficoBarras1);
 
             return View("RelatorioSondagemComponentesPorTurma", model);
         }
