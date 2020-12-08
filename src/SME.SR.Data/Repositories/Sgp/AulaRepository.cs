@@ -354,9 +354,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AulaVinculosDto>> ObterAulasVinculos(string[] turmasId, string[] componenteCurricularesId, bool professorCJ)
         {
-            try
-            {
-                var query = @"select
+            var query = @"select
 	                        a.data_aula as Data,
 	                        a.criado_por as Professor,
 	                        a.criado_rf as ProfessorRf,
@@ -397,14 +395,9 @@ namespace SME.SR.Data
                         order by
 	                        data_aula";
 
-                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-                {
-                    return (await conexao.QueryAsync<AulaVinculosDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
-                }
-            }
-            catch (Exception ex)
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                throw ex;
+                return (await conexao.QueryAsync<AulaVinculosDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
             }
         }
     }
