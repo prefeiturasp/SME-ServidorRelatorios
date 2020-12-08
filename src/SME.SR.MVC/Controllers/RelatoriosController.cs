@@ -4715,8 +4715,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemPortuguesConsolidado", model);
         }
 
-       [HttpGet("graficos-pap")]
-       public IActionResult RelatorioGraficosPAP() {
+        [HttpGet("graficos-pap")]
+        public IActionResult RelatorioGraficosPAP()
+        {
             var graficosDto = new List<ResumoPAPGraficoDto>();
 
             for (var i = 0; i < 7; i++)
@@ -4788,35 +4789,35 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 EhEncaminhamento = false,
                 GraficosDto = graficosDto
             };
-            
+
             return View("RelatorioGraficosPAP", model);
-       }
+        }
         [HttpGet("Usuarios")]
         public IActionResult RelatorioUsuarios()
         {
-            var model = new RelatorioUsuarioDto() 
+            var model = new RelatorioUsuarioDto()
             {
                 Filtro = new FiltroUsuarioDto()
                 {
                     Dre = "DRE - BT",
-                    Ue = "CEU EMEF BUTANTA",                    
+                    Ue = "CEU EMEF BUTANTA",
                     RF = "9879878",
                     Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
                 }
             };
-        //[HttpGet("Usuarios")]
-        //public IActionResult RelatorioUsuarios()
-        //{
-        //    var model = new RelatorioUsuarioDto()
-        //    {
-        //        Filtro = new FiltroUsuarioDto()
-        //        {
-        //            Dre = "DRE - BT",
-        //            Ue = "CEU EMEF BUTANTA",
-        //            RF = "9879878",
-        //            Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
-        //        }
-        //    };
+            //[HttpGet("Usuarios")]
+            //public IActionResult RelatorioUsuarios()
+            //{
+            //    var model = new RelatorioUsuarioDto()
+            //    {
+            //        Filtro = new FiltroUsuarioDto()
+            //        {
+            //            Dre = "DRE - BT",
+            //            Ue = "CEU EMEF BUTANTA",
+            //            RF = "9879878",
+            //            Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
+            //        }
+            //    };
 
             model.Dres = new List<DreUsuarioDto>()
             {
@@ -5083,7 +5084,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),                                    
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 },
                                 new UsuarioProfessorDto()
                                 {
@@ -5245,7 +5246,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                     UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                                 }
-                            }                            
+                            }
                         },
                         new UePorPerfilUsuarioDto()
                         {
@@ -5855,7 +5856,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             Perfil = "CP",
                             SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                             SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
-                            UtilizaSenhaPadao = "Sim",                            
+                            UtilizaSenhaPadao = "Sim",
                         },
                         new HistoricoReinicioSenhaDto()
                         {
@@ -5938,7 +5939,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
                             UtilizaSenhaPadao = "Sim",
                         }
-                    }                    
+                    }
                 }
             };
             return View("RelatorioUsuarios", model);
@@ -6677,6 +6678,67 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         //    };
         //    return View("RelatorioHistoricoAlteracoesNotas", model);
         //}
+
+        [HttpGet("Leitura")]
+        public IActionResult RelatorioLeitura()
+        {
+            var model = new RelatorioLeituraComunicadosDto()
+            {
+                Filtro = new FiltroLeituraComunicadosDto()
+                {
+                    Dre = "DRE - BT",
+                    Ue = "CEU EMEF BUTANTA",
+                    RF = "9879878",
+                    Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza"
+                },
+
+                LeituraComunicadoDto = new List<LeituraComunicadoDto>()
+                {
+                    new LeituraComunicadoDto()
+                    {
+                        Comunicado = "Festa junina 2020",
+                        DataEnvio = DateTime.Now,
+                        DataExpiracao = DateTime.Now.AddDays(5),
+                        NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = null                        
+                    },
+                    new LeituraComunicadoDto()
+                    {
+                        Comunicado = "Festa junina 2020",
+                        DataEnvio = DateTime.Now,
+                        DataExpiracao = DateTime.Now.AddDays(5),
+                        NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = null
+                    },
+                    new LeituraComunicadoDto()
+                    {
+                        Comunicado = "Festa junina 2020",
+                        DataEnvio = DateTime.Now,
+                        DataExpiracao = DateTime.Now.AddDays(5),
+                        NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = null
+                    },
+                    new LeituraComunicadoDto()
+                    {
+                        Comunicado = "Festa junina 2020",
+                        DataEnvio = DateTime.Now,
+                        DataExpiracao = DateTime.Now.AddDays(5),
+                        NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = null
+                    }
+                }
+            };
+
+            return View("RelatorioNotificacoes", model);
+        }
     }
 }
 
