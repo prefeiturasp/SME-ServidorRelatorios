@@ -66,7 +66,7 @@ namespace SME.SR.Data
                             LEFT JOIN cargo on cargo_sobreposto_servidor.cd_cargo = cargo.cd_cargo
                 {0}  --WHERE";
 
-            var where = "where cd_registro_funcional in (@codigosRF) and dt_fim_nomeacao is null";
+            var where = "where cd_registro_funcional in @codigosRF and dt_fim_nomeacao is null";
             var query = string.Format(campos, where);
             var parametros = new { codigosRF, anoLetivo };
 
