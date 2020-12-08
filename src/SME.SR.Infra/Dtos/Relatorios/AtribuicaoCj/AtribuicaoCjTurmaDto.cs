@@ -10,5 +10,6 @@ namespace SME.SR.Infra
         public string ComponenteCurricular { get; set; }
         public string NomeProfessorTitular { get; set; }
         public string DataAtribuicao { get; set; }
+        public List<AtribuicaoCjAulaDto> Aulas { get; set; }
     }
 }
