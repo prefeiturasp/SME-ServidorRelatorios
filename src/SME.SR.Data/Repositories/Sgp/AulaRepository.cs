@@ -392,6 +392,16 @@ namespace SME.SR.Data
 	                        and t.turma_id = ANY(@turmasId)
 	                        and not a.excluido 
                             and a.aula_cj = @professorCJ
+                        group by 	
+	                        a.data_aula,
+	                        a.criado_por,
+	                        a.criado_rf,
+                            a.turma_id,
+                            a.disciplina_id,
+                            cc.permite_registro_frequencia,
+	                    	FrequenciaRegistrada,
+	                    	PossuiAtividadeAvaliativa,
+	                    	PossuiNotaLancada
                         order by
 	                        data_aula";
 
