@@ -12,7 +12,9 @@ namespace SME.SR.Infra
         public string Semestre { get; set; }
         public string Turma { get; set; }
         public string Professor { get; set; }
+        public string RfProfessor { get; set; }
         public string Usuario { get; set; }
+        public string RfUsuario { get; set; }
         public string DataImpressao { get { return DateTime.Today.ToString("dd/MM/yyyy"); } }
         public List<AtribuicaoCjPorTurmaDto> AtribuicoesCjPorTurma { get; set; }
         public List<AtribuicaoCjPorProfessorDto> AtribuicoesCjPorProfessor { get; set; }
