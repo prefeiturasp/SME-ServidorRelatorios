@@ -717,10 +717,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<long>> ObterTurmasCodigoPorUeAnoSondagemAsync(string ano, string ueCodigo, int anoLetivo, long dreCodigo)
         {
-            try
-            {
-
-                var query = new StringBuilder(@"
+            var query = new StringBuilder(@"
                      SELECT distinct turma.cd_turma_escola  codigoTurma 
                      FROM turma_escola Turma  
                      INNER JOIN serie_turma_escola serie_turma
@@ -737,23 +734,16 @@ namespace SME.SR.Data
                      AND left(dc_turma_escola, 1) = @ano AND Turma.cd_tipo_turma = 1");
 
 
-                if (!string.IsNullOrEmpty(ueCodigo))
-                    query.AppendLine("AND turma.cd_escola = @ueCodigo");
+            if (!string.IsNullOrEmpty(ueCodigo))
+                query.AppendLine("AND turma.cd_escola = @ueCodigo");
 
-                if (dreCodigo > 0)
-                    query.AppendLine("AND cue.cd_unidade_administrativa_referencia = @dreCodigo");
+            if (dreCodigo > 0)
+                query.AppendLine("AND cue.cd_unidade_administrativa_referencia = @dreCodigo");
 
 
-                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-                return await conexao.QueryAsync<long>(query.ToString(), new { ano, ueCodigo, anoLetivo, dreCodigo });
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
+            return await conexao.QueryAsync<long>(query.ToString(), new { ano, ueCodigo, anoLetivo, dreCodigo });
         }
 
         public async Task<TurmaResumoDto> ObterTurmaResumoComDreUePorId(long turmaId)
@@ -780,7 +770,16 @@ namespace SME.SR.Data
                 return turma.First();
             }
         }
+        public async Task<IEnumerable<TurmaResumoDto>> ObterTurmasResumoPorCodigos(string[] turmaCodigos)
+        {
+            var query = @"select t.id, t.nome, t.ano_letivo as AnoLetivo, t.modalidade_codigo as Modalidade, t.turma_id as codigo                                
+                              from turma t                             
+                             where t.turma_id = Any(@turmaCodigos)";
 
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+
+            return await conexao.QueryAsync<TurmaResumoDto>(query.ToString(), turmaCodigos);
+        }
         public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
         {
             var query = @"select t.id as Codigo
@@ -798,7 +797,7 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<Turma>(query, new { ids });
             }
         }
-        
+
         public async Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, long anoLetivo)
         {
             var query = @"select t.id as Codigo
@@ -823,7 +822,7 @@ namespace SME.SR.Data
             {
 
                 throw ex;
-            }           
+            }
 
         }
     }
