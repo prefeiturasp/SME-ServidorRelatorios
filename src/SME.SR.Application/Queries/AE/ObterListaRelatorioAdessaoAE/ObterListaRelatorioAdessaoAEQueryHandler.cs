@@ -74,6 +74,8 @@ namespace SME.SR.Application
 
         private async Task TrataDre(string dreCodigoParaTratar, IEnumerable<AdesaoAEQueryConsolidadoRetornoDto> listaConsolida, AdesaoAERetornoDto retorno)
         {
+            retorno.MostraDRE = true;
+
             var uesCodigos = listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo.Trim()))
                 .Select(a => a.UeCodigo.ToString()).Distinct().ToArray();
 
@@ -196,16 +198,18 @@ namespace SME.SR.Application
 
                     switch (request.RelatorioFiltros.OpcaoListaUsuarios)
                     {
-                        case FiltroRelatorioAEAdesao.ListarUsuariosNao:
-                            break;
-                        case FiltroRelatorioAEAdesao.ListarUsuariosValidos:
-                            break;
-                        case FiltroRelatorioAEAdesao.ListarUsuariosCPFIrregular:
-                            break;
-                        case FiltroRelatorioAEAdesao.ListarUsuariosCPFTodos:
+                        case FiltroRelatorioAEAdesaoEnum.ListarUsuariosNao:
 
+
+
+                            break;
+                        case FiltroRelatorioAEAdesaoEnum.ListarUsuariosValidos:
+                            TrataListarCpfValidos(alunosResponsaveisParaTratar, usuariosDoApp, turma, turmaParaAdicionar);
+                            break;
+                        case FiltroRelatorioAEAdesaoEnum.ListarUsuariosCPFIrregular:
+                            break;
+                        case FiltroRelatorioAEAdesaoEnum.ListarUsuariosCPFTodos:
                             TrataListarTodosCpf(alunosResponsaveisParaTratar, usuariosDoApp, turma, turmaParaAdicionar);
-
                             break;
                         default:
                             break;
@@ -220,6 +224,30 @@ namespace SME.SR.Application
             }
 
             retorno.UE = UeParaAdicionar;
+        }
+
+        private void TrataListarCpfValidos(IEnumerable<AlunoResponsavelAdesaoAEDto> alunosResponsaveisParaTratar, IEnumerable<UsuarioAEDto> usuariosDoApp, TurmaResumoDto turma, AdesaoAETurmaDto turmaParaAdicionar)
+        {
+            var alunosResponsaveisDaTurma = alunosResponsaveisParaTratar.Where(a => a.TurmaCodigo == long.Parse(turma.Codigo)).OrderBy(a => a.NomeAlunoParaVisualizar());
+
+            foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
+            {
+                var usuarioApp = usuariosDoApp.FirstOrDefault(a => a.Cpf == alunoResponsaveisDaTurma.ResponsavelCpf);
+                if (usuarioApp != null)
+                {
+                    var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
+                    {
+                        Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
+                        CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf.ToString(),
+                        Responsavel = alunoResponsaveisDaTurma.ResponsavelNome,
+                        Estudante = alunoResponsaveisDaTurma.NomeAlunoParaVisualizar(),
+                        Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada,
+                        UltimoAcesso = usuarioApp?.UltimoLogin.ToString("dd/MM/yyyy HH:mm"),
+                        SituacaoNoApp = ObtemSituacaoApp(usuarioApp, alunoResponsaveisDaTurma)
+                    };
+                    turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
+                }
+            }
         }
 
         private void TrataListarTodosCpf(IEnumerable<AlunoResponsavelAdesaoAEDto> alunosResponsaveisParaTratar, IEnumerable<UsuarioAEDto> usuariosDoApp, TurmaResumoDto turma, AdesaoAETurmaDto turmaParaAdicionar)
@@ -247,9 +275,8 @@ namespace SME.SR.Application
 
         private string ObtemSituacaoApp(UsuarioAEDto usuarioApp, AlunoResponsavelAdesaoAEDto alunoResponsavelAdesaoAEDto)
         {
-            //Verificar a situação do CPF
-            //if (alunoResponsavelAdesaoAEDto.)
-            //return "CPF inválido";
+            if (!UtilCPF.Valida(alunoResponsavelAdesaoAEDto.ResponsavelCpf))
+                return "CPF inválido";
 
             if (usuarioApp == null && usuarioApp.Excluido)
                 return "Não tem";

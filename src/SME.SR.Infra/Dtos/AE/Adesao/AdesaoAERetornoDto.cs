@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace SME.SR.Infra
+﻿namespace SME.SR.Infra
 {
     public class AdesaoAERetornoDto
     {
-        
+
         public string DRENome { get; set; }
         public string UeNome { get; set; }
         public string UsuarioNome { get; set; }
@@ -15,6 +13,6 @@ namespace SME.SR.Infra
         public bool MostraUe { get; set; }
         public AdesaoAESmeDto SME { get; set; }
         public AdesaoAEDreDto DRE { get; set; }
-        public AdesaoAeUeRetornoDto UE { get; set; }       
+        public AdesaoAeUeRetornoDto UE { get; set; }
     }
 }

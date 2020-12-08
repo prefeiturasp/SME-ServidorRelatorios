@@ -22,9 +22,8 @@ namespace SME.SR.Application
             var listaConsolida = await mediator.Send(new ObterValoresConsolidadosAdesaoAppQuery(relatorioFiltros.DreCodigo, relatorioFiltros.UeCodigo));
 
             if (!listaConsolida.Any())
-            {
-                //Verificar oq fazer caso a lista não tenha retorno
-            }
+                throw new NegocioException("Não foram encontrados dados com os filtros informados.");
+            
 
             var listaRetorno = await mediator.Send(new ObterListaRelatorioAdessaoAEQuery(listaConsolida, relatorioFiltros));
             

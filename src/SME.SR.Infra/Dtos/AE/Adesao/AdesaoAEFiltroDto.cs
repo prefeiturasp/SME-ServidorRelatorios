@@ -4,10 +4,10 @@
     {
         public string DreCodigo { get; set; }
         public string UeCodigo { get; set; }
-        public FiltroRelatorioAEAdesao OpcaoListaUsuarios { get; set; }
+        public FiltroRelatorioAEAdesaoEnum OpcaoListaUsuarios { get; set; }
         public string NomeUsuario { get; set; }
     }
-    public enum FiltroRelatorioAEAdesao
+    public enum FiltroRelatorioAEAdesaoEnum
     {
         ListarUsuariosNao = 1,
         ListarUsuariosValidos = 2,

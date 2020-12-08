@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    internal class ObterValoresConsolidadosAdesaoAppQuery : IRequest<IEnumerable<AdesaoAEQueryConsolidadoRetornoDto>>
+    public class ObterValoresConsolidadosAdesaoAppQuery : IRequest<IEnumerable<AdesaoAEQueryConsolidadoRetornoDto>>
     {
         public string DreCodigo { get; set; }
 
