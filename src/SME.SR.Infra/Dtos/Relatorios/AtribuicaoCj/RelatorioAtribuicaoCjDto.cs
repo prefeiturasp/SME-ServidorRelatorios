@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SME.SR.Infra
 {
@@ -19,5 +18,12 @@ namespace SME.SR.Infra
         public List<AtribuicaoCjPorTurmaDto> AtribuicoesCjPorTurma { get; set; }
         public List<AtribuicaoCjPorProfessorDto> AtribuicoesCjPorProfessor { get; set; }
         public List<AtribuicaoEsporadicaDto> AtribuicoesEsporadicas { get; set; }
+
+        public RelatorioAtribuicaoCjDto()
+        {
+            AtribuicoesCjPorTurma = new List<AtribuicaoCjPorTurmaDto>();
+            AtribuicoesCjPorProfessor = new List<AtribuicaoCjPorProfessorDto>();
+            AtribuicoesEsporadicas = new List<AtribuicaoEsporadicaDto>();
+        }
     }
 }

@@ -4,7 +4,6 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,8 +30,9 @@ namespace SME.SR.Data
                             and a.disciplina_id = @disciplinaId 
                             and p.bimestre = @bimestre ";
 
-            var parametros = new { 
-                CodigoTurma = codigoTurma, 
+            var parametros = new
+            {
+                CodigoTurma = codigoTurma,
                 DisciplinaId = componenteCurricularCodigo,
                 TipoCalendarioId = tipoCalendarioId,
                 Bimestre = bimestre
@@ -48,7 +48,7 @@ namespace SME.SR.Data
         {
             var query = @"select * from aula_prevista ap
                          where ap.tipo_calendario_id = @tipoCalendarioId and ap.turma_id = @turmaId and
-                               ap.disciplina_id = @disciplinaId;";            
+                               ap.disciplina_id = @disciplinaId;";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -89,7 +89,7 @@ namespace SME.SR.Data
             }
         }
 
-       // public Task<int> ObterQuantidadeAulas(long turmaId, string componenteCurricularId, string CodigoRF)
+        // public Task<int> ObterQuantidadeAulas(long turmaId, string componenteCurricularId, string CodigoRF)
         public async Task<bool> VerificaExisteMaisAulaCadastradaNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             var query = @"select distinct 1 
@@ -270,7 +270,7 @@ namespace SME.SR.Data
 	                        t.id = @turmaId and 
 	                        gd.componente_curricular_id = @componenteCurricularId ";
 
-            using(var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId }));
             }
@@ -319,6 +319,95 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
+            }
+        }
+
+        public async Task<IEnumerable<AulaReduzidaDto>> ObterAulasReduzido(long[] turmasId, string[] componenteCurricularesId, bool professorCJ)
+        {
+            var query = @"select
+	                        a.data_aula as Data,
+	                        a.criado_por as Professor,
+	                        a.criado_rf as ProfessorRf
+                        from
+	                        aula a
+                        inner join turma t on
+	                        a.turma_id = t.turma_id
+                        inner join periodo_escolar pe on
+	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                        where
+	                        disciplina_id = ANY(@componenteCurricularesId)
+	                        and t.id = ANY(@turmasId)
+	                        and not a.excluido 
+                            and a.aula_cj = @professorCJ
+                        group by
+	                        a.data_aula,
+	                        a.criado_por,
+                            a.criado_por,
+                            a.criado_rf
+                        order by
+	                        data_aula";
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<AulaReduzidaDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
+            }
+        }
+
+        public async Task<IEnumerable<AulaVinculosDto>> ObterAulasVinculos(string[] turmasId, string[] componenteCurricularesId, bool professorCJ)
+        {
+            var query = @"select
+	                        a.data_aula as Data,
+	                        a.criado_por as Professor,
+	                        a.criado_rf as ProfessorRf,
+                            a.turma_id as TurmaCodigo,
+                            a.disciplina_id as ComponenteCurricularId,
+                            cc.permite_registro_frequencia ControlaFrequencia,
+                           CASE
+						        WHEN rf.id is not null THEN 1
+						        ELSE 0
+						    END  FrequenciaRegistrada,
+                            CASE
+						        WHEN aa.id is not null THEN 1
+						        ELSE 0
+						    END PossuiAtividadeAvaliativa,
+					        CASE
+						        WHEN n.id is not null THEN 1
+						        ELSE 0
+						    END PossuiNotaLancada       
+                        from
+	                        aula a
+                        inner join turma t on
+	                        a.turma_id = t.turma_id
+                        inner join componente_curricular cc on a.disciplina_id = cc.id::varchar
+                        left join registro_frequencia rf on rf.aula_id = a.id
+                        left join atividade_avaliativa aa on
+                        	aa.turma_id = a.turma_id
+	                        and aa.data_avaliacao::date = a.data_aula::date
+                        left join atividade_avaliativa_disciplina aad on
+	                        aad.atividade_avaliativa_id = aa.id 
+	                        and aad.disciplina_id = a.disciplina_id 
+	                    left join notas_conceito n on
+                		    aa.id = n.atividade_avaliativa
+                        where
+	                        a.disciplina_id = ANY(@componenteCurricularesId)
+	                        and t.turma_id = ANY(@turmasId)
+	                        and not a.excluido 
+                            and a.aula_cj = @professorCJ
+                        group by 	
+	                        a.data_aula,
+	                        a.criado_por,
+	                        a.criado_rf,
+                            a.turma_id,
+                            a.disciplina_id,
+                            cc.permite_registro_frequencia,
+	                    	FrequenciaRegistrada,
+	                    	PossuiAtividadeAvaliativa,
+	                    	PossuiNotaLancada
+                        order by
+	                        data_aula";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<AulaVinculosDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
             }
         }
     }
