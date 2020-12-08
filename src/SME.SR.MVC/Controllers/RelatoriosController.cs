@@ -6071,12 +6071,68 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 Semestre = "1º",
                 Turma = "TODAS",
                 Professor = "ALANA FERRIRA OLIVEIRA",
+                RfProfessor = "1234569789",
                 Usuario = "RITA DE CASSIA FREITAS",
+                RfUsuario = "789456310",
                 AtribuicoesCjPorProfessor = new List<AtribuicaoCjPorProfessorDto>()
                     {
                         new AtribuicaoCjPorProfessorDto()
                         {
                             NomeProfessor = "PRISCILA MELLO DE ANDRADE(12345678) - ESPORÁDICO",
+                            AtribuiicoesCjTurma = new List<AtribuicaoCjTurmaDto>()
+                            {
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "24/03/2020",
+                                    Aulas = new List<AtribuicaoCjAulaDto>()
+                                    {
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = true,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações askldjçlkj asdklj fçlkajsd fçlkjas dklj çlkasjdf çlkj açlksdj lkçj fasçldkj açlkjsd fçlkj  çlakkjsd fçlkja sdçfkj jç aksjd çlkj façskjd çlkj asd"
+                                        },
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = true,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações"
+                                        },
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = false,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações"
+                                        },
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = true,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações"
+                                        },
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = true,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações"
+                                        }
+                                    }
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                }
+                            }
+                        },
+                        new AtribuicaoCjPorProfessorDto()
+                        {
+                            NomeProfessor = "JULIA ANDRADE(12345678) - ESPORÁDICO",
                             AtribuiicoesCjTurma = new List<AtribuicaoCjTurmaDto>()
                             {
                                 new AtribuicaoCjTurmaDto()
@@ -6092,20 +6148,97 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                     ComponenteCurricular = "Português",
                                     NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
                                     DataAtribuicao= "21/09/2020"
-                                }
-                            }
-                        },
-                        new AtribuicaoCjPorProfessorDto()
-                        {
-                            NomeProfessor = "PRISCILA MELLO DE ANDRADE(12345678) - ESPORÁDICO",
-                            AtribuiicoesCjTurma = new List<AtribuicaoCjTurmaDto>()
-                            {
+                                },
                                 new AtribuicaoCjTurmaDto()
                                 {
                                     NomeTurma = "2B",
                                     ComponenteCurricular = "Português",
                                     NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
-                                    DataAtribuicao= "24/03/2020"
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
                                 },
                                 new AtribuicaoCjTurmaDto()
                                 {
@@ -6129,7 +6262,77 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                 NomeProfessorCj = "Priscila Mello",
                                 ComponenteCurricular = "Biologia",
                                 NomeProfessorTitular = "Ana Paula Souza",
-                                
+                                DataAtribuicao = "20/08/2020",
+                                TipoProfessorCj = "Esporádico",
+                                Aulas = new List<AtribuicaoCjAulaDto>()
+                                {
+                                    new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    },new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    },new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    }
+                                }
+                            },
+                            new AtribuicaoCjProfessorDto()
+                            {
+                                NomeProfessorCj = "Jorge Abreu",
+                                ComponenteCurricular = "Português",
+                                NomeProfessorTitular = "Marcos Santos",
+                                DataAtribuicao = "20/09/2020",
+                                TipoProfessorCj = "Esporádico"
+                            }
+                        }
+                    },
+                    new AtribuicaoCjPorTurmaDto()
+                    {
+                        NomeTurma =  "1B",
+                        AtribuicoesCjProfessor = new List<AtribuicaoCjProfessorDto>()
+                        {
+                            new AtribuicaoCjProfessorDto()
+                            {
+                                NomeProfessorCj = "Priscila Mello",
+                                ComponenteCurricular = "Biologia",
+                                NomeProfessorTitular = "Ana Paula Souza",
+                                DataAtribuicao = "20/08/2020",
+                                TipoProfessorCj = "Esporádico",
+                                Aulas = new List<AtribuicaoCjAulaDto>()
+                                {
+                                    new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    },new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    },new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    }
+                                }
+                            },
+                            new AtribuicaoCjProfessorDto()
+                            {
+                                NomeProfessorCj = "Jorge Abreu",
+                                ComponenteCurricular = "Português",
+                                NomeProfessorTitular = "Marcos Santos",
+                                DataAtribuicao = "20/09/2020",
+                                TipoProfessorCj = "Esporádico"
                             }
                         }
                     }
@@ -6146,6 +6349,270 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         DataAtribuicao = "04/12/2020"
                     },
                     new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
                     {
                         NomeUsuario = "Joana Lime do Carmo (1234569)",
                         Cargo = "Secretária (214123456)",
