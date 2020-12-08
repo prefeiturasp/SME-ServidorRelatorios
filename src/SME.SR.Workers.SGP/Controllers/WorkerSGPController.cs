@@ -187,5 +187,13 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/ae/adesao")]
+        [Action("relatorios/ae/adesao", typeof(IRelatorioAdesaoAppUseCase))]
+        public async Task<bool> AdesaoApp([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAdesaoAppUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
     }
 }
