@@ -185,6 +185,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioNotificacaoUseCase, RelatorioNotificacaoUseCase>();
             services.TryAddScoped<IRelatorioUsuariosUseCase, RelatorioUsuariosUseCase>();
             services.TryAddScoped<IRelatorioAtribuicaoCJUseCase, RelatorioAtribuicaoCJUseCase>();
+            services.TryAddScoped<IRelatorioAlteracaoNotasUseCase, RelatorioAlteracaoNotasUseCase>();
 
         }
     }

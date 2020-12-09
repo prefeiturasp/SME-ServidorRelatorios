@@ -31,6 +31,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
         {
             var model = new RelatorioFaltasFrequenciaDto();
             var filtro = request.Filtro;
+            if (filtro.TurmasPrograma)
+                filtro.AnosEscolares = filtro.AnosEscolares.Concat(new[] { new string("0") });            
 
             var dres = await relatorioFaltasFrequenciaRepository.ObterFaltasFrequenciaPorAno(filtro.AnoLetivo,
                                                                                           filtro.CodigoDre,
@@ -70,6 +72,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 {
                     foreach (var ano in ue.Anos)
                     {
+                        ano.NomeAno = ano.NomeAno.Equals("0º ano") ? "Turma de Programa" : ano.NomeAno;
                         foreach (var bimestre in ano.Bimestres)
                         {
                             bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre";
@@ -111,6 +114,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     }).ToList();
                                     componente.Alunos.AddRange(sem);
                                 }
+
+                                model.UltimoAluno = componente.Alunos.LastOrDefault().CodigoAluno.ToString();
                             }
                         }
 
@@ -170,6 +175,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         ano.Bimestres = ano.Bimestres.OrderBy(c => c.NomeBimestre).ToList();
                     }
                 }
+                model.UltimoAluno = $"{dre.NomeDre}{model.UltimoAluno}";
             }
 
             DefinirCabecalho(request, model, filtro, dres, componentes);
@@ -289,7 +295,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         private static void OrdenarAlunos(FiltroRelatorioFaltasFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFaltaFrequenciaComponenteDto componente)
         {
-            if (!filtro.TodosEstudantes)
+            if (filtro.Condicao != CondicoesRelatorioFaltasFrequencia.TodosEstudantes)
             {
                 componente.Alunos = (from a in componente.Alunos
                                      where
