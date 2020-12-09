@@ -18,8 +18,8 @@ namespace SME.SR.Application
         }
 
         public async Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> Handle(ObterProfessorTitularComponenteCurricularPorTurmaQuery request, CancellationToken cancellationToken)
-        { 
-           var lstProfessores =  await professorRepository.BuscarProfessorTitularComponenteCurricularPorTurma(request.CodigosTurma);
+        {
+            var lstProfessores = await professorRepository.BuscarProfessorTitularComponenteCurricularPorTurma(request.CodigosTurma);
 
             return lstProfessores;
         }
