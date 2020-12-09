@@ -134,7 +134,10 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));            
             services.TryAddScoped(typeof(IPeriodoSondagemRepository), typeof(PeriodoSondagemRepository));
             services.TryAddScoped(typeof(IAulaPrevistaBimestreRepository), typeof(AulaPrevistaBimestreRepository));
-            
+            services.TryAddScoped(typeof(IAtribuicaoEsporadicaRepository), typeof(AtribuicaoEsporadicaRepository));
+            services.TryAddScoped(typeof(ICargoRepository), typeof(CargoRepository));
+            services.TryAddScoped(typeof(IProfessorRepository), typeof(ProfessorRepository));
+
             services.TryAddScoped(typeof(IMathPoolCARepository), typeof(MathPoolCARepository));
             services.TryAddScoped(typeof(IMathPoolCMRepository), typeof(MathPoolCMRepository));
 
@@ -181,6 +184,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioSondagemPtConsolidadoLeitEscProdUseCase, RelatorioSondagemPtConsolidadoLeitEscProdUseCase>();
             services.TryAddScoped<IRelatorioNotificacaoUseCase, RelatorioNotificacaoUseCase>();
             services.TryAddScoped<IRelatorioUsuariosUseCase, RelatorioUsuariosUseCase>();
+            services.TryAddScoped<IRelatorioAtribuicaoCJUseCase, RelatorioAtribuicaoCJUseCase>();
             services.TryAddScoped<IRelatorioAlteracaoNotasUseCase, RelatorioAlteracaoNotasUseCase>();
 
         }

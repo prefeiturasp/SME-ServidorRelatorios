@@ -179,6 +179,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/atribuicoes-cj")]
+        [Action("relatorios/atribuicoes-cj", typeof(IRelatorioAtribuicaoCJUseCase))]
+        public async Task<bool> AtribuicoesCJ([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAtribuicaoCJUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorios/alteracao-notas")]
         [Action("relatorios/alteracao-notas", typeof(IRelatorioAlteracaoNotasUseCase))]
         public async Task<bool> AlteracaoNotasBimestre([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAlteracaoNotasUseCase relatorioUseCase)
@@ -186,6 +194,5 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
-
     }
 }
