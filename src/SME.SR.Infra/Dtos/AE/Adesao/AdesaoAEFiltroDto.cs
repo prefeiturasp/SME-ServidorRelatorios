@@ -5,7 +5,8 @@
         public string DreCodigo { get; set; }
         public string UeCodigo { get; set; }
         public FiltroRelatorioAEAdesaoEnum OpcaoListaUsuarios { get; set; }
-        public string NomeUsuario { get; set; }
+        public string UsuarioNome { get; set; }
+        public string UsuarioRF { get; set; }
     }
     public enum FiltroRelatorioAEAdesaoEnum
     {

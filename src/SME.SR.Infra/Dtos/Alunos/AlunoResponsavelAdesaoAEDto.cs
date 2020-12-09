@@ -19,7 +19,10 @@
         }
         public string ResponsavelCelularFormatado()
         {
-            return $"({ResponsavelDDD} {ResponsavelCelular})";
+            if (string.IsNullOrEmpty(ResponsavelDDD))
+                return string.Empty;
+
+            return $"({ResponsavelDDD.Trim()} {ResponsavelCelular.Trim()})";
         }
 
     }

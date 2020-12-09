@@ -776,9 +776,9 @@ namespace SME.SR.Data
                               from turma t                             
                              where t.turma_id = Any(@turmaCodigos)";
 
-            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryAsync<TurmaResumoDto>(query.ToString(), turmaCodigos);
+            return await conexao.QueryAsync<TurmaResumoDto>(query.ToString(), new { turmaCodigos });
         }
         public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
         {

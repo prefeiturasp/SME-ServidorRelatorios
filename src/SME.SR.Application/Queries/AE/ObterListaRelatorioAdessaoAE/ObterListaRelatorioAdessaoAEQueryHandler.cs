@@ -37,13 +37,33 @@ namespace SME.SR.Application
             {
                 await TrataSME(request, retorno);
             }
-            //Montar cabeçalho
+
+            await MontarCabecalho(request.RelatorioFiltros, retorno);
 
             return retorno;
         }
 
+        private async Task MontarCabecalho(AdesaoAEFiltroDto relatorioFiltros, AdesaoAERetornoDto retorno)
+        {
+            if (!string.IsNullOrEmpty(relatorioFiltros.UeCodigo))
+            {
+                var ue = await mediator.Send(new ObterUePorCodigoQuery(relatorioFiltros.UeCodigo));
+                retorno.UeNome = ue.NomeComTipoEscola;
+            }
+            if (!string.IsNullOrEmpty(relatorioFiltros.DreCodigo))
+            {
+                var dre = await mediator.Send(new ObterDrePorCodigoQuery(relatorioFiltros.DreCodigo));
+                retorno.DRENome = $"{dre.Abreviacao} - {dre.Nome}";
+            }
+
+            retorno.UsuarioNome = relatorioFiltros.UsuarioNome;
+            retorno.UsuarioRF = relatorioFiltros.UsuarioRF;
+        }
+
         private async Task TrataSME(ObterListaRelatorioAdessaoAEQuery request, AdesaoAERetornoDto retorno)
         {
+            retorno.MostraSME = true;
+
             var registroSme = request.ListaConsolida.FirstOrDefault(a => string.IsNullOrEmpty(a.DreCodigo.Trim()));
             if (registroSme == null)
                 throw new NegocioException("Não foi possível obter o registro consolidado da SME.");
@@ -102,26 +122,27 @@ namespace SME.SR.Application
             foreach (var ueParaTratar in listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo)))
             {
                 var ue = Ues.FirstOrDefault(a => a.Codigo == ueParaTratar.UeCodigo);
-
-                var ueParaAdicionar = new AdesaoAEValoresDto()
+                if (ue != null)
                 {
-                    Nome = ue?.NomeComTipoEscola,
-                    NaoRealizaram = registroDreParaTratar.SemAppInstalado,
-                    PrimeiroAcessoIncompleto = registroDreParaTratar.PrimeiroAcessoIncompleto,
-                    SemCpfOuCpfInvalido = registroDreParaTratar.CpfsInvalidos,
-                    Validos = registroDreParaTratar.Validos
-                };
+                    var ueParaAdicionar = new AdesaoAEValoresDto()
+                    {
+                        Nome = ue.NomeComTipoEscola,
+                        NaoRealizaram = registroDreParaTratar.SemAppInstalado,
+                        PrimeiroAcessoIncompleto = registroDreParaTratar.PrimeiroAcessoIncompleto,
+                        SemCpfOuCpfInvalido = registroDreParaTratar.CpfsInvalidos,
+                        Validos = registroDreParaTratar.Validos
+                    };
 
-                registroDre.Ues.Add(ueParaAdicionar);
+                    registroDre.Ues.Add(ueParaAdicionar);
+                }
+
             }
-
             retorno.DRE = registroDre;
         }
 
         private async Task TrataUe(ObterListaRelatorioAdessaoAEQuery request, AdesaoAERetornoDto retorno)
         {
-            retorno.MostraDRE = false;
-            retorno.MostraSME = false;
+            retorno.MostraUe = true;
 
             var registroUeParaTratar = request.ListaConsolida.FirstOrDefault(a => a.TurmaCodigo == 0 && !string.IsNullOrEmpty(a.UeCodigo));
 
@@ -143,7 +164,6 @@ namespace SME.SR.Application
 
             var turmasCodigos = request.ListaConsolida.Select(a => a.TurmaCodigo.ToString()).Distinct().ToArray();
 
-            //Buscar turmas & modalidades
             var turmasEModalidades = await mediator.Send(new ObterTurmasEModalidadesPorCodigoTurmasQuery(turmasCodigos));
 
             var turmasAgrupadasPorModalidade = turmasEModalidades
@@ -174,7 +194,6 @@ namespace SME.SR.Application
 
                 var modalidadeParaAdicionar = new AdesaoAEModalidadeDto() { Valores = valoresDaMolidade };
 
-
                 var alunosResponsaveisParaTratar = await mediator.Send(new ObterAlunosResponsaveisPorTurmasCodigoQuery(codigosTurmasDaModalidade.ToArray()));
 
                 var cpfsDosResponsaveis = alunosResponsaveisParaTratar.Select(a => a.ResponsavelCpf).Distinct().ToArray();
@@ -194,41 +213,58 @@ namespace SME.SR.Application
 
                     var turmaParaAdicionar = new AdesaoAETurmaDto() { Valores = valoresDaTurmaParaTratar };
 
-                    //status (Tem, não tem, CPF inválido, primeiro acesso incompleto)
-
                     switch (request.RelatorioFiltros.OpcaoListaUsuarios)
                     {
                         case FiltroRelatorioAEAdesaoEnum.ListarUsuariosNao:
-
-
-
+                            UeParaAdicionar.MostraColunaSituacao = false;
                             break;
                         case FiltroRelatorioAEAdesaoEnum.ListarUsuariosValidos:
+                            UeParaAdicionar.MostraColunaSituacao = false;
                             TrataListarCpfValidos(alunosResponsaveisParaTratar, usuariosDoApp, turma, turmaParaAdicionar);
                             break;
                         case FiltroRelatorioAEAdesaoEnum.ListarUsuariosCPFIrregular:
+                            TrataListarCpfIrregular(alunosResponsaveisParaTratar, usuariosDoApp, turma, turmaParaAdicionar);
+                            UeParaAdicionar.MostraColunaSituacao = false;
                             break;
                         case FiltroRelatorioAEAdesaoEnum.ListarUsuariosCPFTodos:
+                            UeParaAdicionar.MostraColunaSituacao = true;
                             TrataListarTodosCpf(alunosResponsaveisParaTratar, usuariosDoApp, turma, turmaParaAdicionar);
                             break;
                         default:
                             break;
                     }
-
                     modalidadeParaAdicionar.Turmas.Add(turmaParaAdicionar);
 
                 }
-
-
                 UeParaAdicionar.Modalidades.Add(modalidadeParaAdicionar);
             }
 
             retorno.UE = UeParaAdicionar;
         }
 
+        private void TrataListarCpfIrregular(IEnumerable<AlunoResponsavelAdesaoAEDto> alunosResponsaveisParaTratar, IEnumerable<UsuarioAEDto> usuariosDoApp, TurmaResumoDto turma, AdesaoAETurmaDto turmaParaAdicionar)
+        {
+            var alunosResponsaveisDaTurma = alunosResponsaveisParaTratar.Where(a => a.TurmaCodigo == long.Parse(turma.Codigo) && !UtilCPF.Valida(a.ResponsavelCpf)).OrderBy(a => a.NomeAlunoParaVisualizar());
+
+            foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
+            {
+
+                var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
+                {
+                    Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
+                    CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf.ToString(),
+                    Responsavel = alunoResponsaveisDaTurma.ResponsavelNome,
+                    Estudante = alunoResponsaveisDaTurma.NomeAlunoParaVisualizar(),
+                    Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada
+                };
+                turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
+            }
+        }
+
         private void TrataListarCpfValidos(IEnumerable<AlunoResponsavelAdesaoAEDto> alunosResponsaveisParaTratar, IEnumerable<UsuarioAEDto> usuariosDoApp, TurmaResumoDto turma, AdesaoAETurmaDto turmaParaAdicionar)
         {
             var alunosResponsaveisDaTurma = alunosResponsaveisParaTratar.Where(a => a.TurmaCodigo == long.Parse(turma.Codigo)).OrderBy(a => a.NomeAlunoParaVisualizar());
+
 
             foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
             {
@@ -252,38 +288,49 @@ namespace SME.SR.Application
 
         private void TrataListarTodosCpf(IEnumerable<AlunoResponsavelAdesaoAEDto> alunosResponsaveisParaTratar, IEnumerable<UsuarioAEDto> usuariosDoApp, TurmaResumoDto turma, AdesaoAETurmaDto turmaParaAdicionar)
         {
+
+
             var alunosResponsaveisDaTurma = alunosResponsaveisParaTratar.Where(a => a.TurmaCodigo == long.Parse(turma.Codigo)).OrderBy(a => a.NomeAlunoParaVisualizar());
 
             foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
             {
-                var usuarioApp = usuariosDoApp.FirstOrDefault(a => a.Cpf == alunoResponsaveisDaTurma.ResponsavelCpf);
-
-                var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
+                try
                 {
-                    Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
-                    CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf.ToString(),
-                    Responsavel = alunoResponsaveisDaTurma.ResponsavelNome,
-                    Estudante = alunoResponsaveisDaTurma.AlunoNome,
-                    Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada,
-                    UltimoAcesso = usuarioApp?.UltimoLogin.ToString("dd/MM/yyyy HH:mm"),
-                    SituacaoNoApp = ObtemSituacaoApp(usuarioApp, alunoResponsaveisDaTurma)
-                };
 
-                turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
+                    var usuarioApp = usuariosDoApp.FirstOrDefault(a => a.Cpf == alunoResponsaveisDaTurma.ResponsavelCpf);
+
+                    var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
+                    {
+                        Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
+                        CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf?.ToString(),
+                        Responsavel = alunoResponsaveisDaTurma.ResponsavelNome.Trim(),
+                        Estudante = alunoResponsaveisDaTurma.AlunoNome.Trim(),
+                        Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada?.Trim(),
+                        UltimoAcesso = usuarioApp?.UltimoLogin.ToString("dd/MM/yyyy HH:mm"),
+                        SituacaoNoApp = ObtemSituacaoApp(usuarioApp, alunoResponsaveisDaTurma)
+                    };
+
+                    turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
+
         }
 
         private string ObtemSituacaoApp(UsuarioAEDto usuarioApp, AlunoResponsavelAdesaoAEDto alunoResponsavelAdesaoAEDto)
         {
-            if (!UtilCPF.Valida(alunoResponsavelAdesaoAEDto.ResponsavelCpf))
+            if (string.IsNullOrEmpty(alunoResponsavelAdesaoAEDto.ResponsavelCpf) || !UtilCPF.Valida(alunoResponsavelAdesaoAEDto.ResponsavelCpf))
                 return "CPF inválido";
 
-            if (usuarioApp == null && usuarioApp.Excluido)
+            if (usuarioApp == null || usuarioApp.Excluido)
                 return "Não tem";
             else
             {
                 if (usuarioApp.PrimeiroAcesso)
-                    return "primeiro acesso incompleto";
+                    return "Primeiro acesso incompleto";
             }
             return "Tem";
         }
