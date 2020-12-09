@@ -7,7 +7,7 @@ namespace SME.SR.Application
 {
     public class ObterAtribuicoesCJPorFiltroQuery : IRequest<IEnumerable<AtribuicaoCJ>>
     {
-        public Modalidade Modalidade { get; set; }
+        public Modalidade? Modalidade { get; set; }
 
         public string TurmaId { get; set; }
 

@@ -2936,6 +2936,50 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Linhas = linhas
                 },
             };
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            var graficoBarras1 = new GraficoBarrasVerticalDto(600, "Teste - gráfico de matemática");
+
+            graficoBarras1.Legendas = new List<GraficoBarrasLegendaDto>() {
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="A",
+                    Valor= "Não conseguiu ou não quis ler aaaa nmnnnn kkkk ssss"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="B",
+                    Valor= "Leu com muita dificuldade"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="C",
+                    Valor= "Leu com alguma fluencia"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="D",
+                    Valor= "Leu com fluencia"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="E",
+                    Valor= "Sem preenchimento"
+                },
+            };
+
+            graficoBarras1.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 24, 10);
+
+            graficoBarras1.EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+            {
+                new GraficoBarrasVerticalEixoXDto(2, "A"),
+                new GraficoBarrasVerticalEixoXDto(2, "B"),
+                new GraficoBarrasVerticalEixoXDto(2, "C"),
+                new GraficoBarrasVerticalEixoXDto(1, "D"),
+                new GraficoBarrasVerticalEixoXDto(24, "E"),
+            };
+
+            model.GraficosBarras.Add(graficoBarras1);
 
             return View("RelatorioSondagemComponentesPorTurma", model);
         }
@@ -4805,6 +4849,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
                 }
             };
+        //[HttpGet("Usuarios")]
+        //public IActionResult RelatorioUsuarios()
+        //{
+        //    var model = new RelatorioUsuarioDto()
+        //    {
+        //        Filtro = new FiltroUsuarioDto()
+        //        {
+        //            Dre = "DRE - BT",
+        //            Ue = "CEU EMEF BUTANTA",
+        //            RF = "9879878",
+        //            Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
+        //        }
+        //    };
 
             model.Dres = new List<DreUsuarioDto>()
             {
@@ -6650,6 +6707,610 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioAtribuioesCj", model);
         }
+
+        //[HttpGet("alteracao-notas")]
+        //public IActionResult AlteracaoNotas()
+        //{
+        //    var model = new RelatorioAlteracaoNotasDto()
+        //    {
+        //        Filtro = new FiltroAlteracaoNotasDto()
+        //        {
+        //            Dre = "Todas",
+        //            Ue = "Todas",
+        //            Usuario = "ALANA FERREIRA DE OLIVEIRA",
+        //            RF = "1234567",
+        //            Bimestre = "Todos",
+        //            Turma = "Todas",
+        //            ComponenteCurricular = "Todos"
+        //        }
+        //    };
+
+        //    model.Turmas = new List<TurmaAlteracaoNotasDto>()
+        //    {
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       }
+        //                   }
+
+        //                }
+        //            }
+        //        },
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       },
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Matemática",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       },
+
+
+        //                   }
+
+        //                }
+        //            }
+        //        },
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       }
+        //                   }
+
+        //                }
+        //            }
+        //        },
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       }
+        //                   }
+
+        //                }
+        //            }
+        //        },
+        //        new TurmaAlteracaoNotasDto()
+        //        {
+        //            Id = 1,
+        //            Nome = "1F-EF",
+        //            Bimestres = new List<BimestreAlteracaoNotasDto>()
+        //            {
+        //                new BimestreAlteracaoNotasDto()
+        //                {
+        //                   Descricao = "1",
+        //                   ComponentesCurriculares = new List<ComponenteCurricularAlteracaoNotasDto>()
+        //                   {
+        //                       new ComponenteCurricularAlteracaoNotasDto()
+        //                       {
+        //                           Nome = "Arte",
+        //                           AlunosAlteracaoNotasBimestre = new List<AlunosAlteracaoNotasDto>()
+        //                           {
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               },
+        //                               new AlunosAlteracaoNotasDto()
+        //                               {
+        //                                   Numero = 1,
+        //                                   Nome = "Arthur Santos de Oliveira",
+        //                                   TipoNota = "Conselho de classe",
+        //                                   NotaAnterior = "6,7",
+        //                                   NotaAtribuida = "7",
+        //                                   DataAlteracao = DateTime.Now.ToString("dd/MM/yyy HH:mm"),
+        //                                   UsuarioAlteracao = "José fernades de Oliveira (1256356)",
+        //                                   Situacao = "Ativo",
+        //                                   UsuarioAprovacao = "Cleide Ferreira Nunes (1256356)"
+        //                               }
+        //                           }
+        //                       }
+        //                   }
+
+        //                }
+        //            }
+        //        },
+        //    };
+        //    return View("RelatorioHistoricoAlteracoesNotas", model);
+        //}
     }
 
 }
+

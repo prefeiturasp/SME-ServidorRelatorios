@@ -10,5 +10,6 @@ namespace SME.SR.Infra
         public string ConnectionStringApiEol => Environment.GetEnvironmentVariable("ApiEolConnection");
         public string ConnectionStringCoreSso => Environment.GetEnvironmentVariable("CoreSSOConnection");
         public string ConnectionStringSondagem => Environment.GetEnvironmentVariable("sondagemConnection");
+        public string ConnectionStringAE => Environment.GetEnvironmentVariable("AEConnection");
     }
 }

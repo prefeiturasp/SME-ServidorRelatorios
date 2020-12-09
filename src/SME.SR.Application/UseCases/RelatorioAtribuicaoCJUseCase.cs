@@ -132,7 +132,7 @@ namespace SME.SR.Application
                                  var titular = lstProfTitulares.FirstOrDefault(p => p.TurmaCodigo == t.Turma.Codigo &&
                                                                                     p.ComponenteCurricularId == t.ComponenteCurricularId.ToString());
 
-                                
+
 
                                  var retorno = new AtribuicaoCjTurmaDto()
                                  {
@@ -237,7 +237,7 @@ namespace SME.SR.Application
         }
 
         private async Task MontarCabecalho(RelatorioAtribuicaoCjDto relatorio, string dreCodigo, string ueCodigo,
-                                           Modalidade modalidade, int? semestre, string codigoTurma, string professorRf,
+                                           Modalidade? modalidade, int? semestre, string codigoTurma, string professorRf,
                                            string usuarioRf)
         {
             if (!string.IsNullOrEmpty(dreCodigo))
@@ -257,7 +257,12 @@ namespace SME.SR.Application
             else
                 relatorio.UeNome = "Todas";
 
-            relatorio.Modalidade = modalidade.Name();
+            if (modalidade.HasValue)
+            {
+                relatorio.Modalidade = modalidade.Name();
+            }
+            else
+                relatorio.Modalidade = "Todas";
 
             if (semestre.HasValue && semestre > 0)
                 relatorio.Semestre = $"{semestre}º Semestre";
