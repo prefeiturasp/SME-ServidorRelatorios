@@ -6,6 +6,7 @@
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
+    bool ehRelatorioPorTurma = false;
 
     string VerificaQuebra()
     {
@@ -139,6 +140,7 @@
 
     string EspacoEmBranco(bool ehEspacoMaior=true)
     {
+        contadorQuebrarPagina++;
         var tamanho = ehEspacoMaior ? "20px" : "5px";
         return $@"<table><tbody><tr><td height='{tamanho}' width='100%' class='tabela-cabecalho sem-border-bottom sem-border-top'> </td></tr></tbody></table>";
     }
@@ -185,7 +187,7 @@
     {
         contadorQuebrarPagina++;
         var quebra = VerificaQuebra();
-        var textoQuebra = !string.IsNullOrEmpty(quebra)? quebra+MontaCabecalhoAtribuicaoCjProfessor() : "";
+        var textoQuebra = !string.IsNullOrEmpty(quebra)? quebra+(ehRelatorioPorTurma? MontaCabecalhoAtribuicaoCjTurma():MontaCabecalhoAtribuicaoCjProfessor()) : "";
         return $@"{textoQuebra}
                 <table class='tabela-cabecalho'>
                     <thead>
@@ -200,9 +202,9 @@
     {
         var str = "";
         contadorQuebrarPagina ++;
-        var classSemBorderBottom = ultimaLinha || (contadorQuebrarPagina + 1 == contadorMaximoLinhasPorPagina) ? "" : "class='sem-border-bottom'";
+        var classSemBorderBottom = ultimaLinha ||  VerificaFimPaginaPorLinhas(1) || VerificaFimPaginaPorLinhas(2) ? "" : "class='sem-border-bottom'";
         var quebra = VerificaQuebra();
-        var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra + MontaCabecalhoAtribuicaoCjProfessor() + MontarCabecalhoNomeProfessorTurma(nomeProfessorTurma) : "";
+        var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra + (ehRelatorioPorTurma? MontaCabecalhoAtribuicaoCjTurma():MontaCabecalhoAtribuicaoCjProfessor()) + MontarCabecalhoNomeProfessorTurma(nomeProfessorTurma) : "";
         if (!string.IsNullOrEmpty(textoQuebra))
         {
             str += textoQuebra;
@@ -222,9 +224,14 @@
 
     string MontarCabecalhoAulas(string nomeProfessorTurma)
     {
-        contadorQuebrarPagina ++;
+        if (VerificaFimPaginaPorLinhas(1) || VerificaFimPaginaPorLinhas(2))
+            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
+        else
+            contadorQuebrarPagina ++;
+
         var quebra = VerificaQuebra();
-        var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra + MontaCabecalhoAtribuicaoCjProfessor() + MontarCabecalhoNomeProfessorTurma(nomeProfessorTurma) : "";
+        var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra + (ehRelatorioPorTurma ? MontaCabecalhoAtribuicaoCjTurma() : MontaCabecalhoAtribuicaoCjProfessor())
+            + MontarCabecalhoNomeProfessorTurma(nomeProfessorTurma) : "";
         return $@"{textoQuebra}
             <table class='tabela-cabecalho'>
                     <thead>
@@ -241,10 +248,11 @@
     {
         var str = "";
         contadorQuebrarPagina += (aula.Observacoes.Length/90) +1;
-        var classSemBorderBottom = contadorQuebrarPagina+1 == contadorMaximoLinhasPorPagina ? "" : "class='sem-border-bottom'";
+        var classSemBorderBottom = contadorQuebrarPagina+1 == contadorMaximoLinhasPorPagina || VerificaFimPaginaPorLinhas(1) ? "" : "class='sem-border-bottom'";
         var quebra = VerificaQuebra();
         var textoQuebra = !string.IsNullOrEmpty(quebra) ?
-            quebra + MontaCabecalhoAtribuicaoCjProfessor() + MontarCabecalhoNomeProfessorTurma(nomeProfessorTurma)+MontarCabecalhoAulas(nomeProfessorTurma) : "";
+            quebra + (ehRelatorioPorTurma ? MontaCabecalhoAtribuicaoCjTurma() : MontaCabecalhoAtribuicaoCjProfessor())
+            + MontarCabecalhoNomeProfessorTurma(nomeProfessorTurma)+MontarCabecalhoAulas(nomeProfessorTurma) : "";
         if (!string.IsNullOrEmpty(textoQuebra))
         {
             str += textoQuebra;
@@ -306,9 +314,9 @@
     {
         var str = "";
         contadorQuebrarPagina++;
-        var classSemBorderBottom = ultimaLinha || (contadorQuebrarPagina + 1 == contadorMaximoLinhasPorPagina) ? "" : "class='sem-border-bottom'";
+        var classSemBorderBottom = ultimaLinha || VerificaFimPaginaPorLinhas(1) || VerificaFimPaginaPorLinhas(2) ? "" : "class='sem-border-bottom'";
         var quebra = VerificaQuebra();
-        var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra + MontaCabecalhoAtribuicaoCjProfessor() + MontarCabecalhoNomeProfessorTurma(nomeProfessorTurma) : "";
+        var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra + (ehRelatorioPorTurma ? MontaCabecalhoAtribuicaoCjTurma() : MontaCabecalhoAtribuicaoCjProfessor()) + MontarCabecalhoNomeProfessorTurma(nomeProfessorTurma) : "";
         if (!string.IsNullOrEmpty(textoQuebra))
         {
             str += textoQuebra;
@@ -325,6 +333,11 @@
             </tbody></table>
         ";
         return str;
+    }
+
+    bool VerificaFimPaginaPorLinhas(int linhasFaltando)
+    {
+        return (contadorQuebrarPagina + linhasFaltando) >= contadorMaximoLinhasPorPagina;
     }
 
     <!DOCTYPE html>
@@ -468,7 +481,8 @@
 
                 @if(Model.AtribuicoesCjPorProfessor?.Count() > 0)
                 {
-                    if (Model.AtribuicoesEsporadicas?.Count() > 0)
+                    ehRelatorioPorTurma = false;
+                    if (VerificaFimPaginaPorLinhas(2))
                     {
                         @Html.Raw(EspacoEmBranco())
                     }
@@ -489,7 +503,10 @@
                                        {
                                             @Html.Raw(MontarLinhasAula(aula, atribuicaoProfessorCj.NomeProfessor))
                                        }
-                                       @Html.Raw(EspacoEmBranco(false))
+                                       if(VerificaFimPaginaPorLinhas(3))
+                                           contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
+                                       else
+                                           @Html.Raw(EspacoEmBranco(false))
                                    }
                                }
                     }
@@ -497,6 +514,7 @@
 
                 @if(Model.AtribuicoesCjPorTurma?.Count() > 0)
                 {
+                    ehRelatorioPorTurma = true;
                     if (Model.AtribuicoesEsporadicas?.Count() > 0)
                     {
                         @Html.Raw(EspacoEmBranco())
@@ -505,6 +523,10 @@
                     for (int indexAtribuicaoTurma = 0; indexAtribuicaoTurma < Model.AtribuicoesCjPorTurma.Count(); indexAtribuicaoTurma++)
                     {
                         var atribuicaoTurma = Model.AtribuicoesCjPorTurma[indexAtribuicaoTurma];
+                        if(VerificaFimPaginaPorLinhas(2))
+                        {
+                            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
+                        }
                             @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoTurma.NomeTurma))
 
                                @for (int indexAtribuicao = 0; indexAtribuicao < atribuicaoTurma.AtribuicoesCjProfessor.Count(); indexAtribuicao++)
@@ -518,7 +540,10 @@
                                        {
                                             @Html.Raw(MontarLinhasAula(aula, atribuicaoTurma.NomeTurma))
                                        }
-                                       @Html.Raw(EspacoEmBranco(false))
+                                       if(VerificaFimPaginaPorLinhas(3))
+                                           contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
+                                       else
+                                           @Html.Raw(EspacoEmBranco(false))
                                    }
                                }
                     }
