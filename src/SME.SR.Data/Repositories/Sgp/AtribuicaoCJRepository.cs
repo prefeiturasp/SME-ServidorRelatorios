@@ -18,7 +18,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, 
+        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade? modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, 
                                                                      string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, 
                                                                      long[] componentesCurricularresId = null, int? anoLetivo = null, int? semestre = null)
         {
@@ -42,7 +42,7 @@ namespace SME.SR.Data
             query.AppendLine("on u.rf_codigo = a.professor_rf");
             query.AppendLine("where 1 = 1");
 
-            if (modalidade != default)
+            if (modalidade.HasValue)
                 query.AppendLine("and a.modalidade = @modalidade");
 
             if (!string.IsNullOrEmpty(ueId))
