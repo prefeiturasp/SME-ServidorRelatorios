@@ -244,20 +244,31 @@ namespace SME.SR.Application
 
         private void TrataListarCpfIrregular(IEnumerable<AlunoResponsavelAdesaoAEDto> alunosResponsaveisParaTratar, IEnumerable<UsuarioAEDto> usuariosDoApp, TurmaResumoDto turma, AdesaoAETurmaDto turmaParaAdicionar)
         {
-            var alunosResponsaveisDaTurma = alunosResponsaveisParaTratar.Where(a => a.TurmaCodigo == long.Parse(turma.Codigo) && !UtilCPF.Valida(a.ResponsavelCpf)).OrderBy(a => a.NomeAlunoParaVisualizar());
+            var alunosResponsaveisDaTurma = alunosResponsaveisParaTratar.Where(a => a.TurmaCodigo == long.Parse(turma.Codigo) && 
+            !UtilCPF.Valida(a.ResponsavelCpf)).OrderBy(a => a.NomeAlunoParaVisualizar());
 
             foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
             {
-
-                var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
+                try
                 {
-                    Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
-                    CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf.ToString(),
-                    Responsavel = alunoResponsaveisDaTurma.ResponsavelNome,
-                    Estudante = alunoResponsaveisDaTurma.NomeAlunoParaVisualizar(),
-                    Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada
-                };
-                turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
+
+
+                    var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
+                    {
+                        Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
+                        CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf?.ToString(),
+                        Responsavel = alunoResponsaveisDaTurma.ResponsavelNome?.Trim(),
+                        Estudante = alunoResponsaveisDaTurma.NomeAlunoParaVisualizar(),
+                        Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada
+                    };
+                    turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
             }
         }
 
@@ -294,28 +305,22 @@ namespace SME.SR.Application
 
             foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
             {
-                try
+
+                var usuarioApp = usuariosDoApp.FirstOrDefault(a => a.Cpf == alunoResponsaveisDaTurma.ResponsavelCpf);
+
+                var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
                 {
+                    Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
+                    CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf?.ToString(),
+                    Responsavel = alunoResponsaveisDaTurma.ResponsavelNome.Trim(),
+                    Estudante = alunoResponsaveisDaTurma.AlunoNome.Trim(),
+                    Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada?.Trim(),
+                    UltimoAcesso = usuarioApp?.UltimoLogin.ToString("dd/MM/yyyy HH:mm"),
+                    SituacaoNoApp = ObtemSituacaoApp(usuarioApp, alunoResponsaveisDaTurma)
+                };
 
-                    var usuarioApp = usuariosDoApp.FirstOrDefault(a => a.Cpf == alunoResponsaveisDaTurma.ResponsavelCpf);
+                turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
 
-                    var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
-                    {
-                        Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
-                        CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf?.ToString(),
-                        Responsavel = alunoResponsaveisDaTurma.ResponsavelNome.Trim(),
-                        Estudante = alunoResponsaveisDaTurma.AlunoNome.Trim(),
-                        Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada?.Trim(),
-                        UltimoAcesso = usuarioApp?.UltimoLogin.ToString("dd/MM/yyyy HH:mm"),
-                        SituacaoNoApp = ObtemSituacaoApp(usuarioApp, alunoResponsaveisDaTurma)
-                    };
-
-                    turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
             }
 
         }

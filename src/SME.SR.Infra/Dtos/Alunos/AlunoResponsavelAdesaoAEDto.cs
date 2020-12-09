@@ -22,7 +22,7 @@
             if (string.IsNullOrEmpty(ResponsavelDDD))
                 return string.Empty;
 
-            return $"({ResponsavelDDD.Trim()} {ResponsavelCelular.Trim()})";
+            return $"({ResponsavelDDD.Trim()}) {ResponsavelCelular.Trim()}";
         }
 
     }

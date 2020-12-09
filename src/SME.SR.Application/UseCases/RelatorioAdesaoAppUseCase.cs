@@ -25,8 +25,10 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foram encontrados dados com os filtros informados.");
             
 
-            var listaRetorno = await mediator.Send(new ObterListaRelatorioAdessaoAEQuery(listaConsolida, relatorioFiltros));
-            
+            var relatorioDto = await mediator.Send(new ObterListaRelatorioAdessaoAEQuery(listaConsolida, relatorioFiltros));
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAEAdesao", relatorioDto, request.CodigoCorrelacao));
+
         }
     }
 }
