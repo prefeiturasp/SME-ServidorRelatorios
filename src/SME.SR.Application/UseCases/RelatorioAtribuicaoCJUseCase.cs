@@ -68,7 +68,7 @@ namespace SME.SR.Application
                 aulas = await mediator.Send(new ObterAulaVinculosPorTurmaComponenteQuery(turmasId, componentesId, true));
 
             AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas,
-                                   filtros.TipoVisualizacao, filtros.ExibirAulas);
+                                   filtros.TipoVisualizacao, filtros.ExibirAulas, filtros.Modalidade != null);
 
             OrdernarRelatorio(relatorio, filtros.TipoVisualizacao);
 
@@ -112,7 +112,8 @@ namespace SME.SR.Application
         private void AdicionarAtribuicoesCJ(RelatorioAtribuicaoCjDto relatorio, IEnumerable<AtribuicaoCJ> lstAtribuicaoCJ,
                                             IEnumerable<ProfessorTitularComponenteCurricularDto> lstProfTitulares,
                                             IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica, IEnumerable<ServidorCargoDto> cargosServidores,
-                                            IEnumerable<AulaVinculosDto> aulas, TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao, bool exibirAulas)
+                                            IEnumerable<AulaVinculosDto> aulas, TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao, bool exibirAulas,
+                                            bool modalidadeInformada)
         {
             if (tipoVisualizacao == TipoVisualizacaoRelatorioAtribuicaoCJ.Professor)
             {
@@ -157,7 +158,7 @@ namespace SME.SR.Application
                    {
                        var retorno = new AtribuicaoCjPorTurmaDto();
 
-                       retorno.NomeTurma = $"{turma.Key.Nome}";
+                       retorno.NomeTurma = modalidadeInformada? $"{turma.Key.Nome}" : $"{turma.First().Modalidade.ShortName()} - {turma.Key.Nome}";
                        retorno.AtribuicoesCjProfessor.AddRange(
                             turma.Select(t =>
                             {
@@ -286,7 +287,7 @@ namespace SME.SR.Application
 
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(usuarioRf));
 
-            relatorio.Usuario = usuario.NomeRelatorio;
+            relatorio.Usuario = usuario.Nome;
             relatorio.RfUsuario = usuario.CodigoRf;
         }
     }

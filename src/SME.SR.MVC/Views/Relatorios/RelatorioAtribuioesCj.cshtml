@@ -536,6 +536,10 @@
                 @if(Model.AtribuicoesCjPorProfessor?.Count() > 0)
                 {
                     ehRelatorioPorTurma = false;
+                    if (Model.AtribuicoesEsporadicas?.Count() > 0)
+                    {
+                        @Html.Raw(EspacoEmBranco())
+                    }
                     @Html.Raw(MontaCabecalhoAtribuicaoCjProfessor())
                     for (int indexAtribuicaoProfessorCj = 0; indexAtribuicaoProfessorCj < Model.AtribuicoesCjPorProfessor.Count(); indexAtribuicaoProfessorCj++)
                     {
