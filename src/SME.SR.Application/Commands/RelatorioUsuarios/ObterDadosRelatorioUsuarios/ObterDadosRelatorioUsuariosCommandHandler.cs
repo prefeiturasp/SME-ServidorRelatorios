@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosRelatorioUsuariosCommandHandler : IRequestHandler<ObterDadosRelatorioUsuariosCommand, IEnumerable<DreUsuarioDto>>
+    public class ObterDadosRelatorioUsuariosCommandHandler : IRequestHandler<ObterDadosRelatorioUsuariosCommand, DadosRelatorioUsuariosDto>
     {
         private readonly IMediator mediator;
 
@@ -19,7 +19,7 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IEnumerable<DreUsuarioDto>> Handle(ObterDadosRelatorioUsuariosCommand request, CancellationToken cancellationToken)
+        public async Task<DadosRelatorioUsuariosDto> Handle(ObterDadosRelatorioUsuariosCommand request, CancellationToken cancellationToken)
         {
             var usuarios = await mediator.Send(new ObterUsuariosAbrangenciaPorAcessoQuery(request.FiltroRelatorio.CodigoDre,
                                                                                           request.FiltroRelatorio.CodigoUe,
@@ -32,7 +32,13 @@ namespace SME.SR.Application
             if (request.FiltroRelatorio.Situacoes.Any())
                 FiltrarSituacoesUsuario(usuarios, request.FiltroRelatorio.Situacoes);
 
-            return await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico);
+            var dadosRelatorio = new DadosRelatorioUsuariosDto();
+
+            dadosRelatorio.PerfisSme = ObterUsuariosPorPerfil(ObterUsuariosSme(usuarios));
+
+            dadosRelatorio.Dres = await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico);
+
+            return dadosRelatorio;
         }
 
         private async Task<IEnumerable<DreUsuarioDto>> ObterUsuariosPorDre(IEnumerable<DadosUsuarioDto> usuarios, bool exibirHistorico)
@@ -146,9 +152,11 @@ namespace SME.SR.Application
         }
 
         private IEnumerable<DadosUsuarioDto> ObterUsuariosDre(IGrouping<(string DreCodigo, string Dre), DadosUsuarioDto> usuariosDre)
-        {
-            return usuariosDre.Where(c => new[] { TipoPerfil.SME, TipoPerfil.DRE }.Contains(c.TipoPerfil));
-        }
+            => usuariosDre.Where(c => new[] { TipoPerfil.DRE }.Contains(c.TipoPerfil));
+
+
+        private IEnumerable<DadosUsuarioDto> ObterUsuariosSme(IEnumerable<DadosUsuarioDto> usuarios)
+            => usuarios.Where(c => new[] { TipoPerfil.SME }.Contains(c.TipoPerfil)).DistinctBy(d => d.Login);
 
         private IEnumerable<DadosUsuarioDto> ObterUsuariosUe(IGrouping<string, DadosUsuarioDto> usuariosDre)
         {

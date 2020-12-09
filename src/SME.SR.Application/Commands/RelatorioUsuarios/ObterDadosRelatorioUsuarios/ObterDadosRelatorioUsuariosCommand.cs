@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosRelatorioUsuariosCommand : IRequest<IEnumerable<DreUsuarioDto>>
+    public class ObterDadosRelatorioUsuariosCommand : IRequest<DadosRelatorioUsuariosDto>
     {
         public ObterDadosRelatorioUsuariosCommand(FiltroRelatorioUsuariosDto filtroRelatorio)
         {
