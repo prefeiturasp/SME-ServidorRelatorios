@@ -32,12 +32,9 @@ namespace SME.SR.Application
             if (request.FiltroRelatorio.Situacoes.Any())
                 FiltrarSituacoesUsuario(usuarios, request.FiltroRelatorio.Situacoes);
 
-            var exibirPerfisDreUe = FiltrouTodasUes(request.FiltroRelatorio.CodigoUe);
-
             var dadosRelatorio = new DadosRelatorioUsuariosDto();
 
-            if (exibirPerfisDreUe)
-                dadosRelatorio.PerfisSme = ObterUsuariosPorPerfil(ObterUsuariosSme(usuarios));
+            dadosRelatorio.PerfisSme = ObterUsuariosPorPerfil(ObterUsuariosSme(usuarios));
 
             dadosRelatorio.Dres = await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico);
 
@@ -159,7 +156,7 @@ namespace SME.SR.Application
 
 
         private IEnumerable<DadosUsuarioDto> ObterUsuariosSme(IEnumerable<DadosUsuarioDto> usuarios)
-            => usuarios.Where(c => new[] { TipoPerfil.SME }.Contains(c.TipoPerfil)).DistinctBy(d => d.Rf);
+            => usuarios.Where(c => new[] { TipoPerfil.SME }.Contains(c.TipoPerfil)).DistinctBy(d => d.Login);
 
         private IEnumerable<DadosUsuarioDto> ObterUsuariosUe(IGrouping<string, DadosUsuarioDto> usuariosDre)
         {
