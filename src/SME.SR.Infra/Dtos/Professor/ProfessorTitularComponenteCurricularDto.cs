@@ -7,5 +7,6 @@
         public string NomeProfessor { get; set; }
         public string ComponenteCurricular { get; set; }
         public string ComponenteCurricularId { get; set; }
+        public string ProfessorNomeRf => $"{NomeProfessor} ({ProfessorRf})";
     }
 }
