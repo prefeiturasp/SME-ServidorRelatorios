@@ -1,17 +1,19 @@
-﻿@page
-@model SME.SR.Infra.RelatorioLeituraComunicadosDto
-@{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 43;
+﻿@model SME.SR.Infra.RelatorioLeituraComunicadosDto
 
-    string VerificaQuebra(int valorAdicionalParaSoma)
+@{ int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 48;
+    int contadorPagina = 0;
+    var retornoVerificacao = string.Empty;
+
+    string VerificaQuebra()
     {
-        if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
         {
             contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
 
             var str = MontarCabecalho();
-            str = $@"<div style='page-break-before:always' />" + str;
-            return str;
+            return $@"<div style='page-break-before:always' />" + str;
 
         }
         return string.Empty;
@@ -23,48 +25,54 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 7;
         var str =
            $@"<div>
-                <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-            </div>
-            <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-            <div class='titulo-relatorio'>RELATÓRIO DE HISTÓRICO DE ALTERAÇÃO DE NOTAS</div>
-            <div class='fonte-14 header-pagina'>
-                <table class='tblTopo'>
-                    <tbody>
-                        <tr>
-                            <td  width='50%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
-                            <td width='50%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>                            
-                        </tr>
-                    </tbody>
-                </table>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
-                            <td width='20%'>RF: {Model.Filtro.RF}</td>
-                            <td width='20%'>DATA: {Model.Filtro.Data}</td>
-                    </tbody>
-                </table>
-            </div>
-            ";
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'>RELATÓRIO DE LEITURA</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+    <td  width='50%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+    <td width='50%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+    <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
+    <td width='20%'>RF: {Model.Filtro.RF}</td>
+    <td width='20%'>DATA: {Model.Filtro.Data}</td>
+</tbody>
+</table>
+</div>
+";
 
         return str;
     }
 
-    string MontarCabecalhoTabela()
+    string MontarCabecalhoTabelaComunicado()
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + 7;
         var str = "";
 
         str += $@"
-                <table class='tabela-alunos'>
-                    <thead>                        
-                        <th class='sem-border-bottom' width='20%'>COMUNICADO</th>
-                        <th class='sem-border-bottom' width='16%'>DATA DE ENVIO</th>
-                        <th class='sem-border-bottom' width='16%'>DATA DE EXPIRAÇÃO</th>
-                        <th class='sem-border-bottom' width='16%'>NÃO INSTALADO</th>
-                        <th class='sem-border-bottom' width='16%'>NÃO VISUALIZADO</th>
-                        <th class='sem-border-bottom' width='16%'>VISUALIZADO</th>
+                <table class='tabela-comunicados'>
+                    <thead>
+                        <th class='sem-border-bottom' width='100%'>SME</th>
                     </thead>
-                </table>";
+                </table>
+                <table class='tabela-comunicados'>
+                <thead>
+                    <th class='sem-border-bottom' width='30%'>COMUNICADO</th>
+                    <th class='sem-border-bottom' width='14%'>DATA DE ENVIO</th>
+                    <th class='sem-border-bottom' width='14%'>DATA DE EXPIRAÇÃO</th>
+                    <th class='sem-border-bottom' width='14%'>NÃO INSTALADO</th>
+                    <th class='sem-border-bottom' width='14%'>NÃO VISUALIZADO</th>
+                    <th class='sem-border-bottom' width='14%'>VISUALIZADO</th>
+                </thead>
+            </table>";
         return str;
     }
 
@@ -73,14 +81,14 @@
         var str = "";
 
         str += $@"
-                <table class='tabela-alunos'>
-                    <thead>                        
-                        <th class='sem-border-bottom' width='25%'>TURMA</th>
-                        <th class='sem-border-bottom' width='25%'>NÃO INSTALADO</th>
-                        <th class='sem-border-bottom' width='25%'>NÃO VISUALIZADO</th>
-                        <th class='sem-border-bottom' width='25%'>VISUALIZADO</th>
-                    </thead>
-                </table>";
+<table class='tabela-comunicados'>
+<thead>
+<th class='sem-border-bottom' width='25%'>TURMA</th>
+<th class='sem-border-bottom' width='25%'>NÃO INSTALADO</th>
+<th class='sem-border-bottom' width='25%'>NÃO VISUALIZADO</th>
+<th class='sem-border-bottom' width='25%'>VISUALIZADO</th>
+</thead>
+</table>";
         return str;
     }
 
@@ -89,49 +97,51 @@
         var str = "";
 
         str += $@"
-                <table class='tabela-alunos'>
-                    <thead>                        
-                        <th class='sem-border-bottom' width='5%'>Nº</th>
-                        <th class='sem-border-bottom' width='25%'>ESTUDANTE</th>
-                        <th class='sem-border-bottom' width='25%'>RESPONSÁVEL</th>
-                        <th class='sem-border-bottom' width='22,5%'>CONTATO DO RESPONSÁVEL</th>
-                        <th class='sem-border-bottom' width='22,5%'>SITUAÇÃO</th>
-                    </thead>
-                </table>";
+<table class='tabela-comunicados'>
+<thead>
+<th class='sem-border-bottom' width='5%'>Nº</th>
+<th class='sem-border-bottom' width='25%'>ESTUDANTE</th>
+<th class='sem-border-bottom' width='25%'>RESPONSÁVEL</th>
+<th class='sem-border-bottom' width='22,5%'>CONTATO DO RESPONSÁVEL</th>
+<th class='sem-border-bottom' width='22,5%'>SITUAÇÃO</th>
+</thead>
+</table>";
         return str;
     }
 
-    string MontarDadosTabelaComunicado(List<SME.SR.Infra.LeituraComunicadoDto> leituraComunicado, List<SME.SR.Infra.LeituraComunicadoTurmaDto> leituraComunicadoTurma, List<SME.SR.Infra.LeituraComunicadoEstudanteDto> leituraComunicadoEstudante)
+    string MontarDadosTabelaComunicado(List<SME.SR.Infra.LeituraComunicadoDto> leituraComunicado)
     {
-        var str = $@"<table class='tabela-alunos' style='border-bottom:none;'><tbody>";
-        for (int i = 0; i < alunosAlteracaoNotas.Count; i++)
+        var str = MontarCabecalhoTabelaComunicado();
+        str += $@"<table class='tabela-comunicados' style='border-bottom:none;'><tbody>";
+        int i = 0;
+        foreach (var comunicado in leituraComunicado)
         {
-            var aluno = alunosAlteracaoNotas[i];
+            i++;
             str += $@"
-                    <tr>
-                    <th style='text-align:center' width='5%'>{aluno.NumeroChamada}</th>
-                    <th style='text-align:center' width='15%'>{aluno.Nome}</th>
-                    <th style='text-align:center' width='10%'>{aluno.TipoAlteracaoNota}</th>
-                    <th style='text-align:center' width='10%'>{aluno.NotaConceitoAnterior}</th>
-                    <th style='text-align:center' width='10%'>{aluno.NotaConceitoAtribuido}</th>
-                    <th style='text-align:center' width='10%'>{aluno.DataAlteracao}</th>
-                    <th style='text-align:center' width='15%'>{aluno.UsuarioAlteracao}</th>";
-
-            if (!turma.AnoAtual)
-            {
-                str += $@"
-            <th style='text-align:center' width='10%'>{aluno.Situacao}</th>
-            <th style='text-align:center' width='15%'>{aluno.UsuarioAprovacao}</th>
-          ";
-            }
+            <tr>
+                <th width='30%'>{comunicado.Comunicado}</th>
+                <th width='14%'>{comunicado.DataEnvio.ToShortDateString()}</th>
+                <th width='14%'>{comunicado.DataExpiracao.ToShortDateString()}</th>
+                <th width='14%'>{comunicado.NaoInstalado}</th>
+                <th width='14%'>{comunicado.NaoVisualizado}</th>
+                <th width='14%'>{comunicado.Visualizado}</th>";
 
             str += $@"</tr>";
 
-            contadorQuebrarPagina++;
-            var quebra = VerificaQuebra(0);
+            contadorQuebrarPagina = contadorQuebrarPagina + (comunicado.Comunicado.Length > 44 ? 2 : 1);
 
-            var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, turma) : "");
-            str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}<table class='tabela-alunos'><tbody>" : "";
+            contadorQuebrarPagina++;
+            retornoVerificacao = VerificaQuebra();
+            if (retornoVerificacao != string.Empty)
+            {
+                str += $@"</tbody></table>{retornoVerificacao}{MontarCabecalhoTabelaComunicado()}<table class='tabela-comunicados'><tbody>";
+            }
+
+            //var quebra = VerificaQuebra(0);
+
+            //var novaPagina = quebra + (i < leituraComunicado.Count - 1 ? MontarCabecalhoTabelaComunicado() : "");
+            //str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}<table class='tabela-comunicados'><tbody>" : "";
+
         }
         str += $@"</tbody></table>";
         return str;
@@ -171,6 +181,7 @@
             text-align: right;
             font-size: 14.5px;
             margin-top: 7px;
+            font-weight: bold;
         }
 
         .img-logo-sgp {
@@ -209,7 +220,7 @@
             border: 1px solid #42474a;
         }
 
-        .tabela-alunos tr {
+        .tabela-comunicados tr {
             font-size: 12px;
             height: 24px;
         }
@@ -251,87 +262,12 @@
     </style>
     <div>
         @{
-            @Html.Raw(MontarCabecalho()) foreach (var turma in Model.Turmas)
+            @Html.Raw(MontarCabecalho())
+            @if (Model.LeituraComunicadoDto != null && Model.LeituraComunicadoDto.Any())
             {
-
-                @if (turma.Bimestres != null || !turma.Bimestres.Any())
-                {
-
-                    foreach (var bimestre in turma.Bimestres)
-                    {
-
-                        @if (bimestre.ComponentesCurriculares != null)
-                        {
-
-                            for (int c = 0; c < bimestre.ComponentesCurriculares.Count; c++)
-                            {
-                                var componente = bimestre.ComponentesCurriculares[c];
-
-                                // TURMA
-                                if (Model.Filtro.Turma == "Todas" || Model.Filtro.Turma == "")
-                                {
-                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                    @Html.Raw(VerificaQuebra(4))
-
-                                    <table class="tabela-alunos">
-                                        <thead>
-                                            <tr>
-                                                <th class="sem-border-bottom">@turma.Nome</th>
-                                            </tr>
-                                        </thead>
-                                    </table> }
-
-                                // BIMESTRE
-                                if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
-                                {
-                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                    @Html.Raw(VerificaQuebra(3))
-
-                                    <table class="tabela-alunos">
-                                        <thead>
-                                            <tr>
-                                                <th class="sem-border-bottom">@bimestre.Descricao</th>
-                                            </tr>
-                                        </thead>
-                                    </table> }
-
-                                // COMPONENTE CURRICULAR
-                                if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
-                                {
-                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                    @Html.Raw(VerificaQuebra(2))
-
-                                    <table class="tabela-alunos">
-                                        <thead>
-                                            <tr>
-                                                <th class="sem-border-bottom">@componente.Nome</th>
-                                            </tr>
-                                        </thead>
-                                    </table> }
-
-                                contadorQuebrarPagina++;
-                                var quebra = VerificaQuebra(1);
-                                @Html.Raw(quebra);
-
-                                if (componente.AlunosAlteracaoNotasBimestre.Count() > 0)
-                                {
-                                    @Html.Raw(MontarCabecalhoTabela(quebra, componente.Nome, turma)) contadorQuebrarPagina++;
-                                }
-                                @Html.Raw(MontarDadosTabela(componente.AlunosAlteracaoNotasBimestre, componente.Nome, turma))
-
-                                <table class="tabela-alunos">
-                                    <thead>
-                                        <tr>
-                                            <th class="thLimpo"></th>
-                                        </tr>
-                                    </thead>
-                                </table>contadorQuebrarPagina++;
-
-
-                            }
-                        }}
-                } } }
-
+                @Html.Raw(MontarDadosTabelaComunicado(Model.LeituraComunicadoDto));
+            }
+        }
     </div>
 </body>
 </html>
