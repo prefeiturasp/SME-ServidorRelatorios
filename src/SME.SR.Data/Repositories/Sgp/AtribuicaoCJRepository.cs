@@ -18,8 +18,8 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade? modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf, 
-                                                                     string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null, 
+        public async Task<IEnumerable<AtribuicaoCJ>> ObterPorFiltros(Modalidade? modalidade, string turmaId, string ueId, long componenteCurricularId, string usuarioRf,
+                                                                     string usuarioNome, bool? substituir, string dreCodigo = "", string[] turmaIds = null,
                                                                      long[] componentesCurricularresId = null, int? anoLetivo = null, int? semestre = null)
         {
             var query = new StringBuilder();
@@ -89,7 +89,7 @@ namespace SME.SR.Data
                     return atribuicaoCJ;
                 }, new
                 {
-                    modalidade = (int)modalidade,
+                    modalidade = modalidade.HasValue ? (int)modalidade : 0,
                     ueId,
                     turmaId,
                     componenteCurricularId,
