@@ -28,7 +28,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
         }
 
-        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int anoLetivo, int semestre, ProficienciaSondagemEnum proficiencia, int anoTurma)
+        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int anoLetivo, int semestre, ProficienciaSondagemEnum proficiencia, int anoTurma, string periodoId = "")
         {
             StringBuilder sql = new StringBuilder();
 
@@ -41,7 +41,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 sql.AppendLine(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" and pae.\"AnoEscolar\" = s.\"AnoTurma\"");
                 sql.AppendLine(" inner join \"Resposta\" r on sar.\"RespostaId\" = r.\"Id\" ");
                 sql.AppendLine(" inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\" and pr.\"RespostaId\" = r.\"Id\" ");
-                sql.AppendLine(" where s.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo order by \"NomeAluno\" , pr.\"Ordenacao\"");
+                sql.AppendLine(" where s.\"AnoLetivo\" = @anoLetivo and \"CodigoDre\" = @dreCodigo and \"AnoTurma\" = @anoTurma and \"CodigoTurma\" = @turmaCodigo and \"PeriodoId\" = @periodoId order by \"NomeAluno\" , pr.\"Ordenacao\"");
             }
             else
             {
@@ -55,7 +55,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             var componenteCurricular = ComponenteCurricularSondagemEnum.Matematica.Name();
 
-            var parametros = new { componenteCurricular, dreCodigo, anoLetivo, turmaCodigo, semestre, anoTurma };
+            var parametros = new { componenteCurricular, dreCodigo, anoLetivo, turmaCodigo, semestre, anoTurma, periodoId };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
