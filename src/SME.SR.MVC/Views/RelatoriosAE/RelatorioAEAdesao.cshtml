@@ -16,6 +16,17 @@
         return false;
     }
 
+    void MontarTabelaVazia()
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th class="thLimpo"></th>
+                </tr>
+            </thead>
+        </table>
+    }
+
     void MontarCabecalho()
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 9;
@@ -27,16 +38,16 @@
         <div class='fonte-14 header-pagina'>
             <table class='tblTopo'>
                 <tbody>
-                <tr>
-                    <td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>DRE: @Model.DRENome</td>
-                    <td width='50%' class='espaco-esquerda-15 sem-border-bottom'>UE: @Model.UeNome</td>
-                </tr>
+                    <tr>
+                        <td width='50%' class='espaco-esquerda-15 sem-border-bottom'>DRE: @Model.DRENome</td>
+                        <td width='50%' class='espaco-esquerda-15 sem-border-bottom'>UE: @Model.UeNome</td>
+                    </tr>
                 </tbody>
             </table>
             <table>
                 <tbody>
                     <tr>
-                        <td  width='60%' class='espaco-esquerda-15'>USUÁRIO: @Model.UsuarioNome</td>
+                        <td width='60%' class='espaco-esquerda-15'>USUÁRIO: @Model.UsuarioNome</td>
                         <td width='20%' class='espaco-esquerda-15'>RF: @Model.UsuarioRF</td>
                         <td width='20%' class='espaco-esquerda-15'>DATA: @Model.Data</td>
                     </tr>
@@ -45,7 +56,7 @@
         </div>
     }
 
-    void MontarCabecalhoListarUes()
+    void MontarCabecalhoResponsaveis()
     {
         <thead>
             <tr>
@@ -73,24 +84,37 @@
         </thead>
     }
 
+    void MontarLinhaValores(SME.SR.Infra.AdesaoAEValoresDto valores)
+    {
+        <tr>
+            <td class="fundo-cinza" width="25%">@valores.Nome</td>
+            <td width="15%">@valores.SemCpfOuCpfInvalido</td>
+            <td width="15%">@valores.NaoRealizaram</td>
+            <td width="15%">@valores.PrimeiroAcessoIncompleto</td>
+            <td width="15%">@valores.Validos</td>
+            <td width="15%">@valores.Total</td>
+        </tr>
+
+    }
+
+    void MontaLinhaEspaco()
+    {
+        <tr style="height:8px"><td colspan="6" style="height:2px"></td></tr>
+    }
+
     void MontarListarUes()
     {
         <table class="tabela-cabecalho">
-            @{
-                MontarCabecalhoListarUes();
+            @if (!Model.MostraSME)
+            {
+                MontarCabecalhoResponsaveis();
             }
 
             <tbody>
-                <tr>
-                    <td class="fundo-cinza">@Model.DRE.Valores.Nome</td>
-                    <td>@Model.DRE.Valores.SemCpfOuCpfInvalido</td>
-                    <td>@Model.DRE.Valores.NaoRealizaram</td>
-                    <td>@Model.DRE.Valores.PrimeiroAcessoIncompleto</td>
-                    <td>@Model.DRE.Valores.Validos</td>
-                    <td>@Model.DRE.Valores.Total</td>
-                </tr>
-                <tr style="height:8px"><td colspan="6"></td></tr>
-
+                @{
+                    MontarLinhaValores(Model.DRE.Valores);
+                    MontaLinhaEspaco();
+                }
             </tbody>
         </table>
 
@@ -113,12 +137,12 @@
 
             if (quebra)
             {
-                <div style='page-break-before:always'></div>                
+                <div style='page-break-before:always'></div>
                 MontarCabecalho();
-                
+
                 <table class="tabela-cabecalho">
                     @{
-                        MontarCabecalhoListarUes();
+                        MontarCabecalhoResponsaveis();
                     }
                 </table>
             }
@@ -137,6 +161,8 @@
             </table>
         }
     }
+
+
 }
 
 <!DOCTYPE html>
@@ -291,9 +317,62 @@
         @{
             MontarCabecalho();
 
+            if (Model.MostraSME)
+            {
+                <table class="tabela-cabecalho">
+                    @{ MontarCabecalhoResponsaveis(); }
+                </table>
+
+                <table class="tabela-listar-ues">
+                    <tbody>
+                        @{ MontarLinhaValores(Model.SME.Valores); }
+                    </tbody>
+                </table>
+
+                MontarTabelaVazia();
+            }
+
             if (Model.MostraDRE)
             {
                 MontarListarUes();
+            }
+
+            if (Model.MostraUe)
+            {
+                <table class="tabela-cabecalho">
+                    @{ MontarCabecalhoResponsaveis(); }
+                </table>
+
+                <table class="tabela-listar-ues">
+                    <tbody>
+
+                        @{ MontarLinhaValores(Model.UE.Valores); }
+
+                        @if (Model.UE.Modalidades.Count > 1)
+                        {
+                            @foreach (var modalidade in Model.UE.Modalidades)
+                            {
+                                MontaLinhaEspaco();
+                                MontarLinhaValores(modalidade.Valores);
+                            }
+                        }
+                        
+                        @{ MontaLinhaEspaco(); }
+
+                        @foreach (var modalidade in Model.UE.Modalidades)
+                        {
+                            @foreach (var turmas in modalidade.Turmas)
+                            {
+                                <tr>
+                                    <td>
+                                        @turmas.Alunos
+                                    </td>
+                                </tr>
+                                MontarLinhaValores(turmas.Valores);
+                            }
+                        }
+                    </tbody>
+                </table>
             }
         }
     </div>
