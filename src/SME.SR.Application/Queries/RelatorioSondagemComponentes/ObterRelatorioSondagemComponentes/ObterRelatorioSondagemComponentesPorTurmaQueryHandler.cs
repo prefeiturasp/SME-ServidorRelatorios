@@ -365,7 +365,16 @@ namespace SME.SR.Application
 
         public async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilhaAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request, List<RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntas)
         {
-            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(), request.AnoLetivo, request.Semestre, request.Proficiencia, Int32.Parse(request.Ano));
+
+            string periodoId = "";
+
+            if (int.Parse(request.Ano) >= 7)
+            {
+                var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Semestre, TipoPeriodoSondagem.Semestre));
+                periodoId = periodo?.Id;
+            }
+
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(), request.AnoLetivo, request.Semestre, request.Proficiencia, Int32.Parse(request.Ano), periodoId);
 
             List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
