@@ -50,14 +50,17 @@ namespace SME.SR.Application
             lstServidores.AddRange(lstAtribuicaoEsporadica.Select(s => s.ProfessorRf));
             lstServidores.AddRange(lstAtribuicaoCJ.Select(cj => cj.ProfessorRf));
 
-            lstServidores = lstServidores.Distinct().ToList();
+            var lstServidoresArray = lstServidores?.Distinct().ToArray();
 
-            var cargosServidores = await mediator.Send(new ObterCargosServidoresPorAnoLetivoQuery(filtros.AnoLetivo, lstServidores.ToArray()));
+            var cargosServidores = await mediator.Send(new ObterCargosServidoresPorAnoLetivoQuery(filtros.AnoLetivo, lstServidoresArray));
+
+            var lstProfServidorTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray));
 
             if (filtros.ExibirAtribuicoesExporadicas)
                 AdicionarAtribuicoesEsporadicas(relatorio, lstAtribuicaoEsporadica, cargosServidores);
 
             var turmasId = lstAtribuicaoCJ.Select(t => t.Turma.Codigo)?.Distinct().ToArray();
+
             var componentesId = lstAtribuicaoCJ.Select(t => t.ComponenteCurricularId.ToString())?.Distinct().ToArray();
 
             var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmasId));
@@ -67,7 +70,7 @@ namespace SME.SR.Application
             if (filtros.ExibirAulas)
                 aulas = await mediator.Send(new ObterAulaVinculosPorTurmaComponenteQuery(turmasId, componentesId, true));
 
-            AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas,
+            AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstProfServidorTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas,
                                    filtros.TipoVisualizacao, filtros.ExibirAulas);
 
             OrdernarRelatorio(relatorio, filtros.TipoVisualizacao);
@@ -111,6 +114,7 @@ namespace SME.SR.Application
 
         private void AdicionarAtribuicoesCJ(RelatorioAtribuicaoCjDto relatorio, IEnumerable<AtribuicaoCJ> lstAtribuicaoCJ,
                                             IEnumerable<ProfessorTitularComponenteCurricularDto> lstProfTitulares,
+                                            IEnumerable<ProfessorTitularComponenteCurricularDto> lstProfServidorTitulares,
                                             IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica, IEnumerable<ServidorCargoDto> cargosServidores,
                                             IEnumerable<AulaVinculosDto> aulas, TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao, bool exibirAulas)
         {
@@ -123,7 +127,7 @@ namespace SME.SR.Application
                     {
                         var retorno = new AtribuicaoCjPorProfessorDto();
 
-                        string tipoCJ = ObterTipoProfessorCJ(professor.Key.ProfessorRf, lstAtribuicaoEsporadica, lstProfTitulares, cargosServidores);
+                        string tipoCJ = ObterTipoProfessorCJ(professor.Key.ProfessorRf, lstAtribuicaoEsporadica, lstProfServidorTitulares, cargosServidores);
 
                         retorno.NomeProfessor = $"{professor.Key.ProfessorNome} ({professor.Key.ProfessorRf}) - {tipoCJ}";
                         retorno.AtribuiicoesCjTurma.AddRange(
@@ -170,7 +174,7 @@ namespace SME.SR.Application
                                     DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
                                     NomeProfessorTitular = titular != null ? titular.ProfessorNomeRf : string.Empty,
                                     NomeProfessorCj = t.ProfessorNomeRf,
-                                    TipoProfessorCj = ObterTipoProfessorCJ(t.ProfessorRf, lstAtribuicaoEsporadica, lstProfTitulares, cargosServidores),
+                                    TipoProfessorCj = ObterTipoProfessorCJ(t.ProfessorRf, lstAtribuicaoEsporadica, lstProfServidorTitulares, cargosServidores),
                                     Aulas = exibirAulas ? ObterAulasDadas(t.ProfessorRf, t.Turma.Codigo, t.ComponenteCurricularId, aulas)?.ToList() : null
                                 };
                                 return retorno;
@@ -203,12 +207,12 @@ namespace SME.SR.Application
             if (idsComponentesCurricularesCj.Any(componenteCJ => cargosServidores.Any(cargo => cargo.CodigoRF == professorRf &&
                                                                                                cargo.CodigoComponenteCurricular == componenteCJ.ToString())))
                 return "CJ da UE";
-            else if (lstProfTitulares.Any(titular => titular.ProfessorRf == professorRf))
-                return "Titular da UE";
             else if (lstAtribuicaoEsporadica.Any(esporadico => esporadico.ProfessorRf == professorRf))
                 return "Esporádico";
             else if (cargosServidores.Any(cargo => cargo.CodigoRF == professorRf && cargo.PossuiCargoSobrepostoGestao()))
                 return "Gestão da UE";
+            else if (lstProfTitulares.Any(titular => titular.ProfessorRf == professorRf))
+                return "Titular da UE";
 
             return string.Empty;
 
@@ -288,6 +292,21 @@ namespace SME.SR.Application
 
             relatorio.Usuario = usuario.NomeRelatorio;
             relatorio.RfUsuario = usuario.CodigoRf;
+        }
+
+        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string dreCodigo, string ueCodigo, int anoLetivo, Modalidade? modalidade, int? semestre, string login, Guid perfilAtual, bool consideraHistorico)
+        {
+            return await mediator.Send(new ObterTurmasPorAbrangenciaFiltroQuery()
+            {
+                CodigoDre = dreCodigo,
+                CodigoUe = ueCodigo,
+                AnoLetivo = anoLetivo,
+                Modalidade = modalidade ?? default,
+                Semestre = semestre ?? 0,
+                Login = login,
+                Perfil = perfilAtual,
+                ConsideraHistorico = consideraHistorico
+            });
         }
     }
 }

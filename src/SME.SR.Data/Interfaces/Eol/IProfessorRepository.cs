@@ -7,5 +7,7 @@ namespace SME.SR.Data
     public interface IProfessorRepository
     {
         Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularComponenteCurricularPorTurma(string[] codigosTurma);
+
+        Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularComponenteCurricularPorCodigosRf(string[] codigosRf);
     }
 }
