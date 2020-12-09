@@ -30,7 +30,9 @@ namespace SME.SR.Application
                 }
                 else
                 {
-                    await TrataDre(request.RelatorioFiltros.DreCodigo, request.ListaConsolida, retorno);
+                    var dreParaAdicionar = await TrataDre(request.RelatorioFiltros.DreCodigo, request.ListaConsolida);
+                    retorno.MostraDRE = true;
+                    retorno.DRE = dreParaAdicionar;
                 }
             }
             else
@@ -88,13 +90,15 @@ namespace SME.SR.Application
 
             foreach (var dreCodigosParaTratar in dresCodigosParaTratar)
             {
-                await TrataDre(dreCodigosParaTratar, request.ListaConsolida, retorno);
+                var dreParaAdicionar = await TrataDre(dreCodigosParaTratar, request.ListaConsolida);
+                retorno.SME.Dres.Add(dreParaAdicionar);
+
             }
         }
 
-        private async Task TrataDre(string dreCodigoParaTratar, IEnumerable<AdesaoAEQueryConsolidadoRetornoDto> listaConsolida, AdesaoAERetornoDto retorno)
+        private async Task<AdesaoAEDreDto> TrataDre(string dreCodigoParaTratar, IEnumerable<AdesaoAEQueryConsolidadoRetornoDto> listaConsolida)
         {
-            retorno.MostraDRE = true;
+            
 
             var uesCodigos = listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo.Trim()))
                 .Select(a => a.UeCodigo.ToString()).Distinct().ToArray();
@@ -137,7 +141,7 @@ namespace SME.SR.Application
                 }
 
             }
-            retorno.DRE = registroDre;
+            return registroDre;
         }
 
         private async Task TrataUe(ObterListaRelatorioAdessaoAEQuery request, AdesaoAERetornoDto retorno)
