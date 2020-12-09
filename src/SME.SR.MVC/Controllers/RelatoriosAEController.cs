@@ -28,8 +28,8 @@ namespace SME.SR.MVC.Controllers
 
             var filtroRelatorio = new AdesaoAEFiltroDto()
             {
-                DreCodigo = "109300",
-                UeCodigo = "019241",
+                DreCodigo = "",
+                UeCodigo = "",
                 UsuarioRF = "7777710",
                 UsuarioNome = "Marcos",
                 OpcaoListaUsuarios = FiltroRelatorioAEAdesaoEnum.ListarUsuariosCPFIrregular
