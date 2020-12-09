@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SME.SR.Infra
 {
@@ -24,6 +25,14 @@ namespace SME.SR.Infra
             AtribuicoesCjPorTurma = new List<AtribuicaoCjPorTurmaDto>();
             AtribuicoesCjPorProfessor = new List<AtribuicaoCjPorProfessorDto>();
             AtribuicoesEsporadicas = new List<AtribuicaoEsporadicaDto>();
+        }
+
+        public bool RelatorioVazio(TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao ) {
+
+            if (tipoVisualizacao == TipoVisualizacaoRelatorioAtribuicaoCJ.Professor)
+                return !AtribuicoesCjPorProfessor.Any() && !AtribuicoesEsporadicas.Any();
+            else
+                return !AtribuicoesCjPorTurma.Any() && !AtribuicoesEsporadicas.Any();
         }
     }
 }

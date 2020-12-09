@@ -17,5 +17,6 @@ namespace SME.SR.Data
         public Turma Turma { get; set; }
         public string TurmaId { get; set; }
         public string UeId { get; set; }
+        public string ProfessorNomeRf => $"{ProfessorNome} ({ProfessorRf})";
     }
 }
