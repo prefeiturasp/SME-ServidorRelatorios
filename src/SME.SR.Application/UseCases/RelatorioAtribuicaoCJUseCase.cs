@@ -71,7 +71,7 @@ namespace SME.SR.Application
                 aulas = await mediator.Send(new ObterAulaVinculosPorTurmaComponenteQuery(turmasId, componentesId, true));
 
             AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstProfServidorTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas,
-                                   filtros.TipoVisualizacao, filtros.ExibirAulas);
+                                   filtros.TipoVisualizacao, filtros.ExibirAulas, filtros.Modalidade);
 
             OrdernarRelatorio(relatorio, filtros.TipoVisualizacao);
 
@@ -117,7 +117,7 @@ namespace SME.SR.Application
                                             IEnumerable<ProfessorTitularComponenteCurricularDto> lstProfServidorTitulares,
                                             IEnumerable<AtribuicaoEsporadica> lstAtribuicaoEsporadica, IEnumerable<ServidorCargoDto> cargosServidores,
                                             IEnumerable<AulaVinculosDto> aulas, TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao, bool exibirAulas,
-                                            bool modalidadeInformada)
+                                            Modalidade? filtroModalidade)
         {
             if (tipoVisualizacao == TipoVisualizacaoRelatorioAtribuicaoCJ.Professor)
             {
@@ -155,14 +155,14 @@ namespace SME.SR.Application
             }
             else
             {
-                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => new { cj.Turma.Codigo, cj.Turma.Nome });
+                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => new { cj.Turma });
 
                 relatorio.AtribuicoesCjPorTurma.AddRange(
                    agrupamento.Select(turma =>
                    {
                        var retorno = new AtribuicaoCjPorTurmaDto();
 
-                       retorno.NomeTurma = modalidadeInformada? $"{turma.Key.Nome}" : $"{turma.First().Modalidade.ShortName()} - {turma.Key.Nome}";
+                       retorno.NomeTurma = turma.Key.Turma.NomePorFiltroModalidade(filtroModalidade);
                        retorno.AtribuicoesCjProfessor.AddRange(
                             turma.Select(t =>
                             {
