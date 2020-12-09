@@ -4,6 +4,9 @@
     {
         public static bool Valida(string cpf)
         {
+            if (string.IsNullOrEmpty(cpf))
+                return false;
+
             cpf = cpf.Trim();
             cpf = cpf.Replace(".", "").Replace("-", "");
             if (cpf.Length != 11)

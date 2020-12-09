@@ -33,6 +33,10 @@ namespace SME.SR.MVC.Controllers
                 UsuarioRF = "",
                 UsuarioNome = "",
                 OpcaoListaUsuarios = FiltroRelatorioAEAdesaoEnum.ListarUsuariosNao
+                //UeCodigo = "019241",
+                //UsuarioRF = "7777710",
+                //UsuarioNome = "Marcos",
+                //OpcaoListaUsuarios = FiltroRelatorioAEAdesaoEnum.ListarUsuariosCPFIrregular
             };
 
 
@@ -45,7 +49,7 @@ namespace SME.SR.MVC.Controllers
             var model = await mediator.Send(new ObterListaRelatorioAdessaoAEQuery(listaConsolida, filtroRelatorio));
 
 
-            return View("RelatorioAdesao", model);
+            return View("RelatorioAEAdesao", model);
         }
 
     }
