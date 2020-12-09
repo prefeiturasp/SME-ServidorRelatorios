@@ -52,7 +52,7 @@ namespace SME.SR.Application
 
             var lstServidoresArray = lstServidores?.Distinct().ToArray();
 
-            var cargosServidores = await mediator.Send(new ObterCargosServidoresPorAnoLetivoQuery(filtros.AnoLetivo, lstServidoresArray));
+            var cargosServidores = await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray));
 
             var lstProfServidorTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray));
 
