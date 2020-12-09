@@ -281,7 +281,7 @@ namespace SME.SR.Application
             {
                 var professor = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(professorRf));
 
-                relatorio.Professor = professor.NomeRelatorio;
+                relatorio.Professor = professor.Nome;
                 relatorio.RfProfessor = professor.CodigoRf;
             }
 
