@@ -30,9 +30,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId, long tipocalendarioId)
         {
-            var query = @"select hn.id as historicoNotaId,
-                                 hnf.fechamento_nota_id as fechamentoNotaId,
-                                 fa.aluno_codigo as codigoAluno,
+            var query = @"select fa.aluno_codigo as codigoAluno,
                                  hn.nota_anterior as notaAnterior,
                                  hn.nota_nova as notaAtribuida,
                                  hn.conceito_anterior_id as conceitoAnteriorId,
@@ -44,26 +42,30 @@ namespace SME.SR.Data
                                  ftd.disciplina_id as disciplinaId,
                                  pe.bimestre,
                                  coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome,
-                                 ap.status_aprovacao as situacao,
+                                 ap.status_aprovacao as Situacao,                                 
                                  ap.usuarioaprovacao,
-                                 ap.rfaprovacao
+                                 ap.rfaprovacao                          
                             from historico_nota hn 
                            inner join historico_nota_fechamento hnf on hn.id = hnf.historico_nota_id 
                            inner join fechamento_nota fn on hnf.fechamento_nota_id = fn.id
                             left join (select wan.status as status_aprovacao,  
-				                               coalesce(wan.alterado_por, wan.criado_por) as usuarioaprovacao,
-				                               coalesce(wan.alterado_rf, wan.criado_rf) as rfaprovacao,
-				                               wanf2.fechamento_nota_id 
-				                          from wf_aprovacao_nivel wan
-				                         inner join wf_aprovacao wa2 on wan.wf_aprovacao_id = wa2.id 
-				                         inner join wf_aprovacao_nota_fechamento wanf2 on wa2.id = wanf2.wf_aprovacao_id 
-				                         where wan.wf_aprovacao_id = (select wa.id
-								                                        from wf_aprovacao_nota_fechamento wanf
-								                                       inner join wf_aprovacao wa on wa.id = wanf.wf_aprovacao_id 
-								                                       where wanf.fechamento_nota_id = wanf2.fechamento_nota_id 
-								                                         and not excluido limit 1)
-				                           and wan.status not in (4, 5)				    
-				                         order by wan.nivel desc) ap on ap.fechamento_nota_id = fn.id 
+                                               u.nome as usuarioaprovacao,
+                                               u.rf_codigo as rfaprovacao,
+                                               wanf.fechamento_nota_id ,
+                                               wan.id
+                                          from wf_aprovacao_nota_fechamento wanf
+                                         inner join wf_aprovacao wa on wa.id = wanf.wf_aprovacao_id 
+                                         inner join wf_aprovacao_nivel wan on wan.wf_aprovacao_id = wa.id
+                                          left join wf_aprovacao_nivel_notificacao wann on wann.wf_aprovacao_nivel_id = wan.id 
+                                          left join notificacao n on n.id = wann.notificacao_id
+                                          left join usuario u on u.id = n.usuario_id 
+                                         where wan.id in (select wan2.id 
+                                         					from wf_aprovacao_nivel wan2
+                                         				   where wan2.wf_aprovacao_id = wa.id
+                                         				  	 and wan2.status = 2
+                                         				   order by wan2.nivel desc
+                                         				   limit 1)                                      
+                                         ) ap on ap.fechamento_nota_id = fn.id 
                            inner join fechamento_aluno fa on fn.fechamento_aluno_id = fa.id 
                            inner join fechamento_turma_disciplina ftd on fa.fechamento_turma_disciplina_id = ftd.id 
                            inner join fechamento_turma ft on ftd.fechamento_turma_id = ft.id 
