@@ -129,8 +129,10 @@ namespace SME.SR.Application
                         var retorno = new AtribuicaoCjPorProfessorDto();
 
                         string tipoCJ = ObterTipoProfessorCJ(professor.Key.ProfessorRf, lstAtribuicaoEsporadica, lstProfServidorTitulares, cargosServidores);
+                        var professorNome = cargosServidores.FirstOrDefault(p => p.CodigoRF == professor.Key.ProfessorRf)?.NomeServidor;
 
-                        retorno.NomeProfessor = $"{professor.Key.ProfessorNome} ({professor.Key.ProfessorRf}) - {tipoCJ}";
+                        retorno.NomeProfessor = $"{(professor.Key.ProfessorNome ?? professorNome)} ({professor.Key.ProfessorRf}) - {tipoCJ}";
+
                         retorno.AtribuiicoesCjTurma.AddRange(
                              professor.Select(t =>
                              {
@@ -155,26 +157,28 @@ namespace SME.SR.Application
             }
             else
             {
-                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => new { cj.Turma });
+                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => cj.Turma);
 
                 relatorio.AtribuicoesCjPorTurma.AddRange(
                    agrupamento.Select(turma =>
                    {
                        var retorno = new AtribuicaoCjPorTurmaDto();
 
-                       retorno.NomeTurma = turma.Key.Turma.NomePorFiltroModalidade(filtroModalidade);
+                       retorno.NomeTurma = turma.Key.NomePorFiltroModalidade(filtroModalidade);
                        retorno.AtribuicoesCjProfessor.AddRange(
                             turma.Select(t =>
                             {
                                 var titular = lstProfTitulares.FirstOrDefault(p => p.TurmaCodigo == t.Turma.Codigo &&
                                                                                    p.ComponenteCurricularId == t.ComponenteCurricularId.ToString());
 
+                                var professorNome = cargosServidores.FirstOrDefault(p => p.CodigoRF == t.ProfessorRf)?.NomeRelatorio;
+
                                 var retorno = new AtribuicaoCjProfessorDto()
                                 {
                                     ComponenteCurricular = t.ComponenteCurricularNome,
                                     DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
                                     NomeProfessorTitular = titular != null ? titular.ProfessorNomeRf : string.Empty,
-                                    NomeProfessorCj = t.ProfessorNomeRf,
+                                    NomeProfessorCj = t.ProfessorNomeRf ?? professorNome,
                                     TipoProfessorCj = ObterTipoProfessorCJ(t.ProfessorRf, lstAtribuicaoEsporadica, lstProfServidorTitulares, cargosServidores),
                                     Aulas = exibirAulas ? ObterAulasDadas(t.ProfessorRf, t.Turma.Codigo, t.ComponenteCurricularId, aulas)?.ToList() : null
                                 };
