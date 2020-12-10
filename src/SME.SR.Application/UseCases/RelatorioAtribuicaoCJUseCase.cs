@@ -75,7 +75,7 @@ namespace SME.SR.Application
 
             OrdernarRelatorio(relatorio, filtros.TipoVisualizacao);
 
-            if (string.IsNullOrEmpty(filtros.DreCodigo) && string.IsNullOrEmpty(filtros.UeCodigo))
+            if (string.IsNullOrEmpty(filtros.DreCodigo) || string.IsNullOrEmpty(filtros.UeCodigo))
             {
                 relatorio.ExibirDre = true;
                 //Chamar Query para realizar agrupamento e montagem;
