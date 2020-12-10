@@ -1,0 +1,274 @@
+﻿@model SME.SR.Infra.RelatorioLeituraComunicadosDto
+
+@{ int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 46;
+    int contadorPagina = 0;
+    var retornoVerificacao = string.Empty;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always' />" + str;
+
+        }
+        return string.Empty;
+
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 7;
+        var str =
+           $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'>RELATÓRIO DE LEITURA</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+    <td  width='50%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+    <td width='50%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+    <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
+    <td width='20%'>RF: {Model.Filtro.RF}</td>
+    <td width='20%'>DATA: {Model.Filtro.Data}</td>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+    string MontarCabecalhoTabelaComunicado()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 7;
+        var str = "";
+
+        str += $@"
+                <table class='tabela-comunicados'>
+                    <thead>
+                        <th class='sem-border-bottom' width='100%'>SME</th>
+                    </thead>
+                </table>
+                <table class='tabela-comunicados'>
+                <thead>
+                    <th class='sem-border-bottom' width='30%'>COMUNICADO</th>
+                    <th class='sem-border-bottom' width='14%'>DATA DE ENVIO</th>
+                    <th class='sem-border-bottom' width='14%'>DATA DE EXPIRAÇÃO</th>
+                    <th class='sem-border-bottom' width='14%'>NÃO INSTALADO</th>
+                    <th class='sem-border-bottom' width='14%'>NÃO VISUALIZADO</th>
+                    <th class='sem-border-bottom' width='14%'>VISUALIZADO</th>
+                </thead>
+            </table>";
+        return str;
+    }
+
+    string MontarCabecalhoTabelaTurma()
+    {
+        var str = "";
+
+        str += $@"
+<table class='tabela-comunicados'>
+<thead>
+<th class='sem-border-bottom' width='25%'>TURMA</th>
+<th class='sem-border-bottom' width='25%'>NÃO INSTALADO</th>
+<th class='sem-border-bottom' width='25%'>NÃO VISUALIZADO</th>
+<th class='sem-border-bottom' width='25%'>VISUALIZADO</th>
+</thead>
+</table>";
+        return str;
+    }
+
+    string MontarCabecalhoTabelaEstudante()
+    {
+        var str = "";
+
+        str += $@"
+<table class='tabela-comunicados'>
+<thead>
+<th class='sem-border-bottom' width='5%'>Nº</th>
+<th class='sem-border-bottom' width='25%'>ESTUDANTE</th>
+<th class='sem-border-bottom' width='25%'>RESPONSÁVEL</th>
+<th class='sem-border-bottom' width='22,5%'>CONTATO DO RESPONSÁVEL</th>
+<th class='sem-border-bottom' width='22,5%'>SITUAÇÃO</th>
+</thead>
+</table>";
+        return str;
+    }
+
+    string MontarDadosTabelaComunicado(List<SME.SR.Infra.LeituraComunicadoDto> leituraComunicado)
+    {
+        var str = MontarCabecalhoTabelaComunicado();
+        str += $@"<table class='tabela-comunicados' style='border-bottom:none;'><tbody>";
+        int i = 0;
+        foreach (var comunicado in leituraComunicado)
+        {
+            i++;
+            str += $@"
+            <tr>
+                <th width='30%'>{comunicado.Comunicado}</th>
+                <th width='14%'>{comunicado.DataEnvio.ToShortDateString()}</th>
+                <th width='14%'>{comunicado.DataExpiracao.ToShortDateString()}</th>
+                <th width='14%'>{comunicado.NaoInstalado}</th>
+                <th width='14%'>{comunicado.NaoVisualizado}</th>
+                <th width='14%'>{comunicado.Visualizado}</th>";
+
+            str += $@"</tr>";
+
+            //contadorQuebrarPagina = contadorQuebrarPagina + (comunicado.Comunicado.Length > 44 ? 2 : 1);
+            contadorQuebrarPagina = contadorQuebrarPagina + (comunicado.Comunicado.Length > 40 ? (int)(comunicado.Comunicado.Length / 40) + 1 : 1);
+
+            contadorQuebrarPagina++;
+            retornoVerificacao = VerificaQuebra();
+            if (retornoVerificacao != string.Empty)
+            {
+                str += $@"</tbody></table>{retornoVerificacao}{MontarCabecalhoTabelaComunicado()}<table class='tabela-comunicados'><tbody>";
+            }
+
+            //var quebra = VerificaQuebra(0);
+
+            //var novaPagina = quebra + (i < leituraComunicado.Count - 1 ? MontarCabecalhoTabelaComunicado() : "");
+            //str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}<table class='tabela-comunicados'><tbody>" : "";
+
+        }
+        str += $@"</tbody></table>";
+        return str;
+    } }
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE LEITURA</title>
+</head>
+<body class="body-relatorio">
+    <style>
+
+        tblTopo th, td {
+            padding: 3px 0px 3px 15px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+            font-weight: bold;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        .tabela-comunicados tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-rel-faltas-frequencia {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+    </style>
+    <div>
+        @{
+            @Html.Raw(MontarCabecalho())
+            @if (Model.LeituraComunicadoDto != null && Model.LeituraComunicadoDto.Any())
+            {
+                @Html.Raw(MontarDadosTabelaComunicado(Model.LeituraComunicadoDto));
+            }
+        }
+    </div>
+</body>
+</html>
