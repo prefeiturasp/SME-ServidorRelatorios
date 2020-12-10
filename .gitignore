@@ -272,3 +272,5 @@ src/SME.SGP.Api/healthchecksdb
 
 /sme_servidor_relatorios_worker.env
 src/SME.SR.Workers.SGP/Properties/launchSettings.json
+
+appsettings.Development.json
