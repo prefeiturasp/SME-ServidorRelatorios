@@ -185,7 +185,7 @@
                                     retornoVerificacao = VerificaQuebra();
                                     if (retornoVerificacao != string.Empty)
                                     {
-                                        if (!usuario.Login.Equals(ultimoUsuario.Login))
+                                        if (!usuario.Nome.Equals(ultimoUsuario.Nome) && !usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
                                         {
                                             str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
                                         }
@@ -194,7 +194,10 @@
                                             str += $@"</table>{retornoVerificacao}<table class='fixed'>";
                                             EhUltimoUsuario = true;
                                         }
-
+                                    }
+                                    else if (usuario.Nome.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                                    {
+                                        EhUltimoUsuario = true;
                                     }
                                 }
                                 str += $@"</table>";
@@ -272,15 +275,15 @@
                                        <td width='45%' class='td-valor-historico'>{historico.SenhaReiniciada} - {historico.SenhaReiniciadaPor} ({historico.SenhaReiniciadaPorRf}) - {historico.SenhaReiniciadaPorPerfil}</td>
                                        <td width='8%' class='td-valor-historico'>{historico.UtilizaSenhaPadao}</td>
                                      </tr>";
+                                                        
 
-
-                            if (historico.Nome != null && historico.Nome.Length > 16)
+                            if (historico.Nome != null && historico.Nome.Length > 40)
                             {
-                                contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.Nome.Length / 16) + 1;
+                                contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.Nome.Length / 40) + 1;
                             }
-                            else if (historico.SenhaReiniciadaPor != null && historico.SenhaReiniciadaPor.Length > 16)
+                            else if (historico.SenhaReiniciadaPor != null && historico.SenhaReiniciadaPor.Length > 40)
                             {
-                                contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.SenhaReiniciadaPor.Length / 16) + 1;
+                                contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.SenhaReiniciadaPor.Length / 40) + 1;
                             }
                             else
                             {
@@ -605,6 +608,7 @@
             text-align: center;
             font-size: 8px;
             padding: 4px;
+            height: 25px;
         }
 
         .caixa-1 {
