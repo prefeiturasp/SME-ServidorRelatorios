@@ -52,11 +52,14 @@ namespace SME.SR.Application
                 var ue = await mediator.Send(new ObterUePorCodigoQuery(relatorioFiltros.UeCodigo));
                 retorno.UeNome = ue.NomeComTipoEscola;
             }
+            else retorno.UeNome = "Todas";
+
             if (!string.IsNullOrEmpty(relatorioFiltros.DreCodigo))
             {
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery(relatorioFiltros.DreCodigo));
-                retorno.DRENome = $"{dre.Abreviacao} - {dre.Nome}";
+                retorno.DRENome = $"{dre.Abreviacao}";
             }
+            else retorno.DRENome = "Todas";
 
             retorno.UsuarioNome = relatorioFiltros.UsuarioNome;
             retorno.UsuarioRF = relatorioFiltros.UsuarioRF;
@@ -92,7 +95,7 @@ namespace SME.SR.Application
 
             foreach (var dreCodigosParaTratar in dresCodigosParaTratar)
             {
-                var dreParaAdicionar = await TrataDre(dreCodigosParaTratar, request.ListaConsolida);
+                var dreParaAdicionar = await TrataDre(dreCodigosParaTratar, request.ListaConsolida.Where( a => a.DreCodigo == dreCodigosParaTratar).ToList());
                 retorno.SME.Dres.Add(dreParaAdicionar);
 
             }
@@ -128,15 +131,16 @@ namespace SME.SR.Application
             foreach (var ueParaTratar in listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo)))
             {
                 var ue = Ues.FirstOrDefault(a => a.Codigo == ueParaTratar.UeCodigo);
+                
                 if (ue != null)
                 {
                     var ueParaAdicionar = new AdesaoAEValoresDto()
                     {
                         Nome = ue.NomeComTipoEscola,
-                        NaoRealizaram = registroDreParaTratar.SemAppInstalado,
-                        PrimeiroAcessoIncompleto = registroDreParaTratar.PrimeiroAcessoIncompleto,
-                        SemCpfOuCpfInvalido = registroDreParaTratar.CpfsInvalidos,
-                        Validos = registroDreParaTratar.Validos
+                        NaoRealizaram = ueParaTratar.SemAppInstalado,
+                        PrimeiroAcessoIncompleto = ueParaTratar.PrimeiroAcessoIncompleto,
+                        SemCpfOuCpfInvalido = ueParaTratar.CpfsInvalidos,
+                        Validos = ueParaTratar.Validos
                     };
 
                     registroDre.Ues.Add(ueParaAdicionar);
