@@ -9,6 +9,7 @@ using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Repositories;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
@@ -128,10 +129,10 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesConsolidadoRepository), typeof(RelatorioSondagemPortuguesConsolidadoRepository));
             services.TryAddScoped(typeof(IUsuarioRepository), typeof(UsuarioRepository));
-            services.TryAddScoped(typeof(ITurmaEolRepository), typeof(TurmaEolRepository));            
+            services.TryAddScoped(typeof(ITurmaEolRepository), typeof(TurmaEolRepository));
             services.TryAddScoped(typeof(IMathPoolNumbersRepository), typeof(MathPoolNumbersRepository));
             services.TryAddScoped(typeof(IPerguntasAutoralRepository), typeof(PerguntasAutoralRepository));
-            services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));            
+            services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));
             services.TryAddScoped(typeof(IPeriodoSondagemRepository), typeof(PeriodoSondagemRepository));
             services.TryAddScoped(typeof(IAulaPrevistaBimestreRepository), typeof(AulaPrevistaBimestreRepository));
             services.TryAddScoped(typeof(IAtribuicaoEsporadicaRepository), typeof(AtribuicaoEsporadicaRepository));
@@ -147,6 +148,10 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IEventoRepository), typeof(EventoRepository));
             services.TryAddScoped(typeof(IDiarioBordoRepository), typeof(DiarioBordoRepository));
             services.TryAddScoped(typeof(INotificacaoRepository), typeof(NotificacaoRepository));
+
+            services.TryAddScoped(typeof(IDashboardAdesaoRepository), typeof(DashboardAdesaoRepository));
+            services.TryAddScoped(typeof(IUsuarioAERepository), typeof(UsuarioAERepository));
+            
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -186,6 +191,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioUsuariosUseCase, RelatorioUsuariosUseCase>();
             services.TryAddScoped<IRelatorioAtribuicaoCJUseCase, RelatorioAtribuicaoCJUseCase>();
             services.TryAddScoped<IRelatorioAlteracaoNotasUseCase, RelatorioAlteracaoNotasUseCase>();
+            services.TryAddScoped<IRelatorioAdesaoAppUseCase, RelatorioAdesaoAppUseCase>();
 
         }
     }
