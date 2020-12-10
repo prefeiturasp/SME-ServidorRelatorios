@@ -6,6 +6,8 @@ namespace SME.SR.Infra
 {
     public class AtribuicaoEsporadicaDto
     {
+        public string CodigoDre { get; set; }
+        public string CodigoUe { get; set; }
         public string NomeUsuario { get; set; }
         public string Cargo { get; set; }
         public string DataInicio { get; set; }

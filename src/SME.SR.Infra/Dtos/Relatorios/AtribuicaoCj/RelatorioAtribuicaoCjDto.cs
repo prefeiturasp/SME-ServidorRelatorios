@@ -34,9 +34,9 @@ namespace SME.SR.Infra
         public bool RelatorioVazio(TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao ) {
 
             if (tipoVisualizacao == TipoVisualizacaoRelatorioAtribuicaoCJ.Professor)
-                return !AtribuicoesCjPorProfessor.Any() && !AtribuicoesEsporadicas.Any();
+                return !AtribuicoesCjPorProfessor.Any() && !AtribuicoesEsporadicas.Any() && !Dres.Any();
             else
-                return !AtribuicoesCjPorTurma.Any() && !AtribuicoesEsporadicas.Any();
+                return !AtribuicoesCjPorTurma.Any() && !AtribuicoesEsporadicas.Any() && !Dres.Any(); 
         }
     }
 }

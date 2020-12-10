@@ -6,6 +6,8 @@ namespace SME.SR.Infra
 {
     public class AtribuicaoCjProfessorDto
     {
+        public string CodigoDre { get; set; }
+        public string CodigoUe { get; set; }
         public string NomeProfessorCj { get; set; }
         public string ComponenteCurricular { get; set; }
         public string NomeProfessorTitular { get; set; }
