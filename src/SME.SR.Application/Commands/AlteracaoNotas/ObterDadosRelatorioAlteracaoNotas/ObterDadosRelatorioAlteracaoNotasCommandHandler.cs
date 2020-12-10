@@ -59,9 +59,9 @@ namespace SME.SR.Application
                             historicoNota.NomeAluno = alunoAtual.NomeAluno;
                             historicoNota.NumeroChamada = alunoAtual.NumeroAlunoChamada;
                             historicoNota.NomeTurma = nomeTurma;
-                        }                                             
-
-                        listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
+                        }
+                        if (historicoAlteracaoNotas != null && historicoAlteracaoNotas.Any())
+                            listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
                     }
 
                 }
@@ -195,7 +195,7 @@ namespace SME.SR.Application
                 TipoAlteracaoNota = historicoAlteracaoNotas.TipoNota.Name(),
                 DataAlteracao = historicoAlteracaoNotas.DataAlteracao.ToString("dd/MM/yyy HH:mm"),
                 UsuarioAlteracao = ToTitleCase($"{historicoAlteracaoNotas.UsuarioAlteracao} ({historicoAlteracaoNotas.RfAlteracao})"),
-                Situacao = historicoAlteracaoNotas.Situacao.Name(),
+                Situacao = historicoAlteracaoNotas.Situacao == 0 ? "" : historicoAlteracaoNotas.Situacao.Name(),
                 UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : "",
                 NotaConceitoAnterior = tipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAnterior.ToString() : historicoAlteracaoNotas.ConceitoAnteriorId.Name(),
                 NotaConceitoAtribuido = tipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAtribuida.ToString() : historicoAlteracaoNotas.ConceitoAtribuidoId.Name(),

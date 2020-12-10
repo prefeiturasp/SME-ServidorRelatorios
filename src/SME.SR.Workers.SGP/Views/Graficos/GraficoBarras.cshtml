@@ -45,15 +45,15 @@
 
     function ChartSettings_@(Model.IdParaLastro)() {
         svgMargin_@(Model.IdParaLastro) = 20;
-        svgSpace_@(Model.IdParaLastro) = 80;
+        svgSpace_@(Model.IdParaLastro) = (studentexamdata_@(Model.IdParaLastro).length * 12) + 85;
 
-        svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
-        svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
+        svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - ((svg_@(Model.IdParaLastro).height.baseVal.value/100) * 33);
+        svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - svgSpace_@(Model.IdParaLastro) - 45;
 
         MarginSpace_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgSpace_@(Model.IdParaLastro);
         MarginHeight_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgHeight_@(Model.IdParaLastro);
 
-        barchartMargin_@(Model.IdParaLastro) = 15;
+        barchartMargin_@(Model.IdParaLastro) = 10;
         totalChartBars_@(Model.IdParaLastro) = studentexamdata_@(Model.IdParaLastro).length;
         barchartWidth_@(Model.IdParaLastro) = (svgWidth_@(Model.IdParaLastro) / totalChartBars_@(Model.IdParaLastro)) - barchartMargin_@(Model.IdParaLastro);
 
@@ -124,51 +124,54 @@
     }
 
     function createSVGtextLegendas(caption, x, y) {
+
         //  This function attempts to create a new svg "text" element, chopping
         //  it up into "tspan" pieces, if the caption is too long
         //
-        var svgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        //svgText.setAttributeNS(null, 'transform', 'rotate(90) translate(' + y + ' , ' + - x + ')');
-        // svgText.setAttributeNS(null, 'x', x);
-        // svgText.setAttributeNS(null, 'y', y);
-        svgText.setAttributeNS(null, 'transform', 'rotate(-90) translate(' + y + ' , ' + x + ')');
-        svgText.setAttributeNS(null, 'font-size', 10);
-        //svgText.setAttributeNS(null, 'fill', '#FFFFFF');         //  White text
-        //svgText.setAttributeNS(null, 'text-anchor', 'middle');   //  Center the text
+        var svgSwitch = document.createElementNS('http://www.w3.org/2000/svg', 'switch');
+        svgSwitch.setAttributeNS(null, 'transform', 'rotate(-90) translate(' + y + ' , ' + x + ')');
+        svgSwitch.setAttributeNS(null, 'font-size', 10);
+        svgSwitch.setAttribute('width', 250);
+        svgSwitch.setAttribute('height', 200);
+
+        var svgForeignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+        svgForeignObject.setAttributeNS(null, 'x', 0);
+        svgForeignObject.setAttributeNS(null, 'y', y);
+        svgForeignObject.setAttribute('width', 250);
+        svgForeignObject.setAttribute('height', 200);
 
         //  The following two variables should really be passed as parameters
         var LINE_HEIGHT = 12;
 
         var words = caption.split("||");
         var line = "";
+        var svgDiv = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
 
         for (var n = 0; n < words.length; n++) {
             //if (testLine.length > MAXIMUM_CHARS_PER_LINE) {
-                //  Add a new <tspan> element
-                var svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-                //svgTSpan.setAttributeNS(null, 'transform', 'rotate(90) translate(' + y + ' , ' + x + ')');
-                svgTSpan.setAttributeNS(null, 'x', 0);
-                svgTSpan.setAttributeNS(null, 'y', y);
+            //  Add a new <tspan> element
+            var svgP = document.createElementNS('http://www.w3.org/1999/xhtml', 'p');
+            svgP.setAttributeNS(null, 'style', 'margin-bottom: 2px; margin-top: 2px;');
 
-                var tSpanTextNode = document.createTextNode(line);
-                svgTSpan.appendChild(tSpanTextNode);
-                svgText.appendChild(svgTSpan);
+            var tSpanTextNode = document.createTextNode(line);
+            svgP.appendChild(tSpanTextNode);
+
+            svgForeignObject.appendChild(svgP);
 
                 line = words[n] + " ";
                 y += LINE_HEIGHT;
             //}
         }
 
-        var svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-        svgTSpan.setAttributeNS(null, 'x', 0);
-        svgTSpan.setAttributeNS(null, 'y', y);
-
+        var svgP = document.createElementNS('http://www.w3.org/1999/xhtml', 'p');
+        svgP.setAttributeNS(null, 'style', 'margin-bottom: 2px; margin-top: 2px;');
         var tSpanTextNode = document.createTextNode(line);
-        svgTSpan.appendChild(tSpanTextNode);
+        svgP.appendChild(tSpanTextNode);
+        svgForeignObject.appendChild(svgP);
 
-        svgText.appendChild(svgTSpan);
+        svgSwitch.appendChild(svgForeignObject);
 
-        return svgText;
+        return svgSwitch;
     }
 
  function createSVGtext(caption, x, y) {
