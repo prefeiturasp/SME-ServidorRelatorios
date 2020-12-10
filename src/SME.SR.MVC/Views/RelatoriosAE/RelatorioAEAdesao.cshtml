@@ -104,7 +104,7 @@
             <td width="15%">@valores.NaoRealizaram</td>
             <td width="15%">@valores.PrimeiroAcessoIncompleto</td>
             <td width="15%">@valores.Validos</td>
-            <td width="15%">@valores.Total L -> @contadorQuebrarPagina</td>
+            <td width="15%">@valores.Total</td>
         </tr>
 
     }
@@ -162,15 +162,17 @@
             }
 
             <table class="tabela-listas">
-                @{
-                    if (!quebrou)
-                    {
-                        MontaLinhaEspaco();
-                        contadorEspaco++;
-                        quebrou = false;
+                <tbody>
+                    @{
+                        if (!quebrou)
+                        {
+                            MontaLinhaEspaco();
+                            contadorEspaco++;
+                            quebrou = false;
+                        }
+                        MontarLinhaValores(turmas.Valores);
                     }
-                    MontarLinhaValores(turmas.Valores);
-                }
+                </tbody>
             </table>
 
             contadorQuebrarPagina++;
@@ -183,16 +185,18 @@
             if (turmas.Alunos.Count > 0)
             {
                 <table class="tabela-listas">
-                    @{
-                        if (Model.UE.MostraColunaSituacao)
-                        {
-                            MontarCabecalhoUeComSituacao();
+                    <tbody>
+                        @{
+                            if (Model.UE.MostraColunaSituacao)
+                            {
+                                MontarCabecalhoUeComSituacao();
+                            }
+                            else
+                            {
+                                MontarCabecalhoUeSemSituacao();
+                            }
                         }
-                        else
-                        {
-                            MontarCabecalhoUeSemSituacao();
-                        }
-                    }
+                    </tbody>
                 </table>
 
                 contadorQuebrarPagina++;
@@ -213,11 +217,27 @@
                         <table class="tabela-cabecalho">
                             @{
                                 MontarCabecalhoResponsaveis();
-                                MontarLinhaValores(turmas.Valores);
-                                MontarCabecalhoUeSemSituacao();
-                                contadorQuebrarPagina = contadorQuebrarPagina + 5;
                             }
                         </table>
+                        <table class="tabela-listas">
+                            <tbody>
+                                @{ MontarLinhaValores(turmas.Valores); }
+                            </tbody>
+                        </table>
+                        <table class="tabela-listas">
+                            <tbody>
+                                @if (Model.UE.MostraColunaSituacao)
+                                {
+                                    MontarCabecalhoUeComSituacao();
+                                }
+                                else
+                                {
+                                    MontarCabecalhoUeSemSituacao();
+                                }
+                            </tbody>
+                        </table>
+
+                        contadorQuebrarPagina = contadorQuebrarPagina + 5;
                     }
 
                     <table class="tabela-listas">
@@ -228,7 +248,7 @@
                                 <td width="28%">@aluno.Estudante</td>
                                 <td width="26%">@aluno.Responsavel</td>
                                 <td width="12%">@aluno.CpfResponsavel</td>
-                                <td width="9%">@aluno.UltimoAcesso L-> @contadorQuebrarPagina</td>
+                                <td width="9%">@aluno.UltimoAcesso</td>
                                 <td width="10%">@aluno.Contato</td>
                                 <td width="10%">@aluno.SituacaoNoApp</td>
                             }
@@ -238,7 +258,7 @@
                                 <td width="31%">@aluno.Estudante</td>
                                 <td width="29%">@aluno.Responsavel</td>
                                 <td width="15%">@aluno.CpfResponsavel</td>
-                                <td width="10%">@aluno.UltimoAcesso L-> @contadorQuebrarPagina</td>
+                                <td width="10%">@aluno.UltimoAcesso</td>
                                 <td width="10%">@aluno.Contato</td>
                             }
                         </tr>
@@ -343,6 +363,7 @@
                             MontaLinhaEspaco();
                             MontarLinhaValores(modalidade.Valores);
                         }
+                    </tbody>
                 </table>
                 contadorQuebrarPagina = contadorQuebrarPagina + 2;
 

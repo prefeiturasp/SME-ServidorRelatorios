@@ -217,15 +217,26 @@
                         <table class="tabela-cabecalho">
                             @{
                                 MontarCabecalhoResponsaveis();
-                                MontarLinhaValores(turmas.Valores);
                             }
                         </table>
                         <table class="tabela-listas">
-                            <tbody>                                
-                                @{ MontarCabecalhoUeSemSituacao(); }
+                            <tbody>
+                                @{ MontarLinhaValores(turmas.Valores); }
                             </tbody>
                         </table>
-    
+                        <table class="tabela-listas">
+                            <tbody>
+                                @if (Model.UE.MostraColunaSituacao)
+                                {
+                                    MontarCabecalhoUeComSituacao();
+                                }
+                                else
+                                {
+                                    MontarCabecalhoUeSemSituacao();
+                                }
+                            </tbody>
+                        </table>
+
                         contadorQuebrarPagina = contadorQuebrarPagina + 5;
                     }
 
