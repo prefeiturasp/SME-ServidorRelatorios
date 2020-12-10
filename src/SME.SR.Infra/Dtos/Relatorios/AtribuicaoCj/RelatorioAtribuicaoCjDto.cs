@@ -19,12 +19,16 @@ namespace SME.SR.Infra
         public List<AtribuicaoCjPorTurmaDto> AtribuicoesCjPorTurma { get; set; }
         public List<AtribuicaoCjPorProfessorDto> AtribuicoesCjPorProfessor { get; set; }
         public List<AtribuicaoEsporadicaDto> AtribuicoesEsporadicas { get; set; }
+        public bool ExibirDre { get; set; }     
+        public List<RelatorioAtribuicaoCjDreDto> Dres { get; set; }
+
 
         public RelatorioAtribuicaoCjDto()
         {
             AtribuicoesCjPorTurma = new List<AtribuicaoCjPorTurmaDto>();
             AtribuicoesCjPorProfessor = new List<AtribuicaoCjPorProfessorDto>();
             AtribuicoesEsporadicas = new List<AtribuicaoEsporadicaDto>();
+            Dres = new List<RelatorioAtribuicaoCjDreDto>();
         }
 
         public bool RelatorioVazio(TipoVisualizacaoRelatorioAtribuicaoCJ tipoVisualizacao ) {
