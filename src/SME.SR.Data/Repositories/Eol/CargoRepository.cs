@@ -88,6 +88,7 @@ namespace SME.SR.Data
                     ,Sobreposto
                     ,CodigoComponenteCurricular
 		            ,CodigoCargoBase
+                    ,NomeCargo
             FROM(
 	            SELECT  
                     servidor.cd_registro_funcional    
@@ -97,6 +98,7 @@ namespace SME.SR.Data
                     ,0 as Sobreposto
                     ,NULL as CodigoComponenteCurricular
 		            ,cargoServidor.cd_cargo_base_servidor as CodigoCargoBase
+                    ,cargo.dc_cargo as NomeCargo
 	            FROM v_servidor_cotic servidor
 	            INNER JOIN v_cargo_base_cotic AS cargoServidor ON cargoServidor.CD_SERVIDOR = servidor.cd_servidor
 	            INNER JOIN cargo AS cargo ON cargoServidor.cd_cargo = cargo.cd_cargo
@@ -115,6 +117,7 @@ namespace SME.SR.Data
                     ,1 as Sobreposto
                     ,NULL as CodigoComponenteCurricular
 		            ,cargoServidor.cd_cargo_base_servidor as CodigoCargoBase
+                    ,cargo.dc_cargo as NomeCargo
 	            FROM v_servidor_cotic servidor
 		            INNER JOIN v_cargo_base_cotic AS cargoServidor ON cargoServidor.CD_SERVIDOR = servidor.cd_servidor
 		            LEFT JOIN lotacao_servidor AS lotacao_servidor ON cargoServidor.cd_cargo_base_servidor = lotacao_servidor.cd_cargo_base_servidor
@@ -136,6 +139,7 @@ namespace SME.SR.Data
                     ,0 as Sobreposto
                     ,componente.cd_componente_curricular as CodigoComponenteCurricular
 		            ,cargoServidor.cd_cargo_base_servidor as CodigoCargoBase
+                    ,cargo.dc_cargo as NomeCargo
 	            FROM v_servidor_cotic servidor
 		            INNER JOIN v_cargo_base_cotic AS cargoServidor ON cargoServidor.CD_SERVIDOR = servidor.cd_servidor
 		            INNER JOIN cargo AS cargo ON cargoServidor.cd_cargo = cargo.cd_cargo
@@ -160,6 +164,7 @@ namespace SME.SR.Data
                     ,0 as Sobreposto
                     ,NULL as CodigoComponenteCurricular
 		            ,cargoServidor.cd_cargo_base_servidor as CodigoCargoBase
+                    ,cargo.dc_cargo as NomeCargo
 	            FROM v_servidor_cotic servidor
 		            INNER JOIN v_cargo_base_cotic AS cargoServidor ON cargoServidor.CD_SERVIDOR = servidor.cd_servidor
 		            INNER JOIN cargo AS cargo ON cargoServidor.cd_cargo = cargo.cd_cargo
@@ -177,7 +182,8 @@ namespace SME.SR.Data
 		            ,cd_tipo_funcao
 					,CodigoComponenteCurricular
                     ,Sobreposto
-		            ,CodigoCargoBase";
+		            ,CodigoCargoBase
+                    ,NomeCargo";
 
             var parametros = new { codigosRF };
 
