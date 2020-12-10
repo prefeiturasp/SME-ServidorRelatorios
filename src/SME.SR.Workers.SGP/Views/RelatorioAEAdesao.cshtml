@@ -115,7 +115,7 @@
             <td width="5%">Nº</td>
             <td width="31%">ESTUDANTE</td>
             <td width="29%">RESPONSÁVEL</td>
-            <td width="15%">CPF DO RESPOSÁVEL</td>
+            <td width="15%">CPF DO RESPONSÁVEL</td>
             <td width="10%">ÚLTIMO ACESSO</td>
             <td width="10%">CONTATO</td>
         </tr>
@@ -127,7 +127,7 @@
             <td width="5%">Nº</td>
             <td width="28%">ESTUDANTE</td>
             <td width="26%">RESPONSÁVEL</td>
-            <td width="12%">CPF DO RESPOSÁVEL</td>
+            <td width="12%">CPF DO RESPONSÁVEL</td>
             <td width="9%">ÚLTIMO ACESSO</td>
             <td width="10%">CONTATO</td>
             <td width="10%">SITUAÇÃO NO APP</td>
@@ -164,7 +164,7 @@
             <table class="tabela-listas">
                 <tbody>
                     @{
-                        if (!quebrou)
+                        if (!quebrou && turmas.Alunos.Count > 0)
                         {
                             MontaLinhaEspaco();
                             contadorEspaco++;
