@@ -60,6 +60,8 @@ namespace SME.SR.Application
 
             retorno.UsuarioNome = relatorioFiltros.UsuarioNome;
             retorno.UsuarioRF = relatorioFiltros.UsuarioRF;
+            retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
+
         }
 
         private async Task TrataSME(ObterListaRelatorioAdessaoAEQuery request, AdesaoAERetornoDto retorno)
