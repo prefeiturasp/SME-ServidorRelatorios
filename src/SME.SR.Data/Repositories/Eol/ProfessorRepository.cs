@@ -20,11 +20,9 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularComponenteCurricularPorCodigosRf(string[] codigosRf)
         {
-            try
-            {
-                StringBuilder query = new StringBuilder();
+            StringBuilder query = new StringBuilder();
 
-                query.AppendLine(@"
+            query.AppendLine(@"
 				select coalesce(cc_pro.cd_componente_curricular, cc_ser.cd_componente_curricular) as ComponenteCurricularId,
 					   coalesce(cc_pro.dc_componente_curricular, cc_ser.dc_componente_curricular) as ComponenteCurricular,
 					   coalesce(serv.cd_registro_funcional, '')                                   as ProfessorRF,
@@ -70,19 +68,14 @@ namespace SME.SR.Data
                          left join v_servidor_cotic serv on serv.cd_servidor = vcbc.cd_servidor
                     WHERE serv.cd_registro_funcional in @codigosRf");
 
-                var parametros = new { codigosRf };
+            var parametros = new { codigosRf };
 
-                using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-                {
-                    var result = await conn.QueryAsync<ProfessorTitularComponenteCurricularDto>(
-                                                  query.ToString(),
-                                                  parametros, commandTimeout: 60000);
-                    return result.ToList();
-                }
-            }
-            catch (Exception ex)
+            using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                throw ex;
+                var result = await conn.QueryAsync<ProfessorTitularComponenteCurricularDto>(
+                                              query.ToString(),
+                                              parametros, commandTimeout: 60000);
+                return result.ToList();
             }
         }
 
