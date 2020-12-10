@@ -140,7 +140,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre, bool? possuiFechamento = null, bool? somenteEscolarizada = null)
+        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
         {
             StringBuilder query = new StringBuilder();
             query.Append(@"select ano, anoLetivo, codigo, 
@@ -157,8 +157,16 @@ namespace SME.SR.Data
             if (somenteEscolarizada.HasValue && somenteEscolarizada.Value)
                 query.Append(" and ano != '0'");
 
+
+            if (!string.IsNullOrEmpty(codigoDre))
+                query.Append(@" and codigo in (select t.turma_id from turma t
+                                 inner join ue on ue.id = t.ue_id
+                                 inner join dre on dre.id = ue.dre_id
+                                 where dre.dre_id = @codigoDre)");
+
             var parametros = new
             {
+                CodigoDre = codigoDre,
                 CodigoUe = codigoUe,
                 Modalidade = (int)modalidade,
                 AnoLetivo = anoLetivo,

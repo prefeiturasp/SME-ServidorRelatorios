@@ -14,6 +14,8 @@ namespace SME.SR.Data
         public Guid PerfilAtual { get; set; }
         public IEnumerable<PrioridadePerfil> Perfis { get; private set; }
 
+        public string NomeRelatorio => $"{CodigoRf} - {Nome}";
+
         public bool EhPerfilDRE()
         {
             return Perfis.Any(c => c.Tipo == TipoPerfil.DRE && c.CodigoPerfil == PerfilAtual);
