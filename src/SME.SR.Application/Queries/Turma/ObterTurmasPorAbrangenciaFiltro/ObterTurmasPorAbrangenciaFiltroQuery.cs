@@ -8,6 +8,7 @@ namespace SME.SR.Application
 {
     public class ObterTurmasPorAbrangenciaFiltroQuery : IRequest<IEnumerable<Turma>>
     {
+        public string CodigoDre { get; set; }
         public string CodigoUe { get; set; }
 
         public Modalidade Modalidade { get; set; }

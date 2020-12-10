@@ -63,5 +63,14 @@ namespace SME.SR.Data
                 }
             }
         }
+
+        public string NomePorFiltroModalidade(Modalidade? filtroModalidade)
+        {
+            if (filtroModalidade.HasValue)
+                return Nome;
+            else
+                return $"{ModalidadeCodigo.ShortName()} - {Nome}";
+
+        }
     }
 }

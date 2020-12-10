@@ -17,9 +17,9 @@
 
         public bool PossuiCargoSobrepostoGestao()
         {
-            return CodigoCargoSobreposto == ((int)Cargo.AD).ToString() ||
-                   CodigoCargoSobreposto == ((int)Cargo.CP).ToString() ||
-                   CodigoCargoSobreposto == ((int)Cargo.Diretor).ToString();
+            return Sobreposto && (CodigoCargo == ((int)Cargo.AD).ToString() ||
+                                  CodigoCargo == ((int)Cargo.CP).ToString() ||
+                                  CodigoCargo == ((int)Cargo.Diretor).ToString());
         }
     }
 }
