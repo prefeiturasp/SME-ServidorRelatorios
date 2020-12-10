@@ -50,7 +50,7 @@ namespace SME.SR.Application
             if (!string.IsNullOrEmpty(relatorioFiltros.UeCodigo))
             {
                 var ue = await mediator.Send(new ObterUePorCodigoQuery(relatorioFiltros.UeCodigo));
-                retorno.UeNome = ue.NomeComTipoEscola;
+                retorno.UeNome = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
             }
             else retorno.UeNome = "Todas";
 
@@ -147,6 +147,10 @@ namespace SME.SR.Application
                 }
 
             }
+
+            registroDre.Ues = registroDre
+                .Ues
+                .OrderBy(a => a.Nome).ToList() ;
             return registroDre;
         }
 
@@ -246,8 +250,13 @@ namespace SME.SR.Application
                     modalidadeParaAdicionar.Turmas.Add(turmaParaAdicionar);
 
                 }
+                modalidadeParaAdicionar.Turmas = modalidadeParaAdicionar.Turmas.OrderBy(a => a.Valores.Nome).ToList();
+
                 UeParaAdicionar.Modalidades.Add(modalidadeParaAdicionar);
             }
+
+            UeParaAdicionar.Modalidades = UeParaAdicionar.Modalidades.OrderBy(a => a.Valores.Nome).ToList();
+            
 
             retorno.UE = UeParaAdicionar;
         }
@@ -323,7 +332,7 @@ namespace SME.SR.Application
                     Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
                     CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf?.ToString(),
                     Responsavel = alunoResponsaveisDaTurma.ResponsavelNome.Trim(),
-                    Estudante = alunoResponsaveisDaTurma.AlunoNome.Trim(),
+                    Estudante = alunoResponsaveisDaTurma.NomeAlunoParaVisualizar(),
                     Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada?.Trim(),
                     UltimoAcesso = usuarioApp?.UltimoLogin.ToString("dd/MM/yyyy HH:mm"),
                     SituacaoNoApp = ObtemSituacaoApp(usuarioApp, alunoResponsaveisDaTurma)

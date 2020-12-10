@@ -14,8 +14,8 @@
         public string NomeAlunoParaVisualizar()
         {
             if (string.IsNullOrEmpty(AlunoNomeSocial))
-                return AlunoNome;
-            else return AlunoNomeSocial;
+                return $"{AlunoNome.Trim()} ({AlunoCodigo})";
+            else return $"{AlunoNomeSocial.Trim()} ({AlunoCodigo})";
         }
         public string ResponsavelCelularFormatado()
         {

@@ -1088,6 +1088,7 @@ namespace SME.SR.Data
 						on ra.cd_aluno = matr.cd_aluno
 						WHERE mte.cd_turma_escola in @turmasCodigo
 						and ra.dt_fim is null
+                        and mte.cd_situacao_aluno in (1, 6, 10,13)
 						UNION 
 							SELECT 
 							mte.cd_turma_escola TurmaCodigo,
@@ -1106,7 +1107,8 @@ namespace SME.SR.Data
 						INNER JOIN responsavel_aluno ra 
 						on ra.cd_aluno = matr.cd_aluno
 						WHERE mte.cd_turma_escola in @turmasCodigo
-						and ra.dt_fim is null						
+						and ra.dt_fim is null		
+                        and mte.cd_situacao_aluno in (1, 6, 10,13)
 						and mte.dt_situacao_aluno =                    
 							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
