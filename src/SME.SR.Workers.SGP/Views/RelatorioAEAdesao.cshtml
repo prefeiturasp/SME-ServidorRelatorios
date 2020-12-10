@@ -162,15 +162,17 @@
             }
 
             <table class="tabela-listas">
-                @{
-                    if (!quebrou)
-                    {
-                        MontaLinhaEspaco();
-                        contadorEspaco++;
-                        quebrou = false;
+                <tbody>
+                    @{
+                        if (!quebrou)
+                        {
+                            MontaLinhaEspaco();
+                            contadorEspaco++;
+                            quebrou = false;
+                        }
+                        MontarLinhaValores(turmas.Valores);
                     }
-                    MontarLinhaValores(turmas.Valores);
-                }
+                </tbody>
             </table>
 
             contadorQuebrarPagina++;
@@ -183,16 +185,18 @@
             if (turmas.Alunos.Count > 0)
             {
                 <table class="tabela-listas">
-                    @{
-                        if (Model.UE.MostraColunaSituacao)
-                        {
-                            MontarCabecalhoUeComSituacao();
+                    <tbody>
+                        @{
+                            if (Model.UE.MostraColunaSituacao)
+                            {
+                                MontarCabecalhoUeComSituacao();
+                            }
+                            else
+                            {
+                                MontarCabecalhoUeSemSituacao();
+                            }
                         }
-                        else
-                        {
-                            MontarCabecalhoUeSemSituacao();
-                        }
-                    }
+                    </tbody>
                 </table>
 
                 contadorQuebrarPagina++;
@@ -214,10 +218,15 @@
                             @{
                                 MontarCabecalhoResponsaveis();
                                 MontarLinhaValores(turmas.Valores);
-                                MontarCabecalhoUeSemSituacao();
-                                contadorQuebrarPagina = contadorQuebrarPagina + 5;
                             }
                         </table>
+                        <table class="tabela-listas">
+                            <tbody>                                
+                                @{ MontarCabecalhoUeSemSituacao(); }
+                            </tbody>
+                        </table>
+    
+                        contadorQuebrarPagina = contadorQuebrarPagina + 5;
                     }
 
                     <table class="tabela-listas">
@@ -343,6 +352,7 @@
                             MontaLinhaEspaco();
                             MontarLinhaValores(modalidade.Valores);
                         }
+                    </tbody>
                 </table>
                 contadorQuebrarPagina = contadorQuebrarPagina + 2;
 
