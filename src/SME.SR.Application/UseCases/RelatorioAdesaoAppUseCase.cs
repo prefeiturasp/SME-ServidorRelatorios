@@ -19,6 +19,12 @@ namespace SME.SR.Application
         {
             var relatorioFiltros = request.ObterObjetoFiltro<AdesaoAEFiltroDto>();
 
+            if (relatorioFiltros.DreCodigo == "-99")
+                relatorioFiltros.DreCodigo = string.Empty;
+
+            if (relatorioFiltros.UeCodigo == "-99")
+                relatorioFiltros.UeCodigo = string.Empty;
+
             var listaConsolida = await mediator.Send(new ObterValoresConsolidadosAdesaoAppQuery(relatorioFiltros.DreCodigo, relatorioFiltros.UeCodigo));
 
             if (!listaConsolida.Any())
