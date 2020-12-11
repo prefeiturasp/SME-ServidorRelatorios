@@ -178,7 +178,7 @@ namespace SME.SR.Application
                                     ComponenteCurricular = t.ComponenteCurricularNome,
                                     DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
                                     NomeProfessorTitular = titular != null ? titular.ProfessorNomeRf : string.Empty,
-                                    NomeProfessorCj = t.ProfessorNomeRf ?? professorNome,
+                                    NomeProfessorCj = !string.IsNullOrEmpty(t.ProfessorNome) ? t.ProfessorNomeRf : professorNome,
                                     TipoProfessorCj = ObterTipoProfessorCJ(t.ProfessorRf, lstAtribuicaoEsporadica, lstProfServidorTitulares, cargosServidores),
                                     Aulas = exibirAulas ? ObterAulasDadas(t.ProfessorRf, t.Turma.Codigo, t.ComponenteCurricularId, aulas)?.ToList() : null
                                 };
