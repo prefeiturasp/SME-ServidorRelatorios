@@ -12,7 +12,7 @@ namespace SME.SR.Infra
 
         public FiltroLeituraComunicadosDto Filtro { get; set; }
 
-        public List<LeituraComunicadoDto> LeituraComunicadoDto { get; set; }
+        public IEnumerable<LeituraComunicadoDto> LeituraComunicadoDto { get; set; }
 
     }
 }
