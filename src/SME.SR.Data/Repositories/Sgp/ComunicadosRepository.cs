@@ -78,10 +78,11 @@ namespace SME.SR.Data
         public async Task<IEnumerable<LeituraComunicadoResponsaveoDto>> ObterResponsaveisPorAlunosIds(long[] estudantes)
         {
             var query = @"SELECT [cd_identificador_responsavel] as ResponsavelId
-                      ,[nm_responsavel] as Nome
+                      ,LTRIM(RTRIM(cd_aluno)) as AlunoId
+                      ,LTRIM(RTRIM([nm_responsavel])) as ResponsavelNome
                       ,'Filiação 1' as TipoResponsavel
-                      ,[cd_cpf_responsavel] as CPF
-                      ,case when nr_celular_responsavel is not null then '(' + cd_ddd_celular_responsavel + ') ' + nr_celular_responsavel else '' end as Contato
+                      ,LTRIM(RTRIM([cd_cpf_responsavel])) as CPF
+                      ,case when nr_celular_responsavel is not null then '(' +LTRIM(RTRIM(cd_ddd_celular_responsavel)) + ') ' + LTRIM(RTRIM(nr_celular_responsavel)) else '' end as Contato
                   FROM [se1426].[dbo].[responsavel_aluno]
                   where cd_aluno in @estudantes";
 

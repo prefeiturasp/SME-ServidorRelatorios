@@ -35,7 +35,7 @@ namespace SME.SR.Application
                             var estudantes = await comunicadosRepository.ObterComunicadoTurmasAlunosPorComunicadoId(comunicadoTurma.ComunicadoId);
                             var responsaveis = await comunicadosRepository.ObterResponsaveisPorAlunosIds(estudantes);
 
-                            //comunicadoTurma.LeituraComunicadoEstudantes.AddRange(MapearEstudanteDto(responsaveis.Where());
+                            comunicadoTurma.LeituraComunicadoEstudantes.AddRange(MapearEstudanteDto(responsaveis));
                         }
 
                     }
@@ -50,6 +50,27 @@ namespace SME.SR.Application
             // Carrega comunicados Turma -> comunicados.Select(a => a.id)
 
             return comunicados;
+        }
+
+        private List<LeituraComunicadoEstudanteDto> MapearEstudanteDto(IEnumerable<LeituraComunicadoResponsaveoDto> responsaveis)
+        {
+            var estudantes = new List<LeituraComunicadoEstudanteDto>();
+
+            foreach(var responsavel in responsaveis)
+            {
+                estudantes.Add(new LeituraComunicadoEstudanteDto()
+                {
+                    NumeroChamada = "",
+                    CodigoEstudante = responsavel.AlunoId,
+                    Estudante = "",
+                    Responsavel = responsavel.ResponsavelNome,
+                    TipoResponsavel = responsavel.TipoResponsavel,
+                    ContatoResponsavel = responsavel.Contato,
+                    Situacao = ""
+                }); 
+            }
+
+            return estudantes;
         }
     }
 }

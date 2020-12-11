@@ -10,8 +10,8 @@ namespace SME.SR.Infra
         }
 
         public string ResponsavelId { get; set; }
-
-        public string Nome { get; set; }
+        public string AlunoId { get; set; }
+        public string ResponsavelNome { get; set; }
         public string TipoResponsavel { get; set; }
         public string CPF { get; set; }
         public string Contato { get; set; }
