@@ -28,6 +28,18 @@ namespace SME.SR.Application
                 var comunicadosTurmas = await comunicadosRepository.ObterComunicadoTurmasPorComunicadosIds(comunicados.Select(a => a.ComunicadoId));
                 if(comunicadosTurmas.Any())
                 {
+                    if(request.Filtro.ListarResponsavelEstudante)
+                    {
+                        foreach(var comunicadoTurma in comunicadosTurmas)
+                        {
+                            var estudantes = await comunicadosRepository.ObterComunicadoTurmasAlunosPorComunicadoId(comunicadoTurma.ComunicadoId);
+                            var responsaveis = await comunicadosRepository.ObterResponsaveisPorAlunosIds(estudantes);
+
+                            //comunicadoTurma.LeituraComunicadoEstudantes.AddRange(MapearEstudanteDto(responsaveis.Where());
+                        }
+
+                    }
+
                     foreach(var comunicado in comunicados)
                     {
                         comunicado.LeituraComunicadoTurma.AddRange(comunicadosTurmas.Where(c => c.ComunicadoId == comunicado.ComunicadoId));
