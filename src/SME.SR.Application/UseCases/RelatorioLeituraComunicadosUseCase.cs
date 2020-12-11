@@ -34,7 +34,7 @@ namespace SME.SR.Application
         }
         private async Task ObterDadosRelatorio(RelatorioLeituraComunicadosDto relatorioDto, FiltroRelatorioLeituraComunicadosDto filtro)
         {
-            throw new NotImplementedException();
+            relatorioDto.LeituraComunicadoDto = await mediator.Send(new ObterDadosLeituraComunicadosQuery(filtro));
         }
 
         private async Task ObterFiltroRelatorio(RelatorioLeituraComunicadosDto relatorioDto, FiltroRelatorioLeituraComunicadosDto filtro, string usuarioLogadoRF)

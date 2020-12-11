@@ -109,7 +109,7 @@
         return str;
     }
 
-    string MontarDadosTabelaComunicado(List<SME.SR.Infra.LeituraComunicadoDto> leituraComunicado)
+    string MontarDadosTabelaComunicado(IEnumerable<SME.SR.Infra.LeituraComunicadoDto> leituraComunicado)
     {
         var str = MontarCabecalhoTabelaComunicado();
         str += $@"<table class='tabela-comunicados' style='border-bottom:none;'><tbody>";
