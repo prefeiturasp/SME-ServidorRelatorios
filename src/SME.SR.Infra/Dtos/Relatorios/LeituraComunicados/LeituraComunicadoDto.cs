@@ -10,6 +10,7 @@ namespace SME.SR.Infra
             LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>();
         }
 
+        public long ComunicadoId { get; set; }
         public string Comunicado { get; set; }
         public DateTime DataEnvio { get; set; }
         public DateTime DataExpiracao { get; set; }

@@ -9,5 +9,6 @@ namespace SME.SR.Data.Interfaces
     public interface IComunicadosRepository
     {
         Task<IEnumerable<LeituraComunicadoDto>> ObterComunicadosPorFiltro(FiltroRelatorioLeituraComunicadosDto filtro);
+        Task<IEnumerable<LeituraComunicadoTurmaDto>> ObterComunicadoTurmasPorComunicadosIds(IEnumerable<long> comunicados);
     }
 }

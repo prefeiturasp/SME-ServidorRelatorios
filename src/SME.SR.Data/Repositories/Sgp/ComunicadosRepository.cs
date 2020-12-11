@@ -4,6 +4,7 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -19,7 +20,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<LeituraComunicadoDto>> ObterComunicadosPorFiltro(FiltroRelatorioLeituraComunicadosDto filtro)
         {
-            var query = @"select titulo as Comunicado, data_envio as DataEnvio, data_expiracao as DataExpiracao
+            var query = @"select id as ComunicadoId, titulo as Comunicado, data_envio as DataEnvio, data_expiracao as DataExpiracao
                           from comunicado
                          where ano_letivo = @AnoLetivo
                            and modalidade = @ModalidadeTurma";
@@ -44,6 +45,23 @@ namespace SME.SR.Data
                 filtro.DataInicio,
                 filtro.DataFim
             });
+        }
+
+        public async Task<IEnumerable<LeituraComunicadoTurmaDto>> ObterComunicadoTurmasPorComunicadosIds(IEnumerable<long> comunicados)
+        {
+            var query = @"select 
+        	comunicado_id as ComunicadoId,
+        	t.nome as TurmaNome,
+        	t.modalidade_codigo as TurmaModalidade,
+        	0 as NaoInstalado,
+        	0 as NaoVisualizado,
+        	0 as Visualizado
+        from comunicado_turma ct 
+        inner join turma t on ct.turma_codigo = t.turma_id
+        where ct.comunicado_id = ANY(@comunicados)";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<LeituraComunicadoTurmaDto>(query.ToString(), new { comunicados = comunicados.ToArray()  });
         }
     }
 }
