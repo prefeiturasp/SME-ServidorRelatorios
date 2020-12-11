@@ -6704,14 +6704,16 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         {
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-1A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-1A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10,
@@ -6751,14 +6753,16 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-1A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-1A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10,
@@ -6810,28 +6814,32 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         {
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-1A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-2A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-3A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-4A",
+                               TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10,
@@ -6888,28 +6896,32 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         {
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-1A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-2A",
+                                TurmaNome = "2A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-3A",
+                                TurmaNome = "3A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-4A",
+                                TurmaNome = "4A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
@@ -6934,28 +6946,32 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                         {
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-1A",
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-2A",
+                                TurmaNome = "2A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-3A",
+                                TurmaNome = "3A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10
                             },
                             new LeituraComunicadoTurmaDto()
                             {
-                                Turma = "EF-4A",
+                                TurmaNome = "4A",
+                                TurmaModalidade = Modalidade.Fundamental,
                                 NaoInstalado = 2,
                                 NaoVisualizado = 2,
                                 Visualizado = 10

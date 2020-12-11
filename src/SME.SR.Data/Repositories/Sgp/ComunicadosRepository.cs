@@ -52,6 +52,7 @@ namespace SME.SR.Data
             var query = @"select 
         	comunicado_id as ComunicadoId,
         	t.nome as TurmaNome,
+            t.turma_id as TurmaCodigo,
         	t.modalidade_codigo as TurmaModalidade,
         	0 as NaoInstalado,
         	0 as NaoVisualizado,
@@ -62,6 +63,33 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<LeituraComunicadoTurmaDto>(query.ToString(), new { comunicados = comunicados.ToArray()  });
+        }
+
+        public async Task<IEnumerable<LeituraComunicadoTurmaDto>> ObterComunicadoTurmasAppPorComunicadosIds(IEnumerable<long> comunicados)
+        {
+            var query = @"select distinct
+        			cn.notificacao_id as ComunicadoId,
+	                cn.modalidade_codigo TurmaModalidade,
+	                cn.turma_codigo::varchar TurmaCodigo,
+	                cn.quantidade_responsaveis_sem_app NaoInstalado,
+	                cn.quantidade_responsaveis_com_app - coalesce(leram, 0) NaoVisualizado,
+	                coalesce(leram, 0) Visualizado 
+                from consolidacao_notificacao cn
+                left join (select distinct dre_codigo, dre_nome from dashboard_adesao) da on da.dre_codigo = cn.dre_codigo
+                left join 
+                (
+	                select unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.grupo,',')) modalidade, nt.codigo_eol_turma, count(distinct usuario_cpf) leram
+	                from usuario_notificacao_leitura unl 
+	                left join notificacao n on n.id = unl.notificacao_id
+	                left join notificacao_turma nt on nt.notificacao_id = unl.notificacao_id 
+	                group by unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.grupo,',')), nt.codigo_eol_turma 
+                ) ul on ul.notificacao_id = cn.notificacao_id and ul.dre_codigoeol::varchar = cn.dre_codigo and ul.ue_codigoeol = cn.ue_codigo and ul.modalidade = cn.modalidade_codigo::text and ul.codigo_eol_turma = cn.turma_codigo 
+                where
+	                cn.notificacao_id = ANY(@comunicados) and
+	                cn.turma_codigo <> 0;";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringAE);
+            return await conexao.QueryAsync<LeituraComunicadoTurmaDto>(query.ToString(), new { comunicados = comunicados.ToArray() });
         }
     }
 }
