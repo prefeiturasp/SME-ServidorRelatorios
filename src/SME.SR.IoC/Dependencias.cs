@@ -144,6 +144,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IEventoRepository), typeof(EventoRepository));
             services.TryAddScoped(typeof(IDiarioBordoRepository), typeof(DiarioBordoRepository));
             services.TryAddScoped(typeof(INotificacaoRepository), typeof(NotificacaoRepository));
+            services.TryAddScoped(typeof(IComunicadosRepository), typeof(ComunicadosRepository));
+            
         }
 
         private static void RegistrarServicos(IServiceCollection services)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SME.SR.Infra.Utilitarios;
+using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -9,7 +10,10 @@ namespace SME.SR.Infra
             LeituraComunicadoEstudantes = new List<LeituraComunicadoEstudanteDto>();
         }
 
-        public string Turma { get; set; }
+        public long ComunicadoId { get; set; }
+        public string Turma { get => $"{TurmaNome} - {TurmaModalidade.ShortName()}"; }
+        public string TurmaNome { get; set; }
+        public Modalidade TurmaModalidade { get; set; }
         public long NaoInstalado { get; set; }
         public long NaoVisualizado { get; set; }
         public long Visualizado { get; set; }
