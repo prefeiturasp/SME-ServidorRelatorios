@@ -84,12 +84,13 @@
         var str = "";
         var borda = bordaTop ? "td-titulo-dois" : "td-titulo-tres";
 
-        str += $@"</table><table class='fixed'>
+        str += $@"</table>
+                <table>
                     <tr>
-                        <td width='25%' class='{borda}'>TURMA</td>
-                        <td width='25%' class='{borda}'>NÃO INSTALADO</td>
-                        <td width='25%' class='{borda}'>NÃO VISUALIZADO</td>
-                        <td width='25%' class='{borda}'>VISUALIZADO</td>";
+                        <td width='25%' class='td-titulo-dois'>TURMA</td>
+                        <td width='25%' class='td-titulo-dois'>NÃO INSTALADO</td>
+                        <td width='25%' class='td-titulo-dois'>NÃO VISUALIZADO</td>
+                        <td width='25%' class='td-titulo-dois'>VISUALIZADO</td>";
         return str;
     }
 
@@ -147,6 +148,7 @@
                 adicionouRodape = false;
                 var checaQuantidade = comunicado.LeituraComunicadoTurma.Count == 1 ? true : false;
                 str += MontarCabecalhoLeituraComunicadoTurma(false);
+                
                 var ultimoLeituraComunicadoTurma = comunicado.LeituraComunicadoTurma.LastOrDefault().Turma;
                 foreach(var leituraComunicadoTurma in comunicado.LeituraComunicadoTurma)
                 {
@@ -410,6 +412,7 @@
             font-size: 12px;
             padding: 2px;
             padding: 4px;
+            border-bottom:none;
         }
 
         .td-valor-tres {
@@ -424,7 +427,6 @@
             font-size: 12px;
             padding: 4px;
             padding-left: 10px;
-            border-top: none;
             border-bottom: none;
         }
 
