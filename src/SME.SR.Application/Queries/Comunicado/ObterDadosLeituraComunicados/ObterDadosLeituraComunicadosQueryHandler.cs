@@ -26,7 +26,8 @@ namespace SME.SR.Application
             if(comunicados.Any())
             {
                 var comunicadosTurmas = await comunicadosRepository.ObterComunicadoTurmasPorComunicadosIds(comunicados.Select(a => a.ComunicadoId));
-                if(comunicadosTurmas.Any())
+                var comunicadosApp = await comunicadosRepository.ObterComunicadoTurmasAppPorComunicadosIds(comunicados.Select(a => a.ComunicadoId));
+                if (comunicadosTurmas.Any())
                 {
                     if(request.Filtro.ListarResponsavelEstudante)
                     {
@@ -42,7 +43,18 @@ namespace SME.SR.Application
 
                     foreach(var comunicado in comunicados)
                     {
-                        comunicado.LeituraComunicadoTurma.AddRange(comunicadosTurmas.Where(c => c.ComunicadoId == comunicado.ComunicadoId));
+                        foreach(var comunicadoTurma in comunicadosTurmas.Where(c => c.ComunicadoId == comunicado.ComunicadoId))
+                        {
+                            var comunicadoTurmaApp = comunicadosApp.FirstOrDefault(c => c.TurmaCodigo == comunicadoTurma.TurmaCodigo && c.ComunicadoId == comunicado.ComunicadoId);
+                            if(comunicadoTurmaApp != null)
+                            {
+                                comunicadoTurma.NaoInstalado = comunicadoTurmaApp.NaoInstalado;
+                                comunicadoTurma.NaoVisualizado = comunicadoTurmaApp.NaoVisualizado;
+                                comunicadoTurma.Visualizado = comunicadoTurmaApp.Visualizado;
+                            }
+                                
+                            comunicado.LeituraComunicadoTurma.Add(comunicadoTurma);
+                        }
                     }
                 }
             }

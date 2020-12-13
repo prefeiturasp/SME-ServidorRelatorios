@@ -13,6 +13,7 @@ namespace SME.SR.Infra
         public long ComunicadoId { get; set; }
         public string Turma { get => $"{TurmaNome} - {TurmaModalidade.ShortName()}"; }
         public string TurmaNome { get; set; }
+        public string TurmaCodigo { get; set; }
         public Modalidade TurmaModalidade { get; set; }
         public long NaoInstalado { get; set; }
         public long NaoVisualizado { get; set; }
