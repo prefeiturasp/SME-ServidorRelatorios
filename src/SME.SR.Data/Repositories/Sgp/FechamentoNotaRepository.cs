@@ -30,7 +30,8 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId, long tipocalendarioId)
         {
-            var query = @"select fa.aluno_codigo as codigoAluno,
+            var query = @"select distinct 
+                                 fa.aluno_codigo as codigoAluno,
                                  hn.nota_anterior as notaAnterior,
                                  hn.nota_nova as notaAtribuida,
                                  hn.conceito_anterior_id as conceitoAnteriorId,
@@ -44,7 +45,7 @@ namespace SME.SR.Data
                                  coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome,
                                  ap.status_aprovacao as Situacao,                                 
                                  ap.usuarioaprovacao,
-                                 ap.rfaprovacao                          
+                                 ap.rfaprovacao
                             from historico_nota hn 
                            inner join historico_nota_fechamento hnf on hn.id = hnf.historico_nota_id 
                            inner join fechamento_nota fn on hnf.fechamento_nota_id = fn.id
