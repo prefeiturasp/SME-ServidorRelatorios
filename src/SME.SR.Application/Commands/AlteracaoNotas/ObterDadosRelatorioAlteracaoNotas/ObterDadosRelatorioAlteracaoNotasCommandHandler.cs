@@ -190,13 +190,13 @@ namespace SME.SR.Application
         {
             var AlunosAlteracaoNotasDto = new AlunosAlteracaoNotasDto()
             {
-                NumeroChamada = historicoAlteracaoNotas.NumeroChamada,
+                NumeroChamada = string.IsNullOrEmpty(historicoAlteracaoNotas.NumeroChamada) ? "0" : historicoAlteracaoNotas.NumeroChamada.TrimStart(new Char[] {'0'}),
                 Nome = ToTitleCase(historicoAlteracaoNotas.NomeAluno),
                 TipoAlteracaoNota = historicoAlteracaoNotas.TipoNota.Name(),
                 DataAlteracao = historicoAlteracaoNotas.DataAlteracao.ToString("dd/MM/yyy HH:mm"),
                 UsuarioAlteracao = ToTitleCase($"{historicoAlteracaoNotas.UsuarioAlteracao} ({historicoAlteracaoNotas.RfAlteracao})"),
-                Situacao = historicoAlteracaoNotas.Situacao == 0 ? "" : historicoAlteracaoNotas.Situacao.Name(),
-                UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : "",
+                Situacao = historicoAlteracaoNotas.Situacao == 0 ? " - " : historicoAlteracaoNotas.Situacao.Name(),
+                UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : " - ",
                 NotaConceitoAnterior = tipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAnterior.ToString() : historicoAlteracaoNotas.ConceitoAnteriorId.Name(),
                 NotaConceitoAtribuido = tipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAtribuida.ToString() : historicoAlteracaoNotas.ConceitoAtribuidoId.Name(),
             };
