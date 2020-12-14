@@ -13,9 +13,11 @@ namespace SME.SR.Application
     public class ObterDadosLeituraComunicadosQueryHandler : IRequestHandler<ObterDadosLeituraComunicadosQuery, IEnumerable<LeituraComunicadoDto>>
     {
         private readonly IComunicadosRepository comunicadosRepository;
+        private readonly IAlunoRepository alunoRepository;
 
-        public ObterDadosLeituraComunicadosQueryHandler(IComunicadosRepository comunicadosRepository)
+        public ObterDadosLeituraComunicadosQueryHandler(IComunicadosRepository comunicadosRepository, IAlunoRepository alunoRepository)
         {
+            this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
             this.comunicadosRepository = comunicadosRepository ?? throw new ArgumentNullException(nameof(comunicadosRepository));
         }
 
@@ -23,52 +25,67 @@ namespace SME.SR.Application
         {
             var comunicados = await comunicadosRepository.ObterComunicadosPorFiltro(request.Filtro);
 
-            if(comunicados.Any())
+            if (comunicados.Any())
             {
                 var comunicadosTurmas = await comunicadosRepository.ObterComunicadoTurmasPorComunicadosIds(comunicados.Select(a => a.ComunicadoId));
                 var comunicadosApp = await comunicadosRepository.ObterComunicadoTurmasAppPorComunicadosIds(comunicados.Select(a => a.ComunicadoId));
                 if (comunicadosTurmas.Any())
                 {
-                    if(request.Filtro.ListarResponsavelEstudante)
+                    foreach (var comunicado in comunicados)
                     {
-                        foreach(var comunicadoTurma in comunicadosTurmas)
+                        if (request.Filtro.ListarResponsavelEstudante)
                         {
-                            var estudantes = await comunicadosRepository.ObterComunicadoTurmasAlunosPorComunicadoId(comunicadoTurma.ComunicadoId);
-                            var responsaveis = await comunicadosRepository.ObterResponsaveisPorAlunosIds(estudantes);
+                            foreach (var comunicadoTurma in comunicadosTurmas.Where(c => c.ComunicadoId == comunicado.ComunicadoId))
+                            {
+                                var estudantes = await comunicadosRepository.ObterComunicadoTurmasAlunosPorComunicadoId(comunicadoTurma.ComunicadoId);
+                                var responsaveis = await comunicadosRepository.ObterResponsaveisPorAlunosIds(estudantes);
+                                var statusReponsaveis = await comunicadosRepository.ObterComunicadoTurmasEstudanteAppPorComunicadosIds(new long[] { comunicadoTurma.ComunicadoId });
+                                var dadosAlunos = await alunoRepository.ObterDadosAlunosPorCodigosEAnoLetivo(estudantes, request.Filtro.AnoLetivo);
 
-                            comunicadoTurma.LeituraComunicadoEstudantes.AddRange(MapearEstudanteDto(responsaveis));
+                                foreach (var responsavel in responsaveis)
+                                {
+                                    LeituraComunicadoEstudanteDto estudante = new LeituraComunicadoEstudanteDto();
+
+                                    estudante.NumeroChamada = dadosAlunos.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId).NumeroAlunoChamada;
+                                    estudante.CodigoEstudante = responsavel.AlunoId;
+                                    estudante.Estudante = dadosAlunos.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId).NomeAluno;
+                                    estudante.Responsavel = responsavel.ResponsavelNome;
+                                    estudante.TipoResponsavel = responsavel.TipoResponsavel;
+                                    estudante.ContatoResponsavel = responsavel.Contato;
+                                    estudante.Situacao = statusReponsaveis.FirstOrDefault(a => a.CodigoEstudante == responsavel.AlunoId).Situacao;
+
+                                    comunicadoTurma.LeituraComunicadoEstudantes.Add(estudante);
+
+                                }
+                            }
                         }
 
-                    }
-
-                    foreach(var comunicado in comunicados)
-                    {
-                        foreach(var comunicadoTurma in comunicadosTurmas.Where(c => c.ComunicadoId == comunicado.ComunicadoId))
+                        foreach (var comunicadoTurma in comunicadosTurmas.Where(c => c.ComunicadoId == comunicado.ComunicadoId))
                         {
                             var comunicadoTurmaApp = comunicadosApp.FirstOrDefault(c => c.TurmaCodigo == comunicadoTurma.TurmaCodigo && c.ComunicadoId == comunicado.ComunicadoId);
-                            if(comunicadoTurmaApp != null)
+                            if (comunicadoTurmaApp != null)
                             {
                                 comunicadoTurma.NaoInstalado = comunicadoTurmaApp.NaoInstalado;
                                 comunicadoTurma.NaoVisualizado = comunicadoTurmaApp.NaoVisualizado;
                                 comunicadoTurma.Visualizado = comunicadoTurmaApp.Visualizado;
                             }
-                                
+
                             comunicado.LeituraComunicadoTurma.Add(comunicadoTurma);
                         }
                     }
                 }
             }
-                
+
             // Carrega comunicados Turma -> comunicados.Select(a => a.id)
 
             return comunicados;
         }
 
-        private List<LeituraComunicadoEstudanteDto> MapearEstudanteDto(IEnumerable<LeituraComunicadoResponsaveoDto> responsaveis)
+        private List<LeituraComunicadoEstudanteDto> MapearEstudanteDto(IEnumerable<LeituraComunicadoResponsavelDto> responsaveis)
         {
             var estudantes = new List<LeituraComunicadoEstudanteDto>();
 
-            foreach(var responsavel in responsaveis)
+            foreach (var responsavel in responsaveis)
             {
                 estudantes.Add(new LeituraComunicadoEstudanteDto()
                 {
@@ -79,7 +96,7 @@ namespace SME.SR.Application
                     TipoResponsavel = responsavel.TipoResponsavel,
                     ContatoResponsavel = responsavel.Contato,
                     Situacao = ""
-                }); 
+                });
             }
 
             return estudantes;

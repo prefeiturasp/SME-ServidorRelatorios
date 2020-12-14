@@ -76,7 +76,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<LeituraComunicadoTurmaDto>(query.ToString(), new { comunicados = comunicados.ToArray() });
         }
 
-        public async Task<IEnumerable<LeituraComunicadoResponsaveoDto>> ObterResponsaveisPorAlunosIds(long[] estudantes)
+        public async Task<IEnumerable<LeituraComunicadoResponsavelDto>> ObterResponsaveisPorAlunosIds(long[] estudantes)
         {
             var query = @"SELECT [cd_identificador_responsavel] as ResponsavelId
                       ,LTRIM(RTRIM(cd_aluno)) as AlunoId
@@ -88,7 +88,7 @@ namespace SME.SR.Data
                   where cd_aluno in @estudantes";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<LeituraComunicadoResponsaveoDto>(query, new { estudantes } );
+            return await conexao.QueryAsync<LeituraComunicadoResponsavelDto>(query, new { estudantes } );
         }
 
         public async Task<IEnumerable<LeituraComunicadoTurmaDto>> ObterComunicadoTurmasAppPorComunicadosIds(IEnumerable<long> comunicados)
@@ -117,5 +117,22 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringAE);
             return await conexao.QueryAsync<LeituraComunicadoTurmaDto>(query.ToString(), new { comunicados = comunicados.ToArray() });
         }
+
+        public async Task<IEnumerable<LeituraComunicadoEstudanteDto>> ObterComunicadoTurmasEstudanteAppPorComunicadosIds(long[] comunicados)
+        {
+            var query = @"select 
+        	usuario_id as UsuarioId,
+        	usuario_cpf as UsuarioCpf, 
+        	codigo_eol_aluno::varchar as CodigoEstudante, 
+        	notificacao_id as ComunicadoId,
+        	mensagemvisualizada as Situacao 
+        from usuario_notificacao_leitura unl
+        inner join notificacao n on unl.notificacao_id = n.id  
+        where unl.notificacao_id = ANY(@comunicados);";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringAE);
+            return await conexao.QueryAsync<LeituraComunicadoEstudanteDto>(query.ToString(), new { comunicados = comunicados });
+        }
+
     }
 }

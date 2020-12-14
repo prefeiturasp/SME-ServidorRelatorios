@@ -3,12 +3,14 @@ using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
-    public class LeituraComunicadoResponsaveoDto
+    public class LeituraComunicadoResponsavelDto
     {
-        public LeituraComunicadoResponsaveoDto()
+        public LeituraComunicadoResponsavelDto()
         {
         }
-
+        public long UsuarioId { get; set; }
+        public string UsuarioCPF { get; set; }
+        public long ComunicadoId { get; set; }
         public string ResponsavelId { get; set; }
         public string AlunoId { get; set; }
         public string ResponsavelNome { get; set; }
