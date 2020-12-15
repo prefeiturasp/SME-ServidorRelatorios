@@ -73,6 +73,12 @@ namespace SME.SR.Application
             AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstProfServidorTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas,
                                    filtros.TipoVisualizacao, filtros.ExibirAulas, filtros.Modalidade);
 
+            if (string.IsNullOrEmpty(filtros.DreCodigo) || string.IsNullOrEmpty(filtros.UeCodigo))
+            {
+                relatorio.ExibirDre = true;
+                relatorio = await mediator.Send(new AgruparRelatorioAtribuicaoCJPorDreUeQuery(relatorio));
+            }
+
             OrdernarRelatorio(relatorio, filtros.TipoVisualizacao);
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtribuioesCj", relatorio, request.CodigoCorrelacao));
@@ -109,6 +115,40 @@ namespace SME.SR.Application
                     });
 
                 }
+
+                if (relatorio.Dres.Any())
+                {
+                    relatorio.Dres = relatorio.Dres.OrderBy(o => o.Nome).ToList();
+                    relatorio.Dres.ForEach(dre =>
+                    {
+                        dre.Ues = dre.Ues.OrderBy(o => o.Nome).ToList();
+                        dre.Ues.ForEach(ue =>
+                        {
+                            if (ue.AtribuicoesEsporadicas.Any())
+                                ue.AtribuicoesEsporadicas = ue.AtribuicoesEsporadicas.OrderBy(o => o.NomeUsuario).ToList();
+
+                            if (ue.AtribuicoesCjPorTurma.Any())
+                            {
+                                ue.AtribuicoesCjPorTurma = ue.AtribuicoesCjPorTurma.OrderBy(o => o.NomeTurma).ToList();
+                                ue.AtribuicoesCjPorTurma.ForEach(a =>
+                                {
+                                    a.AtribuicoesCjProfessor = a.AtribuicoesCjProfessor.OrderBy(o => o.ComponenteCurricular).ThenBy(o => o.NomeProfessorCj).ToList();
+                                });
+
+                            }
+
+                            if (ue.AtribuicoesCjPorProfessor.Any())
+                            {
+                                ue.AtribuicoesCjPorProfessor = ue.AtribuicoesCjPorProfessor.OrderBy(o => o.NomeProfessor).ToList();
+                                ue.AtribuicoesCjPorProfessor.ForEach(a =>
+                                {
+                                    a.AtribuiicoesCjTurma = a.AtribuiicoesCjTurma.OrderBy(o => o.NomeTurma).ThenBy(o => o.ComponenteCurricular).ToList();
+                                });
+
+                            }
+                        });
+                    });
+                }
             }
         }
 
@@ -143,6 +183,8 @@ namespace SME.SR.Application
 
                                  var retorno = new AtribuicaoCjTurmaDto()
                                  {
+                                     CodigoDre = t.DreId,
+                                     CodigoUe = t.UeId,
                                      ComponenteCurricular = t.ComponenteCurricularNome,
                                      DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
                                      NomeProfessorTitular = titular != null ? titular.ProfessorNomeRf : string.Empty,
@@ -175,6 +217,8 @@ namespace SME.SR.Application
 
                                 var retorno = new AtribuicaoCjProfessorDto()
                                 {
+                                    CodigoDre = t.DreId,
+                                    CodigoUe = t.UeId,
                                     ComponenteCurricular = t.ComponenteCurricularNome,
                                     DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
                                     NomeProfessorTitular = titular != null ? titular.ProfessorNomeRf : string.Empty,
@@ -234,6 +278,8 @@ namespace SME.SR.Application
                     var retorno = new AtribuicaoEsporadicaDto()
                     {
                         AtribuidoPor = atribuicao.CriadoPor,
+                        CodigoDre = atribuicao.DreId,
+                        CodigoUe = atribuicao.UeId,
                         DataAtribuicao = atribuicao.CriadoEm.ToString("dd/MM/yyyy"),
                         DataInicio = atribuicao.DataInicio.ToString("dd/MM/yyyy"),
                         DataFim = atribuicao.DataFim.ToString("dd/MM/yyyy"),
