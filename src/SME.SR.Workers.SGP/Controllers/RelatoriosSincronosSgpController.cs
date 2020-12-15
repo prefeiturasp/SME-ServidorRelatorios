@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SME.SR.Application;
 using SME.SR.Infra;
 using System;
@@ -17,7 +18,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioFaltasFrequenciasUseCase.Executar(new FiltroRelatorioDto()
             {
                 CodigoCorrelacao = codigoCorrelacao,
-                Mensagem = filtro
+                Mensagem = JsonConvert.SerializeObject(filtro)
             });
 
             return codigoCorrelacao;
