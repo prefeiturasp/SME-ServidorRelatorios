@@ -184,10 +184,7 @@
     {
         if (Model.ExibirDre && !string.IsNullOrEmpty(nomeDre) && Model.DreNome == "Todas")
         {
-            if (VerificaFimPaginaPorLinhas(imprimindoAtribuicaoExporadica? 3 : 8))
-            {
-                contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
-            }
+            VerificaFimPaginaPorLinhas(imprimindoAtribuicaoExporadica ? 6 : 9);
             contadorQuebrarPagina++;
             var quebra = VerificaQuebra();
             return $@"{quebra}
@@ -206,10 +203,7 @@
     {
         if (Model.ExibirDre && !string.IsNullOrEmpty(nomeUe))
         {
-            if (VerificaFimPaginaPorLinhas(imprimindoAtribuicaoExporadica ? 2 : 7))
-            {
-                contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
-            }
+            VerificaFimPaginaPorLinhas(imprimindoAtribuicaoExporadica ? 5 : 8);
             contadorQuebrarPagina++;
             var quebra = VerificaQuebra();
 
@@ -227,10 +221,7 @@
 
     string MontaCabecalhoAtribuicaoCjProfessor()
     {
-        if (VerificaFimPaginaPorLinhas(5))
-        {
-            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
-        }
+        VerificaFimPaginaPorLinhas(7);
         contadorQuebrarPagina += 3;
         var quebra = VerificaQuebra();
         var str = $@"{quebra}
@@ -268,10 +259,7 @@
 
     string MontarCabecalhoNomeProfessorTurma(string nome)
     {
-        if (VerificaFimPaginaPorLinhas(4))
-        {
-            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
-        }
+        VerificaFimPaginaPorLinhas(4);
         contadorQuebrarPagina++;
         var quebra = VerificaQuebra();
         var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra +
@@ -313,10 +301,7 @@
 
     string MontarCabecalhoAulas(string nomeProfessorTurma)
     {
-        if (VerificaFimPaginaPorLinhas(3))
-        {
-            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
-        }
+        VerificaFimPaginaPorLinhas(4);
         contadorQuebrarPagina++;
         var quebra = VerificaQuebra();
         var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra +
@@ -337,10 +322,7 @@
     string MontarLinhasAula(SME.SR.Infra.AtribuicaoCjAulaDto aula, string nomeProfessorTurma)
     {
         var str = "";
-        if (VerificaFimPaginaPorLinhas(1))
-        {
-            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
-        }
+        VerificaFimPaginaPorLinhas(3);
         contadorQuebrarPagina += (aula.Observacoes.Length / 90) + 1;
         var quebra = VerificaQuebra();
 
@@ -367,10 +349,7 @@
 
     string MontaCabecalhoAtribuicaoCjTurma()
     {
-        if (VerificaFimPaginaPorLinhas(5))
-        {
-            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
-        }
+        VerificaFimPaginaPorLinhas(7);
         contadorQuebrarPagina += 3;
         var quebra = VerificaQuebra();
         var str = $@"{quebra}
@@ -409,17 +388,14 @@
         return str;
     }
 
-    string MontarLinhasAtribuicaoCjTurma(SME.SR.Infra.AtribuicaoCjProfessorDto dto, string nomeProfessorTurma, bool ultimaLinha)
+    string MontarLinhasAtribuicaoCjTurma(SME.SR.Infra.AtribuicaoCjProfessorDto dto, string nomeProfessorTurma)
     {
         var str = "";
         var totalLinhas = new List<int>();
         totalLinhas.Add((dto.NomeProfessorCj.Length / 20) + 1);
         totalLinhas.Add((dto.NomeProfessorTitular.Length / 20) + 1);
         var linhas = totalLinhas.Max();
-        if (VerificaFimPaginaPorLinhas(linhas))
-        {
-            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
-        }
+        VerificaFimPaginaPorLinhas(linhas);
         var quebra = VerificaQuebra();
         var textoQuebra = !string.IsNullOrEmpty(quebra) ? quebra +
             (ehRelatorioPorTurma ? MontaCabecalhoAtribuicaoCjTurma() : MontaCabecalhoAtribuicaoCjProfessor()) +
@@ -443,9 +419,13 @@
         return str;
     }
 
-    bool VerificaFimPaginaPorLinhas(int linhasFaltando)
+    void VerificaFimPaginaPorLinhas(int linhasFaltando)
     {
-        return (contadorQuebrarPagina + linhasFaltando) >= contadorMaximoLinhasPorPagina;
+        var result = (contadorQuebrarPagina + linhasFaltando) >= contadorMaximoLinhasPorPagina;
+        if (result)
+        {
+            contadorQuebrarPagina = contadorMaximoLinhasPorPagina;
+        }
     }
 
     <!DOCTYPE html>
@@ -645,15 +625,13 @@
                                     @Html.Raw(EspacoEmBranco())
                                 }
                                 @Html.Raw(MontaCabecalhoAtribuicaoCjTurma())
-                                for (int indexAtribuicaoTurma = 0; indexAtribuicaoTurma < ue.AtribuicoesCjPorTurma.Count(); indexAtribuicaoTurma++)
+                                foreach (var atribuicaoTurma in ue.AtribuicoesCjPorTurma)
                                 {
-                                    var atribuicaoTurma = ue.AtribuicoesCjPorTurma[indexAtribuicaoTurma];
                                     @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoTurma.NomeTurma))
 
-                                    @for (int indexAtribuicao = 0; indexAtribuicao < atribuicaoTurma.AtribuicoesCjProfessor.Count(); indexAtribuicao++)
+                                    @foreach (var atribuicao in atribuicaoTurma.AtribuicoesCjProfessor)
                                     {
-                                        var atribuicao = atribuicaoTurma.AtribuicoesCjProfessor[indexAtribuicao];
-                                        @Html.Raw(MontarLinhasAtribuicaoCjTurma(atribuicao, atribuicaoTurma.NomeTurma, indexAtribuicao + 1 == atribuicaoTurma.AtribuicoesCjProfessor.Count()))
+                                        @Html.Raw(MontarLinhasAtribuicaoCjTurma(atribuicao, atribuicaoTurma.NomeTurma))
                                         if (atribuicao.Aulas?.Count() > 0)
                                         {
                                             @Html.Raw(MontarCabecalhoAulas(atribuicaoTurma.NomeTurma))
@@ -691,14 +669,12 @@
                             @Html.Raw(EspacoEmBranco())
                         }
                         @Html.Raw(MontaCabecalhoAtribuicaoCjProfessor())
-                        for (int indexAtribuicaoProfessorCj = 0; indexAtribuicaoProfessorCj < Model.AtribuicoesCjPorProfessor.Count(); indexAtribuicaoProfessorCj++)
+                        foreach (var atribuicaoProfessorCj in Model.AtribuicoesCjPorProfessor)
                         {
-                            var atribuicaoProfessorCj = Model.AtribuicoesCjPorProfessor[indexAtribuicaoProfessorCj];
                                 @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoProfessorCj.NomeProfessor))
 
-                                   @for (int indexAtribuicao = 0; indexAtribuicao < atribuicaoProfessorCj.AtribuiicoesCjTurma.Count(); indexAtribuicao++)
+                                   @foreach (var atribuicao in atribuicaoProfessorCj.AtribuiicoesCjTurma)
                                    {
-                                       var atribuicao = atribuicaoProfessorCj.AtribuiicoesCjTurma[indexAtribuicao];
                                        @Html.Raw(MontarLinhasAtribuicaoCjProfessor(atribuicao, atribuicaoProfessorCj.NomeProfessor))
                                        if (atribuicao.Aulas?.Count() > 0)
                                        {
@@ -726,10 +702,9 @@
                             var atribuicaoTurma = Model.AtribuicoesCjPorTurma[indexAtribuicaoTurma];
                             @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoTurma.NomeTurma))
 
-                            @for (int indexAtribuicao = 0; indexAtribuicao < atribuicaoTurma.AtribuicoesCjProfessor.Count(); indexAtribuicao++)
+                            @foreach(var atribuicao in atribuicaoTurma.AtribuicoesCjProfessor)
                             {
-                                var atribuicao = atribuicaoTurma.AtribuicoesCjProfessor[indexAtribuicao];
-                                @Html.Raw(MontarLinhasAtribuicaoCjTurma(atribuicao, atribuicaoTurma.NomeTurma, indexAtribuicao + 1 == atribuicaoTurma.AtribuicoesCjProfessor.Count()))
+                                @Html.Raw(MontarLinhasAtribuicaoCjTurma(atribuicao, atribuicaoTurma.NomeTurma))
                                 if (atribuicao.Aulas?.Count() > 0)
                                 {
                                     @Html.Raw(MontarCabecalhoAulas(atribuicaoTurma.NomeTurma))
