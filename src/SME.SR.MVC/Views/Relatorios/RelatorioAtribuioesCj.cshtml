@@ -83,8 +83,9 @@
 
     string MontaCabecalhoAtribuicaoEsporadica()
     {
-        contadorQuebrarPagina += 2;
+        VerificaFimPaginaPorLinhas(5);
         var quebra = VerificaQuebra();
+        contadorQuebrarPagina += 2;
         var str = $@"{quebra}
         <table class='tabela-cabecalho'>
             <thead>
@@ -132,9 +133,11 @@
         totalLinhas.Add((dto.AtribuidoPor.Length / 15) + 1);
         var linhas = totalLinhas.Max();
         var str = "";
-        contadorQuebrarPagina += linhas;
+        VerificaFimPaginaPorLinhas(linhas);
         var quebra = VerificaQuebra();
-        str += $@"{quebra}
+        contadorQuebrarPagina += linhas;
+        var linhaQuebra = !string.IsNullOrEmpty(quebra) ? quebra + MontaCabecalhoAtribuicaoEsporadica() : "";
+        str += $@"{linhaQuebra}
         <table class='tabela-cabecalho'>
           <tbody>
             <tr>
@@ -593,25 +596,30 @@
                                     @Html.Raw(EspacoEmBranco())
                                 }
                                 @Html.Raw(MontaCabecalhoAtribuicaoCjProfessor())
-                                for (int indexAtribuicaoProfessorCj = 0; indexAtribuicaoProfessorCj < ue.AtribuicoesCjPorProfessor.Count(); indexAtribuicaoProfessorCj++)
+                                for(int index = 0; index < ue.AtribuicoesCjPorProfessor.Count(); index++)
                                 {
-                                    var atribuicaoProfessorCj = ue.AtribuicoesCjPorProfessor[indexAtribuicaoProfessorCj];
-                                        @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoProfessorCj.NomeProfessor))
-
-                                           @for (int indexAtribuicao = 0; indexAtribuicao < atribuicaoProfessorCj.AtribuiicoesCjTurma.Count(); indexAtribuicao++)
+                                    var atribuicaoProfessorCj = ue.AtribuicoesCjPorProfessor[index];
+                                       @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoProfessorCj.NomeProfessor))                                        
+                                       @for (int indexAtribuicao = 0; indexAtribuicao < atribuicaoProfessorCj.AtribuiicoesCjTurma.Count(); indexAtribuicao++)
+                                       {
+                                           var atribuicao = atribuicaoProfessorCj.AtribuiicoesCjTurma[indexAtribuicao];
+                                           @Html.Raw(MontarLinhasAtribuicaoCjProfessor(atribuicao, atribuicaoProfessorCj.NomeProfessor))
+                                           if (atribuicao.Aulas?.Count() > 0)
                                            {
-                                               var atribuicao = atribuicaoProfessorCj.AtribuiicoesCjTurma[indexAtribuicao];
-                                               @Html.Raw(MontarLinhasAtribuicaoCjProfessor(atribuicao, atribuicaoProfessorCj.NomeProfessor))
-                                               if (atribuicao.Aulas?.Count() > 0)
+                                               var ehUltimaAula = false;
+                                               @Html.Raw(MontarCabecalhoAulas(atribuicaoProfessorCj.NomeProfessor))
+                                               for (var indexAula = 0; indexAula < atribuicao.Aulas.Count() ; indexAula++)
                                                {
-                                                   @Html.Raw(MontarCabecalhoAulas(atribuicaoProfessorCj.NomeProfessor))
-                                                   foreach (var aula in atribuicao.Aulas)
-                                                   {
-                                                        @Html.Raw(MontarLinhasAula(aula, atribuicaoProfessorCj.NomeProfessor))
-                                                   }
-                                                   @Html.Raw(EspacoEmBranco(false))
+                                                   var aula = atribuicao.Aulas[indexAula];
+                                                   @Html.Raw(MontarLinhasAula(aula, atribuicaoProfessorCj.NomeProfessor))
+                                                   ehUltimaAula = atribuicao.Aulas.Count() == indexAula + 1;
                                                }
+                                               if(ue.AtribuicoesCjPorProfessor.Count() != index + 1 ||
+                                               atribuicaoProfessorCj.AtribuiicoesCjTurma.Count() != indexAtribuicao + 1 ||
+                                               !ehUltimaAula)
+                                                    @Html.Raw(EspacoEmBranco(false))
                                            }
+                                       }
                                 }
                                 @Html.Raw(EspacoEmBranco())
                             }
@@ -625,21 +633,29 @@
                                     @Html.Raw(EspacoEmBranco())
                                 }
                                 @Html.Raw(MontaCabecalhoAtribuicaoCjTurma())
-                                foreach (var atribuicaoTurma in ue.AtribuicoesCjPorTurma)
+                                for (var index = 0; index < ue.AtribuicoesCjPorTurma.Count(); index++)
                                 {
+                                    var atribuicaoTurma = ue.AtribuicoesCjPorTurma[index];
                                     @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoTurma.NomeTurma))
 
-                                    @foreach (var atribuicao in atribuicaoTurma.AtribuicoesCjProfessor)
+                                    @for (var indexAtribuicao = 0; indexAtribuicao < atribuicaoTurma.AtribuicoesCjProfessor.Count(); indexAtribuicao++)
                                     {
+                                        var atribuicao = atribuicaoTurma.AtribuicoesCjProfessor[indexAtribuicao];
                                         @Html.Raw(MontarLinhasAtribuicaoCjTurma(atribuicao, atribuicaoTurma.NomeTurma))
                                         if (atribuicao.Aulas?.Count() > 0)
                                         {
+                                            var ehUltimaAula = false;
                                             @Html.Raw(MontarCabecalhoAulas(atribuicaoTurma.NomeTurma))
-                                            foreach (var aula in atribuicao.Aulas)
+                                            for (var indexAula = 0; indexAula < atribuicao.Aulas.Count(); indexAula++)
                                             {
-                                                 @Html.Raw(MontarLinhasAula(aula, atribuicaoTurma.NomeTurma))
+                                                var aula = atribuicao.Aulas[indexAula];
+                                                @Html.Raw(MontarLinhasAula(aula, atribuicaoTurma.NomeTurma))
+                                                ehUltimaAula = atribuicao.Aulas.Count() == indexAula + 1;
                                             }
-                                            @Html.Raw(EspacoEmBranco(false))
+                                            if(ue.AtribuicoesCjPorTurma.Count() != index + 1 ||
+                                               atribuicaoTurma.AtribuicoesCjProfessor.Count() != indexAtribuicao + 1 ||
+                                               !ehUltimaAula)
+                                                    @Html.Raw(EspacoEmBranco(false))
                                         }
                                     }
                                 }                                
@@ -669,23 +685,31 @@
                             @Html.Raw(EspacoEmBranco())
                         }
                         @Html.Raw(MontaCabecalhoAtribuicaoCjProfessor())
-                        foreach (var atribuicaoProfessorCj in Model.AtribuicoesCjPorProfessor)
+                        for (var index = 0; index < Model.AtribuicoesCjPorProfessor.Count(); index++)
                         {
-                                @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoProfessorCj.NomeProfessor))
+                            var atribuicaoProfessorCj = Model.AtribuicoesCjPorProfessor[index];
+                            @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoProfessorCj.NomeProfessor))
 
-                                   @foreach (var atribuicao in atribuicaoProfessorCj.AtribuiicoesCjTurma)
-                                   {
-                                       @Html.Raw(MontarLinhasAtribuicaoCjProfessor(atribuicao, atribuicaoProfessorCj.NomeProfessor))
-                                       if (atribuicao.Aulas?.Count() > 0)
-                                       {
-                                           @Html.Raw(MontarCabecalhoAulas(atribuicaoProfessorCj.NomeProfessor))
-                                           foreach (var aula in atribuicao.Aulas)
-                                           {
-                                                @Html.Raw(MontarLinhasAula(aula, atribuicaoProfessorCj.NomeProfessor))
-                                           }
-                                           @Html.Raw(EspacoEmBranco(false))
-                                       }
-                                   }
+                            @for (var indexAtribuicao = 0; indexAtribuicao < atribuicaoProfessorCj.AtribuiicoesCjTurma.Count(); indexAtribuicao++)
+                            {
+                                var atribuicao = atribuicaoProfessorCj.AtribuiicoesCjTurma[indexAtribuicao];
+                                @Html.Raw(MontarLinhasAtribuicaoCjProfessor(atribuicao, atribuicaoProfessorCj.NomeProfessor))
+                                if (atribuicao.Aulas?.Count() > 0)
+                                {
+                                    @Html.Raw(MontarCabecalhoAulas(atribuicaoProfessorCj.NomeProfessor))
+                                    var ehUltimaAula = false;
+                                    for (var indexAula = 0; indexAula < atribuicao.Aulas.Count(); indexAula++)
+                                    {
+                                        var aula = atribuicao.Aulas[indexAula];
+                                        @Html.Raw(MontarLinhasAula(aula, atribuicaoProfessorCj.NomeProfessor))
+                                        ehUltimaAula = atribuicao.Aulas.Count() == indexAula + 1;
+                                    }
+                                    if(Model.AtribuicoesCjPorProfessor.Count() != index + 1 ||
+                                               atribuicaoProfessorCj.AtribuiicoesCjTurma.Count() != indexAtribuicao + 1 ||
+                                               !ehUltimaAula)
+                                                    @Html.Raw(EspacoEmBranco(false))
+                                }
+                            }
                         }
                     }
 
@@ -701,18 +725,24 @@
                         {
                             var atribuicaoTurma = Model.AtribuicoesCjPorTurma[indexAtribuicaoTurma];
                             @Html.Raw(MontarCabecalhoNomeProfessorTurma(atribuicaoTurma.NomeTurma))
-
-                            @foreach(var atribuicao in atribuicaoTurma.AtribuicoesCjProfessor)
+                            @for (var indexAtribuicao = 0; indexAtribuicao < atribuicaoTurma.AtribuicoesCjProfessor.Count(); indexAtribuicao++)
                             {
+                                var atribuicao = atribuicaoTurma.AtribuicoesCjProfessor[indexAtribuicao];
                                 @Html.Raw(MontarLinhasAtribuicaoCjTurma(atribuicao, atribuicaoTurma.NomeTurma))
                                 if (atribuicao.Aulas?.Count() > 0)
                                 {
                                     @Html.Raw(MontarCabecalhoAulas(atribuicaoTurma.NomeTurma))
-                                    foreach (var aula in atribuicao.Aulas)
+                                    var ehUltimaAula = false;
+                                    for (var indexAula = 0; indexAula < atribuicao.Aulas.Count(); indexAula++)
                                     {
-                                         @Html.Raw(MontarLinhasAula(aula, atribuicaoTurma.NomeTurma))
+                                        var aula = atribuicao.Aulas[indexAula];
+                                        @Html.Raw(MontarLinhasAula(aula, atribuicaoTurma.NomeTurma))
+                                        ehUltimaAula = atribuicao.Aulas.Count() == indexAula + 1;
                                     }
-                                    @Html.Raw(EspacoEmBranco(false))
+                                    if(Model.AtribuicoesCjPorTurma.Count() != indexAtribuicaoTurma + 1 ||
+                                       atribuicaoTurma.AtribuicoesCjProfessor.Count() != indexAtribuicao + 1 ||
+                                       !ehUltimaAula)
+                                            @Html.Raw(EspacoEmBranco(false))
                                 }
                             }
                         }
