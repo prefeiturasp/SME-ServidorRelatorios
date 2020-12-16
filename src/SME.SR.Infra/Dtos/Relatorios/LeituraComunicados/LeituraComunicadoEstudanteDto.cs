@@ -11,5 +11,6 @@
         public string TipoResponsavel { get; set; }
         public string ContatoResponsavel { get; set; }
         public string Situacao { get; set; }
+        public bool Instalado { get; set; }
     }
 }

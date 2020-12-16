@@ -22,6 +22,8 @@ namespace SME.SR.Application
                 var filtro = request.ObterObjetoFiltro<FiltroRelatorioLeituraComunicadosDto>();
                 var relatorioDto = new RelatorioLeituraComunicadosDto();
 
+                filtro.Turma = filtro.Turma == "-99" ? "" : filtro.Turma;
+
                 await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
                 await ObterDadosRelatorio(relatorioDto, filtro);
 
@@ -47,6 +49,12 @@ namespace SME.SR.Application
             filtroRelatorio.Usuario = filtro.NomeUsuario;
             filtroRelatorio.RF = usuarioLogadoRF;
 
+            if (filtro.DataInicio == null)
+                filtro.DataInicio = new DateTime(filtro.Ano, 1, 1);
+
+            if (filtro.DataFim == null)
+                filtro.DataFim = new DateTime(filtro.Ano, 12, 31);
+
             relatorioDto.Filtro = filtroRelatorio;
         }
 
@@ -55,7 +63,7 @@ namespace SME.SR.Application
             var dre = dreCodigo.Equals("-99") ? null :
                 await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
 
-            return dre != null ? dre.Abreviacao : "Todas";
+            return dre != null ? dre.Abreviacao : "Enviado para todas";
         }
 
         private async Task<string> ObterNomeUe(string ueCodigo)
@@ -63,7 +71,7 @@ namespace SME.SR.Application
             var ue = ueCodigo.Equals("-99") ? null :
                 await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
 
-            return ue != null ? ue.NomeRelatorio : "Todas";
+            return ue != null ? ue.NomeRelatorio : "Enviado para todas";
         }
     }
 }

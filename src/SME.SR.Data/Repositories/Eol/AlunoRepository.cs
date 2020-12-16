@@ -1143,7 +1143,7 @@ namespace SME.SR.Data
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE aluno.cd_aluno in @codigosAluno and matr.an_letivo = @anoLetivo
+						WHERE aluno.cd_aluno in @codigosAluno 
 						UNION 
 						SELECT  aluno.cd_aluno CodigoAluno,
 						aluno.nm_aluno NomeAluno,
@@ -1192,7 +1192,7 @@ namespace SME.SR.Data
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE aluno.cd_aluno in @codigosAluno and matr.an_letivo = @anoLetivo 
+						WHERE aluno.cd_aluno in @codigosAluno 
 						and mte.dt_situacao_aluno =                    
 							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
