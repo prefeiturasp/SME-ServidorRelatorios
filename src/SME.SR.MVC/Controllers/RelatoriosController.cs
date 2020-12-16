@@ -57,7 +57,7 @@ namespace SME.SR.MVC.Controllers
             model.Usuario = "ADMIN";
             model.Modalidade = "Fundamental";
             model.RF = "123123123";
-            model.Data = DateTime.Now.ToString("dd/MM/yyyy");         
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
             return View(model);
         }
@@ -5513,7 +5513,366 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 }
             };
 
-            return View("RelatorioAtribuioesCj", model);
+            return View("RelatorioHistoricoAlteracoesNotas", model);
+
+        }
+
+        [HttpGet("escola-aqui-leitura")]
+        public IActionResult RelatorioEscolaAquiLeitura()
+        {
+            var model = new RelatorioLeituraComunicadosDto()
+            {
+                Filtro = new FiltroLeituraComunicadosDto()
+                {
+                    Dre = "DRE - BT",
+                    Ue = "CEU EMEF BUTANTA",
+                    RF = "9879878",
+                    Usuario = "Anala Ferreira de Oliveira"
+                },
+
+                LeituraComunicadoDto = new List<LeituraComunicadoDto>()
+                {
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020",
+                        DataEnvio = DateTime.Now,
+                        DataExpiracao = DateTime.Now.AddDays(5),
+                        NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>()
+                        {
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10,
+                                LeituraComunicadoEstudantes = new List<LeituraComunicadoEstudanteDto>()
+                                {
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "2",
+                                        CodigoEstudante = "1256990",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "3",
+                                        CodigoEstudante = "1256991",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Visualizada"
+                                    }
+                                }
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10,
+                                LeituraComunicadoEstudantes = new List<LeituraComunicadoEstudanteDto>()
+                                {
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "2",
+                                        CodigoEstudante = "1256990",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "3",
+                                        CodigoEstudante = "1256991",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Visualizada"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>()
+                        {
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                               TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10,
+                                LeituraComunicadoEstudantes = new List<LeituraComunicadoEstudanteDto>()
+                                {
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    }
+                                }
+                            }
+
+                        }},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto()
+{
+    Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>()
+                        {
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "2A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "3A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "4A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            }
+
+                        }},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto()
+{
+    Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>()
+                        {
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "2A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "3A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "4A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            }
+
+                        }},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina Festa junina Festa junina 2099Festa junina Festa junina Festa junina 2099Festa junina Festa junina Festa junina 2099", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 244},
+
+                }
+            };
+
+            return View("RelatorioEscolaAquiLeituraComunicados", model);
         }
     }
 
