@@ -1,7 +1,7 @@
 ﻿@model SME.SR.Infra.RelatorioLeituraComunicadosDto
 
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoLinhasPorPagina = 48;
     int contadorPagina = 0;
     var retornoVerificacao = string.Empty;
 
@@ -111,11 +111,11 @@
         str += $@"
 <table class='fixed'>
 <tr>
-                <td width='7%' class='td-titulo-tres'>N°</td>
-                <td width='25%' class='td-titulo-tres'>ESTUDANTE</td>
-                <td width='25%' class='td-titulo-tres'>RESPONSÁVEL</td>
-                <td width='13%' class='td-titulo-tres'>CONTATO DO RESPONSÁVEL</td>
-                <td width='15%' class='td-titulo-tres'>SITUAÇÃO</td>
+                <td width='7%' class='td-titulo-dois'>N°</td>
+                <td width='25%' class='td-titulo-dois'>ESTUDANTE</td>
+                <td width='25%' class='td-titulo-dois'>RESPONSÁVEL</td>
+                <td width='13%' class='td-titulo-dois'>CONTATO DO RESPONSÁVEL</td>
+                <td width='15%' class='td-titulo-dois'>SITUAÇÃO</td>
             </tr>";
         return str;
     }
@@ -124,13 +124,17 @@
     {
         var adicionouRodape = false;
         var str = "";
-        str += MontarCabecalhoDreUe("SME");
+
+        if(Model.Filtro.Ue.Equals("Enviado para todas"))
+            str += MontarCabecalhoDreUe("SME");
 
         str += MontarCabecalhoLeituraComunicado();
 
+        var ultimoComunicado = leituraComunicado.LastOrDefault().ComunicadoId;
         str += "<table class='fixed'>";
         foreach (var comunicado in leituraComunicado)
         {
+
             adicionouRodape = false;
             str += $@"<tr>
                 <td width='30%' class='td-valor-dois'>{comunicado.Comunicado}</td>
@@ -141,14 +145,14 @@
                 <td width='15%' class='td-valor-dois'>{comunicado.Visualizado}</td>
             </tr>";
 
-            contadorQuebrarPagina += 1;
+            contadorQuebrarPagina += comunicado.Comunicado.Length > 30 ? (int)(Model.Filtro.Ue.Length / 30) + 1 : 1;
 
             if (comunicado.LeituraComunicadoTurma.Any())
             {
                 adicionouRodape = false;
                 var checaQuantidade = comunicado.LeituraComunicadoTurma.Count == 1 ? true : false;
                 str += MontarCabecalhoLeituraComunicadoTurma(false);
-                
+
                 var ultimoLeituraComunicadoTurma = comunicado.LeituraComunicadoTurma.LastOrDefault().Turma;
                 foreach(var leituraComunicadoTurma in comunicado.LeituraComunicadoTurma)
                 {
@@ -162,16 +166,27 @@
 
                     if(leituraComunicadoTurma.LeituraComunicadoEstudantes.Any())
                     {
+                        var estudantes = leituraComunicadoTurma.LeituraComunicadoEstudantes.OrderBy(a => a.NumeroChamada);
                         str += MontarCabecalhoLeituraComunicadoTurmaEstudante();
                         contadorQuebrarPagina += 1;
-                        var ultimoLeituraComunicadoTurmaEstudante = leituraComunicadoTurma.LeituraComunicadoEstudantes.LastOrDefault().CodigoEstudante;
-                        foreach (var leituraComunicadoTurmaEstudante in leituraComunicadoTurma.LeituraComunicadoEstudantes)
+                        var ultimoLeituraComunicadoTurmaEstudante = estudantes.LastOrDefault().CodigoEstudante;
+                        foreach (var leituraComunicadoTurmaEstudante in estudantes)
                         {
-                            contadorQuebrarPagina += 1;
+                            var estudanteDescricao = $"{leituraComunicadoTurmaEstudante.Estudante} ({leituraComunicadoTurmaEstudante.CodigoEstudante})";
+                            var estudanteResponsavel = $"{leituraComunicadoTurmaEstudante.Responsavel} ({leituraComunicadoTurmaEstudante.TipoResponsavel})";
+
+                            if (leituraComunicadoTurmaEstudante.Estudante?.Length > 30 || leituraComunicadoTurmaEstudante.Responsavel.Length > 30)
+                            {
+                                contadorQuebrarPagina += 2;
+                            } else
+                            {
+                                contadorQuebrarPagina += 1;
+                            }
+
                             str += $@"<tr>
                                 <td width='7%' class='td-valor-dois'>{leituraComunicadoTurmaEstudante.NumeroChamada}</td>
-                                <td width='25%' class='td-valor-dois'>{leituraComunicadoTurmaEstudante.Estudante} ({leituraComunicadoTurmaEstudante.CodigoEstudante})</td>
-                                <td width='25%' class='td-valor-dois'>{leituraComunicadoTurmaEstudante.Responsavel} {leituraComunicadoTurmaEstudante.TipoResponsavel}</td>
+                                <td width='25%' class='td-valor-dois'>{estudanteDescricao}</td>
+                                <td width='25%' class='td-valor-dois'>{estudanteResponsavel}</td>
                                 <td width='13%' class='td-valor-dois'>{leituraComunicadoTurmaEstudante.ContatoResponsavel}</td>
                                 <td width='15%' class='td-valor-dois'>{leituraComunicadoTurmaEstudante.Situacao}</td>
                             </tr>";
@@ -181,11 +196,11 @@
                             {
                                 if (ultimoLeituraComunicadoTurmaEstudante.Equals(leituraComunicadoTurmaEstudante.CodigoEstudante))
                                 {
-                                    str += $@"</table>{retornoVerificacao}";
+                                    str += $@"{IncluirTdParaFechar(5)}</table>{retornoVerificacao}";
                                 }
                                 else
                                 {
-                                    str += $@"</table>{retornoVerificacao}{MontarCabecalhoLeituraComunicadoTurmaEstudante()}";
+                                    str += $@"{IncluirTdParaFechar(5)}</table>{retornoVerificacao}{MontarCabecalhoLeituraComunicadoTurmaEstudante()}";
                                 }
                             }
                         }
@@ -210,7 +225,7 @@
                             str += $@"</table>{retornoVerificacao}";
                         } else
                         {
-                            str += $@"</table>{retornoVerificacao}{MontarCabecalhoLeituraComunicadoTurma(true)}";
+                            str += $@"{IncluirTdParaFechar(4)}</table>{retornoVerificacao}{MontarCabecalhoLeituraComunicadoTurma(true)}";
                         }
                     }
                 }
@@ -218,7 +233,8 @@
                 {
                     if(!adicionouRodape)
                     {
-                        str += MontarRodapeLeituraComunicadoTurma();
+                        if(ultimoComunicado != comunicado.ComunicadoId)
+                            str += MontarRodapeLeituraComunicadoTurma();
                     }
                 } else
                 {
@@ -231,9 +247,19 @@
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
             {
-                str += $@"</table>{retornoVerificacao}{MontarCabecalhoLeituraComunicado()}<table class='fixed'>";
+                str += $@"{IncluirTdParaFechar(6)}</table>{retornoVerificacao}{MontarCabecalhoLeituraComunicado()}<table class='fixed'>";
             }
 
+        }
+        return str;
+    }
+
+    string IncluirTdParaFechar(int quantidade)
+    {
+        var str = "";
+        for(var i = 1; i <= quantidade; i++)
+        {
+            str += "<td style='border-bottom:none;border-left:none;border-right:none;'></td>";
         }
         return str;
     }
@@ -486,7 +512,11 @@
         @if (Model.LeituraComunicadoDto != null && Model.LeituraComunicadoDto.Any())
         {
             @Html.Raw(MontarDadosTabelaComunicado(Model.LeituraComunicadoDto));
-        }  
+        }
+        </table>
+        <table>
+            <td style="border-bottom:none;border-left:none;border-right:none;"></td>
+        </table>
     </div>
     </div>
 </body>

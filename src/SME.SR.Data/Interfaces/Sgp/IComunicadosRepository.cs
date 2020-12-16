@@ -12,6 +12,12 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<LeituraComunicadoTurmaDto>> ObterComunicadoTurmasPorComunicadosIds(IEnumerable<long> comunicados);
         Task<IEnumerable<LeituraComunicadoTurmaDto>> ObterComunicadoTurmasAppPorComunicadosIds(IEnumerable<long> comunicados);
 
+        Task<string[]> ObterUsuariosApp();
 
+        Task<long[]> ObterComunicadoTurmasAlunosPorComunicadoId(long comunicado);
+        Task<IEnumerable<LeituraComunicadoResponsavelDto>> ObterResponsaveisPorAlunosIds(int[] estudantes);
+
+        Task<IEnumerable<LeituraComunicadoEstudanteDto>> ObterComunicadoTurmasEstudanteAppPorComunicadosIds(long[] comunicados);
+        Task<IEnumerable<LeituraComunicadoDto>> ObterComunicadoDadosSMEPorComunicadosIds(IEnumerable<long> comunicados);
     }
 }
