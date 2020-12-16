@@ -57,7 +57,7 @@ namespace SME.SR.MVC.Controllers
             model.Usuario = "ADMIN";
             model.Modalidade = "Fundamental";
             model.RF = "123123123";
-            model.Data = DateTime.Now.ToString("dd/MM/yyyy");         
+            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
             return View(model);
         }
@@ -5512,12 +5512,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 }
             };
 
-        //                }
-        //            }
-        //        },
-        //    };
-        //    return View("RelatorioHistoricoAlteracoesNotas", model);
-        //}
+            return View("RelatorioHistoricoAlteracoesNotas", model);
+
+        }
 
         [HttpGet("escola-aqui-leitura")]
         public IActionResult RelatorioEscolaAquiLeitura()
