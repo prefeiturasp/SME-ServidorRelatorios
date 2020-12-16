@@ -56,7 +56,7 @@ namespace SME.SR.Data
             if (!filtro.ListarComunicadosExpirados)
                 query += "and data_expiracao >= @DataExpiracao";
 
-            query += " and data_envio between @DataInicio and @DataFim ";
+            query += " and date(data_envio) between @DataInicio and @DataFim ";
 
             if (!string.IsNullOrEmpty(filtro.Turma))
             {
