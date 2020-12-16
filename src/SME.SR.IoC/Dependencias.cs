@@ -152,6 +152,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IDashboardAdesaoRepository), typeof(DashboardAdesaoRepository));
             services.TryAddScoped(typeof(IUsuarioAERepository), typeof(UsuarioAERepository));
             
+            services.TryAddScoped(typeof(IComunicadosRepository), typeof(ComunicadosRepository));
+            
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -191,6 +193,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioUsuariosUseCase, RelatorioUsuariosUseCase>();
             services.TryAddScoped<IRelatorioAtribuicaoCJUseCase, RelatorioAtribuicaoCJUseCase>();
             services.TryAddScoped<IRelatorioAlteracaoNotasUseCase, RelatorioAlteracaoNotasUseCase>();
+            services.TryAddScoped<IRelatorioLeituraComunicadosUseCase, RelatorioLeituraComunicadosUseCase>();
             services.TryAddScoped<IRelatorioAdesaoAppUseCase, RelatorioAdesaoAppUseCase>();
 
         }
