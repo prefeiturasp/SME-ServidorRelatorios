@@ -173,9 +173,9 @@
                         foreach (var leituraComunicadoTurmaEstudante in estudantes)
                         {
                             var estudanteDescricao = $"{leituraComunicadoTurmaEstudante.Estudante} ({leituraComunicadoTurmaEstudante.CodigoEstudante})";
-                            var estudanteResponsavel = $"{leituraComunicadoTurmaEstudante.Responsavel} ({leituraComunicadoTurmaEstudante.TipoResponsavel})";
+                            var responsavelDescricao = $"{leituraComunicadoTurmaEstudante.Responsavel} ({leituraComunicadoTurmaEstudante.TipoResponsavel})";
 
-                            if (leituraComunicadoTurmaEstudante.Estudante?.Length > 30 || leituraComunicadoTurmaEstudante.Responsavel.Length > 30)
+                            if (estudanteDescricao.Length > 30 || responsavelDescricao.Length > 30)
                             {
                                 contadorQuebrarPagina += 2;
                             } else
@@ -186,7 +186,7 @@
                             str += $@"<tr>
                                 <td width='7%' class='td-valor-dois'>{leituraComunicadoTurmaEstudante.NumeroChamada}</td>
                                 <td width='25%' class='td-valor-dois'>{estudanteDescricao}</td>
-                                <td width='25%' class='td-valor-dois'>{estudanteResponsavel}</td>
+                                <td width='25%' class='td-valor-dois'>{responsavelDescricao}</td>
                                 <td width='13%' class='td-valor-dois'>{leituraComunicadoTurmaEstudante.ContatoResponsavel}</td>
                                 <td width='15%' class='td-valor-dois'>{leituraComunicadoTurmaEstudante.Situacao}</td>
                             </tr>";
