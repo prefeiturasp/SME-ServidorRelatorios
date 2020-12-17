@@ -171,7 +171,7 @@ namespace SME.SR.Application
                         string tipoCJ = ObterTipoProfessorCJ(professor.Key.ProfessorRf, lstAtribuicaoEsporadica, lstProfServidorTitulares, cargosServidores);
                         var professorNome = cargosServidores.FirstOrDefault(p => p.CodigoRF == professor.Key.ProfessorRf)?.NomeServidor;
 
-                        retorno.NomeProfessor = $"{(professor.Key.ProfessorNome ?? professorNome)} ({professor.Key.ProfessorRf}) - {tipoCJ}";
+                        retorno.NomeProfessor = $"{(!string.IsNullOrEmpty(professor.Key.ProfessorNome) ? professor.Key.ProfessorNome : professorNome)} ({professor.Key.ProfessorRf}) - {tipoCJ}";
 
                         retorno.AtribuiicoesCjTurma.AddRange(
                              professor.Select(t =>
