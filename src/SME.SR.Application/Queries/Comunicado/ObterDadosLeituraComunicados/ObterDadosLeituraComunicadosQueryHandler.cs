@@ -62,10 +62,19 @@ namespace SME.SR.Application
                             {
                                 var estudantes = await turmaRepository.ObterDadosAlunos(comunicadoTurma.TurmaCodigo);
 
-                                //var estudantesComunicadoDireto = await comunicadosRepository.ObterComunicadoTurmasAlunosPorComunicadoId(comunicadoTurma.ComunicadoId);
+                                var estudantesComunicadoDireto = await comunicadosRepository.ObterComunicadoTurmasAlunosPorComunicadoId(comunicadoTurma.ComunicadoId);
 
-                                //if (estudantesComunicadoDireto.Any())
-                                //    estudantes = estudantes.Where(a => a.CodigoAluno.ToString() == estudantesComunicadoDireto.ToString());
+                                if (estudantesComunicadoDireto.Any())
+                                {
+                                    var comunicadosDireto = new List<Data.Aluno>();
+                                    foreach (var estudanteComunicadoDireto in estudantesComunicadoDireto)
+                                    {
+                                        var estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == estudanteComunicadoDireto.ToString());
+                                        if(estudante != null)
+                                            comunicadosDireto.Add(estudante);
+                                    }
+                                    estudantes = comunicadosDireto;
+                                }
 
                                 var responsaveis = await comunicadosRepository.ObterResponsaveisPorAlunosIds(estudantes.Select(a => a.CodigoAluno).ToArray());
                                 var statusReponsaveis = await comunicadosRepository.ObterComunicadoTurmasEstudanteAppPorComunicadosIds(new long[] { comunicadoTurma.ComunicadoId });
@@ -77,18 +86,21 @@ namespace SME.SR.Application
                                     {
                                         LeituraComunicadoEstudanteDto estudante = new LeituraComunicadoEstudanteDto();
 
-                                        estudante.NumeroChamada = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NumeroAlunoChamada;
-                                        estudante.CodigoEstudante = responsavel.AlunoId;
-                                        estudante.Estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NomeAluno;
-                                        estudante.Responsavel = responsavel.ResponsavelNome;
-                                        estudante.TipoResponsavel = responsavel.TipoResponsavel.Name();
-                                        estudante.ContatoResponsavel = responsavel.Contato;
-                                        var situacao = statusReponsaveis.FirstOrDefault(a => a.CodigoEstudante == responsavel.AlunoId)?.Situacao;
-                                        var instalado = usuariosApp.FirstOrDefault(c => c == responsavel.CPF);
+                                        if(estudante.Estudante != "")
+                                        {
+                                            estudante.NumeroChamada = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NumeroAlunoChamada;
+                                            estudante.CodigoEstudante = responsavel.AlunoId;
+                                            estudante.Estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NomeAluno;
+                                            estudante.Responsavel = responsavel.ResponsavelNome;
+                                            estudante.TipoResponsavel = responsavel.TipoResponsavel.Name();
+                                            estudante.ContatoResponsavel = responsavel.Contato;
+                                            var situacao = statusReponsaveis.FirstOrDefault(a => a.CodigoEstudante == responsavel.AlunoId)?.Situacao;
+                                            var instalado = usuariosApp.FirstOrDefault(c => c == responsavel.CPF);
 
-                                        estudante.Situacao = situacao == null && instalado == null ? "Não instalado" : (situacao == "True" ? "Visualizado" : "Não Visualizado");
+                                            estudante.Situacao = situacao == null && instalado == null ? "Não instalado" : (situacao == "True" ? "Visualizado" : "Não Visualizado");
 
-                                        comunicadoTurma.LeituraComunicadoEstudantes.Add(estudante);
+                                            comunicadoTurma.LeituraComunicadoEstudantes.Add(estudante);
+                                        }                                        
                                     }
                                 }
                             }

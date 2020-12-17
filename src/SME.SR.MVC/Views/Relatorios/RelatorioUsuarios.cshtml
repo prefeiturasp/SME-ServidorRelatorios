@@ -57,8 +57,8 @@
     {
         var str = "";
         var retornoVerificacao = string.Empty;
-        var ultimaDre = Model.Dres.Last();
-        foreach (var dre in Model.Dres)
+        var ultimaDre = Model.DadosRelatorio.Dres.Last();
+        foreach (var dre in Model.DadosRelatorio.Dres)
         {
             str += MontaCabecalhoDREeUE(dre.Nome);
 

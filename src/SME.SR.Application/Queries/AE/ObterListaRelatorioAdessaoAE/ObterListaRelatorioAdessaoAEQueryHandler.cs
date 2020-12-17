@@ -128,7 +128,7 @@ namespace SME.SR.Application
             var registroDre = new AdesaoAEDreDto() { Valores = dreValoresParaAdicionar };
             //Tratar as Ues \\ 
 
-            foreach (var ueParaTratar in listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo)))
+            foreach (var ueParaTratar in listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo) && a.TurmaCodigo == 0))
             {
                 var ue = Ues.FirstOrDefault(a => a.Codigo == ueParaTratar.UeCodigo);
                 

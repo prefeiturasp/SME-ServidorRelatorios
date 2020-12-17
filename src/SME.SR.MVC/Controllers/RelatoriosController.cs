@@ -3654,7 +3654,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Ue = "CEU EMEF BUTANTA",
                     RF = "9879878",
                     Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
-                }
+                },
+                DadosRelatorio = new DadosRelatorioUsuariosDto()
             };
             //[HttpGet("Usuarios")]
             //public IActionResult RelatorioUsuarios()
@@ -3670,7 +3671,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             //        }
             //    };
 
-            model.Dres = new List<DreUsuarioDto>()
+            model.DadosRelatorio.Dres = new List<DreUsuarioDto>()
             {
                 new DreUsuarioDto()
                 {

@@ -37,7 +37,7 @@ namespace SME.SR.Application
 
         private async Task ObterDadosRelatorioUsuarios(RelatorioUsuarioDto relatorioDto, FiltroRelatorioUsuariosDto filtro)
         {
-            relatorioDto.Dres = await mediator.Send(new ObterDadosRelatorioUsuariosCommand(filtro));
+            relatorioDto.DadosRelatorio = await mediator.Send(new ObterDadosRelatorioUsuariosCommand(filtro));
         }
 
         private async Task ObterFiltroRelatorio(RelatorioUsuarioDto relatorioDto, FiltroRelatorioUsuariosDto filtro, string usuarioLogadoRF)
