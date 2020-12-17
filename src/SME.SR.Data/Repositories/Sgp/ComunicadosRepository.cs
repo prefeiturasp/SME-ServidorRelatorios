@@ -47,8 +47,14 @@ namespace SME.SR.Data
             if (!string.IsNullOrEmpty(filtro.CodigoDre) && filtro.CodigoDre != "-99")
                 query += " and codigo_dre = @CodigoDre ";
 
+            if (filtro.CodigoDre == "-99")
+                query += " and codigo_dre is null";
+
             if (!string.IsNullOrEmpty(filtro.CodigoUe) && filtro.CodigoUe != "-99")
                 query += " and codigo_ue = @CodigoUe ";
+
+            if(filtro.CodigoUe == "-99")
+                query += " and codigo_ue is null";
 
             if (filtro.Semestre > 0)
                 query += " and semestre = @Semestre ";
@@ -56,7 +62,7 @@ namespace SME.SR.Data
             if (!filtro.ListarComunicadosExpirados)
                 query += "and data_expiracao >= @DataExpiracao";
 
-            query += " and date(data_envio) between @DataInicio and @DataFim ";
+            query += " and date(data_envio) between @DataInicio and @DataFim and not comunicado.excluido ";
 
             if (!string.IsNullOrEmpty(filtro.Turma))
             {
