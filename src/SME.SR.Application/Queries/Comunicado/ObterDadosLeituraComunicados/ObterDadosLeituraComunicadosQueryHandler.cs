@@ -86,18 +86,21 @@ namespace SME.SR.Application
                                     {
                                         LeituraComunicadoEstudanteDto estudante = new LeituraComunicadoEstudanteDto();
 
-                                        estudante.NumeroChamada = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NumeroAlunoChamada;
-                                        estudante.CodigoEstudante = responsavel.AlunoId;
-                                        estudante.Estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NomeAluno;
-                                        estudante.Responsavel = responsavel.ResponsavelNome;
-                                        estudante.TipoResponsavel = responsavel.TipoResponsavel.Name();
-                                        estudante.ContatoResponsavel = responsavel.Contato;
-                                        var situacao = statusReponsaveis.FirstOrDefault(a => a.CodigoEstudante == responsavel.AlunoId)?.Situacao;
-                                        var instalado = usuariosApp.FirstOrDefault(c => c == responsavel.CPF);
+                                        if(estudante.Estudante != "")
+                                        {
+                                            estudante.NumeroChamada = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NumeroAlunoChamada;
+                                            estudante.CodigoEstudante = responsavel.AlunoId;
+                                            estudante.Estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NomeAluno;
+                                            estudante.Responsavel = responsavel.ResponsavelNome;
+                                            estudante.TipoResponsavel = responsavel.TipoResponsavel.Name();
+                                            estudante.ContatoResponsavel = responsavel.Contato;
+                                            var situacao = statusReponsaveis.FirstOrDefault(a => a.CodigoEstudante == responsavel.AlunoId)?.Situacao;
+                                            var instalado = usuariosApp.FirstOrDefault(c => c == responsavel.CPF);
 
-                                        estudante.Situacao = situacao == null && instalado == null ? "Não instalado" : (situacao == "True" ? "Visualizado" : "Não Visualizado");
+                                            estudante.Situacao = situacao == null && instalado == null ? "Não instalado" : (situacao == "True" ? "Visualizado" : "Não Visualizado");
 
-                                        comunicadoTurma.LeituraComunicadoEstudantes.Add(estudante);
+                                            comunicadoTurma.LeituraComunicadoEstudantes.Add(estudante);
+                                        }                                        
                                     }
                                 }
                             }
