@@ -56,16 +56,30 @@ namespace SME.SR.Application
                 {
                     foreach (var comunicado in comunicados)
                     {
+                        if(comunicado.ComunicadoId == 741)
+                        {
+                            var i = 0;
+                        }
+
                         if (request.Filtro.ListarResponsaveisEstudantes)
                         {
                             foreach (var comunicadoTurma in comunicadosTurmas.Where(c => c.ComunicadoId == comunicado.ComunicadoId))
                             {
                                 var estudantes = await turmaRepository.ObterDadosAlunos(comunicadoTurma.TurmaCodigo);
 
-                                //var estudantesComunicadoDireto = await comunicadosRepository.ObterComunicadoTurmasAlunosPorComunicadoId(comunicadoTurma.ComunicadoId);
+                                var estudantesComunicadoDireto = await comunicadosRepository.ObterComunicadoTurmasAlunosPorComunicadoId(comunicadoTurma.ComunicadoId);
 
-                                //if (estudantesComunicadoDireto.Any())
-                                //    estudantes = estudantes.Where(a => a.CodigoAluno.ToString() == estudantesComunicadoDireto.ToString());
+                                if (estudantesComunicadoDireto.Any())
+                                {
+                                    var comunicadosDireto = new List<Data.Aluno>();
+                                    foreach (var estudanteComunicadoDireto in estudantesComunicadoDireto)
+                                    {
+                                        var estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == estudanteComunicadoDireto.ToString());
+                                        if(estudante != null)
+                                            comunicadosDireto.Add(estudante);
+                                    }
+                                    estudantes = comunicadosDireto;
+                                }
 
                                 var responsaveis = await comunicadosRepository.ObterResponsaveisPorAlunosIds(estudantes.Select(a => a.CodigoAluno).ToArray());
                                 var statusReponsaveis = await comunicadosRepository.ObterComunicadoTurmasEstudanteAppPorComunicadosIds(new long[] { comunicadoTurma.ComunicadoId });
