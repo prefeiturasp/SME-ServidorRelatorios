@@ -56,11 +56,6 @@ namespace SME.SR.Application
                 {
                     foreach (var comunicado in comunicados)
                     {
-                        if(comunicado.ComunicadoId == 741)
-                        {
-                            var i = 0;
-                        }
-
                         if (request.Filtro.ListarResponsaveisEstudantes)
                         {
                             foreach (var comunicadoTurma in comunicadosTurmas.Where(c => c.ComunicadoId == comunicado.ComunicadoId))
