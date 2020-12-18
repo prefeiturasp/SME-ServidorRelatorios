@@ -138,8 +138,8 @@
             adicionouRodape = false;
             str += $@"<tr>
                 <td width='30%' class='td-valor-dois'>{comunicado.Comunicado}</td>
-                <td width='15%' class='td-valor-dois'>{comunicado.DataEnvio.ToShortDateString():dd/MM/yyyy}</td>
-                <td width='15%' class='td-valor-dois'>{comunicado.DataExpiracao.ToShortDateString():dd/MM/yyyy}</td>
+                <td width='15%' class='td-valor-dois'>{comunicado.DataEnvio:dd/MM/yyyy}</td>
+                <td width='15%' class='td-valor-dois'>{comunicado.DataExpiracao:dd/MM/yyyy}</td>
                 <td width='15%' class='td-valor-dois'>{comunicado.NaoInstalado}</td>
                 <td width='15%' class='td-valor-dois'>{comunicado.NaoVisualizado}</td>
                 <td width='15%' class='td-valor-dois'>{comunicado.Visualizado}</td>
