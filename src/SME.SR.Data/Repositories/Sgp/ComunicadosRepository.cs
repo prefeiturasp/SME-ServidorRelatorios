@@ -48,19 +48,19 @@ namespace SME.SR.Data
                 query += " and codigo_dre = @CodigoDre ";
 
             if (filtro.CodigoDre == "-99")
-                query += " and codigo_dre is null";
+                query += " and codigo_dre is null ";
 
             if (!string.IsNullOrEmpty(filtro.CodigoUe) && filtro.CodigoUe != "-99")
                 query += " and codigo_ue = @CodigoUe ";
 
             if(filtro.CodigoUe == "-99")
-                query += " and codigo_ue is null";
+                query += " and codigo_ue is null ";
 
             if (filtro.Semestre > 0)
                 query += " and semestre = @Semestre ";
 
             if (!filtro.ListarComunicadosExpirados)
-                query += "and data_expiracao >= @DataExpiracao";
+                query += " and data_expiracao >= @DataExpiracao ";
 
             query += " and date(data_envio) between @DataInicio and @DataFim and not comunicado.excluido ";
 
