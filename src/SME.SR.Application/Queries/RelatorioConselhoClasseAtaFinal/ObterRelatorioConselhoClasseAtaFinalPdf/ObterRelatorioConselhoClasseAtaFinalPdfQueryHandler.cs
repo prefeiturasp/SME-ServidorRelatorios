@@ -22,7 +22,6 @@ namespace SME.SR.Application
 
         public async Task<List<ConselhoClasseAtaFinalPaginaDto>> Handle(ObterRelatorioConselhoClasseAtaFinalPdfQuery request, CancellationToken cancellationToken)
         {
-            var mensagensErro = new StringBuilder();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
             foreach (var turmaCodigo in request.FiltroConselhoClasseAtaFinal.TurmasCodigos)
             {
@@ -30,14 +29,11 @@ namespace SME.SR.Application
                 {
                     relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario));
                 }
-                catch (Exception e)
-                {
-                    mensagensErro.AppendLine($"Erro na carga de cados da turma [{turmaCodigo}]: {e.Message}");
-                }
+                catch (NegocioException) { }
             }
 
-            if (mensagensErro.Length > 0)
-                throw new NegocioException(mensagensErro.ToString());
+            if (relatoriosTurmas.Count() <= 0)
+                throw new NegocioException("Não foram encontrados dados para as turmas com os filtros informados");
 
             return relatoriosTurmas;
         }
@@ -246,7 +242,7 @@ namespace SME.SR.Application
 
             var frequenciaGlobalAluno = frequenciaAlunosGeral
                                             .FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString());
-                                          
+
             // Anual
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);
