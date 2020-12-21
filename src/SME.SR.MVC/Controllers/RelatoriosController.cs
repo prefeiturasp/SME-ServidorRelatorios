@@ -5873,6 +5873,71 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioEscolaAquiLeituraComunicados", model);
         }
+
+
+        [HttpGet("controle-planejamento-diario")]
+        public IActionResult RelatorioControlePlanejamentoDiario()
+        {
+            var model = new RelatorioControlePlanejamentoDiarioDto()
+            {
+                Filtro = new FiltroControlePlanejamentoDiarioDto()
+                {
+                    Dre = "DRE - BT",
+                    Ue = "CEU EMEF BUTANTA",
+                    Turma = "Todas",
+                    ComponenteCurricular = "Português",
+                    Bimestre = "Todos",
+                    Usuario = "Anala Ferreira de Oliveira",
+                    RF = "9879878",
+                },
+
+                PlanejamentoDiarioDto = new List<PlanejamentoDiarioDto>()
+                {
+                    new PlanejamentoDiarioDto()
+                    {
+                        DataAula = DateTime.Now,
+                        QuantidadeAulas = 2,
+                        PlanejamentoRealizado = "Sim",
+                        DateRegistro = DateTime.Now.AddDays(-3),
+                        Usuario = "Maria da Silva (999999)",
+                        SecoesPreenchidas = "Objetivos de Aprendizagem - Meus Objetivos Especificos"                                                                                                                                                                                                                                                                                                                                                   
+
+                    },
+                    new PlanejamentoDiarioDto()
+                    {
+                        DataAula = DateTime.Now,
+                        QuantidadeAulas = 2,
+                        PlanejamentoRealizado = "Sim",
+                        DateRegistro = DateTime.Now.AddDays(-3),
+                        Usuario = "Maria da Silva (999999)",
+                        SecoesPreenchidas = "Objetivos de Aprendizagem - Meus Objetivos Especificos"
+
+                    },
+                    new PlanejamentoDiarioDto()
+                    {
+                        DataAula = DateTime.Now,
+                        QuantidadeAulas = 2,
+                        PlanejamentoRealizado = "Sim",
+                        DateRegistro = DateTime.Now.AddDays(-3),
+                        Usuario = "Maria da Silva (999999)",
+                        SecoesPreenchidas = "Objetivos de Aprendizagem - Meus Objetivos Especificos"
+
+                    },
+                    new PlanejamentoDiarioDto()
+                    {
+                        DataAula = DateTime.Now,
+                        QuantidadeAulas = 2,
+                        PlanejamentoRealizado = "Sim",
+                        DateRegistro = DateTime.Now.AddDays(-3),
+                        Usuario = "Maria da Silva (999999)",
+                        SecoesPreenchidas = "Objetivos de Aprendizagem - Meus Objetivos Especificos"
+
+                    }
+                }
+            };
+
+            return View("RelatorioControlePlanejamentoDiario", model);
+        }
     }
 
 }
