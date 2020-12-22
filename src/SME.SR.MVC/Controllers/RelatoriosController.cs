@@ -5885,55 +5885,92 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Dre = "DRE - BT",
                     Ue = "CEU EMEF BUTANTA",
                     Turma = "Todas",
-                    ComponenteCurricular = "Português",
+                    ComponenteCurricular = "Todos",
                     Bimestre = "Todos",
                     Usuario = "Anala Ferreira de Oliveira",
                     RF = "9879878",
                 },
 
-                PlanejamentoDiarioDto = new List<PlanejamentoDiarioDto>()
+                Turmas = new List<TurmaPlanejamentoDiarioDto>()
                 {
-                    new PlanejamentoDiarioDto()
+                    new TurmaPlanejamentoDiarioDto()
                     {
-                        DataAula = DateTime.Now,
-                        QuantidadeAulas = 2,
-                        PlanejamentoRealizado = "Sim",
-                        DateRegistro = DateTime.Now.AddDays(-3),
-                        Usuario = "Maria da Silva (999999)",
-                        SecoesPreenchidas = "Objetivos de Aprendizagem - Meus Objetivos Especificos"                                                                                                                                                                                                                                                                                                                                                   
+                        Nome = "EF - 1A",
+                        Bimestres = new List<BimestrePlanejamentoDiarioDto>()
+                        {
+                            new BimestrePlanejamentoDiarioDto()
+                            {
+                                Nome = "1º Bimestre",
+                                ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+                                {
+                                    new ComponenteCurricularPlanejamentoDiarioDto()
+                                    {
+                                        Nome = "Lingua Portuguesa",
+                                        PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+                                        {
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                ComponenteCurricular = "Lingua Portuguesa",
+                                                DataAula = DateTime.Now.ToString(),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = "Sim",
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString(),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = " - Objetivos de Aprendizagem <br> - Meus Objetivos Especificos"
 
-                    },
-                    new PlanejamentoDiarioDto()
-                    {
-                        DataAula = DateTime.Now,
-                        QuantidadeAulas = 2,
-                        PlanejamentoRealizado = "Sim",
-                        DateRegistro = DateTime.Now.AddDays(-3),
-                        Usuario = "Maria da Silva (999999)",
-                        SecoesPreenchidas = "Objetivos de Aprendizagem - Meus Objetivos Especificos"
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                ComponenteCurricular = "Lingua Portuguesa",
+                                                DataAula = DateTime.Now.ToString(),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = "Sim",
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString(),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = " - Objetivos de Aprendizagem e Desenvolvimento <br> - Meus Objetivos Especificos <br> - Desenvolvimento da aula <br> - 2 objetivos selecionados"
 
-                    },
-                    new PlanejamentoDiarioDto()
-                    {
-                        DataAula = DateTime.Now,
-                        QuantidadeAulas = 2,
-                        PlanejamentoRealizado = "Sim",
-                        DateRegistro = DateTime.Now.AddDays(-3),
-                        Usuario = "Maria da Silva (999999)",
-                        SecoesPreenchidas = "Objetivos de Aprendizagem - Meus Objetivos Especificos"
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                ComponenteCurricular = "Lingua Portuguesa",
+                                                DataAula = DateTime.Now.ToString(),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = "Sim",
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString(),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = " - Objetivos de Aprendizagem e Desenvolvimento <br> - Meus Objetivos Especificos <br> - Desenvolvimento da aula"
 
-                    },
-                    new PlanejamentoDiarioDto()
-                    {
-                        DataAula = DateTime.Now,
-                        QuantidadeAulas = 2,
-                        PlanejamentoRealizado = "Sim",
-                        DateRegistro = DateTime.Now.AddDays(-3),
-                        Usuario = "Maria da Silva (999999)",
-                        SecoesPreenchidas = "Objetivos de Aprendizagem - Meus Objetivos Especificos"
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                ComponenteCurricular = "Lingua Portuguesa",
+                                                DataAula = DateTime.Now.ToString(),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = "Não",
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
 
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                ComponenteCurricular = "Lingua Portuguesa",
+                                                DataAula = DateTime.Now.ToString(),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = "Não",
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
+                },
             };
 
             return View("RelatorioControlePlanejamentoDiario", model);

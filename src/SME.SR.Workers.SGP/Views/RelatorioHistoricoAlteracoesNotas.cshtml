@@ -74,24 +74,24 @@
         if (!String.IsNullOrEmpty(quebra) && componente != "" && (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos"))
         {
             str += $@"<table class='tabela-alunos'>
-<thead>
-  <tr>
-    <th>{componente}</th>
-  </tr>
-</thead>
-</table>";
+                        <thead>
+                          <tr>
+                            <th>{componente}</th>
+                          </tr>
+                        </thead>
+                      </table>";
         }
 
         str += $@"
-<table class='tabela-alunos'>
-<thead>
-<th class='sem-border-bottom' width='5%'>Nº</th>
-<th class='sem-border-bottom' width='15%'>NOME DO ALUNO</th>
-<th class='sem-border-bottom' width='10%'>TIPO DE {turma.TipoNotaConceitoDesc}</th>
-<th class='sem-border-bottom' width='10%'>{turma.TipoNotaConceitoDesc} ANTERIOR</th>
-<th class='sem-border-bottom' width='10%'>{turma.TipoNotaConceitoDesc + descHeaderNotaAtribuida} </th>
-<th class='sem-border-bottom' width='10%'>DATA DA ALTERAÇÃO</th>
-<th class='sem-border-bottom' width='15%'>USUÁRIO QUE ALTEROU</th>";
+                <table class='tabela-alunos'>
+                    <thead>
+                        <th class='sem-border-bottom' width='5%'>Nº</th>
+                        <th class='sem-border-bottom' width='15%'>NOME DO ALUNO</th>
+                        <th class='sem-border-bottom' width='10%'>TIPO DE {turma.TipoNotaConceitoDesc}</th>
+                        <th class='sem-border-bottom' width='10%'>{turma.TipoNotaConceitoDesc} ANTERIOR</th>
+                        <th class='sem-border-bottom' width='10%'>{turma.TipoNotaConceitoDesc + descHeaderNotaAtribuida} </th>
+                        <th class='sem-border-bottom' width='10%'>DATA DA ALTERAÇÃO</th>
+                        <th class='sem-border-bottom' width='15%'>USUÁRIO QUE ALTEROU</th>";
 
         if (!turma.AnoAtual)
         {
@@ -113,14 +113,14 @@
         {
             var aluno = alunosAlteracaoNotas[i];
             str += $@"
-<tr>
-<th style='text-align:center' width='5%'>{aluno.NumeroChamada}</th>
-<th style='text-align:center' width='15%'>{aluno.Nome}</th>
-<th style='text-align:center' width='10%'>{aluno.TipoAlteracaoNota}</th>
-<th style='text-align:center' width='10%'>{aluno.NotaConceitoAnterior}</th>
-<th style='text-align:center' width='10%'>{aluno.NotaConceitoAtribuido}</th>
-<th style='text-align:center' width='10%'>{aluno.DataAlteracao}</th>
-<th style='text-align:center' width='15%'>{aluno.UsuarioAlteracao}</th>";
+                    <tr>
+                        <th style='text-align:center' width='5%'>{aluno.NumeroChamada}</th>
+                        <th style='text-align:center' width='15%'>{aluno.Nome}</th>
+                        <th style='text-align:center' width='10%'>{aluno.TipoAlteracaoNota}</th>
+                        <th style='text-align:center' width='10%'>{aluno.NotaConceitoAnterior}</th>
+                        <th style='text-align:center' width='10%'>{aluno.NotaConceitoAtribuido}</th>
+                        <th style='text-align:center' width='10%'>{aluno.DataAlteracao}</th>
+                        <th style='text-align:center' width='15%'>{aluno.UsuarioAlteracao}</th>";
 
             if (!turma.AnoAtual)
             {
