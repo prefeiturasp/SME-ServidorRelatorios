@@ -43,7 +43,7 @@ namespace SME.SR.Application
             {
                 Dre = await ObterDre(parametros.CodigoDre),
                 Ue = await ObterUe(parametros.CodigoUe),
-                Bimestre = parametros.Bimestre == -99 ? "" : parametros.Bimestre.ToString(),
+                Bimestre = parametros.Bimestre == -99 ? "Todos" : parametros.Bimestre.ToString(),
                 ComponenteCurricular = await ObterComponenteCurricular(parametros.ComponenteCurricular),
                 Turma = await ObterTurma(parametros.CodigoTurma),
                 RF = usuarioLogadoRF,
@@ -54,7 +54,7 @@ namespace SME.SR.Application
         private async Task<string> ObterTurma(string codigoTurma)
         {
             if (codigoTurma == "-99")
-                return "";
+                return "Todos";
 
             var turma = await mediator.Send(new ObterTurmaQuery(codigoTurma));
             return turma.Nome;
@@ -63,7 +63,7 @@ namespace SME.SR.Application
         private async Task<string> ObterComponenteCurricular(long componenteCurricular)
         {
             if (componenteCurricular == -99)
-                return "";
+                return "Todos";
 
             var componente = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(new long[] { componenteCurricular }));
 
@@ -74,7 +74,7 @@ namespace SME.SR.Application
         private async Task<string> ObterUe(string codigoUe)
         {
             if (codigoUe == "-99")
-                return "";
+                return "Todos";
 
             var ue = await mediator.Send(new ObterUePorCodigoQuery(codigoUe));
             return $"{ue.Codigo} - {ue.NomeComTipoEscola}";
@@ -83,7 +83,7 @@ namespace SME.SR.Application
         private async Task<string> ObterDre(string codigoDre)
         {
             if (codigoDre == "-99")
-                return "";
+                return "Todos";
 
             var dre = await mediator.Send(new ObterDrePorCodigoQuery(codigoDre));
             return dre.Abreviacao;
