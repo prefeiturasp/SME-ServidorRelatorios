@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiario>();
+            var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
 
             var relatorioDto = new RelatorioControlePlanejamentoDiarioDto();
 
@@ -31,12 +31,12 @@ namespace SME.SR.Application
             }
             else
             {
-                // Query PlanoAula
+                relatorioDto.Turmas = await mediator.Send(new ObterPlanejamentoDiarioPlanoAulaQuery(parametros));
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
             }
-        }
+        }        
 
-        private async Task<FiltroControlePlanejamentoDiarioDto> ObterFiltroRelatorio(FiltroRelatorioPlanejamentoDiario parametros, string usuarioLogadoRF)
+        private async Task<FiltroControlePlanejamentoDiarioDto> ObterFiltroRelatorio(FiltroRelatorioPlanejamentoDiarioDto parametros, string usuarioLogadoRF)
         {
             return new FiltroControlePlanejamentoDiarioDto()
             {
