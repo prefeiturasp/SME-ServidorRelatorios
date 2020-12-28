@@ -7,11 +7,11 @@ namespace SME.SR.Application
     public class ObterDadosPlanejamentoDiarioBordoQuery : IRequest<IEnumerable<TurmaPlanejamentoDiarioDto>>
     {
 
-        public ObterDadosPlanejamentoDiarioBordoQuery(FiltroRelatorioPlanejamentoDiario parametros)
+        public ObterDadosPlanejamentoDiarioBordoQuery(FiltroRelatorioPlanejamentoDiarioDto parametros)
         {
             Parametros = parametros;
         }
 
-        public FiltroRelatorioPlanejamentoDiario Parametros { get; set; }
+        public FiltroRelatorioPlanejamentoDiarioDto Parametros { get; set; }
     }
 }
