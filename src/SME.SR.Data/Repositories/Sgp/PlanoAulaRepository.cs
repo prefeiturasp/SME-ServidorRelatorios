@@ -127,7 +127,7 @@ namespace SME.SR.Data
                              inner join ue on ue.id = t.ue_id 
                              inner join componente_curricular cc on cc.Id = a.disciplina_id::bigint
                               left join plano_aula pa on pa.aula_id = a.id
-                              left join (select oaa.plano_aula_id, string_agg(oa.codigo, '<br>') as codigo, count(codigo) as QtdObjetivosSelecionados
+                              left join (select oaa.plano_aula_id, string_agg(oa.codigo, '<br/>') as codigo, count(codigo) as QtdObjetivosSelecionados
                                            from objetivo_aprendizagem_aula oaa 
                                           inner join objetivo_aprendizagem oa on oa.id = oaa.objetivo_aprendizagem_id
                                           group by oaa.plano_aula_id) obj on obj.plano_aula_id = pa.id
