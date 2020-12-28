@@ -12,6 +12,9 @@ namespace SME.SR.Infra
         public string SecoesPreenchidas { get; set; }
         public string ObjetivosSelecionados { get; set; }
         public string MeusObjetivosEspecificos { get; set; }
-        public string DesenvolvimentoAula { get; set; }        
+        public string DesenvolvimentoAula { get; set; }
+        public int QtdObjetivosEspecificos { get; set; }
+        public int QtdSecoesPreenchidas { get; set; }
+
     }
 }
