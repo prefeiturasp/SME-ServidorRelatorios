@@ -56,7 +56,6 @@ namespace SME.SR.Data
 
             if (semestre > 0)
                 query += " and t.semestre = @semestre ";
-            query += "limit 200";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
