@@ -3,7 +3,7 @@
 @using SME.SR.Infra.Utilitarios;
 
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 56;
+    int contadorMaximoLinhasPorPagina = 55;
     int contadorPagina = 0;
     var retornoVerificacao = string.Empty;
     var tipoRelatorio = true;
@@ -28,41 +28,41 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 10;
 
         var str = $@"<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-relatorio'>
-<p style='margin-bottom: 0'>
-RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
-</p>
-</div>
-<div class='fonte-14 header-pagina'>
-<table class='tblTopo'>
-<tbody>
-<tr>
-    <td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
-    <td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
-    <td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
-</tr>
-</tbody>
-</table>
+                        <div class='titulo-relatorio'>
+                        <p style='margin-bottom: 0'>
+                        RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
+                        </p>
+                        </div>
+                        <div class='fonte-14 header-pagina'>
+                        <table class='tblTopo'>
+                        <tbody>
+                        <tr>
+                            <td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+                            <td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+                            <td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
+                        </tr>
+                        </tbody>
+                        </table>
 
-<table>
-<tbody>
-<tr>
-    <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
-    <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
-</tr>
-</tbody>
-</table>
+                        <table>
+                        <tbody>
+                        <tr>
+                            <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
+                            <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
+                        </tr>
+                        </tbody>
+                        </table>
 
-<table>
-<tbody>
-<tr>
-    <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
-    <td width='20%'>RF: {Model.Filtro.RF}</td>
-    <td width='20%'>DATA: {Model.Filtro.Data}</td>
-</tr>
-</tbody>
-</table>
-</div>";
+                        <table>
+                        <tbody>
+                        <tr>
+                            <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
+                            <td width='20%'>RF: {Model.Filtro.RF}</td>
+                            <td width='20%'>DATA: {Model.Filtro.Data}</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                        </div>";
         return str;
     }
     string MontarCabecalhoDetalhamento()
@@ -110,7 +110,7 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
             detalhamento = false;
             contadorQuebrarPagina += 1;
 
-            if (planejamento.SecoesPreenchidas != null && planejamento.SecoesPreenchidas.Any())
+            if (!string.IsNullOrEmpty(planejamento.SecoesPreenchidas))
                 contadorQuebrarPagina += 1;
 
             str += $@"<table class='fixed'>
@@ -125,13 +125,11 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
                         </tbody>
                         </table>";
 
-            if (planejamento.Planejamento != null && planejamento.Planejamento.Any())
+            if (!string.IsNullOrEmpty(planejamento.Planejamento))
             {
                 detalhamento = true;
                 var qtdLinhasDetalhamento = 0;
-                str += MontarCabecalhoDetalhamento();
-
-                contadorQuebrarPagina += planejamento.Planejamento.Length > 135 ? (int)(planejamento.Planejamento.Length / 135) + 1 : 1;
+                str += MontarCabecalhoDetalhamento();                
 
                 qtdLinhasDetalhamento = (int)Math.Truncate((double)planejamento.Planejamento.Length / 135) + 1;
                 contadorQuebrarPagina += qtdLinhasDetalhamento;

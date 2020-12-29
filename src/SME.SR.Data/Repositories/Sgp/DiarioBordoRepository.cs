@@ -35,7 +35,7 @@ namespace SME.SR.Data
                         inner join ue on ue.id = t.ue_id 
                         inner join componente_curricular cc on cc.Id = a.disciplina_id::bigint
                          left join diario_bordo db on db.aula_id  = a.id
-                         left join tipo_calendario tc on tc.ano_letivo = @anoLetivo and tc.modalidade = @modalidadeCalendario
+                         left join tipo_calendario tc on tc.ano_letivo = @anoLetivo and tc.modalidade = @modalidadeCalendario and not tc.excluido
                          left join periodo_escolar pe on pe.tipo_calendario_id = tc.id and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
                         where t.ano_letivo = @anoLetivo
                           and t.modalidade_codigo = @modalidadeTurma
