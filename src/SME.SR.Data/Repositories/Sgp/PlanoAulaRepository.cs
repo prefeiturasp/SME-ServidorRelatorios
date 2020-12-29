@@ -135,7 +135,8 @@ namespace SME.SR.Data
                              left join periodo_escolar pe on pe.tipo_calendario_id = tc.id and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
                              where t.ano_letivo = @anoLetivo
                                and t.modalidade_codigo = @modalidadeTurma
-                               and a.ue_id = @codigoUe";
+                               and a.ue_id = @codigoUe
+                               and not a.excluido ";
 
             if (bimestre != -99)
                 query += " and pe.bimestre = @bimestre ";

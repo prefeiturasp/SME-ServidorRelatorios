@@ -486,11 +486,11 @@ PLANO DE AULA
                         </thead>
                     </table>
                 }
-                foreach (var turma in Model.Turmas)
+                foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
                 {
                     tipoRelatorio = true;
                     // TURMA
-                    if (Model.Filtro.Turma == "Todas" || Model.Filtro.Turma == "")
+                    if (Model.Filtro.Turma == "Todos" || Model.Filtro.Turma == "")
                     {
                         contadorQuebrarPagina++;
                         @Html.Raw(VerificaQuebra())
@@ -530,7 +530,7 @@ PLANO DE AULA
                                     }
                                     bimestreDescricaoAnt = nomeBimestre;
                                 }
-                                foreach (var componente in bimestre.ComponentesCurriculares)
+                                foreach (var componente in bimestre.ComponentesCurriculares.OrderBy(o => o.Nome))
                                 {
                                     // COMPONENTE CURRICULAR
                                     if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")

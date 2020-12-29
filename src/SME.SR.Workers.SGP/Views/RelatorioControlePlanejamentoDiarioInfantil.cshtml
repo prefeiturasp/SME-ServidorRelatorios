@@ -116,7 +116,7 @@
             str += $@"<table class='fixed'>
                         <tbody>
                             <tr>
-                                <td width='15%' class='td-valor-dois'>{planejamento.DataAula} / {contadorQuebrarPagina}</td>
+                                <td width='15%' class='td-valor-dois'>{planejamento.DataAula}</td>
                                 <td width='15%' class='td-valor-dois'>{planejamento.PlanejamentoRealizado}</td>
                                 <td width='15%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
                                 <td width='15%' class='td-valor-dois'>{planejamento.Usuario}</td>
@@ -140,7 +140,7 @@
                 str += $@"<table class='fixed'>
                     <tbody>
                         <tr>
-                            <td class='td-planejamento'>{planejamentoRegex} / {contadorQuebrarPagina}</td>
+                            <td class='td-planejamento'>{planejamentoRegex}</td>
                         </tr>
                     </tbody>
                   </table>";
@@ -452,105 +452,105 @@
             <img class="img-logo-sgp" src="logoMono.png" alt="Logo SGP" />
         </div>
         @Html.Raw(MontarCabecalho())
-        <div>
-            @{
-                var bimestreDescricaoAnt = "";
-                // DIÁRIO DE BORDO
-                if (tipoRelatorio)
-                {
-                    tipoRelatorio = false;
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                    @Html.Raw(VerificaQuebra())
+    <div>
+        @{
+            var bimestreDescricaoAnt = "";
+            // DIÁRIO DE BORDO
+            if (tipoRelatorio)
+            {
+                tipoRelatorio = false;
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                @Html.Raw(VerificaQuebra())
 
-                    <table class="tabela-planejamento">
-                        <thead>
-                            <tr>
-                                <th class="sem-border-bottom">@Html.Raw("DIÁRIO DE BORDO")</th>
-                            </tr>
-                        </thead>
-                    </table>
-                }
-                foreach (var turma in Model.Turmas)
+                <table class="tabela-planejamento">
+                    <thead>
+                        <tr>
+                            <th class="sem-border-bottom">@Html.Raw("DIÁRIO DE BORDO")</th>
+                        </tr>
+                    </thead>
+                </table>
+            }
+            foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
+            {
+                tipoRelatorio = true;
+                @if (turma.Bimestres != null || !turma.Bimestres.Any())
                 {
-                    tipoRelatorio = true;
-                    @if (turma.Bimestres != null || !turma.Bimestres.Any())
+                    bimestreDescricaoAnt = "";
+                    // TURMA
+                    if (Model.Filtro.Turma == "Todos" || Model.Filtro.Turma == "")
                     {
-                        bimestreDescricaoAnt = "";
+                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                        @Html.Raw(VerificaQuebra())
 
-                        foreach (var bimestre in turma.Bimestres.OrderBy(o => o.Nome))
+                        <table class="tabela-planejamento">
+                            <thead>
+                                <tr>
+                                    <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    }
+
+                    foreach (var bimestre in turma.Bimestres.OrderBy(o => o.Nome))
+                    {
+                        @if (bimestre.ComponentesCurriculares != null || bimestre.ComponentesCurriculares.Any())
                         {
-                            @if (bimestre.ComponentesCurriculares != null || bimestre.ComponentesCurriculares.Any())
+                            foreach (var componente in bimestre.ComponentesCurriculares.OrderBy(o => o.Nome))
                             {
-                                foreach (var componente in bimestre.ComponentesCurriculares)
+
+                                // BIMESTRE
+                                var nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
+                                if (!bimestreDescricaoAnt.Equals(bimestre.Nome))
                                 {
-                                    // TURMA
-                                    if (Model.Filtro.Turma == "Todas" || Model.Filtro.Turma == "")
+                                    if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
                                     {
                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                         @Html.Raw(VerificaQuebra())
 
-                                        <table class="tabela-planejamento">
-                                            <thead>
-                                                <tr>
-                                                    <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    }
-
-                                    // BIMESTRE
-                                    var nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
-                                    if (!bimestreDescricaoAnt.Equals(bimestre.Nome))
-                                    {
-                                        if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
-                                        {
-                                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                            @Html.Raw(VerificaQuebra())
-
-                                            nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
-
-                                            <table class="tabela-planejamento">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="sem-border-bottom">@nomeBimestre</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                        }
-                                        bimestreDescricaoAnt = nomeBimestre;
-                                    }
-
-
-                                    // COMPONENTE CURRICULAR
-                                    if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
-                                    {
-                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                        @Html.Raw(VerificaQuebra())
+                                        nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
 
                                         <table class="tabela-planejamento">
                                             <thead>
                                                 <tr>
-                                                    <th class="sem-border-bottom">@componente.Nome.ToUpper()</th>
+                                                    <th class="sem-border-bottom">@nomeBimestre</th>
                                                 </tr>
                                             </thead>
                                         </table>
                                     }
-
-                                    var quebra = VerificaQuebra();
-                                    @Html.Raw(quebra);
-
-                                    if (componente.PlanejamentoDiarioInfantil.Count() > 0)
-                                    {
-                                        @Html.Raw(MontarCabecalhoPlanejamento(quebra, turma.Nome, bimestre.Nome, componente.Nome))
-                                    }
-                                    @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiarioInfantil, turma.Nome, bimestre.Nome, componente.Nome, turma))
+                                    bimestreDescricaoAnt = nomeBimestre;
                                 }
+
+
+                                // COMPONENTE CURRICULAR
+                                if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
+                                {
+                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                    @Html.Raw(VerificaQuebra())
+
+                                    <table class="tabela-planejamento">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@componente.Nome.ToUpper()</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                }
+
+                                var quebra = VerificaQuebra();
+                                @Html.Raw(quebra);
+
+                                if (componente.PlanejamentoDiarioInfantil.Count() > 0)
+                                {
+                                    @Html.Raw(MontarCabecalhoPlanejamento(quebra, turma.Nome, bimestre.Nome, componente.Nome))
+                                }
+                                @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiarioInfantil, turma.Nome, bimestre.Nome, componente.Nome, turma))
                             }
                         }
                     }
                 }
             }
-        </div>
+        }
+    </div>
     </div>
 </body>
 </html>
