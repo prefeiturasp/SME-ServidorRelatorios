@@ -199,14 +199,14 @@ namespace SME.SR.Application
             }
             else
             {
-                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => cj.Turma);
+                var agrupamento = lstAtribuicaoCJ.GroupBy(cj => new { cj.Turma.Codigo, Nome = cj.Turma.NomePorFiltroModalidade(filtroModalidade) });
 
                 relatorio.AtribuicoesCjPorTurma.AddRange(
                    agrupamento.Select(turma =>
                    {
                        var retorno = new AtribuicaoCjPorTurmaDto();
 
-                       retorno.NomeTurma = turma.Key.NomePorFiltroModalidade(filtroModalidade);
+                       retorno.NomeTurma = turma.Key.Nome;
                        retorno.AtribuicoesCjProfessor.AddRange(
                             turma.Select(t =>
                             {

@@ -105,7 +105,7 @@
         var ultimoplanejamento = planejamentoDiario.LastOrDefault();
         str += "<table class='fixed'><tbody>";
 
-        foreach (var planejamento in planejamentoDiario)
+        foreach (var planejamento in planejamentoDiario.OrderBy(a => a.DataAula))
         {
             detalhamento = false;
             contadorQuebrarPagina += 1;

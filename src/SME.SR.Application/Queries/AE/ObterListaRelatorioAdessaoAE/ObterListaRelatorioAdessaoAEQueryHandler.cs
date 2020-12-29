@@ -298,7 +298,7 @@ namespace SME.SR.Application
 
             foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
             {
-                var usuarioApp = usuariosDoApp.FirstOrDefault(a => a.Cpf == alunoResponsaveisDaTurma.ResponsavelCpf);
+                var usuarioApp = usuariosDoApp.FirstOrDefault(a => a.Cpf == alunoResponsaveisDaTurma.ResponsavelCpf && !a.PrimeiroAcesso && !a.Excluido);
                 if (usuarioApp != null)
                 {
                     var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
