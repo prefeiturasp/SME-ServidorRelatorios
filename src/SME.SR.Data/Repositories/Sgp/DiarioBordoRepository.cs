@@ -48,13 +48,14 @@ namespace SME.SR.Data
                 query += " and cc.id = @componenteCurricular ";
 
             if (!listarDataFutura)
-                query += " a.data_aula <= NOW()::DATE ";
+                query += " and a.data_aula <= NOW()::DATE ";
 
             if (codigoTurma != "-99")
-                query += " a.turma_id = @codigoTurma ";
+                query += " and a.turma_id = @codigoTurma ";
 
             if (semestre > 0)
-                query += " t.semestre = @semestre ";
+                query += " and t.semestre = @semestre ";
+            query += "limit 200";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {

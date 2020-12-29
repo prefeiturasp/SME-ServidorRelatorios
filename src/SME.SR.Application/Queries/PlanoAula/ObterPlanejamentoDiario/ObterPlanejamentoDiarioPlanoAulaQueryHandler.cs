@@ -37,21 +37,21 @@ namespace SME.SR.Application
             if (aulas == null || !aulas.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            return AgrupaAulasTurma(aulas);
+            return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);
         }
 
-        private IEnumerable<TurmaPlanejamentoDiarioDto> AgrupaAulasTurma(IEnumerable<AulaPlanoAulaDto> aulas)
+        private IEnumerable<TurmaPlanejamentoDiarioDto> AgrupaAulasTurma(IEnumerable<AulaPlanoAulaDto> aulas, bool exibirDetalhamento)
         {
             foreach (var agrupamentoTurma in aulas.GroupBy(c => c.Turma))
             {
                 var turma = new TurmaPlanejamentoDiarioDto() { Nome = agrupamentoTurma.Key };
-                turma.Bimestres = AgrupaAulasBimestre(agrupamentoTurma);
+                turma.Bimestres = AgrupaAulasBimestre(agrupamentoTurma, exibirDetalhamento);
 
                 yield return turma;
             }
         }
 
-        private IEnumerable<BimestrePlanejamentoDiarioDto> AgrupaAulasBimestre(IGrouping<string, AulaPlanoAulaDto> aulasTurma)
+        private IEnumerable<BimestrePlanejamentoDiarioDto> AgrupaAulasBimestre(IGrouping<string, AulaPlanoAulaDto> aulasTurma, bool exibirDetalhamento)
         {
             foreach (var agrupamentoBimestre in aulasTurma.GroupBy(c => c.Bimestre))
             {
@@ -59,32 +59,32 @@ namespace SME.SR.Application
                 if (agrupamentoBimestre.Key.HasValue)
                     bimestre.Nome = $"{agrupamentoBimestre.Key}º Bimestre";
 
-                bimestre.ComponentesCurriculares = AgrupaAulasComponentes(agrupamentoBimestre);
+                bimestre.ComponentesCurriculares = AgrupaAulasComponentes(agrupamentoBimestre, exibirDetalhamento);
 
                 yield return bimestre;
             }
         }
 
-        private IEnumerable<ComponenteCurricularPlanejamentoDiarioDto> AgrupaAulasComponentes(IGrouping<int?, AulaPlanoAulaDto> aulasBimestre)
+        private IEnumerable<ComponenteCurricularPlanejamentoDiarioDto> AgrupaAulasComponentes(IGrouping<int?, AulaPlanoAulaDto> aulasBimestre, bool exibirDetalhamento)
         {
             foreach (var agrupamentoComponente in aulasBimestre.GroupBy(c => c.ComponenteCurricular))
             {
                 var componente = new ComponenteCurricularPlanejamentoDiarioDto();
 
                 componente.Nome = agrupamentoComponente.Key;
-                componente.PlanejamentoDiario = ObterDadosAulasComponente(agrupamentoComponente);
+                componente.PlanejamentoDiario = ObterDadosAulasComponente(agrupamentoComponente, exibirDetalhamento);
 
                 yield return componente;
             }
         }
 
-        private IEnumerable<PlanejamentoDiarioDto> ObterDadosAulasComponente(IGrouping<string, AulaPlanoAulaDto> aulasComponenteCurricular)
+        private IEnumerable<PlanejamentoDiarioDto> ObterDadosAulasComponente(IGrouping<string, AulaPlanoAulaDto> aulasComponenteCurricular, bool exibirDetalhamento)
         {
             foreach (var aula in aulasComponenteCurricular)
             {
                 var aulaPlanejamento = new PlanejamentoDiarioDto();
 
-                aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy HH:mm");
+                aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
                 aulaPlanejamento.QuantidadeAulas = aula.QuantidadeAula;
                 aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue ? "Sim" : "Não";
 
@@ -93,11 +93,15 @@ namespace SME.SR.Application
                     aulaPlanejamento.DateRegistro = aula.DataPlanejamento.Value.ToString("dd/MM/yyyy HH:mm");
                     aulaPlanejamento.Usuario = $"{aula.Usuario} ({aula.UsuarioRf})";
                     aulaPlanejamento.SecoesPreenchidas = ObterSecoesPreenchidas(aula);
-                    aulaPlanejamento.ObjetivosSelecionados = aula.ObjetivosSalecionados;
-                    aulaPlanejamento.MeusObjetivosEspecificos = aula.ObjetivosEspecificos;
-                    aulaPlanejamento.DesenvolvimentoAula = aula.DesenvolvimentoAula;
                     aulaPlanejamento.QtdObjetivosEspecificos = aula.QtdObjetivosSelecionados;
                     aulaPlanejamento.QtdSecoesPreenchidas = aula.QtdSecoesPreenchidas;
+
+                    if (exibirDetalhamento)
+                    {
+                        aulaPlanejamento.ObjetivosSelecionados = aula.ObjetivosSalecionados;
+                        aulaPlanejamento.MeusObjetivosEspecificos = aula.ObjetivosEspecificos;
+                        aulaPlanejamento.DesenvolvimentoAula = aula.DesenvolvimentoAula;
+                    }
                 }
 
                 yield return aulaPlanejamento;

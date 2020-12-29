@@ -38,21 +38,21 @@ namespace SME.SR.Application
             if (aulas == null || !aulas.Any())
                 return null;
 
-            return AgrupaAulasTurma(aulas);
+            return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);
         }
 
-        private IEnumerable<TurmaPlanejamentoDiarioDto> AgrupaAulasTurma(IEnumerable<AulaDiarioBordoDto> aulas)
+        private IEnumerable<TurmaPlanejamentoDiarioDto> AgrupaAulasTurma(IEnumerable<AulaDiarioBordoDto> aulas, bool exibirDetalhamento)
         {
             foreach (var agrupamentoTurma in aulas.GroupBy(c => c.Turma))
             {
                 var turma = new TurmaPlanejamentoDiarioDto() { Nome = agrupamentoTurma.Key };
-                turma.Bimestres = AgrupaAulasBimestre(agrupamentoTurma);
+                turma.Bimestres = AgrupaAulasBimestre(agrupamentoTurma, exibirDetalhamento);
 
                 yield return turma;
             }
         }
 
-        private IEnumerable<BimestrePlanejamentoDiarioDto> AgrupaAulasBimestre(IGrouping<string, AulaDiarioBordoDto> aulasTurma)
+        private IEnumerable<BimestrePlanejamentoDiarioDto> AgrupaAulasBimestre(IGrouping<string, AulaDiarioBordoDto> aulasTurma, bool exibirDetalhamento)
         {
             foreach(var agrupamentoBimestre in aulasTurma.GroupBy(c => c.Bimestre))
             {
@@ -60,32 +60,32 @@ namespace SME.SR.Application
                 if (agrupamentoBimestre.Key.HasValue)
                     bimestre.Nome = $"{agrupamentoBimestre.Key}º Bimestre";
 
-                bimestre.ComponentesCurriculares = AgrupaAulasComponentes(agrupamentoBimestre);
+                bimestre.ComponentesCurriculares = AgrupaAulasComponentes(agrupamentoBimestre, exibirDetalhamento);
 
                 yield return bimestre;
             }
         }
 
-        private IEnumerable<ComponenteCurricularPlanejamentoDiarioDto> AgrupaAulasComponentes(IGrouping<int?, AulaDiarioBordoDto> aulasBimestre)
+        private IEnumerable<ComponenteCurricularPlanejamentoDiarioDto> AgrupaAulasComponentes(IGrouping<int?, AulaDiarioBordoDto> aulasBimestre, bool exibirDetalhamento)
         {
             foreach (var agrupamentoComponente in aulasBimestre.GroupBy(c => c.ComponenteCurricular))
             {
                 var componente = new ComponenteCurricularPlanejamentoDiarioDto();
 
                 componente.Nome = agrupamentoComponente.Key;
-                componente.PlanejamentoDiarioInfantil = ObterDadosAulasComponente(agrupamentoComponente);
+                componente.PlanejamentoDiarioInfantil = ObterDadosAulasComponente(agrupamentoComponente, exibirDetalhamento);
 
                 yield return componente;
             }
         }
 
-        private IEnumerable<PlanejamentoDiarioInfantilDto> ObterDadosAulasComponente(IGrouping<string, AulaDiarioBordoDto> aulasComponenteCurricular)
+        private IEnumerable<PlanejamentoDiarioInfantilDto> ObterDadosAulasComponente(IGrouping<string, AulaDiarioBordoDto> aulasComponenteCurricular, bool exibirDetalhamento)
         {
             foreach(var aula in aulasComponenteCurricular)
             {
                 var aulaPlanejamento = new PlanejamentoDiarioInfantilDto();
 
-                aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy HH:mm");
+                aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
                 aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue ? "Sim" : "Não";
 
                 if (aula.DataPlanejamento.HasValue)
@@ -93,7 +93,9 @@ namespace SME.SR.Application
                     aulaPlanejamento.DateRegistro = aula.DataPlanejamento.Value.ToString("dd/MM/yyyy HH:mm");
                     aulaPlanejamento.Usuario = $"{aula.Usuario} ({aula.UsuarioRf})";
                     aulaPlanejamento.SecoesPreenchidas = ObterSecoesPreenchidas(aula);
-                    aulaPlanejamento.Planejamento = aula.Planejamento;
+
+                    if (exibirDetalhamento)
+                        aulaPlanejamento.Planejamento = aula.Planejamento; 
                 }
 
                 yield return aulaPlanejamento;
