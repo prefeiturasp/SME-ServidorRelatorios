@@ -195,6 +195,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioAlteracaoNotasUseCase, RelatorioAlteracaoNotasUseCase>();
             services.TryAddScoped<IRelatorioLeituraComunicadosUseCase, RelatorioLeituraComunicadosUseCase>();
             services.TryAddScoped<IRelatorioAdesaoAppUseCase, RelatorioAdesaoAppUseCase>();
+            services.TryAddScoped<IRelatorioPlanejamentoDiarioUseCase, RelatorioPlanejamentoDiarioUseCase>();
 
         }
     }

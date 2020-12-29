@@ -211,5 +211,12 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/planejamento-diario")]
+        [Action("relatorios/planejamento-diario", typeof(IRelatorioPlanejamentoDiarioUseCase))]
+        public async Task<bool> PlanejamentoDiario([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanejamentoDiarioUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
     }
 }
