@@ -3,7 +3,7 @@
 namespace SME.SR.Infra
 {
     public class AulaPlanoAulaDto
-    {
+    {        
         public string Turma { get; set; }
         public int? Bimestre { get; set; }
         public string ComponenteCurricular { get; set; }

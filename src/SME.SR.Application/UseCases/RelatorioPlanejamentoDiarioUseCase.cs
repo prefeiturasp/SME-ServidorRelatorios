@@ -18,23 +18,32 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
-
-            var relatorioDto = new RelatorioControlePlanejamentoDiarioDto();
-
-            relatorioDto.Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF);
-
-            if (parametros.ModalidadeTurma == Modalidade.Infantil)
+            try
             {
-                // Query DiarioBordo
-                relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantil", relatorioDto, request.CodigoCorrelacao));
+                var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
+
+                var relatorioDto = new RelatorioControlePlanejamentoDiarioDto();
+
+                relatorioDto.Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF);
+
+                if (parametros.ModalidadeTurma == Modalidade.Infantil)
+                {
+                    // Query DiarioBordo
+                    relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantil", relatorioDto, request.CodigoCorrelacao));
+                }
+                else
+                {
+                    relatorioDto.Turmas = await mediator.Send(new ObterPlanejamentoDiarioPlanoAulaQuery(parametros));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                relatorioDto.Turmas = await mediator.Send(new ObterPlanejamentoDiarioPlanoAulaQuery(parametros));
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
+
+                throw ex;
             }
+            
         }        
 
         private async Task<FiltroControlePlanejamentoDiarioDto> ObterFiltroRelatorio(FiltroRelatorioPlanejamentoDiarioDto parametros, string usuarioLogadoRF)

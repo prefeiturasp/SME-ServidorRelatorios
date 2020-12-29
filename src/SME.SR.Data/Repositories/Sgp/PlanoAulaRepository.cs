@@ -108,7 +108,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AulaPlanoAulaDto>> ObterPlanejamentoDiarioPlanoAula(long anoLetivo, int bimestre, string codigoUe, long componenteCurricular, bool listarDataFutura, string codigoTurma, Modalidade modalidadeTurma, ModalidadeTipoCalendario modalidadeCalendario, int semestre)
         {            
-              var query = (@"select t.nome as Turma,
+              var query = @"select t.nome as Turma,
                                    cc.descricao_sgp as ComponenteCurricular,
                                    pe.bimestre,
 	                               a.data_aula as DataAula, 
@@ -131,11 +131,11 @@ namespace SME.SR.Data
                                            from objetivo_aprendizagem_aula oaa 
                                           inner join objetivo_aprendizagem oa on oa.id = oaa.objetivo_aprendizagem_id
                                           group by oaa.plano_aula_id) obj on obj.plano_aula_id = pa.id
-                             left join tipo_calendario tc on tc.ano_letivo = @anoLetivo and tc.modalidade = @modalidadeCalendario
+                             left join tipo_calendario tc on tc.ano_letivo = @anoLetivo and tc.modalidade = @modalidadeCalendario and not tc.excluido
                              left join periodo_escolar pe on pe.tipo_calendario_id = tc.id and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
                              where t.ano_letivo = @anoLetivo
                                and t.modalidade_codigo = @modalidadeTurma
-                               and a.ue_id = @codigoUe");
+                               and a.ue_id = @codigoUe";
 
             if (bimestre != -99)
                 query += " and pe.bimestre = @bimestre ";
@@ -144,13 +144,13 @@ namespace SME.SR.Data
                 query += " and cc.id = @componenteCurricular ";
 
             if (!listarDataFutura)
-                query += " a.data_aula <= NOW()::DATE ";
+                query += " and a.data_aula <= NOW()::DATE ";
 
             if (codigoTurma != "-99")
-                query += " a.turma_id = @codigoTurma ";
+                query += " and a.turma_id = @codigoTurma ";
 
             if (semestre > 0)
-                query += " t.semestre = @semestre ";
+                query += " and t.semestre = @semestre ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
