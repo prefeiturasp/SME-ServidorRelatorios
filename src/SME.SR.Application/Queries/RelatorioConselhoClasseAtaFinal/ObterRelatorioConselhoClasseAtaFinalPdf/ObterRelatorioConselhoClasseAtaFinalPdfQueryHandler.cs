@@ -46,7 +46,7 @@ namespace SME.SR.Application
         {
             var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
             if (notasFinais == null || !notasFinais.Any())
-                throw new NegocioException($"Turma não possui conselho de classe");
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
 
             var turma = await ObterTurma(turmaCodigo);
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
