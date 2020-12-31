@@ -66,7 +66,7 @@ namespace SME.SR.Application
                 return "Todos";
 
             var turma = await mediator.Send(new ObterTurmaQuery(codigoTurma));
-            return turma.Nome;
+            return turma.NomeRelatorio;
         }
 
         private async Task<string> ObterComponenteCurricular(long componenteCurricular)
