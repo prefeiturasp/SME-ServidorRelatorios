@@ -45,7 +45,7 @@ namespace SME.SR.Application
         {
             var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
             if (notasFinais == null || !notasFinais.Any())
-                return null;
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
 
             var turma = await ObterTurma(turmaCodigo);
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
