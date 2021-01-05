@@ -134,8 +134,8 @@
                 qtdLinhasDetalhamento = (int)Math.Truncate((double)planejamento.Planejamento.Length / 135) + 1;
                 contadorQuebrarPagina += qtdLinhasDetalhamento;
 
-                var planejamentoRegex = Regex.Replace(planejamento.Planejamento, @"<[^>]*>", String.Empty);
-                planejamentoRegex = Regex.Replace(planejamentoRegex, @"&nbsp;", " ").Trim();
+                var planejamentoRegex = UtilRegex.RemoverTagsHtmlMidia(planejamento.Planejamento);
+                planejamentoRegex = UtilRegex.RemoverTagsHtml(planejamentoRegex);
 
                 str += $@"<table class='fixed'>
                     <tbody>
