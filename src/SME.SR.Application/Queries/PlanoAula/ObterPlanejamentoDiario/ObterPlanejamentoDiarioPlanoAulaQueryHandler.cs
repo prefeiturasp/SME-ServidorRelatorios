@@ -37,7 +37,7 @@ namespace SME.SR.Application
             if (aulas == null || !aulas.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);
+            return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);            
         }
 
         private IEnumerable<TurmaPlanejamentoDiarioDto> AgrupaAulasTurma(IEnumerable<AulaPlanoAulaDto> aulas, bool exibirDetalhamento)
@@ -80,7 +80,7 @@ namespace SME.SR.Application
 
         private IEnumerable<PlanejamentoDiarioDto> ObterDadosAulasComponente(IGrouping<string, AulaPlanoAulaDto> aulasComponenteCurricular, bool exibirDetalhamento)
         {
-            foreach (var aula in aulasComponenteCurricular)
+            foreach (var aula in aulasComponenteCurricular.OrderByDescending(o => o.DataAula))
             {
                 var aulaPlanejamento = new PlanejamentoDiarioDto();
 

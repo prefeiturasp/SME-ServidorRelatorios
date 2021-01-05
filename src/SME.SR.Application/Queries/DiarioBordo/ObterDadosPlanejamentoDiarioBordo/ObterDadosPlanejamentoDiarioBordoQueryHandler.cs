@@ -81,12 +81,13 @@ namespace SME.SR.Application
 
         private IEnumerable<PlanejamentoDiarioInfantilDto> ObterDadosAulasComponente(IGrouping<string, AulaDiarioBordoDto> aulasComponenteCurricular, bool exibirDetalhamento)
         {
-            foreach(var aula in aulasComponenteCurricular)
+            foreach(var aula in aulasComponenteCurricular.OrderByDescending(o => o.DataAula))
             {
                 var aulaPlanejamento = new PlanejamentoDiarioInfantilDto();
 
                 aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
                 aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue ? "Sim" : "Não";
+
 
                 if (aula.DataPlanejamento.HasValue)
                 {
