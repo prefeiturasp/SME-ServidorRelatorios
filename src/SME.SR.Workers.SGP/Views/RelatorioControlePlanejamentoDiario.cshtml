@@ -108,7 +108,7 @@
         return str;
     }
 
-    string MontarDadosTabelaPlanejamento(IEnumerable<SME.SR.Infra.PlanejamentoDiarioDto> planejamentoDiario, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioDto turma, string ultimaAulaRelatorio, string ultimaTurma)
+    string MontarDadosTabelaPlanejamento(IEnumerable<SME.SR.Infra.PlanejamentoDiarioDto> planejamentoDiario, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioDto turma, long ultimaAulaRelatorio, string ultimaTurma, string ultimoComponenteNome, string ultimoBimestreNome)
     {
         var str = "";
         var detalhamento = false;
@@ -173,7 +173,7 @@
                 var desenvolvimentoAula = Regex.Replace(planejamento.DesenvolvimentoAula, @"<[^>]*>", String.Empty);
                 desenvolvimentoAula = Regex.Replace(desenvolvimentoAula, @"&nbsp;", " ").Trim();
                 str += $@"<tr>
-                            <td width='20%' class='td-valor-tres'>{planejamento.ObjetivosSelecionados}</td>
+                            <td width='20%' class='td-valor-Objetivos'>{planejamento.ObjetivosSelecionados}</td>
                             <td width='40%' class='td-valor-tres'>{meusObjetivosEspecificos.ToLower()}</td>
                             <td width='40%' class='td-valor-tres'>{desenvolvimentoAula.ToLower()}</td>
                           </tr>";
@@ -181,17 +181,22 @@
                 if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                     str += IncluirTdParaFechar(3);
 
-                if (planejamento.DataAula.Equals(ultimaAulaRelatorio) && NomeTurma.Equals(ultimaTurma))
+                if (planejamento.AulaId == ultimaAulaRelatorio)
                     str += IncluirTdParaFechar(3);
 
                 str += "</table>";
 
             }
+            else
+            {
+                if (planejamento.AulaId == ultimaAulaRelatorio && NomeBimestre.Equals(ultimoBimestreNome.ToUpper()))
+                    str += IncluirTdParaFechar(6);
+            }
 
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
             {
-                if (ultimoplanejamento.DataAula.Equals(planejamento.DataAula))
+                if (ultimoplanejamento.AulaId == planejamento.AulaId)
                 {
                     str += $@"</tbody></table>{retornoVerificacao}<table class='fixed'>";
                 }
@@ -202,17 +207,16 @@
             }
             else
             {
-                if (!ultimoplanejamento.DataAula.Equals(planejamento.DataAula))
+                if (ultimoplanejamento.AulaId != planejamento.AulaId)
                 {
                     if (detalhamento)
                         str += LinhaEmBranco();
                 }
                 else
-                {
-                    if (ultimoplanejamento.DataAula.Equals(ultimaAulaRelatorio) && NomeTurma.Equals(ultimaTurma))
+                {                    
+                    if(ultimoplanejamento.AulaId == ultimaAulaRelatorio)
                         if (detalhamento)
                             str += IncluirTdParaFechar(6);
-
                 }
             }
         }
@@ -425,6 +429,13 @@
             border-bottom: none;
         }
 
+        .td-valor-Objetivos {
+            text-align: center;
+            font-size: 12px;
+            padding: 2px;
+            border-bottom: none;
+        }
+
         .td-valor-quatro {
             text-align: left;
             font-size: 12px;
@@ -536,8 +547,10 @@
                 var ultimoBimestre = bimestreOrdenado.LastOrDefault();
                 var componenteOrdenado = ultimoBimestre.ComponentesCurriculares.OrderBy(o => o.Nome);
                 var ultimoComponente = componenteOrdenado.LastOrDefault();
-                var ultimaAula = ultimoComponente.PlanejamentoDiario.LastOrDefault().DataAula;
+                var ultimaAula = ultimoComponente.PlanejamentoDiario.LastOrDefault().AulaId;
                 var ultimaTurmaNome = ultimaTurma.Nome;
+                var ultimoComponenteNome = ultimoComponente.Nome;
+                var ultimoBimestreNome = ultimoBimestre.Nome;
 
                 foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
                 {
@@ -607,7 +620,7 @@
                                     if (componente.PlanejamentoDiario.Count() > 0)
                                     {
                                         @Html.Raw(MontarCabecalhoPlanejamento())
-                                        @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiario, turma.Nome, bimestre.Nome, componente.Nome, turma, ultimaAula, ultimaTurmaNome))
+                                        @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiario, turma.Nome, nomeBimestre, componente.Nome, turma, ultimaAula, ultimaTurmaNome, ultimoComponenteNome, ultimoBimestreNome))
                                     }
                                 }
                             }

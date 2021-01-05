@@ -84,6 +84,7 @@ namespace SME.SR.Application
             {
                 var aulaPlanejamento = new PlanejamentoDiarioDto();
 
+                aulaPlanejamento.AulaId = aula.AulaId;
                 aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
                 aulaPlanejamento.QuantidadeAulas = aula.QuantidadeAula;
                 aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue ? "Sim" : "Não";
@@ -94,11 +95,20 @@ namespace SME.SR.Application
                     aulaPlanejamento.Usuario = $"{aula.Usuario} ({aula.UsuarioRf})";
                     aulaPlanejamento.SecoesPreenchidas = ObterSecoesPreenchidas(aula);
                     aulaPlanejamento.QtdObjetivosEspecificos = aula.QtdObjetivosSelecionados;
-                    aulaPlanejamento.QtdSecoesPreenchidas = aula.QtdSecoesPreenchidas;
+                    aulaPlanejamento.QtdSecoesPreenchidas = aula.QtdSecoesPreenchidas;                   
 
                     if (exibirDetalhamento)
                     {
-                        aulaPlanejamento.ObjetivosSelecionados = aula.ObjetivosSalecionados;
+                        var ObjSplit = aula.ObjetivosSalecionados.Split("<br/>");
+
+                        string ObjetivosSalecionados = "";
+
+                        foreach (var obj in ObjSplit.OrderBy(c => c))
+                        {
+                            ObjetivosSalecionados += $"{obj} <br/>";
+                        }
+
+                        aulaPlanejamento.ObjetivosSelecionados = ObjetivosSalecionados;
                         aulaPlanejamento.MeusObjetivosEspecificos = aula.ObjetivosEspecificos;
                         aulaPlanejamento.DesenvolvimentoAula = aula.DesenvolvimentoAula;
                     }

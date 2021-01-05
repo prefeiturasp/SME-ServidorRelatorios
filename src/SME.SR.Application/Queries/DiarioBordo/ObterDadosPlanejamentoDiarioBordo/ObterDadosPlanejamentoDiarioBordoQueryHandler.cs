@@ -36,7 +36,7 @@ namespace SME.SR.Application
                 request.Parametros.Semestre);
 
             if (aulas == null || !aulas.Any())
-                return null;
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);
         }
@@ -85,6 +85,7 @@ namespace SME.SR.Application
             {
                 var aulaPlanejamento = new PlanejamentoDiarioInfantilDto();
 
+                aulaPlanejamento.AulaId = aula.AulaId;
                 aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
                 aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue ? "Sim" : "Não";
 

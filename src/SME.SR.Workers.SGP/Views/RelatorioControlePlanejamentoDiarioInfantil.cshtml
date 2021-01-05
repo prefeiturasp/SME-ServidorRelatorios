@@ -98,7 +98,7 @@
         return str;
     }
 
-    string MontarDadosTabelaPlanejamento(IEnumerable<SME.SR.Infra.PlanejamentoDiarioInfantilDto> planejamentoDiario, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioDto turma, string ultimaAulaRelatorio, string ultimaTurma)
+    string MontarDadosTabelaPlanejamento(IEnumerable<SME.SR.Infra.PlanejamentoDiarioInfantilDto> planejamentoDiario, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioDto turma, long ultimaAulaRelatorio)
     {
         var str = "";
         var detalhamento = false;        
@@ -145,7 +145,7 @@
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
             {                
-                if (ultimoplanejamento.DataAula.Equals(planejamento.DataAula))
+                if (ultimoplanejamento.AulaId == planejamento.AulaId)
                 {
                     str += $@"</tbody></table>{retornoVerificacao}<table class='fixed'>";
                 }
@@ -156,14 +156,14 @@
             }
             else
             {
-                if (!ultimoplanejamento.DataAula.Equals(planejamento.DataAula))
+                if (ultimoplanejamento.AulaId != planejamento.AulaId)
                 {
                     if (detalhamento)
                         str += LinhaEmBranco();
                 }
                 else
                 {
-                    if (ultimoplanejamento.DataAula.Equals(ultimaAulaRelatorio) && NomeTurma.Equals(ultimaTurma))
+                    if (ultimoplanejamento.AulaId == ultimaAulaRelatorio)
                         str += IncluirTdParaFechar(5);
                 }
             }
@@ -501,8 +501,7 @@
             var ultimoBimestre = bimestreOrdenado.LastOrDefault();
             var componenteOrdenado = ultimoBimestre.ComponentesCurriculares.OrderBy(o => o.Nome);
             var ultimoComponente = componenteOrdenado.LastOrDefault();
-            var ultimaAula = ultimoComponente.PlanejamentoDiarioInfantil.LastOrDefault().DataAula;
-            var ultimaTurmaNome = ultimaTurma.Nome;
+            var ultimaAula = ultimoComponente.PlanejamentoDiarioInfantil.LastOrDefault().AulaId;            
 
             foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
             {
@@ -576,7 +575,7 @@
                                 if (componente.PlanejamentoDiarioInfantil.Count() > 0)
                                 {
                                     @Html.Raw(MontarCabecalhoPlanejamento())
-                                    @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiarioInfantil, turma.Nome, bimestre.Nome, componente.Nome, turma, ultimaAula, ultimaTurmaNome))
+                                    @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiarioInfantil, turma.Nome, bimestre.Nome, componente.Nome, turma, ultimaAula))
                                 }
                             }
                         }
