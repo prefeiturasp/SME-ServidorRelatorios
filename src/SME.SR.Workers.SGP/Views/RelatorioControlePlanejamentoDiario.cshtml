@@ -27,68 +27,66 @@
         contadorQuebrarPagina += 10;
 
         var str = $@"<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-relatorio'>
-<p style='margin-bottom: 0'>
-RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
-</p>
-</div>
-<div class='fonte-14 header-pagina'>
-<table class='tblTopo'>
-<tbody>
-<tr>
-<td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
-<td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
-<td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
-</tr>
-</tbody>
-</table>
+                     <div class='titulo-relatorio'>
+                         <p style='margin-bottom: 0'>
+                            RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
+                         </p>
+                     </div>
+                     <div class='fonte-14 header-pagina'>
+                        <table class='tblTopo'>
+                            <tbody>
+                                <tr>
+                                    <td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+                                    <td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+                                    <td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-<table>
-<tbody>
-<tr>
-<td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
-<td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
-</tr>
-</tbody>
-</table>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
+                                    <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-<table>
-<tbody>
-<tr>
-<td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
-<td width='20%'>RF: {Model.Filtro.RF}</td>
-<td width='20%'>DATA: {Model.Filtro.Data}</td>
-</tr>
-</tbody>
-</table>
-</div>";
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
+                                    <td width='20%'>RF: {Model.Filtro.RF}</td>
+                                    <td width='20%'>DATA: {Model.Filtro.Data}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                      </div>";
         return str;
     }
     string MontarCabecalhoTipoRelatorio()
     {
         contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
-<tr>
-<td width='100%' class='td-titulo-um'>
-PLANO DE AULA
-</td>
-</tr>
-</table>";
+                    <tr>
+                        <td width='100%' class='td-titulo-um'>PLANO DE AULA</td>
+                    </tr>
+                  </table>";
     }
 
-    string MontarCabecalhoPlanejamento(string quebra, string turma, string bimestre, string componente)
+    string MontarCabecalhoPlanejamento()
     {
         contadorQuebrarPagina += 2;
-        var str = @"<table class='fixed'>
-    <tr>
-    <td width='15%' class='td-titulo-dois'>DATA DA AULA</td>
-    <td width='12%' class='td-titulo-dois'>QUANTIDADE DE AULAS</td>
-    <td width='14%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
-    <td width='14%' class='td-titulo-dois'>DATA DO REGISTRO</td>
-    <td width='15%' class='td-titulo-dois'>USUÁRIO</td>
-    <td width='30%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
-    </tr>
-    </table>";
+        var str = $@"<table class='fixed'>
+                        <tr>
+                            <td width='15%' class='td-titulo-dois'>DATA DA AULA</td>
+                            <td width='12%' class='td-titulo-dois'>QUANTIDADE DE AULAS</td>
+                            <td width='14%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
+                            <td width='14%' class='td-titulo-dois'>DATA DO REGISTRO</td>
+                            <td width='15%' class='td-titulo-dois'>USUÁRIO</td>
+                            <td width='30%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
+                        </tr>
+                    </table>";
 
         return str;
     }
@@ -100,17 +98,17 @@ PLANO DE AULA
 
 
         str += $@" <table class='fixed'>
-<tr>
-<td width='20%' class='td-titulo-dois'>OBJETIVOS SELECIONADOS</td>
-<td width='40%' class='td-titulo-dois'>MEUS OBJETIVOS ESPECIFICOS</td>
-<td width='40%' class='td-titulo-dois'>DESENVOLVIMENTO DA AULA</td>
-</tr>
-</table>";
+                    <tr>
+                        <td width='20%' class='td-titulo-dois'>OBJETIVOS SELECIONADOS</td>
+                        <td width='40%' class='td-titulo-dois'>MEUS OBJETIVOS ESPECIFICOS</td>
+                        <td width='40%' class='td-titulo-dois'>DESENVOLVIMENTO DA AULA</td>
+                    </tr>
+                   ";
 
         return str;
     }
 
-    string MontarDadosTabelaPlanejamento(IEnumerable<SME.SR.Infra.PlanejamentoDiarioDto> planejamentoDiario, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioDto turma)
+    string MontarDadosTabelaPlanejamento(IEnumerable<SME.SR.Infra.PlanejamentoDiarioDto> planejamentoDiario, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioDto turma, string ultimaAulaRelatorio, string ultimaTurma)
     {
         var str = "";
         var detalhamento = false;
@@ -119,24 +117,33 @@ PLANO DE AULA
 
         foreach (var planejamento in planejamentoDiario)
         {
-            detalhamento = false;
-            contadorQuebrarPagina += 1;
+            detalhamento = false;            
 
             if (!string.IsNullOrEmpty(planejamento.SecoesPreenchidas))
-                contadorQuebrarPagina += (1 + (planejamento.QtdObjetivosEspecificos > 0 ? 3 : 0));
+            {
+                var qtdSecoes = planejamento.QtdSecoesPreenchidas;
 
-            str += $@"<table class='fixed'>
-<tbody>
-<tr>
-<td width='15%' class='td-valor-dois'>{planejamento.DataAula}</td>
-<td width='12%' class='td-valor-dois'>{planejamento.QuantidadeAulas}</td>
-<td width='14%' class='td-valor-dois'>{planejamento.PlanejamentoRealizado}</td>
-<td width='14%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
-<td width='15%' class='td-valor-dois'>{planejamento.Usuario}</td>
-<td width='30%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
-</tr>
-</tbody>
-</table>";
+                double tamanhoTexto1 = planejamento.Usuario != null ? planejamento.Usuario.Length : 0;
+
+                var qtdLinhaUsuario = (int)Math.Truncate(tamanhoTexto1 / 12);
+
+                contadorQuebrarPagina += Math.Max(planejamento.QtdSecoesPreenchidas, qtdLinhaUsuario);
+            }
+            else
+            {
+                contadorQuebrarPagina += 1;
+            }
+
+
+            str += $@"<tr>
+                        <td width='15%' class='td-valor-dois'>{planejamento.DataAula}</td>
+                        <td width='12%' class='td-valor-dois'>{planejamento.QuantidadeAulas}</td>
+                        <td width='14%' class='td-valor-dois'>{planejamento.PlanejamentoRealizado}</td>
+                        <td width='14%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
+                        <td width='15%' class='td-valor-dois'>{planejamento.Usuario}</td>
+                        <td width='30%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
+                      </tr>";
+
             if (!string.IsNullOrEmpty(planejamento.DesenvolvimentoAula)
              || !string.IsNullOrEmpty(planejamento.MeusObjetivosEspecificos))
             {
@@ -147,12 +154,17 @@ PLANO DE AULA
                 qtdLinhasDetalhamento = Math.Max((int)Math.Truncate(tamanhoTexto / 55) + 1, planejamento.QtdObjetivosEspecificos);
                 contadorQuebrarPagina += qtdLinhasDetalhamento;
 
+                if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+                    str += IncluirTdParaFechar(6);
+
+                str += $"</tbody></table>";
+
                 retornoVerificacao = VerificaQuebra();
                 if (retornoVerificacao != string.Empty)
                 {
-                    str += $@"</tbody></table>{retornoVerificacao}";
+                    str += $@"{IncluirTdParaFechar(6)}</tbody></table>{retornoVerificacao}";
                     contadorQuebrarPagina += qtdLinhasDetalhamento;
-                }                
+                }
 
                 str += MontarCabecalhoDetalhamento();
                 var meusObjetivosEspecificos = Regex.Replace(planejamento.MeusObjetivosEspecificos, @"<[^>]*>", String.Empty);
@@ -160,15 +172,19 @@ PLANO DE AULA
 
                 var desenvolvimentoAula = Regex.Replace(planejamento.DesenvolvimentoAula, @"<[^>]*>", String.Empty);
                 desenvolvimentoAula = Regex.Replace(desenvolvimentoAula, @"&nbsp;", " ").Trim();
-                str += $@"<table class='fixed'>
-                    <tbody>
-                    <tr>
-                        <td width='20%' class='td-valor-dois'>{planejamento.ObjetivosSelecionados}</td>
-                        <td width='40%' class='td-valor-dois'>{meusObjetivosEspecificos}</td>
-                        <td width='40%' class='td-valor-dois'>{desenvolvimentoAula}</td>
-                    </tr>
-                    </tbody>
-                    </table>";
+                str += $@"<tr>
+                            <td width='20%' class='td-valor-tres'>{planejamento.ObjetivosSelecionados}</td>
+                            <td width='40%' class='td-valor-tres'>{meusObjetivosEspecificos.ToLower()}</td>
+                            <td width='40%' class='td-valor-tres'>{desenvolvimentoAula.ToLower()}</td>
+                          </tr>";
+
+                if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+                    str += IncluirTdParaFechar(3);
+
+                if (planejamento.DataAula.Equals(ultimaAulaRelatorio) && NomeTurma.Equals(ultimaTurma))
+                    str += IncluirTdParaFechar(3);
+
+                str += "</table>";
 
             }
 
@@ -177,18 +193,27 @@ PLANO DE AULA
             {
                 if (ultimoplanejamento.DataAula.Equals(planejamento.DataAula))
                 {
-                    str += $@"</tbody></table>{retornoVerificacao}";
+                    str += $@"</tbody></table>{retornoVerificacao}<table class='fixed'>";
                 }
                 else
                 {
-                    str += $@"</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento(retornoVerificacao, NomeTurma, NomeBimestre, NomeComponente)}";
+                    str += $@"{IncluirTdParaFechar(6)}</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'>";
                 }
             }
             else
             {
                 if (!ultimoplanejamento.DataAula.Equals(planejamento.DataAula))
+                {
                     if (detalhamento)
                         str += LinhaEmBranco();
+                }
+                else
+                {
+                    if (ultimoplanejamento.DataAula.Equals(ultimaAulaRelatorio) && NomeTurma.Equals(ultimaTurma))
+                        if (detalhamento)
+                            str += IncluirTdParaFechar(6);
+
+                }
             }
         }
         return str;
@@ -196,7 +221,18 @@ PLANO DE AULA
     string LinhaEmBranco()
     {
         contadorQuebrarPagina += 1;
-        return "<table><tr><td style='border-top:none;border-bottom:none;'><br/></td></tr></table>";
+        return "</tbody></table><table><tr><td style='border-bottom:none;'><br/></td></tr></table><table class='fixed'><tbody>";
+    }
+
+    string IncluirTdParaFechar(int quantidade)
+    {
+        var str = "<tr>";
+        for (var i = 1; i <= quantidade; i++)
+        {
+            str += "<td style='border-bottom:none;border-left:none;border-right:none;'></td>";
+        }
+        str += "</tr>";
+        return str;
     }
 }
 
@@ -370,7 +406,7 @@ PLANO DE AULA
             background-color: #f3f3f3;
             text-align: center;
             font-size: 12px;
-            padding: 4px;
+            padding: 2px;
             border-top: none;
             border-bottom: none;
         }
@@ -379,13 +415,14 @@ PLANO DE AULA
             text-align: center;
             font-size: 12px;
             padding: 2px;
+            border-bottom: none;
         }
 
         .td-valor-tres {
             text-align: left;
             font-size: 12px;
-            padding: 4px;
-            padding-left: 10px;
+            padding: 2px;
+            border-bottom: none;
         }
 
         .td-valor-quatro {
@@ -401,7 +438,14 @@ PLANO DE AULA
             text-align: left;
             font-size: 12px;
             padding: 2px;
-            padding: 4px;
+            border-bottom: none;
+        }
+
+        .td-usuario {
+            text-align: left;
+            font-size: 12px;
+            padding: 2px;
+            border-bottom: none;
         }
 
         .caixa-1 {
@@ -486,6 +530,15 @@ PLANO DE AULA
                         </thead>
                     </table>
                 }
+                var turmaOrdenada = Model.Turmas.OrderBy(o => o.Nome);
+                var ultimaTurma = turmaOrdenada.LastOrDefault();
+                var bimestreOrdenado = ultimaTurma.Bimestres.OrderBy(o => o.Nome);
+                var ultimoBimestre = bimestreOrdenado.LastOrDefault();
+                var componenteOrdenado = ultimoBimestre.ComponentesCurriculares.OrderBy(o => o.Nome);
+                var ultimoComponente = componenteOrdenado.LastOrDefault();
+                var ultimaAula = ultimoComponente.PlanejamentoDiario.LastOrDefault().DataAula;
+                var ultimaTurmaNome = ultimaTurma.Nome;
+
                 foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
                 {
                     tipoRelatorio = true;
@@ -536,12 +589,13 @@ PLANO DE AULA
                                     if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
                                     {
                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                        var nomeComponente = componente.Nome != null ? componente.Nome.ToUpper() : "COMPONENTE NÃO IDENTIFICADO";
                                         @Html.Raw(VerificaQuebra())
 
                                         <table class="tabela-planejamento">
                                             <thead>
                                                 <tr>
-                                                    <th class="sem-border-bottom">@componente.Nome.ToUpper()</th>
+                                                    <th class="sem-border-bottom">@nomeComponente</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -552,9 +606,9 @@ PLANO DE AULA
 
                                     if (componente.PlanejamentoDiario.Count() > 0)
                                     {
-                                        @Html.Raw(MontarCabecalhoPlanejamento(quebra, turma.Nome, bimestre.Nome, componente.Nome))
+                                        @Html.Raw(MontarCabecalhoPlanejamento())
+                                        @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiario, turma.Nome, bimestre.Nome, componente.Nome, turma, ultimaAula, ultimaTurmaNome))
                                     }
-                                    @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiario, turma.Nome, bimestre.Nome, componente.Nome, turma))
                                 }
                             }
                         }
