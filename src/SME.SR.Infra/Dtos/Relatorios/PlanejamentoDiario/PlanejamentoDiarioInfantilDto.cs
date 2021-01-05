@@ -4,6 +4,7 @@ namespace SME.SR.Infra
 {
     public class PlanejamentoDiarioInfantilDto
     {
+        public long AulaId { get; set; }
         public string DataAula { get; set; }        
         public string PlanejamentoRealizado { get; set; }
         public string DateRegistro { get; set; }
