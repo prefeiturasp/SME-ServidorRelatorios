@@ -35,7 +35,7 @@ namespace SME.SR.Application
                 catch (Exception e)
                 {
                     var turma = await ObterTurma(turmaCodigo);
-                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e}");
                 }
             }
 
