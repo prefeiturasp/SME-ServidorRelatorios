@@ -28,7 +28,9 @@ namespace SME.SR.Application
             {
                 try
                 {
-                    relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario));
+                    var relatorioTurma = await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario);
+                    if (relatorioTurma.Any())
+                        relatoriosTurmas.AddRange(relatorioTurma);
                 }
                 catch (Exception e)
                 {
