@@ -113,11 +113,14 @@
             if (!string.IsNullOrEmpty(planejamento.SecoesPreenchidas))
                 contadorQuebrarPagina += 1;
 
+            var planejamentoRealizado = planejamento.PlanejamentoRealizado ? "Sim" : "Não";
+            var cj = planejamento.PlanejamentoRealizado && planejamento.AulaCJ ? " - CJ" : "";
+
             str += $@"<tr>
                         <td width='15%' class='td-valor-dois'>{planejamento.DataAula}</td>
-                        <td width='15%' class='td-valor-dois'>{planejamento.PlanejamentoRealizado}</td>
+                        <td width='15%' class='td-valor-dois'>{planejamentoRealizado}</td>
                         <td width='15%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
-                        <td width='15%' class='td-valor-dois'>{planejamento.Usuario}</td>
+                        <td width='15%' class='td-valor-dois'>{planejamento.Usuario}{cj}</td>
                         <td width='40%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
                       </tr>";
 

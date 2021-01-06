@@ -85,9 +85,10 @@ namespace SME.SR.Application
                 var aulaPlanejamento = new PlanejamentoDiarioDto();
 
                 aulaPlanejamento.AulaId = aula.AulaId;
+                aulaPlanejamento.AulaCJ = aula.AulaCJ;
                 aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
                 aulaPlanejamento.QuantidadeAulas = aula.QuantidadeAula;
-                aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue ? "Sim" : "Não";
+                aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue;
 
                 if (aula.DataPlanejamento.HasValue)
                 {
