@@ -105,7 +105,7 @@ namespace SME.SR.Application
                     Login = usuario.Login,
                     Nome = usuario.Nome,
                     Situacao = usuario.Situacao.Name(),
-                    UltimoAcesso = usuario.UltimoAcesso == null ? "" : usuario.UltimoAcesso.ToString("dd/MM/yyyy HH:mm"),
+                    UltimoAcesso = usuario.UltimoAcesso == null ? "" : usuario.UltimoAcesso?.ToString("dd/MM/yyyy HH:mm"),
                     UltimaAulaRegistrada = ultimaAulaRegistrada?.ToString("dd/MM/yyyy HH:mm"),
                     UltimaFrequenciaRegistrada = ultimaFrequenciaRegistrada?.ToString("dd/MM/yyyy HH:mm"),
                     UltimoPlanoAulaRegistrado = ultimoPlanoAulaCadastrado?.ToString("dd/MM/yyyy HH:mm") 
@@ -147,7 +147,7 @@ namespace SME.SR.Application
                     Login = usuario.Login,
                     Nome = usuario.Nome,
                     Situacao = usuario.Situacao.Name(),
-                    UltimoAcesso = usuario.UltimoAcesso.ToString("dd/MM/yyyy HH:mm")
+                    UltimoAcesso = usuario.UltimoAcesso == null ? "" : usuario.UltimoAcesso?.ToString("dd/MM/yyyy HH:mm")
                 };
         }
 

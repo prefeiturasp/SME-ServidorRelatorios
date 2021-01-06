@@ -100,7 +100,7 @@ namespace SME.SR.Data
                 query.AppendLine("and a.usuario_perfil = Any(@perfis)");
 
             if (diasSemAcesso > 0)
-                query.AppendLine($"and u.ultimo_login <= NOW() - interval '{diasSemAcesso} day'");
+                query.AppendLine($"and u.ultimo_login <= NOW() - interval '{diasSemAcesso} day'");            
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {

@@ -14,6 +14,6 @@ namespace SME.SR.Infra
         public string Login { get; set; }
         public string Nome { get; set; }
         public SituacaoUsuario Situacao { get; set; }
-        public DateTime UltimoAcesso { get; set; }
+        public DateTime? UltimoAcesso { get; set; }
     }
 }
