@@ -110,6 +110,7 @@ namespace SME.SR.Data
         {            
               var query = @"select distinct
                                    a.id as AulaId,
+                                   a.aula_cj as AulaCJ,
                                    t.nome as Turma,
                                    cc.descricao_sgp as ComponenteCurricular,
                                    pe.bimestre,

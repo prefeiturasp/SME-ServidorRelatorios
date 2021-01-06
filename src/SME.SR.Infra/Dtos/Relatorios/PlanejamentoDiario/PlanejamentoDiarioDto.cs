@@ -5,9 +5,10 @@ namespace SME.SR.Infra
     public class PlanejamentoDiarioDto
     {
         public long AulaId { get; set; }
+        public bool AulaCJ { get; set; }
         public string DataAula { get; set; }
         public long QuantidadeAulas { get; set; }
-        public string PlanejamentoRealizado { get; set; }
+        public bool PlanejamentoRealizado { get; set; }
         public string DateRegistro { get; set; }
         public string Usuario { get; set; }
         public string SecoesPreenchidas { get; set; }
