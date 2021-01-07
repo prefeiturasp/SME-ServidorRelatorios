@@ -99,18 +99,20 @@ namespace SME.SR.Application
 
                     if (exibirDetalhamento)
                     {
-                        var ObjSplit = aula.ObjetivosSalecionados.Split("<br/>");
-
                         string ObjetivosSalecionados = "";
-
-                        foreach (var obj in ObjSplit.OrderBy(c => c))
+                        if (!string.IsNullOrEmpty(aula.ObjetivosSalecionados))
                         {
-                            ObjetivosSalecionados += $"{obj} <br/>";
-                        }
+                            var ObjSplit = aula.ObjetivosSalecionados.Split("<br/>");                            
+
+                            foreach (var obj in ObjSplit.OrderBy(c => c))
+                            {
+                                ObjetivosSalecionados += $"{obj} <br/>";
+                            }
+                        }                       
 
                         aulaPlanejamento.ObjetivosSelecionados = ObjetivosSalecionados;
-                        aulaPlanejamento.MeusObjetivosEspecificos = aula.ObjetivosEspecificos;
-                        aulaPlanejamento.DesenvolvimentoAula = aula.DesenvolvimentoAula;
+                        aulaPlanejamento.MeusObjetivosEspecificos = string.IsNullOrEmpty(aula.ObjetivosEspecificos) ? "" : aula.ObjetivosEspecificos;
+                        aulaPlanejamento.DesenvolvimentoAula = string.IsNullOrEmpty(aula.DesenvolvimentoAula) ? "" : aula.DesenvolvimentoAula;
                     }
                 }
 
