@@ -2,10 +2,11 @@
 @using System.Text.RegularExpressions;
 @using SME.SR.Infra.Utilitarios;
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 56;
+    int contadorMaximoLinhasPorPagina = 57;
     int contadorPagina = 0;
     var retornoVerificacao = string.Empty;
     var tipoRelatorio = true;
+    var fecharTabela = "";
 
     string VerificaQuebra()
     {
@@ -113,7 +114,9 @@
         var str = "";
         var detalhamento = false;
         var ultimoplanejamento = planejamentoDiario.LastOrDefault();
-        str += "<table class='fixed'><tbody>";
+        str += MontarCabecalhoPlanejamento();
+        str += "<table class='fixed'>";
+        fecharTabela = "";
 
         foreach (var planejamento in planejamentoDiario)
         {
@@ -123,11 +126,14 @@
             {
                 var qtdSecoes = planejamento.QtdSecoesPreenchidas;
 
+                if (planejamento.SecoesPreenchidas.Contains("Objetivos de Aprendizagem e Desenvolvimento"))
+                    qtdSecoes += 2;
+
                 double tamanhoTexto1 = planejamento.Usuario != null ? planejamento.Usuario.Length : 0;
 
                 var qtdLinhaUsuario = (int)Math.Truncate(tamanhoTexto1 / 12);
 
-                contadorQuebrarPagina += Math.Max(planejamento.QtdSecoesPreenchidas, qtdLinhaUsuario);
+                contadorQuebrarPagina += Math.Max(qtdSecoes, qtdLinhaUsuario);
             }
             else
             {
@@ -200,11 +206,21 @@
             {
                 if (ultimoplanejamento.AulaId == planejamento.AulaId)
                 {
-                    str += $@"</tbody></table>{retornoVerificacao}<table class='fixed'>";
+                    if(planejamento.AulaId == ultimaAulaRelatorio && NomeBimestre.Equals(ultimoBimestreNome.ToUpper()))
+                    {
+                        str += $@"</table>";
+                    }
+                    else
+                    {
+                        if (planejamento.AulaId == ultimoplanejamento.AulaId)
+                            str += IncluirTdParaFechar(6);
+
+                        str += $@"</table>{retornoVerificacao}<table class='fixed'>";
+                    }
                 }
                 else
                 {
-                    str += $@"{IncluirTdParaFechar(6)}</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'>";
+                    str += $@"{IncluirTdParaFechar(6)}</table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'>";
                 }
             }
             else
@@ -215,10 +231,14 @@
                         str += LinhaEmBranco();
                 }
                 else
-                {                    
+                {
                     if(ultimoplanejamento.AulaId == ultimaAulaRelatorio)
                         if (detalhamento)
-                            str += IncluirTdParaFechar(6);
+                            str += IncluirTdParaFechar(3);
+
+                    if (ultimoplanejamento.AulaId == planejamento.AulaId)
+                        fecharTabela = $@"{IncluirTdParaFechar(6)}</table>";
+
                 }
             }
         }
@@ -227,7 +247,7 @@
     string LinhaEmBranco()
     {
         contadorQuebrarPagina += 1;
-        return "</tbody></table><table><tr><td style='border-bottom:none;'><br/></td></tr></table><table class='fixed'><tbody>";
+        return "</table><table><tr><td style='border-bottom:none;'><br/></td></tr></table><table class='fixed'><tbody>";
     }
 
     string IncluirTdParaFechar(int quantidade)
@@ -235,7 +255,7 @@
         var str = "<tr>";
         for (var i = 1; i <= quantidade; i++)
         {
-            str += "<td style='border-bottom:none;border-left:none;border-right:none;'></td>";
+            str += "<td style='border-bottom:none;border-left:none;border-right:none'></td>";
         }
         str += "</tr>";
         return str;
@@ -525,112 +545,147 @@
             <img class="img-logo-sgp" src="logoMono.png" alt="Logo SGP" />
         </div>
         @Html.Raw(MontarCabecalho())
-        <div>
-            @{
-                var bimestreDescricaoAnt = "";
-                // PLANO DE AULA
-                if (tipoRelatorio)
+    <div>
+        @{
+            var bimestreDescricaoAnt = "";
+            // PLANO DE AULA
+            if (tipoRelatorio)
+            {
+                tipoRelatorio = false;
+                contadorQuebrarPagina++;
+                @Html.Raw(VerificaQuebra())
+
+                <table class="tabela-planejamento">
+                    <thead>
+                        <tr>
+                            <th class="sem-border-bottom">@Html.Raw("PLANO DE AULA")</th>
+                        </tr>
+                    </thead>
+                </table>
+            }
+            var turmaOrdenada = Model.Turmas.OrderBy(o => o.Nome);
+            var ultimaTurma = turmaOrdenada.LastOrDefault();
+            var bimestreOrdenado = ultimaTurma.Bimestres.OrderBy(o => o.Nome);
+            var ultimoBimestre = bimestreOrdenado.LastOrDefault();
+            var componenteOrdenado = ultimoBimestre.ComponentesCurriculares.OrderBy(o => o.Nome);
+            var ultimoComponente = componenteOrdenado.LastOrDefault();
+            var ultimaAula = ultimoComponente.PlanejamentoDiario.LastOrDefault().AulaId;
+            var ultimaTurmaNome = ultimaTurma.Nome;
+            var ultimoComponenteNome = ultimoComponente.Nome;
+            var ultimoBimestreNome = ultimoBimestre.Nome;
+
+            foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
+            {
+                tipoRelatorio = true;
+                // TURMA
+                if (Model.Filtro.Turma == "Todos" || Model.Filtro.Turma == "")
                 {
-                    tipoRelatorio = false;
-                    contadorQuebrarPagina++;
-                    @Html.Raw(VerificaQuebra())
+                    var countTurma = contadorQuebrarPagina + 6;
+                    if (countTurma >= contadorMaximoLinhasPorPagina)
+                    {
+                        @Html.Raw(fecharTabela)
+                        fecharTabela = "";
+                        contadorQuebrarPagina += contadorQuebrarPagina + 6;
+                        @Html.Raw(VerificaQuebra())
+                    }
+                    else
+                    {
+                        contadorQuebrarPagina++;
+                        @Html.Raw(VerificaQuebra())
+                    }                   
 
                     <table class="tabela-planejamento">
                         <thead>
                             <tr>
-                                <th class="sem-border-bottom">@Html.Raw("PLANO DE AULA")</th>
+                                <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
                             </tr>
                         </thead>
                     </table>
                 }
-                var turmaOrdenada = Model.Turmas.OrderBy(o => o.Nome);
-                var ultimaTurma = turmaOrdenada.LastOrDefault();
-                var bimestreOrdenado = ultimaTurma.Bimestres.OrderBy(o => o.Nome);
-                var ultimoBimestre = bimestreOrdenado.LastOrDefault();
-                var componenteOrdenado = ultimoBimestre.ComponentesCurriculares.OrderBy(o => o.Nome);
-                var ultimoComponente = componenteOrdenado.LastOrDefault();
-                var ultimaAula = ultimoComponente.PlanejamentoDiario.LastOrDefault().AulaId;
-                var ultimaTurmaNome = ultimaTurma.Nome;
-                var ultimoComponenteNome = ultimoComponente.Nome;
-                var ultimoBimestreNome = ultimoBimestre.Nome;
-
-                foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
+                @if (turma.Bimestres != null || !turma.Bimestres.Any())
                 {
-                    tipoRelatorio = true;
-                    // TURMA
-                    if (Model.Filtro.Turma == "Todos" || Model.Filtro.Turma == "")
-                    {
-                        contadorQuebrarPagina++;
-                        @Html.Raw(VerificaQuebra())
+                    bimestreDescricaoAnt = "";
+                    var nomeBimestre = "";
+                    var nomeComponente = "";
 
-                        <table class="tabela-planejamento">
-                            <thead>
-                                <tr>
-                                    <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    }
-                    @if (turma.Bimestres != null || !turma.Bimestres.Any())
+                    foreach (var bimestre in turma.Bimestres.OrderBy(o => o.Nome))
                     {
-                        bimestreDescricaoAnt = "";
-
-                        foreach (var bimestre in turma.Bimestres.OrderBy(o => o.Nome))
+                        @if (bimestre.ComponentesCurriculares != null || bimestre.ComponentesCurriculares.Any())
                         {
-                            @if (bimestre.ComponentesCurriculares != null || bimestre.ComponentesCurriculares.Any())
+                            // BIMESTRE
+                            nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
+                            if (!bimestreDescricaoAnt.Equals(nomeBimestre))
                             {
-                                // BIMESTRE
-                                var nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
-                                if (!bimestreDescricaoAnt.Equals(nomeBimestre))
+                                if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
                                 {
-                                    if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
+                                    var countBimestre = contadorQuebrarPagina + 5;
+                                    if (countBimestre >= contadorMaximoLinhasPorPagina)
                                     {
-                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                        @Html.Raw(fecharTabela)
+                                        fecharTabela = "";
+                                        contadorQuebrarPagina += contadorQuebrarPagina + 5;
                                         @Html.Raw(VerificaQuebra())
-
-                                        <table class="tabela-planejamento">
-                                            <thead>
-                                                <tr>
-                                                    <th class="sem-border-bottom">@nomeBimestre</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
                                     }
-                                    bimestreDescricaoAnt = nomeBimestre;
+                                    else
+                                    {
+                                        contadorQuebrarPagina++;
+                                        @Html.Raw(VerificaQuebra())
+                                    }                                    
+
+                                    <table class="tabela-planejamento">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@nomeBimestre</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 }
-                                foreach (var componente in bimestre.ComponentesCurriculares.OrderBy(o => o.Nome))
+                                bimestreDescricaoAnt = nomeBimestre;
+                            }
+                            foreach (var componente in bimestre.ComponentesCurriculares.OrderBy(o => o.Nome))
+                            {
+                                // COMPONENTE CURRICULAR
+                                if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
                                 {
-                                    // COMPONENTE CURRICULAR
-                                    if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
+                                    nomeComponente = componente.Nome != null ? componente.Nome.ToUpper() : "COMPONENTE NÃO IDENTIFICADO";
+
+                                    var countComponente = contadorQuebrarPagina + 4;
+                                    if (countComponente >= contadorMaximoLinhasPorPagina)
                                     {
-                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                        var nomeComponente = componente.Nome != null ? componente.Nome.ToUpper() : "COMPONENTE NÃO IDENTIFICADO";
+                                        @Html.Raw(fecharTabela)
+                                        fecharTabela = "";
+                                        contadorQuebrarPagina += contadorQuebrarPagina + 4;
                                         @Html.Raw(VerificaQuebra())
-
-                                        <table class="tabela-planejamento">
-                                            <thead>
-                                                <tr>
-                                                    <th class="sem-border-bottom">@nomeComponente</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
                                     }
-
-                                    var quebra = VerificaQuebra();
-                                    @Html.Raw(quebra);
-
-                                    if (componente.PlanejamentoDiario.Count() > 0)
+                                    else
                                     {
-                                        @Html.Raw(MontarCabecalhoPlanejamento())
-                                        @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiario, turma.Nome, nomeBimestre, componente.Nome, turma, ultimaAula, ultimaTurmaNome, ultimoComponenteNome, ultimoBimestreNome))
+                                        contadorQuebrarPagina++;
+                                        @Html.Raw(VerificaQuebra())
                                     }
+                                    
+                                    <table class="tabela-planejamento">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@nomeComponente</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                }
+
+                                var quebra = VerificaQuebra();
+                                @Html.Raw(quebra);
+
+                                if (componente.PlanejamentoDiario.Count() > 0)
+                                {                                    
+                                    @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiario, turma.Nome, nomeBimestre, nomeComponente, turma, ultimaAula, ultimaTurmaNome, ultimoComponenteNome, ultimoBimestreNome))
                                 }
                             }
                         }
                     }
                 }
             }
-        </div>
+        }
+    </div>
     </div>
 </body>
 </html>
