@@ -98,7 +98,7 @@ namespace SME.SR.Application
                     aulaPlanejamento.SecoesPreenchidas = ObterSecoesPreenchidas(aula);
 
                     if (exibirDetalhamento)
-                        aulaPlanejamento.Planejamento = aula.Planejamento; 
+                        aulaPlanejamento.Planejamento = string.IsNullOrEmpty(aula.Planejamento) ? "" : aula.Planejamento; 
                 }
 
                 yield return aulaPlanejamento;
