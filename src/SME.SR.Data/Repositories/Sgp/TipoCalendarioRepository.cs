@@ -30,7 +30,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QuerySingleOrDefaultAsync<long>(query, parametros);
+                return await conexao.QueryFirstOrDefaultAsync<long>(query, parametros);
             }
         }
 
