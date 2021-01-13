@@ -112,6 +112,25 @@
         for (int i = 0; i < alunosAlteracaoNotas.Count; i++)
         {
             var aluno = alunosAlteracaoNotas[i];
+
+            double tamanhoTexto1 = !string.IsNullOrEmpty(aluno.Nome) ? aluno.Nome.Length : 0;
+
+            var qtdLinhaNome = (int)Math.Truncate(tamanhoTexto1 / 9);
+
+            double tamanhoTexto2 = !string.IsNullOrEmpty(aluno.UsuarioAlteracao) ? aluno.UsuarioAlteracao.Length : 0;
+
+            var qtdLinhaUsuarioAlteracao = (int)Math.Truncate(tamanhoTexto2 / 9);
+
+            var qdtResult = Math.Max(qtdLinhaNome, qtdLinhaUsuarioAlteracao);
+
+            double tamanhoTexto3 = !string.IsNullOrEmpty(aluno.UsuarioAprovacao) ? aluno.UsuarioAprovacao.Length : 0;
+
+            var qtdLinhaUsuarioAprovacao = (int)Math.Truncate(tamanhoTexto3 / 9);
+
+            var qtdResulFinal = Math.Max(qdtResult, qtdLinhaUsuarioAprovacao);
+
+            contadorQuebrarPagina = contadorQuebrarPagina + qtdResulFinal;
+
             str += $@"
                     <tr>
                         <th style='text-align:center' width='5%'>{aluno.NumeroChamada}</th>
@@ -131,24 +150,7 @@
             }
 
             str += $@"</tr>";
-
-
-            if ((int)(aluno.Nome.ToString().Length) > 38)
-            {                
-                contadorQuebrarPagina = contadorQuebrarPagina + 2;
-            }
-            else if((int)(aluno.UsuarioAlteracao.ToString().Length) > 38)
-            {                
-                contadorQuebrarPagina = contadorQuebrarPagina + 2;
-            }
-            else if (!turma.AnoAtual && (aluno.UsuarioAprovacao.ToString().Length) > 38)
-            {                
-                contadorQuebrarPagina = contadorQuebrarPagina + 2;
-            }
-            else
-            {
-                contadorQuebrarPagina++;
-            }
+            
             var quebra = VerificaQuebra(0);
 
             var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, turma) : "");
