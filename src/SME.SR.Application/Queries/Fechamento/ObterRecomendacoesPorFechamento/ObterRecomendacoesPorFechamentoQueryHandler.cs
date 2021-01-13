@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,10 +61,11 @@ namespace SME.SR.Application
         {
             if (!string.IsNullOrEmpty(recomendacao))
             {
-                string semTags = Regex.Replace(recomendacao, "<.*?>", String.Empty);
-                string adicionarEspaco = Regex.Replace(semTags, @"\.(?! |$)", ". ");
+                string semTags = UtilRegex.RemoverTagsHtmlMidia(recomendacao);
+                semTags = UtilRegex.RemoverTagsHtml(semTags);
+                semTags = UtilRegex.AdicionarEspacos(semTags);
 
-                return adicionarEspaco;
+                return semTags;
             }
             else
             {
