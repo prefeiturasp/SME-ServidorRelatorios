@@ -75,7 +75,7 @@ namespace SME.SR.Application
                     var jsonPublicaFila = UtilJson.ConverterApenasCamposNaoNulos(publicacaoFila);
                     Console.WriteLine(jsonPublicaFila);
 
-                    SentrySdk.CaptureMessage("6.5 - Sucesso na publicação da fila Processando");
+                    SentrySdk.CaptureMessage("6.5 - Sucesso na publicação da fila: " + publicacaoFila.NomeFila);
                     return true;
                 }
 
