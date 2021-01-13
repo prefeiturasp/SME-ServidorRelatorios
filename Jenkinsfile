@@ -26,15 +26,8 @@ pipeline {
         script {
           step([$class: "RundeckNotifier",
           includeRundeckLogs: true,
-                            
-          //JOB DE BUILD
           jobId: "42907c0b-0fec-4490-9feb-8ad4f49c810a",
           nodeFilters: "",
-          //options: """
-          //     PARAM_1=value1
-            //    PARAM_2=value2
-          //     PARAM_3=
-          //     """,
           rundeckInstance: "Rundeck-SME",
           shouldFailTheBuild: true,
           shouldWaitForRundeckJob: true,
@@ -189,7 +182,7 @@ pipeline {
       }
     }
   }
-  
+
   post {
     always {
       echo 'One way or another, I have finished'
