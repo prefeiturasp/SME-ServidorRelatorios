@@ -28,7 +28,9 @@ namespace SME.SR.Application
             {
                 try
                 {
-                    relatoriosTurmas.AddRange(await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario));
+                    var relatorioTurma = await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario);
+                    if (relatorioTurma.Any())
+                        relatoriosTurmas.AddRange(relatorioTurma);
                 }
                 catch (Exception e)
                 {
@@ -47,7 +49,7 @@ namespace SME.SR.Application
         {
             var notasFinais = await ObterNotasFinaisPorTurma(turmaCodigo);
             if (notasFinais == null || !notasFinais.Any())
-                throw new NegocioException($"Turma não possui conselho de classe");
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
 
             var turma = await ObterTurma(turmaCodigo);
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
