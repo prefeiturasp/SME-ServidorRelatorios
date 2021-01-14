@@ -180,7 +180,7 @@ namespace SME.SR.Application
 
             var turmasEModalidades = await mediator.Send(new ObterTurmasEModalidadesPorCodigoTurmasQuery(turmasCodigos));
 
-            var turmasAgrupadasPorModalidade = turmasEModalidades
+            var turmasAgrupadasPorModalidade = turmasEModalidades                
                 .GroupBy(a => a.Modalidade)
                 .ToList();
 
@@ -208,7 +208,7 @@ namespace SME.SR.Application
 
                 var modalidadeParaAdicionar = new AdesaoAEModalidadeDto() { Valores = valoresDaMolidade };
 
-                var alunosResponsaveisParaTratar = await mediator.Send(new ObterAlunosResponsaveisPorTurmasCodigoQuery(codigosTurmasDaModalidade.ToArray()));
+                var alunosResponsaveisParaTratar = await mediator.Send(new ObterAlunosResponsaveisPorTurmasCodigoRelatorioAdesaoQuery(codigosTurmasDaModalidade.ToArray()));
 
                 var cpfsDosResponsaveis = alunosResponsaveisParaTratar.Select(a => a.ResponsavelCpf).Distinct().ToArray();
 
@@ -268,10 +268,7 @@ namespace SME.SR.Application
 
             foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
             {
-                try
-                {
-
-
+             
                     var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
                     {
                         Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
@@ -281,13 +278,7 @@ namespace SME.SR.Application
                         Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada
                     };
                     turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
-
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
+             
             }
         }
 
