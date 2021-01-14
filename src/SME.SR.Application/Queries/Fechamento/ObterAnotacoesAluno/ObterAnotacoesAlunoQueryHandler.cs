@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -36,7 +37,11 @@ namespace SME.SR.Application
                     anotacao.Data = data.ToString("dd/MM/yyyy");
 
                 if (!string.IsNullOrEmpty(anotacao.Anotacao))
-                    anotacao.Anotacao = Regex.Replace(anotacao.Anotacao, "<.*?>", String.Empty);
+                {
+                    anotacao.Anotacao = UtilRegex.RemoverTagsHtmlMidia(anotacao.Anotacao);
+                    anotacao.Anotacao = UtilRegex.RemoverTagsHtml(anotacao.Anotacao);
+                }
+                    
             }
         }
     }

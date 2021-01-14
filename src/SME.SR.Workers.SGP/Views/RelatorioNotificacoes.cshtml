@@ -171,8 +171,8 @@ RELATÓRIO DE NOTIFICAÇÕES
                             str += $@"<tr><td colspan='7' width='100%' class='td-titulo'>DESCRIÇÃO</td></tr>";
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;
                             int tamanho = 0;
-                            var mensagem = Regex.Replace(notificacao.Mensagem, @"<[^>]*>", String.Empty);
-                            mensagem = Regex.Replace(mensagem, @"&nbsp;", " ").Trim();
+                            var mensagem = UtilRegex.RemoverTagsHtml(notificacao.Mensagem);
+                            
                             str += "<tr><td colspan='7' style='padding:5px;font-size: 14.5px'>";
                             for (int i = 0; i < mensagem.Length; i++)
                             {
