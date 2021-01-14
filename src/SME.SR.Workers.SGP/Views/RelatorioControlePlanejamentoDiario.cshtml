@@ -175,8 +175,11 @@
                 }
 
                 str += MontarCabecalhoDetalhamento();
-                var meusObjetivosEspecificos = Regex.Replace(planejamento.MeusObjetivosEspecificos, @"<[^>]*>", String.Empty);
-                meusObjetivosEspecificos = Regex.Replace(meusObjetivosEspecificos, @"&nbsp;", " ").Trim();
+                var meusObjetivosEspecificos = UtilRegex.RemoverTagsHtmlMidia(planejamento.MeusObjetivosEspecificos);
+                meusObjetivosEspecificos = UtilRegex.RemoverTagsHtml(meusObjetivosEspecificos);
+
+                var desenvolvimentoAula = UtilRegex.RemoverTagsHtmlMidia(planejamento.DesenvolvimentoAula);
+                desenvolvimentoAula = UtilRegex.RemoverTagsHtml(desenvolvimentoAula);
 
                 var desenvolvimentoAula = Regex.Replace(planejamento.DesenvolvimentoAula, @"<[^>]*>", String.Empty);
                 desenvolvimentoAula = Regex.Replace(desenvolvimentoAula, @"&nbsp;", " ").Trim();
