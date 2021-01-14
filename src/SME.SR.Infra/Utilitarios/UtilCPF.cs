@@ -4,11 +4,10 @@
     {
         public static bool Valida(string cpf)
         {
-            if (string.IsNullOrEmpty(cpf))
-                return false;
-
             cpf = cpf.Trim();
             cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.PadLeft(11,'0');
+
             if (cpf.Length != 11)
             {
                 return false;
