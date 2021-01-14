@@ -234,7 +234,7 @@ namespace SME.SR.Data
 					from  turma t
 					inner join ue on ue.id = t.ue_id 
 					inner join dre on ue.dre_id = dre.id 
-					inner join tipo_escola tp on ue.tipo_escola = tp.id 
+					inner join tipo_escola tp on ue.tipo_escola = tp.cod_tipo_escola_eol 
 				   where t.turma_id = @codigoTurma";
 
 		internal static string TurmaPorCodigo = @"select t.turma_id Codigo, t.nome, 
