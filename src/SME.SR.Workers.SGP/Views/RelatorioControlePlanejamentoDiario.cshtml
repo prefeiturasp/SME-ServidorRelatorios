@@ -180,9 +180,6 @@
 
                 var desenvolvimentoAula = UtilRegex.RemoverTagsHtmlMidia(planejamento.DesenvolvimentoAula);
                 desenvolvimentoAula = UtilRegex.RemoverTagsHtml(desenvolvimentoAula);
-
-                var desenvolvimentoAula = Regex.Replace(planejamento.DesenvolvimentoAula, @"<[^>]*>", String.Empty);
-                desenvolvimentoAula = Regex.Replace(desenvolvimentoAula, @"&nbsp;", " ").Trim();
                 str += $@"<tr>
                             <td width='20%' class='td-valor-Objetivos'>{planejamento.ObjetivosSelecionados}</td>
                             <td width='40%' class='td-valor-tres'>{meusObjetivosEspecificos.ToLower()}</td>
