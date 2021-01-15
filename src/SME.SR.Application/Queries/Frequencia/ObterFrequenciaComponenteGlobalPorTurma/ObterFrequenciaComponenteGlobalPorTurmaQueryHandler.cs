@@ -43,9 +43,10 @@ namespace SME.SR.Application
                 foreach (var bimestre in bimestres)
                 {
                     var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
+                    var disciplinaId = !string.IsNullOrEmpty(frequenciaAluno.DisciplinaId) ? Convert.ToInt64(frequenciaAluno.DisciplinaId) : 0;
 
                     frequenciaAluno.TotalAulas += frequenciaBimestre?.TotalAulas ??
-                                    await mediator.Send(new ObterAulasDadasNoBimestreQuery(turmaCodigo, tipoCalendarioId, string.IsNullOrWhiteSpace(frequenciaAluno.DisciplinaId) ? 0 : long.Parse(frequenciaAluno.DisciplinaId), bimestre));
+                                        await mediator.Send(new ObterAulasDadasNoBimestreQuery(turmaCodigo, tipoCalendarioId, disciplinaId, bimestre));
 
                     frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
                     frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;

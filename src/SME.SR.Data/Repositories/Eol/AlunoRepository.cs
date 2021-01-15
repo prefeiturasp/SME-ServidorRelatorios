@@ -575,8 +575,7 @@ namespace SME.SR.Data
             var parametros = new { CodigosAluno = codigosAlunos };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
-
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros, commandTimeout: 60);
         }
 
         public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
