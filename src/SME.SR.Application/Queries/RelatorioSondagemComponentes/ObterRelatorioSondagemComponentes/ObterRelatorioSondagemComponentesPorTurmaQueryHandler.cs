@@ -38,49 +38,187 @@ namespace SME.SR.Application
                 Cabecalho = cabecalho,
                 Planilha = planilha
             };
-
-            GerarGraficoParaNumeros(relatorio, request.Proficiencia);
+            if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo ||
+                 request.Proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
+            {
+                GerarGraficosCamposAditivoMultiplicativo(relatorio, planilha.Linhas.Count());
+            }
+            else if (request.Proficiencia == ProficienciaSondagemEnum.Numeros)
+            {
+                GerarGraficoParaNumeros(relatorio);
+            }
+            else
+            {
+                GerarGraficoAutoral(relatorio);
+            }
 
             return relatorio;
         }
 
-        private static void GerarGraficoParaNumeros(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, ProficienciaSondagemEnum proficiencia)
+        private void GerarGraficosCamposAditivoMultiplicativo(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos)
         {
-            if (proficiencia == ProficienciaSondagemEnum.Numeros)
+            foreach (var ordem in relatorio.Cabecalho.Ordens)
             {
                 foreach (var pergunta in relatorio.Cabecalho.Perguntas)
                 {
-                    var grafico = new GraficoBarrasVerticalDto(420, pergunta.Nome);
+                    var legendas = new List<GraficoBarrasLegendaDto>();
+                    var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Descricao} - {pergunta.Nome}");
 
                     var respostas = relatorio.Planilha.Linhas
-                        .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id)).GroupBy(b => b.Resposta);
+                        .SelectMany(l => l.OrdensRespostas.Where(or => or.OrdemId == ordem?.Id && or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta)))
+                        .GroupBy(b => b.Resposta).OrderByDescending(a => a.Key.StartsWith("Adequada"));
+
+                    int chaveIndex = 0;
+                    string chave = String.Empty;
+                    int qtdSemPreenchimento = 0;
 
                     foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
                     {
-                        var qntRespostas = resposta.Count();
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, resposta.Key));
-                    }
+                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                    var respostasNulasOuVazias = respostas.Where(a => string.IsNullOrEmpty(a.Key)).ToList();
-                    if (respostasNulasOuVazias.Any())
-                    {
-                        var qntSemRespostas = 0;
-
-                        foreach (var item in respostasNulasOuVazias)
+                        legendas.Add(new GraficoBarrasLegendaDto()
                         {
-                            qntSemRespostas += item.Count();
-                        }
+                            Chave = chave,
+                            Valor = resposta.Key
+                        });
 
-                        if (qntSemRespostas > 0)
-                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, "Sem preenchimento"));
+                        var qntRespostas = resposta.Count();
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
                     }
 
-                    var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                    qtdSemPreenchimento = qtdAlunos - totalRespostas;
+
+                    if (qtdSemPreenchimento > 0)
+                    {
+                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = "Sem preenchimento"
+                        });
+
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                    }
+
+                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
                     grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                    grafico.Legendas = legendas;
 
                     relatorio.GraficosBarras.Add(grafico);
                 }
+            }
+        }
+
+        private void GerarGraficoParaNumeros(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio)
+        {
+            foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+            {
+                var legendas = new List<GraficoBarrasLegendaDto>();
+                var grafico = new GraficoBarrasVerticalDto(420, pergunta.Nome);
+
+                var respostas = relatorio.Planilha.Linhas
+                     .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta))).GroupBy(b => b.Resposta).OrderByDescending(a => a.Key.StartsWith("Escreve"));
+
+                int chaveIndex = 0;
+                string chave = String.Empty;
+
+                foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                {
+                    chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+
+                    legendas.Add(new GraficoBarrasLegendaDto()
+                    {
+                        Chave = chave,
+                        Valor = resposta.Key
+                    });
+
+                    var qntRespostas = resposta.Count();
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
+                }
+
+                var respostasNulasOuVazias = relatorio.Planilha.Linhas.SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta?.Id && string.IsNullOrEmpty(or.Resposta))).GroupBy(b => b.Resposta);
+                if (respostasNulasOuVazias.Any())
+                {
+                    var qntSemRespostas = 0;
+
+                    foreach (var item in respostasNulasOuVazias)
+                    {
+                        qntSemRespostas += item.Count();
+                    }
+
+                    if (qntSemRespostas > 0)
+                    {
+                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = "Sem preenchimento"
+                        });
+
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, chave));
+                    }
+                }
+
+                var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                grafico.Legendas = legendas;
+
+                relatorio.GraficosBarras.Add(grafico);
+            }
+        }
+
+        private void GerarGraficoAutoral(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio)
+        {
+            relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+            {
+                var respostasPorPergunta = new List<RepostaTotalDto>();
+                var grafico = new GraficoBarrasVerticalDto(420, pergunta.Nome);
+                var legendas = new List<GraficoBarrasLegendaDto>();
+                int chaveIndex = 0;
+                foreach (var linha in relatorio.Planilha.Linhas)
+                {
+                    var resposta = linha.OrdensRespostas.FirstOrDefault(r => r.PerguntaId == pergunta.Id);
+                    if (resposta != null)
+                    {
+                        var perguntaResposta = respostasPorPergunta.FirstOrDefault(pr => pr.Resposta == resposta.Resposta);
+                        if (perguntaResposta != null)
+                        {
+                            perguntaResposta.Quantidade++;
+                        }
+                        else
+                        {
+                            respostasPorPergunta.Add(new RepostaTotalDto()
+                            {
+                                OrdenacaoResposta = string.IsNullOrEmpty(resposta.Resposta) ? 99 : resposta.OrdenacaoResposta,
+                                Quantidade = 1,
+                                Resposta = resposta.Resposta
+                            });
+                        }
+                    }
+                }
+
+                foreach (var resposta in respostasPorPergunta.OrderBy(r => r.OrdenacaoResposta))
+                {
+                    var chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                    legendas.Add(new GraficoBarrasLegendaDto()
+                    {
+                        Chave = chave,
+                        Valor = string.IsNullOrEmpty(resposta.Resposta) ? "Sem Preenchimento" : resposta.Resposta
+                    });
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(resposta.Quantidade, chave));
+                }
+
+                var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                grafico.Legendas = legendas;
+                relatorio.GraficosBarras.Add(grafico);
             }
         }
 
@@ -227,7 +365,16 @@ namespace SME.SR.Application
 
         public async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilhaAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request, List<RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntas)
         {
-            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(), request.AnoLetivo, request.Semestre, request.Proficiencia, Int32.Parse(request.Ano));
+
+            string periodoId = "";
+
+            if (int.Parse(request.Ano) >= 7)
+            {
+                var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Semestre, TipoPeriodoSondagem.Semestre));
+                periodoId = periodo?.Id;
+            }
+
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(), request.AnoLetivo, request.Semestre, request.Proficiencia, Int32.Parse(request.Ano), periodoId);
 
             List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
@@ -245,6 +392,7 @@ namespace SME.SR.Application
                             OrdemId = 0,
                             PerguntaId = pergunta.Id,
                             Resposta = resposta.Resposta,
+                            OrdenacaoResposta = resposta.OrdenacaoResposta
                         });
                     }
                     else

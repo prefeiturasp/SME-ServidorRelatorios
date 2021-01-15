@@ -62,6 +62,11 @@ namespace SME.SR.Application
             var turmasCodigo = todasTurmas.Select(a => a.Codigo);
             var alunosCodigo = todosAlunos.Select(a => a.Codigo);
 
+            IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes = null;
+
+            if (alunosTurmas != null && alunosTurmas.Any())
+               historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
+
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
 
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
@@ -106,11 +111,11 @@ namespace SME.SR.Application
             if ((turmasFundMedio != null && turmasFundMedio.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                    filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
+                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
             else if ((turmasEja != null && turmasEja.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
                 resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                    filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
+                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
             if (resultadoFundMedio != null && resultadoFundMedio.Any())
             {
@@ -274,6 +279,15 @@ namespace SME.SR.Application
                 CodigoUe = codigoUe,
                 Modalidade = modalidade,
                 Usuario = usuario
+            });
+        }
+
+        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusao(long[] alunosCodigo, Modalidade modalidade)
+        {
+            return await mediator.Send(new ObterUesConclusaoQuery()
+            {
+                CodigosAlunos = alunosCodigo,
+                Modalidade = modalidade
             });
         }
 

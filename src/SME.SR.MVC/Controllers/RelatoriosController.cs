@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SME.SR.Application;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace SME.SR.MVC.Controllers
             return View();
         }
         [HttpGet("graficos")]
-        public async Task<IActionResult> RelatorioGraficosTeste([FromServices]IMediator mediator)
+        public async Task<IActionResult> RelatorioGraficosTeste([FromServices] IMediator mediator)
         {
 
 
@@ -34,7 +35,7 @@ namespace SME.SR.MVC.Controllers
             var grafico = new GraficoBarrasVerticalDto(500, "");
 
             grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(10, "Banana"));
-            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));            
+            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(20, "Laranja"));
 
             grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(500, "Frutas", 100, 5);
 
@@ -57,1030 +58,6 @@ namespace SME.SR.MVC.Controllers
             model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            //model.Dres.Add(new RelatorioFaltaFrequenciaDreDto
-            //{
-            //    CodigoDre = "123",
-            //    NomeDre = "DRE 01",
-            //    Ues = new List<RelatorioFaltaFrequenciaUeDto>
-            //    {
-            //        new RelatorioFaltaFrequenciaUeDto
-            //        {
-            //            NomeUe="UE 01",
-            //            CodigoUe="456",
-            //            Anos= new List<RelatorioFaltaFrequenciaAnoDto>
-            //            {
-            //                new RelatorioFaltaFrequenciaAnoDto
-            //                {
-            //                    NomeAno="1º ano",
-            //                    Bimestres= new List<RelatorioFaltaFrequenciaBimestreDto>
-            //                    {
-            //                        new RelatorioFaltaFrequenciaBimestreDto
-            //                        {
-            //                            NomeBimestre="1º Bim",
-            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-            //                            {
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Matemática",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 01",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 02",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                 new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 03",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 04",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 05",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                            }
-            //                        },
-            //                        new RelatorioFaltaFrequenciaBimestreDto
-            //                        {
-            //                            NomeBimestre="2º Bim",
-            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-            //                            {
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Matemática",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                        },
-            //                            new RelatorioFaltaFrequenciaBimestreDto
-            //                        {
-            //                            NomeBimestre="3º Bim",
-            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-            //                            {
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Matemática",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                        },
-            //                                new RelatorioFaltaFrequenciaBimestreDto
-            //                        {
-            //                            NomeBimestre="4º Bim",
-            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-            //                            {
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Matemática",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                        }
-
-            //                    }
-            //                },
-            //                new RelatorioFaltaFrequenciaAnoDto
-            //                {
-            //                    NomeAno="2º ano",
-            //                    Bimestres= new List<RelatorioFaltaFrequenciaBimestreDto>
-            //                    {
-            //                        new RelatorioFaltaFrequenciaBimestreDto
-            //                        {
-            //                            NomeBimestre="1º Bim",
-            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-            //                            {
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Matemática",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 01",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 02",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                 new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 03",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 04",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português 05",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                            }
-            //                        },
-            //                        new RelatorioFaltaFrequenciaBimestreDto
-            //                        {
-            //                            NomeBimestre="2º Bim",
-            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-            //                            {
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Matemática",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                        },
-            //                            new RelatorioFaltaFrequenciaBimestreDto
-            //                        {
-            //                            NomeBimestre="3º Bim",
-            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-            //                            {
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Matemática",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                        },
-            //                                new RelatorioFaltaFrequenciaBimestreDto
-            //                        {
-            //                            NomeBimestre="4º Bim",
-            //                            Componentes= new List<RelatorioFaltaFrequenciaComponenteDto>
-            //                            {
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Matemática",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                },
-            //                                new RelatorioFaltaFrequenciaComponenteDto
-            //                                {
-            //                                    NomeComponente="Português",
-            //                                    Alunos= new List<RelatorioFaltaFrequenciaAlunoDto>
-            //                                    {
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        },
-            //                                        new RelatorioFaltaFrequenciaAlunoDto
-            //                                        {
-            //                                            NomeAluno="José da silva",
-            //                                            Faltas="10",
-            //                                            Frequencia=50,
-            //                                            NomeTurma="1A",
-            //                                            Numero="1"
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                        }
-
-            //                    }
-            //                },
-            //            }
-            //        }
-            //    }
-            //});
 
             return View(model);
         }
@@ -2160,175 +1137,6 @@ namespace SME.SR.MVC.Controllers
 
         }
 
-        //[HttpGet("sondagem-consolidado-matematica-numeros")]
-        //public IActionResult RelatorioSondagemConsolidadoMatematicaNumeros()
-        //{
-
-        //    var model = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
-        //    model.Dre = "DRE-JT";
-        //    model.Ue = "EMEF - Máximo de Moura";
-        //    model.AnoLetivo = 2020;
-        //    model.Ano = "9";
-        //    model.Turma = "Todas";
-        //    model.ComponenteCurricular = "Matemática";
-        //    model.Proficiencia = "Números";
-        //    model.Periodo = "1º semestre";
-        //    model.Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque";
-        //    model.RF = "7777710";
-        //    model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
-        //    Random randNum = new Random();
-
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    { 
-        //        Pergunta = "Familiares ou frequentes", Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() { 
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 82, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 18, AlunosQuantidade = randNum.Next(99999), Resposta = "Não escreve convencionalmente" },
-        //        } 
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Opacos",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 73, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 27, AlunosQuantidade = randNum.Next(99999), Resposta = "Não escreve convencionalmente" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Transparentes",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 56, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 44, AlunosQuantidade = randNum.Next(99999), Resposta = "Não escreve convencionalmente" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Terminam em zero",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 53, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 47, AlunosQuantidade = randNum.Next(99999), Resposta = "Não escreve convencionalmente" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Algarismos iguais",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 50, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 50, AlunosQuantidade = randNum.Next(99999) , Resposta = "Não escreve convencionalmente" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Processo de generalização",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 43, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 57, AlunosQuantidade = randNum.Next(99999), Resposta = "Não escreve convencionalmente" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Zero intercalado",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 33, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 67, AlunosQuantidade = randNum.Next(99999), Resposta = "Não escreve convencionalmente" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Zero intercalado1",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 33, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 67, AlunosQuantidade = randNum.Next(99999), Resposta = "Não escreve convencionalmente" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Zero intercalado2",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 33, AlunosQuantidade = randNum.Next(99999), Resposta = "Escreve convencionalmente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 67, AlunosQuantidade = randNum.Next(99999), Resposta = "Não escreve convencionalmente" },
-        //        }
-        //    });
-
-        //    return View("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", model);
-        //}
-
-        //[HttpGet("sondagem-consolidado-matematica-autoral")]
-        //public IActionResult RelatorioSondagemConsolidadoMatematicaAutoral()
-        //{
-
-        //    var model = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
-        //    model.Dre = "DRE-JT";
-        //    model.Ue = "EMEF - Máximo de Moura";
-        //    model.AnoLetivo = 2020;
-        //    model.Ano = "9";
-        //    model.Turma = "Todas";
-        //    model.ComponenteCurricular = "Matemática";
-        //    model.Proficiencia = "";
-        //    model.Periodo = "1º semestre";
-        //    model.Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque";
-        //    model.RF = "7777710";
-        //    model.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
-        //    Random randNum = new Random();
-
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Problema de lógica",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 20, AlunosQuantidade = randNum.Next(99999), Resposta = "Resolveu corretamente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = randNum.Next(99999), Resposta = "Resolveu uma parte do problema corretamente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 25, AlunosQuantidade = randNum.Next(99999), Resposta = "Não registrou" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 40, AlunosQuantidade = randNum.Next(99999), Resposta = "Sem preenchimento" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Área e perímetro",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Resolveu corretamente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 23, AlunosQuantidade = randNum.Next(99999), Resposta = "Compreende o que é área, mas não compreende o que é perímetro" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 27, AlunosQuantidade = randNum.Next(99999), Resposta = "Compreende o que é perímetro, mas não compreende o que é área" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 25, AlunosQuantidade = randNum.Next(99999), Resposta = "Não registrou" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = randNum.Next(99999), Resposta = "Sem preenchimento" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Sólidos geométricos",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Resolveu corretamente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 26, AlunosQuantidade = randNum.Next(99999), Resposta = "Identificou os nomes das figuras e não determinou elementos de poliedros corretamente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 24, AlunosQuantidade = randNum.Next(99999), Resposta = "Não identificou nomes de figuras e não determinou elementos de poliedros corretamente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 25, AlunosQuantidade = randNum.Next(99999), Resposta = "Não registrou" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = randNum.Next(99999), Resposta = "Sem preenchimento" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Regularidade e generalização",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Resolveu corretamente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 23, AlunosQuantidade = randNum.Next(99999), Resposta = "Percebeu a regularidade, mas não expressou a generalização por meio de uma expressão algébrica" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 32, AlunosQuantidade = randNum.Next(99999), Resposta = "Não percebeu a regularidade e nem expressou a generalização por meio de uma expressão algébrica" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 20, AlunosQuantidade = randNum.Next(99999), Resposta = "Não registrou" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = 32275, Resposta = "Sem preenchimento" },
-        //        }
-        //    });
-        //    model.PerguntasRespostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-        //    {
-        //        Pergunta = "Probabilidade",
-        //        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>() {
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 10, AlunosQuantidade = randNum.Next(99999), Resposta = "Resolveu corretamente" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 30, AlunosQuantidade = randNum.Next(99999), Resposta = "Representou corretamente a probabilidade na forma fracionária, mas errou as formas decimal e/ou percentual" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 15, AlunosQuantidade = randNum.Next(99999) , Resposta = "Não identificou a probabilidade" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 25, AlunosQuantidade = randNum.Next(99999), Resposta = "Não registrou" },
-        //            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() { AlunosPercentual = 20, AlunosQuantidade = randNum.Next(99999), Resposta = "Sem preenchimento" },
-        //        }
-        //    });
-
-        //    return View("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", model);
-        //}
-
         [HttpGet("plano-aula")]
         public IActionResult RelatorioPlanoAula()
 
@@ -2534,7 +1342,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
-        [HttpGet("sondagem-componentes-numeros")]
         public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
@@ -2755,7 +1562,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             foreach (var pergunta in model.Cabecalho.Perguntas)
             {
                 var grafico = new GraficoBarrasVerticalDto(400, pergunta.Nome);
-           
+
                 var respostas = model.Planilha.Linhas
                     .SelectMany(l => l.OrdensRespostas.Where(or => or.PerguntaId == pergunta.Id)).GroupBy(b => b.Resposta);
 
@@ -2768,7 +1575,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 var valorMaximoEixo = respostas.Max(a => a.Count());
                 grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo, 6);
 
-                model.GraficosBarras.Add(grafico);              
+                model.GraficosBarras.Add(grafico);
             }
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("relatorios/RelatorioSondagemComponentesPorTurma", model, Guid.NewGuid(), envioPorRabbit: false));
@@ -2936,6 +1743,50 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Linhas = linhas
                 },
             };
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            var graficoBarras1 = new GraficoBarrasVerticalDto(600, "Teste - gráfico de matemática");
+
+            graficoBarras1.Legendas = new List<GraficoBarrasLegendaDto>() {
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="A",
+                    Valor= "Não conseguiu ou não quis ler aaaa nmnnnn kkkk ssss"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="B",
+                    Valor= "Leu com muita dificuldade"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="C",
+                    Valor= "Leu com alguma fluencia"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="D",
+                    Valor= "Leu com fluencia"
+                },
+                new GraficoBarrasLegendaDto()
+                {
+                    Chave="E",
+                    Valor= "Sem preenchimento"
+                },
+            };
+
+            graficoBarras1.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 24, 10);
+
+            graficoBarras1.EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+            {
+                new GraficoBarrasVerticalEixoXDto(2, "A"),
+                new GraficoBarrasVerticalEixoXDto(2, "B"),
+                new GraficoBarrasVerticalEixoXDto(2, "C"),
+                new GraficoBarrasVerticalEixoXDto(1, "D"),
+                new GraficoBarrasVerticalEixoXDto(24, "E"),
+            };
+
+            model.GraficosBarras.Add(graficoBarras1);
 
             return View("RelatorioSondagemComponentesPorTurma", model);
         }
@@ -2994,14 +1845,13 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioSondagemComponentesMatematicaAditivoMultiplicativoConsolidado", model);
         }
 
-
         [HttpGet("controle-grade-sintetico")]
-        public IActionResult RelatorioControleGradeSintetico()
+        public IActionResult RelatorioControleGradeSintetico([FromQuery] bool analitico)
         {
 
-            var controleGrade = new ControleGradeSinteticoDto()
+            var controleGrade = new ControleGradeDto()
             {
-                Filtro = new FiltroGradeSintetico()
+                Filtro = new FiltroControleGrade()
                 {
                     Dre = "DRE - BT",
                     Ue = "CEU EMEF BUTANTA",
@@ -3013,19 +1863,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 }
             };
 
-            controleGrade.Turmas = new List<TurmaControleGradeSinteticoDto>()
+            controleGrade.Turmas = new List<TurmaControleGradeDto>()
             {
-               new TurmaControleGradeSinteticoDto()
+                new TurmaControleGradeDto()
                {
                    Nome="1F",
-                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   Bimestres = new List<BimestreControleGradeDto>()
                    {
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "1° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3036,7 +1886,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3047,7 +1897,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3058,7 +1908,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "CIÊNCIAS",
                                    AulasPrevistas = 15,
@@ -3071,12 +1921,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "2° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3087,7 +1937,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3098,7 +1948,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3109,7 +1959,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "CIÊNCIAS",
                                    AulasPrevistas = 15,
@@ -3122,12 +1972,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "3° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3138,7 +1988,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3151,12 +2001,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "4° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3167,7 +2017,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3178,7 +2028,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3189,7 +2039,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3200,7 +2050,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3211,7 +2061,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3227,17 +2077,17 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
                    }
                },
-             new TurmaControleGradeSinteticoDto()
+                new TurmaControleGradeDto()
                {
                    Nome="2F",
-                   Bimestres = new List<BimestreControleGradeSinteticoDto>()
+                   Bimestres = new List<BimestreControleGradeDto>()
                    {
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "1° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3246,9 +2096,70 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    AulasDadasProfessorTitular = 8,
                                    AulasDadasProfessorSubstituto = 2,
                                    Repostas = 0,
-                                   Divergencias = "Não"
+                                   Divergencias = "Sim",
+                                   DetalhamentoDivergencias = analitico ? new DetalhamentoDivergenciasControleGradeSinteticoDto()
+                                   {
+                                       AulasNormaisExcedido = new List<AulaNormalExcedidoControleGradeDto>()
+                                       {
+                                           new AulaNormalExcedidoControleGradeDto()
+                                           {
+                                               Data = "26/10/2020",
+                                               QuantidadeAulas = 10,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           },
+                                           new AulaNormalExcedidoControleGradeDto()
+                                           {
+                                               Data = "26/10/2020",
+                                               QuantidadeAulas = 5,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           }
+                                       },
+                                       AulasTitularCJ = new List<AulaTitularCJDataControleGradeDto>()
+                                       {
+                                           new AulaTitularCJDataControleGradeDto() {
+                                               Data = "26/10/2020",
+                                               Divergencias = new List<AulaTitularCJControleGradeDto>()
+                                               {
+                                                  new AulaTitularCJControleGradeDto()
+                                                  {
+                                                      QuantidadeAulas = 2,
+                                                      ProfessorTitular =  "SADAKO MORITA (3135535)",
+                                                  },
+                                                  new AulaTitularCJControleGradeDto()
+                                                  {
+                                                      QuantidadeAulas = 1,
+                                                      ProfessorCJ =  "CARLA REGIANE (8027129)",
+                                                  },
+                                                  new AulaTitularCJControleGradeDto()
+                                                  {
+                                                      QuantidadeAulas = 1,
+                                                      ProfessorCJ =  "ANA CRISTINA (7777710)",
+                                                  }
+                                               }
+                                           }
+                                       },
+                                       AulasDiasNaoLetivos = new List<AulaDiasNaoLetivosControleGradeDto>()
+                                       {
+                                           new AulaDiasNaoLetivosControleGradeDto()
+                                           {
+                                                Data = "21/03/2020",
+                                                Professor = "SADAKO MORITA (3135535)",
+                                                Motivo  = "SUSPENSÃO DE ATIVIDADE",
+                                                QuantidadeAulas = 2
+                                           }
+                                       },
+                                       AulasDuplicadas = new List<AulaDuplicadaControleGradeDto>()
+                                       {
+                                           new AulaDuplicadaControleGradeDto()
+                                           {
+                                               Data = "21/03/2020",
+                                               QuantidadeDuplicado = 1,
+                                               Professor = "SADAKO MORITA (3135535)"
+                                           }
+                                       },
+                                   } : null
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3259,7 +2170,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 3,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3270,7 +2181,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3281,7 +2192,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "MATEMÁTICA",
                                    AulasPrevistas = 15,
@@ -3292,124 +2203,14 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               },
-                               new ComponenteCurricularControleGradeSinteticoDto()
-                               {
-                                   Nome = "MATEMÁTICA",
-                                   AulasPrevistas = 15,
-                                   AulasCriadasProfessorTitular = 14,
-                                   AulasCriadasProfessorSubstituto = 1,
-                                   AulasDadasProfessorTitular = 14,
-                                   AulasDadasProfessorSubstituto = 1,
-                                   Repostas = 0,
-                                   Divergencias = "Não"
-                               }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "2° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3420,7 +2221,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3433,12 +2234,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "3° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 10,
@@ -3449,7 +2250,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 20,
@@ -3462,12 +2263,12 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                }
                            }
                        },
-                       new BimestreControleGradeSinteticoDto()
+                       new BimestreControleGradeDto()
                        {
                            Descricao = "4° BIMESTRE - 20/03 À 25/04",
-                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeSinteticoDto>()
+                           ComponentesCurriculares = new List<ComponenteCurricularControleGradeDto>()
                            {
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "INGLÊS",
                                    AulasPrevistas = 12,
@@ -3478,7 +2279,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                    Repostas = 0,
                                    Divergencias = "Não"
                                },
-                               new ComponenteCurricularControleGradeSinteticoDto()
+                               new ComponenteCurricularControleGradeDto()
                                {
                                    Nome = "PORTUGUÊS",
                                    AulasPrevistas = 19,
@@ -3587,6 +2388,43 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 },
             };
 
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            model.GraficosBarras.Add(new GraficoBarrasVerticalDto(800, "Português - Leitura")
+            {
+                EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+              {
+                  new GraficoBarrasVerticalEixoXDto(5, "A"),
+                  new GraficoBarrasVerticalEixoXDto(1, "B"),
+                  new GraficoBarrasVerticalEixoXDto(3, "C"),
+                  new GraficoBarrasVerticalEixoXDto(2, "D")
+              },
+                Legendas = new List<GraficoBarrasLegendaDto>()
+              {
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "A",
+                      Valor = "Nivel 1"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "B",
+                      Valor = "Nivel 2"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "C",
+                      Valor = "Nivel 3"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "D",
+                      Valor = "Sem preenchimento"
+                  }
+              },
+                EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 5, 10)
+            });
+
             return View("RelatorioSondagemPortuguesPorTurma", model);
         }
 
@@ -3660,7 +2498,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             PerguntaId = "1"
                         },
                     }
-                }); 
+                });
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
@@ -3710,6 +2548,285 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
 
             return View("RelatorioSondagemPortuguesPorTurma", model);
+        }
+
+        [HttpGet("sondagem-portugues-capacidade-leitura")]
+        public IActionResult SondagemPortuguesCapacidadeLeitura()
+        {
+            var linhas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto>();
+            for (var i = 0; i < 20; i++)
+            {
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA ALEXIA FERNANDES LIMA",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "2"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
+                    },
+                });
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 4650630,
+                        Nome = "MATHEUS GUILHERME NASCIMENTO DA SILVA (RECLASSIFICADO SAÍDA EM 11/04/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Desistente.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "3",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                    //    new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                    //        OrdemId = "3",
+                    //        Resposta = "Não resolveu",
+                    //        PerguntaId = "2"
+                    //    },
+                    //    new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                    //        OrdemId = "3",
+                    //        Resposta = "Não resolveu",
+                    //        PerguntaId = "3"
+                    //    },
+                    },
+                });
+                linhas.Add(
+                new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "AMANDA ALBUQUERQUE",
+                        SituacaoMatricula = SituacaoMatriculaAluno.NaoCompareceu.ToString(),
+                    },
+                    OrdensRespostas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Inadequada",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "1",
+                            Resposta = "Adequada",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Inadequada",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                            OrdemId = "2",
+                            Resposta = "Não resolveu",
+                            PerguntaId = "2"
+                        },
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "2",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Inadequada",
+                        //    PerguntaId = "1"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "2"
+                        //},
+                        //new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemRespostasDto() {
+                        //    OrdemId = "3",
+                        //    Resposta = "Não resolveu",
+                        //    PerguntaId = "3"
+                        //},
+                    },
+                });
+            }
+
+            var model = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaCabecalhoDto()
+                {
+                    Ano = 5.ToString(),
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Matemática",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/YYYY"),
+                    Dre = "DRE - BT",
+                    Periodo = "1º Semestre",
+                    Proficiencia = "Campo Aditivo",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    Ordens = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "1",
+                            Descricao = "ORDEM NO NARRAR"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "2",
+                            Descricao = "ORDEM DO RELATAR"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaOrdemDto()
+                        {
+                            Id = "3",
+                            Descricao = "ORDEM DO ARGUMENTAR"
+                        },
+                    },
+                    Perguntas = new List<RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "1",
+                            Nome = "Inferência"
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "2",
+                            Nome = "Localização "
+                        },
+                        new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPerguntaDto()
+                        {
+                            Id = "3",
+                            Nome = "Reflexão"
+                        }
+                    },
+                },
+                Planilha = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
+            };
+            model.GraficosBarras = new List<GraficoBarrasVerticalDto>();
+
+            model.GraficosBarras.Add(new GraficoBarrasVerticalDto(800, "Português - Leitura")
+            {
+                EixosX = new List<GraficoBarrasVerticalEixoXDto>()
+              {
+                  new GraficoBarrasVerticalEixoXDto(50, "A"),
+                  new GraficoBarrasVerticalEixoXDto(10, "B"),
+                  new GraficoBarrasVerticalEixoXDto(30, "C"),
+                  new GraficoBarrasVerticalEixoXDto(20, "D")
+              },
+                Legendas = new List<GraficoBarrasLegendaDto>()
+              {
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "A",
+                      Valor = "Nivel 1"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "B",
+                      Valor = "Nivel 2"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "C",
+                      Valor = "Nivel 3"
+                  },
+                  new GraficoBarrasLegendaDto()
+                  {
+                      Chave = "D",
+                      Valor = "Sem preenchimento"
+                  }
+              },
+                EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", 50, 10)
+            });
+
+            return View("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", model);
         }
 
         [HttpGet("sondagem-portugues-leitura-voz-alta")]
@@ -3830,7 +2947,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                         PerguntaId = "4"
                                     },
                                 }
-                }); 
+                });
                 linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
                 {
                     Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
@@ -3915,7 +3032,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
             #region Monta dados
             var perguntas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto>();
-            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto() {
+            perguntas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
+            {
                 Pergunta = "Localização",
                 Respostas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>()
                 {
@@ -4050,5 +3168,4105 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
             return View("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", model);
         }
+
+        [HttpGet("sondagem-producao-texto-turma")]
+        public IActionResult SondagemProducaopTextoTurma()
+        {
+            var linhas = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>();
+
+            for (var i = 0; i < 6; i++)
+            {
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "ALEXIA FERNANDES LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "JOÃO MARIA LIMA (RECLASSIFICADO SAÍDA EM 23/09/2020)",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "MARCOS ALBERTO FIGUEIRA",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "FERNANDO PIRES",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+                linhas.Add(new RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto()
+                {
+                    Aluno = new RelatorioSondagemComponentesPorTurmaAlunoDto()
+                    {
+                        Codigo = 6197654,
+                        Nome = "JOÃO PEDRO FARIAS",
+                        SituacaoMatricula = SituacaoMatriculaAluno.Ativo.ToString(),
+                    },
+                    Respostas = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "2"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "3"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "4"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "S",
+                            PerguntaId = "5"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaRespostaDto() {
+                            Resposta = "N",
+                            PerguntaId = "6"
+                        },
+                    }
+                });
+            }
+
+            var model = new RelatorioSondagemPortuguesPorTurmaRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesPorTurmaCabecalhoDto()
+                {
+                    AnoTurma = 8,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Português",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                    Dre = "DRE - BT",
+                    Periodo = "4º Bimestre",
+                    Proficiencia = "Produção de texto",
+                    Rf = "9879878",
+                    Turma = "EMEF - 8A",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                    Perguntas = new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
+                    {
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "1",
+                            Nome = "Não produziu/entregou em branco"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "2",
+                            Nome = "Não apresentou dificuldades"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "3",
+                            Nome = "Escrita não alfabética"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "4",
+                            Nome = "Dificuldades com aspectos semânticos"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "5",
+                            Nome = "Dificuldades com aspectos textuais"
+                        },
+                        new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                        {
+                            Id = "6",
+                            Nome = "Dificuldades com aspectos ortográficos e notacionais"
+                        },
+                    },
+                },
+                Planilha = new RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
+                {
+                    Linhas = linhas
+                },
+            };
+
+            return View("RelatorioSondagemPortuguesPorTurma", model);
+        }
+
+        [HttpGet("sondagem-portugues-consolidado")]
+        public IActionResult SondagemPortuguesConsolidado()
+        {
+            #region Monta dados
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
+            {
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Id = "1",
+                    Resposta = "Pré-Silábico",
+                    Quantidade = 1,
+                    Percentual = (decimal)11.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Resposta = "Silábico sem Valor",
+                    Quantidade = 2,
+                    Percentual = (decimal)12.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Resposta = "Silábico com Valor",
+                    Quantidade = 3,
+                    Percentual = (decimal)13.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Resposta = "Silábico Alfabético",
+                    Quantidade = 4,
+                    Percentual = (decimal)14.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto(){
+                    Resposta = "Alfabético",
+                    Quantidade = 5,
+                    Percentual = (decimal)15.23,
+                    Total = 3
+                },
+            };
+            #endregion
+
+            var model = new RelatorioSondagemPortuguesConsolidadoRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesConsolidadoCabecalhoDto()
+                {
+                    AnoTurma = 1,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Português",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                    Dre = "DRE - BT",
+                    Periodo = "1º bimestre",
+                    Proficiencia = "Leitura",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida ",
+                    EhProducaoTexto = false,
+                },
+                Respostas = respostas,
+            };
+            return View("RelatorioSondagemPortuguesConsolidado", model);
+        }
+
+        [HttpGet("sondagem-portugues-consolidado-producao")]
+        public IActionResult SondagemPortuguesConsolidadoProducao()
+        {
+            #region Monta dados
+            var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>()
+            {
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "1",
+                    Resposta = "Escrita não alfabética",
+                    Quantidade = 1,
+                    Percentual = (decimal)11.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "2",
+                    Resposta = "Dificuldades com aspectos semânticos",
+                    Quantidade = 2,
+                    Percentual = (decimal)12.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "3",
+                    Resposta = "Dificuldades com aspectos textuais",
+                    Quantidade = 3,
+                    Percentual = (decimal)13.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "4",
+                    Resposta = "Dificuldades com aspectos ortográficos e notacionais",
+                    Quantidade = 4,
+                    Percentual = (decimal)14.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "5",
+                    Resposta = "Não produziu/entregou em branco",
+                    Quantidade = 5,
+                    Percentual = (decimal)15.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "6",
+                    Resposta = "Não apresentou dificuldades",
+                    Quantidade = 6,
+                    Percentual = (decimal)16.23,
+                    Total = 3
+                },
+                new RelatorioSondagemPortuguesConsolidadoRespostaDto()
+                {
+                    Id = "7",
+                    Resposta = "Sem preenchimento",
+                    Quantidade = 7,
+                    Percentual = (decimal)17.23,
+                    Total = 3
+                },
+
+            };
+            #endregion
+
+            var model = new RelatorioSondagemPortuguesConsolidadoRelatorioDto()
+            {
+                Cabecalho = new RelatorioSondagemPortuguesConsolidadoCabecalhoDto()
+                {
+                    AnoTurma = 4,
+                    AnoLetivo = 2020,
+                    ComponenteCurricular = "Português",
+                    DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                    Dre = "DRE - BT",
+                    Periodo = "3º bimestre",
+                    Proficiencia = "Produção de texto",
+                    Rf = "9879878",
+                    Turma = "Todas",
+                    Ue = "CEU EMEF BUTANTA",
+                    Usuario = "Alice Gonçalves de Almeida Souza",
+                    EhProducaoTexto = true,
+                },
+                Respostas = respostas,
+            };
+            return View("RelatorioSondagemPortuguesConsolidado", model);
+        }
+
+        [HttpGet("graficos-pap")]
+        public IActionResult RelatorioGraficosPAP()
+        {
+            var graficosDto = new List<ResumoPAPGraficoDto>();
+
+            for (var i = 0; i < 7; i++)
+            {
+                var grafico = new ResumoPAPGraficoDto()
+                {
+                    Titulo = "SONDAGEM: HIPÓTESE ESCRITA",
+                    Graficos = new List<ResumoPAPGraficoAnoDto>()
+                        {
+                        new ResumoPAPGraficoAnoDto(395, "")
+                        {
+                            Titulo =  (3 + i) + "º Ano",
+                            EixosX = new List<GraficoBarrasPAPVerticalEixoXDto>()
+                            {
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "A"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "B"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "C"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "D"),
+                                new GraficoBarrasPAPVerticalEixoXDto(8, 10, "E"),
+                            },
+                            Legendas = new List<GraficoBarrasLegendaDto>()
+                            {
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "A",
+                                    Valor = "Alfabético"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "B",
+                                    Valor = "Silábico com valor sonoro"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "C",
+                                    Valor = "Pré silábico"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "D",
+                                    Valor = "Silábico alfabético"
+                                },
+                                new GraficoBarrasLegendaDto()
+                                {
+                                    Chave = "E",
+                                    Valor = "Silábico sem valor sonoro"
+                                },
+                            },
+                            EixoYConfiguracao = new GraficoBarrasPAPVerticalEixoYDto(350, "Alunos", 50, 10)
+                        }
+                    }
+                };
+
+                graficosDto.Add(grafico);
+            }
+
+            var model = new GraficoPAPDto()
+            {
+                DreNome = "DRE - BT",
+                AnoLetivo = 2020,
+                Ciclo = "INTERDISCIPLINAR",
+                Ano = "4",
+                Turma = "Todas",
+                Periodo = "Acompanhamento 2º Semestre",
+                UeNome = "Todas",
+                UsuarioNome = "Alice Gonçalves de Almeida Souza Nascimento da Silva Albuquerque",
+                UsuarioRF = "9879878",
+                Data = DateTime.Now.ToString("dd/MM/yyyy"),
+                EhEncaminhamento = false,
+                GraficosDto = graficosDto
+            };
+
+            return View("RelatorioGraficosPAP", model);
+        }
+        [HttpGet("Usuarios")]
+        public IActionResult RelatorioUsuarios()
+        {
+            var model = new RelatorioUsuarioDto()
+            {
+                Filtro = new FiltroUsuarioDto()
+                {
+                    Dre = "DRE - BT",
+                    Ue = "CEU EMEF BUTANTA",
+                    RF = "9879878",
+                    Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
+                },
+                DadosRelatorio = new DadosRelatorioUsuariosDto()
+            };
+            //[HttpGet("Usuarios")]
+            //public IActionResult RelatorioUsuarios()
+            //{
+            //    var model = new RelatorioUsuarioDto()
+            //    {
+            //        Filtro = new FiltroUsuarioDto()
+            //        {
+            //            Dre = "DRE - BT",
+            //            Ue = "CEU EMEF BUTANTA",
+            //            RF = "9879878",
+            //            Usuario = "Alice Gonçalves de Almeida Souza Gonçalves de Almeida Souza",
+            //        }
+            //    };
+
+            model.DadosRelatorio.Dres = new List<DreUsuarioDto>()
+            {
+                new DreUsuarioDto()
+                {
+                    Nome = "DRE - BT",
+                    Perfis = new List<PerfilUsuarioDto>()
+                    {
+                        new PerfilUsuarioDto()
+                        {
+                            Nome = "ADM DRE",
+                            Usuarios = new List<UsuarioDto>()
+                            {
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alice Gonçalves de Almeida Souza de Freitas",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Ana lucia de Freitas",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Ana lucia de Freitas",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Jessica de Oliveira",
+                                    Situacao = "5 - Expirado",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Jessica de Oliveira",
+                                    Situacao = "5 - Expirado",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Jessica de Oliveira",
+                                    Situacao = "5 - Expirado",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Jessica de Oliveira",
+                                    Situacao = "5 - Expirado",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Jessica de Oliveira",
+                                    Situacao = "5 - Expirado",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+
+                            }
+                        },
+                        new PerfilUsuarioDto()
+                        {
+                            Nome = "DIPED",
+                            Usuarios = new List<UsuarioDto>()
+                            {
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Carmen Mendes",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Ana Luiza Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Ana Luiza Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Ana Luiza Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Ana Luiza Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Ana Luiza Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Ana Luiza Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                            }
+                        }
+                    },
+                    Ues = new List<UePorPerfilUsuarioDto>()
+                    {
+                        new UePorPerfilUsuarioDto()
+                        {
+                            Nome = "CEU EMEF BUTANTA",
+                            Perfis = new List<PerfilUsuarioDto>()
+                            {
+                                new PerfilUsuarioDto()
+                                {
+                                    Nome = "CP",
+                                    Usuarios = new List<UsuarioDto>()
+                                    {
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Jessica de Oliveira",
+                                            Situacao = "5 - Expirado",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Jessica de Oliveira",
+                                            Situacao = "5 - Expirado",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                    }
+                                },
+                                new PerfilUsuarioDto()
+                                {
+                                    Nome = "DIRETOR",
+                                    Usuarios = new List<UsuarioDto>()
+                                    {
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                         new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        }
+                                    }
+                                }
+                            },
+                            Professores = new List<UsuarioProfessorDto>()
+                            {
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                }
+                            }
+                        },
+                        new UePorPerfilUsuarioDto()
+                        {
+                            Nome = "CEU EMEF BUTANTA",
+                            Perfis = new List<PerfilUsuarioDto>()
+                            {
+                                new PerfilUsuarioDto()
+                                {
+                                    Nome = "CP",
+                                    Usuarios = new List<UsuarioDto>()
+                                    {
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Jessica de Oliveira",
+                                            Situacao = "5 - Expirado",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Jessica de Oliveira",
+                                            Situacao = "5 - Expirado",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                    }
+                                },
+                                new PerfilUsuarioDto()
+                                {
+                                    Nome = "DIRETOR",
+                                    Usuarios = new List<UsuarioDto>()
+                                    {
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                         new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        }
+                                    }
+                                }
+                            },
+                            Professores = new List<UsuarioProfessorDto>()
+                            {
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                }
+                            }
+                        },
+                        new UePorPerfilUsuarioDto()
+                        {
+                            Nome = "CEU EMEF BUTANTA",
+                            Perfis = new List<PerfilUsuarioDto>()
+                            {
+                                new PerfilUsuarioDto()
+                                {
+                                    Nome = "CP",
+                                    Usuarios = new List<UsuarioDto>()
+                                    {
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Jessica de Oliveira",
+                                            Situacao = "5 - Expirado",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana lucia de Freitas",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Jessica de Oliveira",
+                                            Situacao = "5 - Expirado",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                    }
+                                },
+                                new PerfilUsuarioDto()
+                                {
+                                    Nome = "DIRETOR",
+                                    Usuarios = new List<UsuarioDto>()
+                                    {
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Carmen Mendes",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                        new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        },
+                                         new UsuarioDto()
+                                        {
+                                            Login = "153726",
+                                            Nome = "Ana Luiza Souza",
+                                            Situacao = "1 - Ativo",
+                                            UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                        }
+                                    }
+                                }
+                            },
+                            Professores = new List<UsuarioProfessorDto>()
+                            {
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                },
+                                new UsuarioProfessorDto()
+                                {
+                                    Login = "153726",
+                                    Nome = "Alexandre Barros de Souza",
+                                    Situacao = "1 - Ativo",
+                                    UltimoAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaAulaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimoPlanoAulaRegistrado = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    UltimaFrequenciaRegistrada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                }
+                            }
+                        }
+                    },
+                    HistoricoReinicioSenha = new List<HistoricoReinicioSenhaDto>()
+                    {
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Não",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        },
+                        new HistoricoReinicioSenhaDto()
+                        {
+                            Login = "153726",
+                            Nome = "Ana de Souza",
+                            Perfil = "CP",
+                            SenhaReiniciada = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            SenhaReiniciadaPor = "Jordana Carvalho de Arruda",
+                            UtilizaSenhaPadao = "Sim",
+                        }
+                    }
+                }
+            };
+            return View("RelatorioUsuarios", model);
+        }
+
+        [HttpGet("notificacoes")]
+        public IActionResult Notificacoes()
+        {
+            var model = new RelatorioNotificacaoDto
+            {
+
+                CabecalhoDRE = "TODAS",
+                CabecalhoUE = "TODAS",
+                CabecalhoUsuario = "ALANA FERREIRA DE OLIVEIRA",
+                CabecalhoUsuarioRF = "1234567",
+                DREs = new List<DreNotificacaoDto>()
+                {
+                    new DreNotificacaoDto()
+                    {
+                        Nome = "CAPELA DO SOCORRO",
+                        UEs = new List<UeNotificacaoDto>()
+                        {
+                            new UeNotificacaoDto() {
+                                Nome = "CEU EMEF JARDIM ELIANA",
+                                Usuarios = new List<UsuarioNotificacaoDto>()
+                                {
+                                    new UsuarioNotificacaoDto()
+                                    {
+                                        Nome = "Irêne de Carvalho (1234567)", Notificacoes = new List<NotificacaoDto>()
+                                        {
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            new UeNotificacaoDto() {
+                                Nome = "CEU EMEF JARDIM ELIANA",
+                                Usuarios = new List<UsuarioNotificacaoDto>()
+                                {
+                                    new UsuarioNotificacaoDto()
+                                    {
+                                        Nome = "Irêne de Carvalho (1234567)", Notificacoes = new List<NotificacaoDto>()
+                                        {
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            },
+                                            new NotificacaoDto()
+                                            {
+                                                Codigo = 153726,
+                                                Titulo = "Relatório de Notas e Conceitos Finais",
+                                                Categoria = NotificacaoCategoria.Aviso,
+                                                Tipo = NotificacaoTipo.Relatorio,
+                                                Situacao = NotificacaoStatus.Lida,
+                                                DataRecebimento = DateTime.Now,
+                                                DataLeitura = DateTime.Now
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            return View("RelatorioNotificacoes", model);
+        }
+
+        [HttpGet("relatorio-atribuicoes-cj")]
+        public IActionResult RelatorioAtribuioesCj()
+        {
+            var model = new RelatorioAtribuicaoCjDto()
+            {
+                DreNome = "CAPELA DO SOCORRO",
+                UeNome = "CEU EMEF JARDIM ELIANA",
+                Modalidade = Modalidade.Fundamental.Name(),
+                Semestre = "1º",
+                Turma = "TODAS",
+                Professor = "ALANA FERRIRA OLIVEIRA",
+                RfProfessor = "1234569789",
+                Usuario = "RITA DE CASSIA FREITAS",
+                RfUsuario = "789456310",
+                AtribuicoesCjPorProfessor = new List<AtribuicaoCjPorProfessorDto>()
+                    {
+                        new AtribuicaoCjPorProfessorDto()
+                        {
+                            NomeProfessor = "PRISCILA MELLO DE ANDRADE(12345678) - ESPORÁDICO",
+                            AtribuiicoesCjTurma = new List<AtribuicaoCjTurmaDto>()
+                            {
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "24/03/2020",
+                                    Aulas = new List<AtribuicaoCjAulaDto>()
+                                    {
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = true,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações askldjçlkj asdklj fçlkajsd fçlkjas dklj çlkasjdf çlkj açlksdj lkçj fasçldkj açlkjsd fçlkj  çlakkjsd fçlkja sdçfkj jç aksjd çlkj façskjd çlkj asd"
+                                        },
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = true,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações"
+                                        },
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = false,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações"
+                                        },
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = true,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações"
+                                        },
+                                        new AtribuicaoCjAulaDto()
+                                        {
+                                            AulaDada = true,
+                                            DataAula = "10/10/2020",
+                                            Observacoes = "Sem observações"
+                                        }
+                                    }
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                }
+                            }
+                        },
+                        new AtribuicaoCjPorProfessorDto()
+                        {
+                            NomeProfessor = "JULIA ANDRADE(12345678) - ESPORÁDICO",
+                            AtribuiicoesCjTurma = new List<AtribuicaoCjTurmaDto>()
+                            {
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "24/03/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                },
+                                new AtribuicaoCjTurmaDto()
+                                {
+                                    NomeTurma = "2B",
+                                    ComponenteCurricular = "Português",
+                                    NomeProfessorTitular = "ANA MARIA CARDOSO (98764531)",
+                                    DataAtribuicao= "21/09/2020"
+                                }
+                            }
+                        }
+                    },
+                AtribuicoesCjPorTurma = new List<AtribuicaoCjPorTurmaDto>()
+                {
+                    new AtribuicaoCjPorTurmaDto()
+                    {
+                        NomeTurma =  "1A",
+                        AtribuicoesCjProfessor = new List<AtribuicaoCjProfessorDto>()
+                        {
+                            new AtribuicaoCjProfessorDto()
+                            {
+                                NomeProfessorCj = "Priscila Mello",
+                                ComponenteCurricular = "Biologia",
+                                NomeProfessorTitular = "Ana Paula Souza",
+                                DataAtribuicao = "20/08/2020",
+                                TipoProfessorCj = "Esporádico",
+                                Aulas = new List<AtribuicaoCjAulaDto>()
+                                {
+                                    new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    },new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    },new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    }
+                                }
+                            },
+                            new AtribuicaoCjProfessorDto()
+                            {
+                                NomeProfessorCj = "Jorge Abreu",
+                                ComponenteCurricular = "Português",
+                                NomeProfessorTitular = "Marcos Santos",
+                                DataAtribuicao = "20/09/2020",
+                                TipoProfessorCj = "Esporádico"
+                            }
+                        }
+                    },
+                    new AtribuicaoCjPorTurmaDto()
+                    {
+                        NomeTurma =  "1B",
+                        AtribuicoesCjProfessor = new List<AtribuicaoCjProfessorDto>()
+                        {
+                            new AtribuicaoCjProfessorDto()
+                            {
+                                NomeProfessorCj = "Priscila Mello",
+                                ComponenteCurricular = "Biologia",
+                                NomeProfessorTitular = "Ana Paula Souza",
+                                DataAtribuicao = "20/08/2020",
+                                TipoProfessorCj = "Esporádico",
+                                Aulas = new List<AtribuicaoCjAulaDto>()
+                                {
+                                    new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    },new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    },new AtribuicaoCjAulaDto()
+                                    {
+                                        DataAula = "23/08/2020",
+                                        AulaDada = true,
+                                        Observacoes = "Teste"
+                                    }
+                                }
+                            },
+                            new AtribuicaoCjProfessorDto()
+                            {
+                                NomeProfessorCj = "Jorge Abreu",
+                                ComponenteCurricular = "Português",
+                                NomeProfessorTitular = "Marcos Santos",
+                                DataAtribuicao = "20/09/2020",
+                                TipoProfessorCj = "Esporádico"
+                            }
+                        }
+                    }
+                },
+                AtribuicoesEsporadicas = new List<AtribuicaoEsporadicaDto>()
+                {
+                    new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },
+                    new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    },new AtribuicaoEsporadicaDto()
+                    {
+                        NomeUsuario = "Joana Lime do Carmo (1234569)",
+                        Cargo = "Secretária (214123456)",
+                        DataInicio = "18/06/2020",
+                        DataFim = "20/12/2020",
+                        AtribuidoPor= "Teste",
+                        DataAtribuicao = "04/12/2020"
+                    }
+                }
+            };
+
+            return View("RelatorioHistoricoAlteracoesNotas", model);
+
+        }
+
+        [HttpGet("escola-aqui-leitura")]
+        public IActionResult RelatorioEscolaAquiLeitura()
+        {
+            var model = new RelatorioLeituraComunicadosDto()
+            {
+                Filtro = new FiltroLeituraComunicadosDto()
+                {
+                    Dre = "DRE - BT",
+                    Ue = "CEU EMEF BUTANTA",
+                    RF = "9879878",
+                    Usuario = "Anala Ferreira de Oliveira"
+                },
+
+                LeituraComunicadoDto = new List<LeituraComunicadoDto>()
+                {
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020",
+                        DataEnvio = DateTime.Now,
+                        DataExpiracao = DateTime.Now.AddDays(5),
+                        NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>()
+                        {
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10,
+                                LeituraComunicadoEstudantes = new List<LeituraComunicadoEstudanteDto>()
+                                {
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "2",
+                                        CodigoEstudante = "1256990",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "3",
+                                        CodigoEstudante = "1256991",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Visualizada"
+                                    }
+                                }
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10,
+                                LeituraComunicadoEstudantes = new List<LeituraComunicadoEstudanteDto>()
+                                {
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "2",
+                                        CodigoEstudante = "1256990",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "3",
+                                        CodigoEstudante = "1256991",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Visualizada"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>()
+                        {
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                               TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10,
+                                LeituraComunicadoEstudantes = new List<LeituraComunicadoEstudanteDto>()
+                                {
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    },
+                                    new LeituraComunicadoEstudanteDto()
+                                    {
+                                        NumeroChamada = "1",
+                                        CodigoEstudante = "1256989",
+                                        Estudante = "Alexandra Maria dos Santos",
+                                        Responsavel = "Sarita Capiperibe",
+                                        TipoResponsavel = " (Filiação 1)",
+                                        ContatoResponsavel = "(11) 94585-0366",
+                                        Situacao = "Não Visualizada"
+                                    }
+                                }
+                            }
+
+                        }},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto()
+{
+    Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>()
+                        {
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "2A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "3A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "4A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            }
+
+                        }},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto()
+{
+    Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523,
+                        NaoVisualizado = 235,
+                        Visualizado = 236,
+                        LeituraComunicadoTurma = new List<LeituraComunicadoTurmaDto>()
+                        {
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "1A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "2A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "3A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            },
+                            new LeituraComunicadoTurmaDto()
+                            {
+                                TurmaNome = "4A",
+                                TurmaModalidade = Modalidade.Fundamental,
+                                NaoInstalado = 2,
+                                NaoVisualizado = 2,
+                                Visualizado = 10
+                            }
+
+                        }},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina 2020", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 236},
+                    new LeituraComunicadoDto() { Comunicado = "Festa junina Festa junina Festa junina 2099Festa junina Festa junina Festa junina 2099Festa junina Festa junina Festa junina 2099", DataEnvio = DateTime.Now, DataExpiracao = DateTime.Now.AddDays(5), NaoInstalado = 523, NaoVisualizado = 235, Visualizado = 244},
+
+                }
+            };
+
+            return View("RelatorioEscolaAquiLeituraComunicados", model);
+        }
+
+
+        [HttpGet("controle-planejamento-diario")]
+        public IActionResult RelatorioControlePlanejamentoDiario()
+        {
+            return Ok();
+            //var model = new RelatorioControlePlanejamentoDiarioDto()
+            //{
+            //    Filtro = new FiltroControlePlanejamentoDiarioDto()
+            //    {
+            //        Dre = "DRE - BT",
+            //        Ue = "CEU EMEF BUTANTA",
+            //        Turma = "Todas",
+            //        ComponenteCurricular = "Lingua Portuguesa",
+            //        Bimestre = "Todos",
+            //        Usuario = "Anala Ferreira de Oliveira",
+            //        RF = "9879878",
+            //    },
+
+            //    Turmas = new List<TurmaPlanejamentoDiarioDto>()
+            //    {
+            //        new TurmaPlanejamentoDiarioDto()
+            //        {
+            //            Nome = "EF - 1A",
+            //            Bimestres = new List<BimestrePlanejamentoDiarioDto>()
+            //            {
+            //                new BimestrePlanejamentoDiarioDto()
+            //                {
+            //                    Nome = "1º Bimestre",
+            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+            //                    {
+            //                        new ComponenteCurricularPlanejamentoDiarioDto()
+            //                        {
+            //                            Nome = "Lingua Portuguesa",
+            //                            PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+            //                            {
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) -CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) -CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                }
+            //                            }
+            //                        }                                    
+            //                    }
+            //                },
+            //                new BimestrePlanejamentoDiarioDto()
+            //                {
+            //                    Nome = "2º Bimestre",
+            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+            //                    {
+            //                        new ComponenteCurricularPlanejamentoDiarioDto()
+            //                        {
+            //                            Nome = "Lingua Portuguesa",
+            //                            PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+            //                            {
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) -CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) -CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                },
+            //                new BimestrePlanejamentoDiarioDto()
+            //                {
+            //                    Nome = "3º Bimestre",
+            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+            //                    {
+            //                        new ComponenteCurricularPlanejamentoDiarioDto()
+            //                        {
+            //                            Nome = "Lingua Portuguesa",
+            //                            PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+            //                            {
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) -CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) -CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                },
+            //                new BimestrePlanejamentoDiarioDto()
+            //                {
+            //                    Nome = "4º Bimestre",
+            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+            //                    {
+            //                        new ComponenteCurricularPlanejamentoDiarioDto()
+            //                        {
+            //                            Nome = "Lingua Portuguesa",
+            //                            PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+            //                            {
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) -CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) -CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999) - CJ",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = string.Empty,
+            //                                    Usuario = string.Empty,
+            //                                    SecoesPreenchidas = string.Empty
+            //                                },
+            //                                new PlanejamentoDiarioDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(9).ToString("dd/MM/yyyy"),
+            //                                    QuantidadeAulas = 2,
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(8).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                }
+
+            //            }
+            //        }
+            //    },
+            //};
+
+            //return View("RelatorioControlePlanejamentoDiario", model);
+        }
+
+        [HttpGet("controle-planejamento-diario-infantil")]
+        public IActionResult RelatorioControlePlanejamentoDiarioInfantil()
+        {
+            return Ok();
+            //var model = new RelatorioControlePlanejamentoDiarioDto()
+            //{
+            //    Filtro = new FiltroControlePlanejamentoDiarioDto()
+            //    {
+            //        Dre = "DRE - BT",
+            //        Ue = "CEU EMEF BUTANTA",
+            //        Turma = "Todas",
+            //        ComponenteCurricular = "Todos",
+            //        Bimestre = "Todos",
+            //        Usuario = "Anala Ferreira de Oliveira",
+            //        RF = "9879878",
+            //    },
+
+            //    Turmas = new List<TurmaPlanejamentoDiarioDto>()
+            //    {
+            //        new TurmaPlanejamentoDiarioDto()
+            //        {
+            //            Nome = "EF - 1A",
+            //            Bimestres = new List<BimestrePlanejamentoDiarioDto>()
+            //            {
+            //                new BimestrePlanejamentoDiarioDto()
+            //                {
+            //                    Nome = "1º Bimestre",
+            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+            //                    {
+            //                        new ComponenteCurricularPlanejamentoDiarioDto()
+            //                        {
+            //                            Nome = "Lingua Portuguesa",
+            //                            PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>()
+            //                            {
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),                                                
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),                                                
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),                                                
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva",
+            //                                    Planejamento = @"Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo. Texto que o professor vai digitar no respectivo campo."
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(15).ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(13).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                },
+            //                new BimestrePlanejamentoDiarioDto()
+            //                {
+            //                    Nome = "2º Bimestre",
+            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+            //                    {
+            //                        new ComponenteCurricularPlanejamentoDiarioDto()
+            //                        {
+            //                            Nome = "Lingua Portuguesa",
+            //                            PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>()
+            //                            {
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Não",
+            //                                    DateRegistro = "",
+            //                                    Usuario = "",
+            //                                    SecoesPreenchidas = ""
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                },
+            //                                new PlanejamentoDiarioInfantilDto()
+            //                                {
+            //                                    DataAula = DateTime.Now.AddDays(15).ToString("dd/MM/yyyy"),
+            //                                    PlanejamentoRealizado = "Sim",
+            //                                    DateRegistro = DateTime.Now.AddDays(13).ToString("dd/MM/yyyy HH:mm"),
+            //                                    Usuario = "Maria da Silva (999999)",
+            //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    },
+            //};
+
+            //return View("RelatorioControlePlanejamentoDiarioInfantil", model);
+        }
     }
+
 }
+
