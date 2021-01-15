@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterFrequenciaComponenteGlobalPorTurmaQueryHandler : IRequestHandler<ObterFrequenciaComponenteGlobalPorTurmaQuery , IEnumerable<FrequenciaAluno>>
+    public class ObterFrequenciaComponenteGlobalPorTurmaQueryHandler : IRequestHandler<ObterFrequenciaComponenteGlobalPorTurmaQuery, IEnumerable<FrequenciaAluno>>
     {
         private readonly IFrequenciaAlunoRepository frequenciaRepository;
         private readonly IMediator mediator;
@@ -32,7 +32,7 @@ namespace SME.SR.Application
             var frequenciaGlobalAlunos = new List<FrequenciaAluno>();
 
             var agrupamentoAlunoComponente = frequenciaTurma.GroupBy(g => (g.CodigoAluno, g.DisciplinaId));
-            foreach(var alunoComponente in agrupamentoAlunoComponente)
+            foreach (var alunoComponente in agrupamentoAlunoComponente)
             {
                 var frequenciaAluno = new FrequenciaAluno()
                 {
