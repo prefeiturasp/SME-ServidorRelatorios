@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.4.3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConselhoAta" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8fa6a720-37a6-4ec7-816a-34b257822a5f">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
 	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
@@ -405,7 +405,7 @@
 			<staticText>
 				<reportElement x="430" y="39" width="380" height="30" uuid="41037f34-ff42-4226-b707-a450f7f2422b"/>
 				<textElement textAlignment="Right"/>
-				<text><![CDATA[ATA FINAL DE RESULTADOS]]></text>
+				<text><![CDATA[ATA DE RESULTADOS FINAIS]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="750" y="120" width="60" height="23" uuid="62ddcc39-ecb1-44bc-8274-db6dc69bc0e8"/>
@@ -498,7 +498,7 @@
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents mode="Opaque" style="Crosstab 3_CH">
-							<textField isStretchWithOverflow="true">
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="30" height="20" backcolor="#FFFFFF" uuid="cf98953b-b463-4ab2-ba4d-8a36af909f75"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$V{CodigoEol}]]></textFieldExpression>
@@ -520,7 +520,7 @@
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents mode="Opaque" style="Crosstab 3_CH">
-							<textField isStretchWithOverflow="true">
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="140" height="20" backcolor="#FFFFFF" uuid="b7317716-1128-4354-9c59-e70f662abbd7">
 									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 								</reportElement>
@@ -546,7 +546,7 @@
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab 3_CH">
-							<textField isStretchWithOverflow="true">
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="70" height="20" backcolor="#F3F3F3" uuid="59c87ab3-c9bb-48d4-b7f5-660e3a0ff9c8"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$V{NomeGrupo}]]></textFieldExpression>
@@ -568,7 +568,7 @@
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab 3_CH">
-							<textField isStretchWithOverflow="true">
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="70" height="20" backcolor="#F3F3F3" uuid="e271e46c-fe7c-4673-b8f5-64b59e580170">
 									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 								</reportElement>
@@ -594,7 +594,7 @@
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab 3_CH">
-							<textField isStretchWithOverflow="true">
+							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="70" height="20" backcolor="#F3F3F3" uuid="fb63e040-5641-4f1f-8a55-d7aae97757b6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$V{Bimestre}+"º"]]></textFieldExpression>
@@ -615,7 +615,7 @@
 				</measure>
 				<crosstabCell width="70" height="20">
 					<cellContents mode="Opaque" style="Crosstab 3_CD">
-						<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+						<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 							<reportElement x="0" y="0" width="70" height="20" uuid="c4b55518-32b1-4979-be78-29b10ae7616f"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle"/>
 							<textFieldExpression><![CDATA[$V{Nota_MEASURE}]]></textFieldExpression>
@@ -723,7 +723,7 @@
 				<textElement>
 					<paragraph leftIndent="5"/>
 				</textElement>
-				<text><![CDATA[SGP - Sistema de gestão Pedagógica | ata final de resultados]]></text>
+				<text><![CDATA[SGP - Sistema de gestão Pedagógica | ata de resultados finais]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="654" y="1" width="100" height="30" uuid="14559202-79f8-4090-91ce-6e6c04a4c969"/>
