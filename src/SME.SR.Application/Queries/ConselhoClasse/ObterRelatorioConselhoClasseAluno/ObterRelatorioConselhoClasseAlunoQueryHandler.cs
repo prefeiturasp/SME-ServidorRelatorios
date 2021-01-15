@@ -59,7 +59,7 @@ namespace SME.SR.Application
                     relatorio.EhBimestreFinal = true;
                     SentrySdk.AddBreadcrumb("Obtive o bimestre FINAL", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 }                
-                relatorio.Titulo = "Conselho de Classe";
+                relatorio.Titulo = "Ata de conselho de classe";
                 relatorio.Turma = fechamentoTurma.Turma.NomeRelatorio;
                 relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
