@@ -22,15 +22,15 @@ namespace SME.SR.Application
 
         public async Task<List<ConselhoClasseAtaFinalPaginaDto>> Handle(ObterRelatorioConselhoClasseAtaFinalPdfQuery request, CancellationToken cancellationToken)
         {
-            var mensagensErro = new StringBuilder();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
             foreach (var turmaCodigo in request.FiltroConselhoClasseAtaFinal.TurmasCodigos)
             {
                 try
                 {
-                    var relatorioTurma = await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario);
-                    if (relatorioTurma.Any())
-                        relatoriosTurmas.AddRange(relatorioTurma);
+                    var retorno = await ObterRelatorioTurma(turmaCodigo, request.UsuarioLogadoRF, request.PerfilUsuario);
+
+                    if (retorno != null && retorno.Any())
+                        relatoriosTurmas.AddRange(retorno);
                 }
                 catch (Exception e)
                 {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterFrequenciaComponenteGlobalPorTurmaQueryHandler : IRequestHandler<ObterFrequenciaComponenteGlobalPorTurmaQuery , IEnumerable<FrequenciaAluno>>
+    public class ObterFrequenciaComponenteGlobalPorTurmaQueryHandler : IRequestHandler<ObterFrequenciaComponenteGlobalPorTurmaQuery, IEnumerable<FrequenciaAluno>>
     {
         private readonly IFrequenciaAlunoRepository frequenciaRepository;
         private readonly IMediator mediator;
@@ -32,7 +32,7 @@ namespace SME.SR.Application
             var frequenciaGlobalAlunos = new List<FrequenciaAluno>();
 
             var agrupamentoAlunoComponente = frequenciaTurma.GroupBy(g => (g.CodigoAluno, g.DisciplinaId));
-            foreach(var alunoComponente in agrupamentoAlunoComponente)
+            foreach (var alunoComponente in agrupamentoAlunoComponente)
             {
                 var frequenciaAluno = new FrequenciaAluno()
                 {
@@ -43,9 +43,10 @@ namespace SME.SR.Application
                 foreach (var bimestre in bimestres)
                 {
                     var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
+                    var disciplinaId = !string.IsNullOrEmpty(frequenciaAluno.DisciplinaId) ? Convert.ToInt64(frequenciaAluno.DisciplinaId) : 0;
 
                     frequenciaAluno.TotalAulas += frequenciaBimestre?.TotalAulas ??
-                                        await mediator.Send(new ObterAulasDadasNoBimestreQuery(turmaCodigo, tipoCalendarioId, long.Parse(frequenciaAluno.DisciplinaId), bimestre));
+                                        await mediator.Send(new ObterAulasDadasNoBimestreQuery(turmaCodigo, tipoCalendarioId, disciplinaId, bimestre));
 
                     frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
                     frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;
