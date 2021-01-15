@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConselhoClasse" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5b7b40f2-5361-4f9e-95a6-7f51b83a4bda">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
-	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
-	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<property name="ireport.jasperserver.url" value="https://hom-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="usr_amcom"/>
 	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal_files/main_jrxml"/>
 	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal"/>
 	<parameter name="jsonString" class="java.lang.String">
@@ -107,7 +107,7 @@
 				<text><![CDATA[SGP - SISTEMA DE GESTÃO PEDAGÓGICA]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="415" y="21" width="140" height="20" uuid="fa78cb5a-039b-4307-a2a7-46a43a04e2f0">
+				<reportElement x="306" y="21" width="249" height="20" uuid="fa78cb5a-039b-4307-a2a7-46a43a04e2f0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -349,11 +349,11 @@
 	<pageFooter>
 		<band height="39" splitType="Prevent">
 			<textField>
-				<reportElement x="1" y="8" width="318" height="23" uuid="05431bcd-8953-428c-b962-e8bfeeeb09ab">
+				<reportElement x="1" y="8" width="414" height="23" uuid="05431bcd-8953-428c-b962-e8bfeeeb09ab">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA["SGP - Sistema de gestão Pedagógica | CONSELHO DE CLASSE  "]]></textFieldExpression>
+				<textFieldExpression><![CDATA["SGP - Sistema de gestão Pedagógica | ATA DE CONSELHO DE CLASSE  "]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight" evaluationTime="Report">
 				<reportElement positionType="Float" x="530" y="8" width="24" height="23" uuid="9c5fe508-a24a-4239-88f7-9e58b87d964c">
