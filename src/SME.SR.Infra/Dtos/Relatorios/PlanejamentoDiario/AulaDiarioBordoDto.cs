@@ -6,6 +6,8 @@ namespace SME.SR.Infra
 {
     public class AulaDiarioBordoDto
     {
+        public long AulaId { get; set; }
+        public bool AulaCJ { get; set; }
         public string Turma { get; set; }
         public int? Bimestre { get; set; }
         public string ComponenteCurricular { get; set; }

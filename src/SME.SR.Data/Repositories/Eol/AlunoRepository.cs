@@ -1251,63 +1251,34 @@ namespace SME.SR.Data
 
 		}
 
-		public async Task<IEnumerable<AlunoResponsavelAdesaoAEDto>> ObterAlunosResponsaveisPorTurmasCodigo(long[] turmasCodigo)
+		public async Task<IEnumerable<AlunoResponsavelAdesaoAEDto>> ObterAlunosResponsaveisPorTurmasCodigoParaRelatorioAdesao(long[] turmasCodigo, int anoLetivo)
 		{
-			var query = @"SELECT 
-						mte.cd_turma_escola TurmaCodigo,
-					    aluno.cd_aluno AlunoCodigo,			
-						aluno.nm_aluno as AlunoNome,
-					    aluno.nm_social_aluno AlunoNomeSocial,					   					  					
+
+			var query = @"select 
+						distinct
+						te.cd_turma_escola TurmaCodigo,
+						a.cd_aluno AlunoCodigo,
+						a.nm_aluno AlunoNome,
+						a.nm_social_aluno AlunoNomeSocial,
 						mte.nr_chamada_aluno AlunoNumeroChamada,
 						ra.cd_cpf_responsavel as ResponsavelCpf,
 						ra.nm_responsavel as ResponsavelNome,
 						ra.cd_ddd_celular_responsavel as ResponsavelDDD,
-						ra.nr_celular_responsavel as ResponsavelCelular
-						FROM v_aluno_cotic aluno
-						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						INNER JOIN responsavel_aluno ra 
-						on ra.cd_aluno = matr.cd_aluno
-						WHERE mte.cd_turma_escola in @turmasCodigo
-						and ra.dt_fim is null
-                        and mte.cd_situacao_aluno in (1, 6, 10,13)
-						UNION 
-							SELECT 
-							mte.cd_turma_escola TurmaCodigo,
-					    aluno.cd_aluno AlunoCodigo,			
-						aluno.nm_aluno as AlunoNome,
-					    aluno.nm_social_aluno AlunoNomeSocial,					   					  					
-						mte.nr_chamada_aluno AlunoNumeroChamada,
-						ra.cd_cpf_responsavel as ResponsavelCpf,
-						ra.nm_responsavel as ResponsavelNome,
-						ra.cd_ddd_celular_responsavel as ResponsavelDDD,
-						ra.nr_celular_responsavel as ResponsavelCelular	
-						FROM v_aluno_cotic aluno
-						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						INNER JOIN responsavel_aluno ra 
-						on ra.cd_aluno = matr.cd_aluno
-						WHERE mte.cd_turma_escola in @turmasCodigo
-						and ra.dt_fim is null		
-                        and mte.cd_situacao_aluno in (1, 6, 10,13)
-						and mte.dt_situacao_aluno =                    
-							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
-							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-							where
-							mte2.cd_turma_escola in @turmasCodigo
-							and matr2.cd_aluno = matr.cd_aluno
-						)
-						AND NOT EXISTS(
-							SELECT 1 FROM v_matricula_cotic matr3
-						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola in @turmasCodigo)";
+						ra.nr_celular_responsavel as ResponsavelCelular,						
+						coalesce(ra.cd_cpf_responsavel, 0) CpfResponsavel
+					from v_aluno_cotic(nolock) a
+					inner join responsavel_aluno(nolock) ra on ra.cd_aluno = a.cd_aluno
+					inner join v_matricula_cotic(nolock) m on m.cd_aluno = a.cd_aluno
+					inner join matricula_turma_escola(nolock) mte on mte.cd_matricula = m.cd_matricula
+					inner join v_cadastro_unidade_educacao(nolock) vue on vue.cd_unidade_educacao = m.cd_escola
+					inner join v_cadastro_unidade_educacao(nolock) dre on dre.cd_unidade_educacao = vue.cd_unidade_administrativa_referencia
+					inner join turma_escola(nolock) te on te.cd_turma_escola = mte.cd_turma_escola
+					where
+						mte.cd_situacao_aluno IN( 1, 6, 10, 13 ) and
+						ra.dt_fim IS NULL and te.cd_turma_escola in @turmasCodigo
+						and m.an_letivo = @anoLetivo";
 
-
-
-			var parametros = new { turmasCodigo };
+			var parametros = new { turmasCodigo, anoLetivo };
 
 			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
 			{

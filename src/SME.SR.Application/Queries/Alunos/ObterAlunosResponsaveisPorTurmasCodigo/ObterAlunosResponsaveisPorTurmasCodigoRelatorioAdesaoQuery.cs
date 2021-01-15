@@ -6,9 +6,9 @@ using System.Text;
 
 namespace SME.SR.Application
 {
-    public class ObterAlunosResponsaveisPorTurmasCodigoQuery : IRequest<IEnumerable<AlunoResponsavelAdesaoAEDto>>
+    public class ObterAlunosResponsaveisPorTurmasCodigoRelatorioAdesaoQuery : IRequest<IEnumerable<AlunoResponsavelAdesaoAEDto>>
     {
-        public ObterAlunosResponsaveisPorTurmasCodigoQuery(long[] turmasCodigo)
+        public ObterAlunosResponsaveisPorTurmasCodigoRelatorioAdesaoQuery(long[] turmasCodigo)
         {
             TurmasCodigo = turmasCodigo;
         }

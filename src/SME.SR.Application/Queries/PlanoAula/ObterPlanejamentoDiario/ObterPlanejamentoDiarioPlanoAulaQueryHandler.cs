@@ -37,7 +37,7 @@ namespace SME.SR.Application
             if (aulas == null || !aulas.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);
+            return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);            
         }
 
         private IEnumerable<TurmaPlanejamentoDiarioDto> AgrupaAulasTurma(IEnumerable<AulaPlanoAulaDto> aulas, bool exibirDetalhamento)
@@ -80,13 +80,15 @@ namespace SME.SR.Application
 
         private IEnumerable<PlanejamentoDiarioDto> ObterDadosAulasComponente(IGrouping<string, AulaPlanoAulaDto> aulasComponenteCurricular, bool exibirDetalhamento)
         {
-            foreach (var aula in aulasComponenteCurricular)
+            foreach (var aula in aulasComponenteCurricular.OrderByDescending(o => o.DataAula))
             {
                 var aulaPlanejamento = new PlanejamentoDiarioDto();
 
+                aulaPlanejamento.AulaId = aula.AulaId;
+                aulaPlanejamento.AulaCJ = aula.AulaCJ;
                 aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
                 aulaPlanejamento.QuantidadeAulas = aula.QuantidadeAula;
-                aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue ? "Sim" : "Não";
+                aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue;
 
                 if (aula.DataPlanejamento.HasValue)
                 {
@@ -94,13 +96,24 @@ namespace SME.SR.Application
                     aulaPlanejamento.Usuario = $"{aula.Usuario} ({aula.UsuarioRf})";
                     aulaPlanejamento.SecoesPreenchidas = ObterSecoesPreenchidas(aula);
                     aulaPlanejamento.QtdObjetivosEspecificos = aula.QtdObjetivosSelecionados;
-                    aulaPlanejamento.QtdSecoesPreenchidas = aula.QtdSecoesPreenchidas;
+                    aulaPlanejamento.QtdSecoesPreenchidas = aula.QtdSecoesPreenchidas;                   
 
                     if (exibirDetalhamento)
                     {
-                        aulaPlanejamento.ObjetivosSelecionados = aula.ObjetivosSalecionados;
-                        aulaPlanejamento.MeusObjetivosEspecificos = aula.ObjetivosEspecificos;
-                        aulaPlanejamento.DesenvolvimentoAula = aula.DesenvolvimentoAula;
+                        string ObjetivosSalecionados = "";
+                        if (!string.IsNullOrEmpty(aula.ObjetivosSalecionados))
+                        {
+                            var ObjSplit = aula.ObjetivosSalecionados.Split("<br/>");                            
+
+                            foreach (var obj in ObjSplit.OrderBy(c => c))
+                            {
+                                ObjetivosSalecionados += $"{obj} <br/>";
+                            }
+                        }                       
+
+                        aulaPlanejamento.ObjetivosSelecionados = ObjetivosSalecionados;
+                        aulaPlanejamento.MeusObjetivosEspecificos = string.IsNullOrEmpty(aula.ObjetivosEspecificos) ? "" : aula.ObjetivosEspecificos;
+                        aulaPlanejamento.DesenvolvimentoAula = string.IsNullOrEmpty(aula.DesenvolvimentoAula) ? "" : aula.DesenvolvimentoAula;
                     }
                 }
 

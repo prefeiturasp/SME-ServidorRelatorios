@@ -108,7 +108,10 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AulaPlanoAulaDto>> ObterPlanejamentoDiarioPlanoAula(long anoLetivo, int bimestre, string codigoUe, long componenteCurricular, bool listarDataFutura, string codigoTurma, Modalidade modalidadeTurma, ModalidadeTipoCalendario modalidadeCalendario, int semestre)
         {            
-              var query = @"select t.nome as Turma,
+              var query = @"select distinct
+                                   a.id as AulaId,
+                                   a.aula_cj as AulaCJ,
+                                   t.nome as Turma,
                                    cc.descricao_sgp as ComponenteCurricular,
                                    pe.bimestre,
 	                               a.data_aula as DataAula, 
@@ -136,7 +139,7 @@ namespace SME.SR.Data
                              where t.ano_letivo = @anoLetivo
                                and t.modalidade_codigo = @modalidadeTurma
                                and a.ue_id = @codigoUe
-                               and not a.excluido ";
+                               and not a.excluido";
 
             if (bimestre != -99)
                 query += " and pe.bimestre = @bimestre ";
@@ -151,7 +154,7 @@ namespace SME.SR.Data
                 query += " and a.turma_id = @codigoTurma ";
 
             if (semestre > 0)
-                query += " and t.semestre = @semestre ";
+                query += " and t.semestre = @semestre ";            
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {

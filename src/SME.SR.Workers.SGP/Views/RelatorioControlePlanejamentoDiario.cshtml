@@ -2,10 +2,11 @@
 @using System.Text.RegularExpressions;
 @using SME.SR.Infra.Utilitarios;
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 56;
+    int contadorMaximoLinhasPorPagina = 57;
     int contadorPagina = 0;
     var retornoVerificacao = string.Empty;
     var tipoRelatorio = true;
+    var fecharTabela = "";
 
     string VerificaQuebra()
     {
@@ -27,68 +28,66 @@
         contadorQuebrarPagina += 10;
 
         var str = $@"<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-relatorio'>
-<p style='margin-bottom: 0'>
-RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
-</p>
-</div>
-<div class='fonte-14 header-pagina'>
-<table class='tblTopo'>
-<tbody>
-<tr>
-<td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
-<td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
-<td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
-</tr>
-</tbody>
-</table>
+                     <div class='titulo-relatorio'>
+                         <p style='margin-bottom: 0'>
+                            RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
+                         </p>
+                     </div>
+                     <div class='fonte-14 header-pagina'>
+                        <table class='tblTopo'>
+                            <tbody>
+                                <tr>
+                                    <td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+                                    <td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+                                    <td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-<table>
-<tbody>
-<tr>
-<td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
-<td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
-</tr>
-</tbody>
-</table>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
+                                    <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-<table>
-<tbody>
-<tr>
-<td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
-<td width='20%'>RF: {Model.Filtro.RF}</td>
-<td width='20%'>DATA: {Model.Filtro.Data}</td>
-</tr>
-</tbody>
-</table>
-</div>";
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
+                                    <td width='20%'>RF: {Model.Filtro.RF}</td>
+                                    <td width='20%'>DATA: {Model.Filtro.Data}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                      </div>";
         return str;
     }
     string MontarCabecalhoTipoRelatorio()
     {
         contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
-<tr>
-<td width='100%' class='td-titulo-um'>
-PLANO DE AULA
-</td>
-</tr>
-</table>";
+                    <tr>
+                        <td width='100%' class='td-titulo-um'>PLANO DE AULA</td>
+                    </tr>
+                  </table>";
     }
 
-    string MontarCabecalhoPlanejamento(string quebra, string turma, string bimestre, string componente)
+    string MontarCabecalhoPlanejamento()
     {
         contadorQuebrarPagina += 2;
-        var str = @"<table class='fixed'>
-    <tr>
-    <td width='15%' class='td-titulo-dois'>DATA DA AULA</td>
-    <td width='12%' class='td-titulo-dois'>QUANTIDADE DE AULAS</td>
-    <td width='14%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
-    <td width='14%' class='td-titulo-dois'>DATA DO REGISTRO</td>
-    <td width='15%' class='td-titulo-dois'>USUÁRIO</td>
-    <td width='30%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
-    </tr>
-    </table>";
+        var str = $@"<table class='fixed'>
+                        <tr>
+                            <td width='15%' class='td-titulo-dois'>DATA DA AULA</td>
+                            <td width='12%' class='td-titulo-dois'>QUANTIDADE DE AULAS</td>
+                            <td width='14%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
+                            <td width='14%' class='td-titulo-dois'>DATA DO REGISTRO</td>
+                            <td width='15%' class='td-titulo-dois'>USUÁRIO</td>
+                            <td width='30%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
+                        </tr>
+                    </table>";
 
         return str;
     }
@@ -100,43 +99,59 @@ PLANO DE AULA
 
 
         str += $@" <table class='fixed'>
-<tr>
-<td width='20%' class='td-titulo-dois'>OBJETIVOS SELECIONADOS</td>
-<td width='40%' class='td-titulo-dois'>MEUS OBJETIVOS ESPECIFICOS</td>
-<td width='40%' class='td-titulo-dois'>DESENVOLVIMENTO DA AULA</td>
-</tr>
-</table>";
+                    <tr>
+                        <td width='20%' class='td-titulo-dois'>OBJETIVOS SELECIONADOS</td>
+                        <td width='40%' class='td-titulo-dois'>MEUS OBJETIVOS ESPECIFICOS</td>
+                        <td width='40%' class='td-titulo-dois'>DESENVOLVIMENTO DA AULA</td>
+                    </tr>
+                   ";
 
         return str;
     }
 
-    string MontarDadosTabelaPlanejamento(IEnumerable<SME.SR.Infra.PlanejamentoDiarioDto> planejamentoDiario, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioDto turma)
+    string MontarDadosTabelaPlanejamento(IEnumerable<SME.SR.Infra.PlanejamentoDiarioDto> planejamentoDiario, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioDto turma, long ultimaAulaRelatorio, string ultimaTurma, string ultimoComponenteNome, string ultimoBimestreNome)
     {
         var str = "";
         var detalhamento = false;
         var ultimoplanejamento = planejamentoDiario.LastOrDefault();
-        str += "<table class='fixed'><tbody>";
+        str += MontarCabecalhoPlanejamento();
+        str += "<table class='fixed'>";
+        fecharTabela = "";
 
         foreach (var planejamento in planejamentoDiario)
         {
-            detalhamento = false;
-            contadorQuebrarPagina += 1;
+            detalhamento = false;            
 
             if (!string.IsNullOrEmpty(planejamento.SecoesPreenchidas))
-                contadorQuebrarPagina += (1 + (planejamento.QtdObjetivosEspecificos > 0 ? 3 : 0));
+            {
+                var qtdSecoes = planejamento.QtdSecoesPreenchidas;
 
-            str += $@"<table class='fixed'>
-<tbody>
-<tr>
-<td width='15%' class='td-valor-dois'>{planejamento.DataAula}</td>
-<td width='12%' class='td-valor-dois'>{planejamento.QuantidadeAulas}</td>
-<td width='14%' class='td-valor-dois'>{planejamento.PlanejamentoRealizado}</td>
-<td width='14%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
-<td width='15%' class='td-valor-dois'>{planejamento.Usuario}</td>
-<td width='30%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
-</tr>
-</tbody>
-</table>";
+                if (planejamento.SecoesPreenchidas.Contains("Objetivos de Aprendizagem e Desenvolvimento"))
+                    qtdSecoes += 2;
+
+                double tamanhoTexto1 = planejamento.Usuario != null ? planejamento.Usuario.Length : 0;
+
+                var qtdLinhaUsuario = (int)Math.Truncate(tamanhoTexto1 / 12);
+
+                contadorQuebrarPagina += Math.Max(qtdSecoes, qtdLinhaUsuario);
+            }
+            else
+            {
+                contadorQuebrarPagina += 1;
+            }
+
+            var planejamentoRealizado = planejamento.PlanejamentoRealizado ? "Sim" : "Não";
+            var cj = planejamento.PlanejamentoRealizado && planejamento.AulaCJ ? " - CJ" : "";
+
+            str += $@"<tr>
+                        <td width='15%' class='td-valor-dois'>{planejamento.DataAula}</td>
+                        <td width='12%' class='td-valor-dois'>{planejamento.QuantidadeAulas}</td>
+                        <td width='14%' class='td-valor-dois'>{planejamentoRealizado}</td>
+                        <td width='14%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
+                        <td width='15%' class='td-valor-dois'>{planejamento.Usuario}{cj}</td>
+                        <td width='30%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
+                      </tr>";
+
             if (!string.IsNullOrEmpty(planejamento.DesenvolvimentoAula)
              || !string.IsNullOrEmpty(planejamento.MeusObjetivosEspecificos))
             {
@@ -147,12 +162,17 @@ PLANO DE AULA
                 qtdLinhasDetalhamento = Math.Max((int)Math.Truncate(tamanhoTexto / 55) + 1, planejamento.QtdObjetivosEspecificos);
                 contadorQuebrarPagina += qtdLinhasDetalhamento;
 
+                if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+                    str += IncluirTdParaFechar(6);
+
+                str += $"</tbody></table>";
+
                 retornoVerificacao = VerificaQuebra();
                 if (retornoVerificacao != string.Empty)
                 {
-                    str += $@"</tbody></table>{retornoVerificacao}";
+                    str += $@"{IncluirTdParaFechar(6)}</tbody></table>{retornoVerificacao}";
                     contadorQuebrarPagina += qtdLinhasDetalhamento;
-                }                
+                }
 
                 str += MontarCabecalhoDetalhamento();
                 var meusObjetivosEspecificos = UtilRegex.RemoverTagsHtmlMidia(planejamento.MeusObjetivosEspecificos);
@@ -160,36 +180,66 @@ PLANO DE AULA
 
                 var desenvolvimentoAula = UtilRegex.RemoverTagsHtmlMidia(planejamento.DesenvolvimentoAula);
                 desenvolvimentoAula = UtilRegex.RemoverTagsHtml(desenvolvimentoAula);
+                str += $@"<tr>
+                            <td width='20%' class='td-valor-Objetivos'>{planejamento.ObjetivosSelecionados}</td>
+                            <td width='40%' class='td-valor-tres'>{meusObjetivosEspecificos.ToLower()}</td>
+                            <td width='40%' class='td-valor-tres'>{desenvolvimentoAula.ToLower()}</td>
+                          </tr>";
 
-                str += $@"<table class='fixed'>
-                    <tbody>
-                    <tr>
-                        <td width='20%' class='td-valor-dois'>{planejamento.ObjetivosSelecionados}</td>
-                        <td width='40%' class='td-valor-dois'>{meusObjetivosEspecificos}</td>
-                        <td width='40%' class='td-valor-dois'>{desenvolvimentoAula}</td>
-                    </tr>
-                    </tbody>
-                    </table>";
+                if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+                    str += IncluirTdParaFechar(3);
 
+                if (planejamento.AulaId == ultimaAulaRelatorio)
+                    str += IncluirTdParaFechar(3);
+
+                str += "</table>";
+
+            }
+            else
+            {
+                if (planejamento.AulaId == ultimaAulaRelatorio && NomeBimestre.Equals(ultimoBimestreNome.ToUpper()))
+                    str += IncluirTdParaFechar(6);
             }
 
             retornoVerificacao = VerificaQuebra();
             if (retornoVerificacao != string.Empty)
             {
-                if (ultimoplanejamento.DataAula.Equals(planejamento.DataAula))
+                if (ultimoplanejamento.AulaId == planejamento.AulaId)
                 {
-                    str += $@"</tbody></table>{retornoVerificacao}";
+                    if(planejamento.AulaId == ultimaAulaRelatorio && NomeBimestre.Equals(ultimoBimestreNome.ToUpper()))
+                    {
+                        str += $@"</table>";
+                    }
+                    else
+                    {
+                        if (planejamento.AulaId == ultimoplanejamento.AulaId)
+                            str += IncluirTdParaFechar(6);
+
+                        str += $@"</table>{retornoVerificacao}<table class='fixed'>";
+                    }
                 }
                 else
                 {
-                    str += $@"</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento(retornoVerificacao, NomeTurma, NomeBimestre, NomeComponente)}";
+                    str += $@"{IncluirTdParaFechar(6)}</table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'>";
                 }
             }
             else
             {
-                if (!ultimoplanejamento.DataAula.Equals(planejamento.DataAula))
+                if (ultimoplanejamento.AulaId != planejamento.AulaId)
+                {
                     if (detalhamento)
                         str += LinhaEmBranco();
+                }
+                else
+                {
+                    if(ultimoplanejamento.AulaId == ultimaAulaRelatorio)
+                        if (detalhamento)
+                            str += IncluirTdParaFechar(3);
+
+                    if (ultimoplanejamento.AulaId == planejamento.AulaId)
+                        fecharTabela = $@"{IncluirTdParaFechar(6)}</table>";
+
+                }
             }
         }
         return str;
@@ -197,7 +247,18 @@ PLANO DE AULA
     string LinhaEmBranco()
     {
         contadorQuebrarPagina += 1;
-        return "<table><tr><td style='border-top:none;border-bottom:none;'><br/></td></tr></table>";
+        return "</table><table><tr><td style='border-bottom:none;'><br/></td></tr></table><table class='fixed'><tbody>";
+    }
+
+    string IncluirTdParaFechar(int quantidade)
+    {
+        var str = "<tr>";
+        for (var i = 1; i <= quantidade; i++)
+        {
+            str += "<td style='border-bottom:none;border-left:none;border-right:none'></td>";
+        }
+        str += "</tr>";
+        return str;
     }
 }
 
@@ -371,7 +432,7 @@ PLANO DE AULA
             background-color: #f3f3f3;
             text-align: center;
             font-size: 12px;
-            padding: 4px;
+            padding: 2px;
             border-top: none;
             border-bottom: none;
         }
@@ -380,13 +441,21 @@ PLANO DE AULA
             text-align: center;
             font-size: 12px;
             padding: 2px;
+            border-bottom: none;
         }
 
         .td-valor-tres {
             text-align: left;
             font-size: 12px;
-            padding: 4px;
-            padding-left: 10px;
+            padding: 2px;
+            border-bottom: none;
+        }
+
+        .td-valor-Objetivos {
+            text-align: center;
+            font-size: 12px;
+            padding: 2px;
+            border-bottom: none;
         }
 
         .td-valor-quatro {
@@ -402,7 +471,14 @@ PLANO DE AULA
             text-align: left;
             font-size: 12px;
             padding: 2px;
-            padding: 4px;
+            border-bottom: none;
+        }
+
+        .td-usuario {
+            text-align: left;
+            font-size: 12px;
+            padding: 2px;
+            border-bottom: none;
         }
 
         .caixa-1 {
@@ -469,100 +545,147 @@ PLANO DE AULA
             <img class="img-logo-sgp" src="logoMono.png" alt="Logo SGP" />
         </div>
         @Html.Raw(MontarCabecalho())
-        <div>
-            @{
-                var bimestreDescricaoAnt = "";
-                // PLANO DE AULA
-                if (tipoRelatorio)
+    <div>
+        @{
+            var bimestreDescricaoAnt = "";
+            // PLANO DE AULA
+            if (tipoRelatorio)
+            {
+                tipoRelatorio = false;
+                contadorQuebrarPagina++;
+                @Html.Raw(VerificaQuebra())
+
+                <table class="tabela-planejamento">
+                    <thead>
+                        <tr>
+                            <th class="sem-border-bottom">@Html.Raw("PLANO DE AULA")</th>
+                        </tr>
+                    </thead>
+                </table>
+            }
+            var turmaOrdenada = Model.Turmas.OrderBy(o => o.Nome);
+            var ultimaTurma = turmaOrdenada.LastOrDefault();
+            var bimestreOrdenado = ultimaTurma.Bimestres.OrderBy(o => o.Nome);
+            var ultimoBimestre = bimestreOrdenado.LastOrDefault();
+            var componenteOrdenado = ultimoBimestre.ComponentesCurriculares.OrderBy(o => o.Nome);
+            var ultimoComponente = componenteOrdenado.LastOrDefault();
+            var ultimaAula = ultimoComponente.PlanejamentoDiario.LastOrDefault().AulaId;
+            var ultimaTurmaNome = ultimaTurma.Nome;
+            var ultimoComponenteNome = ultimoComponente.Nome;
+            var ultimoBimestreNome = ultimoBimestre.Nome;
+
+            foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
+            {
+                tipoRelatorio = true;
+                // TURMA
+                if (Model.Filtro.Turma == "Todos" || Model.Filtro.Turma == "")
                 {
-                    tipoRelatorio = false;
-                    contadorQuebrarPagina++;
-                    @Html.Raw(VerificaQuebra())
+                    var countTurma = contadorQuebrarPagina + 6;
+                    if (countTurma >= contadorMaximoLinhasPorPagina)
+                    {
+                        @Html.Raw(fecharTabela)
+                        fecharTabela = "";
+                        contadorQuebrarPagina += contadorQuebrarPagina + 6;
+                        @Html.Raw(VerificaQuebra())
+                    }
+                    else
+                    {
+                        contadorQuebrarPagina++;
+                        @Html.Raw(VerificaQuebra())
+                    }                   
 
                     <table class="tabela-planejamento">
                         <thead>
                             <tr>
-                                <th class="sem-border-bottom">@Html.Raw("PLANO DE AULA")</th>
+                                <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
                             </tr>
                         </thead>
                     </table>
                 }
-                foreach (var turma in Model.Turmas.OrderBy(o => o.Nome))
+                @if (turma.Bimestres != null || !turma.Bimestres.Any())
                 {
-                    tipoRelatorio = true;
-                    // TURMA
-                    if (Model.Filtro.Turma == "Todos" || Model.Filtro.Turma == "")
-                    {
-                        contadorQuebrarPagina++;
-                        @Html.Raw(VerificaQuebra())
+                    bimestreDescricaoAnt = "";
+                    var nomeBimestre = "";
+                    var nomeComponente = "";
 
-                        <table class="tabela-planejamento">
-                            <thead>
-                                <tr>
-                                    <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    }
-                    @if (turma.Bimestres != null || !turma.Bimestres.Any())
+                    foreach (var bimestre in turma.Bimestres.OrderBy(o => o.Nome))
                     {
-                        bimestreDescricaoAnt = "";
-
-                        foreach (var bimestre in turma.Bimestres.OrderBy(o => o.Nome))
+                        @if (bimestre.ComponentesCurriculares != null || bimestre.ComponentesCurriculares.Any())
                         {
-                            @if (bimestre.ComponentesCurriculares != null || bimestre.ComponentesCurriculares.Any())
+                            // BIMESTRE
+                            nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
+                            if (!bimestreDescricaoAnt.Equals(nomeBimestre))
                             {
-                                // BIMESTRE
-                                var nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
-                                if (!bimestreDescricaoAnt.Equals(nomeBimestre))
+                                if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
                                 {
-                                    if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
+                                    var countBimestre = contadorQuebrarPagina + 5;
+                                    if (countBimestre >= contadorMaximoLinhasPorPagina)
                                     {
-                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                        @Html.Raw(fecharTabela)
+                                        fecharTabela = "";
+                                        contadorQuebrarPagina += contadorQuebrarPagina + 5;
                                         @Html.Raw(VerificaQuebra())
-
-                                        <table class="tabela-planejamento">
-                                            <thead>
-                                                <tr>
-                                                    <th class="sem-border-bottom">@nomeBimestre</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
                                     }
-                                    bimestreDescricaoAnt = nomeBimestre;
+                                    else
+                                    {
+                                        contadorQuebrarPagina++;
+                                        @Html.Raw(VerificaQuebra())
+                                    }                                    
+
+                                    <table class="tabela-planejamento">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@nomeBimestre</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 }
-                                foreach (var componente in bimestre.ComponentesCurriculares.OrderBy(o => o.Nome))
+                                bimestreDescricaoAnt = nomeBimestre;
+                            }
+                            foreach (var componente in bimestre.ComponentesCurriculares.OrderBy(o => o.Nome))
+                            {
+                                // COMPONENTE CURRICULAR
+                                if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
                                 {
-                                    // COMPONENTE CURRICULAR
-                                    if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
+                                    nomeComponente = componente.Nome != null ? componente.Nome.ToUpper() : "COMPONENTE NÃO IDENTIFICADO";
+
+                                    var countComponente = contadorQuebrarPagina + 4;
+                                    if (countComponente >= contadorMaximoLinhasPorPagina)
                                     {
-                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                        @Html.Raw(fecharTabela)
+                                        fecharTabela = "";
+                                        contadorQuebrarPagina += contadorQuebrarPagina + 4;
                                         @Html.Raw(VerificaQuebra())
-
-                                        <table class="tabela-planejamento">
-                                            <thead>
-                                                <tr>
-                                                    <th class="sem-border-bottom">@componente.Nome.ToUpper()</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
                                     }
-
-                                    var quebra = VerificaQuebra();
-                                    @Html.Raw(quebra);
-
-                                    if (componente.PlanejamentoDiario.Count() > 0)
+                                    else
                                     {
-                                        @Html.Raw(MontarCabecalhoPlanejamento(quebra, turma.Nome, bimestre.Nome, componente.Nome))
+                                        contadorQuebrarPagina++;
+                                        @Html.Raw(VerificaQuebra())
                                     }
-                                    @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiario, turma.Nome, bimestre.Nome, componente.Nome, turma))
+                                    
+                                    <table class="tabela-planejamento">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@nomeComponente</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                }
+
+                                var quebra = VerificaQuebra();
+                                @Html.Raw(quebra);
+
+                                if (componente.PlanejamentoDiario.Count() > 0)
+                                {                                    
+                                    @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiario, turma.Nome, nomeBimestre, nomeComponente, turma, ultimaAula, ultimaTurmaNome, ultimoComponenteNome, ultimoBimestreNome))
                                 }
                             }
                         }
                     }
                 }
             }
-        </div>
+        }
+    </div>
     </div>
 </body>
 </html>

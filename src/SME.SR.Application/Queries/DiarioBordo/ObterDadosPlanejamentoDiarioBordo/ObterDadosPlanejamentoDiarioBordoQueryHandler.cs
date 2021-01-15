@@ -36,7 +36,7 @@ namespace SME.SR.Application
                 request.Parametros.Semestre);
 
             if (aulas == null || !aulas.Any())
-                return null;
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);
         }
@@ -81,12 +81,15 @@ namespace SME.SR.Application
 
         private IEnumerable<PlanejamentoDiarioInfantilDto> ObterDadosAulasComponente(IGrouping<string, AulaDiarioBordoDto> aulasComponenteCurricular, bool exibirDetalhamento)
         {
-            foreach(var aula in aulasComponenteCurricular)
+            foreach(var aula in aulasComponenteCurricular.OrderByDescending(o => o.DataAula))
             {
                 var aulaPlanejamento = new PlanejamentoDiarioInfantilDto();
 
+                aulaPlanejamento.AulaId = aula.AulaId;
+                aulaPlanejamento.AulaCJ = aula.AulaCJ;
                 aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
-                aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue ? "Sim" : "Não";
+                aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue;
+
 
                 if (aula.DataPlanejamento.HasValue)
                 {
@@ -95,7 +98,7 @@ namespace SME.SR.Application
                     aulaPlanejamento.SecoesPreenchidas = ObterSecoesPreenchidas(aula);
 
                     if (exibirDetalhamento)
-                        aulaPlanejamento.Planejamento = aula.Planejamento; 
+                        aulaPlanejamento.Planejamento = string.IsNullOrEmpty(aula.Planejamento) ? "" : aula.Planejamento; 
                 }
 
                 yield return aulaPlanejamento;

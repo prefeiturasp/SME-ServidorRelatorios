@@ -13,8 +13,8 @@ namespace SME.SR.Infra
         public long Bimestre { get; set; }
         public TipoNota TipoNotaConceito { get; set; }
         public TipoAlteracaoNota TipoNota { get; set; }
-        public long NotaAnterior { get; set; }
-        public long NotaAtribuida { get; set; }
+        public double NotaAnterior { get; set; }
+        public double NotaAtribuida { get; set; }
         public TipoConceito ConceitoAnteriorId { get; set; }
         public TipoConceito ConceitoAtribuidoId { get; set; }
         public DateTime DataAlteracao { get; set; }

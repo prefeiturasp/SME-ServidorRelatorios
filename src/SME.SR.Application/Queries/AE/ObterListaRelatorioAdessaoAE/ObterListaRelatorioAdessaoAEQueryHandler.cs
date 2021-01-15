@@ -95,7 +95,7 @@ namespace SME.SR.Application
 
             foreach (var dreCodigosParaTratar in dresCodigosParaTratar)
             {
-                var dreParaAdicionar = await TrataDre(dreCodigosParaTratar, request.ListaConsolida.Where( a => a.DreCodigo == dreCodigosParaTratar).ToList());
+                var dreParaAdicionar = await TrataDre(dreCodigosParaTratar, request.ListaConsolida.Where(a => a.DreCodigo == dreCodigosParaTratar).ToList());
                 retorno.SME.Dres.Add(dreParaAdicionar);
 
             }
@@ -103,7 +103,7 @@ namespace SME.SR.Application
 
         private async Task<AdesaoAEDreDto> TrataDre(string dreCodigoParaTratar, IEnumerable<AdesaoAEQueryConsolidadoRetornoDto> listaConsolida)
         {
-            
+
 
             var uesCodigos = listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo.Trim()))
                 .Select(a => a.UeCodigo.ToString()).Distinct().ToArray();
@@ -131,7 +131,7 @@ namespace SME.SR.Application
             foreach (var ueParaTratar in listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo) && a.TurmaCodigo == 0))
             {
                 var ue = Ues.FirstOrDefault(a => a.Codigo == ueParaTratar.UeCodigo);
-                
+
                 if (ue != null)
                 {
                     var ueParaAdicionar = new AdesaoAEValoresDto()
@@ -150,7 +150,7 @@ namespace SME.SR.Application
 
             registroDre.Ues = registroDre
                 .Ues
-                .OrderBy(a => a.Nome).ToList() ;
+                .OrderBy(a => a.Nome).ToList();
             return registroDre;
         }
 
@@ -208,7 +208,7 @@ namespace SME.SR.Application
 
                 var modalidadeParaAdicionar = new AdesaoAEModalidadeDto() { Valores = valoresDaMolidade };
 
-                var alunosResponsaveisParaTratar = await mediator.Send(new ObterAlunosResponsaveisPorTurmasCodigoQuery(codigosTurmasDaModalidade.ToArray()));
+                var alunosResponsaveisParaTratar = await mediator.Send(new ObterAlunosResponsaveisPorTurmasCodigoRelatorioAdesaoQuery(codigosTurmasDaModalidade.ToArray()));
 
                 var cpfsDosResponsaveis = alunosResponsaveisParaTratar.Select(a => a.ResponsavelCpf).Distinct().ToArray();
 
@@ -216,6 +216,7 @@ namespace SME.SR.Application
 
                 foreach (var turma in turmaAgrupadasPorModalidade)
                 {
+
                     var turmaParaTratar = turmasEValoresDaModalidade.FirstOrDefault(a => a.TurmaCodigo == long.Parse(turma.Codigo));
                     var valoresDaTurmaParaTratar = new AdesaoAEValoresDto();
 
@@ -256,38 +257,29 @@ namespace SME.SR.Application
             }
 
             UeParaAdicionar.Modalidades = UeParaAdicionar.Modalidades.OrderBy(a => a.Valores.Nome).ToList();
-            
+
 
             retorno.UE = UeParaAdicionar;
         }
 
         private void TrataListarCpfIrregular(IEnumerable<AlunoResponsavelAdesaoAEDto> alunosResponsaveisParaTratar, IEnumerable<UsuarioAEDto> usuariosDoApp, TurmaResumoDto turma, AdesaoAETurmaDto turmaParaAdicionar)
         {
-            var alunosResponsaveisDaTurma = alunosResponsaveisParaTratar.Where(a => a.TurmaCodigo == long.Parse(turma.Codigo) && 
+            var alunosResponsaveisDaTurma = alunosResponsaveisParaTratar.Where(a => a.TurmaCodigo == long.Parse(turma.Codigo) &&
             !UtilCPF.Valida(a.ResponsavelCpf)).OrderBy(a => a.NomeAlunoParaVisualizar());
 
             foreach (var alunoResponsaveisDaTurma in alunosResponsaveisDaTurma)
             {
-                try
+
+                var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
                 {
+                    Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
+                    CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf?.ToString(),
+                    Responsavel = alunoResponsaveisDaTurma.ResponsavelNome?.Trim(),
+                    Estudante = alunoResponsaveisDaTurma.NomeAlunoParaVisualizar(),
+                    Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada
+                };
+                turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
 
-
-                    var alunoResponsavelParaAdicionar = new AdesaoAEUeAlunoDto()
-                    {
-                        Contato = alunoResponsaveisDaTurma.ResponsavelCelularFormatado(),
-                        CpfResponsavel = alunoResponsaveisDaTurma.ResponsavelCpf?.ToString(),
-                        Responsavel = alunoResponsaveisDaTurma.ResponsavelNome?.Trim(),
-                        Estudante = alunoResponsaveisDaTurma.NomeAlunoParaVisualizar(),
-                        Numero = alunoResponsaveisDaTurma.AlunoNumeroChamada
-                    };
-                    turmaParaAdicionar.Alunos.Add(alunoResponsavelParaAdicionar);
-
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
             }
         }
 

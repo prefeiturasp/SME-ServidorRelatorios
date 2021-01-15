@@ -20,7 +20,10 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AulaDiarioBordoDto>> ObterAulasDiarioBordo(long anoLetivo, int bimestre, string codigoUe, long componenteCurricular, bool listarDataFutura, string codigoTurma, Modalidade modalidadeTurma, ModalidadeTipoCalendario modalidadeCalendario, int semestre)
         {
-            var query = $@"select a.data_aula as DataAula
+            var query = $@"select distinct
+                              a.id as AulaId
+                            , a.data_aula as DataAula
+                            , a.aula_cj as AulaCJ
 	                        , t.nome as Turma
 	                        , cc.descricao_sgp as ComponenteCurricular
 	                        , pe.bimestre
