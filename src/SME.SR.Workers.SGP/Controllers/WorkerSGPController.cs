@@ -63,8 +63,8 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet("relatorios/atafinalresultados")]
-        [Action("relatorios/atafinalresultados", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
+        [HttpGet("relatorios/conselhoclasseatafinal")]
+        [Action("relatorios/conselhoclasseatafinal", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
         public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase)
         {
             await relatorioConselhoClasseAtaFinalUseCase.Executar(request);
