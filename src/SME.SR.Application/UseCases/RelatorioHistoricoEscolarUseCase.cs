@@ -64,7 +64,7 @@ namespace SME.SR.Application
 
             IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes = null;
 
-            if (alunosTurmas != null && alunosTurmas.Any())
+            if (todosAlunos != null && todosAlunos.Any())
                historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
