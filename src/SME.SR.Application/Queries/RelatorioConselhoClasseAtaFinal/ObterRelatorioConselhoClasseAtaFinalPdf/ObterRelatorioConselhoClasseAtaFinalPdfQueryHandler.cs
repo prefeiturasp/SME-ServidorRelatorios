@@ -238,7 +238,7 @@ namespace SME.SR.Application
                                             ++coluna);
                     linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            frequenciaAluno?.PercentualFrequencia.ToString() ?? "100,00",
+                                            frequenciaAluno?.PercentualFrequencia.ToString() ?? string.Empty,
                                             ++coluna);
                 }
             }
@@ -249,7 +249,7 @@ namespace SME.SR.Application
             // Anual
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);
-            linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? "100", 3);
+            linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? string.Empty, 3);
 
             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
             linhaDto.AdicionaCelula(99, 99, parecerConclusivo?.ParecerConclusivo ?? "Sem Parecer", 4);

@@ -62,6 +62,7 @@ namespace SME.SR.Application
                                                                                     request.ComponenteCurricularCodigo);
                     if (frequenciaAlunoPeriodo != null)
                     {
+                        frequenciaAluno.Id = frequenciaAlunoPeriodo.Id;
                         frequenciaAluno.TotalAulas += frequenciaAlunoPeriodo.TotalAulas;
                         frequenciaAluno.TotalAusencias += frequenciaAlunoPeriodo.TotalAusencias;
                         frequenciaAluno.TotalCompensacoes += frequenciaAlunoPeriodo.TotalCompensacoes;

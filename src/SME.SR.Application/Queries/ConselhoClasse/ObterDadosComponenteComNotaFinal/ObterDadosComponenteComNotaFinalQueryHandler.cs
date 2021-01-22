@@ -86,10 +86,10 @@ namespace SME.SR.Application
         {
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaFinal()
             {
-                Aulas = frequenciaAluno.TotalAulas,
+                Aulas = frequenciaAluno?.TotalAulas ?? 0,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100)
+                Frequencia = frequenciaAluno != null && frequenciaAluno.Id > 0 && frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? null : null
             };
 
             var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
@@ -142,7 +142,7 @@ namespace SME.SR.Application
                 Componente = disciplina.Disciplina,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100),
+                Frequencia = frequenciaAluno != null && frequenciaAluno.Id > 0 && frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? null : null,
                 NotaConceitoBimestre1 = notasComponente.FirstOrDefault(n => n.Bimestre == 1)?.NotaConceito,
                 NotaConceitoBimestre2 = notasComponente.FirstOrDefault(n => n.Bimestre == 2)?.NotaConceito,
                 NotaConceitoBimestre3 = notasComponente.FirstOrDefault(n => n.Bimestre == 3)?.NotaConceito,
