@@ -1,25 +1,15 @@
 ﻿using MediatR;
-using SME.SR.Data;
+using SME.SR.Infra;
 using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterComponentesCurricularesPorIdsQuery : IRequest<IEnumerable<ComponenteCurricularPorTurma>>
+    public class ObterComponentesCurricularesPorIdsQuery : IRequest<IEnumerable<DisciplinaDto>>
     {
-        public ObterComponentesCurricularesPorIdsQuery()
-        {
-
-        }
-        public ObterComponentesCurricularesPorIdsQuery(long id)
-        {
-            ComponentesCurricularesIds = new long[] { id };
-        }
-
         public ObterComponentesCurricularesPorIdsQuery(long[] ids)
         {
-            ComponentesCurricularesIds = ids;
+            Ids = ids;
         }
-
-        public long[] ComponentesCurricularesIds { get; set; }
+        public long[] Ids { get; set; }
     }
 }

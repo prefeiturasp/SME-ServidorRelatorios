@@ -327,7 +327,30 @@ namespace SME.SR.Data
             return await conexao.QueryFirstOrDefaultAsync<string>(query, parametros);
         }
 
+        public async Task<IEnumerable<DisciplinaDto>> ObterDisciplinasPorIds(long[] ids)
+        {
+            var query = $@"select
+                                cc.id,
+                                cc.id as CodigoComponenteCurricular,
+                                cc.area_conhecimento_id as AreaConhecimentoId,
+                                cc.componente_curricular_pai_id as CdComponenteCurricularPai,
+                                coalesce(cc.descricao_sgp,cc.descricao) as Nome,
+                                cc.eh_base_nacional as EhBaseNacional,
+                                cc.eh_compartilhada as Compartilhada,
+                                cc.eh_regencia as Regencia,
+                                cc.eh_territorio as TerritorioSaber,
+                                cc.grupo_matriz_id as GrupoMatrizId,
+                                ccgm.nome as GrupoMatrizNome,
+                                cc.permite_lancamento_nota as LancaNota,
+                                cc.permite_registro_frequencia as RegistraFrequencia
+                           from componente_curricular cc 
+                           left join componente_curricular_grupo_matriz ccgm on ccgm.id = cc.grupo_matriz_id 
+                          WHERE cc.id = ANY(@ids)";
 
-
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<DisciplinaDto>(query, new { ids });
+            }
+        }
     }
 }
