@@ -2,7 +2,7 @@
 {
     public static class FrequenciaAlunoConsultas
     {
-        private static readonly string CamposFrequencia = @"codigo_aluno CodigoAluno, 
+        private static readonly string CamposFrequencia = @"id Id, codigo_aluno CodigoAluno, 
                             tipo, disciplina_id DisciplinaId, periodo_inicio PeriodoInicio, 
                             periodo_fim PeriodoFim, bimestre, total_aulas TotalAulas, 
                             total_ausencias TotalAusencias, total_compensacoes TotalCompensacoes, 

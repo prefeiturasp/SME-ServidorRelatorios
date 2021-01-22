@@ -43,7 +43,7 @@ namespace SME.SR.Application
                     var frequenciaDisciplina = frequenciaAluno.Where(x =>
                         x.DisciplinaId == disciplina.CodDisciplina.ToString());
 
-                    var percentualFrequencia = frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : 100;
+                    var percentualFrequencia = frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : (double?)null;
 
                     var sintese = percentualFrequencia >=
                                     await ObterFrequenciaMediaPorComponenteCurricular(disciplina.Regencia,

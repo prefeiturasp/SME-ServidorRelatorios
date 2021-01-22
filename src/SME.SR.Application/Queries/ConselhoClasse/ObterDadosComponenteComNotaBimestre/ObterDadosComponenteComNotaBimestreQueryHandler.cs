@@ -95,10 +95,10 @@ namespace SME.SR.Application
 
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
             {
-                Aulas = frequenciaAluno.TotalAulas,
+                Aulas = frequenciaAluno?.TotalAulas ?? 0,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100)
+                Frequencia = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? null : null
             };
 
             foreach (var componenteRegencia in componentesRegencia)
@@ -126,10 +126,10 @@ namespace SME.SR.Application
             {
                 Componente = disciplina.Disciplina,
                 EhEja = turma.EhEja,
-                Aulas = frequenciaAluno.TotalAulas,
+                Aulas = frequenciaAluno?.TotalAulas ?? 0,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100),
+                Frequencia = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? null : null,
                 NotaConceito = ObterNotasComponente(disciplina, periodoEscolar, notasFechamentoAluno).FirstOrDefault()?.NotaConceito,
                 NotaPosConselho = ObterNotaPosConselho(disciplina, periodoEscolar?.Bimestre, notasConselhoClasseAluno, notasFechamentoAluno)
             };
