@@ -46,7 +46,7 @@ namespace SME.SR.Application
                     {
                         Componente = disciplina.Disciplina,
                         Faltas = frequenciaDisciplina?.Sum(x => x.TotalAusencias),
-                        Frequencia = frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : 100
+                        Frequencia = frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : (double?)null
                     };
 
                     lstCompSemNota.Add(componenteSemNota);
