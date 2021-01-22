@@ -1,11 +1,10 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Sgp
@@ -33,11 +32,23 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "\"yearClassroom\" AnoTurma, ";
                     sql += "\"classroomCodeEol\" TurmaEolCode ";
                     sql += "from \"PortuguesePolls\" ";
-                    sql += "where \"dreCodeEol\" = @dreCodigo ";
-                    sql += "and \"schoolCodeEol\" = @ueCodigo ";
-                    sql += "and \"classroomCodeEol\" = @turmaCodigo ";
-                    sql += "and \"schoolYear\" = @anoLetivo ";
-                    sql += "and \"yearClassroom\" = @anoTurma ";
+                    sql += "where 1 = 1 ";
+
+                    if (!string.IsNullOrEmpty(dreCodigo) && int.Parse(dreCodigo) > 0)
+                        sql += "and \"dreCodeEol\" = @dreCodigo ";
+
+                    if (!string.IsNullOrEmpty(ueCodigo) && int.Parse(ueCodigo) > 0)
+                        sql += "and \"schoolCodeEol\" = @ueCodigo ";
+
+                    if (!string.IsNullOrEmpty(turmaCodigo))
+                        sql += "and \"classroomCodeEol\" = @turmaCodigo ";
+
+                    if (anoLetivo > 0)
+                        sql += "and \"schoolYear\" = @anoLetivo ";
+
+                    if (anoTurma > 0)
+                        sql += "and \"yearClassroom\" = @anoTurma ";
+
                     break;
                 case ProficienciaSondagemEnum.Autoral:
                     sql += "select distinct sa2.\"CodigoAluno\" AlunoEolCode, sa2.\"NomeAluno\" AlunoNome, sa.\"AnoLetivo\", sa.\"AnoTurma\", sa.\"CodigoTurma\" TurmaEolCode, p.\"Id\" PerguntaId, p.\"Descricao\" Pergunta, r.\"Descricao\" Resposta ";
@@ -51,8 +62,15 @@ namespace SME.SR.Data.Repositories.Sgp
                     sql += "inner join \"Resposta\" r on r.\"Id\" = pr.\"RespostaId\"  ";
                     sql += "inner join \"OrdemPergunta\" op on op.\"GrupoId\" = sa.\"GrupoId\" ";
                     sql += "where sa.\"GrupoId\" = @grupoId ";
-                    sql += "and sa.\"CodigoDre\" = @dreCodigo  ";
-                    sql += "and sa.\"CodigoUe\" = @ueCodigo  ";
+
+                    if(!string.IsNullOrEmpty(dreCodigo) && int.Parse(dreCodigo) > 0)
+                    {
+                        sql += "and sa.\"CodigoDre\" = @dreCodigo  ";
+                    }
+                    if (!string.IsNullOrEmpty(ueCodigo) != null && int.Parse(ueCodigo) > 0)
+                    {
+                        sql += "and sa.\"CodigoUe\" = @ueCodigo  ";
+                    }
                     sql += "and sa.\"CodigoTurma\" = @turmaCodigo ";
                     sql += "and sa.\"AnoLetivo\" = @anoLetivo  ";
                     sql += "and sa.\"AnoTurma\" = @anoTurma ";
@@ -81,6 +99,68 @@ namespace SME.SR.Data.Repositories.Sgp
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
             return await conexao.QueryAsync<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>(sql, parametros);
+        }
+
+        public async Task<IEnumerable<SondagemAutoralPorAlunoDto>> ObterPorFiltros(string grupoId, string componenteCurricularId, string periodoId, int anoLetivo, string codigoTurma)
+        {
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine(@"
+                    select
+                       s.""OrdemId"",
+                       o.""Descricao"" as ""OrdemDescricao"",
+                       sa.""CodigoAluno"",
+                       sa.""NomeAluno"",
+                       p.""Id"" as ""PerguntaId"",
+                       p.""Descricao"" as ""PerguntaDescricao"",
+                       sar.""RespostaId"",
+                       r.""Descricao"" as ""RespostaDescricao""  
+            	from
+            		""SondagemAlunoRespostas"" sar
+            	inner join ""SondagemAluno"" sa on
+            		sa.""Id"" = ""SondagemAlunoId""
+            	inner join ""Sondagem"" s on
+            		s.""Id"" = sa.""SondagemId""
+            	inner join ""Pergunta"" p on
+            		p.""Id"" = sar.""PerguntaId""
+            	inner join ""Resposta"" r on
+            		r.""Id"" = sar.""RespostaId""
+            	inner join ""Periodo"" per on
+            		per.""Id"" = s.""PeriodoId""
+            	inner join ""ComponenteCurricular"" c on
+            		c.""Id"" = s.""ComponenteCurricularId""
+                inner join ""Ordem"" o on
+                    o.""Id"" = s.""OrdemId""
+                where
+            		s.""Id"" in (
+            		select
+            			s.""Id""
+            		from
+            			""Sondagem"" s
+            		where 1 = 1");
+
+            if (!string.IsNullOrEmpty(grupoId))
+                query.AppendLine(" and s.\"GrupoId\" = @GrupoId");
+
+            if (!string.IsNullOrEmpty(componenteCurricularId))
+                query.AppendLine(" and s.\"ComponenteCurricularId\" = @ComponenteCurricularId");
+
+            if (!string.IsNullOrEmpty(periodoId))
+                query.AppendLine(" and s.\"PeriodoId\" = @PeriodoId");
+
+            if(anoLetivo > 0)
+                query.AppendLine(" and s.\"AnoLetivo\" = @AnoLetivo");
+
+            if (!string.IsNullOrEmpty(codigoTurma))
+                query.AppendLine(" and s.\"CodigoTurma\" = @CodigoTurma");
+
+            query.AppendLine(")");
+
+            var parametros = new { grupoId, componenteCurricularId, periodoId, anoLetivo, codigoTurma };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryAsync<SondagemAutoralPorAlunoDto>(query.ToString(), parametros);
         }
     }
 }

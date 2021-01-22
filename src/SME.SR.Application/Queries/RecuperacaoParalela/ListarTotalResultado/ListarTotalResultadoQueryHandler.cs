@@ -150,6 +150,8 @@ namespace SME.SR.Application
                 listaRetorno.Add(new ResumoPAPResultadoRespostaDto
                 {
                     RespostaDescricao = resposta.RespostaDescricao,
+                    RespostaNome = resposta.RespostaNome,
+                    Ordem = resposta.RespostaOrdem,
                     RespostaId = resposta.RespostaId
                 });
             }

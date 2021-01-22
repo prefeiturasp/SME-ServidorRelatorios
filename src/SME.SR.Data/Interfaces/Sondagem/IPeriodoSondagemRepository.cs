@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SME.SR.Infra;
+using System;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -7,5 +8,6 @@ namespace SME.SR.Data
     {
         Task<DateTime> ObterPeriodoFixoFimPorSemestreAnoLetivo(string semestreDescricao, int anoLetivo);
         Task<DateTime> ObterPeriodoAberturaFimPorBimestreAnoLetivo(int bimestre, int anoLetivo);
+        Task<PeriodoSondagem> ObterPeriodoPorTipo(int periodo, TipoPeriodoSondagem tipoPeriodo);
     }
 }

@@ -141,6 +141,22 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<Guid>> ObterPerfisUsuarioPorRf(string usuarioRf)
+        {
+            var query = @"SELECT UsGrup.Gru_Id
+                          FROM SYS_UsuarioGrupo UsGrup 
+                         INNER JOIN SYS_Grupo Grupo ON Grupo.gru_id = UsGrup.gru_id
+                         INNER JOIN sys_usuario u on u.usu_id = UsGrup.usu_id
+                         WHERE Grupo.sis_id = 1000
+                           and u.usu_login = @usuarioRf
+                           and usg_situacao = 1";
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringCoreSso))
+            {
+                return await conexao.QueryAsync<Guid>(query, new { usuarioRf });
+            }
+        }
+
         protected string MontaQueryObterFuncionariosPorCargoUe(string query, string where, string order = "")
         {
             var sb = new StringBuilder();

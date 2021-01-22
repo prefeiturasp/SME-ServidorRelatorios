@@ -12,5 +12,6 @@ namespace SME.SR.Infra
         {
             Planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();
         }
+        public List<GraficoBarrasVerticalDto> GraficosBarras { get; set; }
     }
 }

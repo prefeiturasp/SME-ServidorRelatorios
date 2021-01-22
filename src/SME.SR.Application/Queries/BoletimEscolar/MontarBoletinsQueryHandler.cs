@@ -12,6 +12,13 @@ namespace SME.SR.Application
 {
     public class MontarBoletinsQueryHandler : IRequestHandler<MontarBoletinsQuery, BoletimEscolarDto>
     {
+        private readonly IMediator mediator;
+
+        public MontarBoletinsQueryHandler(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
+
         public async Task<BoletimEscolarDto> Handle(MontarBoletinsQuery request, CancellationToken cancellationToken)
         {
             var turmas = request.Turmas;
@@ -71,7 +78,7 @@ namespace SME.SR.Application
 
         private List<GrupoMatrizComponenteCurricularDto> MapearGruposEComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma)
         {
-            var gruposMatrizes = componentesCurricularesPorTurma.GroupBy(cc => cc.GrupoMatriz).ToList();
+            var gruposMatrizes = componentesCurricularesPorTurma.GroupBy(cc => cc.GrupoMatriz).ToList();          
 
             var gruposRetorno = new List<GrupoMatrizComponenteCurricularDto>();
 

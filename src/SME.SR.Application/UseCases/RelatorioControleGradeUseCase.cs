@@ -28,6 +28,7 @@ namespace SME.SR.Application
                         await mediator.Send(new GerarRelatorioControleGradeSinteticoCommand(filtros, request.CodigoCorrelacao));
                         break;
                     case ModeloRelatorio.Analitico:
+                        await mediator.Send(new GerarRelatorioControleGradeAnaliticoCommand(filtros, request.CodigoCorrelacao));
                         break;
                     default:
                         break;

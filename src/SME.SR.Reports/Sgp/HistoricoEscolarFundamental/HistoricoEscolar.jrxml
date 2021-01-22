@@ -99,6 +99,10 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="historicoEscolar.enriquecimentoCurricular"/>
 		<fieldDescription><![CDATA[historicoEscolar.enriquecimentoCurricular]]></fieldDescription>
 	</field>
+	<field name="estudosRealizados" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="estudosRealizados"/>
+		<fieldDescription><![CDATA[estudosRealizados]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -255,7 +259,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="113" splitType="Stretch">
+		<band height="128" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField textAdjust="StretchHeight">
 				<reportElement mode="Opaque" x="0" y="0" width="555" height="22" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="16e02bde-f672-481c-ae42-5b22c9c2a999">
@@ -283,7 +287,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["ContainerHistorico.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="37" width="555" height="28" isRemoveLineWhenBlank="true" uuid="79e42fcf-8f9f-46dd-abe3-20af516c8270">
+				<reportElement positionType="Float" x="0" y="52" width="555" height="28" isRemoveLineWhenBlank="true" uuid="79e42fcf-8f9f-46dd-abe3-20af516c8270">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -295,7 +299,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["HistoricoTransferencia.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement positionType="Float" x="0" y="65" width="555" height="15" isRemoveLineWhenBlank="true" uuid="a2611e0a-4693-4b59-b699-721d54eecdae">
+				<reportElement positionType="Float" x="0" y="80" width="555" height="15" isRemoveLineWhenBlank="true" uuid="a2611e0a-4693-4b59-b699-721d54eecdae">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -307,7 +311,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA[$F{legenda}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="80" width="555" height="31" isRemoveLineWhenBlank="true" uuid="267f04ba-0d48-48d8-be67-9a8e0ab182fe">
+				<reportElement positionType="Float" x="0" y="95" width="555" height="31" isRemoveLineWhenBlank="true" uuid="267f04ba-0d48-48d8-be67-9a8e0ab182fe">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -318,11 +322,24 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<subreportExpression><![CDATA["Observacoes.jasper"]]></subreportExpression>
 			</subreport>
 			<break>
-				<reportElement positionType="Float" x="0" y="112" width="554" height="1" isRemoveLineWhenBlank="true" uuid="cad02731-9011-4134-892f-214afca72fcb">
+				<reportElement positionType="Float" x="0" y="127" width="554" height="1" isRemoveLineWhenBlank="true" uuid="cad02731-9011-4134-892f-214afca72fcb">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 			</break>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="37" width="555" height="15" isRemoveLineWhenBlank="true" uuid="d11db2d9-2a6c-4f80-b69c-c4476b929a66">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$F{estudosRealizados} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["EstudosRealizados.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 	<pageFooter>
