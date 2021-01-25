@@ -66,7 +66,9 @@ namespace SME.SR.JRSClient.Services
                     SentrySdk.CaptureMessage("6.1 - ExecucaoRelatorioService - Sucesso ao executar envio do relatório");
                     return retorno.Content;
                 }
-                SentrySdk.CaptureMessage($"10.1 - Retorno da requisição - {retorno}");
+                SentrySdk.CaptureMessage($"10.1 - Retorno da requisição - {retorno.Content}");
+
+                SentrySdk.CaptureMessage($"10.2 - Retorno da requisição - {retorno.StatusCode}");
 
                 return default;
 
