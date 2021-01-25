@@ -54,11 +54,11 @@ namespace SME.SR.JRSClient.Services
 
                 var conteudoJson = $"{requisicao.Parametros.ParametrosRelatorio.FirstOrDefault().Nome} / {requisicao.Parametros.ParametrosRelatorio[0].Valor.FirstOrDefault()}";
 
-                SentrySdk.CaptureMessage($"9.8 - Conteudo json - {conteudoJson}");
+                SentrySdk.CaptureMessage($"9.9 - Conteudo json - {conteudoJson}");
 
                 var usuarioESenha64 = ObterUsuarioSenhaBase64();
 
-                SentrySdk.CaptureMessage($"9.9 - Usuario e senha Base 64 - {usuarioESenha64}");
+                SentrySdk.CaptureMessage($"10.0 - Usuario e senha Base 64 - {usuarioESenha64}");
 
                 var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
                 if (retorno.IsSuccessStatusCode)
@@ -66,7 +66,7 @@ namespace SME.SR.JRSClient.Services
                     SentrySdk.CaptureMessage("6.1 - ExecucaoRelatorioService - Sucesso ao executar envio do relatório");
                     return retorno.Content;
                 }
-                SentrySdk.CaptureMessage($"9.9 - Retorno da requisição - {retorno}");
+                SentrySdk.CaptureMessage($"10.1 - Retorno da requisição - {retorno}");
 
                 return default;
 
