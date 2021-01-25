@@ -7,6 +7,7 @@ using SME.SR.JRSClient.Extensions;
 using SME.SR.JRSClient.Grupos;
 using SME.SR.JRSClient.Interfaces;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -48,6 +49,16 @@ namespace SME.SR.JRSClient.Services
                     jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
 
                 SentrySdk.AddBreadcrumb("Obtendo PostExecucaoRelatorioAsync", "6.1 - ExecucaoRelatorioService");
+                                
+                SentrySdk.CaptureMessage($"9.8 - URI - {requisicao.UnidadeRelatorioUri}");
+
+                var conteudoJson = $"{requisicao.Parametros.ParametrosRelatorio.FirstOrDefault().Nome} / {requisicao.Parametros.ParametrosRelatorio[0].Valor.FirstOrDefault()}";
+
+                SentrySdk.CaptureMessage($"9.8 - Conteudo json - {conteudoJson}");
+
+                var usuarioESenha64 = ObterUsuarioSenhaBase64();
+
+                SentrySdk.CaptureMessage($"9.9 - Usuario e senha Base 64 - {usuarioESenha64}");
 
                 var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
                 if (retorno.IsSuccessStatusCode)
@@ -55,6 +66,8 @@ namespace SME.SR.JRSClient.Services
                     SentrySdk.CaptureMessage("6.1 - ExecucaoRelatorioService - Sucesso ao executar envio do relatório");
                     return retorno.Content;
                 }
+                SentrySdk.CaptureMessage($"9.9 - Retorno da requisição - {retorno}");
+
                 return default;
 
             }
