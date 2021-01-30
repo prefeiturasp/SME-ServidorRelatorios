@@ -15,6 +15,20 @@
         and codigo_aluno = @codigoAluno
         and fa.turma_id = @codigoTurma";
 
+        internal static string FrequenciGlobalPorBimestre = @"select pe.bimestre,
+  	            coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal
+          	from tipo_calendario tc 
+          		inner join periodo_escolar pe
+          			on tc.id = pe.tipo_calendario_id 
+          		left join frequencia_aluno fa
+          			on pe.id = fa.periodo_escolar_id and
+          			   fa.tipo = 2 and
+          	    	   fa.codigo_aluno = @codigoAluno and
+          	    	   fa.turma_id = @codigoTurma  				
+          where tc.ano_letivo = @anoLetivo and
+          	    tc.modalidade = @modalidade
+          group by pe.bimestre;";
+
         internal static string FrequenciaPorAlunoDataDisciplina = @$"select {CamposFrequencia}
                         from frequencia_aluno
                         where

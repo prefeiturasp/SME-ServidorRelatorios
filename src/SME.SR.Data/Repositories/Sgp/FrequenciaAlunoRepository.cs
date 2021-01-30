@@ -43,12 +43,21 @@ namespace SME.SR.Data
         }
 
         public async Task<double> ObterFrequenciaGlobal(string codigoTurma, string codigoAluno)
-        {
-            var query = FrequenciaAlunoConsultas.FrequenciaGlobal;
-            var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
-
+        {            
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryFirstOrDefaultAsync<double>(query, parametros);
+
+            var turma = await conexao.QueryFirstAsync<Turma>(TurmaConsultas.TurmaPorCodigo, new { codigoTurma });                        
+
+            if (turma.AnoLetivo.Equals(2020))
+            {                                          
+                var percentuais = await conexao.QueryAsync<(int, double)>(FrequenciaAlunoConsultas.FrequenciGlobalPorBimestre, 
+                    new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno, turma.AnoLetivo, modalidade = turma.ModalidadeTipoCalendario });
+
+                return percentuais.Any() ? Math.Round(percentuais.Sum(p => p.Item2) / percentuais.Count(), 2) : 100;
+            }
+
+            var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
+            return await conexao.QueryFirstOrDefaultAsync<double>(FrequenciaAlunoConsultas.FrequenciaGlobal, parametros);
 
         }
 
