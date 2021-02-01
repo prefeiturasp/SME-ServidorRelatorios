@@ -21,6 +21,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<GrupoMatrizComponenteSemNotaFinal>> Handle(ObterDadosComponenteSemNotaFinalQuery request, CancellationToken cancellationToken)
         {
             var disciplinasPorTurma = await ObterComponentesCurricularesPorTurma(request.CodigoTurma);
+            var turma = await mediator.Send(new ObterTurmaQuery(request.CodigoTurma));
 
             var lstComponentesSemNota = disciplinasPorTurma.Where(x => !x.LancaNota && x.GrupoMatriz != null)
                                               .GroupBy(c => new { c.GrupoMatriz?.Id, c.GrupoMatriz?.Nome });
@@ -41,10 +42,10 @@ namespace SME.SR.Application
                 foreach (var disciplina in grupoDisciplinasMatriz)
                 {
                     var frequenciaDisciplina = frequenciaAluno.Where(x =>
-                        x.DisciplinaId == disciplina.CodDisciplina.ToString());
+                        x.DisciplinaId == disciplina.CodDisciplina.ToString());                   
 
-                    var percentualFrequencia = frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : (double?)null;
-
+                    var percentualFrequencia = frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : 100;                                        
+                    
                     var sintese = percentualFrequencia >=
                                     await ObterFrequenciaMediaPorComponenteCurricular(disciplina.Regencia,
                                                                                       disciplina.LancaNota) ?

@@ -60,6 +60,9 @@ namespace SME.SR.Application
                                                                                     periodoEscolarTurma.Bimestre,
                                                                                     TipoFrequenciaAluno.PorDisciplina,
                                                                                     request.ComponenteCurricularCodigo);
+
+                    frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolarTurma.Bimestre, frequenciaAlunoPeriodo != null ? frequenciaAlunoPeriodo.PercentualFrequencia : 100);
+
                     if (frequenciaAlunoPeriodo != null)
                     {
                         frequenciaAluno.Id = frequenciaAlunoPeriodo.Id;
