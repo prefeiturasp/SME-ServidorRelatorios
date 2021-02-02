@@ -172,6 +172,8 @@ namespace SME.SR.Application
                 {
                     foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                     {
+                        var frequenciasComponente = frequencia?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
+
                         if (componenteCurricular.Nota)
                         {
                             var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == componenteCurricular.Codigo) ?? null;
@@ -183,21 +185,19 @@ namespace SME.SR.Application
 
                             componenteCurricular.NotaFinal = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito?.NotaConceito;
                         }
+                        else
+                            componenteCurricular.NotaFinal = ObterSintese(frequenciasComponente, mediasFrequencia, false, false);
+
 
                         if (componenteCurricular.Frequencia)
                         {
-                            var frequenciasComponente = frequencia?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
-
                             componenteCurricular.FrequenciaBimestre1 = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == 1)?.PercentualFrequencia.ToString() ?? "100";
                             componenteCurricular.FrequenciaBimestre2 = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == 2)?.PercentualFrequencia.ToString() ?? "100";
                             componenteCurricular.FrequenciaBimestre3 = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == 3)?.PercentualFrequencia.ToString() ?? "100";
-                            componenteCurricular.FrequenciaBimestre4 = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == 4)?.PercentualFrequencia.ToString() ?? "100";
-
-                            componenteCurricular.FrequenciaFinal = ObterFrequenciaFinalAluno(frequenciasComponente);
-
-                            if (!componenteCurricular.Nota)
-                                componenteCurricular.NotaFinal = ObterSintese(frequenciasComponente, mediasFrequencia, false, false);
+                            componenteCurricular.FrequenciaBimestre4 = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == 4)?.PercentualFrequencia.ToString() ?? "100";                            
                         }
+
+                        componenteCurricular.FrequenciaFinal = ObterFrequenciaFinalAluno(frequenciasComponente);
                     }
                 }
             }
