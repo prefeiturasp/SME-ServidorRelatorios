@@ -139,6 +139,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/graficopap")]
+        [Action("relatorios/graficopap", typeof(IRelatorioGraficoPAPUseCase))]
+        public async Task<bool> RelatorioGraficoPAP([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGraficoPAPUseCase relatorioGraficoPAPUseCase)
+        {
+            await relatorioGraficoPAPUseCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorios/planoaula")]
         [Action("relatorios/planoaula", typeof(IRelatorioPlanoAulaUseCase))]
         public async Task<bool> RelatorioPlanoAula([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAulaUseCase relatorioPlanoAulaUseCase)
@@ -150,6 +158,62 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpGet("relatorios/controle-grade")]
         [Action("relatorios/controle-grade", typeof(IRelatorioControleGradeUseCase))]
         public async Task<bool> ControleGrade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioControleGradeUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/usuarios")]
+        [Action("relatorios/usuarios", typeof(IRelatorioUsuariosUseCase))]
+        public async Task<bool> Usuarios([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioUsuariosUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/notificacoes")]
+        [Action("relatorios/notificacoes", typeof(IRelatorioNotificacaoUseCase))]
+        public async Task<bool> ControleGrade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioNotificacaoUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/atribuicoes-cj")]
+        [Action("relatorios/atribuicoes-cj", typeof(IRelatorioAtribuicaoCJUseCase))]
+        public async Task<bool> AtribuicoesCJ([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAtribuicaoCJUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/alteracao-notas")]
+        [Action("relatorios/alteracao-notas", typeof(IRelatorioAlteracaoNotasUseCase))]
+        public async Task<bool> AlteracaoNotasBimestre([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAlteracaoNotasUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/ae/adesao")]
+        [Action("relatorios/ae/adesao", typeof(IRelatorioAdesaoAppUseCase))]
+        public async Task<bool> AdesaoApp([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAdesaoAppUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/dados-leitura")]
+        [Action("relatorios/dados-leitura", typeof(IRelatorioLeituraComunicadosUseCase))]
+        public async Task<bool> LeituraComunicados([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioLeituraComunicadosUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/planejamento-diario")]
+        [Action("relatorios/planejamento-diario", typeof(IRelatorioPlanejamentoDiarioUseCase))]
+        public async Task<bool> PlanejamentoDiario([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanejamentoDiarioUseCase relatorioUseCase)
         {
             await relatorioUseCase.Executar(request);
             return true;

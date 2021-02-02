@@ -17,6 +17,7 @@ namespace SME.SR.Infra
         public int ValorCondicao { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
         public string NomeUsuario { get; set; }
-        public string CodigoRf { get; set; }
+        public string CodigoRf { get; set; }        
+        public bool TurmasPrograma { get; set; }        
     }
 }

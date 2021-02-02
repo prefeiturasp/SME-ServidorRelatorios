@@ -45,23 +45,23 @@
 
     function ChartSettings_@(Model.IdParaLastro)() {
         svgMargin_@(Model.IdParaLastro) = 20;
-        svgSpace_@(Model.IdParaLastro) = 60;
+        svgSpace_@(Model.IdParaLastro) = (studentexamdata_@(Model.IdParaLastro).length * 12) + 85;
 
-        svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
-        svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - 2 * svgMargin_@(Model.IdParaLastro) - svgSpace_@(Model.IdParaLastro);
+        svgHeight_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).height.baseVal.value - ((svg_@(Model.IdParaLastro).height.baseVal.value/100) * 33);
+        svgWidth_@(Model.IdParaLastro) = svg_@(Model.IdParaLastro).width.baseVal.value - svgSpace_@(Model.IdParaLastro) - 45;
 
         MarginSpace_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgSpace_@(Model.IdParaLastro);
         MarginHeight_@(Model.IdParaLastro) = svgMargin_@(Model.IdParaLastro) + svgHeight_@(Model.IdParaLastro);
 
-        barchartMargin_@(Model.IdParaLastro) = 15;
+        barchartMargin_@(Model.IdParaLastro) = 10;
         totalChartBars_@(Model.IdParaLastro) = studentexamdata_@(Model.IdParaLastro).length;
         barchartWidth_@(Model.IdParaLastro) = (svgWidth_@(Model.IdParaLastro) / totalChartBars_@(Model.IdParaLastro)) - barchartMargin_@(Model.IdParaLastro);
 
         maximumDataValue_@(Model.IdParaLastro) = @(Model.EixoYConfiguracao.ValorMaximoEixo);
-        
-        
+
+
         LabelOnYAxis_@(Model.IdParaLastro) = @(Model.EixoYConfiguracao.DivisoesDoEixo);
-        
+
         }
 
     function drawAxis_@(Model.IdParaLastro)() {
@@ -82,55 +82,28 @@
         newdataAxis.style.strokeWidth = "2px";
 
         svg_@(Model.IdParaLastro).appendChild(newdataAxis);
-        </text>
-    }
+
     }
 
     function drawMarkers_@(Model.IdParaLastro)(x1) {
-        @*var labelForLoop = LabelOnYAxis_@(Model.IdParaLastro)
-        var numberMarkers = parseInt(maximumDataValue_@(Model.IdParaLastro) / LabelOnYAxis_@(Model.IdParaLastro));
-        
-        
-         for (var i = 0; i < labelForLoop + 1; i++)
-         {
-             @{
-                 <text>
+      //Legendas  verticais
+        var textelementLegenda = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 
-                markerVal_@(Model.IdParaLastro) = i * numberMarkers;
-                markerValHt_@(Model.IdParaLastro) = i * numberMarkers * svgHeight_@(Model.IdParaLastro);
-                var xaxisMarkers = MarginSpace_@(Model.IdParaLastro) - 5;
-                var yaxisMarkers = MarginHeight_@(Model.IdParaLastro) - (markerValHt_@(Model.IdParaLastro) / maximumDataValue_@(Model.IdParaLastro));
-                textelement = document.createElementNS("http://www.w3.org/2000/svg", 'text');
-                textelement.setAttribute('dx', xaxisMarkers-30);
+        textelementLegenda.setAttributeNS(null, 'transform', 'rotate(-90) translate(' + - 250 + ' , ' + 10 + ')');
 
-                textelement.setAttribute('dy',yaxisMarkers + 5);
-                txtnode = document.createTextNode(markerVal_@(Model.IdParaLastro));
-                textelement.appendChild(txtnode);
+        textelementLegenda.setAttributeNS(null, 'font-size', 13);
+        textelementLegenda.setAttributeNS(null, 'font-weight', 'bold');
+        var txtnodeLegenda = document.createTextNode('Legendas');
+        textelementLegenda.appendChild(txtnodeLegenda);
+        svg_@(Model.IdParaLastro).appendChild(textelementLegenda);
 
-                svg_@(Model.IdParaLastro).appendChild(textelement);
+        //Texts Legendas
 
+        svg_@(Model.IdParaLastro).appendChild(createSVGtextLegendas('@Html.Raw(Model.DescricaoLegenda)', 265, -250));
 
-                var newdataAxis = document.createElementNS("http://www.w3.org/2000/svg", 'line');
-                newdataAxis.setAttribute("x1", x1);
-                newdataAxis.setAttribute("y1", yaxisMarkers);
-                newdataAxis.setAttribute("x2", 1000);
-                newdataAxis.setAttribute("y2", yaxisMarkers);
-                newdataAxis.setAttribute("stroke-dasharray", "5, 5");
-                newdataAxis.style.stroke = "gray";
-             newdataAxis.style.strokeWidth = "1px";
-
-                    svg_@(Model.IdParaLastro).appendChild(newdataAxis);
-            </text>
-
-        }*@
-
-             @{
-                    <text>
         var totalChartBarsForLoop = totalChartBars_@(Model.IdParaLastro)
                  </text>
                  }
-
-       
 
             for (var i = 0; i < totalChartBarsForLoop; i++)
             {
@@ -142,17 +115,65 @@
                 markerYPosition = MarginHeight_@(Model.IdParaLastro) + 20 ;
                 //textelement = document.createElementNS("http://www.w3.org/2000/svg", 'text');
                 var elementText = createSVGtext(name, markerXPosition, markerYPosition)
-                </text>
-                       }
 
-               @{
-                   <text>
 
                 svg_@(Model.IdParaLastro).appendChild(elementText);
 
 
             }
+    }
+
+    function createSVGtextLegendas(caption, x, y) {
+
+        //  This function attempts to create a new svg "text" element, chopping
+        //  it up into "tspan" pieces, if the caption is too long
+        //
+        var svgSwitch = document.createElementNS('http://www.w3.org/2000/svg', 'switch');
+        svgSwitch.setAttributeNS(null, 'transform', 'rotate(-90) translate(' + y + ' , ' + x + ')');
+        svgSwitch.setAttributeNS(null, 'font-size', 10);
+        svgSwitch.setAttribute('width', 250);
+        svgSwitch.setAttribute('height', 200);
+
+        var svgForeignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+        svgForeignObject.setAttributeNS(null, 'x', 0);
+        svgForeignObject.setAttributeNS(null, 'y', y);
+        svgForeignObject.setAttribute('width', 250);
+        svgForeignObject.setAttribute('height', 200);
+
+        //  The following two variables should really be passed as parameters
+        var LINE_HEIGHT = 12;
+
+        var words = caption.split("||");
+        var line = "";
+        var svgDiv = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+
+        for (var n = 0; n < words.length; n++) {
+            //if (testLine.length > MAXIMUM_CHARS_PER_LINE) {
+            //  Add a new <tspan> element
+            var svgP = document.createElementNS('http://www.w3.org/1999/xhtml', 'p');
+            svgP.setAttributeNS(null, 'style', 'margin-bottom: 2px; margin-top: 2px;');
+
+            var tSpanTextNode = document.createTextNode(line);
+            svgP.appendChild(tSpanTextNode);
+
+            svgForeignObject.appendChild(svgP);
+
+                line = words[n] + " ";
+                y += LINE_HEIGHT;
+            //}
         }
+
+        var svgP = document.createElementNS('http://www.w3.org/1999/xhtml', 'p');
+        svgP.setAttributeNS(null, 'style', 'margin-bottom: 2px; margin-top: 2px;');
+        var tSpanTextNode = document.createTextNode(line);
+        svgP.appendChild(tSpanTextNode);
+        svgForeignObject.appendChild(svgP);
+
+        svgSwitch.appendChild(svgForeignObject);
+
+        return svgSwitch;
+    }
+
  function createSVGtext(caption, x, y) {
     //  This function attempts to create a new svg "text" element, chopping
     //  it up into "tspan" pieces, if the caption is too long
@@ -214,10 +235,10 @@
         svg_@(Model.IdParaLastro).appendChild(rect);
 
         //Novo Marcador para exibir numero acima
-        var arrVal = studentexamdata_@(Model.IdParaLastro)[i].split(",");                
-        var valueOfTextY = arrVal[1];                                        
+        var arrVal = studentexamdata_@(Model.IdParaLastro)[i].split(",");
+        var valueOfTextY = arrVal[1];
         var elementNewTextY = createSVGtext(valueOfTextY, x + (wd/2), y - 2)
-        
+
         svg_@(Model.IdParaLastro).appendChild(elementNewTextY);
 
     }
@@ -262,7 +283,7 @@
 
     <text>
         <div id="chartcontainer_@(Model.IdParaLastro)" style="text-align:left">
-            <h2 style="text-align:center">@(Model.Titulo)</h2>
+            <h2 style="text-align:center; margin-top: 0; margin-bottom: 5px; font-weight: lighter;">@(Model.Titulo)</h2>
             <svg id="svgcontainer_@(Model.IdParaLastro)" height="@Model.EixoYConfiguracao.ValorTotalAltura" width="@(Model.LarguraTotal - 50)">
             </svg>
     </text>

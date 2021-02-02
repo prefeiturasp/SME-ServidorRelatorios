@@ -1,0 +1,666 @@
+﻿@model SME.SR.Infra.RelatorioUsuarioDto
+
+@{ int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 47;
+    int contadorPagina = 0;
+    bool realizouQuebra = false;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always' />" + str;
+
+        }
+        return string.Empty;
+
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+
+        var str = $@"<div>
+                  <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+                </div>
+                <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+                <div class='titulo-plano-aula'>
+                   <p style='margin-bottom: 0'>RELATÓRIO DE USUÁRIOS</p>
+                    <div class='fonte-14 header-pagina'>
+                        <table >
+                          <tbody>
+                            <tr>
+                              <td width ='50%'>DRE: {Model.Filtro.Dre}</td>
+                              <td width ='50%'>UE: {Model.Filtro.Ue}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td class='campo-usuario'>USUÁRIO: {Model.Filtro.Usuario}</td>
+                              <td class='campo-rf-data'>RF: {Model.Filtro.RF}</td>
+                              <td class='campo-data-cabecalho'>DATA: {Model.Filtro.Data:dd/MM/yyyy}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>";
+
+        return str;
+    }
+
+    string MontarEstrutura()
+    {
+        var str = "";
+        var retornoVerificacao = string.Empty;
+
+        if (Model.DadosRelatorio.PerfisSme != null && Model.DadosRelatorio.PerfisSme.Any())
+        {
+            foreach (var perfil in Model.DadosRelatorio.PerfisSme)
+            {
+                str += MontarCabecalhoPerfil(perfil.Nome);
+                var ultimoUsuario = perfil.Usuarios.LastOrDefault();
+                var EhUltimoUsuario = false;
+                foreach (var usuario in perfil.Usuarios)
+                {
+                    str += $@"<tr>
+                        <td width='10%' class='td-valor'>{usuario.Login}</td>
+                        <td width='40%' class='td-valor'>{usuario.Nome}</td>
+                        <td width='20%' class='td-valor'>{usuario.Situacao}</td>
+                        <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                        </tr>";
+
+                    contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
+
+                    retornoVerificacao = VerificaQuebra();
+                    if (retornoVerificacao != string.Empty)
+                    {
+                        if (!usuario.Nome.Equals(ultimoUsuario.Nome) && !usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                        {
+                            str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
+                        }
+                        else
+                        {
+                            str += $@"</table>{retornoVerificacao}<table class='fixed'>";
+                            EhUltimoUsuario = true;
+                        }
+                    }
+                    else if (usuario.Nome.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                    {
+                        EhUltimoUsuario = true;
+                    }
+                }
+                str += $@"</table>";
+                if (!EhUltimoUsuario)
+                    str += LinhaEmBranco();
+            }
+        }
+
+
+        if (Model.DadosRelatorio.Dres != null && Model.DadosRelatorio.Dres.Any())
+        {
+            var ultimaDre = Model.DadosRelatorio.Dres.Last();
+            foreach (var dre in Model.DadosRelatorio.Dres)
+            {
+                if (!dre.Perfis.Any())
+                    continue;
+                str += MontaCabecalhoDRE(dre.Nome, contadorQuebrarPagina);
+
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                if (dre.Perfis != null && dre.Perfis.Any())
+                {
+                    foreach (var perfil in dre.Perfis)
+                    {
+                        str += MontarCabecalhoPerfil(perfil.Nome);
+                        var ultimoUsuario = perfil.Usuarios.LastOrDefault();
+                        var EhUltimoUsuario = false;
+                        foreach (var usuario in perfil.Usuarios)
+                        {
+
+                            str += $@"<tr>
+                                        <td width='10%' class='td-valor'>{usuario.Login}</td>
+                                        <td width='40%' class='td-valor'>{usuario.Nome}</td>
+                                        <td width='20%' class='td-valor'>{usuario.Situacao}</td>
+                                        <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                                      </tr>";
+
+                            contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
+
+                            retornoVerificacao = VerificaQuebra();
+                            if (retornoVerificacao != string.Empty)
+                            {
+                                if (!usuario.Nome.Equals(ultimoUsuario.Nome) && !usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                                {
+                                    str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
+                                }
+                                else
+                                {
+                                    str += $@"</table>{retornoVerificacao}<table class='fixed'>";
+                                    EhUltimoUsuario = true;
+                                }
+                            }
+                            else if (usuario.Nome.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                            {
+                                EhUltimoUsuario = true;
+                            }
+                        }
+                        str += $@"</table>";
+                        if (!EhUltimoUsuario)
+                            str += LinhaEmBranco();
+                    }
+                }
+
+                if (dre.Ues != null && dre.Ues.Any())
+                {
+                    var EhUltimaUe = false;
+                    var ultimaUe = dre.Ues.LastOrDefault(a => a.Professores.Any());
+                    foreach (var ue in dre.Ues)
+                    {
+                        if (!ue.Professores.Any() && !ue.Perfis.Any(a => a.Usuarios.Any()))
+                            continue;
+                        str += MontaCabecalhoUE(ue.Nome);
+                        if (ue.Perfis != null)
+                            foreach (var perfil in ue.Perfis)
+                            {
+                                var ultimoUsuario = perfil.Usuarios.LastOrDefault();
+                                var EhUltimoUsuario = false;
+                                str += MontarCabecalhoPerfil(perfil.Nome);
+                                foreach (var usuario in perfil.Usuarios)
+                                {
+
+                                    str += $@"<tr>
+                                            <td width='10%' class='td-valor'>{usuario.Login}</td>
+                                            <td width='40%' class='td-valor'>{usuario.Nome}</td>
+                                            <td width='20%' class='td-valor'>{usuario.Situacao}</td>
+                                            <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                                          </tr>";
+
+                                    contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
+
+                                    retornoVerificacao = VerificaQuebra();
+                                    if (retornoVerificacao != string.Empty)
+                                    {
+                                        if (!usuario.Nome.Equals(ultimoUsuario.Nome) && !usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                                        {
+                                            str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
+                                        }
+                                        else
+                                        {
+                                            str += $@"</table>{retornoVerificacao}<table class='fixed'>";
+                                            EhUltimoUsuario = true;
+                                        }
+                                    }
+                                    else if (usuario.Nome.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                                    {
+                                        EhUltimoUsuario = true;
+                                    }
+                                }
+                                str += $@"</table>";
+                                if (!EhUltimoUsuario)
+                                {
+                                    str += LinhaEmBranco();
+                                    EhUltimoUsuario = false;
+                                }
+                            }
+                        if (!ue.Professores.Any())
+                            continue;
+                        str += MontarCabecalhoProfessor();
+                        var ultimoProfessor = ue.Professores.LastOrDefault();
+                        var EhUltimoProfessor = false;
+                        foreach (var professor in ue.Professores)
+                        {
+                            str += $@"<tr>
+                                    <td width='20%' class='td-valor'>{professor.Login}</td>
+                                    <td width='30%' class='td-valor'>{professor.Nome}</td>
+                                    <td width='20%' class='td-valor'>{professor.Situacao}</td>
+                                    <td width='30%' class='td-valor'>{professor.UltimoAcesso}</td>
+                                    <td width='30%' class='td-valor'>{professor.UltimaAulaRegistrada}</td>
+                                    <td width='30%' class='td-valor'>{professor.UltimoPlanoAulaRegistrado}</td>
+                                    <td width='30%' class='td-valor'>{professor.UltimaFrequenciaRegistrada}</td>
+                                  </tr>";
+
+                            contadorQuebrarPagina = contadorQuebrarPagina + (professor.Nome.Length > 16 ? (int)(professor.Nome.Length / 16) + 1 : 1);
+
+                            retornoVerificacao = VerificaQuebra();
+                            if (retornoVerificacao != string.Empty)
+                            {
+                                if (!professor.Nome.Equals(ultimoProfessor.Nome) && !professor.UltimoAcesso.Equals(ultimoProfessor.UltimoAcesso))
+                                {
+                                    str += $@"</table>{retornoVerificacao}{MontarCabecalhoProfessor()}";
+                                    realizouQuebra = true;
+                                }
+                                else
+                                {
+                                    str += $@"</table>{retornoVerificacao}<table class='fixed'>";
+                                    EhUltimoProfessor = true;
+                                    realizouQuebra = true;
+                                }
+
+                            }
+
+                            if (professor.Nome.Equals(ultimoProfessor.Nome) && professor.UltimoAcesso.Equals(ultimoProfessor.UltimoAcesso))
+                                EhUltimoProfessor = true;
+                        }
+                        if (ue.Nome.Equals(ultimaUe.Nome))
+                            EhUltimaUe = true;
+                        str += $@"</table>";
+                        if (contadorQuebrarPagina != 8)
+                        {
+                            if (!EhUltimaUe)
+                                str += LinhaEmBranco();
+
+                        }
+
+                    }
+                }
+
+                if (dre.HistoricoReinicioSenha != null)
+                {
+                    var ultimohistorico = dre.HistoricoReinicioSenha.LastOrDefault();
+                    var EhUltimohistorico = false;
+                    if (ultimohistorico != null)
+                    {
+                        str += MontarCabecalhoHistoricoReinicioSenha();
+                        foreach (var historico in dre.HistoricoReinicioSenha)
+                        {
+                            str += $@"<tr>
+                                       <td width='8%' class='td-valor-historico'>{historico.Login}</td>
+                                       <td width='24%' class='td-valor-historico'>{historico.Nome}</td>
+                                       <td width='15%' class='td-valor-historico'>{historico.Perfil}</td>
+                                       <td width='45%' class='td-valor-historico'>{historico.SenhaReiniciada} - {historico.SenhaReiniciadaPor} ({historico.SenhaReiniciadaPorRf}) - {historico.SenhaReiniciadaPorPerfil}</td>
+                                       <td width='8%' class='td-valor-historico'>{historico.UtilizaSenhaPadao}</td>
+                                     </tr>";
+                                                        
+
+                            if (historico.Nome != null && historico.Nome.Length > 40)
+                            {
+                                contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.Nome.Length / 40) + 1;
+                            }
+                            else if (historico.SenhaReiniciadaPor != null && historico.SenhaReiniciadaPor.Length > 40)
+                            {
+                                contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.SenhaReiniciadaPor.Length / 40) + 1;
+                            }
+                            else
+                            {
+                                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                            }
+
+                            retornoVerificacao = VerificaQuebra();
+                            if (retornoVerificacao != string.Empty)
+                            {
+                                if (!historico.SenhaReiniciada.Equals(ultimohistorico.SenhaReiniciada))
+                                {
+                                    str += $@"</table>{retornoVerificacao}{MontarCabecalhoHistoricoReinicioSenha()}";
+                                }
+                                else
+                                {
+                                    str += $@"</table>{retornoVerificacao}<table class='fixed'>";
+                                    EhUltimohistorico = true;
+                                }
+                            }
+                            else
+                            {
+                                if (!historico.SenhaReiniciada.Equals(ultimohistorico.SenhaReiniciada))
+                                    EhUltimohistorico = true;
+                            }
+                        }
+                        str += $@"</table>";
+                        if (!EhUltimohistorico)
+                            str += LinhaEmBranco();
+                    }
+                }
+
+
+            }
+        }
+
+        return str;
+    }
+
+    string MontarCabecalhoHistoricoReinicioSenha()
+    {
+        contadorQuebrarPagina += 3;
+        var str = $@"<table class='fixed'>
+            <tr>
+              <td width='100%' class='td-turma-bimestre'>
+                HISTORICO DE REINICIO DE SENHA
+              </td>
+            </tr>
+         </table>
+        <table class='fixed'>
+            <tr>
+              <td width='8%' class='td-titulo'>LOGIN</td>
+              <td width='24%' class='td-titulo'>NOME</td>
+              <td width='15%' class='td-titulo'>PERFIL</td>
+              <td width='45%' class='td-titulo'>SENHA REINICIADA POR</td>
+              <td width='8%' class='td-titulo'>SENHA PADRÃO</td>
+            </tr>";
+
+        return str;
+    }
+    string MontaCabecalhoDRE(string descricao, int contadorQuebrarPagina)
+    {
+        var str = "";
+        var count = 1;
+        if(contadorQuebrarPagina != 8)
+        {
+            str += LinhaEmBranco();
+            count += 1;
+        }
+
+        contadorQuebrarPagina += count;
+        str += $@"<table class='fixed'>
+                    <tr>
+                      <td width='100%' class='td-turma-bimestre'>{descricao}</td>
+                    </tr>
+                  </table>";
+
+        return str;
+    }
+
+    string MontaCabecalhoUE(string descricao)
+    {
+        contadorQuebrarPagina += 1;
+        var str = $@"<table class='fixed'>
+                    <tr>
+                      <td width='100%' class='td-turma-bimestre'>{descricao}</td>
+                    </tr>
+                  </table>";
+
+        return str;
+    }
+
+    string MontarCabecalhoPerfil(string descricao)
+    {
+        contadorQuebrarPagina += 2;
+        return $@"<table class='fixed'>
+<tr>
+<td width='100%' class='td-turma-bimestre'>{descricao}</td>
+</tr>
+</table>
+<table class='fixed'>
+        <tr>
+            <td width='10%' class='td-titulo'>LOGIN</td>
+            <td width='40%' class='td-titulo'>NOME</td>
+            <td width='20%' class='td-titulo'>SITUAÇÃO</td>
+            <td width='20%' class='td-titulo'>ÚLTIMO ACESSO</td>
+        </tr>";
+    }
+
+    string MontarCabecalhoProfessor()
+    {
+        contadorQuebrarPagina += 3;
+        return $@"<table class='fixed'>
+                <tr>
+                  <td width='100%' class='td-turma-bimestre'>
+                    PROFESSOR
+                  </td>
+                </tr>
+              </table>
+              <table class='fixed'>
+                <tr>
+                  <td width='20%' class='td-titulo'>LOGIN</td>
+                  <td width='30%' class='td-titulo'>NOME</td>
+                  <td width='25%' class='td-titulo'>SITUAÇÃO</td>
+                  <td width='30%' class='td-titulo'>ÚLTIMO ACESSO</td>
+                  <td width='30%' class='td-titulo'>ÚLTIMA AULA REGISTRADA</td>
+                  <td width='35%' class='td-titulo'>ÚLTIMO PLANO DE AULA REGISTRADO</td>
+                  <td width='35%' class='td-titulo'>ÚLTIMA FREQUÊNCIA REGISTRADA</td>
+                </tr>";
+    }
+
+    string LinhaEmBranco()
+    {
+        contadorQuebrarPagina += 1;
+        return "<table><tr><td style='border-top:none;border-bottom:none'><br/></td></tr></table>";
+    } }
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>RELATÓRIO DE USUÁRIOS</title>
+</head>
+
+<body class='body-rel-faltas-frequencia'>
+    <style>
+        .body-rel-faltas-frequencia {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-plano-aula {
+            text-align: right;
+            font-size: 14.5px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+                padding-left: 15px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+        .campo-dre {
+            width: 25%;
+        }
+
+        .campo-ue {
+            width: 60%;
+        }
+
+        .campo-ano {
+            width: 15%;
+        }
+
+        .campo-componente-curricular {
+            width: 70%;
+            border-top: none;
+        }
+
+        .campo-bimestre {
+            width: 30%;
+            border-top: none;
+        }
+
+        .campo-usuario {
+            width: 45%;
+            border-top: none;
+        }
+
+        .campo-rf-data {
+            width: 20%;
+            border-top: none;
+        }
+
+        .campo-data-cabecalho {
+            width: 35%;
+            border-top: none;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        .fonte-16 {
+            font-size: 16px !important;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .fonte-12 {
+            font-size: 12px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-rel-faltas-frequencia {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+        }
+
+        .tb-head {
+            background-color: #f3f3f3;
+            text-align: left;
+            font-size: 16px;
+            padding: 10px;
+            padding-left: 20px;
+        }
+
+        .td-turma-bimestre {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-size: 16px;
+            padding: 4px;
+            border-bottom: none;
+        }
+
+        .td-titulo {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-size: 14px;
+            padding: 2px;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            border-bottom: none;
+            border-bottom: none;
+        }
+
+        .td-titulo-2 {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-size: 12px;
+            padding: 2px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: none;
+        }
+
+        .td-valor {
+            text-align: center;
+            font-size: 12px;
+            padding: 4px;
+            min-height: 25px;
+        }
+
+        .td-valor-historico {
+            text-align: center;
+            font-size: 8px;
+            padding: 4px;
+            height: 25px;
+        }
+
+        .caixa-1 {
+            text-align: justify;
+            padding: 20px 15px 20px 15px;
+        }
+
+        .caixa-2 {
+            padding: 10px 15px 10px 15px;
+            text-align: justify;
+            border-top: none;
+        }
+
+        .h-50 {
+            height: 50px;
+        }
+
+        .m-30 {
+            margin-top: 30px;
+        }
+
+        .tabela-objetivos-items-tr {
+            height: 50px;
+        }
+
+        .tabela-objetivos-items-titulo {
+            padding: 20px 15px 20px 15px;
+            border-top: none;
+            text-align: center;
+            font-weight: bold;
+            width: 15%;
+        }
+
+        .tabela-objetivos-items-descricao {
+            border-top: none;
+            width: 85%;
+            text-align: justify;
+            padding: 5px 15px 5px 15px;
+            font-size: 14px;
+        }
+
+        table.fixed {
+            table-layout: fixed;
+        }
+
+            table.fixed td {
+                overflow: hidden;
+            }
+    </style>
+    <div>
+        @Html.Raw(MontarCabecalho())
+        @Html.Raw(MontarEstrutura())
+    </div>
+</body>
+</html>
