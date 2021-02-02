@@ -41,5 +41,17 @@ namespace SME.SR.Data
 
             return await conexao.QueryFirstOrDefaultAsync<DateTime>(query.ToString(), new { semestreDescricao, anoLetivo });
         }
+
+        public async Task<PeriodoSondagem> ObterPeriodoPorTipo(int periodo, TipoPeriodoSondagem tipoPeriodo)
+        {
+            var query = new StringBuilder("select \"Id\", \"Descricao\" ");
+            query.AppendLine("from \"Periodo\" ");
+            query.AppendLine("where \"TipoPeriodo\" = @tipoPeriodo");
+            query.AppendLine("and \"Descricao\" like @periodo");
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryFirstOrDefaultAsync<PeriodoSondagem>(query.ToString(), new { periodo = $"{periodo}%", tipoPeriodo = (int)tipoPeriodo });
+        }
     }
 }

@@ -1,0 +1,607 @@
+﻿@model SME.SR.Infra.AdesaoAERetornoDto
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 44;
+    int contadorPagina = 0;
+    int contadorEspaco = 0;
+
+    bool VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+    bool VaiUltrapassar(int linhas)
+    {
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+    void MontarTabelaVazia()
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th class="thLimpo"></th>
+                </tr>
+            </thead>
+        </table>
+    }
+
+    void MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'> RELATÓRIO DE ADESÃO</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='50%' class='espaco-esquerda-15 sem-border-bottom'>DRE: @Model.DRENome</td>
+                        <td width='50%' class='espaco-esquerda-15 sem-border-bottom'>UE: @Model.UeNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='60%' class='espaco-esquerda-15'>USUÁRIO: @Model.UsuarioNome</td>
+                        <td width='20%' class='espaco-esquerda-15'>RF: @Model.UsuarioRF</td>
+                        <td width='20%' class='espaco-esquerda-15'>DATA: @Model.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    void MontarCabecalhoResponsaveis()
+    {
+        <thead>
+            <tr>
+                <td colspan="6">ADESÃO DE RESPONSÁVEIS</td>
+            </tr>
+            <tr>
+                <td width="25%"></td>
+                <td width="15%">
+                    SEM CPF OU CPF INVÁLIDO NO EOL
+                </td>
+                <td width="15%">
+                    NÃO REALIZARAM
+                    A INSTALAÇÃO
+                </td>
+                <td width="15%">
+                    PRIMEIRO ACESSO INCOMPLETO
+                </td>
+                <td width="15%">
+                    VÁLIDOS
+                </td>
+                <td width="15%">
+                    TOTAL
+                </td>
+            </tr>
+        </thead>
+    }
+
+    void MontarLinhaValores(SME.SR.Infra.AdesaoAEValoresDto valores)
+    {
+        <tr>
+            <td class="fundo-cinza" width="25%">@valores.Nome</td>
+            <td width="15%">@valores.SemCpfOuCpfInvalido</td>
+            <td width="15%">@valores.NaoRealizaram</td>
+            <td width="15%">@valores.PrimeiroAcessoIncompleto</td>
+            <td width="15%">@valores.Validos</td>
+            <td width="15%">@valores.Total</td>
+        </tr>
+
+    }
+
+    void MontarCabecalhoUeSemSituacao()
+    {
+        <tr class="fundo-cinza">
+            <td width="5%">Nº</td>
+            <td width="31%">ESTUDANTE</td>
+            <td width="29%">RESPONSÁVEL</td>
+            <td width="15%">CPF DO RESPONSÁVEL</td>
+            <td width="10%">ÚLTIMO ACESSO</td>
+            <td width="10%">CONTATO</td>
+        </tr>
+    }
+
+    void MontarCabecalhoUeComSituacao()
+    {
+        <tr class="fundo-cinza">
+            <td width="5%">Nº</td>
+            <td width="28%">ESTUDANTE</td>
+            <td width="26%">RESPONSÁVEL</td>
+            <td width="12%">CPF DO RESPONSÁVEL</td>
+            <td width="9%">ÚLTIMO ACESSO</td>
+            <td width="10%">CONTATO</td>
+            <td width="10%">SITUAÇÃO NO APP</td>
+        </tr>
+    }
+
+    void MontaLinhaEspaco()
+    {
+        <tr style="height:8px"><td colspan="6" style="height:2px"></td></tr>
+    }
+
+    void MontarListas(SME.SR.Infra.AdesaoAEModalidadeDto modalidade)
+    {
+
+        @foreach (var turmas in modalidade.Turmas)
+        {
+            var quebraIncial = VerificaQuebra();
+            bool ultrapassou = VaiUltrapassar(3);
+            bool quebrou = false;
+
+            if (quebraIncial || ultrapassou)
+            {
+                <div style='page-break-before:always'></div>
+                MontarCabecalho();
+                quebrou = true;
+
+                <table class="tabela-cabecalho">
+                    @{ MontarCabecalhoResponsaveis(); }
+                </table>
+
+                contadorQuebrarPagina = contadorQuebrarPagina + 5;
+            }
+
+            <table class="tabela-listas">
+                <tbody>
+                    @{
+                        if (!quebrou && turmas.Alunos.Count > 0)
+                        {
+                            MontaLinhaEspaco();
+                            contadorEspaco++;
+                            quebrou = false;
+                        }
+                        MontarLinhaValores(turmas.Valores);
+                    }
+                </tbody>
+            </table>
+
+            contadorQuebrarPagina++;
+            if (contadorEspaco == 4)
+            {
+                contadorEspaco = 0;
+                contadorQuebrarPagina++;
+            }
+
+            if (turmas.Alunos.Count > 0)
+            {
+                <table class="tabela-listas">
+                    <tbody>
+                        @{
+                            if (Model.UE.MostraColunaSituacao)
+                            {
+                                MontarCabecalhoUeComSituacao();
+                            }
+                            else
+                            {
+                                MontarCabecalhoUeSemSituacao();
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                contadorQuebrarPagina++;
+
+                @foreach (var aluno in turmas.Alunos)
+                {
+                    var quebraFinal = VerificaQuebra();
+                    int numeroLinhasEstudantes = aluno.Estudante.Length / 30;
+                    int numeroLinhasResponsavel = aluno.Estudante.Length / 30;
+                    int numeroLinhas = numeroLinhasEstudantes > numeroLinhasResponsavel ? numeroLinhasEstudantes : numeroLinhasResponsavel;
+
+                    if (quebraFinal)
+                    {
+                        <div style='page-break-before:always'></div>
+                        MontarCabecalho();
+                        quebrou = true;
+
+                        <table class="tabela-cabecalho">
+                            @{
+                                MontarCabecalhoResponsaveis();
+                            }
+                        </table>
+                        <table class="tabela-listas">
+                            <tbody>
+                                @{ MontarLinhaValores(turmas.Valores); }
+                            </tbody>
+                        </table>
+                        <table class="tabela-listas">
+                            <tbody>
+                                @if (Model.UE.MostraColunaSituacao)
+                                {
+                                    MontarCabecalhoUeComSituacao();
+                                }
+                                else
+                                {
+                                    MontarCabecalhoUeSemSituacao();
+                                }
+                            </tbody>
+                        </table>
+
+                        contadorQuebrarPagina = contadorQuebrarPagina + 5;
+                    }
+
+                    <table class="tabela-listas">
+                        <tr>
+                            @if (Model.UE.MostraColunaSituacao)
+                            {
+                                <td width="5%">@aluno.Numero </td>
+                                <td width="28%">@aluno.Estudante</td>
+                                <td width="26%">@aluno.Responsavel</td>
+                                <td width="12%">@aluno.CpfResponsavel</td>
+                                <td width="9%">@aluno.UltimoAcesso</td>
+                                <td width="10%">@aluno.Contato</td>
+                                <td width="10%">@aluno.SituacaoNoApp</td>
+                            }
+                            else
+                            {
+                                <td width="5%">@aluno.Numero </td>
+                                <td width="31%">@aluno.Estudante</td>
+                                <td width="29%">@aluno.Responsavel</td>
+                                <td width="15%">@aluno.CpfResponsavel</td>
+                                <td width="10%">@aluno.UltimoAcesso</td>
+                                <td width="10%">@aluno.Contato</td>
+                            }
+                        </tr>
+                    </table>
+
+                    if (numeroLinhas > 1)
+                    {
+                        contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+                    }
+                    else
+                    {
+                        contadorQuebrarPagina++;
+                    }
+                }
+            }
+        }
+    }
+
+    void MontarTabelaSME()
+    {
+        <table class="tabela-cabecalho">
+            @{ MontarCabecalhoResponsaveis(); }
+        </table>
+
+        <table class="tabela-listas">
+            <tbody>
+                @{ MontarLinhaValores(Model.SME.Valores); }
+            </tbody>
+        </table>
+
+        foreach (var dres in Model.SME.Dres)
+        {
+            MontarTabelaVazia();
+
+            <table class="tabela-listas">
+                <tbody>
+                    @{
+                        MontarLinhaValores(dres.Valores);
+                        MontaLinhaEspaco();
+                    }
+                </tbody>
+            </table>
+
+
+            contadorQuebrarPagina = contadorQuebrarPagina + 5;
+
+
+            foreach (var ues in dres.Ues)
+            {
+                var quebraFinal = VerificaQuebra();
+
+                if (quebraFinal)
+                {
+                    <div style='page-break-before:always'></div>
+                    MontarCabecalho();
+
+                    <table class="tabela-cabecalho">
+                        @{
+                            MontarCabecalhoResponsaveis();
+                            MontarLinhaValores(dres.Valores);
+                            MontaLinhaEspaco();
+
+                            contadorQuebrarPagina = contadorQuebrarPagina + 5;
+                        }
+                    </table>
+                }
+
+                <table class="tabela-listas">
+                    <tbody>
+                        @{ MontarLinhaValores(ues); }
+                    </tbody>
+                </table>
+
+                contadorQuebrarPagina++;
+            }
+        }
+    }
+
+    void MontarTabelaUe()
+    {
+        <table class="tabela-cabecalho">
+            @{ MontarCabecalhoResponsaveis(); }
+        </table>
+
+        contadorQuebrarPagina = contadorQuebrarPagina + 4;
+
+        <table class="tabela-listas">
+            <tbody>
+
+                @{ MontarLinhaValores(Model.UE.Valores); }
+
+            </tbody>
+        </table>
+
+        if (Model.UE.Modalidades.Count > 1)
+        {
+            @foreach (var modalidade in Model.UE.Modalidades)
+            {
+                <table class="tabela-listas">
+                    <tbody>
+                        @{
+                            MontaLinhaEspaco();
+                            MontarLinhaValores(modalidade.Valores);
+                        }
+                    </tbody>
+                </table>
+                contadorQuebrarPagina = contadorQuebrarPagina + 2;
+
+                MontarListas(modalidade);
+
+            }
+        }
+        else
+        {
+            foreach (var modalidade in Model.UE.Modalidades)
+            {
+                MontarListas(modalidade);
+            }
+        }
+    }
+
+    void MontarTabelaDRE()
+    {
+        <table class="tabela-cabecalho">
+            @if (!Model.MostraSME)
+            {
+                MontarCabecalhoResponsaveis();
+            }
+
+            <tbody>
+                @{
+                    MontarLinhaValores(Model.DRE.Valores);
+                    MontaLinhaEspaco();
+                }
+            </tbody>
+        </table>
+
+        contadorQuebrarPagina = contadorQuebrarPagina + 5;
+
+        @foreach (var ue in Model.DRE.Ues)
+        {
+            int numeroLinhas = (ue.Nome.Length / 30);
+
+            if (numeroLinhas > 1)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+            }
+            else
+            {
+                contadorQuebrarPagina++;
+            }
+
+            var quebra = VerificaQuebra();
+
+            if (quebra)
+            {
+                <div style='page-break-before:always'></div>
+                MontarCabecalho();
+
+                <table class="tabela-cabecalho">
+                    @{ MontarCabecalhoResponsaveis(); }
+                </table>
+
+                contadorQuebrarPagina = contadorQuebrarPagina + 3;
+            }
+
+            <table class="tabela-listas">
+                <tbody>
+                    @{ MontarLinhaValores(ue); }
+                </tbody>
+            </table>
+        }
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de adesão</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px 1px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+            padding: 3px 1px;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 10px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-bottom: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border-top: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .coluna-vazia {
+            border: 0;
+            background: white;
+        }
+
+        .quebra-palavra {
+            word-break: break-word;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .sem-border-bottom-top {
+            border-top: 0;
+            border-bottom: 0;
+        }
+
+        .tabela-listas tr {
+            border-left: 1px solid #42474a;
+        }
+
+        .tabela-listas td {
+            border: 0;
+            border-right: 1px solid #42474a;
+            border-bottom: 1px solid #42474a;
+            font-size: 10px;
+            height: 24px;
+            padding: 3px 1px;
+            box-sizing: border-box;
+        }
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+
+            if (Model.MostraSME)
+            {
+                MontarTabelaSME();
+            }
+
+            if (Model.MostraDRE)
+            {
+                MontarTabelaDRE();
+            }
+
+            if (Model.MostraUe)
+            {
+                MontarTabelaUe();
+            }
+        }
+    </div>
+</body>
+</html>

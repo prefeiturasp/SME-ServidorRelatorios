@@ -19,6 +19,7 @@ namespace SME.SR.Application
                                            IEnumerable<TransferenciaDto> transferencias,
                                            string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda,
                                            DadosDataDto dadosData, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario,
+                                           IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes, 
                                            bool preencherDataImpressao, bool imprimirDadosResponsaveis)
         {
             Dre = dre;
@@ -27,6 +28,7 @@ namespace SME.SR.Application
             ComponentesCurricularesTurmas = componentesCurricularesTurmas;
             AlunosTurmas = alunosTurmas;
             TurmasCodigo = turmasCodigo;
+            HistoricoUes = historicoUes;
             Cabecalho = cabecalho;
             Notas = notas;
             Frequencias = frequencias;
@@ -45,6 +47,7 @@ namespace SME.SR.Application
         public Ue Ue { get; set; }
         public IEnumerable<IGrouping<string, NotasAlunoBimestre>> Notas { get; set; }
         public IEnumerable<IGrouping<string, FrequenciaAluno>> Frequencias { get; set; }
+        public IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> HistoricoUes { get; set; }
         public IEnumerable<MediaFrequencia> MediasFrequencia { get; set; }
         public IEnumerable<AreaDoConhecimento> AreasConhecimento { get; set; }
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }

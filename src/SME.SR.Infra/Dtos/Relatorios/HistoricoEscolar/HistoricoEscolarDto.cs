@@ -14,11 +14,8 @@ namespace SME.SR.Infra
         [JsonProperty("ciclos")]
         public List<CicloDto> Ciclos { get; set; }
        
-
         [JsonProperty("historicoEscolar")]
         public HistoricoEscolarNotasFrequenciaDto DadosHistorico { get; set; }
-
-        
 
         [JsonProperty("legenda")]
         public LegendaDto Legenda { get; set; }
@@ -29,6 +26,9 @@ namespace SME.SR.Infra
 
         [JsonProperty("dadosData")]
         public DadosDataDto DadosData { get; set; }
+
+        [JsonProperty("estudosRealizados")]
+        public List<UeConclusaoDto> EstudosRealizados { get; set; }
 
         [JsonProperty("historicoEscolarTransferencia")]
         public TransferenciaDto DadosTransferencia{ get; set; }

@@ -9,6 +9,7 @@ namespace SME.SR.Infra
         {
             PerguntasRespostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto>();
             Perguntas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto>();
+            GraficosBarras = new List<GraficoBarrasVerticalDto>();
         }
         public string Ano { get; set; }
         public int AnoLetivo { get; set; }
@@ -24,6 +25,8 @@ namespace SME.SR.Infra
         public List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto> Perguntas { get; set; }
 
         public List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto> PerguntasRespostas { get; set; }
+
+        public List<GraficoBarrasVerticalDto> GraficosBarras { get; set; }
 
         public string[] ObterPerguntasPorId(long[] ids)
         {

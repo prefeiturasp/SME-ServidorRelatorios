@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SME.SR.Infra;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Interfaces
@@ -28,5 +29,8 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorCodigoETurma(string turmaCodigo, long[] componentesCodigo);
 
         Task<IEnumerable<ComponenteCurricularSondagem>> ObterComponenteCurricularDeSondagemPorId(string componenteCurricularId);
+        Task<string> ObterNomeComponenteCurricularPorId(long componenteCurricularId);
+
+        Task<IEnumerable<DisciplinaDto>> ObterDisciplinasPorIds(long[] ids);
     }
 }

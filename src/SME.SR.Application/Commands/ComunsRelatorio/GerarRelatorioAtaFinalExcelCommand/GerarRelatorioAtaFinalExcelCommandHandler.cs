@@ -3,7 +3,9 @@ using MediatR;
 using Sentry;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -15,6 +17,7 @@ namespace SME.SR.Application
 {
     public class GerarRelatorioAtaFinalExcelCommandHandler : IRequestHandler<GerarRelatorioAtaFinalExcelCommand, Unit>
     {
+        private readonly IMediator mediator;
         private readonly IServicoFila servicoFila;
 
         private const int LINHA_CABECALHO_DRE = 6;
@@ -23,8 +26,9 @@ namespace SME.SR.Application
         private const int LINHA_GRUPOS = 9;
         private const int LINHA_COMPONENTES = 10;
 
-        public GerarRelatorioAtaFinalExcelCommandHandler(IServicoFila servicoFila)
+        public GerarRelatorioAtaFinalExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
         {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
 
@@ -32,30 +36,48 @@ namespace SME.SR.Application
         {
             try
             {
-                using (var workbook = new XLWorkbook())
+                if (!request.ObjetoExportacao.Any())
+                    throw new NegocioException("Não foi possível localizar o objeto de consulta.");
+
+                var lstCodigosCorrelacao = new Dictionary<Guid, string>();
+
+                var dadosAgrupadosTurma = request.ObjetoExportacao.GroupBy(g => g.Cabecalho);
+                var modalidade = request.ObjetoExportacao.Select(o => o.Modalidade).FirstOrDefault();
+
+                for (int i = 0; i < dadosAgrupadosTurma.Count(); i++)
                 {
-                    var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
 
-                    if (!request.ObjetoExportacao.Any())
-                        throw new NegocioException("Não foi possível localizar o objeto de consulta.");
+                        var objetoExportacao = dadosAgrupadosTurma.ElementAt(i);
 
-                    var objetoExportacao = request.ObjetoExportacao.FirstOrDefault();
+                        var tabelaDados = request.TabelasDados.ElementAt(i);
 
-                    MontarCabecalho(worksheet, objetoExportacao.Cabecalho, request.TabelaDados.Columns.Count);
+                        MontarCabecalho(worksheet, objetoExportacao.Key, tabelaDados.Columns.Count);
 
-                    worksheet.Cell(LINHA_GRUPOS, 1).InsertData(request.TabelaDados);
+                        worksheet.Cell(LINHA_GRUPOS, 1).InsertData(tabelaDados);
 
-                    MergearTabela(worksheet, request.TabelaDados);
+                        MergearTabela(worksheet, tabelaDados);
 
-                    AdicionarEstilo(worksheet, request.TabelaDados);
+                        AdicionarEstilo(worksheet, tabelaDados);
 
-                    var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-                    var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
+                        var codigoCorrelacao = Guid.NewGuid();
 
-                    workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
+                        var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+                        var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
+
+                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
+
+                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+
+                        lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
+                    }
                 }
 
-                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
+                foreach (var codigoCorrelacao in lstCodigosCorrelacao)
+                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, codigoCorrelacao.Key));
 
                 return await Task.FromResult(Unit.Value);
             }
@@ -64,6 +86,14 @@ namespace SME.SR.Application
                 SentrySdk.CaptureException(ex);
                 throw ex;
             }
+        }
+
+        private MensagemRelatorioProntoDto ObterNotificacao(Modalidade modalidade, string turma)
+        {
+            return new MensagemRelatorioProntoDto()
+            {
+                MensagemTitulo = $"Relatório Ata final de resultados - {modalidade.ShortName()} - {turma}"
+            };
         }
 
         private void AdicionarEstilo(IXLWorksheet worksheet, DataTable tabelaDados)

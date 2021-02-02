@@ -1,5 +1,4 @@
 ﻿@model SME.SR.Infra.PlanoAulaDto
-@using System.Text.RegularExpressions;
 @using SME.SR.Infra.Utilitarios;
 @{
     int contadorQuebrarPagina = 0;
@@ -94,8 +93,9 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         str += @"<table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
 
         int tamanho = 0;
-        descricao = Regex.Replace(descricao, @"<[^>]*>", String.Empty);
-        descricao = Regex.Replace(descricao, @"&nbsp;", " ").Trim();
+        descricao = UtilRegex.RemoverTagsHtmlMidia(descricao);
+        descricao = UtilRegex.RemoverTagsHtml(descricao);
+
         for (int i = 0; i < descricao.Length; i++)
         {
 

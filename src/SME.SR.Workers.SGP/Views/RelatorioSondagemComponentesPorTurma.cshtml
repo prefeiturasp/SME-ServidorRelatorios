@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 47;
+    int contadorMaximoLinhasPorPagina = 48;
     int contadorPagina = 0;
 
     string VerificaQuebra(bool devePular = false)
@@ -127,7 +127,8 @@
         for (var i = 0; i < Model.Planilha.Linhas.Count; i++)
         {
             var linha = Model.Planilha.Linhas[i];
-            int numeroLinhas = (linha.Aluno.Nome.Length / 30);
+            int numeroLinhasAluno = (linha.Aluno.Nome.Length / 30);
+            int numeroLinhasRespostas = 0;
 
             if (quebrou)
             {
@@ -149,16 +150,44 @@
             foreach (var ordem in ordensOrdenadas)
             {
                 bool preencheu = false;
+                int numeroLinhasRespostasAnt = 0;
+                int numeroMaxCaracteres = 28;
+
+                if(Model.Cabecalho.Ordens.First().Id == 0 && !string.IsNullOrEmpty(Model.Cabecalho.Proficiencia))
+                {
+                    numeroMaxCaracteres = 15;
+                }
+
                 foreach (var resposta in respostasOrdenadas)
                 {
                     if (resposta.OrdemId == ordem.Id)
                     {
                         var quebraPalavra = ordem.Id == 0 ? "quebra-palavra" : "";
 
+                        if (Model.Cabecalho.Ordens.First().Id == 0 && !string.IsNullOrEmpty(resposta.Resposta))
+                        {
+                            int linhasRepostas = resposta.Resposta.Length / numeroMaxCaracteres;
+
+                            if (linhasRepostas > numeroLinhasRespostasAnt)
+                            {
+                                numeroLinhasRespostas = linhasRepostas;
+                                numeroLinhasRespostasAnt = linhasRepostas;
+                            }
+                        }
+
                         str += $@"<td  class='{quebraPalavra}'>{resposta.Resposta}</td>";
                         preencheu = true;
                     }
                 }
+
+                if (Model.Cabecalho.Ordens.First().Id == 0)
+                {
+                    if (numeroLinhasRespostas > 1)
+                    {
+                        contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasRespostas;
+                    }
+                }
+
 
                 if (!preencheu && ordem.Id > 0)
                 {
@@ -171,19 +200,15 @@
 
             str += $@"</tr>";
 
-            if (numeroLinhas > 1)
+            if (numeroLinhasAluno > 1)
             {
-                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasAluno;
             }
             else
             {
                 contadorQuebrarPagina++;
             }
 
-            if (Model.Cabecalho.Ordens.First().Id == 0 && !string.IsNullOrEmpty(Model.Cabecalho.Proficiencia))
-            {
-                contadorMaximoLinhasPorPagina = 33;
-            }
 
             var quebra = VerificaQuebra();
             var novaPagina = quebra + (i < Model.Planilha.Linhas.Count - 1 ? MontarCabecalhoSondagem() : "");

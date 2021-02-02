@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SME.SR.HtmlPdf\SME.SR.HtmlPdf.csproj" />
     <ProjectReference Include="..\SME.SR.Data\SME.SR.Data.csproj" />
+    <ProjectReference Include="..\SME.SR.Infra\SME.SR.Infra.csproj" />
     <ProjectReference Include="..\SME.SR.JRSClient\SME.SR.JRSClient.csproj" />
     <ProjectReference Include="..\SME.SR.Infra\SME.SR.Infra.csproj" />
   </ItemGroup>

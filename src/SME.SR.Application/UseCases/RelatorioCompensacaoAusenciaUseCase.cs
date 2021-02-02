@@ -47,7 +47,7 @@ namespace SME.SR.Application
 
             var componetesCurricularesCodigo = compensacoes.Select(a => a.DisciplinaId).Distinct().ToArray();
 
-            var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = componetesCurricularesCodigo });
+            var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = componetesCurricularesCodigo });
 
             if (componentesCurriculares == null || !componentesCurriculares.Any())
                 throw new NegocioException("Não foi possível obter os componentes curriculares.");
