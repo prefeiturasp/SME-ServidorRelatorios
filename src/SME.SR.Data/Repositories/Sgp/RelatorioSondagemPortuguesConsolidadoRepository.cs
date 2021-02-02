@@ -4,6 +4,7 @@ using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Sgp
@@ -17,38 +18,91 @@ namespace SME.SR.Data.Repositories.Sgp
         }
         public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, GrupoSondagemEnum grupo)
         {
-            var sql = String.Empty;
-
-            sql += "select ";
-            sql += "o.\"Descricao\" Ordem, ";
-            sql += "p.\"Descricao\" Pergunta, ";
-            sql += "r.\"Descricao\" Resposta, ";
-            sql += "count(*) Quantidade ";
-
-            sql += "from \"Ordem\" o ";
-            sql += "inner join \"GrupoOrdem\" go2 on go2.\"OrdemId\" = o.\"Id\"  ";
-            sql += "inner join \"OrdemPergunta\" op on op.\"GrupoId\" = go2.\"GrupoId\"  ";
-            sql += "inner join \"Pergunta\" p on p.\"Id\" = op.\"PerguntaId\"  ";
-            sql += "inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\"  ";
-            sql += "inner join \"Resposta\" r on r.\"Id\" = pr.\"RespostaId\"  ";
-            sql += "inner join \"ComponenteCurricular\" cc on p.\"ComponenteCurricularId\" = cc.\"Id\"  ";
-            sql += "inner join \"Sondagem\" sa on sa.\"ComponenteCurricularId\" = cc.\"Id\" and sa.\"GrupoId\" = go2.\"GrupoId\" and sa.\"OrdemId\" = o.\"Id\"  ";
-            sql += "inner join \"Periodo\" p2 on sa.\"PeriodoId\" = p2.\"Id\" ";
-
-            sql += "where cc.\"Id\" = @componenteCurricularId ";
+            var queryRelatorio = @"
+                                   select
+                                   o.""Descricao"" as ""ordem"",
+                                   p.""Descricao"" as ""pergunta"",
+                                   r.""Descricao"" as ""resposta"" ,
+                                   count(tabela.""RespostaId"") as ""quantidade""
+                                   from
+                                       ""Ordem""  as o 
+                                      inner join ""GrupoOrdem"" gp on 
+                                      gp.""OrdemId"" = o.""Id"" and 
+                                      gp.""GrupoId"" = @GrupoId
+                                      inner join ""OrdemPergunta"" op on
+                                       op.""GrupoId"" = @GrupoId
+                                      inner join ""Pergunta"" p on
+                                   	 p.""Id"" = op.""PerguntaId"" 
+                                   inner join ""PerguntaResposta"" pr on
+                                   	pr.""PerguntaId"" = p.""Id""
+                                   inner join ""Resposta"" r on
+                                   	r.""Id"" = pr.""RespostaId""
+                                   left join (
+                                   	select
+                                   	    s.""OrdemId"",
+                                   		s.""AnoLetivo"",
+                                   		s.""AnoTurma"",
+                                   		per.""Descricao"",
+                                   		c.""Descricao"",
+                                   		sa.""NomeAluno"",
+                                   		p.""Id"" as ""PerguntaId"",
+                                   		p.""Descricao"" as ""PerguntaDescricao"",
+                                   		r.""Id"" as ""RespostaId"",
+                                   		r.""Descricao"" as ""RespostaDescricao""
+                                   	from
+                                   		""SondagemAlunoRespostas"" sar
+                                   	inner join ""SondagemAluno"" sa on
+                                   		sa.""Id"" = ""SondagemAlunoId""
+                                   	inner join ""Sondagem"" s on
+                                   		s.""Id"" = sa.""SondagemId""
+                                   	inner join ""Pergunta"" p on
+                                   		p.""Id"" = sar.""PerguntaId""
+                                   	inner join ""Resposta"" r on
+                                   		r.""Id"" = sar.""RespostaId""
+                                   	inner join ""Periodo"" per on
+                                   		per.""Id"" = s.""PeriodoId""
+                                   	inner join ""ComponenteCurricular"" c on
+                                   		c.""Id"" = s.""ComponenteCurricularId""
+                                       
+                                   	where
+                                   		s.""Id"" in (
+                                   		select
+                                   			s.""Id""
+                                   		from
+                                   			""Sondagem"" s
+                                   		where
+                                   		        s.""GrupoId"" = @grupoId
+                                   		    and s.""ComponenteCurricularId"" = @componenteCurricularId";
 
             if (dreCodigo != null && dreCodigo != "0")
-                sql += "and sa.\"CodigoDre\" = @dreCodigo ";
-
+                queryRelatorio+=@" and ""CodigoDre"" =  @dreCodigo";
             if (ueCodigo != null && ueCodigo != String.Empty)
-                sql += "and sa.\"CodigoUe\" = @ueCodigo ";
+                queryRelatorio +=@" and ""CodigoUe"" =  @ueCodigo";
 
-            sql += "and sa.\"AnoLetivo\" = @anoLetivo ";
-            sql += "and sa.\"AnoTurma\" = @anoTurma ";
-            sql += "and p2.\"Descricao\" = @periodo ";
-            sql += "and sa.\"GrupoId\" = @grupoId ";
-            sql += "group by Ordem, Pergunta, Resposta ";
-            sql += "order by Ordem, Pergunta, Resposta ";
+            queryRelatorio +=@"
+                                            AND per.""Descricao"" = @periodo
+                                   			and s.""AnoLetivo"" = @anoLetivo
+                                   			and s.""AnoTurma"" = @anoTurma
+                                   		        ) ) as tabela on
+                                          	p.""Id"" = tabela.""PerguntaId"" and
+                                          	r.""Id""= tabela.""RespostaId"" and
+                                              o.""Id"" = tabela.""OrdemId""
+                                          group by
+                                          	o.""Id"",
+                                              o.""Descricao"",
+                                              r.""Id"",
+                                          	r.""Descricao"",
+                                          	p.""Id"",
+                                          	p.""Descricao"",
+                                          	gp.""Ordenacao"",
+                                            op.""OrdenacaoNaTela""
+                                          order by
+                                             gp.""Ordenacao"",
+                                             o.""Descricao"",
+                                             op.""OrdenacaoNaTela"",
+                                              r.""Descricao""";
+
+            var sql = queryRelatorio.ToString();
 
             var componenteCurricularId = ComponenteCurricularSondagemEnum.Portugues.Name();
 

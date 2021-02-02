@@ -24,6 +24,7 @@ namespace SME.SR.Application
 
         public async Task<List<ConselhoClasseAtaFinalPaginaDto>> Handle(ObterRelatorioConselhoClasseAtaFinalPdfQuery request, CancellationToken cancellationToken)
         {
+            var mensagensErro = new StringBuilder();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
             foreach (var turmaCodigo in request.FiltroConselhoClasseAtaFinal.TurmasCodigos)
             {
@@ -34,11 +35,15 @@ namespace SME.SR.Application
                     if (retorno != null && retorno.Any())
                         relatoriosTurmas.AddRange(retorno);
                 }
-                catch (NegocioException) { }
+                catch (Exception e)
+                {
+                    var turma = await ObterTurma(turmaCodigo);
+                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e}");
+                }
             }
 
-            if (relatoriosTurmas.Count() <= 0)
-                throw new NegocioException("Não foram encontrados dados para as turmas com os filtros informados");
+            if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
+                throw new NegocioException(mensagensErro.ToString());
 
             return relatoriosTurmas;
         }
@@ -90,7 +95,7 @@ namespace SME.SR.Application
 
                     ConselhoClasseAtaFinalPaginaDto modelPagina = new ConselhoClasseAtaFinalPaginaDto
                     {
-                        EhEJA = dadosRelatorio.EhEJA,
+                        Modalidade = dadosRelatorio.Modalidade,
                         Cabecalho = dadosRelatorio.Cabecalho,
                         NumeroPagina = contPagina++,
                         FinalHorizontal = ehPaginaFinal,
@@ -157,7 +162,7 @@ namespace SME.SR.Application
         private async Task<ConselhoClasseAtaFinalDto> MontarEstruturaRelatorio(Modalidade modalidadeCodigo, ConselhoClasseAtaFinalCabecalhoDto cabecalho, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares, string turmaCodigo)
         {
             var relatorio = new ConselhoClasseAtaFinalDto();
-            relatorio.EhEJA = modalidadeCodigo == Modalidade.EJA;
+            relatorio.Modalidade = modalidadeCodigo;
 
             relatorio.Cabecalho = cabecalho;
             var gruposMatrizes = componentesCurriculares.Where(c => c.GrupoMatriz != null).GroupBy(c => c.GrupoMatriz);

@@ -71,5 +71,59 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<TipoCiclo>(query, parametros);
 
         }
+
+        public async Task<IEnumerable<TipoCiclo>> ObterCiclosPorModalidadeAsync(Modalidade modalidade)
+        {
+
+
+            var query = @"select tc.id, 
+	                             tc.descricao,
+	                             tca.ano,
+	                             tca.modalidade from tipo_ciclo tc 
+                          inner join tipo_ciclo_ano tca on tca.tipo_ciclo_id = tc.id 
+                          where tca.modalidade = @modalidade
+                          order by ano, tc.descricao";
+
+            var parametros = new { modalidade };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<TipoCiclo>(query, parametros);
+
+        }
+
+        public async Task<CicloTurmaDto> ObterCicloPorAnoModalidade(string ano, Modalidade modalidade)
+        {
+            var sql = @"select tc.id, tc.descricao from tipo_ciclo tc
+                        inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
+                        where tca.ano = @ano and tca.modalidade = @modalidade";
+
+            var parametros = new { ano, modalidade };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<CicloTurmaDto>(sql, parametros);
+            }            
+        }
+
+        public async Task<NotaTipoValor> ObterPorCicloIdDataAvalicacao(long cicloId, DateTime dataAvalicao)
+        {
+            var sql = @"  select ntv.ativo, ntv.descricao, 
+                                  ntv.fim_vigencia as fimvigencia, 
+                                  ntv.inicio_vigencia as iniciovigencia, 
+                                  ntv.tipo_nota as TipoNota 
+                             from notas_tipo_valor ntv
+                            inner join notas_conceitos_ciclos_parametos nccp
+                            on nccp.tipo_nota = ntv.id
+                        where nccp.ciclo = @cicloId and @dataAvalicao >= nccp.inicio_vigencia
+                        and (nccp.ativo = true or @dataAvalicao <= nccp.fim_vigencia)
+                        order by nccp.id asc";
+
+            var parametros = new { cicloId, dataAvalicao };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<NotaTipoValor>(sql, parametros);
+            }            
+        }
     }
 }

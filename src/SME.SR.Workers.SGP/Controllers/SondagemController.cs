@@ -37,5 +37,18 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             return (await relatorioSondagemPortuguesConsolidadoUseCase.Executar(request));
         }
+
+        [HttpPost("portugues-por-turma-capacidade-leitura")]
+        public async Task<string> RelatorioPortuguesPorTurmaCapacidadeLeitura([FromBody] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemPtPorTurmaCapLeituraUseCase relatorioSondagemPtPorTurmaCapLeituraUseCase)
+        {
+            return await relatorioSondagemPtPorTurmaCapLeituraUseCase.Executar(request);
+        }
+
+        [HttpPost("portugues-consolidado-leitura-escrita-producao")]
+        public async Task<string> RelatorioPortuguesConsolidadoLeituraEscritaProducao([FromBody] FiltroRelatorioSincronoDto request, [FromServices] IRelatorioSondagemPtConsolidadoLeitEscProdUseCase relatorioPtConsolidadoLeituraEscritaProducaoUseCase)
+        {
+            return (await relatorioPtConsolidadoLeituraEscritaProducaoUseCase.Executar(request));
+        }
+
     }
 }

@@ -34,7 +34,7 @@ namespace SME.SR.Application
 
             //Obter as disciplinas do EOL por código\\
             var componentesCurricularesIds = resultadoQuery.Select(a => a.DisciplinaId).Distinct().ToArray();
-            var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = componentesCurricularesIds });
+            var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = componentesCurricularesIds });
             
             if (!componentesCurricularesDescricoes.Any())
                 throw new NegocioException("Não foram localizadas descrições dos componentes curriculares no EOL.");

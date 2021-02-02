@@ -164,5 +164,19 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigoTurma });
             }
         }
+
+        public async Task<DateTime?> ObterUltimaFrequenciaRegistradaProfessor(string professorRf)
+        {
+            var query = @$"select max(rf.criado_em) 
+                          from aula a
+                         inner join registro_frequencia rf on rf.aula_id = a.id
+                         where not a.excluido 
+                           and a.professor_rf = @professorRf";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
+            }
+        }
     }
 }
