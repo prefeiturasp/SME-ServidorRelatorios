@@ -25,7 +25,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<FrequenciaAluno> ObterPorAlunoDataDisciplina(string codigoAluno, DateTime dataAtual, TipoFrequenciaAluno tipoFrequencia, string disciplinaId)
+        public async Task<FrequenciaAluno> ObterPorAlunoDataDisciplina(string codigoAluno, DateTime dataAtual, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma)
         {
             var query = FrequenciaAlunoConsultas.FrequenciaPorAlunoDataDisciplina;
             var parametros = new
@@ -33,7 +33,8 @@ namespace SME.SR.Data
                 CodigoAluno = codigoAluno,
                 DataAtual = dataAtual,
                 TipoFrequencia = tipoFrequencia,
-                DisciplinaId = disciplinaId
+                DisciplinaId = disciplinaId,
+                codigoTurma
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
@@ -46,22 +47,12 @@ namespace SME.SR.Data
         {            
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            var turma = await conexao.QueryFirstAsync<Turma>(TurmaConsultas.TurmaPorCodigo, new { codigoTurma });                        
-
-            if (turma.AnoLetivo.Equals(2020))
-            {                                          
-                var percentuais = await conexao.QueryAsync<(int, double)>(FrequenciaAlunoConsultas.FrequenciGlobalPorBimestre, 
-                    new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno, turma.AnoLetivo, modalidade = turma.ModalidadeTipoCalendario });
-
-                return percentuais.Any() ? Math.Round(percentuais.Sum(p => p.Item2) / percentuais.Count(), 2) : 100;
-            }
-
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
             return await conexao.QueryFirstOrDefaultAsync<double>(FrequenciaAlunoConsultas.FrequenciaGlobal, parametros);
 
         }
 
-        public async Task<FrequenciaAluno> ObterPorAlunoBimestreAsync(string codigoAluno, int bimestre, TipoFrequenciaAluno tipoFrequencia, string disciplinaId)
+        public async Task<FrequenciaAluno> ObterPorAlunoBimestreAsync(string codigoAluno, int bimestre, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma)
         {
             var query = FrequenciaAlunoConsultas.FrequenciaPorAlunoBimestreDisciplina;
             var parametros = new
@@ -69,7 +60,8 @@ namespace SME.SR.Data
                 CodigoAluno = codigoAluno,
                 Bimestre = bimestre,
                 TipoFrequencia = tipoFrequencia,
-                DisciplinaId = disciplinaId
+                DisciplinaId = disciplinaId,
+                codigoTurma
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
