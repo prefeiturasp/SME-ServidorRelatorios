@@ -36,14 +36,16 @@
 	                        and tipo = @tipoFrequencia
 	                        and periodo_inicio <= @dataAtual
 	                        and periodo_fim >= @dataAtual
-                            and disciplina_id = @disciplinaId";
+                            and disciplina_id = @disciplinaId
+                            and turma_id = @codigoTurma";
 
         internal static string FrequenciaPorAlunoBimestreDisciplina = @$"select {CamposFrequencia}
                         from frequencia_aluno
                         where codigo_aluno = @codigoAluno
 	                        and tipo = @tipoFrequencia
 	                        and bimestre = @bimestre
-                            and disciplina_id = @disciplinaId";
+                            and disciplina_id = @disciplinaId
+                            and turma_id = @codigoTurma";
 
         public static string FrequenciaPorAlunoTurmaBimestre(int? bimestre)
         {
