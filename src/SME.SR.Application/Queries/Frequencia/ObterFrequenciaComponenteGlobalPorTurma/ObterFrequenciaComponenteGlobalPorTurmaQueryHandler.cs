@@ -50,6 +50,12 @@ namespace SME.SR.Application
 
                     frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
                     frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;
+
+                    var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
+
+                    // Particularidade de cálculo de frequência para 2020.
+                    if (turma.AnoLetivo.Equals(2020))
+                        frequenciaAluno.AdicionarFrequenciaBimestre(bimestre, frequenciaBimestre?.PercentualFrequencia ?? 100);
                 }
 
                 frequenciaGlobalAlunos.Add(frequenciaAluno);
