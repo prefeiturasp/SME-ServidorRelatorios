@@ -21,7 +21,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<Turma>> Handle(ObterTurmasPorAbrangenciaFiltroQuery request, CancellationToken cancellationToken)
         {
-            var turmas = await turmaSgpRepository.ObterPorAbrangenciaFiltros(request.CodigoUe, request.Modalidade, request.AnoLetivo, request.Login, request.Perfil, request.ConsideraHistorico, request.Semestre, request.PossuiFechamento, request.SomenteEscolarizadas);
+            var turmas = await turmaSgpRepository.ObterPorAbrangenciaFiltros(request.CodigoUe, request.Modalidade, request.AnoLetivo, request.Login, request.Perfil, request.ConsideraHistorico, request.Semestre, request.PossuiFechamento, request.SomenteEscolarizadas, request.CodigoDre);
 
             if (turmas == null || !turmas.Any())
                 throw new NegocioException("Não foi possível encontrar as turmas da abrangência.");

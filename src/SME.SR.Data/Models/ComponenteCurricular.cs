@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -58,6 +59,16 @@ namespace SME.SR.Data
                 return null;
 
             return gruposMatriz?.FirstOrDefault(x => componente.IdGrupoMatriz == x.Id);
+        }
+
+        public ComponenteCurricularGrupoMatriz ObterGrupoMatrizSgp(IEnumerable<DisciplinaDto> disciplina, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
+        {
+            var componente = disciplina.FirstOrDefault(x => x.Id == Codigo);
+
+            if (componente == null)
+                return null;
+
+            return gruposMatriz?.FirstOrDefault(x => componente.GrupoMatrizId == x.Id);
         }
 
         public object Clone()

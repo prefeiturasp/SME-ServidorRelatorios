@@ -23,7 +23,10 @@ namespace SME.SR.Infra.Utilitarios
 
 
         public static string Name(this Enum enumValue)
-            => enumValue.GetAttribute<DisplayAttribute>().Name;
+        {
+            return Enum.IsDefined(enumValue.GetType(), enumValue) ? enumValue.GetAttribute<DisplayAttribute>().Name : enumValue.ToString();
+        }
+            
 
         public static string ShortName(this Enum enumValue)
             => enumValue.GetAttribute<DisplayAttribute>().ShortName;

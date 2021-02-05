@@ -2,7 +2,6 @@
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
-using SME.SR.Infra.Dtos.Relatorios.ConselhoClasse;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,7 +38,6 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
             return await conexao.QueryAsync<long>(query, parametros);
-
         }
     }
 }

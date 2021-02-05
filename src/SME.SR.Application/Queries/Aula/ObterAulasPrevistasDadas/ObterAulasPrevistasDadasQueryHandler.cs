@@ -17,6 +17,6 @@ namespace SME.SR.Application
             this.aulaPrevistaBimestreRepository = aulaPrevistaBimestreRepository ?? throw new ArgumentNullException(nameof(aulaPrevistaBimestreRepository));
         }
         public async Task<IEnumerable<AulaPrevistaBimestreQuantidade>> Handle(ObterAulasPrevistasDadasQuery request, CancellationToken cancellationToken)
-                => await aulaPrevistaBimestreRepository.ObterBimestresAulasPrevistasPorFiltro(request.TurmaId, request.ComponenteCurricularId);
+                => await aulaPrevistaBimestreRepository.ObterBimestresAulasPrevistasPorFiltro(request.TurmaId, request.ComponenteCurricularId, request.TipoCalendarioId);
     }
 }

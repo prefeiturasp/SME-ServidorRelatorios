@@ -127,7 +127,9 @@ namespace SME.SR.Application
                 listaRetorno.Add(new ResumoPAPResultadoRespostaDto
                 {
                     RespostaDescricao = resposta.RespostaDescricao,
-                    RespostaId = resposta.RespostaId
+                    RespostaNome = resposta.RespostaNome,
+                    Ordem = resposta.RespostaOrdem,
+                    RespostaId = resposta.RespostaId,
                 });
             }
 

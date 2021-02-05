@@ -27,6 +27,9 @@ namespace SME.SR.Infra
         [JsonProperty("dadosData")]
         public DadosDataDto DadosData { get; set; }
 
+        [JsonProperty("estudosRealizados")]
+        public List<UeConclusaoDto> EstudosRealizados { get; set; }
+
         [JsonProperty("historicoEscolarTransferencia")]
         public TransferenciaDto DadosTransferencia { get; set; }
     }
