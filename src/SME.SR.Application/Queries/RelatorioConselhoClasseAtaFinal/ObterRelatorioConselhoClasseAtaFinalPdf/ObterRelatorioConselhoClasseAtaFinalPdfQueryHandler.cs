@@ -261,7 +261,10 @@ namespace SME.SR.Application
             linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? frequenciaGlobalAluno?.PercentualFrequenciaFinal.ToString() : frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100, 3);
 
             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
-            linhaDto.AdicionaCelula(99, 99, parecerConclusivo?.ParecerConclusivo ?? "Sem Parecer", 4);
+            var textoParecer = parecerConclusivo?.ParecerConclusivo;
+            if (textoParecer == null)
+                textoParecer = aluno.SituacaoMatricula != null ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";            
+            linhaDto.AdicionaCelula(99, 99, textoParecer, 4);
 
             return linhaDto;
         }

@@ -15,6 +15,7 @@ namespace SME.SR.Infra
             this.CodigoSituacaoMatricula = aluno.CodigoSituacaoMatricula;
             this.SituacaoMatricula = aluno.SituacaoMatricula;
             this.NumeroAlunoChamada = aluno.NumeroAlunoChamada;
+            this.DataSituacaoAluno = aluno.DataSituacaoAluno;
         }
 
         public bool Inativo { get => !(new[] { SituacaoMatriculaAluno.Ativo,
