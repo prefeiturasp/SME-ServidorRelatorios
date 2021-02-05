@@ -74,7 +74,7 @@ namespace SME.SR.Application
             if (componenteCurricular == -99)
                 return "Todos";
 
-            var componente = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(new long[] { componenteCurricular }));
+            var componente = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(new long[] { componenteCurricular }));
 
             return componente != null && componente.Any() ?
                 componente.First().Disciplina : "";

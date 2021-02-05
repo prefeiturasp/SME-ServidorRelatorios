@@ -57,7 +57,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<long> componentesCurriculares)
         {
-            var componentes = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesCurriculares.ToArray()));
+            var componentes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurriculares.ToArray()));
             return componentes;
         }
 
