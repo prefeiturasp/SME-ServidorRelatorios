@@ -84,12 +84,18 @@ namespace SME.SR.Application
 
         private async Task<ComponenteFrequenciaRegenciaFinal> ObterNotasFrequenciaRegencia(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Usuario usuario)
         {
+            var percentualFrequencia = frequenciaAluno != null && frequenciaAluno.Id > 0 && frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
+
+            //Frequência especifica para 2020.
+            if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
+
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaFinal()
             {
-                Aulas = frequenciaAluno.TotalAulas,
+                Aulas = frequenciaAluno?.TotalAulas ?? 0,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100)
+                Frequencia = percentualFrequencia
             };
 
             var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
@@ -134,6 +140,11 @@ namespace SME.SR.Application
 
         private async Task<ComponenteComNotaFinal> ObterNotasFrequenciaComponenteComNotaFinal(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
+            var percentualFrequencia = frequenciaAluno != null && frequenciaAluno.Id > 0 && frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
+
+            if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
+
             var notasComponente = ObterNotasComponente(disciplina, periodoEscolar, notasFechamentoAluno);
 
             var conselhoClasseComponente = new ComponenteComNotaFinal()
@@ -142,7 +153,7 @@ namespace SME.SR.Application
                 Componente = disciplina.Disciplina,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100),
+                Frequencia = percentualFrequencia,
                 NotaConceitoBimestre1 = notasComponente.FirstOrDefault(n => n.Bimestre == 1)?.NotaConceito,
                 NotaConceitoBimestre2 = notasComponente.FirstOrDefault(n => n.Bimestre == 2)?.NotaConceito,
                 NotaConceitoBimestre3 = notasComponente.FirstOrDefault(n => n.Bimestre == 3)?.NotaConceito,
