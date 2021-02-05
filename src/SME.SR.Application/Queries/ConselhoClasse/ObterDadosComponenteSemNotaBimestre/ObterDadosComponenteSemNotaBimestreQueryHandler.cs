@@ -20,6 +20,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<GrupoMatrizComponenteSemNotaBimestre>> Handle(ObterDadosComponenteSemNotaBimestreQuery request, CancellationToken cancellationToken)
         {
             var disciplinasPorTurma = await ObterComponentesCurricularesPorTurma(request.CodigoTurma);
+            var turma = await mediator.Send(new ObterTurmaQuery(request.CodigoTurma));
 
             var lstComponentesSemNota = disciplinasPorTurma.Where(x => !x.LancaNota && x.GrupoMatriz != null)
                                              .GroupBy(c => new { c.GrupoMatriz?.Id, c.GrupoMatriz?.Nome });
@@ -42,11 +43,20 @@ namespace SME.SR.Application
                     var frequenciaDisciplina = frequenciaAluno.Where(x =>
                         x.DisciplinaId == disciplina.CodDisciplina.ToString());
 
+                    if (request.Bimestre.HasValue)
+                        frequenciaDisciplina.ToList().ForEach(f => f.AdicionarFrequenciaBimestre(request.Bimestre.Value, f.PercentualFrequencia));
+
+                    var consideraFrequenciaEspecifica = turma.AnoLetivo.Equals(2020) && request.Bimestre.HasValue;
+                    var frequencia = (double)100;
+
+                    if (frequenciaDisciplina.Any())
+                        frequencia = frequenciaDisciplina.Sum(x => consideraFrequenciaEspecifica ? x.PercentualFrequenciaFinal : x.PercentualFrequencia) / frequenciaDisciplina.Count();
+
                     var componenteSemNota = new ComponenteSemNota()
                     {
                         Componente = disciplina.Disciplina,
                         Faltas = frequenciaDisciplina?.Sum(x => x.TotalAusencias),
-                        Frequencia = frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : 100
+                        Frequencia = frequencia
                     };
 
                     lstCompSemNota.Add(componenteSemNota);
