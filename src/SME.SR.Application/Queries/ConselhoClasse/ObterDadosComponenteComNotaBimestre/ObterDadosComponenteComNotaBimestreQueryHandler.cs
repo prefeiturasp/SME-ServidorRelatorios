@@ -93,12 +93,20 @@ namespace SME.SR.Application
             if (componentesRegencia == null || !componentesRegencia.Any())
                 return null;
 
+            var percentualFrequencia = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
+
+            if (frequenciaAluno != null && periodoEscolar != null && turma.AnoLetivo.Equals(2020))
+            {
+                frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia);
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
+            }
+
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
             {
-                Aulas = frequenciaAluno.TotalAulas,
+                Aulas = frequenciaAluno?.TotalAulas ?? 0,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100)
+                Frequencia = percentualFrequencia
             };
 
             foreach (var componenteRegencia in componentesRegencia)
@@ -122,14 +130,22 @@ namespace SME.SR.Application
 
         private async Task<ComponenteComNotaBimestre> ObterNotasFrequenciaComponenteComNotaBimestre(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
+            var percentualFrequencia = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
+
+            if (frequenciaAluno != null && periodoEscolar != null && turma.AnoLetivo.Equals(2020))
+            {
+                frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia);
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
+            }
+
             var conselhoClasseComponente = new ComponenteComNotaBimestre()
             {
                 Componente = disciplina.Disciplina,
                 EhEja = turma.EhEja,
-                Aulas = frequenciaAluno.TotalAulas,
+                Aulas = frequenciaAluno?.TotalAulas ?? 0,
                 Faltas = frequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = frequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100),
+                Frequencia = percentualFrequencia,
                 NotaConceito = ObterNotasComponente(disciplina, periodoEscolar, notasFechamentoAluno).FirstOrDefault()?.NotaConceito,
                 NotaPosConselho = ObterNotaPosConselho(disciplina, periodoEscolar?.Bimestre, notasConselhoClasseAluno, notasFechamentoAluno)
             };

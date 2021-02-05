@@ -39,7 +39,8 @@ namespace SME.SR.Application
                 frequenciaAluno = await frequenciaRepository.ObterPorAlunoDataDisciplina(request.CodigoAluno,
                                                                                     request.PeriodoEscolar.PeriodoFim,
                                                                                     TipoFrequenciaAluno.PorDisciplina,
-                                                                                    request.ComponenteCurricularCodigo);
+                                                                                    request.ComponenteCurricularCodigo,
+                                                                                    request.Turma.Codigo);
                 if (frequenciaAluno != null)
                     return frequenciaAluno;
 
@@ -59,9 +60,14 @@ namespace SME.SR.Application
                     var frequenciaAlunoPeriodo = await frequenciaRepository.ObterPorAlunoBimestreAsync(request.CodigoAluno,
                                                                                     periodoEscolarTurma.Bimestre,
                                                                                     TipoFrequenciaAluno.PorDisciplina,
-                                                                                    request.ComponenteCurricularCodigo);
+                                                                                    request.ComponenteCurricularCodigo,
+                                                                                    request.Turma.Codigo);
+
+                    frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolarTurma.Bimestre, frequenciaAlunoPeriodo != null ? frequenciaAlunoPeriodo.PercentualFrequencia : 100);
+
                     if (frequenciaAlunoPeriodo != null)
                     {
+                        frequenciaAluno.Id = frequenciaAlunoPeriodo.Id;
                         frequenciaAluno.TotalAulas += frequenciaAlunoPeriodo.TotalAulas;
                         frequenciaAluno.TotalAusencias += frequenciaAlunoPeriodo.TotalAusencias;
                         frequenciaAluno.TotalCompensacoes += frequenciaAlunoPeriodo.TotalCompensacoes;
