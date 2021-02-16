@@ -120,15 +120,18 @@ namespace SME.SR.Data
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-        internal static string DadosAlunosSituacao = @"IF OBJECT_ID('tempdb..#tmpAlunosSituacao') IS NOT NULL
+        internal static string DadosAlunosSituacao = @"
+					IF OBJECT_ID('tempdb..#tmpAlunosSituacao') IS NOT NULL
 						DROP TABLE #tmpAlunosSituacao
+
 					CREATE TABLE #tmpAlunosSituacao 
 					(
 						CodigoAluno int,
 						NomeAluno VARCHAR(70),
 						CodigoSituacaoMatricula INT,
 						SituacaoMatricula VARCHAR(40),
-						NumeroAlunoChamada VARCHAR(5)
+						NumeroAlunoChamada VARCHAR(5),
+						DataSituacaoAluno DATETIME
 					)
 					INSERT INTO #tmpAlunosSituacao
 					SELECT aluno.cd_aluno CodigoAluno,
@@ -151,7 +154,8 @@ namespace SME.SR.Data
 							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
 							ELSE 'Fora do domínio liberado pela PRODAM'
 							END SituacaoMatricula,
-						mte.nr_chamada_aluno NumeroAlunoChamada
+						mte.nr_chamada_aluno NumeroAlunoChamada,
+						mte.dt_situacao_aluno DataSituacaoAluno
 					FROM v_aluno_cotic aluno
 					INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 					INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
@@ -161,9 +165,9 @@ namespace SME.SR.Data
 					    aluno.nm_aluno NomeAluno,
 					    mte.cd_situacao_aluno CodigoSituacaoMatricula,
 					    CASE
-						    WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+						    WHEN mte.cd_situacao_aluno = 1 AND NOT (mte.nr_chamada_aluno is null and mte.dt_situacao_aluno < te.dt_inicio_turma) THEN 'Ativo'
 						    WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
-						    WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+						    WHEN mte.cd_situacao_aluno = 3 OR dbo.proc_existe_historico_matricula_diferente_aluno(aluno.cd_aluno, matr.an_letivo, matr.cd_matricula, matr.cd_serie_ensino) = 'True' THEN 'Transferido'
 						    WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
 						    WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
 						    WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
@@ -172,15 +176,17 @@ namespace SME.SR.Data
 						    WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
 						    WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
 						    WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
-						    WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+						    WHEN mte.cd_situacao_aluno = 13 OR dbo.proc_existe_historico_matricula_diferente_aluno(aluno.cd_aluno, matr.an_letivo, matr.cd_matricula, matr.cd_serie_ensino) = 'False' THEN 'Sem continuidade'
 						    WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 						    WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
 						    ELSE 'Fora do domínio liberado pela PRODAM'
 						    END SituacaoMatricula,
-					    mte.nr_chamada_aluno NumeroAlunoChamada
+						mte.nr_chamada_aluno NumeroAlunoChamada,
+						mte.dt_situacao_aluno DataSituacaoAluno
 					FROM v_aluno_cotic aluno
 					INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 					INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+					INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola
 					WHERE mte.cd_turma_escola = @turmaCodigo
 						and mte.dt_situacao_aluno =                    
 							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
@@ -200,14 +206,16 @@ namespace SME.SR.Data
 					NomeAluno,
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
-					NumeroAlunoChamada
+					NumeroAlunoChamada,
+					DataSituacaoAluno
 					FROM #tmpAlunosSituacao
 					GROUP BY
 					CodigoAluno,
 					NomeAluno,
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
-					NumeroAlunoChamada";
+					NumeroAlunoChamada,
+					DataSituacaoAluno";
 
 
 
