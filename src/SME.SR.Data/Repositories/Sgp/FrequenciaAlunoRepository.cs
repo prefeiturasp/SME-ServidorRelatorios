@@ -14,7 +14,7 @@ namespace SME.SR.Data
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        private readonly string CamposFrequencia = @"codigo_aluno CodigoAluno, 
+        private readonly string CamposFrequencia = @"id Id, codigo_aluno CodigoAluno, 
                             tipo, disciplina_id DisciplinaId, periodo_inicio PeriodoInicio, 
                             periodo_fim PeriodoFim, bimestre, total_aulas TotalAulas, 
                             total_ausencias TotalAusencias, total_compensacoes TotalCompensacoes, 
@@ -25,7 +25,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<FrequenciaAluno> ObterPorAlunoDataDisciplina(string codigoAluno, DateTime dataAtual, TipoFrequenciaAluno tipoFrequencia, string disciplinaId)
+        public async Task<FrequenciaAluno> ObterPorAlunoDataDisciplina(string codigoAluno, DateTime dataAtual, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma)
         {
             var query = FrequenciaAlunoConsultas.FrequenciaPorAlunoDataDisciplina;
             var parametros = new
@@ -33,7 +33,8 @@ namespace SME.SR.Data
                 CodigoAluno = codigoAluno,
                 DataAtual = dataAtual,
                 TipoFrequencia = tipoFrequencia,
-                DisciplinaId = disciplinaId
+                DisciplinaId = disciplinaId,
+                codigoTurma
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
@@ -43,16 +44,15 @@ namespace SME.SR.Data
         }
 
         public async Task<double> ObterFrequenciaGlobal(string codigoTurma, string codigoAluno)
-        {
-            var query = FrequenciaAlunoConsultas.FrequenciaGlobal;
-            var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
-
+        {            
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryFirstOrDefaultAsync<double>(query, parametros);
+
+            var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
+            return await conexao.QueryFirstOrDefaultAsync<double>(FrequenciaAlunoConsultas.FrequenciaGlobal, parametros);
 
         }
 
-        public async Task<FrequenciaAluno> ObterPorAlunoBimestreAsync(string codigoAluno, int bimestre, TipoFrequenciaAluno tipoFrequencia, string disciplinaId)
+        public async Task<FrequenciaAluno> ObterPorAlunoBimestreAsync(string codigoAluno, int bimestre, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma)
         {
             var query = FrequenciaAlunoConsultas.FrequenciaPorAlunoBimestreDisciplina;
             var parametros = new
@@ -60,7 +60,8 @@ namespace SME.SR.Data
                 CodigoAluno = codigoAluno,
                 Bimestre = bimestre,
                 TipoFrequencia = tipoFrequencia,
-                DisciplinaId = disciplinaId
+                DisciplinaId = disciplinaId,
+                codigoTurma
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
@@ -82,7 +83,8 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string turmaCodigo, long tipoCalendarioId)
         {
-            var query = @"select fa.codigo_aluno as CodigoAluno
+            var query = @"select  fa.id Id
+                                , fa.codigo_aluno as CodigoAluno
                                 , fa.disciplina_id as DisciplinaId
                                 , pe.bimestre
                                 , fa.total_aulas as TotalAulas
@@ -117,7 +119,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorComponentesBimestresTurmas(string[] componentesCurriculares, int[] bimestres, string[] turmasCodigos)
         {
-            var query = new StringBuilder(@"select fa.codigo_aluno as codigoAluno, fa.bimestre, fa.turma_id as TurmaId, fa.disciplina_id as disciplinaId,
+            var query = new StringBuilder(@"select fa.id Id, fa.codigo_aluno as codigoAluno, fa.bimestre, fa.turma_id as TurmaId, fa.disciplina_id as disciplinaId,
                                          fa.periodo_escolar_id as periodoEscolarId, fa.periodo_fim as PeriodoFim, fa.periodo_inicio as PeriodoInicio,
                                          fa.total_aulas as totalAulas, fa.total_compensacoes as totalCompensacoes, fa.tipo, fa.total_ausencias as totalAusencias
                                          from frequencia_aluno fa 
@@ -140,7 +142,8 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunosPorTurma(string codigoTurma)
         {
-            var query = @$"select fa.codigo_aluno as CodigoAluno
+            var query = @$"select fa.id Id
+                                , fa.codigo_aluno as CodigoAluno
                                 , fa.turma_id as TurmaId
                                 , fa.total_aulas as TotalAulas
                                 , fa.total_ausencias as TotalAusencias
