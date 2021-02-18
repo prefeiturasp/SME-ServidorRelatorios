@@ -178,7 +178,21 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<Turma>(query.ToString(), parametros);
+                var turmas = await conexao.QueryAsync<Turma>(query.ToString(), parametros);
+
+                query.Clear();
+                query.AppendLine("select cd_turma_escola");
+                query.AppendLine("  from turma_escola");
+                query.AppendLine("where cd_tipo_turma = 1 and");
+                query.AppendLine("      cd_turma_escola in ('#codigosTurmas')");
+
+                using (var conexaoEol = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+                {
+                    var turmasRegulares = await conexaoEol.QueryAsync<string>(
+                        query.ToString().Replace("#codigosTurmas", string.Join("', '", turmas.Select(t => t.Codigo))));
+
+                    return turmas.Where(t => turmasRegulares.Contains(t.Codigo));
+                }                
             }
         }
 
