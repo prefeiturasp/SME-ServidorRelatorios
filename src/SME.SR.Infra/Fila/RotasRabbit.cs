@@ -15,5 +15,6 @@
         public static string RotaRelatoriosProcessando => "relatorios.processando";
         public static string RotaRelatorioComErro => "relatorios.erro";
         public static string RotaRelatorioCorrelacaoCopiar => "relatorios.correlacao.copiar";
+        public static string RotaRelatorioCorrelacaoInserir => "relatorios.correlacao.inserir";
     }
 }

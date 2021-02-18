@@ -7,15 +7,15 @@
     int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
 
-    bool VerificaQuebra()
+    string VerificaQuebra(bool podeQuebrar = false)
     {
-        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina || podeQuebrar)
         {
             contadorQuebrarPagina = 0;
             contadorPagina = contadorPagina + 1;
-            return true;
+            return ("<div style='page-break-before:always'></div>"+ MontarCabecalho());
         }
-        return false;
+        return "";
     }
 
     string MontarCabecalho()
@@ -120,10 +120,9 @@
                     var alunosPercentual = Math.Round(respostas.AlunosPercentual, 2);
                     var alunosPercentualAlterado = alunosPercentual.ToString().Replace(',', '.');
 
-                    if (quebra)
+                    if (!string.IsNullOrEmpty(quebra))
                     {
-                        @Html.Raw("</tbody></table><div style ='page-break-before:always'></div >")
-                        @Html.Raw(MontarCabecalho())
+                        @Html.Raw(quebra)
                         @Html.Raw("<table class='tabela-cabecalho'>")
                         @Html.Raw(MontaCabecalhoSondagem(pergunta))
                     }
@@ -292,13 +291,7 @@
 
                 for (var i = 0; i < Model.PerguntasRespostas.Count; i++)
                 {
-                    var quebra = VerificaQuebra();
-
-                    if (quebra)
-                    {
-                        @Html.Raw("<div style='page-break-before:always'></div>");
-                        @Html.Raw(MontarCabecalho())
-                    }
+                    @Html.Raw(VerificaQuebra());
 
                     @Html.Raw(MontaTabelaPerguntasRespostas(Model.PerguntasRespostas[i]));
 
@@ -308,9 +301,65 @@
                         contadorQuebrarPagina++;
                     }
                 }
+
+                if (Model.GraficosBarras != null && Model.GraficosBarras.Any())
+            {
+
+
+                int groupings = 2;
+                var grouped = Model.GraficosBarras.Select((x, i) => new { x, i = i / groupings })
+                              .GroupBy(x => x.i, x => x.x);
+
+                var maxTabelasPorPagina = 2;
+                var iCount = 0;
+
+                //Verificando página inicial que irá receber os primeiros relatórios
+                if (contadorQuebrarPagina <= 26 && contadorQuebrarPagina > 20)
+                    iCount = 1;
+                else if (contadorQuebrarPagina > 35)
+                    iCount = 2;
+
+
+                @foreach (var items in grouped)
+                {
+                    if (iCount >= maxTabelasPorPagina)
+                    {
+                        @Html.Raw(VerificaQuebra(true))
+                        iCount = 1;
+                    }
+                    else
+                    {
+                        iCount ++;
+                    }
+
+                    <table style="border:none; border-color: #ffffff!important; margin-top:30px; ">
+                        <tbody>
+                            <tr>
+                                @foreach (var item in items)
+                                {
+                                    <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("Graficos/GraficoBarras", item)</td>
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            }
             }
         </div>
     </body>
+    <script>
+    window.onload = function () {
+    @{
+        foreach (var item in Model.GraficosBarras)
+        {
+        <text>
+             drawBarChart_@(item.IdParaLastro)();
+        </text>
+        }
+    }
+
+    }
+    </script>
 </html>
 }
 

@@ -6,6 +6,7 @@ using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,7 +67,7 @@ namespace SME.SR.Application
                 SentrySdk.AddBreadcrumb("Obtendo a turma..", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 var turma = await ObterDadosTurma(fechamentoTurma.Turma.Codigo);
 
-                relatorio.Dre = turma.Dre.Nome;
+                relatorio.Dre = turma.Dre.Abreviacao;
                 relatorio.Ue = turma.Ue.Nome;
 
                 SentrySdk.AddBreadcrumb($"Obtendo dados do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
@@ -82,7 +83,8 @@ namespace SME.SR.Application
                 relatorio.AlunoSituacao = dadosAluno.SituacaoRelatorio;
 
                 SentrySdk.AddBreadcrumb($"Obtendo frequencia global do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-                relatorio.AlunoFrequenciaGlobal = (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno)).ToString();
+                if (!fechamentoTurma.Turma.AnoLetivo.Equals(2020))
+                    relatorio.AlunoFrequenciaGlobal = (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno)).ToString();
 
                 if (bimestre.HasValue)
                 {
@@ -99,6 +101,8 @@ namespace SME.SR.Application
                             Usuario = request.Usuario
                         });
 
+                    if (fechamentoTurma.Turma.AnoLetivo.Equals(2020))
+                        DefinirFrequenciaGlobalBimestre2020(relatorio, ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesComNota);
 
                     SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesSemNota Com Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                     ((RelatorioConselhoClasseBimestre)relatorio).GruposMatrizComponentesSemNota =
@@ -126,6 +130,9 @@ namespace SME.SR.Application
                             Usuario = request.Usuario
                         });
 
+                    if (fechamentoTurma.Turma.AnoLetivo.Equals(2020))
+                        DefinirFrequenciaGlobalFinal2020(relatorio, ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesComNota);
+
                     SentrySdk.AddBreadcrumb("Obtendo GruposMatrizComponentesSemNota Sem Bimestre", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                     ((RelatorioConselhoClasseFinal)relatorio).GruposMatrizComponentesSemNota =
                         await mediator.Send(new ObterDadosComponenteSemNotaFinalQuery()
@@ -144,7 +151,6 @@ namespace SME.SR.Application
                 relatorio.RecomendacaoAluno = recomendacoes.RecomendacoesAluno;
                 relatorio.RecomendacaoFamilia = recomendacoes.RecomendacoesFamilia;
                 relatorio.AnotacoesPedagogicas = recomendacoes.AnotacoesPedagogicas;
-
 
                 SentrySdk.AddBreadcrumb("Obtendo ObterAnotacoesAluno", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 var anotacoes = await ObterAnotacoesAluno(
@@ -170,6 +176,34 @@ namespace SME.SR.Application
                 throw ex;
             }
 
+        }
+
+        private void DefinirFrequenciaGlobalFinal2020(RelatorioConselhoClasseBase relatorio, IEnumerable<GrupoMatrizComponenteComNotaFinal> listaGrupoMatrizComponenteComNotaFinal)
+        {
+            var somaPercentuaisFrequencia = 0.0;
+            var totalDisciplinas = 0;
+            listaGrupoMatrizComponenteComNotaFinal.ToList().ForEach(gmc =>
+            {
+                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => cn.Frequencia.HasValue).Sum(gn => gn.Frequencia.Value);
+                somaPercentuaisFrequencia += gmc.ComponentesComNotaRegencia?.Frequencia ?? 0;
+                totalDisciplinas += gmc.ComponentesComNota.Count();
+                totalDisciplinas += gmc.ComponentesComNotaRegencia?.ComponentesCurriculares.Count ?? 0;
+            });
+            relatorio.AlunoFrequenciaGlobal = Math.Round(somaPercentuaisFrequencia / totalDisciplinas, 2).ToString();
+        }
+
+        private void DefinirFrequenciaGlobalBimestre2020(RelatorioConselhoClasseBase relatorio, IEnumerable<GrupoMatrizComponenteComNotaBimestre> listaGrupoMatrizComponenteComNotaBimestre)
+        {
+            var somaPercentuaisFrequencia = 0.0;
+            var totalDisciplinas = 0;
+            listaGrupoMatrizComponenteComNotaBimestre.ToList().ForEach(gmc =>
+            {
+                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => cn.Frequencia.HasValue).Sum(gn => gn.Frequencia.Value);
+                somaPercentuaisFrequencia += gmc.ComponenteComNotaRegencia?.Frequencia ?? 0;
+                totalDisciplinas += gmc.ComponentesComNota.Count();
+                totalDisciplinas += gmc.ComponenteComNotaRegencia?.ComponentesCurriculares.Count ?? 0;
+            });
+            relatorio.AlunoFrequenciaGlobal = Math.Round(somaPercentuaisFrequencia / totalDisciplinas, 2).ToString();
         }
 
         private async Task<string> ObterParecerConclusivoPorAluno(string codigoAluno, long conselhoClasseId)

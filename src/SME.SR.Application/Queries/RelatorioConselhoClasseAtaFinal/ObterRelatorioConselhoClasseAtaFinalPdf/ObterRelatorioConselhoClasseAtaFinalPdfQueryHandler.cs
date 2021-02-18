@@ -12,7 +12,9 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
-        private IMediator mediator;
+        private const string FREQUENCIA_100 = "100";
+
+        private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
 
         public ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler(IMediator mediator)
@@ -22,6 +24,7 @@ namespace SME.SR.Application
 
         public async Task<List<ConselhoClasseAtaFinalPaginaDto>> Handle(ObterRelatorioConselhoClasseAtaFinalPdfQuery request, CancellationToken cancellationToken)
         {
+            var mensagensErro = new StringBuilder();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
             foreach (var turmaCodigo in request.FiltroConselhoClasseAtaFinal.TurmasCodigos)
             {
@@ -32,11 +35,15 @@ namespace SME.SR.Application
                     if (retorno != null && retorno.Any())
                         relatoriosTurmas.AddRange(retorno);
                 }
-                catch (NegocioException) { }
+                catch (Exception e)
+                {
+                    var turma = await ObterTurma(turmaCodigo);
+                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e}");
+                }
             }
 
-            if (relatoriosTurmas.Count() <= 0)
-                throw new NegocioException("Não foram encontrados dados para as turmas com os filtros informados");
+            if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
+                throw new NegocioException(mensagensErro.ToString());
 
             return relatoriosTurmas;
         }
@@ -88,7 +95,7 @@ namespace SME.SR.Application
 
                     ConselhoClasseAtaFinalPaginaDto modelPagina = new ConselhoClasseAtaFinalPaginaDto
                     {
-                        EhEJA = dadosRelatorio.EhEJA,
+                        Modalidade = dadosRelatorio.Modalidade,
                         Cabecalho = dadosRelatorio.Cabecalho,
                         NumeroPagina = contPagina++,
                         FinalHorizontal = ehPaginaFinal,
@@ -155,7 +162,7 @@ namespace SME.SR.Application
         private async Task<ConselhoClasseAtaFinalDto> MontarEstruturaRelatorio(Modalidade modalidadeCodigo, ConselhoClasseAtaFinalCabecalhoDto cabecalho, IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares, string turmaCodigo)
         {
             var relatorio = new ConselhoClasseAtaFinalDto();
-            relatorio.EhEJA = modalidadeCodigo == Modalidade.EJA;
+            relatorio.Modalidade = modalidadeCodigo;
 
             relatorio.Cabecalho = cabecalho;
             var gruposMatrizes = componentesCurriculares.Where(c => c.GrupoMatriz != null).GroupBy(c => c.GrupoMatriz);
@@ -189,6 +196,8 @@ namespace SME.SR.Application
                 Situacao = aluno.SituacaoMatricula,
                 Inativo = aluno.Inativo
             };
+
+            var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
 
             foreach (var grupoMatriz in gruposMatrizes)
             {
@@ -238,21 +247,24 @@ namespace SME.SR.Application
                                             ++coluna);
                     linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            frequenciaAluno?.PercentualFrequencia.ToString() ?? "100,00",
+                                            (turma.AnoLetivo.Equals(2020) ? frequenciaAluno?.PercentualFrequenciaFinal.ToString() : frequenciaAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100,
                                             ++coluna);
                 }
             }
 
             var frequenciaGlobalAluno = frequenciaAlunosGeral
-                                            .FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString());
+                .FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString());
 
             // Anual
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalAusencias.ToString() ?? "0", 1);
             linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.TotalCompensacoes.ToString() ?? "0", 2);
-            linhaDto.AdicionaCelula(99, 99, frequenciaGlobalAluno?.PercentualFrequencia.ToString() ?? "100", 3);
+            linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? frequenciaGlobalAluno?.PercentualFrequenciaFinal.ToString() : frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100, 3);
 
             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
-            linhaDto.AdicionaCelula(99, 99, parecerConclusivo?.ParecerConclusivo ?? "Sem Parecer", 4);
+            var textoParecer = parecerConclusivo?.ParecerConclusivo;
+            if (textoParecer == null)
+                textoParecer = aluno.SituacaoMatricula != null ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";            
+            linhaDto.AdicionaCelula(99, 99, textoParecer, 4);
 
             return linhaDto;
         }

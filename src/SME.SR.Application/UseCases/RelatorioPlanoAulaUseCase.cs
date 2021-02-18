@@ -26,7 +26,7 @@ namespace SME.SR.Workers.SGP
             if (planoAula == null)
                 throw new NegocioException("Plano de aula não encontrado.");
 
-            var componenteCurricular = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(planoAula.ComponenteCurricularId));
+            var componenteCurricular = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(planoAula.ComponenteCurricularId));
 
             planoAula.ComponenteCurricular = componenteCurricular.FirstOrDefault().Disciplina;
             planoAula.Objetivos = await mediator.Send(new ObterPlanoAulaObjetivoAprendizagemQuery(filtros.PlanoAulaId));

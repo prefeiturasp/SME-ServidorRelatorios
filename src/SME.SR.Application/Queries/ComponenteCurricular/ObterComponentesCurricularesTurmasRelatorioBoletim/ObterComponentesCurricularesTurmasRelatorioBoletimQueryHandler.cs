@@ -25,6 +25,9 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesTurmasRelatorioBoletimQuery request, CancellationToken cancellationToken)
         {
             var componentesDasTurmas = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
+
+            var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray()));
+
             if (componentesDasTurmas != null && componentesDasTurmas.Any())
             {
                 var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
@@ -38,7 +41,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                     BaseNacional = c.EhBaseNacional(componentesApiEol),
                     Compartilhada = c.EhCompartilhada(componentesApiEol),
                     Disciplina = c.DescricaoFormatada,
-                    GrupoMatriz = c.ObterGrupoMatriz(componentesApiEol, gruposMatriz),
+                    GrupoMatriz = c.ObterGrupoMatrizSgp(disciplinasDaTurma, gruposMatriz),
                     LancaNota = c.PodeLancarNota(componentesApiEol),
                     Frequencia = c.ControlaFrequencia(componentesApiEol),
                     Regencia = c.EhRegencia(componentesApiEol),

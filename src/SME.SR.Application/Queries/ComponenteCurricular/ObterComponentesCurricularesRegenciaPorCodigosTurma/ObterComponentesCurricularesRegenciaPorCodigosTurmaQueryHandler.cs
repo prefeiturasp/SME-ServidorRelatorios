@@ -57,13 +57,13 @@ namespace SME.SR.Application
             if (atribuicoes == null || !atribuicoes.Any())
                 return null;
 
-            var disciplinasEol = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = atribuicoes.Select(a => a.DisciplinaId).Distinct().ToArray() });
+            var disciplinasEol = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = atribuicoes.Select(a => a.ComponenteCurricularId).Distinct().ToArray() });
 
             var componenteRegencia = disciplinasEol?.FirstOrDefault(c => c.Regencia);
             if (componenteRegencia == null || ignorarDeParaRegencia)
                 return MapearComponentesPorAtribuicaoCJ(atribuicoes, disciplinasEol);
 
-            var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery() { ComponentesCurricularesIds = IDS_COMPONENTES_REGENCIA });
+            var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = IDS_COMPONENTES_REGENCIA });
             if (componentesRegencia != null)
                 return MapearComponentesPorAtribuicaoCJ(atribuicoes, componentesRegencia);
 

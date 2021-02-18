@@ -1,4 +1,5 @@
 ﻿using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace SME.SR.Infra
         public RelatorioRecuperacaoParalelaAlunoSecaoDto(string secaoNome, string secaoValor)
         {
             SecaoNome = secaoNome;
-            SecaoValor = secaoValor.LimparFormatacaoHtml();
+            SecaoValor = UtilRegex.RemoverTagsHtmlMidia(secaoValor);
+            SecaoValor = UtilRegex.RemoverTagsHtml(SecaoValor);            
         }
 
         public string SecaoNome { get; set; }

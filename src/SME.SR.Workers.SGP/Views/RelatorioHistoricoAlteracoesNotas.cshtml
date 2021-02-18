@@ -1,0 +1,379 @@
+﻿@model SME.SR.Infra.RelatorioAlteracaoNotasDto
+
+@{
+
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 48;
+
+    string VerificaQuebra(int valorAdicionalParaSoma)
+    {
+        if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+
+            var str = MontarCabecalho();
+            str = $@"<div style='page-break-before:always' />" + str;
+            return str;
+
+        }
+        return string.Empty;
+
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 7;
+        var str =
+           $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'>RELATÓRIO DE ALTERAÇÕES DE NOTAS</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+<td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+<td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
+<td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
+<td width='20%'>RF: {Model.Filtro.RF}</td>
+<td width='20%'>DATA: {Model.Filtro.Data}</td>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+    string MontarCabecalhoTabela(string quebra, string componente, SME.SR.Infra.TurmaAlteracaoNotasDto turma)
+    {
+
+        var ehNota = turma.TipoNotaConceito == SME.SR.Infra.TipoNota.Nota;
+        var descHeaderNotaAtribuida = ehNota ? " ATRIBUÍDA" : " ATRIBUÍDO";
+
+        var str = "";
+
+        if (!String.IsNullOrEmpty(quebra) && componente != "" && (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos"))
+        {
+            str += $@"<table class='tabela-alunos'>
+                        <thead>
+                          <tr>
+                            <th>{componente}</th>
+                          </tr>
+                        </thead>
+                      </table>";
+        }
+
+        str += $@"
+                <table class='tabela-alunos'>
+                    <thead>
+                        <th class='sem-border-bottom' width='5%'>Nº</th>
+                        <th class='sem-border-bottom' width='15%'>NOME DO ALUNO</th>
+                        <th class='sem-border-bottom' width='10%'>TIPO DE {turma.TipoNotaConceitoDesc}</th>
+                        <th class='sem-border-bottom' width='10%'>{turma.TipoNotaConceitoDesc} ANTERIOR</th>
+                        <th class='sem-border-bottom' width='10%'>{turma.TipoNotaConceitoDesc + descHeaderNotaAtribuida} </th>
+                        <th class='sem-border-bottom' width='10%'>DATA DA ALTERAÇÃO</th>
+                        <th class='sem-border-bottom' width='15%'>USUÁRIO QUE ALTEROU</th>";
+
+        if (!turma.AnoAtual)
+        {
+            str += $@" 
+                    <th class='sem-border-bottom' width='10%'>SITUAÇÃO</th>
+                    <th class='sem-border-bottom' width='15%'>USUÁRIO APROVAÇÃO</th>";
+        }
+
+        str += $@"
+                  </thead>
+                  </table>";
+        return str;
+    }
+
+    string MontarDadosTabela(List<SME.SR.Infra.AlunosAlteracaoNotasDto> alunosAlteracaoNotas, string componente, SME.SR.Infra.TurmaAlteracaoNotasDto turma)
+    {
+        var str = $@"<table class='tabela-alunos' style='border-bottom:none;'><tbody>";
+        for (int i = 0; i < alunosAlteracaoNotas.Count; i++)
+        {
+            var aluno = alunosAlteracaoNotas[i];
+
+            double tamanhoTexto1 = !string.IsNullOrEmpty(aluno.Nome) ? aluno.Nome.Length : 0;
+
+            var qtdLinhaNome = (int)Math.Truncate(tamanhoTexto1 / 9);
+
+            double tamanhoTexto2 = !string.IsNullOrEmpty(aluno.UsuarioAlteracao) ? aluno.UsuarioAlteracao.Length : 0;
+
+            var qtdLinhaUsuarioAlteracao = (int)Math.Truncate(tamanhoTexto2 / 9);
+
+            var qdtResult = Math.Max(qtdLinhaNome, qtdLinhaUsuarioAlteracao);
+
+            double tamanhoTexto3 = !string.IsNullOrEmpty(aluno.UsuarioAprovacao) ? aluno.UsuarioAprovacao.Length : 0;
+
+            var qtdLinhaUsuarioAprovacao = (int)Math.Truncate(tamanhoTexto3 / 9);
+
+            var qtdResulFinal = Math.Max(qdtResult, qtdLinhaUsuarioAprovacao);
+
+            contadorQuebrarPagina = contadorQuebrarPagina + qtdResulFinal;
+
+            str += $@"
+                    <tr>
+                        <th style='text-align:center' width='5%'>{aluno.NumeroChamada}</th>
+                        <th style='text-align:center' width='15%'>{aluno.Nome}</th>
+                        <th style='text-align:center' width='10%'>{aluno.TipoAlteracaoNota}</th>
+                        <th style='text-align:center' width='10%'>{aluno.NotaConceitoAnterior}</th>
+                        <th style='text-align:center' width='10%'>{aluno.NotaConceitoAtribuido}</th>
+                        <th style='text-align:center' width='10%'>{aluno.DataAlteracao}</th>
+                        <th style='text-align:center' width='15%'>{aluno.UsuarioAlteracao}</th>";
+
+            if (!turma.AnoAtual)
+            {
+                str += $@"
+                <th style='text-align:center' width='10%'>{aluno.Situacao}</th>
+                <th style='text-align:center' width='15%'>{aluno.UsuarioAprovacao}</th>
+              ";
+            }
+
+            str += $@"</tr>";
+            
+            var quebra = VerificaQuebra(0);
+
+            var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, turma) : "");
+            str += quebra.Length > 0 ? $@"</tbody></table>{novaPagina}<table class='tabela-alunos'><tbody>" : "";
+        }
+        str += $@"</tbody></table>";
+        return str;
+    }
+
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE ALTERAÇÕES DE NOTAS</title>
+</head>
+<body class="body-relatorio">
+    <style>
+
+        tblTopo th, td {
+            padding: 3px 0px 3px 15px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+            font-weight: bold;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        .tabela-alunos tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-rel-faltas-frequencia {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+    </style>
+    <div>
+        @{
+            @Html.Raw(MontarCabecalho())
+            var bimestreDescricaoAnt = "";
+            foreach (var turma in Model.Turmas)
+            {
+
+                @if (turma.Bimestres != null || !turma.Bimestres.Any())
+                {
+                     bimestreDescricaoAnt = "";
+
+                    foreach (var bimestre in turma.Bimestres)
+                    {
+                        @if (bimestre.ComponentesCurriculares != null)
+                        {
+
+                            for (int c = 0; c < bimestre.ComponentesCurriculares.Count; c++)
+                            {
+                                var componente = bimestre.ComponentesCurriculares[c];
+
+                                // TURMA
+                                if (Model.Filtro.Turma == "Todas" || Model.Filtro.Turma == "")
+                                {
+                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                    @Html.Raw(VerificaQuebra(4))
+                            
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@turma.Nome</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                }
+
+                                // BIMESTRE
+                                if(!bimestreDescricaoAnt.Equals(bimestre.Descricao))
+                                {
+                                    if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
+                                    {
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                    @Html.Raw(VerificaQuebra(3))
+
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@bimestre.Descricao</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    }
+                                    bimestreDescricaoAnt = bimestre.Descricao;
+                                }
+
+                                // COMPONENTE CURRICULAR
+                                if (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos")
+                                {
+                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                    @Html.Raw(VerificaQuebra(2))
+
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@componente.Nome</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                }
+
+                                contadorQuebrarPagina++;
+                                var quebra = VerificaQuebra(1);
+                                @Html.Raw(quebra);
+
+                                if (componente.AlunosAlteracaoNotasBimestre.Count() > 0)
+                                {
+                                    @Html.Raw(MontarCabecalhoTabela(quebra, componente.Nome, turma))
+                                    contadorQuebrarPagina++;
+                                }
+                                @Html.Raw(MontarDadosTabela(componente.AlunosAlteracaoNotasBimestre, componente.Nome, turma))
+
+                                <table class="tabela-alunos">
+                                    <thead>
+                                        <tr>
+                                            <th class="thLimpo"></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                                contadorQuebrarPagina++;
+
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    </div>
+</body>
+</html>

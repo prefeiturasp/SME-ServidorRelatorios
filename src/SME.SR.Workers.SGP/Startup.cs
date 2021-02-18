@@ -48,7 +48,7 @@ namespace SME.SR.Workers.SGP
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+        { 
 
             app.UseSwagger();
 

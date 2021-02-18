@@ -37,6 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\RelatorioFaltasFrequencias - Copy.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\RelatorioFaltasFrequencias.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
