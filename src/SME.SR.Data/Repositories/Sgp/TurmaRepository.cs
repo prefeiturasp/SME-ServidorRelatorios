@@ -192,7 +192,7 @@ namespace SME.SR.Data
                         query.ToString().Replace("#codigosTurmas", string.Join("', '", turmas.Select(t => t.Codigo))));
 
                     return turmas.Where(t => turmasRegulares.Contains(t.Codigo));
-                }                
+                }
             }
         }
 
@@ -846,6 +846,20 @@ namespace SME.SR.Data
                 throw ex;
             }
 
+        }
+
+        public async Task<Turma> ObterPorId(long id)
+        {
+            var query = @"select t.turma_id Codigo, t.nome
+			                    , t.modalidade_codigo  ModalidadeCodigo, t.semestre
+                                , t.ano, t.ano_letivo AnoLetivo,
+			                from turma t
+			                where t.id = @id";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<Turma>(query, new { id });
+            }
         }
     }
 }

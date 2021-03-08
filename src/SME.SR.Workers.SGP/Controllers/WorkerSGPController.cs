@@ -218,5 +218,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/devolutivas")]
+        [Action("relatorios/devolutivas", typeof(IRelatorioDevolutivasUseCase))]
+        public async Task<bool> Devolutivas([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanejamentoDiarioUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
     }
 }
