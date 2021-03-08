@@ -7270,6 +7270,89 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         [HttpGet("relatorio-devolutivas")]
         public IActionResult RelatorioDevolutivas()
         {
+            var turmas = new List<TurmasDevolutivasDto>();
+            var devolutivas1 = new List<DevolutivasDto>();
+            var devolutivas2 = new List<DevolutivasDto>();
+
+            for (var i = 0; i < 25; i++)
+            {
+                var DiasIntervalos1 = new List<String>();
+                for(var j = 0; j < 15; j++)
+                {
+                    DiasIntervalos1.Add(DateTime.Now.AddDays(j - 1).ToString("dd/MM"));
+                }
+
+                var valoresDevolutivas1 = new DevolutivasDto()
+                {
+                    IntervaloDatas = DateTime.Now.AddDays(i).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(i + 5).ToString("dd/MM/yyyy"),
+                    DiasIntervalo = String.Join(", ", DiasIntervalos1.ToArray()),
+                    DataRegistro = DateTime.Now.AddDays( i + 10).ToString("dd/MM/yyyy"),
+                    ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
+                    Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
+                };
+                devolutivas1.Add(valoresDevolutivas1);
+            }
+
+            for (var i = 0; i < 30; i++)
+            {
+                var DiasIntervalos2 = new List<String>();
+                for (var j = 0; j < 5; j++)
+                {
+                    DiasIntervalos2.Add(DateTime.Now.AddDays(j - 20).ToString("dd/MM"));
+                }
+
+                var valoresDevolutivas2 = new DevolutivasDto()
+                {
+                    IntervaloDatas = DateTime.Now.AddDays(i).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(i -20).ToString("dd/MM/yyyy"),
+                    DiasIntervalo = String.Join(", ", DiasIntervalos2.ToArray()),
+                    DataRegistro = DateTime.Now.AddDays(i - 10).ToString("dd/MM/yyyy"),
+                    ResgistradoPor = "REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE (2547458)",
+                    Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
+                };
+                devolutivas2.Add(valoresDevolutivas2);
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+
+                var turmasDevolutivasDto1 = new TurmasDevolutivasDto()
+                {
+                    NomeTurma = i + 1 + "A",
+                    Bimestres = new List<BimestresDevolutivasDto>()
+                {
+                    new BimestresDevolutivasDto()
+                    {
+                        NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                        Devolutivas = devolutivas1
+                    },
+                    new BimestresDevolutivasDto()
+                    {
+                        NomeBimestre = "2º Bimestre (02/02/2020 à 29/04/2020)",
+                        Devolutivas = devolutivas2
+                    }
+                }
+                };
+                turmas.Add(turmasDevolutivasDto1);
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+
+                var turmasDevolutivasDto2 = new TurmasDevolutivasDto()
+                {
+                    NomeTurma = i + 1 + "B",
+                    Bimestres = new List<BimestresDevolutivasDto>()
+                {
+                    new BimestresDevolutivasDto()
+                    {
+                        NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                        Devolutivas = devolutivas1
+                    },
+                }
+                };
+                turmas.Add(turmasDevolutivasDto2);
+            }
+
             var model = new RelatorioDevolutivasDto()
             {
                 Dre = "DRE - BT",
@@ -7280,98 +7363,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 RF = "9879878",
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 ExibeConteudoDevolutivas = true,
-                Turmas = new List<TurmasDevolutivasDto>()
-                {
-                    new TurmasDevolutivasDto()
-                    {
-                        NomeTurma = "5A",
-                        Bimestres =  new List<BimestresDevolutivasDto>()
-                        {
-                            new BimestresDevolutivasDto()
-                            {
-                               NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
-                               Devolutivas = new List<DevolutivasDto>()
-                               {
-                                  new DevolutivasDto()
-                                  {
-                                      IntervaloDatas = "27/04/2020 até 30/04/2020",
-                                      DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
-                                      DataRegistro = "27/04/2020",
-                                      ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
-                                      Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
-                                  },
-
-                                   new DevolutivasDto()
-                                  {
-                                      IntervaloDatas = "27/04/2020 até 30/04/2020",
-                                      DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
-                                      DataRegistro = "27/04/2020",
-                                      ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
-                                      Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
-                                  }
-                               }
-                            },
-                             new BimestresDevolutivasDto()
-                            {
-                               NomeBimestre = "2º Bimestre (02/02/2020 à 29/04/2020)",
-                               Devolutivas = new List<DevolutivasDto>()
-                               {
-                                  new DevolutivasDto()
-                                  {
-                                      IntervaloDatas = "27/04/2020 até 30/04/2020",
-                                      DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
-                                      DataRegistro = "27/04/2020",
-                                      ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
-                                      Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
-                                  },
-
-                                   new DevolutivasDto()
-                                  {
-                                      IntervaloDatas = "27/04/2020 até 30/04/2020",
-                                      DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
-                                      DataRegistro = "27/04/2020",
-                                      ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
-                                      Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
-                                  }
-                               }
-                            }
-                        }
-                        
-                    },
-                    new TurmasDevolutivasDto()
-                    {
-                        NomeTurma = "5B",
-                        Bimestres =  new List<BimestresDevolutivasDto>()
-                        {
-                            new BimestresDevolutivasDto()
-                            {
-                               NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
-
-                               Devolutivas = new List<DevolutivasDto>()
-                               {
-                                  new DevolutivasDto()
-                                  {
-                                      IntervaloDatas = "27/04/2020 até 30/04/2020",
-                                      DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
-                                      DataRegistro = "27/04/2020",
-                                      ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
-                                      Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
-                                  },
-
-                                   new DevolutivasDto()
-                                  {
-                                      IntervaloDatas = "27/04/2020 até 30/04/2020",
-                                      DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
-                                      DataRegistro = "27/04/2020",
-                                      ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
-                                      Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
-                                  }
-                               }
-                            },
-                        }
-
-                    }
-                }
+                Turmas = turmas
             };
 
             return View("RelatorioDevolutivas", model);
