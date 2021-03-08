@@ -7290,9 +7290,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             new BimestresDevolutivasDto()
                             {
                                NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
-                               Devolutivas = new List<DevolutivasDto>()
+                               Devolutivas = new List<DevolutivaRelatorioDto>()
                                {
-                                  new DevolutivasDto()
+                                  new DevolutivaRelatorioDto()
                                   {
                                       IntervaloDatas = "27/04/2020 até 30/04/2020",
                                       DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
@@ -7301,7 +7301,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                       Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
                                   },
 
-                                   new DevolutivasDto()
+                                   new DevolutivaRelatorioDto()
                                   {
                                       IntervaloDatas = "27/04/2020 até 30/04/2020",
                                       DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
@@ -7314,9 +7314,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                              new BimestresDevolutivasDto()
                             {
                                NomeBimestre = "2º Bimestre (02/02/2020 à 29/04/2020)",
-                               Devolutivas = new List<DevolutivasDto>()
+                               Devolutivas = new List<DevolutivaRelatorioDto>()
                                {
-                                  new DevolutivasDto()
+                                  new DevolutivaRelatorioDto()
                                   {
                                       IntervaloDatas = "27/04/2020 até 30/04/2020",
                                       DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
@@ -7325,7 +7325,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                       Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
                                   },
 
-                                   new DevolutivasDto()
+                                   new DevolutivaRelatorioDto()
                                   {
                                       IntervaloDatas = "27/04/2020 até 30/04/2020",
                                       DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
@@ -7347,9 +7347,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                             {
                                NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
 
-                               Devolutivas = new List<DevolutivasDto>()
+                               Devolutivas = new List<DevolutivaRelatorioDto>()
                                {
-                                  new DevolutivasDto()
+                                  new DevolutivaRelatorioDto()
                                   {
                                       IntervaloDatas = "27/04/2020 até 30/04/2020",
                                       DiasIntervalo = "27/04, 28/04, 29/04, 30/04",
@@ -7358,7 +7358,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                                       Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
                                   },
 
-                                   new DevolutivasDto()
+                                   new DevolutivaRelatorioDto()
                                   {
                                       IntervaloDatas = "27/04/2020 até 30/04/2020",
                                       DiasIntervalo = "27/04, 28/04, 29/04, 30/04",

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
-    public class DevolutivasDto
+    public class DevolutivaRelatorioDto
     {
         public string IntervaloDatas { get; set; }
         public string DiasIntervalo { get; set; }
