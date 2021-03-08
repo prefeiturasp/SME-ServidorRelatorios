@@ -13,6 +13,6 @@ namespace SME.SR.Infra
         public string RF { get; set; }
         public string DataSolicitacao { get; set; }
         public bool ExibeConteudoDevolutivas { get; set; }
-        public List<TurmasDevolutivasDto> Turmas { get; set; }
+        public IEnumerable<TurmasDevolutivasDto> Turmas { get; set; }
     }
 }
