@@ -7271,8 +7271,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public IActionResult RelatorioDevolutivas()
         {
             var turmas = new List<TurmasDevolutivasDto>();
-            var devolutivas1 = new List<DevolutivasDto>();
-            var devolutivas2 = new List<DevolutivasDto>();
+            var devolutivas1 = new List<DevolutivaRelatorioDto>();
+            var devolutivas2 = new List<DevolutivaRelatorioDto>();
 
             for (var i = 0; i < 25; i++)
             {
@@ -7282,7 +7282,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     DiasIntervalos1.Add(DateTime.Now.AddDays(j - 1).ToString("dd/MM"));
                 }
 
-                var valoresDevolutivas1 = new DevolutivasDto()
+                DevolutivaRelatorioDto valoresDevolutivas1 = new DevolutivaRelatorioDto()
                 {
                     IntervaloDatas = DateTime.Now.AddDays(i).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(i + 5).ToString("dd/MM/yyyy"),
                     DiasIntervalo = String.Join(", ", DiasIntervalos1.ToArray()),
@@ -7301,7 +7301,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     DiasIntervalos2.Add(DateTime.Now.AddDays(j - 20).ToString("dd/MM"));
                 }
 
-                var valoresDevolutivas2 = new DevolutivasDto()
+                DevolutivaRelatorioDto valoresDevolutivas2 = new DevolutivaRelatorioDto()
                 {
                     IntervaloDatas = DateTime.Now.AddDays(i).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(i -20).ToString("dd/MM/yyyy"),
                     DiasIntervalo = String.Join(", ", DiasIntervalos2.ToArray()),
@@ -7309,7 +7309,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     ResgistradoPor = "REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE (2547458)",
                     Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
                 };
-                devolutivas2.Add(valoresDevolutivas2);
+                devolutivas2.ToList().Add(valoresDevolutivas2);
             }
 
             for (var i = 0; i < 5; i++)

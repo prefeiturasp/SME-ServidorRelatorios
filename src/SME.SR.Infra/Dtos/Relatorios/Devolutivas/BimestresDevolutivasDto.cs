@@ -6,7 +6,7 @@ namespace SME.SR.Infra
     public class BimestresDevolutivasDto
     {
         public string NomeBimestre { get; set; }
-        public List<DevolutivasDto> Devolutivas { get; set; }
+        public IEnumerable<DevolutivaRelatorioDto> Devolutivas { get; set; }
 
     }
 }
