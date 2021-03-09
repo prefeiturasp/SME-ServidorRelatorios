@@ -25,7 +25,7 @@ namespace SME.SR.Application
             var devolutivasDto = new List<TurmasDevolutivasDto>();
             var devolutivas = await devolutivaRepository.ObterDevolutivas(request.UeId, request.Turmas, request.Bimestres, request.Ano);
 
-            foreach (var devolutivasPorTurma in devolutivas.GroupBy(a => a.Aula.Turma))
+            foreach (var devolutivasPorTurma in devolutivas.GroupBy(a => new { a.Aula.Turma.Id, a.Aula.Turma.Nome }))
             {
                 devolutivasDto.Add(new TurmasDevolutivasDto()
                 {
@@ -37,25 +37,31 @@ namespace SME.SR.Application
             return devolutivasDto;
         }
 
-        private IEnumerable<BimestresDevolutivasDto> ObterBimestres(IGrouping<TurmaNomeDto, DevolutivaDto> devolutivas)
+        private IEnumerable<BimestresDevolutivasDto> ObterBimestres(IGrouping<object, DevolutivaDto> devolutivas)
         {
-            foreach (var devolutivasPorBimestre in devolutivas.GroupBy(a => a.Aula.PeriodoEscolar))
+            foreach (var devolutivasPorBimestre in devolutivas
+                .GroupBy(a => new { a.Aula.PeriodoEscolar.Bimestre, a.Aula.PeriodoEscolar.DataInicio, a.Aula.PeriodoEscolar.DataFim })
+                .OrderBy(a => a.Key.Bimestre))
             {
                 var periodoEscolar = devolutivasPorBimestre.Key;
 
                 yield return new BimestresDevolutivasDto()
                 {
-                    NomeBimestre = $"{periodoEscolar.Bimestre}º BIMESTRE ({periodoEscolar.DataInicio:dd/MM/yyyy} À {periodoEscolar.Bimestre:dd/MM/yyyy})",
+                    NomeBimestre = $"{periodoEscolar.Bimestre}º BIMESTRE ({periodoEscolar.DataInicio:dd/MM/yyyy} À {periodoEscolar.DataFim:dd/MM/yyyy})",
                     Devolutivas = ObterDevolutivasQuery(devolutivasPorBimestre).ToList()
                 };
             }
         }
 
-        private IEnumerable<DevolutivaRelatorioDto> ObterDevolutivasQuery(IGrouping<PeriodoEscolarDto, DevolutivaDto> devolutivas)
+        private IEnumerable<DevolutivaRelatorioDto> ObterDevolutivasQuery(IGrouping<object, DevolutivaDto> devolutivas)
         {
-            foreach(var devolutivasPorId in devolutivas.GroupBy(a => a.Id))
+            foreach(var devolutivasPorId in devolutivas
+                .GroupBy(a => new { a.Id, a.DataInicio })
+                .OrderByDescending(a => a.Key.DataInicio))
             {
-                var datas = string.Join(", ", devolutivasPorId.SelectMany(a => a.Aula.Data.ToString("dd/MM/yyyy")));
+                var datas = string.Join(", ", devolutivasPorId
+                    .OrderBy(a => a.Aula.Data)
+                    .Select(a => a.Aula.Data.ToString("dd/MM")));
                 var devolutiva = devolutivasPorId.First();
 
                 yield return new DevolutivaRelatorioDto()
@@ -63,8 +69,10 @@ namespace SME.SR.Application
                     IntervaloDatas = $"{devolutiva.DataInicio:dd/MM/yyyy} até {devolutiva.DataFim:dd/MM/yyyy}",
                     DiasIntervalo = datas,
                     DataRegistro = devolutiva.DataRegistro.ToString("dd/MM/yyyy"),
-                    ResgistradoPor = devolutiva.RegistradoPor,
-                    Descricao = UtilRegex.RemoverTagsHtml(UtilRegex.RemoverTagsHtmlMidia(devolutiva.Descricao))
+                    ResgistradoPor = $"{devolutiva.RegistradoPor} ({devolutiva.RegistradoRF})",
+                    Descricao = UtilRegex.AdicionarEspacos(
+                        UtilRegex.RemoverTagsHtml(
+                        UtilRegex.RemoverTagsHtmlMidia(devolutiva.Descricao)))
                 };
             }
         }

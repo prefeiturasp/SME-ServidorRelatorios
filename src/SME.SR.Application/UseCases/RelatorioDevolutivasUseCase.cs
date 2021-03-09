@@ -28,7 +28,10 @@ namespace SME.SR.Application
 
                 await ObterFiltrosRelatorio(relatorioDto, parametros);
 
-                relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, ObterTurmas(parametros.Turmas), ObterBimestresFiltro(parametros.Bimestres), parametros.Ano));
+                var turmas = ObterTurmas(parametros.Turmas);
+                var bimestres = ObterBimestresFiltro(parametros.Bimestres);
+
+                relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano));
 
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
 
@@ -61,13 +64,17 @@ namespace SME.SR.Application
             var ue = await mediator.Send(new ObterUePorIdQuery(parametros.UeId));
             var dre = await mediator.Send(new ObterDrePorIdQuery(long.Parse(ue.DreId)));
 
-            relatorioDto.Dre = dre.Nome;
-            relatorioDto.Ue = ue.NomeComTipoEscola;
-            relatorioDto.Turma = await ObterTurma(parametros.Turmas);
-            relatorioDto.Bimestre = ObterBimestres(parametros.Bimestres);
+            var turmas = ObterTurmas(parametros.Turmas);
+            var bimestres = ObterBimestresFiltro(parametros.Bimestres);
+
+            relatorioDto.Dre = dre.Abreviacao;
+            relatorioDto.Ue = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
+            relatorioDto.Turma = await ObterTurma(turmas);
+            relatorioDto.Bimestre = ObterBimestres(bimestres);
             relatorioDto.Usuario = parametros.UsuarioNome;
             relatorioDto.RF = parametros.UsuarioRF;
             relatorioDto.ExibeConteudoDevolutivas = parametros.ExibirDetalhes;
+            relatorioDto.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
         }
 
         private string ObterBimestres(IEnumerable<int> bimestres)
@@ -88,7 +95,7 @@ namespace SME.SR.Application
                 return turmaDto.NomeRelatorio;
             }
 
-            return "";
+            return "Todas";
         }
     }
 }

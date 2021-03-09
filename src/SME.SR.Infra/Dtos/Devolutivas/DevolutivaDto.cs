@@ -11,6 +11,7 @@ namespace SME.SR.Infra
         public DateTime DataFim { get; set; }
         public DateTime DataRegistro { get; set; }
         public string RegistradoPor { get; set; }
+        public string RegistradoRF { get; set; }
         public string Descricao { get; set; }
 
         public DataAulaDto Aula { get; set; }
