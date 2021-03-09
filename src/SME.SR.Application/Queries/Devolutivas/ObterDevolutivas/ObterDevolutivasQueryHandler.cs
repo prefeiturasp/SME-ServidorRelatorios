@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<TurmasDevolutivasDto>> Handle(ObterDevolutivasQuery request, CancellationToken cancellationToken)
         {
             var devolutivasDto = new List<TurmasDevolutivasDto>();
-            var devolutivas = await devolutivaRepository.ObterDevolutivas(request.UeId, request.Turmas, request.Bimestres);
+            var devolutivas = await devolutivaRepository.ObterDevolutivas(request.UeId, request.Turmas, request.Bimestres, request.Ano);
 
             foreach (var devolutivasPorTurma in devolutivas.GroupBy(a => a.Aula.Turma))
             {
@@ -63,7 +64,7 @@ namespace SME.SR.Application
                     DiasIntervalo = datas,
                     DataRegistro = devolutiva.DataRegistro.ToString("dd/MM/yyyy"),
                     ResgistradoPor = devolutiva.RegistradoPor,
-                    Descricao = devolutiva.Descricao
+                    Descricao = UtilRegex.RemoverTagsHtml(UtilRegex.RemoverTagsHtmlMidia(devolutiva.Descricao))
                 };
             }
         }

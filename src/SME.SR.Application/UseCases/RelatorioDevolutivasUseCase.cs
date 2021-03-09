@@ -26,7 +26,7 @@ namespace SME.SR.Application
 
             await ObterFiltrosRelatorio(relatorioDto, parametros);
 
-            relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, parametros.Turmas, parametros.Bimestres));
+            relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, parametros.Turmas, parametros.Bimestres, parametros.Ano));
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
         }
@@ -42,6 +42,7 @@ namespace SME.SR.Application
             relatorioDto.Bimestre = ObterBimestres(parametros.Bimestres);
             relatorioDto.Usuario = parametros.UsuarioNome;
             relatorioDto.RF = parametros.UsuarioRF;
+            relatorioDto.ExibeConteudoDevolutivas = parametros.ExibirDetalhes;
         }
 
         private string ObterBimestres(IEnumerable<int> bimestres)

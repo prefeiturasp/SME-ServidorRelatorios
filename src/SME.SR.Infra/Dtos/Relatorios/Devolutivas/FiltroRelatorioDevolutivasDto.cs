@@ -6,10 +6,12 @@ namespace SME.SR.Infra
 {
     public class FiltroRelatorioDevolutivasDto
     {
+        public int Ano { get; set; }
         public long UeId { get; set; }
         public IEnumerable<long> Turmas { get; set; }
         public IEnumerable<int> Bimestres { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
+        public bool ExibirDetalhes { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace SME.SR.Data.Repositories.Sgp
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<DevolutivaDto>> ObterDevolutivas(long ueId, IEnumerable<long> turmas, IEnumerable<int> bimestres)
+        public async Task<IEnumerable<DevolutivaDto>> ObterDevolutivas(long ueId, IEnumerable<long> turmas, IEnumerable<int> bimestres, int ano)
         {
             var query = new StringBuilder(@"select d.id, d.periodo_inicio as DataInicio, d.periodo_fim as DataFim, d.criado_em as DataRegistro, d.criado_por as RegistradoPor, d.descricao 
 	                        , a.id, a.data_aula as Data
@@ -35,7 +35,8 @@ namespace SME.SR.Data.Repositories.Sgp
  		                        when 3 then 2
  		                        else 1 end
                           left join periodo_escolar pe on pe.tipo_calendario_id = tc.id and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
-                        where t.ue_id = ueId ");
+                        where t.ue_id = ueId 
+                          and t.ano_letivo = @ano");
 
             if (turmas.Any())
                 query.AppendLine(" and t.id = Any(@turmas)");
@@ -54,7 +55,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
                         return devolutiva;
                     }
-                    , new { ueId, turmas, bimestres });
+                    , new { ueId, turmas, bimestres, ano });
             }
 
         }
