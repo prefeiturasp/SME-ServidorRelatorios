@@ -22,13 +22,38 @@ namespace SME.SR.Application
         {
             var parametros = request.ObterObjetoFiltro<FiltroRelatorioDevolutivasDto>();
 
-            var relatorioDto = new RelatorioDevolutivasDto();
+            try
+            {
+                var relatorioDto = new RelatorioDevolutivasDto();
 
-            await ObterFiltrosRelatorio(relatorioDto, parametros);
+                await ObterFiltrosRelatorio(relatorioDto, parametros);
 
-            relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, parametros.Turmas, parametros.Bimestres, parametros.Ano));
+                relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, ObterTurmas(parametros.Turmas), ObterBimestresFiltro(parametros.Bimestres), parametros.Ano));
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }        
+        }
+
+        private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)
+        {
+            if (bimestres.Count() == 1 && (bimestres.First() == -99))
+                return new List<int>() { 1,2,3,4 };
+
+            return bimestres;
+        }
+
+        private IEnumerable<long> ObterTurmas(IEnumerable<long> turmas)
+        {
+            if (turmas.Count() == 1 && (turmas.First() == -99))
+                return Enumerable.Empty<long>();
+
+            return turmas;
         }
 
         private async Task ObterFiltrosRelatorio(RelatorioDevolutivasDto relatorioDto, FiltroRelatorioDevolutivasDto parametros)
