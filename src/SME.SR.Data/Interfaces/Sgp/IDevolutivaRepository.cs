@@ -8,6 +8,6 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IDevolutivaRepository
     {
-        Task<IEnumerable<DevolutivaDto>> ObterDevolutivas(long ueId, IEnumerable<long> turmas, IEnumerable<int> bimestres)
+        Task<IEnumerable<DevolutivaDto>> ObterDevolutivas(long ueId, IEnumerable<long> turmas, IEnumerable<int> bimestres);
     }
 }
