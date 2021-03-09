@@ -9,6 +9,8 @@ namespace SME.SR.Infra.Utilitarios
         public static string RemoverTagsHtml(string texto)
         {
             texto = Regex.Replace(texto, @"<br[^>]*>", " ");
+            texto = Regex.Replace(texto, @"<p[^>]*>", " ");
+            texto = Regex.Replace(texto, @"<li[^>]*>", " ");
             texto = Regex.Replace(texto, @"<[^>]*>", String.Empty);
             texto = Regex.Replace(texto, @"&nbsp;", " ").Trim();
             return texto.Trim();

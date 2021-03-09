@@ -1,0 +1,364 @@
+﻿@model SME.SR.Infra.RelatorioDevolutivasDto;
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 39;
+    int contadorPagina = 0;
+
+    bool VerificaQuebra(int linhas = 0)
+    {
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        var str =
+            $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'> RELATÓRIO DE DEVOLUTIVAS</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='30%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {Model.Dre}</td>
+<td width='70%' class='espaco-esquerda-15 sem-border-bottom'>UE: {Model.Ue}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td width='50%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Turma}</td>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>BIMESTRE: {Model.Bimestre}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td  width='60%' class='espaco-esquerda-15'>USUÁRIO: {Model.Usuario}</td>
+<td width='20%' class='espaco-esquerda-15'>RF: {Model.RF}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.DataSolicitacao}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+    string EspacoEmBranco(bool exibeConteudo)
+    {
+        var estilo = exibeConteudo ? "height: 1px;" : "";
+        <tr style="@estilo"><td colspan="4"></td></tr>
+        return "";
+    }
+
+    string MontarCabecalhoDevolutivas(int bimestreIndex, string nomeTurma, string nomeBimestre)
+    {
+        <thead>
+            @if (bimestreIndex == 0)
+            {
+                <tr>
+                    <td colspan="4">@nomeTurma</td>
+                </tr>
+
+                contadorQuebrarPagina++;
+            }
+            <tr>
+                <td colspan="4">@nomeBimestre</td>
+            </tr>
+            <tr>
+                <td width="13%" style="padding: 3px 21px;">Intervalo de datas</td>
+                <td width="26%" style="padding: 3px 35px;">Dias com diário de bordo no intervalo de datas</td>
+                <td width="13%">Data do registro</td>
+                <td width="48%">Registrado por</td>
+            </tr>
+        </thead>
+        return "";
+    }
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Relatório Sondagem</title>
+    </head>
+    <body class="body-relatorio">
+        <style>
+
+            .tblTopo th, td {
+                padding: 3px 0;
+                text-align: left;
+            }
+
+            .body-relatorio {
+                margin: 0.5cm auto;
+                font-family: Roboto, sans-serif;
+                width: 21cm;
+                min-height: 29.7cm;
+                background: white;
+                color: #42474a;
+            }
+
+            .titulo-sgp {
+                text-align: right;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .titulo-relatorio {
+                text-align: right;
+                font-size: 14.5px;
+                margin-top: 7px;
+            }
+
+            .header-pagina {
+                margin-top: 33px;
+                margin-bottom: 22px;
+            }
+
+                .header-pagina td {
+                    text-align: left;
+                }
+
+            table {
+                display: table;
+                width: 100%;
+                border-color: #42474a;
+                empty-cells: show;
+                border: none;
+                border-collapse: collapse;
+            }
+
+            thead {
+                background-color: #f3f3f3;
+            }
+
+            th {
+                border: 1px solid #42474a;
+                font-weight: normal;
+            }
+
+            td {
+                border: 1px solid #42474a;
+                text-align: center;
+            }
+
+            .tabela-cabecalho tr {
+                font-size: 12px;
+                height: 24px;
+            }
+
+            .mt-25 {
+                margin-top: 25px;
+            }
+
+            .fonte-14 {
+                font-size: 14px !important;
+            }
+
+            .alinhar-esquerda {
+                text-align: left;
+            }
+
+            .espaco-esquerda-15 {
+                padding-left: 15px;
+            }
+
+            .fundo-cinza {
+                background-color: #f3f3f3;
+            }
+
+            .negrito {
+                font-weight: bold;
+            }
+
+            .sem-border-bottom {
+                border-bottom: 0;
+            }
+
+            .sem-border-top {
+                border-bottom: 0;
+            }
+
+            .thLimpo {
+                background-color: #ffffff;
+                border: 0;
+                height: 22px;
+            }
+
+            .img-logo-sgp {
+                height: 64px;
+                float: left;
+            }
+
+            .centralizar {
+                text-align: center;
+            }
+        </style>
+        <div>
+            @Html.Raw(MontarCabecalho())
+
+            <table class="tabela-cabecalho">
+
+                @{ var turmasIndex = 0; }
+
+                @foreach (var turma in Model.Turmas)
+                 {
+
+                    var exibeConteudoDevolutivas = Model.ExibeConteudoDevolutivas;
+                    int bimestreIndex = 0;
+
+
+                    @foreach (var bimestre in turma.Bimestres)
+                     {
+                        var quebraInicial = VerificaQuebra(4);
+
+                        if (quebraInicial)
+                        {
+                            @Html.Raw("</tbody></table>");
+                            @Html.Raw("<div style='page-break-before:always'></div>");
+                            @Html.Raw(MontarCabecalho())
+                            @Html.Raw("<table class='tabela-cabecalho'>");
+                            bimestreIndex = 0;
+                        }
+
+                        @Html.Raw(MontarCabecalhoDevolutivas(bimestreIndex, turma.NomeTurma, bimestre.NomeBimestre));
+
+                        contadorQuebrarPagina = contadorQuebrarPagina + 3;
+
+                        var quebraCabecalho = VerificaQuebra();
+
+                        if (quebraCabecalho)
+                        {
+                            @Html.Raw("</tbody></table>");
+                            @Html.Raw("<div style='page-break-before:always'></div>");
+                            @Html.Raw(MontarCabecalho())
+                            @Html.Raw("<table class='tabela-cabecalho'>");
+                            @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestre));
+                            bimestreIndex = -1;
+                        }
+
+                        <tbody>
+
+                            @{
+                                int valoresIndex = 0;
+                                int contadorLinhasExtras = 0;
+                            }
+
+                            @foreach (var valores in bimestre.Devolutivas)
+                             {
+
+                                var numeroLinhasDiasIntervalo = valores.DiasIntervalo.Length / 40;
+                                var numeroLinhasRegistradoPor = valores.ResgistradoPor.Length / 70;
+                                var numeroLinhasDescricao = valores.Descricao.Length / 125;
+                                var numeroLinhas = numeroLinhasDiasIntervalo > numeroLinhasRegistradoPor ? numeroLinhasDiasIntervalo : numeroLinhasRegistradoPor;
+
+
+                                <tr>
+                                    <td>@valores.IntervaloDatas</td>
+                                    <td>@valores.DiasIntervalo</td>
+                                    <td>@valores.DataRegistro</td>
+                                    <td>@valores.ResgistradoPor</td>
+                                </tr>
+
+
+
+                                var quebraValores = VerificaQuebra();
+
+                                if (quebraValores)
+                                {
+                                    @Html.Raw("</tbody></table>");
+                                    @Html.Raw("<div style='page-break-before:always'></div>");
+                                    @Html.Raw(MontarCabecalho())
+                                    @Html.Raw("<table class='tabela-cabecalho'>");
+                                    @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestre));
+                                    bimestreIndex = -1;
+                                }
+
+
+                                if (numeroLinhas > 1)
+                                {
+                                    contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+                                    contadorLinhasExtras = 0;
+                                }
+                                else
+                                {
+                                    if (contadorLinhasExtras > 1)
+                                    {
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+                                        contadorLinhasExtras = 0;
+                                    }
+                                    else
+                                    {
+                                        contadorQuebrarPagina++;
+                                        contadorLinhasExtras++;
+                                    }
+                                }
+
+                                @if (exibeConteudoDevolutivas)
+                                 {
+                                    <tr>
+                                        <td colspan="4" class="alinhar-esquerda" style="padding: 3px;">@valores.Descricao</td>
+                                    </tr>
+
+                                    if(numeroLinhasDescricao > 1)
+                                    {
+                                        contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
+                                    }
+                                    else
+                                    {
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+                                    }
+                                    if (valoresIndex < bimestre.Devolutivas.Count() - 1)
+                                    {
+                                        @Html.Raw(EspacoEmBranco(exibeConteudoDevolutivas));
+                                    }
+
+                                 }
+
+                                valoresIndex++;
+                             }
+
+                            @if (turmasIndex < Model.Turmas.Count() - 1)
+                             {
+                                var quebraFinal = VerificaQuebra(5);
+
+                                if (quebraFinal)
+                                {
+                                    @Html.Raw("</tbody></table>");
+                                    @Html.Raw("<div style='page-break-before:always'></div>");
+                                    @Html.Raw(MontarCabecalho())
+                                    @Html.Raw("<table class='tabela-cabecalho'>");
+                                    bimestreIndex = -1;
+                                }
+                                else
+                                {
+                                    @Html.Raw(EspacoEmBranco(false));
+                                    contadorQuebrarPagina++;
+                                }
+                             }
+
+                        </tbody>
+                        bimestreIndex++;
+                     }
+
+                    turmasIndex++;
+                 }
+            </table>
+        </div>
+    </body>
+</html>
+}
