@@ -45,7 +45,7 @@ namespace SME.SR.Application
                 yield return new BimestresDevolutivasDto()
                 {
                     NomeBimestre = $"{periodoEscolar.Bimestre}º BIMESTRE ({periodoEscolar.DataInicio:dd/MM/yyyy} À {periodoEscolar.Bimestre:dd/MM/yyyy})",
-                    Devolutivas = ObterDevolutivasQuery(devolutivasPorBimestre)
+                    Devolutivas = ObterDevolutivasQuery(devolutivasPorBimestre).ToList()
                 };
             }
         }
