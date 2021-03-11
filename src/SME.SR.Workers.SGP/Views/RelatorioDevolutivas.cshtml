@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 39;
+    int contadorMaximoLinhasPorPagina = 42;
     int contadorPagina = 0;
 
     bool VerificaQuebra(int linhas = 0)
@@ -80,11 +80,14 @@
             </tr>
             <tr>
                 <td width="13%" style="padding: 3px 21px;">Intervalo de datas</td>
-                <td width="26%" style="padding: 3px 35px;">Dias com diário de bordo no intervalo de datas</td>
+                <td width="26%" style="padding: 3px 30px;">Dias com diário de bordo no intervalo de datas</td>
                 <td width="13%">Data do registro</td>
                 <td width="48%">Registrado por</td>
             </tr>
         </thead>
+
+        contadorQuebrarPagina = contadorQuebrarPagina + 3;
+
         return "";
     }
 
@@ -93,7 +96,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Relatório Sondagem</title>
+        <title>Relatório Devolutivas</title>
     </head>
     <body class="body-relatorio">
         <style>
@@ -216,15 +219,15 @@
                 @{ var turmasIndex = 0; }
 
                 @foreach (var turma in Model.Turmas)
-                 {
+                {
 
                     var exibeConteudoDevolutivas = Model.ExibeConteudoDevolutivas;
                     int bimestreIndex = 0;
 
 
                     @foreach (var bimestre in turma.Bimestres)
-                     {
-                        var quebraInicial = VerificaQuebra(4);
+                    {
+                        var quebraInicial = VerificaQuebra(5);
 
                         if (quebraInicial)
                         {
@@ -237,30 +240,17 @@
 
                         @Html.Raw(MontarCabecalhoDevolutivas(bimestreIndex, turma.NomeTurma, bimestre.NomeBimestre));
 
-                        contadorQuebrarPagina = contadorQuebrarPagina + 3;
-
-                        var quebraCabecalho = VerificaQuebra();
-
-                        if (quebraCabecalho)
-                        {
-                            @Html.Raw("</tbody></table>");
-                            @Html.Raw("<div style='page-break-before:always'></div>");
-                            @Html.Raw(MontarCabecalho())
-                            @Html.Raw("<table class='tabela-cabecalho'>");
-                            @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestre));
-                            bimestreIndex = -1;
-                        }
-
                         <tbody>
 
                             @{
                                 int valoresIndex = 0;
                                 int contadorLinhasExtras = 0;
+                                int contadorEspaçosExtras = 0;
+                                int contadorLinhasDescricao = 0;
                             }
 
                             @foreach (var valores in bimestre.Devolutivas)
-                             {
-
+                            {
                                 var numeroLinhasDiasIntervalo = valores.DiasIntervalo.Length / 40;
                                 var numeroLinhasRegistradoPor = valores.ResgistradoPor.Length / 70;
                                 var numeroLinhasDescricao = valores.Descricao.Length / 125;
@@ -274,25 +264,11 @@
                                     <td>@valores.ResgistradoPor</td>
                                 </tr>
 
-
-
-                                var quebraValores = VerificaQuebra();
-
-                                if (quebraValores)
-                                {
-                                    @Html.Raw("</tbody></table>");
-                                    @Html.Raw("<div style='page-break-before:always'></div>");
-                                    @Html.Raw(MontarCabecalho())
-                                    @Html.Raw("<table class='tabela-cabecalho'>");
-                                    @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestre));
-                                    bimestreIndex = -1;
-                                }
-
-
                                 if (numeroLinhas > 1)
                                 {
                                     contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
                                     contadorLinhasExtras = 0;
+                                    contadorEspaçosExtras = 0;
                                 }
                                 else
                                 {
@@ -306,34 +282,73 @@
                                         contadorQuebrarPagina++;
                                         contadorLinhasExtras++;
                                     }
+
+                                    if (contadorEspaçosExtras > 8)
+                                    {
+                                        contadorQuebrarPagina++;
+                                        contadorEspaçosExtras = 0;
+                                    }
+
+                                    if (numeroLinhasDescricao == 1 && contadorLinhasDescricao <= 1)
+                                    {
+                                        contadorLinhasDescricao++;
+                                    }
+                                    else if (contadorLinhasDescricao > 1)
+                                    {
+                                        contadorLinhasDescricao = 0;
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                                    }
+                                }
+
+                                int numeroLinhasAtual = 1;
+                                if (contadorLinhasDescricao > 1 && contadorLinhasExtras > 1)
+                                {
+                                    numeroLinhasAtual = 3;
                                 }
 
                                 @if (exibeConteudoDevolutivas)
-                                 {
+                                {
                                     <tr>
                                         <td colspan="4" class="alinhar-esquerda" style="padding: 3px;">@valores.Descricao</td>
                                     </tr>
 
-                                    if(numeroLinhasDescricao > 1)
+                                    if (numeroLinhasDescricao > 1)
                                     {
                                         contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
                                     }
                                     else
                                     {
-                                        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+                                        contadorQuebrarPagina++;
                                     }
-                                    if (valoresIndex < bimestre.Devolutivas.Count() - 1)
+
+                                    if (valoresIndex < bimestre.Devolutivas.Count() - 1 && !(contadorQuebrarPagina + numeroLinhasAtual >= contadorMaximoLinhasPorPagina))
                                     {
                                         @Html.Raw(EspacoEmBranco(exibeConteudoDevolutivas));
+                                        contadorEspaçosExtras++;
                                     }
 
-                                 }
+                                }
+
+
+                                var quebraValores = VerificaQuebra(numeroLinhasAtual);
+
+                                if (quebraValores && valoresIndex < bimestre.Devolutivas.Count() - 1)
+                                {
+                                    @Html.Raw("</tbody></table>");
+                                    @Html.Raw("<div style='page-break-before:always'></div>");
+                                    @Html.Raw(MontarCabecalho())
+                                    @Html.Raw("<table class='tabela-cabecalho'>");
+                                    @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestre));
+                                    @Html.Raw("<tbody>");
+                                    bimestreIndex = -1;
+                                }
 
                                 valoresIndex++;
-                             }
+                            }
 
                             @if (turmasIndex < Model.Turmas.Count() - 1)
-                             {
+                            {
                                 var quebraFinal = VerificaQuebra(5);
 
                                 if (quebraFinal)
@@ -349,14 +364,14 @@
                                     @Html.Raw(EspacoEmBranco(false));
                                     contadorQuebrarPagina++;
                                 }
-                             }
+                            }
 
                         </tbody>
                         bimestreIndex++;
-                     }
+                    }
 
                     turmasIndex++;
-                 }
+                }
             </table>
         </div>
     </body>

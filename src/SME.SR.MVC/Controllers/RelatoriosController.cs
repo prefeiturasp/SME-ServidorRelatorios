@@ -7274,10 +7274,10 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             var devolutivas1 = new List<DevolutivaRelatorioDto>();
             var devolutivas2 = new List<DevolutivaRelatorioDto>();
 
-            for (var i = 0; i < 25; i++)
+            for (var i = 0; i < 3; i++)
             {
                 var DiasIntervalos1 = new List<String>();
-                for(var j = 0; j < 15; j++)
+                for(var j = 0; j < 3; j++)
                 {
                     DiasIntervalos1.Add(DateTime.Now.AddDays(j - 1).ToString("dd/MM"));
                 }
@@ -7293,10 +7293,10 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 devolutivas1.Add(valoresDevolutivas1);
             }
 
-            for (var i = 0; i < 30; i++)
+            for (var i = 0; i < 6; i++)
             {
                 var DiasIntervalos2 = new List<String>();
-                for (var j = 0; j < 5; j++)
+                for (var j = 0; j < 4; j++)
                 {
                     DiasIntervalos2.Add(DateTime.Now.AddDays(j - 20).ToString("dd/MM"));
                 }
@@ -7306,49 +7306,50 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     IntervaloDatas = DateTime.Now.AddDays(i).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(i -20).ToString("dd/MM/yyyy"),
                     DiasIntervalo = String.Join(", ", DiasIntervalos2.ToArray()),
                     DataRegistro = DateTime.Now.AddDays(i - 10).ToString("dd/MM/yyyy"),
-                    ResgistradoPor = "REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE REGINA DA SILVA CAVALCANTE (2547458)",
-                    Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled."
+                    ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
+                    Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled. "
                 };
-                devolutivas2.ToList().Add(valoresDevolutivas2);
+                devolutivas2.Add(valoresDevolutivas2);
             }
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 1; i++)
             {
 
                 var turmasDevolutivasDto1 = new TurmasDevolutivasDto()
                 {
                     NomeTurma = i + 1 + "A",
                     Bimestres = new List<BimestresDevolutivasDto>()
-                {
-                    new BimestresDevolutivasDto()
                     {
-                        NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
-                        Devolutivas = devolutivas1
-                    },
-                    new BimestresDevolutivasDto()
-                    {
-                        NomeBimestre = "2º Bimestre (02/02/2020 à 29/04/2020)",
-                        Devolutivas = devolutivas2
+                        new BimestresDevolutivasDto()
+                        {
+                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            Devolutivas = devolutivas1
+                        },
+                       
                     }
-                }
                 };
                 turmas.Add(turmasDevolutivasDto1);
             }
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 1; i++)
             {
 
                 var turmasDevolutivasDto2 = new TurmasDevolutivasDto()
                 {
                     NomeTurma = i + 1 + "B",
                     Bimestres = new List<BimestresDevolutivasDto>()
-                {
-                    new BimestresDevolutivasDto()
                     {
-                        NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
-                        Devolutivas = devolutivas1
-                    },
-                }
+                        new BimestresDevolutivasDto()
+                        {
+                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            Devolutivas = devolutivas2
+                        },
+                        // new BimestresDevolutivasDto()
+                        //{
+                        //    NomeBimestre = "2º Bimestre (02/02/2020 à 29/04/2020)",
+                        //    Devolutivas = devolutivas1
+                        //}
+                    }
                 };
                 turmas.Add(turmasDevolutivasDto2);
             }
