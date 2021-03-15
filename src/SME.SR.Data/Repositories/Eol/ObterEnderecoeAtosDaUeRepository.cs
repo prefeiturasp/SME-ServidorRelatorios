@@ -20,7 +20,7 @@ namespace SME.SR.Data
         {
 
             var query = @"	SELECT DISTINCT 
-	                        CONCAT(RTRIM(LTRIM(tpe.sg_tp_escola)), ' - ', RTRIM(LTRIM(vcue.nm_unidade_educacao))) AS nomeUe,
+	                        CONCAT(RTRIM(LTRIM(vcue.cd_unidade_educacao)), ' - ',RTRIM(LTRIM(tpe.sg_tp_escola)), ' - ', RTRIM(LTRIM(vcue.nm_unidade_educacao))) AS nomeUe,
 	                        CONCAT(tl.dc_tp_logradouro, ' ', vcue.nm_logradouro, ', ', vcue.cd_nr_endereco, ', ', vcue.nm_bairro, ', ', vcue.cd_cep, ' SÃO PAULO - SP') as endereco,	
 							atos =
 							case 
