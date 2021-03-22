@@ -1,10 +1,12 @@
 ﻿using MediatR;
+using SME.SR.Application.Queries.BoletimEscolar;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,10 +23,13 @@ namespace SME.SR.Application
 
         public async Task<RelatorioBoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
         {
+            if (!string.IsNullOrWhiteSpace(request.TurmaCodigo))
+                await ObterFechamentoTurma(request.TurmaCodigo);
+
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
-            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
+            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();            
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
@@ -43,6 +48,16 @@ namespace SME.SR.Application
             return new RelatorioBoletimEscolarDto(boletins);
         }
 
+        private async Task ObterFechamentoTurma(string codigoTurma)
+        {
+            var obterFechamentosPorCodigosTurmaQuery = new ObterFehamentoPorCodigoTurmaQuery()
+            {
+                CodigoTurma = codigoTurma
+            };
+
+            await mediator.Send(obterFechamentosPorCodigosTurmaQuery);
+        }
+
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
         {
             return await mediator.Send(new ObterDrePorCodigoQuery()
@@ -58,16 +73,23 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string turmaCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
         {
-            return await mediator.Send(new ObterTurmasRelatorioBoletimQuery()
+            try
             {
-                CodigoTurma = turmaCodigo,
-                CodigoUe = ueCodigo,
-                Modalidade = modalidade,
-                AnoLetivo = anoLetivo,
-                Semestre = semestre,
-                Usuario = usuario,
-                ConsideraHistorico = consideraHistorico
-            });
+                return await mediator.Send(new ObterTurmasRelatorioBoletimQuery()
+                {
+                    CodigoTurma = turmaCodigo,
+                    CodigoUe = ueCodigo,
+                    Modalidade = modalidade,
+                    AnoLetivo = anoLetivo,
+                    Semestre = semestre,
+                    Usuario = usuario,
+                    ConsideraHistorico = consideraHistorico
+                });
+            }
+            catch (NegocioException)
+            {
+                throw new NegocioException("As turmas selecionadas não possuem fechamento.");
+            }            
         }
 
         private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo)
