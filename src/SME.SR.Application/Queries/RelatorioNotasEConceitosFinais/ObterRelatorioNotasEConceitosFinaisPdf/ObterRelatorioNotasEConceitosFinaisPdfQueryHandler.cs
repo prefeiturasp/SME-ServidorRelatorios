@@ -156,7 +156,7 @@ namespace SME.SR.Application
             var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = componentesCurricularesCodigos.ToArray() });
             if (componentesCurriculares == null || !componentesCurriculares.Any())
                 throw new NegocioException("Não foi possível obter os componentes curriculares");
-            return componentesCurriculares.Where(cc => cc.LancaNota == (filtro != TipoNota.Sintese));
+            return componentesCurriculares.Where(cc => filtro == TipoNota.Todas || (cc.LancaNota == (filtro != TipoNota.Sintese)));
         }
 
         private IEnumerable<RetornoNotaConceitoBimestreComponenteDto> AplicarFiltroPorCondicoesEValores(FiltroRelatorioNotasEConceitosFinaisDto filtros, IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notas)
@@ -168,19 +168,22 @@ namespace SME.SR.Application
             if (filtros.TipoNota == TipoNota.Sintese)
                 return notas.Where(a => a.SinteseId == filtros.ValorCondicao).ToList();
 
-            switch (filtros.Condicao)
+            if (filtros.TipoNota != TipoNota.Todas)
             {
-                case CondicoesRelatorioNotasEConceitosFinais.Igual:
-                    return notas.Where(a => a.Nota == filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
-                case CondicoesRelatorioNotasEConceitosFinais.Maior:
-                    return notas.Where(a => a.Nota > filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
-                case CondicoesRelatorioNotasEConceitosFinais.Menor:
-                    return notas.Where(a => a.Nota < filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
-                default:
-                    break;
+                switch (filtros.Condicao)
+                {
+                    case CondicoesRelatorioNotasEConceitosFinais.Igual:
+                        return notas.Where(a => a.Nota == filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
+                    case CondicoesRelatorioNotasEConceitosFinais.Maior:
+                        return notas.Where(a => a.Nota > filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
+                    case CondicoesRelatorioNotasEConceitosFinais.Menor:
+                        return notas.Where(a => a.Nota < filtros.ValorCondicao && a.ConceitoId == null && a.SinteseId == null).ToList();
+                    default:
+                        break;
+                }
             }
 
-            return default;
+            return notas;
         }
 
         private async Task<List<Dre>> AplicarFiltroPorDre(FiltroRelatorioNotasEConceitosFinaisDto filtros)
