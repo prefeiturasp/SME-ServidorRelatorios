@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BoletimPrincipal" columnCount="2" pageWidth="595" pageHeight="842" columnWidth="295" leftMargin="5" rightMargin="0" topMargin="5" bottomMargin="0" uuid="3d7a19bc-c7b4-443f-a41b-599dd3b333be">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<parameter name="jsonString" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JSON_INPUT_STREAM" class="java.io.InputStream" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new java.io.ByteArrayInputStream($P{jsonString}.getBytes("UTF-8"))]]></defaultValueExpression>
+	</parameter>
+	<queryString language="jsonql">
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="412" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport overflowType="Stretch">
+				<reportElement positionType="Float" x="0" y="0" width="290" height="412" backcolor="#FFFFFF" uuid="e8aef862-1a78-4f4a-8b13-cc66a7606078">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[new net.sf.jasperreports.engine.data.JsonQLDataSource(new java.io.ByteArrayInputStream( $P{jsonString}.getBytes("UTF-8") ), "RelatorioBoletimEscolar.boletins")]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["RelatorioBoletim.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>
