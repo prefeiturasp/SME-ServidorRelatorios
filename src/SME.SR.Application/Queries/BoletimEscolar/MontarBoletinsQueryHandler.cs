@@ -102,7 +102,7 @@ namespace SME.SR.Application
                     Descricao = grupoMatriz.Key.Nome
                 };
 
-                foreach (var componente in grupoMatriz)
+                foreach (var componente in grupoMatriz.OrderBy(a => a.Disciplina))
                 {
                     if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
                     {
@@ -112,7 +112,7 @@ namespace SME.SR.Application
                             Frequencia = componente.Frequencia
                         };
 
-                        foreach (var componenteRegencia in componente.ComponentesCurricularesRegencia)
+                        foreach (var componenteRegencia in componente.ComponentesCurricularesRegencia.OrderBy(a => a.Disciplina))
                         {
                             grupoParaAdd.ComponenteCurricularRegencia.ComponentesCurriculares.Add(
                                 new ComponenteCurricularRegenciaNotaDto()
