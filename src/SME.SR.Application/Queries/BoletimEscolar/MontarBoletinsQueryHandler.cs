@@ -40,35 +40,41 @@ namespace SME.SR.Application
 
             foreach (var aluno in alunos)
             {
-                var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
-
-                var tipoNota = tiposNota[turma.Codigo];
-                var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
+                try
                 {
-                    TipoNota = tipoNota,
-                    Cabecalho = ObterCabecalhoInicial(dre, ue, turma, aluno.First().CodigoAluno.ToString(), aluno.First().NomeRelatorio),
-                };
+                    var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
 
-                var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
-                foreach (var turmaAluno in aluno)
-                {
-                    var grupoComponentesDoAluno = MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()));
-                    var notasTurma = notas.FirstOrDefault(c => c.Key == turmaAluno.CodigoTurma.ToString());
-                    if (notasTurma == null)
-                        continue;
+                    var tipoNota = tiposNota[turma.Codigo];
+                    var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
+                    {
+                        TipoNota = tipoNota,
+                        Cabecalho = ObterCabecalhoInicial(dre, ue, turma, aluno.First().CodigoAluno.ToString(), aluno.First().NomeRelatorio),
+                    };
 
-                    var frequenciasTurma = frequencia.FirstOrDefault(c => c.Key == turmaAluno.CodigoTurma.ToString());
+                    var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
+                    foreach (var turmaAluno in aluno)
+                    {
+                        var grupoComponentesDoAluno = MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()));
 
-                    var notasAluno = notasTurma.Where(t => t.CodigoAluno == aluno.First().CodigoAluno.ToString());
-                    var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.First().CodigoAluno.ToString());
+                        var frequenciasTurma = frequencia.FirstOrDefault(c => c.Key == turmaAluno.CodigoTurma.ToString());
 
-                    if (notasAluno.Any())
-                        SetarNotasFrequencia(grupoComponentesDoAluno, notasAluno, frequenciasAluno, mediasFrequencia);
+                        var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                        var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.First().CodigoAluno.ToString());
 
-                    boletimEscolarAlunoDto.Grupos.AddRange(grupoComponentesDoAluno);
+                        if (notasAluno != null && notasAluno.Any())
+                            SetarNotasFrequencia(grupoComponentesDoAluno, notasAluno, frequenciasAluno, mediasFrequencia);
+
+                        boletimEscolarAlunoDto.Grupos.AddRange(grupoComponentesDoAluno);
+                    }
+
+                    boletinsAlunos.Add(boletimEscolarAlunoDto);
+
                 }
+                catch (Exception e )
+                {
 
-                boletinsAlunos.Add(boletimEscolarAlunoDto);
+                    throw;
+                }            
             }
 
             return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos));

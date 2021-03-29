@@ -25,7 +25,7 @@ namespace SME.SR.Application
             if (notas == null || !notas.Any())
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
 
-            return notas.GroupBy(nf => nf.CodigoTurma);
+            return notas.GroupBy(nf => nf.CodigoAluno);
         }
     }
 }
