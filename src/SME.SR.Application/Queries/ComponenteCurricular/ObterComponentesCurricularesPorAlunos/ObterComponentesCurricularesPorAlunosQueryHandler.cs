@@ -40,7 +40,7 @@ namespace SME.SR.Application
                     CodDisciplinaPai = c.CodigoComponentePai(componentesApiEol),
                     BaseNacional = c.EhBaseNacional(componentesApiEol),
                     Compartilhada = c.EhCompartilhada(componentesApiEol),
-                    Disciplina = c.DescricaoFormatada,
+                    Disciplina = disciplinasDaTurma.FirstOrDefault(d => d.Id == c.Codigo).Nome,
                     GrupoMatriz = c.ObterGrupoMatrizSgp(disciplinasDaTurma, gruposMatriz),
                     LancaNota = c.PodeLancarNota(componentesApiEol),
                     Frequencia = c.ControlaFrequencia(componentesApiEol),
