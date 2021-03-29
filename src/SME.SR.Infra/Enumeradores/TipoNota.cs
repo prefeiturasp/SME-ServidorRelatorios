@@ -4,6 +4,8 @@ namespace SME.SR.Infra
 {
     public enum TipoNota
     {
+        [Display(Name = "Todas")]
+        Todas = 0,
         [Display(Name = "Nota")]
         Nota = 1,
         [Display(Name = "Conceito")]
