@@ -30,8 +30,8 @@
             <thead>
                 <th class='thLimpo' width='10%'>TURMA</th>
                 <th class='thLimpo' width='5%'>Nº</th>
-                <th class='thLimpo' width='60%'>NOME</th>
-                <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
+                <th class='thLimpo' width='57%'>NOME</th>
+                <th class='thLimpo' width='38%'>PARECER CONCLUSIVO</th>
             </thead>";
 
             var cabecalho = MontarCabecalho();
@@ -297,8 +297,8 @@
                                 <thead>
                                 <th class='thLimpo' width='10%'>TURMA</th>
                                 <th class='thLimpo' width='5%'>Nº</th>
-                                <th class='thLimpo' width='60%'>NOME</th>
-                                <th class='thLimpo' width='25%'>PARECER CONCLUSIVO</th>
+                                <th class='thLimpo' width='57%'>NOME</th>
+                                <th class='thLimpo' width='28%'>PARECER CONCLUSIVO</th>
                                 </thead>
                             </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
                             @Html.Raw(VerificaQuebra());
@@ -315,8 +315,8 @@
                                         <tr>
                                             <td width="10%">@parecerConclusivo.TurmaNome</td>
                                             <td width="5%">@parecerConclusivo.AlunoNumeroChamada</td>
-                                            <td width="60%" class="alinhar-esquerda espaco-esquerda-15">@parecerConclusivo.AlunoNomeCompleto </td>
-                                            <td width="25%">@parecerConclusivo.ParecerConclusivoDescricao</td>
+                                            <td width="57%" class="alinhar-esquerda espaco-esquerda-15">@parecerConclusivo.AlunoNomeCompleto</td>
+                                            <td width="28%">@parecerConclusivo.ParecerConclusivoDescricao</td>
                                         </tr>
 
                                         if (numeroLinhas > 0)
