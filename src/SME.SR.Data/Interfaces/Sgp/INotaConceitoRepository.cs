@@ -6,6 +6,6 @@ namespace SME.SR.Data
 {
     public interface INotaConceitoRepository
     {
-        Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosTurma, string[] codigosAluno);
+        Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre);
     }
 }

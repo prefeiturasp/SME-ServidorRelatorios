@@ -14,11 +14,11 @@ namespace SME.SR.Data
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        private readonly string CamposFrequencia = @"id Id, codigo_aluno CodigoAluno, 
-                            tipo, disciplina_id DisciplinaId, periodo_inicio PeriodoInicio, 
-                            periodo_fim PeriodoFim, bimestre, total_aulas TotalAulas, 
-                            total_ausencias TotalAusencias, total_compensacoes TotalCompensacoes, 
-                            turma_id TurmaId, periodo_escolar_id PeriodoEscolarId";
+        private readonly string CamposFrequencia = @"fa.id Id, fa.codigo_aluno CodigoAluno, 
+                            fa.tipo, fa.disciplina_id DisciplinaId, fa.periodo_inicio PeriodoInicio, 
+                            fa.periodo_fim PeriodoFim, fa.bimestre, fa.total_aulas TotalAulas, 
+                            fa.total_ausencias TotalAusencias, fa.total_compensacoes TotalCompensacoes, 
+                            fa.turma_id TurmaId, fa.periodo_escolar_id PeriodoEscolarId";
 
         public FrequenciaAlunoRepository(VariaveisAmbiente variaveisAmbiente)
         {
@@ -103,13 +103,18 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosTurma, string[] codigosAluno)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
-            var query = @$"select {CamposFrequencia} from frequencia_aluno fa 
+            var query = @$"select {CamposFrequencia} 
+                             from frequencia_aluno fa 
+                            inner join turma t on t.turma_id = fa.turma_id
                             where fa.codigo_aluno = ANY(@codigosAluno)
-                            and fa.turma_id = ANY(@codigosTurma) and fa.tipo = 1";
+                              and fa.tipo = 1
+                              and t.ano_letivo = @anoLetivo
+                              and t.modalidade_codigo = @modalidade
+                              and t.semestre = @semestre";
 
-            var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
+            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
