@@ -665,12 +665,13 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-						FROM v_aluno_cotic aluno
-						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE mte.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno
-						UNION 
+                      FROM matricula_turma_escola mte1 
+                     INNER JOIN v_matricula_cotic matr ON matr.cd_matricula = mte1.cd_matricula 
+                     INNER JOIN v_aluno_cotic aluno ON aluno.cd_aluno = matr.cd_aluno 
+                     inner join matricula_turma_escola mte on mte.cd_matricula = mte1.cd_matricula 
+                      LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte1.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno
+					UNION 
 						SELECT  mte.cd_turma_escola CodigoTurma,
 						aluno.cd_aluno CodigoAluno,
 						aluno.nm_aluno NomeAluno,
@@ -700,12 +701,13 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-						FROM v_aluno_cotic aluno
-						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE mte.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno
-						and mte.dt_situacao_aluno =                    
+                    FROM v_historico_matricula_cotic matr
+                    INNER JOIN v_aluno_cotic aluno ON aluno.cd_aluno = matr.cd_aluno
+                    INNER JOIN historico_matricula_turma_escola mte1 ON matr.cd_matricula = mte1.cd_matricula
+                    INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+                     LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte1.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno
+						and mte1.dt_situacao_aluno =                    
 							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							where
@@ -715,8 +717,8 @@ namespace SME.SR.Data
 						AND NOT EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola in @codigosTurma
+						WHERE mte1.cd_matricula = mte3.cd_matricula
+							AND mte1.cd_turma_escola in @codigosTurma
 							AND matr3.cd_aluno in @codigosAluno) 
 
 					SELECT
