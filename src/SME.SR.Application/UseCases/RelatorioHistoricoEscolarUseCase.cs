@@ -65,7 +65,7 @@ namespace SME.SR.Application
             IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes = null;
 
             if (todosAlunos != null && todosAlunos.Any())
-               historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
+                historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
 
@@ -261,11 +261,13 @@ namespace SME.SR.Application
         {
             if (enderecosEAtos.Any())
             {
-                var cabecalho = new CabecalhoDto();
-                cabecalho.NomeUe = enderecosEAtos?.FirstOrDefault()?.NomeUe;
-                cabecalho.Endereco = enderecosEAtos?.FirstOrDefault()?.Endereco;
-                cabecalho.AtoCriacao = enderecosEAtos?.FirstOrDefault(teste => teste.TipoOcorrencia == "1")?.Atos;
-                cabecalho.AtoAutorizacao = enderecosEAtos?.FirstOrDefault(teste => teste.TipoOcorrencia == "7")?.Atos;
+                var cabecalho = new CabecalhoDto
+                {
+                    NomeUe = enderecosEAtos?.FirstOrDefault()?.NomeUe?.ToUpper(),
+                    Endereco = enderecosEAtos?.FirstOrDefault()?.Endereco?.ToUpper(),
+                    AtoCriacao = enderecosEAtos?.FirstOrDefault(teste => teste.TipoOcorrencia == "1")?.Atos?.ToUpper(),
+                    AtoAutorizacao = enderecosEAtos?.FirstOrDefault(teste => teste.TipoOcorrencia == "7")?.Atos?.ToUpper()
+                };
                 return cabecalho;
             }
             else return default;
