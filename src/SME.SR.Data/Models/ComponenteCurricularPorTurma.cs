@@ -4,6 +4,7 @@ namespace SME.SR.Data
 {
     public class ComponenteCurricularPorTurma
     {
+        public string CodigoAluno { get; set; }
         public string CodigoTurma { get; set; }
         public long CodDisciplina { get; set; }
         public long? CodDisciplinaPai { get; set; }

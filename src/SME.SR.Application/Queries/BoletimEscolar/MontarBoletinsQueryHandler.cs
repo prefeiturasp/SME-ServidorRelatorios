@@ -29,8 +29,8 @@ namespace SME.SR.Application
             var turmas = request.Turmas;
             var dre = request.Dre;
             var ue = request.Ue;
+            var componentesCurriculares = request.ComponentesCurriculares;
             var alunos = request.AlunosPorTuma;
-            var componentesCurriculares = request.ComponentesCurricularesPorTurma;
             var notas = request.Notas;
             var frequencia = request.Frequencias;
             var tiposNota = request.TiposNota;
@@ -38,46 +38,58 @@ namespace SME.SR.Application
 
             var boletinsAlunos = new List<BoletimEscolarAlunoDto>();
 
-            foreach (var turma in turmas)
+            foreach (var aluno in alunos)
             {
-                var tipoNota = tiposNota[turma.Codigo];              
-                var notasTurma = notas.FirstOrDefault(nf => nf.Key == turma.Codigo);
-                var frequenciasTurma = frequencia.FirstOrDefault(nf => nf.Key == turma.Codigo);
-
-                foreach (var aluno in alunos.FirstOrDefault(a => a.Key == turma.Codigo))
+                try
                 {
-                    var grupoComponentesDoAluno = MapearGruposEComponentes(componentesCurriculares.FirstOrDefault(cc => cc.Key == turma.Codigo)); 
+                    var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
 
+                    var tipoNota = tiposNota[turma.Codigo];
                     var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
                     {
                         TipoNota = tipoNota,
-                        Cabecalho = ObterCabecalhoInicial(dre, ue, turma),
-                        Grupos = grupoComponentesDoAluno
+                        Cabecalho = ObterCabecalhoInicial(dre, ue, turma, aluno.First().CodigoAluno.ToString(), aluno.First().NomeRelatorio),
                     };
 
-                    boletimEscolarAlunoDto.Cabecalho.CodigoEol = aluno.CodigoAluno.ToString();
-                    boletimEscolarAlunoDto.Cabecalho.Aluno = aluno.NomeRelatorio;
+                    var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
+                    foreach (var turmaAluno in aluno)
+                    {
+                        var grupoComponentesDoAluno = MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()));
 
-                    var notasAluno = notasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString()).ToList();
-                    var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.CodigoAluno.ToString()).ToList();
+                        var frequenciasTurma = frequencia.FirstOrDefault(c => c.Key == turmaAluno.CodigoTurma.ToString());
 
-                    SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno, mediasFrequencia);
+                        var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                        var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.First().CodigoAluno.ToString());
+
+                        if (notasAluno != null && notasAluno.Any())
+                            SetarNotasFrequencia(grupoComponentesDoAluno, notasAluno, frequenciasAluno, mediasFrequencia);
+
+                        boletimEscolarAlunoDto.Grupos.AddRange(grupoComponentesDoAluno);
+                    }
 
                     boletinsAlunos.Add(boletimEscolarAlunoDto);
+
                 }
+                catch (Exception e )
+                {
+
+                    throw;
+                }            
             }
 
             return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos));
         }
 
-        private BoletimEscolarCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, Turma turma)
+        private BoletimEscolarCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, Turma turma, string alunoCodigo, string nome)
         {
             return new BoletimEscolarCabecalhoDto()
             {
                 Data = DateTime.Now.ToString("dd/MM/yyyy"),
                 NomeDre = dre.Abreviacao,
                 NomeUe = ue.NomeRelatorio,
-                NomeTurma = turma.NomeRelatorio
+                NomeTurma = turma.NomeRelatorio,
+                CodigoEol = alunoCodigo,
+                Aluno = nome
             };
         }
 
@@ -96,7 +108,7 @@ namespace SME.SR.Application
                     Descricao = grupoMatriz.Key.Nome
                 };
 
-                foreach (var componente in grupoMatriz)
+                foreach (var componente in grupoMatriz.OrderBy(a => a.Disciplina))
                 {
                     if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
                     {
@@ -106,7 +118,7 @@ namespace SME.SR.Application
                             Frequencia = componente.Frequencia
                         };
 
-                        foreach (var componenteRegencia in componente.ComponentesCurricularesRegencia)
+                        foreach (var componenteRegencia in componente.ComponentesCurricularesRegencia.OrderBy(a => a.Disciplina))
                         {
                             grupoParaAdd.ComponenteCurricularRegencia.ComponentesCurriculares.Add(
                                 new ComponenteCurricularRegenciaNotaDto()

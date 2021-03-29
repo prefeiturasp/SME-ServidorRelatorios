@@ -7,7 +7,17 @@ namespace SME.SR.Application
 {
     public class ObterNotasRelatorioBoletimQuery : IRequest<IEnumerable<IGrouping<string, NotasAlunoBimestre>>>
     {
-        public string[] CodigosTurma { get; set; }
+        public ObterNotasRelatorioBoletimQuery(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre)
+        {
+            CodigosAlunos = codigosAlunos;
+            AnoLetivo = anoLetivo;
+            Modalidade = modalidade;
+            Semestre = semestre;
+        }
+
         public string[] CodigosAlunos { get; set; }
+        public int AnoLetivo { get; }
+        public int Modalidade { get; }
+        public int Semestre { get; }
     }
 }
