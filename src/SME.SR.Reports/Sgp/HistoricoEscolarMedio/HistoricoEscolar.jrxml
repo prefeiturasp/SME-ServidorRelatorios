@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Principal" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="05587c97-f3c6-4cf2-9a1d-2b32c0508906">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
@@ -191,7 +191,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 	<columnHeader>
 		<band height="80" splitType="Stretch">
 			<textField textAdjust="StretchHeight">
-				<reportElement x="0" y="22" width="400" height="22" uuid="3061595e-75fc-4955-aebd-9a4226848d11">
+				<reportElement x="0" y="22" width="286" height="22" uuid="3061595e-75fc-4955-aebd-9a4226848d11">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -213,7 +213,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["RGA: "+($F{rga}!=null?$F{rga}:"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="44" width="160" height="22" uuid="d005aaff-8c61-4402-9a4f-ba3460de02ff">
+				<reportElement x="0" y="44" width="276" height="22" uuid="d005aaff-8c61-4402-9a4f-ba3460de02ff">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -224,7 +224,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["CIDADE NATAL: "+($F{cidadeNatal}!= null ? $F{cidadeNatal}:"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="160" y="44" width="124" height="22" uuid="ed8a7f74-6e15-4f44-b455-d68013983e95">
+				<reportElement x="276" y="44" width="124" height="22" uuid="ed8a7f74-6e15-4f44-b455-d68013983e95">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -235,7 +235,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["ESTADO NATAL: "+($F{estadoNatal}!= null ? $F{estadoNatal}:"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="284" y="44" width="156" height="22" uuid="4102c9eb-2973-4f29-b3dc-2830888c2fa0">
+				<reportElement x="400" y="44" width="154" height="22" uuid="4102c9eb-2973-4f29-b3dc-2830888c2fa0">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -246,7 +246,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["NACIONALIDADE: "+($F{nacionalidade}!=null?$F{nacionalidade}:"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="440" y="44" width="114" height="22" uuid="40c7ae8a-980c-43e5-bff0-224ca0db764d">
+				<reportElement x="286" y="22" width="114" height="22" uuid="40c7ae8a-980c-43e5-bff0-224ca0db764d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
