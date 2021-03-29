@@ -61,6 +61,7 @@ namespace SME.SR.Data
 				            ON cargoSobreposto.cd_cargo_base_servidor = cargoServidor.cd_cargo_base_servidor
 					            AND cargoSobreposto.cd_unidade_local_servico = dre.cd_unidade_educacao
 	                WHERE  lotacao_servidor.dt_fim IS NULL AND dre.cd_unidade_educacao = @CodigoUE
+							AND NOT EXISTS (SELECT 1 FROM cargo_sobreposto_servidor cargoSobreposto WHERE cargoSobreposto.cd_cargo_base_servidor = cargoServidor.cd_cargo_base_servidor AND dt_fim_nomeacao IS NULL)
 		            UNION
 		            SELECT DISTINCT servidor.nm_pessoa              NomeServidor 
 			                ,servidor.cd_registro_funcional            CodigoRF 
