@@ -79,8 +79,8 @@ namespace SME.SR.Application
 
             var tipoNotas = await ObterTiposNotaRelatorio();
 
-            var notas = await ObterNotasAlunos(turmasCodigo.ToArray(), alunosCodigo.ToArray());
-            var frequencias = await ObterFrequenciasAlunos(turmasCodigo.ToArray(), alunosCodigo.ToArray());
+            var notas = await ObterNotasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
+            var frequencias = await ObterFrequenciasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
