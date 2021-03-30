@@ -26,5 +26,6 @@ namespace SME.SR.Application
         public IEnumerable<IGrouping<string, NotasAlunoBimestre>> Notas { get; set; }
 
         public IEnumerable<IGrouping<string, FrequenciaAluno>> Frequencias { get; set; }
+        public IEnumerable<IGrouping<string, FrequenciaAluno>> FrequenciasGlobal { get; set; }
     }
 }
