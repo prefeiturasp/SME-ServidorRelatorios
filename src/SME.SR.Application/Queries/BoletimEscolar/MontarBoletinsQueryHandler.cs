@@ -54,27 +54,23 @@ namespace SME.SR.Application
                     var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
                     foreach (var turmaAluno in aluno)
                     {
-                        var grupoComponentesDoAluno = MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()));
-
-                        var frequenciasTurma = frequencia.FirstOrDefault(c => c.Key == turmaAluno.CodigoTurma.ToString());
-
-                        var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                        var frequenciasAluno = frequenciasTurma?.Where(t => t.CodigoAluno == aluno.First().CodigoAluno.ToString());
-
-                        if (notasAluno != null && notasAluno.Any())
-                            SetarNotasFrequencia(grupoComponentesDoAluno, notasAluno, frequenciasAluno, mediasFrequencia);
-
-                        boletimEscolarAlunoDto.Grupos.AddRange(grupoComponentesDoAluno);
+                        MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()), boletimEscolarAlunoDto.Grupos);
                     }
+
+                    var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                    var frequenciasAluno = frequencia?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+
+                    if (notasAluno != null && notasAluno.Any())
+                        SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno, mediasFrequencia);
 
                     boletinsAlunos.Add(boletimEscolarAlunoDto);
 
                 }
-                catch (Exception e )
+                catch (Exception e)
                 {
 
                     throw;
-                }            
+                }
             }
 
             return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos));
@@ -93,26 +89,35 @@ namespace SME.SR.Application
             };
         }
 
-        private List<GrupoMatrizComponenteCurricularDto> MapearGruposEComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma)
+        private void MapearGruposEComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, List<GrupoMatrizComponenteCurricularDto> grupos)
         {
-            var gruposMatrizes = componentesCurricularesPorTurma.GroupBy(cc => cc.GrupoMatriz).ToList();          
+            var gruposMatrizes = componentesCurricularesPorTurma.GroupBy(cc => cc.GrupoMatriz).ToList();
 
             var gruposRetorno = new List<GrupoMatrizComponenteCurricularDto>();
 
             foreach (var grupoMatriz in gruposMatrizes)
             {
-                var grupoParaAdd = new GrupoMatrizComponenteCurricularDto()
+                GrupoMatrizComponenteCurricularDto grupo = null;
+
+                if (grupos.Any(g => g.Id == (int)grupoMatriz.Key.Id))
+                    grupo = grupos.FirstOrDefault(g => g.Id == (int)grupoMatriz.Key.Id);
+                else
                 {
-                    Id = (int)grupoMatriz.Key.Id,
-                    Nome = $"GRUPO {gruposRetorno.Count() + 1}",
-                    Descricao = grupoMatriz.Key.Nome
-                };
+                    grupo = new GrupoMatrizComponenteCurricularDto()
+                    {
+                        Id = (int)grupoMatriz.Key.Id,
+                        Nome = $"GRUPO {gruposRetorno.Count() + 1}",
+                        Descricao = grupoMatriz.Key.Nome
+                    };
+
+                    grupos.Add(grupo);
+                }
 
                 foreach (var componente in grupoMatriz.OrderBy(a => a.Disciplina))
                 {
                     if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
                     {
-                        grupoParaAdd.ComponenteCurricularRegencia = new ComponenteCurricularRegenciaDto()
+                        grupo.ComponenteCurricularRegencia = new ComponenteCurricularRegenciaDto()
                         {
                             Codigo = componente.CodDisciplina.ToString(),
                             Frequencia = componente.Frequencia
@@ -120,35 +125,33 @@ namespace SME.SR.Application
 
                         foreach (var componenteRegencia in componente.ComponentesCurricularesRegencia.OrderBy(a => a.Disciplina))
                         {
-                            grupoParaAdd.ComponenteCurricularRegencia.ComponentesCurriculares.Add(
-                                new ComponenteCurricularRegenciaNotaDto()
-                                {
-                                    Codigo = componenteRegencia.CodDisciplina.ToString(),
-                                    Nome = componenteRegencia.Disciplina,
-                                    Nota = componenteRegencia.LancaNota
-                                });
+                            if (!grupo.ComponenteCurricularRegencia.ComponentesCurriculares.Any(g => g.Codigo == componenteRegencia.CodDisciplina.ToString()))
+                                grupo.ComponenteCurricularRegencia.ComponentesCurriculares.Add(
+                                    new ComponenteCurricularRegenciaNotaDto()
+                                    {
+                                        Codigo = componenteRegencia.CodDisciplina.ToString(),
+                                        Nome = componenteRegencia.Disciplina,
+                                        Nota = componenteRegencia.LancaNota
+                                    });
                         }
                     }
                     else if (!componente.Regencia)
                     {
-                        if (grupoParaAdd.ComponentesCurriculares == null)
-                            grupoParaAdd.ComponentesCurriculares = new List<ComponenteCurricularDto>();
+                        if (grupo.ComponentesCurriculares == null)
+                            grupo.ComponentesCurriculares = new List<ComponenteCurricularDto>();
 
-                        grupoParaAdd.ComponentesCurriculares.Add(
-                            new ComponenteCurricularDto()
-                            {
-                                Codigo = componente.CodDisciplina.ToString(),
-                                Nome = componente.Disciplina,
-                                Nota = componente.LancaNota,
-                                Frequencia = componente.Frequencia
-                            });
+                        if (!grupo.ComponentesCurriculares.Any(g => g.Codigo == componente.CodDisciplina.ToString()))
+                            grupo.ComponentesCurriculares.Add(
+                                new ComponenteCurricularDto()
+                                {
+                                    Codigo = componente.CodDisciplina.ToString(),
+                                    Nome = componente.Disciplina,
+                                    Nota = componente.LancaNota,
+                                    Frequencia = componente.Frequencia
+                                });
                     }
                 }
-
-                gruposRetorno.Add(grupoParaAdd);
             }
-
-            return gruposRetorno;
         }
 
         private void SetarNotasFrequencia(List<GrupoMatrizComponenteCurricularDto> gruposMatriz, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
@@ -231,8 +234,6 @@ namespace SME.SR.Application
                 return frequencias.FirstOrDefault(nf => nf.PeriodoEscolarId == null).PercentualFrequencia.ToString();
             else
             {
-                var turma = mediator.Send(new ObterTurmaQuery(frequencias.First().TurmaId)).Result;
-
                 var frequenciaFinal = new FrequenciaAluno()
                 {
                     TotalAulas = frequencias.Sum(f => f.TotalAulas),
@@ -241,9 +242,9 @@ namespace SME.SR.Application
                 };
 
                 //Particularidade de cálculo de frequência para 2020.
-                if (turma.AnoLetivo.Equals(2020))
+                if (frequencias.First().AnoTurma.Equals(2020))
                 {
-                    var idTipoCalendario = tipoCalendarioRepository.ObterPorAnoLetivoEModalidade(turma.AnoLetivo, turma.ModalidadeTipoCalendario).Result;
+                    var idTipoCalendario = tipoCalendarioRepository.ObterPorAnoLetivoEModalidade(frequencias.First().AnoTurma, frequencias.First().ModalidadeTurma).Result;
                     var periodos = mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(idTipoCalendario)).Result;
 
                     periodos.ToList().ForEach(p =>
@@ -253,7 +254,7 @@ namespace SME.SR.Application
                     });
 
                     return frequenciaFinal.PercentualFrequenciaFinal.ToString();
-                }          
+                }
 
                 return frequenciaFinal.PercentualFrequencia.ToString();
             }
