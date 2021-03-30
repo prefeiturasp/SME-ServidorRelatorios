@@ -97,7 +97,7 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
             foreach (var ueDaDre in uesDaDre)
             {
                 var ueParaAdicionar = new RelatorioParecerConclusivoUeDto();
-                ueParaAdicionar.Nome = ueDaDre.TipoEscola + " - " + ueDaDre.Nome;
+                ueParaAdicionar.Nome = ueDaDre.NomeComTipoEscola;
                 ueParaAdicionar.Codigo = ueDaDre.Codigo;
 
                 await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, anoLetivo, modalidadeId, cicloIdEnviado, anos, parecerConclusivoId);
@@ -141,9 +141,10 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
                         foreach (var alunoDaTurma in alunosDasTurmas.Where(a => a.CodigoTurma == int.Parse(turma.Codigo)).OrderBy(a => a.ObterNomeFinal()))
                         {
                             var parecerParaIncluir = new RelatorioParecerConclusivoAlunoDto();
+                            var numeroAlunoChamadaConvertido =  String.IsNullOrEmpty(alunoDaTurma.NumeroAlunoChamada) ? "" : Int32.Parse(alunoDaTurma.NumeroAlunoChamada).ToString();
                             parecerParaIncluir.AlunoCodigo = alunoDaTurma.CodigoAluno.ToString();
                             parecerParaIncluir.AlunoNomeCompleto = alunoDaTurma.ObterNomeFinal();
-                            parecerParaIncluir.AlunoNumeroChamada = alunoDaTurma.NumeroAlunoChamada ?? "";
+                            parecerParaIncluir.AlunoNumeroChamada = numeroAlunoChamadaConvertido;
                             parecerParaIncluir.TurmaNome = turma.Nome;
 
                             var parecerFiltradoParaIncluir = parecesParaTratar.FirstOrDefault(a => a.TurmaId.ToString() == turma.Codigo
@@ -193,7 +194,7 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
             else
             {
                 var ueDoCabecalho = await mediator.Send(new ObterUePorCodigoQuery(request.filtroRelatorioParecerConclusivoDto.UeCodigo));
-                retorno.UeNome = ueDoCabecalho.TipoEscola + " - " + ueDoCabecalho.Nome;
+                retorno.UeNome = ueDoCabecalho.NomeComTipoEscola;
             }
 
             retorno.RF = request.UsuarioRf;
