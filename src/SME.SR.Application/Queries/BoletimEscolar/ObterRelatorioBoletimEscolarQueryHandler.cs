@@ -37,8 +37,9 @@ namespace SME.SR.Application
 
             var notas = await ObterNotasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
 
-            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, frequencias, tiposNota, mediasFrequencia);
+            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal);
 
             return new RelatorioBoletimEscolarDto(boletins);
         }
@@ -107,10 +108,15 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery(alunosCodigo, anoLetivo, modalidade, semestre));
         }
 
+        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciaGlobalAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade)
+        {
+            return await mediator.Send(new ObterFrequenciaGlobalRelatorioBoletimQuery(alunosCodigo, anoLetivo, modalidade));
+        }
+
         private async Task<BoletimEscolarDto> MontarBoletins(Dre dre, Ue ue, IEnumerable<Turma> turmas, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares,
                                                              IEnumerable<IGrouping<string, Aluno>> alunosPorTurma, IEnumerable<IGrouping<string, NotasAlunoBimestre>> notasAlunos,
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos, IDictionary<string, string> tiposNota,
-                                                             IEnumerable<MediaFrequencia> mediasFrequencias)
+                                                             IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal)
         {
             return await mediator.Send(new MontarBoletinsQuery()
             {
@@ -122,7 +128,8 @@ namespace SME.SR.Application
                 Notas = notasAlunos,
                 Frequencias = frequenciasAlunos,
                 TiposNota = tiposNota,
-                MediasFrequencia = mediasFrequencias
+                MediasFrequencia = mediasFrequencias,
+                FrequenciasGlobal = frequenciaGlobal
             });
         }
 

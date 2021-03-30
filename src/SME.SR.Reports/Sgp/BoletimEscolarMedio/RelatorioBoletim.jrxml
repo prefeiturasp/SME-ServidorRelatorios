@@ -5,6 +5,8 @@
 	<property name="net.sf.jasperreports.print.create.bookmarks" value="true"/>
 	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
 	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio"/>
 	<queryString language="jsonql">
 		<![CDATA[grupos]]>
 	</queryString>
@@ -35,6 +37,14 @@
 	<field name="tipoNota" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="tipoNota"/>
 		<fieldDescription><![CDATA[tipoNota]]></fieldDescription>
+	</field>
+	<field name="frequenciaGlobal" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="frequenciaGlobal"/>
+		<fieldDescription><![CDATA[cabecalho.frequenciaGlobal]]></fieldDescription>
+	</field>
+	<field name="anoLetivo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="anoLetivo"/>
+		<fieldDescription><![CDATA[cabecalho.anoLetivo]]></fieldDescription>
 	</field>
 	<detail>
 		<band height="412" splitType="Stretch">
@@ -87,6 +97,38 @@
 						<pen lineWidth="0.5" lineStyle="Solid"/>
 					</graphicElement>
 				</line>
+				<textField>
+					<reportElement x="193" y="21" width="90" height="16" uuid="ff38a594-8646-4e7a-bfe4-a797a28081ac">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box leftPadding="4">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{anoLetivo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="2" y="58" width="145" height="10" uuid="b77e0800-33aa-4bb0-b5ec-2fe4fbd7622a">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box leftPadding="4">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA["FREQUÊNCIA GLOBAL: "+ $F{frequenciaGlobal}]]></textFieldExpression>
+				</textField>
 			</frame>
 			<subreport isUsingCache="false" overflowType="Stretch">
 				<reportElement positionType="Float" x="2" y="90" width="285" height="290" uuid="6205000e-57ea-4b3a-a82c-bd647176e1d7">
@@ -222,7 +264,7 @@
 				<text><![CDATA[BOLETIM ESCOLAR]]></text>
 			</staticText>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="false">
-				<reportElement x="92" y="40" width="195" height="10" uuid="0b4aec14-a8db-4a6c-95c5-006377135532">
+				<reportElement x="92" y="38" width="195" height="10" uuid="0b4aec14-a8db-4a6c-95c5-006377135532">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -235,7 +277,7 @@
 				<textFieldExpression><![CDATA["UE: "+$F{nomeUe}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2" y="50" width="90" height="10" uuid="cfad6463-110b-445d-bcd2-d5a9e2276f8b">
+				<reportElement x="2" y="48" width="90" height="10" uuid="cfad6463-110b-445d-bcd2-d5a9e2276f8b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -248,7 +290,7 @@
 				<textFieldExpression><![CDATA["TURMA: "+$F{nomeTurma}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont">
-				<reportElement x="92" y="50" width="195" height="10" uuid="3bdcae83-ca66-4a13-95f7-e9d7fd57bcce">
+				<reportElement x="92" y="48" width="195" height="10" uuid="3bdcae83-ca66-4a13-95f7-e9d7fd57bcce">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -261,10 +303,16 @@
 				<textFieldExpression><![CDATA["ESTUDANTE: "+$F{aluno}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="147" y="60" width="75" height="10" uuid="0e4eda8e-b39c-4713-b95a-7ee7940717e0">
+				<reportElement x="147" y="58" width="75" height="10" uuid="0e4eda8e-b39c-4713-b95a-7ee7940717e0">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<box leftPadding="2"/>
+				<box leftPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
@@ -276,7 +324,7 @@
 				<imageExpression><![CDATA["logo.png"]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="2" y="40" width="90" height="10" uuid="a750a1c2-3b96-4849-8226-a2259e0ca99b">
+				<reportElement x="2" y="38" width="90" height="10" uuid="a750a1c2-3b96-4849-8226-a2259e0ca99b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="4">
@@ -288,11 +336,16 @@
 				<textFieldExpression><![CDATA["DRE: "+$F{nomeDre}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="222" y="60" width="65" height="10" uuid="452219d4-4ae9-4460-833d-082d5e141bfb">
+				<reportElement x="222" y="58" width="65" height="10" uuid="452219d4-4ae9-4460-833d-082d5e141bfb">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<box leftPadding="4"/>
+				<box leftPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>

@@ -128,6 +128,26 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGlobalAlunos(string[] codigosAluno, int anoLetivo, int modalidade)
+        {
+            var query = @$"select fa.codigo_aluno as CodigoAluno
+                                , sum(fa.total_aulas) as TotalAulas
+                                , sum(fa.total_ausencias) as TotalAusencias
+                                , sum(fa.total_compensacoes) as TotalCompensacoes
+                              from frequencia_aluno fa 
+                            inner join turma t on t.turma_id = fa.turma_id
+                            where fa.codigo_aluno = ANY(@codigosAluno) 
+                              and t.ano_letivo = @anoLetivo
+                              and t.modalidade_codigo = @modalidade 
+                              and fa.tipo = 2 
+                            group by fa.codigo_aluno";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade });
+            }
+        }
+
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorComponentesBimestresTurmas(string[] componentesCurriculares, int[] bimestres, string[] turmasCodigos)
         {
             var query = new StringBuilder(@"select fa.id Id, fa.codigo_aluno as codigoAluno, fa.bimestre, fa.turma_id as TurmaId, fa.disciplina_id as disciplinaId,
