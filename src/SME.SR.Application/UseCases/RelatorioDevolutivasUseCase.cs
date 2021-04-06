@@ -91,7 +91,7 @@ namespace SME.SR.Application
         {
             if (turmas.Count() == 1)
             {
-                var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(turmas.First()));
+                var turmaDto = await mediator.Send(new ObterTurmaPorCodigoQuery(turmas.First().ToString()));
                 return turmaDto.NomeRelatorio;
             }
 
