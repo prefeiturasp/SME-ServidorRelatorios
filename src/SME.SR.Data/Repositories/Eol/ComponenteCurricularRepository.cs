@@ -352,5 +352,22 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<DisciplinaDto>(query, new { ids });
             }
         }
+
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] alunosCodigos, int anoLetivo, int semestre)
+        {
+            var query = anoLetivo == DateTime.Today.Year ?
+                ComponenteCurricularConsultas.BuscarPorAlunos :
+                ComponenteCurricularConsultas.BuscarPorAlunosHistorico ;
+
+            var parametros = new 
+            { 
+                alunosCodigos,
+                anoLetivo,
+                semestre
+            };
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+        }
     }
 }

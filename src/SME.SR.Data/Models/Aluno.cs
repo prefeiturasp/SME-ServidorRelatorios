@@ -30,7 +30,7 @@ namespace SME.SR.Data
             $"{SituacaoMatricula} em {DataSituacao:dd/MM/yyyy}".ToUpper();
 
         public string NomeRelatorio =>
-             $"{NumeroAlunoChamada} - {(NomeSocialAluno ?? NomeAluno)} " +
+             $"{Convert.ToInt32(NumeroAlunoChamada)} - {(NomeSocialAluno ?? NomeAluno)} " +
              $"{(SituacaoEspecial ? $"({CodigoSituacaoMatricula.GetAttribute<DisplayAttribute>().Name})" : "")}";
 
         public bool EstaAtivo(DateTime dataBase) => SituacoesAtiva.Contains(CodigoSituacaoMatricula) || dataBase.Date <= DataSituacao.Date;
@@ -49,7 +49,7 @@ namespace SME.SR.Data
         private SituacaoMatriculaAluno[] SituacoesAtivaSondagem => new[] { SituacaoMatriculaAluno.Ativo,
                         SituacaoMatriculaAluno.Rematriculado,
                         SituacaoMatriculaAluno.PendenteRematricula,
-                        SituacaoMatriculaAluno.SemContinuidade, 
+                        SituacaoMatriculaAluno.SemContinuidade,
             SituacaoMatriculaAluno.Concluido};
 
         public string ObterNomeParaRelatorioSondagem()

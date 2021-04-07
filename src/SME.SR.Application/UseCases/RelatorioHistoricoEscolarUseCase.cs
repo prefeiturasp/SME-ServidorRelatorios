@@ -79,8 +79,8 @@ namespace SME.SR.Application
 
             var tipoNotas = await ObterTiposNotaRelatorio();
 
-            var notas = await ObterNotasAlunos(turmasCodigo.ToArray(), alunosCodigo.ToArray());
-            var frequencias = await ObterFrequenciasAlunos(turmasCodigo.ToArray(), alunosCodigo.ToArray());
+            var notas = await ObterNotasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
+            var frequencias = await ObterFrequenciasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
@@ -151,22 +151,14 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
         }
 
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
         {
-            return await mediator.Send(new ObterNotasRelatorioBoletimQuery()
-            {
-                CodigosAlunos = alunosCodigo,
-                CodigosTurma = turmasCodigo
-            });
+            return await mediator.Send(new ObterNotasRelatorioBoletimQuery(alunosCodigo, anoLetivo, (int)modalidade, semestre));
         }
 
-        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] turmasCodigo, string[] alunosCodigo)
+        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
         {
-            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery()
-            {
-                CodigosAluno = alunosCodigo,
-                CodigosTurma = turmasCodigo
-            });
+            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery(alunosCodigo, anoLetivo, modalidade, semestre));
         }
 
         private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
