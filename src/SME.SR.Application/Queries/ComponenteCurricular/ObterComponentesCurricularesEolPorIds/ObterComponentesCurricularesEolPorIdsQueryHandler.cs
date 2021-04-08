@@ -12,10 +12,12 @@ namespace SME.SR.Application
     public class ObterComponentesCurricularesEolPorIdsQueryHandler : IRequestHandler<ObterComponentesCurricularesEolPorIdsQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
+        private readonly IAreaDoConhecimentoRepository areaDoConhecimentoRepository;
 
-        public ObterComponentesCurricularesEolPorIdsQueryHandler(IComponenteCurricularRepository componenteCurricularRepository)
+        public ObterComponentesCurricularesEolPorIdsQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IAreaDoConhecimentoRepository areaDoConhecimentoRepository)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
+            this.areaDoConhecimentoRepository = areaDoConhecimentoRepository ?? throw new ArgumentNullException(nameof(areaDoConhecimentoRepository));
         }
 
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesEolPorIdsQuery request, CancellationToken cancellationToken)
@@ -26,74 +28,33 @@ namespace SME.SR.Application
                    .Where(w => request.ComponentesCurricularesIds.Contains(w.Codigo))
                    .ToList();
 
-            lstComponentes = lstComponentes.Concat(await componenteCurricularRepository.ListarComponentesTerritorioSaber(request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray()));
+            var componenteIds = request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray();
+
+            lstComponentes = lstComponentes.Concat(await componenteCurricularRepository.ListarComponentesTerritorioSaber(componenteIds));
 
             if (lstComponentes != null && lstComponentes.Any())
             {
-                var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+                var areasDoConhecimento = await areaDoConhecimentoRepository.ObterAreasDoConhecimentoPorComponentesCurriculares(componenteIds.Select(long.Parse).ToArray());
 
                 return lstComponentes.Select(x => new ComponenteCurricularPorTurma
                 {
                     CodDisciplina = x.Codigo,
-                    CodDisciplinaPai = ObterCodDisciplinaPai(x.Codigo, componentesApiEol),
+                    CodDisciplinaPai = x.CodComponentePai,
                     Disciplina = x.Descricao.Trim(),
-                    Regencia = VerificaSeRegencia(x.Codigo, componentesApiEol),
-                    Compartilhada = VerificaSeCompartilhada(x.Codigo, componentesApiEol),
-                    Frequencia = VerificaSeRegistraFrequencia(x.Codigo, componentesApiEol),
-                    LancaNota = VerificarSeLancaNota(x.Codigo, componentesApiEol),
+                    Regencia = x.ComponentePlanejamentoRegencia,
+                    Compartilhada = x.Compartilhada,
+                    Frequencia = x.Frequencia,
+                    LancaNota = x.LancaNota,
                     TerritorioSaber = x.TerritorioSaber,
-                    BaseNacional = VerificaSeBaseNacional(x.Codigo, componentesApiEol),
-                    GrupoMatriz = ObterGrupoMatriz(x.Codigo, componentesApiEol, gruposMatriz)
+                    BaseNacional = x.BaseNacional,
+                    GrupoMatriz = x.ObterGrupoMatriz(gruposMatriz),
+                    AreaDoConhecimento = x.ObterAreaDoConhecimento(areasDoConhecimento)
                 });
             }
 
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
         }
-
-        private bool VerificaSeBaseNacional(long codDisciplina, IEnumerable<ComponenteCurricularApiEol> disciplinasApiEol)
-        {
-            return disciplinasApiEol.FirstOrDefault(x => x.IdComponenteCurricular == codDisciplina)?.EhBaseNacional ?? false;
-        }
-
-        private ComponenteCurricularGrupoMatriz ObterGrupoMatriz(long codDisciplina, IEnumerable<ComponenteCurricularApiEol> disciplinasApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
-        {
-            var disciplinaEol = disciplinasApiEol.FirstOrDefault(x => x.IdComponenteCurricular == codDisciplina);
-
-            if (disciplinaEol == null)
-                return null;
-
-            return grupoMatrizes.FirstOrDefault(x => x.Id == disciplinaEol.IdGrupoMatriz);
-        }
-
-        private bool VerificarSeLancaNota(long codDisciplina, IEnumerable<ComponenteCurricularApiEol> disciplinasApiEol)
-        {
-            return !disciplinasApiEol.Any(w => w.IdComponenteCurricular == codDisciplina) ||
-                   disciplinasApiEol.Any(w => w.IdComponenteCurricular == codDisciplina && w.PermiteLancamentoDeNota);
-        }
-
-        private bool VerificaSeRegencia(long codigoDisciplina, IEnumerable<ComponenteCurricularApiEol> disciplinasApiEol)
-        {
-            return disciplinasApiEol.Any(w => w.IdComponenteCurricular == codigoDisciplina && w.EhRegencia);
-        }
-
-        private bool VerificaSeCompartilhada(long codDisciplina, IEnumerable<ComponenteCurricularApiEol> disciplinasApiEol)
-        {
-            return disciplinasApiEol.Any(w => w.IdComponenteCurricular == codDisciplina && w.EhCompartilhada);
-        }
-
-        private bool VerificaSeRegistraFrequencia(long codDisciplina, IEnumerable<ComponenteCurricularApiEol> disciplinasApiEol)
-        {
-            var disciplina = disciplinasApiEol.FirstOrDefault(x => x.IdComponenteCurricular == codDisciplina);
-
-            return disciplina == null || disciplina.PermiteRegistroFrequencia;
-        }
-
-        private long? ObterCodDisciplinaPai(long codigoDisciplina, IEnumerable<ComponenteCurricularApiEol> disciplinasApiEol)
-        {
-            return disciplinasApiEol.FirstOrDefault(w => w.IdComponenteCurricular == codigoDisciplina)?.IdComponenteCurricularPai;
-        }
-
 
     }
 }

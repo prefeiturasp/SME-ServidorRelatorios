@@ -71,14 +71,14 @@ namespace SME.SR.Data
                     where convert(bigint,concat(stg.cd_turma_escola, grade_ter.cd_territorio_saber, grade_ter.cd_experiencia_pedagogica, FORMAT(grade_ter.dt_inicio, 'MM'), FORMAT(grade_ter.dt_inicio, 'dd'))) IN ({string.Join(',', ids)})";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<ComponenteCurricular>(query);
+            return await conexao.QueryAsync<ComponenteCurricular>(query, commandTimeout: 30000);
         }
 
         public async Task<IEnumerable<ComponenteCurricularGrupoMatriz>> ListarGruposMatriz()
         {
-            var query = @"select id, nome from componentecurriculargrupomatriz";
+            var query = @"select id, nome from componente_curricular_grupo_matriz";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ComponenteCurricularGrupoMatriz>(query);
         }
 
@@ -110,11 +110,12 @@ namespace SME.SR.Data
                                cc.descricao_sgp as descricao,
                                cc.eh_territorio as territorioSaber,
                                cc.eh_regencia as ComponentePlanejamentoRegencia,
-                               cc.componente_curricular_pai_id as CodigoComponentePai,
-                               cc.eh_compartilhada as EhCompartilhada,
-                               cc.permite_lancamento_nota as PodeLancarNota,
-                               cc.permite_registro_frequencia as ControlaFrequencia,
-                               cc.eh_base_nacional as EhBaseNacional
+                               cc.componente_curricular_pai_id as CodComponentePai,
+                               cc.grupo_matriz_id as GrupoMatrizId,
+                               cc.eh_compartilhada as Compartilhada,
+                               cc.permite_lancamento_nota as LancaNota,
+                               cc.permite_registro_frequencia as Frequencia,
+                               cc.eh_base_nacional as BaseNacional
                           from componente_curricular cc 
                          order by cc.id";
 
