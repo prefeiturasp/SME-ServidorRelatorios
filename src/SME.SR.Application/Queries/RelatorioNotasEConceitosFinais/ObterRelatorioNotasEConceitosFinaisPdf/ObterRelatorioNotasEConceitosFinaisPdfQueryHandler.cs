@@ -11,7 +11,7 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioNotasEConceitosFinaisPdfQueryHandler : IRequestHandler<ObterRelatorioNotasEConceitosFinaisPdfQuery, RelatorioNotasEConceitosFinaisDto>
     {
-        private IMediator mediator;
+        private readonly IMediator mediator;
 
         public ObterRelatorioNotasEConceitosFinaisPdfQueryHandler(IMediator mediator)
         {
@@ -87,24 +87,29 @@ namespace SME.SR.Application
 
                         foreach (var bimestreParaAdicionar in bimestresParaAdicionar)
                         {
-                            var bimestreNovo = new RelatorioNotasEConceitosFinaisBimestreDto($"{bimestreParaAdicionar.ToString()}º BIMESTRE");
+                            var bimestreNovo = new RelatorioNotasEConceitosFinaisBimestreDto($"{bimestreParaAdicionar}º BIMESTRE");
 
                             var componentesParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar && a.Bimestre == bimestreParaAdicionar)
                                                                          .Select(a => a.ComponenteCurricularCodigo)
                                                                          .Distinct();
 
+                            var componentesDetalhes = componentesCurriculares.Where(a => componentesParaAdicionar.Contains(a.CodDisciplina))
+                                                                             .OrderBy(c => c.Regencia)
+                                                                             .ThenBy(c => c.GrupoMatriz.Nome, StringComparer.OrdinalIgnoreCase)
+                                                                             .ThenByDescending(c => c.AreaDoConhecimento != null && !string.IsNullOrEmpty(c.AreaDoConhecimento.Nome))
+                                                                             .ThenBy(c => c.AreaDoConhecimento.Nome, StringComparer.OrdinalIgnoreCase)
+                                                                             .ThenBy(c => c.Disciplina, StringComparer.OrdinalIgnoreCase);
 
-                            foreach (var componenteParaAdicionar in componentesParaAdicionar)
+
+                            foreach (var componenteParaAdicionar in componentesDetalhes)
                             {
-                                var componente = componentesCurriculares.FirstOrDefault(a => a.CodDisciplina == componenteParaAdicionar);
-
                                 var componenteNovo = new RelatorioNotasEConceitosFinaisComponenteCurricularDto
                                 {
-                                    Nome = componente?.Disciplina
+                                    Nome = componenteParaAdicionar?.Disciplina
                                 };
 
                                 var notasDosAlunosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar
-                                                                                       && a.Bimestre == bimestreParaAdicionar && a.ComponenteCurricularCodigo == componenteParaAdicionar)
+                                                                                       && a.Bimestre == bimestreParaAdicionar && a.ComponenteCurricularCodigo == componenteParaAdicionar?.CodDisciplina)
                                                                                 .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome, a.EhNotaConceitoFechamento })
                                                                                 .Distinct();
 
@@ -115,7 +120,7 @@ namespace SME.SR.Application
                                         possuiNotaFechamento = true;
 
                                     var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));
-                                    var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo.CodigoAluno, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componente.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese);
+                                    var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo.CodigoAluno, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componenteParaAdicionar.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese);
                                     componenteNovo.NotaConceitoAlunos.Add(notaConceitoNovo);
                                 }
                                 componenteNovo.NotaConceitoAlunos = componenteNovo.NotaConceitoAlunos.OrderBy(t => t.TurmaNome).ThenBy(a => a.AlunoNomeCompleto).ToList();
