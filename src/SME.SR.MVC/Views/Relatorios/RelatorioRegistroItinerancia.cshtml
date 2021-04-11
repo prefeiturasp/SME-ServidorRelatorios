@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 42;
+    int contadorMaximoLinhasPorPagina = 53;
     int contadorPagina = 0;
 
     bool VerificaQuebra(int linhas = 0)
@@ -51,11 +51,117 @@
 
     string EspacoEmBranco()
     {
-        <tr ><td></td></tr>
+        <tr>
+            <td colspan="2"></td>
+        </tr>
         return "";
     }
 
-   
+    string informacoesQuebra(string estudante, bool mostrarEstudante = true)
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");
+        @Html.Raw(MontarCabecalho())
+        @Html.Raw("<table class='tabela-cabecalho'>");
+
+        if (mostrarEstudante)
+        {
+            @Html.Raw(MontarLinhaSimples(estudante))
+        }
+
+        return "";
+    }
+
+    string MontarCabecalhoObjetivos()
+    {
+        <tr>
+            <td class="fundo-cinza">OBJETIVOS DA ITENERÂNCIA</td>
+            <td class="fundo-cinza">SITUAÇÃO ATIVO/INATIVO L -> @contadorQuebrarPagina</td>
+        </tr>
+        return "";
+    }
+
+    string MontarObjetivos(IEnumerable<SME.SR.Infra.ObjetivosRegistroItineranciaDto> listaObjetivos, string estudante)
+    {
+        @Html.Raw(MontarCabecalhoObjetivos())
+
+        contadorQuebrarPagina++;
+
+        @foreach (var objetivo in listaObjetivos)
+        {
+            <tr>
+                <td>@objetivo.NomeObjetivo</td>
+                <td>@objetivo.SituacaoObjetivo L -> @contadorQuebrarPagina</td>
+            </tr>
+            contadorQuebrarPagina++;
+
+            var quebra = VerificaQuebra();
+
+            if (quebra)
+            {
+                informacoesQuebra(estudante);
+                contadorQuebrarPagina++;
+                MontarCabecalhoObjetivos();
+                contadorQuebrarPagina++;
+            }
+        }
+
+        return "";
+    }
+
+    string MontarSecoes(string nomeSecao, string valorSecao, bool alinharCentro = false)
+    {
+        var classeAlinhamento = alinharCentro ? "" : "alinhar-esquerda";
+        <tr>
+            <td colspan="2" class="fundo-cinza">@nomeSecao L -> @contadorQuebrarPagina</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="@classeAlinhamento" style="padding: 3px;">@valorSecao L -> @contadorQuebrarPagina</td>
+        </tr>
+
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+
+        return "";
+    }
+
+    string MontarLinhaSimples(string valorLinha)
+    {
+        <tr>
+            <td colspan="2" class="fundo-cinza">@valorLinha L -> @contadorQuebrarPagina</td>
+        </tr>
+
+        return "";
+    }
+
+    string CalcularLinhas(int valorLinha = 0)
+    {
+        if (valorLinha > 0)
+        {
+            var numeroLinhasDescricao = valorLinha / 180;
+
+            if(numeroLinhasDescricao > 1)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
+            }else
+            { 
+                contadorQuebrarPagina++;
+            }
+        }
+        return "";
+    }
+
+    string QuebrarLinhas(string estudante, bool mostrarEstudante = true)
+    {
+        var quebra = VerificaQuebra(2);
+
+        if (quebra)
+        {
+            informacoesQuebra(estudante, mostrarEstudante);
+            contadorQuebrarPagina++;
+        }
+        return "";
+    }
+
     <!DOCTYPE html>
     <html lang="pt-BR">
     <head>
@@ -179,9 +285,83 @@
         <div>
             @Html.Raw(MontarCabecalho())
 
-            <table class="tabela-cabecalho">
+            @{ int registrosIndex = 0; }
 
-            </table>
+            @foreach (var registros in Model.Registros)
+            {
+                <table class="tabela-cabecalho">
+                    @{
+                        var dataVisita = registros.DataVisita;
+                        int secoesIndex = 0;
+                    }
+
+                    @foreach (var secoes in registros.Secoes)
+                    {
+                        var estudante = secoes.Estudante;
+                        var acompanhamentoSituacao = secoes.AcompanhamentoSituacao;
+                        var encaminhamentos = secoes.Encaminhamentos;
+                        var dataRetorno = secoes.DataRetorno;
+                        var temEstudante = String.IsNullOrEmpty(estudante);
+
+                        <tbody>
+                            @if (!temEstudante)
+                            {
+                                @Html.Raw(MontarLinhaSimples(estudante))
+                                contadorQuebrarPagina++;
+                            }
+
+                            @Html.Raw(MontarLinhaSimples(dataVisita))
+
+                            @{ contadorQuebrarPagina++; }
+
+                            @Html.Raw(MontarObjetivos(registros.Objetivos, estudante))
+
+                            @if (!temEstudante)
+                            {
+                                var descritivoEstudante = secoes.DescritivoEstudante;
+                                MontarSecoes("DESCRITIVO DO ESTUDANTE", descritivoEstudante);
+                                CalcularLinhas(descritivoEstudante.Length);
+
+                            }
+
+                            @Html.Raw(QuebrarLinhas(estudante))
+
+                            @Html.Raw(MontarSecoes("ACOMPANHAMENTO DA SITUAÇÃO", acompanhamentoSituacao))
+                            @Html.Raw(CalcularLinhas(acompanhamentoSituacao.Length))
+                            @Html.Raw(QuebrarLinhas(estudante))
+
+                            @Html.Raw(MontarSecoes("ENCAMINHAMENTOS", encaminhamentos))
+                            @Html.Raw(CalcularLinhas(encaminhamentos.Length))
+                            @Html.Raw(QuebrarLinhas(estudante))
+
+                            @Html.Raw(MontarSecoes("DATA PARA RETORNO/VERIFICAÇÃO", dataRetorno, true))
+
+                            @if (secoesIndex < registros.Secoes.Count() - 1)
+                            {
+                                QuebrarLinhas(estudante, false);
+                                contadorQuebrarPagina++;
+                            }
+                        </tbody>
+
+                        if (secoesIndex < registros.Secoes.Count() - 1)
+                        {
+                            @Html.Raw(EspacoEmBranco());
+                            contadorQuebrarPagina++;
+                        }
+
+                        secoesIndex++;
+                    }
+                </table>
+
+                if (registrosIndex < Model.Registros.Count() - 1)
+                {
+                    contadorQuebrarPagina = 0;
+                    @Html.Raw("<div style='page-break-before:always'></div>")
+                    @Html.Raw(MontarCabecalho())                    
+                }
+
+                registrosIndex++;
+            }
         </div>
     </body>
 </html>
