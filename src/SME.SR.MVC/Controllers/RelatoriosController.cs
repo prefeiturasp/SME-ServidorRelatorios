@@ -7376,76 +7376,68 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             var registros = new List<RegistrosRegistroItineranciaDto>();
             var objetivos1 = new List<ObjetivosRegistroItineranciaDto>();
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 4; i++)
             {
                 var objetivo1 = new ObjetivosRegistroItineranciaDto()
                 {
                     NomeObjetivo = "Mapeamento dos estudantes público da educação especial " + i,
-                    SituacaoObjetivo = "ATIVO"
                 };
                 var objetivo2 = new ObjetivosRegistroItineranciaDto()
                 {
                     NomeObjetivo = "Reunião - Discussão sobre melhorias da SRM " + i,
-                    SituacaoObjetivo = "ATIVO"
                 };
                 objetivos1.Add(objetivo1);
                 objetivos1.Add(objetivo2);
             }
 
-            var secoes1 = new List<SecoesRegistroItineranciaDto>();
+            var alunos1 = new List<AlunoRegistroItineranciaDto>();
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 15; i++)
             {
-                var secao1 = new SecoesRegistroItineranciaDto()
+                var aluno1 = new AlunoRegistroItineranciaDto()
                 {
                     Estudante = "ALANA FERREIRA DE OLIVEIRA (1234567) - EF-" + i + "A",
                     DescritivoEstudante = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                     AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                    Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                    DataRetorno = DateTime.Now.AddDays(i + 15).ToString("dd/MM/yyyy")
+                    Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",          
                 };
-                var secao2 = new SecoesRegistroItineranciaDto()
+                var aluno2 = new AlunoRegistroItineranciaDto()
                 {
-                    Estudante = "Fernando DOS SANTOS (1234567) - EF-" + i + "B",
+                    Estudante = "FERNANDO DOS SANTOS (1234567) - EF-" + i + "B",
                     DescritivoEstudante = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                     AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                     Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                    DataRetorno = DateTime.Now.AddDays(i + 20).ToString("dd/MM/yyyy")
                 };
-                secoes1.Add(secao1);
-                secoes1.Add(secao2);
+                alunos1.Add(aluno1);
+                alunos1.Add(aluno2);
             }
-
-            var secoes2 = new List<SecoesRegistroItineranciaDto>();
-            var secao3 = new SecoesRegistroItineranciaDto()
-            {
-                AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                DataRetorno = DateTime.Now.ToString("dd/MM/yyyy")
-            };
-            secoes2.Add(secao3);
-
+            
             RegistrosRegistroItineranciaDto registro1 = new RegistrosRegistroItineranciaDto()
             {
+                Dre = "DRE - BT",
+                Ue = "CEU EMEF BUTANTA",
                 DataVisita = DateTime.Now.ToString("dd/MM/yyyy"),
+                DataRetorno = DateTime.Now.ToString("dd/MM/yyyy"),
                 Objetivos = objetivos1,
-                Secoes = secoes1
+                Alunos = alunos1,
             };
 
             RegistrosRegistroItineranciaDto registro2 = new RegistrosRegistroItineranciaDto()
             {
+                Dre = "DRE - BT",
+                Ue = "CEU EMEF BUTANTA",
                 DataVisita = DateTime.Now.ToString("dd/MM/yyyy"),
+                DataRetorno = DateTime.Now.ToString("dd/MM/yyyy"),
                 Objetivos = objetivos1,
-                Secoes = secoes2
+                AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             };
             registros.Add(registro1);
             registros.Add(registro2);
 
             var model = new RelatorioRegistroItineranciaDto()
             {
-                Dre = "DRE - BT",
-                Ue = "CEU EMEF BUTANTA",
-                Usuario = "Anala Ferreira de Oliveira",
+                Usuario = "Catia Pereira de Souza",
                 RF = "9879878",
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Registros = registros

@@ -226,5 +226,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/itinerancias")]
+        [Action("relatorios/itinerancias", typeof(IRelatorioDevolutivasUseCase))]
+        public async Task<bool> Itinerancias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioItineranciasUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
     }
 }

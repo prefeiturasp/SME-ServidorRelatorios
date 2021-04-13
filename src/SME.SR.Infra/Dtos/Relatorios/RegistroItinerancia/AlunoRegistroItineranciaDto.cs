@@ -2,12 +2,11 @@
 
 namespace SME.SR.Infra
 {
-    public class SecoesRegistroItineranciaDto
+    public class AlunoRegistroItineranciaDto
     {
         public string Estudante { get; set; }
         public string DescritivoEstudante { get; set; }
         public string AcompanhamentoSituacao { get; set; }
         public string Encaminhamentos { get; set; }
-        public string DataRetorno { get; set; }
     }
 }
