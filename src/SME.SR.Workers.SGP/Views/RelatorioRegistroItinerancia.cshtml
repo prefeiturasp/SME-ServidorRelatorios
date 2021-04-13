@@ -2,8 +2,9 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 48;
+    int contadorMaximoLinhasPorPagina = 52;
     int contadorPagina = 0;
+    bool quebrou = false;
 
     bool VerificaQuebra(int linhas = 0)
     {
@@ -24,7 +25,7 @@
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-relatorio'>RELATÓRIO DE ITINERÂNCIA</div>
+<div class='titulo-relatorio'>REGISTRO DE ITINERÂNCIA</div>
 <div class='fonte-14 header-pagina'>
 <table class='tblTopo'>
 <tbody>
@@ -75,7 +76,7 @@
     string MontarCabecalhoObjetivos()
     {
         <tr>
-            <td class="fundo-cinza">OBJETIVOS DA ITENERÂNCIA</td>
+            <td class="fundo-cinza">OBJETIVOS DA ITINERÂNCIA</td>
         </tr>
         return "";
     }
@@ -90,7 +91,7 @@
         @foreach (var objetivo in listaObjetivos)
         {
             <tr>
-                <td>@objetivo.NomeObjetivo</td>
+                <td class="alinhar-esquerda espaco-esquerda-15">@objetivo.NomeObjetivo</td>
             </tr>
             contadorQuebrarPagina++;
 
@@ -101,7 +102,7 @@
                 informacoesQuebra(estudante, dre, ue);
                 contadorQuebrarPagina++;
 
-                if(objetivosIndex < listaObjetivos.Count() - 1) 
+                if (objetivosIndex < listaObjetivos.Count() - 1)
                 {
                     MontarCabecalhoObjetivos();
                     contadorQuebrarPagina++;
@@ -143,10 +144,11 @@
         {
             var numeroLinhasDescricao = valorLinha / 200;
 
-            if(numeroLinhasDescricao > 1)
+            if (numeroLinhasDescricao > 1)
             {
                 contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
-            }else
+            }
+            else
             {
                 contadorQuebrarPagina++;
             }
@@ -156,15 +158,16 @@
         return 2;
     }
 
-    string QuebrarLinhas(string estudante, string dre, string ue, int numeroQuebras = 2, bool mostrarEstudante = true )
+    string QuebrarLinhas(string estudante, string dre, string ue, int numeroQuebras = 2, bool mostrarEstudante = true)
     {
         var quebra = VerificaQuebra(numeroQuebras);
+        quebrou = false;
 
         if (quebra)
         {
             informacoesQuebra(estudante, dre, ue, mostrarEstudante);
-            contadorQuebrarPagina++;
-
+            contadorQuebrarPagina = contadorQuebrarPagina + numeroQuebras;
+            quebrou = true;
         }
         return "";
     }
@@ -174,7 +177,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Relatório de Itinerância</title>
+        <title>Registro de Itinerância</title>
     </head>
     <body class="body-relatorio">
         <style>
@@ -310,9 +313,9 @@
                         var encaminhamentos = temAlunos ? registros.Alunos.ToList()[i].Encaminhamentos : registros.Encaminhamentos;
                         var dataRetorno = registros.DataRetorno;
 
-                        @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false))
-                        
-                        if (i < registros?.Alunos?.Count() - 1)
+                        QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false);
+
+                        if (i > 0 && i < registros?.Alunos?.Count() - 1 && !quebrou)
                         {
                             @Html.Raw(EspacoEmBranco());
                             contadorQuebrarPagina++;
@@ -352,7 +355,6 @@
 
                             @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue))
                             @Html.Raw(MontarSecoes("DATA PARA RETORNO/VERIFICAÇÃO", dataRetorno, true))
-                            @{ contadorQuebrarPagina = contadorQuebrarPagina + 2; }
 
                             @if (i < registros?.Alunos?.Count() - 1)
                             {
