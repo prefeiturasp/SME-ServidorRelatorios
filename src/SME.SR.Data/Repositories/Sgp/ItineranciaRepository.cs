@@ -79,7 +79,7 @@ namespace SME.SR.Data.Interfaces
 
         public async Task<IEnumerable<ItineranciaObjetivoDto>> ObterObjetivosPorItineranciaIds(long[] ids)
         {
-            var query = @"select io.itinerancia_id as ItineranciaId, iob.ordem, iob.nome
+            var query = @"select io.itinerancia_id as ItineranciaId, iob.ordem, iob.nome, io.descricao 
                            from itinerancia_objetivo io 
                           inner join itinerancia_objetivo_base iob on iob.id = io.itinerancia_base_id 
                           where not io.excluido 

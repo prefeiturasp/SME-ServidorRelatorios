@@ -92,10 +92,13 @@ namespace SME.SR.Application
             foreach (var objetivo in objetivos
                 .Where(c => c.ItineranciaId == id)
                 .OrderBy(a => a.Ordem))
+            {
+                var descricao = !string.IsNullOrEmpty(objetivo.Descricao) ? $": {objetivo.Descricao}" : "";
                 yield return new ObjetivosRegistroItineranciaDto()
                 {
-                    NomeObjetivo = objetivo.Nome
+                    NomeObjetivo = $"{objetivo.Nome}{descricao}"
                 };
+            }
         }
     }
 }

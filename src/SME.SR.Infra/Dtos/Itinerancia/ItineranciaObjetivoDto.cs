@@ -9,5 +9,6 @@ namespace SME.SR.Infra
         public long ItineranciaId { get; set; }
         public int Ordem { get; set; }
         public string Nome { get; set; }
+        public string Descricao { get; set; }
     }
 }

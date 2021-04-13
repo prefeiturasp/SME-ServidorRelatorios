@@ -31,7 +31,6 @@ namespace SME.SR.Application
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }
