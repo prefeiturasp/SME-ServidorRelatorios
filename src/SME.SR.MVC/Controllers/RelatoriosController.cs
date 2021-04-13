@@ -7374,43 +7374,70 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public IActionResult RelatorioRegistroItinerancia()
         {
             var registros = new List<RegistrosRegistroItineranciaDto>();
-            var objetivos = new List<ObjetivosRegistroItineranciaDto>();
-            var objetivo1 = new ObjetivosRegistroItineranciaDto()
-            {
-                NomeObjetivo = "Mapeamento dos estudantes público da educação especial",
-                SituacaoObjetivo = "ATIVO"
-            };
-            var objetivo2 = new ObjetivosRegistroItineranciaDto()
-            {
-                NomeObjetivo = "Reunião - Discussão sobre melhorias da SRM",
-                SituacaoObjetivo = "ATIVO"
-            };
-            objetivos.Add(objetivo1);
-            objetivos.Add(objetivo2);
+            var objetivos1 = new List<ObjetivosRegistroItineranciaDto>();
 
-            var secoes = new List<AlunoRegistroItineranciaDto>();
-            var secao1 = new AlunoRegistroItineranciaDto()
+            for (var i = 0; i < 4; i++)
             {
-                Estudante = "ALANA FERREIRA DE OLIVEIRA (1234567) - EF-5A",
-                DescritivoEstudante = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                var objetivo1 = new ObjetivosRegistroItineranciaDto()
+                {
+                    NomeObjetivo = "Mapeamento dos estudantes público da educação especial " + i,
+                };
+                var objetivo2 = new ObjetivosRegistroItineranciaDto()
+                {
+                    NomeObjetivo = "Reunião - Discussão sobre melhorias da SRM " + i,
+                };
+                objetivos1.Add(objetivo1);
+                objetivos1.Add(objetivo2);
+            }
+
+            var alunos1 = new List<AlunoRegistroItineranciaDto>();
+
+            for (var i = 0; i < 15; i++)
+            {
+                var aluno1 = new AlunoRegistroItineranciaDto()
+                {
+                    Estudante = "ALANA FERREIRA DE OLIVEIRA (1234567) - EF-" + i + "A",
+                    DescritivoEstudante = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",          
+                };
+                var aluno2 = new AlunoRegistroItineranciaDto()
+                {
+                    Estudante = "FERNANDO DOS SANTOS (1234567) - EF-" + i + "B",
+                    DescritivoEstudante = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                };
+                alunos1.Add(aluno1);
+                alunos1.Add(aluno2);
+            }
+            
+            RegistrosRegistroItineranciaDto registro1 = new RegistrosRegistroItineranciaDto()
+            {
+                Dre = "DRE - BT",
+                Ue = "CEU EMEF BUTANTA",
+                DataVisita = DateTime.Now.ToString("dd/MM/yyyy"),
+                DataRetorno = DateTime.Now.ToString("dd/MM/yyyy"),
+                Objetivos = objetivos1,
+                Alunos = alunos1,
+            };
+
+            RegistrosRegistroItineranciaDto registro2 = new RegistrosRegistroItineranciaDto()
+            {
+                Dre = "DRE - BT",
+                Ue = "CEU EMEF BUTANTA",
+                DataVisita = DateTime.Now.ToString("dd/MM/yyyy"),
+                DataRetorno = DateTime.Now.ToString("dd/MM/yyyy"),
+                Objetivos = objetivos1,
                 AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                 Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             };
-            secoes.Add(secao1);
+            registros.Add(registro1);
+            registros.Add(registro2);
 
-            RegistrosRegistroItineranciaDto registro = new RegistrosRegistroItineranciaDto()
-            {
-                DataVisita = DateTime.Now.ToString("dd/MM/yyyy"),
-                DataRetorno = DateTime.Now.ToString("dd/MM/yyyy"),
-                Dre = "DRE - BT",
-                Ue = "CEU EMEF BUTANTA",
-                Objetivos = objetivos,
-                Alunos = secoes
-            };
-            
             var model = new RelatorioRegistroItineranciaDto()
             {
-                Usuario = "Anala Ferreira de Oliveira",
+                Usuario = "Catia Pereira de Souza",
                 RF = "9879878",
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Registros = registros
