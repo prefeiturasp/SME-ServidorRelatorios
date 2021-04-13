@@ -40,7 +40,7 @@ namespace SME.SR.Application
             {
                 var itineranciaDto = new RegistrosRegistroItineranciaDto()
                 {
-                    Dre = itinerancia.Ue.Dre.Nome,
+                    Dre = itinerancia.Ue.Dre.Abreviacao,
                     Ue = itinerancia.Ue.NomeRelatorio,
                     DataVisita = $"{itinerancia.DataVisita:dd/MM/yyyy}",
                     DataRetorno = $"{itinerancia.DataRetorno:dd/MM/yyyy}",
