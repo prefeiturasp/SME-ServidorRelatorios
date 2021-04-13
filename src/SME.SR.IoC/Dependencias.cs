@@ -155,6 +155,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IComunicadosRepository), typeof(ComunicadosRepository));
             
             services.TryAddScoped(typeof(IDevolutivaRepository), typeof(DevolutivaRepository));
+            services.TryAddScoped(typeof(IItineranciaRepository), typeof(ItineranciaRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)

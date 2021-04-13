@@ -228,7 +228,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/itinerancias")]
-        [Action("relatorios/itinerancias", typeof(IRelatorioDevolutivasUseCase))]
+        [Action("relatorios/itinerancias", typeof(IRelatorioItineranciasUseCase))]
         public async Task<bool> Itinerancias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioItineranciasUseCase relatorioUseCase)
         {
             await relatorioUseCase.Executar(request);
