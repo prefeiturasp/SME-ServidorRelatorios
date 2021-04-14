@@ -52,8 +52,8 @@ namespace SME.SR.Application
 
                 SentrySdk.CaptureMessage("6.1 - Obtendo jSessionId...");
 
-                //var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
-                var jsessionId = await loginService.ObterTokenAutenticacao("user", "bitnami");
+                var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
+
                 SentrySdk.CaptureMessage($"6.2 - jSessionId = {jsessionId}");
 
 
