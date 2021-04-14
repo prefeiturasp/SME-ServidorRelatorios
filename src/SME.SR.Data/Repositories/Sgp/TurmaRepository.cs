@@ -805,7 +805,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
         {
             var query = @"select t.id as Codigo
-                            , t.turma_id 
+                            , t.turma_id
                             , t.nome
                             , t.modalidade_codigo  ModalidadeCodigo
                             , t.semestre

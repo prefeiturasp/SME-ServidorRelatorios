@@ -45,6 +45,9 @@ namespace SME.SR.Application
             if (!notasPorTurmas.Any())
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
+            if (notasPorTurmas.Any(n => n.ConselhoClasseAlunoId.HasValue && n.PossuiTurmaAssociada))
+                await ObterTurmasAssociadas(notasPorTurmas);
+
             // Componentes curriculares
             var componentesCurriculares = await ObterComponentesCurriculares(notasPorTurmas, filtros.TipoNota);
 
@@ -144,6 +147,51 @@ namespace SME.SR.Application
                 throw new NegocioException("Não encontramos dados para geração do relatório!");
 
             return relatorioNotasEConceitosFinaisDto;
+        }
+
+        private async Task ObterTurmasAssociadas(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
+        {
+            var notasTurmasAssociadas = notasPorTurmas.Where(n => n.ConselhoClasseAlunoId.HasValue && n.PossuiTurmaAssociada);
+
+            var conselhoClasseAlunoIds = notasTurmasAssociadas.Select(n => n.ConselhoClasseAlunoId.Value).ToArray();
+            var turmasAssociadas = await mediator.Send(new ObterTurmasAssociadasConselhoClasseAlunoQuery(conselhoClasseAlunoIds));
+
+            var turmasAssociadasIds = turmasAssociadas.Select(t => t.TurmaComplementarId).Distinct().ToArray();
+            var turmaAssociadaCodigos = turmasAssociadas.Select(t => t.TurmaComplementarCodigo).Distinct().ToArray();
+            var turmaRegularCodigos = turmasAssociadas.Select(t => t.TurmaRegularCodigo).Distinct().ToArray();
+
+            var componentesDasTurmas = await mediator.Send(new ObterComponentesCurricularesPorTurmasQuery(turmaAssociadaCodigos));
+            var turmasAssociadasObj = await mediator.Send(new ObterTurmasPorIdsQuery(turmasAssociadasIds));
+
+            var notasComponentesTurmasAssociadas = notasTurmasAssociadas.Where(n => componentesDasTurmas.Any(c => c.CodDisciplina == n.ComponenteCurricularCodigo));
+
+            foreach (var nota in notasComponentesTurmasAssociadas)
+            {
+                var associacao = turmasAssociadas.FirstOrDefault(t => t.ConselhoClasseAlunoId == nota.ConselhoClasseAlunoId);
+
+                var turmaAssociada = turmasAssociadasObj.FirstOrDefault(t => t.Codigo == associacao.TurmaComplementarId.ToString());
+
+                nota.TurmaCodigo = turmaAssociada.turma_id;
+                nota.TurmaNome = turmaAssociada.Nome;
+                nota.Ano = turmaAssociada.Ano;
+            }
+
+            var notasTurmasAssociadasConselho = notasComponentesTurmasAssociadas.Where(n => !n.EhNotaConceitoFechamento);
+
+            foreach (var notaConselho in notasTurmasAssociadasConselho)
+            {
+                var notaFechamento = notasPorTurmas.FirstOrDefault(n => n.EhNotaConceitoFechamento &&
+                                                                   n.TurmaCodigo == notaConselho.TurmaCodigo &&
+                                                                   n.Ano == notaConselho.Ano &&
+                                                                   n.Bimestre == notaConselho.Bimestre &&
+                                                                   n.ComponenteCurricularCodigo == notaConselho.ComponenteCurricularCodigo &&
+                                                                   n.AlunoCodigo == notaConselho.AlunoCodigo);
+
+                if (notaFechamento != null)
+                    notaFechamento.ExcluirNota = true;
+            }
+
+            notasPorTurmas = notasPorTurmas.Where(n => !n.ExcluirNota);
         }
 
         private async Task<IEnumerable<AlunoHistoricoEscolar>> ObterAlunos(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
