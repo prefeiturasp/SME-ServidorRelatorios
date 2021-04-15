@@ -46,7 +46,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
             if (notasPorTurmas.Any(n => n.ConselhoClasseAlunoId.HasValue && n.PossuiTurmaAssociada))
-                await ObterTurmasAssociadas(notasPorTurmas);
+                notasPorTurmas = await ObterTurmasAssociadas(notasPorTurmas);
 
             // Componentes curriculares
             var componentesCurriculares = await ObterComponentesCurriculares(notasPorTurmas, filtros.TipoNota);
@@ -149,7 +149,7 @@ namespace SME.SR.Application
             return relatorioNotasEConceitosFinaisDto;
         }
 
-        private async Task ObterTurmasAssociadas(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
+        private async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterTurmasAssociadas(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
         {
             var notasTurmasAssociadas = notasPorTurmas.Where(n => n.ConselhoClasseAlunoId.HasValue && n.PossuiTurmaAssociada);
 
@@ -191,7 +191,7 @@ namespace SME.SR.Application
                     notaFechamento.ExcluirNota = true;
             }
 
-            notasPorTurmas = notasPorTurmas.Where(n => !n.ExcluirNota);
+            return notasPorTurmas.Where(n => !n.ExcluirNota);
         }
 
         private async Task<IEnumerable<AlunoHistoricoEscolar>> ObterAlunos(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
