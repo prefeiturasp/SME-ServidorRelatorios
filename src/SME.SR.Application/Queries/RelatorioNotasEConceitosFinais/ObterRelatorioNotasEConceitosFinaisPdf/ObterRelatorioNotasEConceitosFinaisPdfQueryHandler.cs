@@ -90,7 +90,7 @@ namespace SME.SR.Application
 
                         foreach (var bimestreParaAdicionar in bimestresParaAdicionar)
                         {
-                            var bimestreNovo = new RelatorioNotasEConceitosFinaisBimestreDto($"{bimestreParaAdicionar}º BIMESTRE");
+                            var bimestreNovo = new RelatorioNotasEConceitosFinaisBimestreDto(bimestreParaAdicionar != null ? $"{bimestreParaAdicionar}º BIMESTRE" : $"FINAL");
 
                             var componentesParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar && a.Bimestre == bimestreParaAdicionar)
                                                                          .Select(a => a.ComponenteCurricularCodigo)
