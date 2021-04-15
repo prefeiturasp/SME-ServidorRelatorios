@@ -69,7 +69,6 @@ namespace SME.SR.Application
                         return retorno;
 
                     var alunosPromovidosCodigos = await mediator.Send(new ObterAlunosPorTurmaParecerConclusivoQuery(request.CodigoTurma, pareceresConclusivosIds.ToArray()));
-
                     if (!alunosPromovidosCodigos.Any())
                         return retorno;
 

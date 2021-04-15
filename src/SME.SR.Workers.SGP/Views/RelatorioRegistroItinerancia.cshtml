@@ -1,0 +1,379 @@
+﻿@model SME.SR.Infra.RelatorioRegistroItineranciaDto;
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 52;
+    int contadorPagina = 0;
+    bool quebrou = false;
+
+    bool VerificaQuebra(int linhas = 0)
+    {
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+    string MontarCabecalho(string dre, string ue)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        var str =
+            $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'>REGISTRO DE ITINERÂNCIA</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='30%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {dre}</td>
+<td width='70%' class='espaco-esquerda-15 sem-border-bottom'>UE: {ue}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td  width='65%' class='espaco-esquerda-15'>USUÁRIO: {Model.Usuario}</td>
+<td width='17%' class='espaco-esquerda-15'>RF: {Model.RF}</td>
+<td width='18%' class='espaco-esquerda-15'>DATA: {Model.DataSolicitacao}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+
+    string EspacoEmBranco()
+    {
+        <tr>
+            <td></td>
+        </tr>
+        return "";
+    }
+
+    string informacoesQuebra(string estudante, string dre, string ue, bool mostrarEstudante = true)
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");
+        @Html.Raw(MontarCabecalho(dre, ue))
+        @Html.Raw("<table class='tabela-cabecalho'>");
+
+        if (mostrarEstudante)
+        {
+            @Html.Raw(MontarLinhaSimples(estudante))
+        }
+
+        return "";
+    }
+
+    string MontarCabecalhoObjetivos()
+    {
+        <tr>
+            <td class="fundo-cinza">OBJETIVOS DA ITINERÂNCIA</td>
+        </tr>
+        return "";
+    }
+
+    string MontarObjetivos(IEnumerable<SME.SR.Infra.ObjetivosRegistroItineranciaDto> listaObjetivos, string estudante, string dre, string ue)
+    {
+        @Html.Raw(MontarCabecalhoObjetivos())
+
+        contadorQuebrarPagina++;
+        int objetivosIndex = 0;
+
+        @foreach (var objetivo in listaObjetivos)
+        {
+            <tr>
+                <td class="alinhar-esquerda espaco-esquerda-15">@objetivo.NomeObjetivo</td>
+            </tr>
+            contadorQuebrarPagina++;
+
+            var quebra = VerificaQuebra();
+
+            if (quebra)
+            {
+                informacoesQuebra(estudante, dre, ue);
+                contadorQuebrarPagina++;
+
+                if (objetivosIndex < listaObjetivos.Count() - 1)
+                {
+                    MontarCabecalhoObjetivos();
+                    contadorQuebrarPagina++;
+                }
+            }
+
+            objetivosIndex++;
+        }
+
+        return "";
+    }
+
+    string MontarSecoes(string nomeSecao, string valorSecao, bool alinharCentro = false)
+    {
+        var classeAlinhamento = alinharCentro ? "" : "alinhar-esquerda";
+        <tr>
+            <td class="fundo-cinza">@nomeSecao</td>
+        </tr>
+        contadorQuebrarPagina++;
+        <tr>
+            <td class="@classeAlinhamento" style="padding: 3px;">@valorSecao</td>
+        </tr>
+
+        return "";
+    }
+
+    string MontarLinhaSimples(string valorLinha)
+    {
+        <tr>
+            <td colspan="2" class="fundo-cinza">@valorLinha</td>
+        </tr>
+
+        return "";
+    }
+
+    int CalcularLinhas(int valorLinha = 0)
+    {
+        if (valorLinha > 0)
+        {
+            var numeroLinhasDescricao = valorLinha / 200;
+
+            if (numeroLinhasDescricao > 1)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
+            }
+            else
+            {
+                contadorQuebrarPagina++;
+            }
+
+            return numeroLinhasDescricao;
+        }
+        return 2;
+    }
+
+    string QuebrarLinhas(string estudante, string dre, string ue, int numeroQuebras = 2, bool mostrarEstudante = true)
+    {
+        var quebra = VerificaQuebra(numeroQuebras);
+        quebrou = false;
+
+        if (quebra)
+        {
+            informacoesQuebra(estudante, dre, ue, mostrarEstudante);
+            contadorQuebrarPagina = contadorQuebrarPagina + numeroQuebras;
+            quebrou = true;
+        }
+        return "";
+    }
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registro de Itinerância</title>
+    </head>
+    <body class="body-relatorio">
+        <style>
+
+            .tblTopo th, td {
+                padding: 3px 0;
+                text-align: left;
+            }
+
+            .body-relatorio {
+                margin: 0.5cm auto;
+                font-family: Roboto, sans-serif;
+                width: 21cm;
+                min-height: 29.7cm;
+                background: white;
+                color: #42474a;
+            }
+
+            .titulo-sgp {
+                text-align: right;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .titulo-relatorio {
+                text-align: right;
+                font-size: 14.5px;
+                margin-top: 7px;
+            }
+
+            .header-pagina {
+                margin-top: 33px;
+                margin-bottom: 22px;
+            }
+
+                .header-pagina td {
+                    text-align: left;
+                }
+
+            table {
+                display: table;
+                width: 100%;
+                border-color: #42474a;
+                empty-cells: show;
+                border: none;
+                border-collapse: collapse;
+            }
+
+            thead {
+                background-color: #f3f3f3;
+            }
+
+            th {
+                border: 1px solid #42474a;
+                font-weight: normal;
+            }
+
+            td {
+                border: 1px solid #42474a;
+                text-align: center;
+            }
+
+            .tabela-cabecalho tr {
+                font-size: 12px;
+                height: 24px;
+            }
+
+            .mt-25 {
+                margin-top: 25px;
+            }
+
+            .fonte-14 {
+                font-size: 14px !important;
+            }
+
+            .alinhar-esquerda {
+                text-align: left;
+            }
+
+            .espaco-esquerda-15 {
+                padding-left: 15px;
+            }
+
+            .fundo-cinza {
+                background-color: #f3f3f3;
+            }
+
+            .negrito {
+                font-weight: bold;
+            }
+
+            .sem-border-bottom {
+                border-bottom: 0;
+            }
+
+            .sem-border-top {
+                border-bottom: 0;
+            }
+
+            .thLimpo {
+                background-color: #ffffff;
+                border: 0;
+                height: 22px;
+            }
+
+            .img-logo-sgp {
+                height: 64px;
+                float: left;
+            }
+
+            .centralizar {
+                text-align: center;
+            }
+        </style>
+        <div>
+            @{ int registrosIndex = 0; }
+
+            @foreach (var registros in Model.Registros)
+            {
+                @Html.Raw(MontarCabecalho(registros.Dre, registros.Ue))
+
+                <table class="tabela-cabecalho">
+                    @{
+                        var dataVisita = registros.DataVisita;
+                        bool temAlunos = registros?.Alunos?.Count() > 0;
+                        var numeroRegistros = temAlunos ? registros.Alunos.Count() : 1;
+                    }
+
+                    @for (var i = 0; i < numeroRegistros; i++)
+                    {
+                        var estudante = temAlunos ? registros.Alunos.ToList()[i].Estudante : "";
+                        var acompanhamentoSituacao = temAlunos ? registros.Alunos.ToList()[i].AcompanhamentoSituacao : registros.AcompanhamentoSituacao;
+                        var encaminhamentos = temAlunos ? registros.Alunos.ToList()[i].Encaminhamentos : registros.Encaminhamentos;
+                        var dataRetorno = registros.DataRetorno;
+
+                        QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false);
+
+                        if (i > 0 && i < registros?.Alunos?.Count() - 1 && !quebrou)
+                        {
+                            @Html.Raw(EspacoEmBranco());
+                            contadorQuebrarPagina++;
+                        }
+
+                        <tbody>
+                            @if (temAlunos)
+                            {
+                                @Html.Raw(MontarLinhaSimples(estudante))
+                                contadorQuebrarPagina++;
+
+                            }
+
+                            @Html.Raw(MontarLinhaSimples(dataVisita))
+
+                            @{ contadorQuebrarPagina++; }
+
+                            @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, 4))
+
+                            @Html.Raw(MontarObjetivos(registros.Objetivos, estudante, registros.Dre, registros.Ue))
+
+                            @if (temAlunos)
+                            {
+                                var descritivoEstudante = registros.Alunos.ToList()[i].DescritivoEstudante;
+                                int numeroLinhasDE = CalcularLinhas(descritivoEstudante.Length);
+                                @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasDE))
+                                MontarSecoes("DESCRITIVO DO ESTUDANTE", descritivoEstudante);
+                            }
+
+                            @{ int numeroLinhasAS = CalcularLinhas(acompanhamentoSituacao.Length); }
+                            @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasAS))
+                            @Html.Raw(MontarSecoes("ACOMPANHAMENTO DA SITUAÇÃO", acompanhamentoSituacao))
+
+                            @{ int numeroLinhasEncaminhamentos = CalcularLinhas(encaminhamentos.Length); }
+                            @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasEncaminhamentos))
+                            @Html.Raw(MontarSecoes("ENCAMINHAMENTOS", encaminhamentos))
+
+                            @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue))
+                            @Html.Raw(MontarSecoes("DATA PARA RETORNO/VERIFICAÇÃO", dataRetorno, true))
+
+                            @if (i < registros?.Alunos?.Count() - 1)
+                            {
+                                QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false);
+                                contadorQuebrarPagina++;
+                            }
+                        </tbody>
+                    }
+                </table>
+
+                if (registrosIndex < Model.Registros.Count() - 1)
+                {
+                    contadorQuebrarPagina = 0;
+                    @Html.Raw("<div style='page-break-before:always'></div>")
+                }
+
+                registrosIndex++;
+            }
+        </div>
+    </body>
+</html>
+}
