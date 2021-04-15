@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterComponentesCurricularesPorTurmaQueryHandler : IRequestHandler<ObterComponentesCurricularesPorTurmaQuery, IEnumerable<ComponenteCurricularPorTurma>>
+    public class ObterComponentesCurricularesPorTurmasQueryHandler : IRequestHandler<ObterComponentesCurricularesPorTurmasQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
 
-        public ObterComponentesCurricularesPorTurmaQueryHandler(IComponenteCurricularRepository componenteCurricularRepository)
+        public ObterComponentesCurricularesPorTurmasQueryHandler(IComponenteCurricularRepository componenteCurricularRepository)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
         }
 
-        public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesPorTurmaQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesPorTurmasQuery request, CancellationToken cancellationToken)
         {
-            var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurma(request.CodigoTurma);
+            var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
             if (componentesDaTurma != null && componentesDaTurma.Any())
             {
                 var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
@@ -28,6 +28,7 @@ namespace SME.SR.Application
 
                 return componentesDaTurma?.Select(c => new ComponenteCurricularPorTurma
                 {
+                    CodigoTurma = c.CodigoTurma,
                     CodDisciplina = c.Codigo,
                     CodDisciplinaPai = c.CodigoComponentePai(componentesApiEol),
                     BaseNacional = c.EhBaseNacional(componentesApiEol),

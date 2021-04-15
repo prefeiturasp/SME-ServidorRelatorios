@@ -21,6 +21,12 @@ namespace SME.SR.Data
         public string TipoEscola { get; set; }
         public int TurnoTurma { get; set; }
         public bool ComponentePlanejamentoRegencia { get; set; }
+        public long? CodComponentePai { get; set; }
+        public long GrupoMatrizId { get; set; }
+        public bool Compartilhada { get; set; }
+        public bool LancaNota { get; set; }
+        public bool Frequencia { get; set; }
+        public bool BaseNacional { get; set; }
 
         public long? CodigoComponentePai(IEnumerable<ComponenteCurricularApiEol> componentesApiEol) => componentesApiEol?
                                             .FirstOrDefault(w => w.IdComponenteCurricular == Codigo)?.IdComponenteCurricularPai;
@@ -52,14 +58,14 @@ namespace SME.SR.Data
             return componentesApiEol != null && componentesApiEol.Any(x => x.IdComponenteCurricular == Codigo && x.EhBaseNacional);
         }
 
-        public ComponenteCurricularGrupoMatriz ObterGrupoMatriz(IEnumerable<ComponenteCurricularApiEol> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
+        public ComponenteCurricularGrupoMatriz ObterGrupoMatriz(IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
         {
-            var componente = componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == Codigo);
+            return gruposMatriz?.FirstOrDefault(x => GrupoMatrizId == x.Id);
+        }
 
-            if (componente == null)
-                return null;
-
-            return gruposMatriz?.FirstOrDefault(x => componente.IdGrupoMatriz == x.Id);
+        public AreaDoConhecimento ObterAreaDoConhecimento(IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
+        {
+            return areasDoConhecimentos.FirstOrDefault(x => x.CodigoComponenteCurricular == Codigo);
         }
 
         public ComponenteCurricularGrupoMatriz ObterGrupoMatrizSgp(IEnumerable<DisciplinaDto> disciplina, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
