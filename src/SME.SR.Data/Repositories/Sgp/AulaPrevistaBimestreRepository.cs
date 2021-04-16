@@ -37,9 +37,8 @@ namespace SME.SR.Data
   	                 inner join aula_prevista_bimestre apb on apb.aula_prevista_id = ap.id
                   ) pv on pv.tipo_calendario_id = p.tipo_calendario_id
                      and pv.bimestre = p.bimestre
-                     and pv.disciplina_id::bigint = cc.id
+                     and pv.disciplina_id = cc.id::text
                      and pv.turma_id = t.turma_id
-
                    left join (
 	                select a.tipo_calendario_id, a.turma_id, a.disciplina_id, a.data_aula, a.quantidade, a.tipo_aula, a.aula_cj, rf.id as registro_frequencia_id
 	                  from aula a
@@ -50,7 +49,6 @@ namespace SME.SR.Data
                      and ac.disciplina_id::bigint = cc.id
                      and ac.data_aula between p.periodo_inicio and p.periodo_fim
                  where p.tipo_calendario_id = @tipoCalendarioId
-
                 group by t.nome, cc.id, cc.descricao_sgp, cc.descricao, cc.eh_regencia, p.bimestre, p.periodo_inicio, p.periodo_fim, pv.aulas_previstas ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
