@@ -62,8 +62,12 @@ namespace SME.SR.Application
                         return retorno;
 
                     var alunosPromovidosCodigos = await mediator.Send(new ObterAlunosPorTurmaSemParecerConclusivoQuery(request.CodigoTurma));
-
                     if (!alunosPromovidosCodigos.Any())
+                        return retorno;
+
+                    var codigoAlunos = alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray();
+                    var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosSemParecerQuery(codigoAlunos));
+                    if (!turmasDosAlunos.Any())
                         return retorno;
 
                     IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(alunosPromovidosCodigos.Select(a => a.AlunoCodigo).ToArray());
@@ -71,7 +75,19 @@ namespace SME.SR.Application
                     foreach (var item in informacoesDosAlunos)
                     {
                         var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
-                        alunoTurmasNotasFrequenciasDto.Turmas.Add(turma);
+
+                        var turmasDoAluno = turmasDosAlunos
+                            .Where(x => x.AlunoCodigo == item.CodigoAluno)
+                            .Select(x => new Turma()
+                            {
+                                Ano = x.Ano.ToString(),
+                                Codigo = x.TurmaCodigo,
+                                ModalidadeCodigo = x.Modalidade,
+                                EtapaEJA = x.EtapaEJA,
+                                Ciclo = x.Ciclo
+                            })
+                            .ToList();
+                        alunoTurmasNotasFrequenciasDto.Turmas.AddRange(turmasDoAluno);
                         retorno.Add(alunoTurmasNotasFrequenciasDto);
                     }
                 }

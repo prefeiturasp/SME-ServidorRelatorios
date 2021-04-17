@@ -38,7 +38,6 @@ namespace SME.SR.Application
                 if (!turmasDosAlunos.Any())
                     return retorno;
 
-
                 foreach (var item in informacoesDosAlunos)
                 {
                     var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
