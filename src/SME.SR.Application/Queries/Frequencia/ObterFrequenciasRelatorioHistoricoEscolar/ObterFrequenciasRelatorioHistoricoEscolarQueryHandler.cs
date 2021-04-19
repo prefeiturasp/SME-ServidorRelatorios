@@ -20,7 +20,7 @@ namespace SME.SR.Application.Queries.Frequencia.ObterFrequenciasRelatorioHistori
 
         public async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> Handle(ObterFrequenciasRelatorioHistoricoEscolarQuery request, CancellationToken cancellationToken)
         {
-            var frequencias = await frequenciaRepository.ObterFrequenciasPorTurmasAlunos(request.CodigosAluno, request.AnoLetivo, (int)request.Modalidade, request.Semestre);
+            var frequencias = await frequenciaRepository.ObterFrequenciasPorTurmasAlunosParaHistoricoEscolar(request.CodigosAluno, request.AnoLetivo, (int)request.Modalidade, request.Semestre);
             return frequencias.GroupBy(f => f.TurmaId);
         }
     }
