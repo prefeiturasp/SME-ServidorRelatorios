@@ -98,7 +98,7 @@ namespace SME.SR.Application
 
                             var componentesDetalhes = componentesCurriculares.Where(a => componentesParaAdicionar.Contains(a.CodDisciplina))
                                                                              .OrderBy(c => c.Regencia)
-                                                                             .ThenBy(c => c.GrupoMatriz.Nome, StringComparer.OrdinalIgnoreCase)
+                                                                             .ThenBy(c => c.GrupoMatriz.Id)
                                                                              .ThenByDescending(c => c.AreaDoConhecimento != null && !string.IsNullOrEmpty(c.AreaDoConhecimento.Nome))
                                                                              .ThenBy(c => c.AreaDoConhecimento.Nome, StringComparer.OrdinalIgnoreCase)
                                                                              .ThenBy(c => c.Disciplina, StringComparer.OrdinalIgnoreCase);
