@@ -7445,6 +7445,17 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioRegistroItinerancia", model);
         }
+
+
+        [HttpGet("acompanhamento-aprendizagem")]
+        public async Task<IActionResult> AcompanhamentoAprendizagem([FromServices] IMediator mediator)
+        {
+
+            var model = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery());
+
+            return View("RelatorioRegistroItinerancia", model);
+        }
+
     }
 }
 
