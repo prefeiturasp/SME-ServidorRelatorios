@@ -38,12 +38,13 @@ namespace SME.SR.Application
         {
             foreach (var itinerancia in itinerancias)
             {
+                var dataRetorno = itinerancia.DataRetorno.HasValue ? $"{itinerancia.DataRetorno:dd/MM/yyyy}" : "";
                 var itineranciaDto = new RegistrosRegistroItineranciaDto()
                 {
                     Dre = itinerancia.Ue.Dre.Abreviacao,
                     Ue = itinerancia.Ue.NomeRelatorio,
                     DataVisita = $"{itinerancia.DataVisita:dd/MM/yyyy}",
-                    DataRetorno = $"{itinerancia.DataRetorno:dd/MM/yyyy}",
+                    DataRetorno = dataRetorno,
                     Objetivos = ObterObjetivosItinerancia(itinerancia.Id, objetivos),
                     Alunos = ObterAlunosItinerancia(itinerancia.Id, alunosItinerancias, nomesAlunos)
                 };
