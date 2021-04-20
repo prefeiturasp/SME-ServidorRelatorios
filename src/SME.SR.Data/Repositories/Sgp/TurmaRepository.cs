@@ -367,12 +367,12 @@ namespace SME.SR.Data
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
                         inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
                         inner join ue u on t.ue_id  = u.id
-                        where u.id = @ueId and tc.id = @tipoCicloId and t.ano_letivo = @anoLetivo and tca.ano = @ano";
+                        where u.id = @ueId and tc.id = @tipoCicloId and t.ano_letivo = @anoLetivo and tca.ano = @ano and t.tipo_turma = @tipoTurmaRegular";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano });
+            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano, tipoTurmaRegular = TipoTurma.Regular });
         }
         public async Task<IEnumerable<AlunoTurmaRegularRetornoDto>> ObterAlunosTurmasRegularesPorTurmaRecuperacaoCodigoQuery(long turmaCodigo)
         {
