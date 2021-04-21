@@ -169,20 +169,22 @@ namespace SME.SR.Application
                     }
                     else
                     {
+                        var turmaDoComponente = turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma);
+
                         componentes.Add(new ComponenteCurricularHistoricoEscolarTransferenciaDto()
                         {
                             Codigo = componenteCurricular.CodDisciplina.ToString(),
                             Nome = componenteCurricular.Disciplina,
                             Frequencia = componenteCurricular.Frequencia,
                             Nota = componenteCurricular.LancaNota,
-                            FrequenciaPrimeiroBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.CodDisciplina.ToString(), frequencia, 1),
-                            FrequenciaSegundoBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.CodDisciplina.ToString(), frequencia, 2),
-                            FrequenciaTerceiroBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.CodDisciplina.ToString(), frequencia, 3),
-                            FrequenciaQuartoBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.CodDisciplina.ToString(), frequencia, 4),
-                            NotaConceitoPrimeiroBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 1),
-                            NotaConceitoSegundoBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 2),
-                            NotaConceitoTerceiroBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 3),
-                            NotaConceitoQuartoBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 4),
+                            FrequenciaPrimeiroBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 1),
+                            FrequenciaSegundoBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 2),
+                            FrequenciaTerceiroBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 3),
+                            FrequenciaQuartoBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 4),
+                            NotaConceitoPrimeiroBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 1),
+                            NotaConceitoSegundoBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 2),
+                            NotaConceitoTerceiroBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 3),
+                            NotaConceitoQuartoBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 4),
                         });
                     }
                 }
