@@ -8,6 +8,8 @@
 
         public string CodigoComponenteCurricular { get; set; }
 
+        public bool Aprovado { get; set; }
+
         public PeriodoEscolar PeriodoEscolar { get; set; }
 
         public NotaConceitoBimestreComponente NotaConceito { get; set; }

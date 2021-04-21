@@ -46,7 +46,7 @@ namespace SME.SR.Application
                     var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
                     var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
 
-                    var turma = aluno.Turmas.FirstOrDefault();
+                    var turma = aluno.Turmas.FirstOrDefault(x => x.TipoTurma == TipoTurma.Regular);
                     var tiposNotaDto = MapearTiposNota(agrupamentoTurmas.Key, request.TiposNota, turma);
 
                     var transferenciaDto = new TransferenciaDto()
@@ -158,6 +158,7 @@ namespace SME.SR.Application
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
+                var turmaRegular = turmas.FirstOrDefault(x => x.TipoTurma == TipoTurma.Regular);
                 componentes = new List<ComponenteCurricularHistoricoEscolarTransferenciaDto>();
 
                 foreach (var componenteCurricular in componentesCurricularesDaTurma)
@@ -174,14 +175,14 @@ namespace SME.SR.Application
                             Nome = componenteCurricular.Disciplina,
                             Frequencia = componenteCurricular.Frequencia,
                             Nota = componenteCurricular.LancaNota,
-                            FrequenciaPrimeiroBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), frequencia, 1),
-                            FrequenciaSegundoBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), frequencia, 2),
-                            FrequenciaTerceiroBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), frequencia, 3),
-                            FrequenciaQuartoBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), frequencia, 4),
-                            NotaConceitoPrimeiroBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 1),
-                            NotaConceitoSegundoBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 2),
-                            NotaConceitoTerceiroBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 3),
-                            NotaConceitoQuartoBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 4),
+                            FrequenciaPrimeiroBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.CodDisciplina.ToString(), frequencia, 1),
+                            FrequenciaSegundoBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.CodDisciplina.ToString(), frequencia, 2),
+                            FrequenciaTerceiroBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.CodDisciplina.ToString(), frequencia, 3),
+                            FrequenciaQuartoBimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.CodDisciplina.ToString(), frequencia, 4),
+                            NotaConceitoPrimeiroBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 1),
+                            NotaConceitoSegundoBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 2),
+                            NotaConceitoTerceiroBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 3),
+                            NotaConceitoQuartoBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(x => x.Codigo == componenteCurricular.CodigoTurma), turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 4),
                         });
                     }
                 }
@@ -198,17 +199,35 @@ namespace SME.SR.Application
                 return null;
         }
 
-        private string ObterNotaComponentePorTurma(Turma turma, string codigoComponente, bool regencia, bool lancaNota, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias, int bimestre)
+        private string ObterNotaComponentePorTurma(Turma turma, Turma turmaRegular, string codigoComponente, bool regencia, bool lancaNota, IEnumerable<FrequenciaAluno> frequenciaAlunos, 
+            IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias, int bimestre)
         {
-            if (turma != null)
-            {
-                if (lancaNota)
-                    return notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
-                else
-                    return ObterSintese(frequenciaAlunos.Where(f => f.PeriodoEscolarId != null), mediasFrequencias, regencia, !lancaNota);
-            }
-            else
+            if (turma is null)
                 return null;
+
+            if(!lancaNota)
+                return ObterSintese(frequenciaAlunos.Where(f => f.PeriodoEscolarId != null), mediasFrequencias, regencia, !lancaNota);
+
+            if(turmaRegular is null)
+                return notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+
+            if (turma.Codigo == turmaRegular.Codigo)
+                return notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+
+            return 
+                notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turmaRegular.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito
+                ?? notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+        }
+
+        private string ObterNotaComponentePorTurmaRegencia(Turma turma, string codigoComponente, bool regencia, bool lancaNota, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias, int bimestre)
+        {
+            if (turma is null)
+                return null;
+
+            if (!lancaNota)
+                return ObterSintese(frequenciaAlunos.Where(f => f.PeriodoEscolarId != null), mediasFrequencias, regencia, !lancaNota);
+
+            return notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
         }
 
         private IEnumerable<ComponenteCurricularHistoricoEscolarTransferenciaDto> MapearComponentesRegencia(string codigoComponenteRegencia, IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesRegencia, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
@@ -232,10 +251,10 @@ namespace SME.SR.Application
                     FrequenciaSegundoBimestre = frequencia2Bimestre,
                     FrequenciaTerceiroBimestre = frequencia3Bimestre,
                     FrequenciaQuartoBimestre = frequencia4Bimestre,
-                    NotaConceitoPrimeiroBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 1),
-                    NotaConceitoSegundoBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 2),
-                    NotaConceitoTerceiroBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 3),
-                    NotaConceitoQuartoBimestre = ObterNotaComponentePorTurma(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 4),
+                    NotaConceitoPrimeiroBimestre = ObterNotaComponentePorTurmaRegencia(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 1),
+                    NotaConceitoSegundoBimestre = ObterNotaComponentePorTurmaRegencia(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 2),
+                    NotaConceitoTerceiroBimestre = ObterNotaComponentePorTurmaRegencia(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 3),
+                    NotaConceitoQuartoBimestre = ObterNotaComponentePorTurmaRegencia(turmas.FirstOrDefault(), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 4),
                 });
             }
 
