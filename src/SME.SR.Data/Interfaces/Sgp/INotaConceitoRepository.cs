@@ -8,7 +8,5 @@ namespace SME.SR.Data
         Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre);
 
         Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaHistoricoEscolasAsync(string[] codigosAluno, int anoLetivo, int modalidade, int semestre);
-
-        Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosTurma, string[] codigosAluno);
     }
 }
