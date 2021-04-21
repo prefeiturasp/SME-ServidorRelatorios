@@ -50,7 +50,8 @@ namespace SME.SR.Application
                             Ano = turmaDoAluno.Ano.ToString(),
                             Codigo = turmaDoAluno.TurmaCodigo,
                             ModalidadeCodigo = turmaDoAluno.Modalidade,
-                            EtapaEJA = turmaDoAluno.EtapaEJA
+                            EtapaEJA = turmaDoAluno.EtapaEJA,
+                            TipoTurma = turmaDoAluno.TipoTurma
                         });
                     }
 
@@ -92,7 +93,8 @@ namespace SME.SR.Application
                                 Ano = turmaDoAluno.Ano.ToString(),
                                 Codigo = turmaDoAluno.TurmaCodigo,
                                 ModalidadeCodigo = turmaDoAluno.Modalidade,
-                                EtapaEJA = turmaDoAluno.EtapaEJA
+                                EtapaEJA = turmaDoAluno.EtapaEJA,
+                                TipoTurma = turmaDoAluno.TipoTurma
                             });
                         }
 

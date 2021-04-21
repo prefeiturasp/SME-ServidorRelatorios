@@ -17,6 +17,8 @@ namespace SME.SR.Data
         public Dre Dre { get; set; }
         public Ue Ue { get; set; }
         public Modalidade ModalidadeCodigo { get; set; }
+        public TipoTurma TipoTurma { get; set; }
+
         public ModalidadeTipoCalendario ModalidadeTipoCalendario
         {
             get => ModalidadeCodigo == Modalidade.EJA ?
