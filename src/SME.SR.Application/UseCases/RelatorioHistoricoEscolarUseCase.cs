@@ -80,7 +80,6 @@ namespace SME.SR.Application
             var tipoNotas = await ObterTiposNotaRelatorio();
 
             var notas = await ObterNotasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
-            //var notas = await ObterNotasAlunosOld(turmasCodigo.ToArray(), alunosCodigo.ToArray());
             var frequencias = await ObterFrequenciasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
 
             var mediasFrequencia = await ObterMediasFrequencia();
@@ -155,15 +154,6 @@ namespace SME.SR.Application
         private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
         {
             return await mediator.Send(new ObterNotasRelatorioHistoricoEscolarQuery(alunosCodigo, anoLetivo, (int)modalidade, semestre));
-        }
-
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunosOld(string[] turmasCodigo, string[] alunosCodigo)
-        {
-            return await mediator.Send(new ObterNotasRelatorioHistoricoEscolarOldQuery()
-            {
-                CodigosAlunos = alunosCodigo,
-                CodigosTurma = turmasCodigo
-            });
         }
 
         private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
