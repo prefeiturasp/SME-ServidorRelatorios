@@ -9,7 +9,7 @@ namespace SME.SR.Infra
             Alunos = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
         }
         public RelatorioAcompanhamentoAprendizagemCabecalhoDto Cabecalho { get; set; }
-        public List<RelatorioAcompanhamentoAprendizagemAlunoDto> Alunos { get; set; }
+        public List<RelatorioAcompanhamentoAprendizagemAlunoDto> Alunos { get; set; }        
 
     }
 }

@@ -7453,7 +7453,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             var model = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery());
 
-            return View("RelatorioRegistroItinerancia", model);
+            return View("RelatorioAcompanhamentoAprendizagem", model);
         }
 
     }
