@@ -139,7 +139,7 @@ namespace SME.SR.Data
                             inner join turma t on t.turma_id = fa.turma_id
                             where fa.codigo_aluno = ANY(@codigosAluno)
                               and fa.tipo = 1
-                              and t.ano_letivo = @anoLetivo ");
+                              and t.ano_letivo <= @anoLetivo ");
 
             if (modalidade > 0)
             {
