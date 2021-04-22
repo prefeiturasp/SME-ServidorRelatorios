@@ -17,6 +17,7 @@ namespace SME.SR.Data
         public bool LancaNota { get; set; }
         public bool BaseNacional { get; set; }
         public ComponenteCurricularGrupoMatriz GrupoMatriz { get; set; }
+        public AreaDoConhecimento AreaDoConhecimento { get; set; }
         public IEnumerable<ComponenteCurricularPorTurmaRegencia> ComponentesCurricularesRegencia { get; set; }
     }
 }
