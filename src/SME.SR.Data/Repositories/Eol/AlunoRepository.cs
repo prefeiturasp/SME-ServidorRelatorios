@@ -615,7 +615,7 @@ namespace SME.SR.Data
             var parametros = new { CodigosAluno = codigosAlunos };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros, commandTimeout: 60);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros, commandTimeout: 600);
         }
 
         public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
@@ -1291,5 +1291,17 @@ namespace SME.SR.Data
 				return await conexao.QueryAsync<AlunoResponsavelAdesaoAEDto>(query, parametros);
 			}
 		}
-	}
+
+        public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
+        {
+            var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
+                          from v_aluno_cotic vac  
+                          where vac.cd_aluno in @codigos";
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<AlunoNomeDto>(query, new { codigos });
+            }
+        }
+    }
 }

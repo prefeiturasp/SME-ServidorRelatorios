@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponentesRegencia" pageWidth="260" pageHeight="842" columnWidth="260" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" uuid="ed9af5bb-fb4c-444b-bc7d-fce5f7e6c9e5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="ireport.jasperserver.url" value="https://hom-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="usr_amcom"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja_files/ComponentesRegencia.jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja"/>
 	<style name="Table 1_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -117,7 +121,7 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre1"/>
 			<fieldDescription><![CDATA[notaBimestre1]]></fieldDescription>
 		</field>
-		<field name="frequenciaBimestre1" class="java.lang.Integer">
+		<field name="frequenciaBimestre1" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre1"/>
 			<fieldDescription><![CDATA[frequenciaBimestre1]]></fieldDescription>
 		</field>
@@ -125,7 +129,7 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre2"/>
 			<fieldDescription><![CDATA[notaBimestre2]]></fieldDescription>
 		</field>
-		<field name="frequenciaBimestre2" class="java.lang.Integer">
+		<field name="frequenciaBimestre2" class="java.lang.String">
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre2"/>
 			<fieldDescription><![CDATA[frequenciaBimestre2]]></fieldDescription>
 		</field>
@@ -141,11 +145,11 @@
 	<queryString language="JSON">
 		<![CDATA[]]>
 	</queryString>
-	<field name="frequenciaBimestre1" class="java.lang.Integer">
+	<field name="frequenciaBimestre1" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre1"/>
 		<fieldDescription><![CDATA[componenteCurricularRegencia.frequenciaBimestre1]]></fieldDescription>
 	</field>
-	<field name="frequenciaBimestre2" class="java.lang.Integer">
+	<field name="frequenciaBimestre2" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre2"/>
 		<fieldDescription><![CDATA[componenteCurricularRegencia.frequenciaBimestre2]]></fieldDescription>
 	</field>

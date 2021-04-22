@@ -42,7 +42,7 @@ namespace SME.SR.Application
 
                     var turmasHistorico = agrupamentoTurmas.Where(t => request.Transferencias == null || !request.Transferencias.Any(tt => tt.CodigoTurma == t.Codigo && tt.CodigoAluno == aluno.Key));
 
-                    var notasAluno = request.Notas.Where(n => turmasHistorico.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Key && w.PeriodoEscolar == null);
+                    var notasAluno = request.Notas.Where(n => turmasHistorico.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Key && w.PeriodoEscolar == null && w.Aprovado);
                     var frequenciasAluno = request.Frequencias.Where(f => turmasHistorico.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Key);
 
                     var baseNacionalDto = ObterBaseNacionalComum(turmasHistorico, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento);

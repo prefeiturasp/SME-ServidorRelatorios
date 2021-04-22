@@ -32,9 +32,8 @@ namespace SME.SR.Application
 
             //Obter as turmas dos Alunos
             var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigosAlunos, pareceresConclusivosIds.ToArray()));
-
             if (!turmasDosAlunos.Any())
-                throw new NegocioException("Não foi possível obter os dados das turmas dos alunos.");
+                return new List<IGrouping<long, UeConclusaoPorAlunoAno>>();
 
             var ues = await mediator.Send(new ObterUePorCodigosQuery(informacoesDosAlunos.Select(u => u.CodigoEscola).Distinct().ToArray()));
 

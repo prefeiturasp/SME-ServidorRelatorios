@@ -46,6 +46,8 @@ namespace SME.SR.Workers.SGP.Services
         {
             _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Topic);
             _channel.QueueDeclare(RotasRabbit.FilaWorkerRelatorios, false, false, false, null);
+            
+            _channel.QueueBind(RotasRabbit.FilaWorkerRelatorios, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatoriosSolicitados);
 
             //esperando todas as filas a partir de 'sme.sr.workers.sgp'
             _channel.QueueBind(RotasRabbit.FilaWorkerRelatorios, RotasRabbit.ExchangeListenerWorkerRelatorios, "*", null);
