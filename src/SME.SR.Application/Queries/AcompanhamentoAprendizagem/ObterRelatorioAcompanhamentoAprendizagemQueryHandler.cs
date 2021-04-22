@@ -24,6 +24,7 @@ namespace SME.SR.Application
             aluno.Nome = "Nº1 - ALANA FERREIRA DE OLIVEIRA";
             aluno.Responsavel = "JONATHAN DA SILVA PEREIRA (FILIAÇÃO1)";
             aluno.Telefone = "(11) 94596-3666 (Atualizado - 26/06/2018)";
+            aluno.Situacao = "MATRICULADO EM 04/02/2019";
 
             aluno.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto()
             {
@@ -81,7 +82,7 @@ namespace SME.SR.Application
             aluno.RegistrosIndividuais.Add(new RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto()
             {
                 Data = "04/12/2020",
-                 Descricao = "O cuidado em identificar pontos críticos na necessidade de renovação processual ainda não demonstrou convincentemente que vai participar na mudança das condições financeiras e administrativas exigidas."
+                Descricao = "O cuidado em identificar pontos críticos na necessidade de renovação processual ainda não demonstrou convincentemente que vai participar na mudança das condições financeiras e administrativas exigidas."
             });
 
             aluno.RegistrosIndividuais.Add(new RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto()
@@ -103,7 +104,15 @@ namespace SME.SR.Application
 
         private RelatorioAcompanhamentoAprendizagemCabecalhoDto GerarCabecalho()
         {
-            return new RelatorioAcompanhamentoAprendizagemCabecalhoDto() { Dre = "BUTANTA", Ue = "EMEI ANTONIO BENTO", Turma = "5B", Professores = "FRANCISCA DA SILTA MATA, JESSICA DE OLIVEIRA" };
+            return new RelatorioAcompanhamentoAprendizagemCabecalhoDto()
+            {
+                Dre = "BUTANTA",
+                Ue = "EMEI ANTONIO BENTO",
+                Turma = "5B",
+                Professores = "FRANCISCA DA SILTA MATA, JESSICA DE OLIVEIRA",
+                Semestre = "1º SEMESTRE 2021"
+            };
+
         }
     }
 }
