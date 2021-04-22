@@ -490,7 +490,7 @@ namespace SME.SR.Data
 						matr.cd_escola CodigoEscola,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
 						mun.nm_municipio CidadeNatal,
-						aluno.sg_uf_registro_aluno_estado EstadoNatal,
+						aluno.sg_uf_nascimento_aluno EstadoNatal,
 						CASE
 							WHEN aluno.cd_nacionalidade_aluno = 'B' THEN 'Brasileira'
 							ELSE 'Estrangeira'
@@ -539,7 +539,7 @@ namespace SME.SR.Data
 						matr.cd_escola CodigoEscola,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
 						mun.nm_municipio CidadeNatal,
-						aluno.sg_uf_registro_aluno_estado EstadoNatal,
+						aluno.sg_uf_nascimento_aluno EstadoNatal,
 						CASE
 							WHEN aluno.cd_nacionalidade_aluno = 'B' THEN 'Brasileira'
 							ELSE 'Estrangeira'

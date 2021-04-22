@@ -1,1 +1,429 @@
-{"relatorioHistoricoEscolar":[{"nomeDre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE","cabecalho":{"nomeUe":"EMEF - MAXIMO DE MOURA SANTOS, PROF.","endereco":"Rua JULIA LOPES DE ALMEIDA, 275   , VILA PAULICEIA, 2301000 SÃO PAULO - SP","atoCriacao":null,"atoAutorizacao":null,"leiFundamental":"Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06","leiMedio":"Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"},"informacoesAluno":{"nome":"ANA CAROLINA SENA MATOS","rga":"5436380","cidadeNatal":"SAO PAULO","estadoNatal":null,"nacionalidade":"Brasileira","nascimento":"14/10/2003","rg":null,"expedicao":"01/01/0001","orgaoExpeditor":null,"estado":"","Codigo":"5436380"},"ciclos":null,"historicoEscolar":{"baseNacionalComum":{"areasDeConhecimento":[{"nome":"Linguagens","componentesCurriculares":[{"nome":"LINGUA PORTUGUESA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"50","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"ARTE","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Matemática","componentesCurriculares":[{"nome":"MATEMATICA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"83,33","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Ciências da Natureza","componentesCurriculares":[{"nome":"CIENCIAS","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Ciências Humanas","componentesCurriculares":[{"nome":"HISTORIA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"GEOGRAFIA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]}]},"gruposComponentesCurriculares":[{"nome":"Diversificada","areasDeConhecimento":[{"nome":"Língua Estrangeira Moderna","componentesCurriculares":[{"nome":"INGLES","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]}]}],"ensinoReligioso":null,"enriquecimentoCurricular":[{"nome":"INFORMATICA - OIE","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"F","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"LEITURA - OSL","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"F","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}],"projetosAtividadesComplementares":null,"tipoNota":{"primeiraEtapaCiclo1":"C","segundaEtapaCiclo1":"C","primeiraEtapaCiclo2":"C","segundaEtapaCiclo2":"C","primeiraEtapaCiclo3":"N","segundaEtapaCiclo3":"N","primeiraEtapaCiclo4":"N","segundaEtapaCiclo4":"N"},"pareceresConclusivos":{"primeiraEtapaCiclo1":null,"segundaEtapaCiclo1":null,"primeiraEtapaCiclo2":null,"segundaEtapaCiclo2":null,"primeiraEtapaCiclo3":"Promovido","segundaEtapaCiclo3":null,"primeiraEtapaCiclo4":null,"segundaEtapaCiclo4":null}},"legenda":{"texto":"P = Plenamente Satisfatório, S = Satisfatório, NS = Não Satisfatório"},"Modalidade":3,"responsaveisUe":{"nomeSecretario":"MONICA MARIA BARBOSA DE SOUSA","documentoSecretario":"39541463-5/OUTROS EMISSORES","nomeDiretor":"CLEODEONIRA ALONSO DE CARVALHO MORAES","documentoDiretor":"16294606-5/SSP"},"dadosData":{"municipio":"São Paulo","dia":"28","mes":"novembro","ano":"2020"},"estudosRealizados":[{"ano":"EJA - Alfabetização - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Alfabetização - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Básica - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Básica - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Complementar - I","ueNome":"EMEF - MAXIMO DE MOURA SANTOS, PROF. (DRE - JT)","ueMunicipio":"São Paulo","ueUf":"SP"},{"ano":"EJA - Complementar - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Final - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Final - II","ueNome":null,"ueMunicipio":null,"ueUf":null}],"historicoEscolarTransferencia":null},{"nomeDre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE","cabecalho":{"nomeUe":"EMEF - MAXIMO DE MOURA SANTOS, PROF.","endereco":"Rua JULIA LOPES DE ALMEIDA, 275   , VILA PAULICEIA, 2301000 SÃO PAULO - SP","atoCriacao":null,"atoAutorizacao":null,"leiFundamental":"Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06","leiMedio":"Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"},"informacoesAluno":{"nome":"ANA PAULA NOGUEIRA DA SILVA","rga":"7554312","cidadeNatal":"FORTALEZA","estadoNatal":null,"nacionalidade":"Brasileira","nascimento":"09/01/1976","rg":"000000053003788-9   ","expedicao":"09/10/2008","orgaoExpeditor":"10","estado":"","Codigo":"7554312"},"ciclos":null,"historicoEscolar":{"baseNacionalComum":{"areasDeConhecimento":[{"nome":"Linguagens","componentesCurriculares":[{"nome":"LINGUA PORTUGUESA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"50","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"ARTE","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Matemática","componentesCurriculares":[{"nome":"MATEMATICA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"83,33","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Ciências da Natureza","componentesCurriculares":[{"nome":"CIENCIAS","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Ciências Humanas","componentesCurriculares":[{"nome":"HISTORIA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"GEOGRAFIA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]}]},"gruposComponentesCurriculares":[{"nome":"Diversificada","areasDeConhecimento":[{"nome":"Língua Estrangeira Moderna","componentesCurriculares":[{"nome":"INGLES","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]}]}],"ensinoReligioso":null,"enriquecimentoCurricular":[{"nome":"INFORMATICA - OIE","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"F","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"LEITURA - OSL","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"F","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}],"projetosAtividadesComplementares":null,"tipoNota":{"primeiraEtapaCiclo1":"C","segundaEtapaCiclo1":"C","primeiraEtapaCiclo2":"C","segundaEtapaCiclo2":"C","primeiraEtapaCiclo3":"N","segundaEtapaCiclo3":"N","primeiraEtapaCiclo4":"N","segundaEtapaCiclo4":"N"},"pareceresConclusivos":{"primeiraEtapaCiclo1":null,"segundaEtapaCiclo1":null,"primeiraEtapaCiclo2":null,"segundaEtapaCiclo2":null,"primeiraEtapaCiclo3":"Promovido","segundaEtapaCiclo3":null,"primeiraEtapaCiclo4":null,"segundaEtapaCiclo4":null}},"legenda":{"texto":"P = Plenamente Satisfatório, S = Satisfatório, NS = Não Satisfatório"},"Modalidade":3,"responsaveisUe":{"nomeSecretario":"MONICA MARIA BARBOSA DE SOUSA","documentoSecretario":"39541463-5/OUTROS EMISSORES","nomeDiretor":"CLEODEONIRA ALONSO DE CARVALHO MORAES","documentoDiretor":"16294606-5/SSP"},"dadosData":{"municipio":"São Paulo","dia":"28","mes":"novembro","ano":"2020"},"estudosRealizados":[{"ano":"EJA - Alfabetização - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Alfabetização - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Básica - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Básica - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Complementar - I","ueNome":"EMEF - MAXIMO DE MOURA SANTOS, PROF. (DRE - JT)","ueMunicipio":"São Paulo","ueUf":"SP"},{"ano":"EJA - Complementar - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Final - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Final - II","ueNome":null,"ueMunicipio":null,"ueUf":null}],"historicoEscolarTransferencia":null},{"nomeDre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE","cabecalho":{"nomeUe":"EMEF - MAXIMO DE MOURA SANTOS, PROF.","endereco":"Rua JULIA LOPES DE ALMEIDA, 275   , VILA PAULICEIA, 2301000 SÃO PAULO - SP","atoCriacao":null,"atoAutorizacao":null,"leiFundamental":"Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06","leiMedio":"Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"},"informacoesAluno":{"nome":"ANA PAULA OLINDA","rga":"7585536","cidadeNatal":"SAO PAULO","estadoNatal":"SP","nacionalidade":"Brasileira","nascimento":"02/02/1975","rg":"000000002473308-9   ","expedicao":"02/03/2010","orgaoExpeditor":"10","estado":"","Codigo":"7585536"},"ciclos":null,"historicoEscolar":{"baseNacionalComum":{"areasDeConhecimento":[{"nome":"Linguagens","componentesCurriculares":[{"nome":"LINGUA PORTUGUESA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"5.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"ARTE","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"5.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Matemática","componentesCurriculares":[{"nome":"MATEMATICA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"5.0","frequenciaPrimeiraEtapaCiclo3":"83,33","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Ciências da Natureza","componentesCurriculares":[{"nome":"CIENCIAS","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"5.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Ciências Humanas","componentesCurriculares":[{"nome":"HISTORIA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"5.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"GEOGRAFIA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"5.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]}]},"gruposComponentesCurriculares":[{"nome":"Diversificada","areasDeConhecimento":[{"nome":"Língua Estrangeira Moderna","componentesCurriculares":[{"nome":"INGLES","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"5.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]}]}],"ensinoReligioso":null,"enriquecimentoCurricular":[{"nome":"INFORMATICA - OIE","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"F","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"LEITURA - OSL","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"F","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}],"projetosAtividadesComplementares":null,"tipoNota":{"primeiraEtapaCiclo1":"C","segundaEtapaCiclo1":"C","primeiraEtapaCiclo2":"C","segundaEtapaCiclo2":"C","primeiraEtapaCiclo3":"N","segundaEtapaCiclo3":"N","primeiraEtapaCiclo4":"N","segundaEtapaCiclo4":"N"},"pareceresConclusivos":{"primeiraEtapaCiclo1":null,"segundaEtapaCiclo1":null,"primeiraEtapaCiclo2":null,"segundaEtapaCiclo2":null,"primeiraEtapaCiclo3":"Promovido","segundaEtapaCiclo3":null,"primeiraEtapaCiclo4":null,"segundaEtapaCiclo4":null}},"legenda":{"texto":"P = Plenamente Satisfatório, S = Satisfatório, NS = Não Satisfatório"},"Modalidade":3,"responsaveisUe":{"nomeSecretario":"MONICA MARIA BARBOSA DE SOUSA","documentoSecretario":"39541463-5/OUTROS EMISSORES","nomeDiretor":"CLEODEONIRA ALONSO DE CARVALHO MORAES","documentoDiretor":"16294606-5/SSP"},"dadosData":{"municipio":"São Paulo","dia":"28","mes":"novembro","ano":"2020"},"estudosRealizados":[{"ano":"EJA - Alfabetização - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Alfabetização - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Básica - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Básica - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Complementar - I","ueNome":"EMEF - MAXIMO DE MOURA SANTOS, PROF. (DRE - JT)","ueMunicipio":"São Paulo","ueUf":"SP"},{"ano":"EJA - Complementar - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Final - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Final - II","ueNome":null,"ueMunicipio":null,"ueUf":null}],"historicoEscolarTransferencia":null},{"nomeDre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE","cabecalho":{"nomeUe":"EMEF - MAXIMO DE MOURA SANTOS, PROF.","endereco":"Rua JULIA LOPES DE ALMEIDA, 275   , VILA PAULICEIA, 2301000 SÃO PAULO - SP","atoCriacao":null,"atoAutorizacao":null,"leiFundamental":"Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06","leiMedio":"Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"},"informacoesAluno":{"nome":"CRISTINA APARECIDA ALVES DE SOUZA","rga":"3192723","cidadeNatal":"JANUARIA","estadoNatal":null,"nacionalidade":"Brasileira","nascimento":"05/05/1985","rg":"000000044876539-1   ","expedicao":"15/01/2004","orgaoExpeditor":"10","estado":"","Codigo":"3192723"},"ciclos":null,"historicoEscolar":{"baseNacionalComum":{"areasDeConhecimento":[{"nome":"Linguagens","componentesCurriculares":[{"nome":"LINGUA PORTUGUESA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"ARTE","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Matemática","componentesCurriculares":[{"nome":"MATEMATICA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Ciências da Natureza","componentesCurriculares":[{"nome":"CIENCIAS","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]},{"nome":"Ciências Humanas","componentesCurriculares":[{"nome":"HISTORIA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"GEOGRAFIA","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]}]},"gruposComponentesCurriculares":[{"nome":"Diversificada","areasDeConhecimento":[{"nome":"Língua Estrangeira Moderna","componentesCurriculares":[{"nome":"INGLES","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"8.0","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}]}]}],"ensinoReligioso":null,"enriquecimentoCurricular":[{"nome":"INFORMATICA - OIE","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"F","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null},{"nome":"LEITURA - OSL","notaConceitoPrimeiraEtapaCiclo1":null,"frequenciaPrimeiraEtapaCiclo1":null,"notaConceitoSegundaEtapaCiclo1":null,"frequenciaSegundaEtapaCiclo1":null,"notaConceitoPrimeiraEtapaCiclo2":null,"frequenciaPrimeiraEtapaCiclo2":null,"notaConceitoSegundaEtapaCiclo2":null,"frequenciaSegundaEtapaCiclo2":null,"notaConceitoPrimeiraEtapaCiclo3":"F","frequenciaPrimeiraEtapaCiclo3":"100","notaConceitoSegundaEtapaCiclo3":null,"frequenciaSegundaEtapaCiclo3":null,"notaConceitoPrimeiraEtapaCiclo4":null,"frequenciaPrimeiraEtapaCiclo4":null,"notaConceitoSegundaEtapaCiclo4":null,"frequenciaSegundaEtapaCiclo4":null}],"projetosAtividadesComplementares":null,"tipoNota":{"primeiraEtapaCiclo1":"C","segundaEtapaCiclo1":"C","primeiraEtapaCiclo2":"C","segundaEtapaCiclo2":"C","primeiraEtapaCiclo3":"N","segundaEtapaCiclo3":"N","primeiraEtapaCiclo4":"N","segundaEtapaCiclo4":"N"},"pareceresConclusivos":{"primeiraEtapaCiclo1":null,"segundaEtapaCiclo1":null,"primeiraEtapaCiclo2":null,"segundaEtapaCiclo2":null,"primeiraEtapaCiclo3":"Promovido","segundaEtapaCiclo3":null,"primeiraEtapaCiclo4":null,"segundaEtapaCiclo4":null}},"legenda":{"texto":"P = Plenamente Satisfatório, S = Satisfatório, NS = Não Satisfatório"},"Modalidade":3,"responsaveisUe":{"nomeSecretario":"MONICA MARIA BARBOSA DE SOUSA","documentoSecretario":"39541463-5/OUTROS EMISSORES","nomeDiretor":"CLEODEONIRA ALONSO DE CARVALHO MORAES","documentoDiretor":"16294606-5/SSP"},"dadosData":{"municipio":"São Paulo","dia":"28","mes":"novembro","ano":"2020"},"estudosRealizados":[{"ano":"EJA - Alfabetização - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Alfabetização - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Básica - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Básica - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Complementar - I","ueNome":"EMEF - MAXIMO DE MOURA SANTOS, PROF. (DRE - JT)","ueMunicipio":"São Paulo","ueUf":"SP"},{"ano":"EJA - Complementar - II","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Final - I","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"EJA - Final - II","ueNome":null,"ueMunicipio":null,"ueUf":null}],"historicoEscolarTransferencia":null}]}
+{
+	"relatorioHistoricoEscolar": [
+		{
+			"nomeDre": "DIRETORIA REGIONAL DE EDUCACAO GUAIANASES",
+			"cabecalho": {
+				"nomeUe": "019437 - EMEF - DIAS GOMES",
+				"endereco": "RUA ALESSIO PRATI 42, 42    , VILA IOLANDA, 8451550 SÃO PAULO - SP",
+				"atoCriacao": "38.344 - 23/09/1999",
+				"atoAutorizacao": "02 - 01/02/2001",
+				"leiFundamental": "Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06",
+				"leiMedio": "Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"
+			},
+			"informacoesAluno": {
+				"nome": "AVANILDE DA SILVA PIRES",
+				"rga": "7043515",
+				"cidadeNatal": "BRUMADO",
+				"estadoNatal": "SP",
+				"nacionalidade": "Brasileira",
+				"nascimento": "16/02/1965",
+				"rg": "000000030249492-3   ",
+				"expedicao": "20/10/2015",
+				"orgaoExpeditor": "10",
+				"estado": "",
+				"Codigo": "7043515"
+			},
+			"ciclos": null,
+			"historicoEscolar": null,
+			"legenda": {
+				"texto": "P = Plenamente Satisfatório, S = Satisfatório, NS = Não Satisfatório"
+			},
+			"Modalidade": 3,
+			"responsaveisUe": {
+				"nomeSecretario": "MARIA JOSE DA SILVA",
+				"documentoSecretario": "14591251-6/SSP",
+				"nomeDiretor": "MARTA FERREIRA MARQUES",
+				"documentoDiretor": "17782884-5/SSP"
+			},
+			"dadosData": {
+				"municipio": "São Paulo",
+				"dia": "22",
+				"mes": "abril",
+				"ano": "2021"
+			},
+			"estudosRealizados": null,
+			"historicoEscolarTransferencia": {
+				"data": "22/04/2021",
+				"descricao": "NOTAS E Nº DE FALTAS DA ETAPA EJA - FINAL 2",
+				"rodape": "O (a) aluno (a) tem direito à matrícula na etapa EJA - FINAL 2",
+				"tipoNota": "N",
+				"baseNacionalComum": {
+					"areasDeConhecimento": [
+						{
+							"nome": "Ciências da Natureza e suas tecnologias",
+							"componentesCurriculares": [
+								{
+									"nome": "Ciências",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": "3.0",
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								}
+							]
+						},
+						{
+							"nome": "Linguagens e suas tecnologias",
+							"componentesCurriculares": [
+								{
+									"nome": "Língua Portuguesa",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": null,
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								},
+								{
+									"nome": "Arte",
+									"notaConceitoPrimeiroBimestre": "9.0",
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": "2.0",
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								}
+							]
+						},
+						{
+							"nome": "Matemática e suas tecnologias",
+							"componentesCurriculares": [
+								{
+									"nome": "Matemática",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": null,
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								}
+							]
+						},
+						{
+							"nome": "Ciências Humanas e Sociais Aplicadas",
+							"componentesCurriculares": [
+								{
+									"nome": "História",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": null,
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								},
+								{
+									"nome": "Geografia",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": null,
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								}
+							]
+						}
+					]
+				},
+				"gruposComponentesCurriculares": [
+					{
+						"nome": "Diversificada",
+						"areasDeConhecimento": [
+							{
+								"nome": "Língua Estrangeira Moderna",
+								"componentesCurriculares": [
+									{
+										"nome": "Inglês",
+										"notaConceitoPrimeiroBimestre": null,
+										"frequenciaPrimeiroBimestre": "0",
+										"notaConceitoSegundoBimestre": null,
+										"frequenciaSegundoBimestre": "0",
+										"notaConceitoTerceiroBimestre": null,
+										"frequenciaTerceiroBimestre": "0",
+										"notaConceitoQuartoBimestre": null,
+										"frequenciaQuartoBimestre": "0"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ensinoReligioso": null,
+				"enriquecimentoCurricular": [
+					{
+						"nome": "Informática - OIE",
+						"notaConceitoPrimeiroBimestre": "F",
+						"frequenciaPrimeiroBimestre": "0",
+						"notaConceitoSegundoBimestre": "F",
+						"frequenciaSegundoBimestre": "0",
+						"notaConceitoTerceiroBimestre": "F",
+						"frequenciaTerceiroBimestre": "0",
+						"notaConceitoQuartoBimestre": "F",
+						"frequenciaQuartoBimestre": "0"
+					},
+					{
+						"nome": "Leitura - OSL",
+						"notaConceitoPrimeiroBimestre": "F",
+						"frequenciaPrimeiroBimestre": "0",
+						"notaConceitoSegundoBimestre": "F",
+						"frequenciaSegundoBimestre": "0",
+						"notaConceitoTerceiroBimestre": "F",
+						"frequenciaTerceiroBimestre": "0",
+						"notaConceitoQuartoBimestre": "F",
+						"frequenciaQuartoBimestre": "0"
+					}
+				],
+				"projetosAtividadesComplementares": null
+			}
+		},
+		{
+			"nomeDre": "DIRETORIA REGIONAL DE EDUCACAO GUAIANASES",
+			"cabecalho": {
+				"nomeUe": "019437 - EMEF - DIAS GOMES",
+				"endereco": "RUA ALESSIO PRATI 42, 42    , VILA IOLANDA, 8451550 SÃO PAULO - SP",
+				"atoCriacao": "38.344 - 23/09/1999",
+				"atoAutorizacao": "02 - 01/02/2001",
+				"leiFundamental": "Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06",
+				"leiMedio": "Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"
+			},
+			"informacoesAluno": {
+				"nome": "AVANILDE DA SILVA PIRES",
+				"rga": "7043515",
+				"cidadeNatal": "BRUMADO",
+				"estadoNatal": "SP",
+				"nacionalidade": "Brasileira",
+				"nascimento": "16/02/1965",
+				"rg": "000000030249492-3   ",
+				"expedicao": "20/10/2015",
+				"orgaoExpeditor": "10",
+				"estado": "",
+				"Codigo": "7043515"
+			},
+			"ciclos": null,
+			"historicoEscolar": null,
+			"legenda": {
+				"texto": "P = Plenamente Satisfatório, S = Satisfatório, NS = Não Satisfatório"
+			},
+			"Modalidade": 3,
+			"responsaveisUe": {
+				"nomeSecretario": "MARIA JOSE DA SILVA",
+				"documentoSecretario": "14591251-6/SSP",
+				"nomeDiretor": "MARTA FERREIRA MARQUES",
+				"documentoDiretor": "17782884-5/SSP"
+			},
+			"dadosData": {
+				"municipio": "São Paulo",
+				"dia": "22",
+				"mes": "abril",
+				"ano": "2021"
+			},
+			"estudosRealizados": [
+				{
+					"ano": "EJA - Alfabetização - I",
+					"ueNome": null,
+					"ueMunicipio": null,
+					"ueUf": null
+				},
+				{
+					"ano": "EJA - Alfabetização - II",
+					"ueNome": null,
+					"ueMunicipio": null,
+					"ueUf": null
+				},
+				{
+					"ano": "EJA - Básica - I",
+					"ueNome": null,
+					"ueMunicipio": null,
+					"ueUf": null
+				},
+				{
+					"ano": "EJA - Básica - II",
+					"ueNome": null,
+					"ueMunicipio": null,
+					"ueUf": null
+				},
+				{
+					"ano": "EJA - Complementar - I",
+					"ueNome": "EMEF - MAXIMO DE MOURA SANTOS, PROF. (DRE - JT)",
+					"ueMunicipio": "São Paulo",
+					"ueUf": "SP"
+				},
+				{
+					"ano": "EJA - Complementar - II",
+					"ueNome": null,
+					"ueMunicipio": null,
+					"ueUf": null
+				},
+				{
+					"ano": "EJA - Final - I",
+					"ueNome": null,
+					"ueMunicipio": null,
+					"ueUf": null
+				},
+				{
+					"ano": "EJA - Final - II",
+					"ueNome": null,
+					"ueMunicipio": null,
+					"ueUf": null
+				}
+			],
+			"historicoEscolarTransferencia": {
+				"data": "22/04/2021",
+				"descricao": "NOTAS E Nº DE FALTAS DA ETAPA EJA - FINAL 2",
+				"rodape": "O (a) aluno (a) tem direito à matrícula na etapa EJA - FINAL 2",
+				"tipoNota": "N",
+				"baseNacionalComum": {
+					"areasDeConhecimento": [
+						{
+							"nome": "Ciências da Natureza e suas tecnologias",
+							"componentesCurriculares": [
+								{
+									"nome": "Ciências",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": "3.0",
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								}
+							]
+						},
+						{
+							"nome": "Linguagens e suas tecnologias",
+							"componentesCurriculares": [
+								{
+									"nome": "Língua Portuguesa",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": null,
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								},
+								{
+									"nome": "Arte",
+									"notaConceitoPrimeiroBimestre": "9.0",
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": "2.0",
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								}
+							]
+						},
+						{
+							"nome": "Matemática e suas tecnologias",
+							"componentesCurriculares": [
+								{
+									"nome": "Matemática",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": null,
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								}
+							]
+						},
+						{
+							"nome": "Ciências Humanas e Sociais Aplicadas",
+							"componentesCurriculares": [
+								{
+									"nome": "História",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": null,
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								},
+								{
+									"nome": "Geografia",
+									"notaConceitoPrimeiroBimestre": null,
+									"frequenciaPrimeiroBimestre": "0",
+									"notaConceitoSegundoBimestre": null,
+									"frequenciaSegundoBimestre": "0",
+									"notaConceitoTerceiroBimestre": null,
+									"frequenciaTerceiroBimestre": "0",
+									"notaConceitoQuartoBimestre": null,
+									"frequenciaQuartoBimestre": "0"
+								}
+							]
+						}
+					]
+				},
+				"gruposComponentesCurriculares": [
+					{
+						"nome": "Diversificada",
+						"areasDeConhecimento": [
+							{
+								"nome": "Língua Estrangeira Moderna",
+								"componentesCurriculares": [
+									{
+										"nome": "Inglês",
+										"notaConceitoPrimeiroBimestre": null,
+										"frequenciaPrimeiroBimestre": "0",
+										"notaConceitoSegundoBimestre": null,
+										"frequenciaSegundoBimestre": "0",
+										"notaConceitoTerceiroBimestre": null,
+										"frequenciaTerceiroBimestre": "0",
+										"notaConceitoQuartoBimestre": null,
+										"frequenciaQuartoBimestre": "0"
+									}
+								]
+							}
+						]
+					}
+				],
+				"ensinoReligioso": null,
+				"enriquecimentoCurricular": [
+					{
+						"nome": "Informática - OIE",
+						"notaConceitoPrimeiroBimestre": "F",
+						"frequenciaPrimeiroBimestre": "0",
+						"notaConceitoSegundoBimestre": "F",
+						"frequenciaSegundoBimestre": "0",
+						"notaConceitoTerceiroBimestre": "F",
+						"frequenciaTerceiroBimestre": "0",
+						"notaConceitoQuartoBimestre": "F",
+						"frequenciaQuartoBimestre": "0"
+					},
+					{
+						"nome": "Leitura - OSL",
+						"notaConceitoPrimeiroBimestre": "F",
+						"frequenciaPrimeiroBimestre": "0",
+						"notaConceitoSegundoBimestre": "F",
+						"frequenciaSegundoBimestre": "0",
+						"notaConceitoTerceiroBimestre": "F",
+						"frequenciaTerceiroBimestre": "0",
+						"notaConceitoQuartoBimestre": "F",
+						"frequenciaQuartoBimestre": "0"
+					}
+				],
+				"projetosAtividadesComplementares": null
+			}
+		}
+	]
+}
