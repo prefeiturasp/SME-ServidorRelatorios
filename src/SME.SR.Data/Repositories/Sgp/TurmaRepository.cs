@@ -112,7 +112,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<Turma> ObterPorCodigo(string codigoTurma)
+        public async Task<Turma> ObterComDreUePorCodigo(string codigoTurma)
         {
             var query = @"select t.turma_id Codigo, t.nome, 
 			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA,
@@ -963,13 +963,27 @@ namespace SME.SR.Data
         {
             var query = @"select t.turma_id Codigo, t.nome
 			                    , t.modalidade_codigo  ModalidadeCodigo, t.semestre
-                                , t.ano, t.ano_letivo AnoLetivo,
+                                , t.ano, t.ano_letivo AnoLetivo
 			                from turma t
 			                where t.id = @id";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryFirstOrDefaultAsync<Turma>(query, new { id });
+            }
+        }
+
+        public async Task<Turma> ObterPorCodigo(string turmaCodigo)
+        {
+            var query = @"select t.turma_id Codigo, t.nome
+			                    , t.modalidade_codigo  ModalidadeCodigo, t.semestre
+                                , t.ano, t.ano_letivo AnoLetivo
+			                from turma t
+			                where t.turma_id = @turmaCodigo";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<Turma>(query, new { turmaCodigo });
             }
         }
     }
