@@ -67,7 +67,7 @@ namespace SME.SR.Application
                         Legenda = request.Legenda,
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
-                        EstudosRealizados = ObterHistoricoUes(uesHistorico)?.ToList(),
+                        EstudosRealizados = ObterHistoricoUes(uesHistorico),
                         DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
                     };
 
@@ -79,21 +79,19 @@ namespace SME.SR.Application
             return await Task.FromResult(listaRetorno);
         }
 
-        private IEnumerable<UeConclusaoDto> ObterHistoricoUes(List<UeConclusaoPorAlunoAno> uesHistorico)
+        private List<UeConclusaoDto> ObterHistoricoUes(List<UeConclusaoPorAlunoAno> uesHistorico)
         {
-            if (uesHistorico != null && uesHistorico.Any())
-            {
-                foreach (var ue in uesHistorico)
+            if (!uesHistorico?.Any() ?? true) return null;
+
+            return uesHistorico
+                .Select(ue => new UeConclusaoDto()
                 {
-                    yield return new UeConclusaoDto()
-                    {
-                        Ano = ue.TurmaAno,
-                        UeNome = ue.UeNome,
-                        UeMunicipio = ue.UeMunicipio,
-                        UeUf = ue.UeUF
-                    };
-                }
-            }
+                    Ano = ue.TurmaAno,
+                    UeNome = ue.UeNome,
+                    UeMunicipio = ue.UeMunicipio,
+                    UeUf = ue.UeUF
+                })
+                .ToList();
         }
 
         private HistoricoEscolarEJANotasFrequenciaDto ObterDadosHistorico(List<GruposComponentesCurricularesEJADto> diversificadosDto, BaseNacionalComumEJADto baseNacionalDto, List<ComponenteCurricularHistoricoEscolarEJADto> enriquecimentoDto, List<ComponenteCurricularHistoricoEscolarEJADto> projetosDto, TiposNotaEJADto tiposNotaDto, ParecerConclusivoEJADto pareceresDto)
