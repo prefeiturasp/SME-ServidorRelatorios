@@ -7451,7 +7451,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public async Task<IActionResult> AcompanhamentoAprendizagem([FromServices] IMediator mediator)
         {
 
-            var model = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery());
+            var model = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery("", 0));
 
             return View("RelatorioAcompanhamentoAprendizagem", model);
         }
