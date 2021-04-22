@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
@@ -26,7 +27,7 @@ namespace SME.SR.Application
 
             foreach (var aluno in alunosTurmas)
             {
-                var alunoTurmasPorModalidade = aluno.SelectMany(a => a.Turmas).GroupBy(t => t.ModalidadeCodigo);
+                var alunoTurmasPorModalidade = aluno.SelectMany(a => a.Turmas).Where(t => string.IsNullOrEmpty(t.RegularCodigo)).GroupBy(t => t.ModalidadeCodigo);
 
                 foreach (var agrupamentoTurmas in alunoTurmasPorModalidade)
                 {
@@ -35,7 +36,7 @@ namespace SME.SR.Application
 
                     //Obter grupo matriz
                     var baseNacionalComum = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 1)?.Select(b => b);
-                    var diversificados = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 2)?.Select(d => d);
+                    var diversificados = componentesPorGrupoMatriz.Where(cpm => cpm.Key.Id == 2 || cpm.Key.Id > 4)?.SelectMany(d => d);
                     var enriquecimentos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 3)?.Select(e => e);
                     var projetos = componentesPorGrupoMatriz.FirstOrDefault(cpm => cpm.Key.Id == 4)?.Select(p => p);
                     //
@@ -69,7 +70,7 @@ namespace SME.SR.Application
                         Legenda = request.Legenda,
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
-                        EstudosRealizados = estudosRealizados.Count() > 0? estudosRealizados : null,
+                        EstudosRealizados = estudosRealizados.Count() > 0 ? estudosRealizados : null,
                         DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
                     };
 
@@ -198,20 +199,24 @@ namespace SME.SR.Application
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
-                var componentesPorGrupoMatriz = componentesCurricularesDaTurma.GroupBy(cc => cc.GrupoMatriz);
-                var areasConhecimento = MapearAreasDoConhecimento(componentesCurricularesDaTurma, areasDoConhecimentos);
+                var componentesPorGrupoMatriz = componentesCurricularesDaTurma.GroupBy(cc => cc.GrupoMatriz).OrderBy(g => g.Key.Id);
 
-                gruposComponentes.AddRange(componentesPorGrupoMatriz.Select(gp => new GruposComponentesCurricularesDto
+                foreach (var componentes in componentesPorGrupoMatriz)
                 {
-                    Nome = gp.Key.Nome,
-                    AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
+                    var areasConhecimento = MapearAreasDoConhecimento(componentes, areasDoConhecimentos);
+
+                    gruposComponentes.Add(new GruposComponentesCurricularesDto
                     {
-                        Nome = ac.Key.Nome,
-                        ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
-                                                ObterComponentesDasAreasDeConhecimento(componentesCurricularesDaTurma, ac),
-                                                notasAlunos, frequencias, mediasFrequencia, ac)?.ToList()
-                    }).ToList()
-                }));
+                        Nome = componentes.Key.Nome,
+                        AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
+                        {
+                            Nome = ac.Key.Nome,
+                            ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
+                                                    ObterComponentesDasAreasDeConhecimento(componentes, ac),
+                                                    notasAlunos, frequencias, mediasFrequencia, ac)?.OrderBy(o => o.Nome).ToList()
+                        }).ToList()
+                    });
+                }
             }
 
             return gruposComponentes;
@@ -237,7 +242,7 @@ namespace SME.SR.Application
                         Nome = ac.Key.Nome,
                         ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
                                                 ObterComponentesDasAreasDeConhecimento(componentesCurricularesDaTurma, ac),
-                                                notasAlunos, frequencias, mediasFrequencia, ac)?.ToList()
+                                                notasAlunos, frequencias, mediasFrequencia, ac)?.OrderBy(o => o.Nome).ToList()
                     }).ToList()
                 };
             }
@@ -250,7 +255,7 @@ namespace SME.SR.Application
         {
             return componentesCurricularesDaTurma.Where(c => (!c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)) ||
                                                             (c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Any(cr =>
-                                                            c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr))));
+                                                            c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr)))).OrderBy(cc => cc.Disciplina);
         }
 
         private IEnumerable<IGrouping<(string Nome, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
@@ -260,7 +265,8 @@ namespace SME.SR.Application
             return areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Where(cc => !cc.Regencia).Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)) ||
                                                                     (componentesCurricularesDaTurma.Any(cc => cc.Regencia) &&
                                                                      componentesCurricularesDaTurma.Where(cc => cc.Regencia).SelectMany(cc => cc.ComponentesCurricularesRegencia).
-                                                                     Select(r => r.CodDisciplina).Contains(a.CodigoComponenteCurricular)))).GroupBy(g => (g.Nome, g.Id));
+                                                                     Select(r => r.CodDisciplina).Contains(a.CodigoComponenteCurricular)))).GroupBy(g => (g.Nome, g.Id)).
+                                                                     OrderByDescending(c => c.Key.Id > 0 && !string.IsNullOrEmpty(c.Key.Nome)).ThenBy(c => c.Key.Nome, StringComparer.OrdinalIgnoreCase);
         }
 
         private IEnumerable<ComponenteCurricularHistoricoEscolarDto> MontarComponentesNotasFrequencia(IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<AreaDoConhecimento> areasDoConhecimentos)

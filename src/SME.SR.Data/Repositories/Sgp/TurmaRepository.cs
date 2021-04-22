@@ -223,6 +223,7 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasRegulares;
                         select 
 	                        t.turma_id as TurmaCodigo,
+                            null as TurmaRegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
@@ -252,6 +253,7 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasComplementares;
                         select 
 	                        t.turma_id as TurmaCodigo,
+                            tr.turma_id as TurmaRegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
@@ -267,6 +269,15 @@ namespace SME.SR.Data
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccat
 	                        on cca.id = ccat.conselho_classe_aluno_id
+                        inner join 
+	                        conselho_classe cc
+	                        on cc.id = t1.ConselhoClasseId
+                        inner join
+	                        fechamento_turma ft
+	                        on cc.fechamento_turma_id = ft.id
+                        inner join 
+	                        turma tr
+	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
 	                        on t.id = ccat.turma_id
@@ -716,6 +727,7 @@ namespace SME.SR.Data
             var query = @"drop table if exists tempTurmaRegularConselhoAluno;
                         select distinct 
                             t.turma_id as TurmaCodigo,
+                            null as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
@@ -765,6 +777,7 @@ namespace SME.SR.Data
                         drop table if exists tempTurmaComplementarConselhoAluno;
                         select distinct 
                             t.turma_id as TurmaCodigo,
+                            tr.turma_id as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
@@ -779,6 +792,15 @@ namespace SME.SR.Data
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccatc 
 	                        on cca.id = ccatc .conselho_classe_aluno_id 
+                         inner join 
+	                        conselho_classe cc
+	                        on cc.id = cca.conselho_classe_id
+                        inner join
+	                        fechamento_turma ft
+	                        on cc.fechamento_turma_id = ft.id
+                        inner join 
+	                        turma tr
+	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
 	                        on ccatc .turma_id = t.id

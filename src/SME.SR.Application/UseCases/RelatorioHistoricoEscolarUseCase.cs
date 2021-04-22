@@ -59,6 +59,13 @@ namespace SME.SR.Application
             var todasTurmas = todosAlunosTurmas.SelectMany(a => a.Turmas).DistinctBy(t => t.Codigo);
             var todosAlunos = todosAlunosTurmas.Select(a => a.Aluno).DistinctBy(t => t.Codigo);
 
+            var todasTurmasAssociadas = todosAlunosTurmas.SelectMany(a => a.Turmas)
+                                            .Where(t => !string.IsNullOrEmpty(t.RegularCodigo))?
+                                            .DistinctBy(t => t.Codigo)?
+                                            .Select(t => (t.Codigo, t.RegularCodigo));
+
+            var turmasAssociadasCodigo = todasTurmasAssociadas?.Select(a => a.Codigo);
+
             var turmasCodigo = todasTurmas.Select(a => a.Codigo);
             var alunosCodigo = todosAlunos.Select(a => a.Codigo);
 
@@ -67,7 +74,20 @@ namespace SME.SR.Application
             if (todosAlunos != null && todosAlunos.Any())
                 historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
 
+            var notas = await ObterNotasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
+            var frequencias = await ObterFrequenciasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
+
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
+
+            if (componentesCurriculares.Any(cc => turmasAssociadasCodigo.Contains(cc.Key)))
+            {
+                componentesCurriculares = ConverterTurmasAssociadasParaRegular(componentesCurriculares, turmasAssociadasCodigo, todasTurmasAssociadas);
+            }
+
+            if (notas.Any(n => turmasAssociadasCodigo.Contains(n.Key)))
+            {
+                notas = ConverterTurmasAssociadasParaRegular(notas, turmasAssociadasCodigo, todasTurmasAssociadas);
+            }
 
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
 
@@ -78,9 +98,6 @@ namespace SME.SR.Application
             var enderecoAtoUe = await ObterEnderecoAtoUe(filtros.UeCodigo);
 
             var tipoNotas = await ObterTiposNotaRelatorio();
-
-            var notas = await ObterNotasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
-            var frequencias = await ObterFrequenciasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
@@ -149,6 +166,34 @@ namespace SME.SR.Application
             }
             else
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+        }
+
+        private IEnumerable<IGrouping<string, NotasAlunoBimestre>> ConverterTurmasAssociadasParaRegular(IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas, IEnumerable<string> turmasAssociadasCodigo, IEnumerable<(string Codigo, string RegularCodigo)> todasTurmasAssociadas)
+        {
+            var notasLista = notas.SelectMany(e => e).ToList();
+
+            foreach (var nota in notasLista.Where(cc => turmasAssociadasCodigo.Contains(cc.CodigoTurma)))
+            {
+                var turmaRegularId = todasTurmasAssociadas.FirstOrDefault(tr => tr.Codigo == nota.CodigoTurma).RegularCodigo;
+
+                nota.CodigoTurma = turmaRegularId;
+            }
+
+            return notasLista.GroupBy(cc => cc.CodigoTurma);
+        }
+
+        private IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ConverterTurmasAssociadasParaRegular(IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares, IEnumerable<string> turmasAssociadasCodigo, IEnumerable<(string Codigo, string RegularCodigo)> todasTurmasAssociadas)
+        {
+            var componentesLista = componentesCurriculares.SelectMany(e => e).ToList();
+
+            foreach (var componenteDaTurma in componentesLista.Where(cc => turmasAssociadasCodigo.Contains(cc.CodigoTurma)))
+            {
+                var turmaRegularId = todasTurmasAssociadas.FirstOrDefault(tr => tr.Codigo == componenteDaTurma.CodigoTurma).RegularCodigo;
+
+                componenteDaTurma.CodigoTurma = turmaRegularId;
+            }
+
+            return componentesLista.GroupBy(cc => cc.CodigoTurma);
         }
 
         private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
