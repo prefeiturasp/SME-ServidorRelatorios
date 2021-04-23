@@ -160,7 +160,7 @@
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<staticText>
-					<reportElement x="35" y="0" width="80" height="60" uuid="474eb944-ca05-462b-a966-3adb8ace57b2">
+					<reportElement x="35" y="0" width="95" height="60" uuid="474eb944-ca05-462b-a966-3adb8ace57b2">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -174,10 +174,10 @@
 conhecimento]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="115" y="0" width="80" height="60" uuid="de8825b5-5330-4ac3-90d9-955966d87da8">
+					<reportElement x="130" y="0" width="95" height="60" uuid="de8825b5-5330-4ac3-90d9-955966d87da8">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -199,7 +199,7 @@ curriculares]]></text>
 						</datasetRun>
 						<jr:listContents height="15" width="520">
 							<textField textAdjust="StretchHeight">
-								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="80" height="15" uuid="f5bb00cb-80d9-49e1-9f2e-c292287f34a0">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="95" height="15" uuid="f5bb00cb-80d9-49e1-9f2e-c292287f34a0">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
 								</reportElement>
@@ -212,7 +212,7 @@ curriculares]]></text>
 								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 							</textField>
 							<subreport>
-								<reportElement x="80" y="0" width="330" height="15" uuid="805d560e-727e-49e8-a32b-962d5b460a40"/>
+								<reportElement x="95" y="0" width="315" height="15" uuid="805d560e-727e-49e8-a32b-962d5b460a40"/>
 								<subreportParameter name="REPORT_DATA_SOURCE">
 									<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
 								</subreportParameter>
@@ -222,8 +222,10 @@ curriculares]]></text>
 					</jr:list>
 				</componentElement>
 				<staticText>
-					<reportElement x="195" y="0" width="360" height="30" uuid="3049c7e6-c3f5-4175-b118-c9ab29113a4c">
+					<reportElement x="225" y="0" width="330" height="30" uuid="3049c7e6-c3f5-4175-b118-c9ab29113a4c">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -234,9 +236,8 @@ curriculares]]></text>
 					<text><![CDATA[Resultado final]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="195" y="45" width="60" height="15" uuid="177b9bd4-8cde-4136-a556-ef5d29c82b1c">
+					<reportElement x="225" y="45" width="55" height="15" uuid="177b9bd4-8cde-4136-a556-ef5d29c82b1c">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -247,9 +248,7 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{primeiroAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="255" y="45" width="60" height="15" uuid="f42c5731-7614-4fb7-957b-9e95c4baef5f">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</reportElement>
+					<reportElement x="280" y="45" width="55" height="15" uuid="f42c5731-7614-4fb7-957b-9e95c4baef5f"/>
 					<box>
 						<pen lineWidth="0.5"/>
 					</box>
@@ -259,9 +258,7 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="375" y="45" width="60" height="15" uuid="3d029a98-59d0-45e7-8252-ac859c6e2c3d">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</reportElement>
+					<reportElement x="390" y="45" width="55" height="15" uuid="3d029a98-59d0-45e7-8252-ac859c6e2c3d"/>
 					<box>
 						<pen lineWidth="0.5"/>
 					</box>
@@ -271,9 +268,8 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="315" y="45" width="60" height="15" uuid="67824ec0-197d-4ae9-bcca-d13e3c39d7d1">
+					<reportElement x="335" y="45" width="55" height="15" uuid="67824ec0-197d-4ae9-bcca-d13e3c39d7d1">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -284,8 +280,9 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{segundoAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="495" y="45" width="60" height="15" uuid="11cbd2e5-ab63-4ba0-be97-1a9cdcfe16e5">
+					<reportElement x="500" y="45" width="55" height="15" uuid="11cbd2e5-ab63-4ba0-be97-1a9cdcfe16e5">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -296,7 +293,7 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="435" y="45" width="60" height="15" uuid="5e33eb08-0415-42da-8c47-e8996072e315">
+					<reportElement x="445" y="45" width="55" height="15" uuid="5e33eb08-0415-42da-8c47-e8996072e315">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -309,10 +306,11 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{terceiroAno}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="435" y="30" width="120" height="15" uuid="1b58e272-e426-4979-9a8d-53e5a35303f1">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<reportElement x="445" y="30" width="110" height="15" uuid="1b58e272-e426-4979-9a8d-53e5a35303f1">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -323,10 +321,11 @@ curriculares]]></text>
 					<text><![CDATA[3º ano]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="315" y="30" width="120" height="15" uuid="343eed65-ce5b-42fc-8a3c-a51f07cf2290">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<reportElement x="335" y="30" width="110" height="15" uuid="343eed65-ce5b-42fc-8a3c-a51f07cf2290">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -337,10 +336,11 @@ curriculares]]></text>
 					<text><![CDATA[2º ano]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="195" y="30" width="120" height="15" uuid="25594ed1-057f-4c49-8dc7-a391f7bdbb12">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<reportElement x="225" y="30" width="110" height="15" uuid="25594ed1-057f-4c49-8dc7-a391f7bdbb12">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
