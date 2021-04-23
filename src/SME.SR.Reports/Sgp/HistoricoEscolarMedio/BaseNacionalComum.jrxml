@@ -199,7 +199,7 @@ curriculares]]></text>
 						</datasetRun>
 						<jr:listContents height="15" width="520">
 							<textField textAdjust="StretchHeight">
-								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="95" height="15" uuid="f5bb00cb-80d9-49e1-9f2e-c292287f34a0">
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="95" height="15" uuid="f5bb00cb-80d9-49e1-9f2e-c292287f34a0">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
 								</reportElement>

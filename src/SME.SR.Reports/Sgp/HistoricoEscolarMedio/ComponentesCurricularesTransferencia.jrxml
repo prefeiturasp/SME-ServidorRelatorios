@@ -90,13 +90,13 @@
 					<datasetRun subDataset="DatasetComponentesCurriculares" uuid="f2671c16-3f0e-4be4-a475-3b122ec19f2b">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="205" uuid="064220a8-725b-4c92-b904-4b966edeeae9">
+					<jr:column width="192" uuid="064220a8-725b-4c92-b904-4b966edeeae9">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<textField textAdjust="StretchHeight">
-								<reportElement x="0" y="0" width="205" height="15" uuid="4946bac3-0379-4af6-9cd4-f7952517d4c1"/>
+								<reportElement x="0" y="0" width="192" height="15" uuid="4946bac3-0379-4af6-9cd4-f7952517d4c1"/>
 								<box leftPadding="5">
 									<pen lineWidth="0.75"/>
 								</box>
@@ -107,13 +107,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="35" uuid="cc617125-fc1a-4367-985d-9881fddbf38c">
+					<jr:column width="31" uuid="cc617125-fc1a-4367-985d-9881fddbf38c">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="35" height="15" uuid="b10b1c00-89cd-4339-8526-62a55b874e1b"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="31" height="15" uuid="b10b1c00-89cd-4339-8526-62a55b874e1b"/>
 								<box>
 									<pen lineWidth="0.75"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -128,13 +128,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="35" uuid="41e13c87-9d53-4379-9f8c-6aca7886442b">
+					<jr:column width="31" uuid="41e13c87-9d53-4379-9f8c-6aca7886442b">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="35" height="15" uuid="58527a1a-84cf-47ee-817a-4a23c6a26c0a"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="31" height="15" uuid="58527a1a-84cf-47ee-817a-4a23c6a26c0a"/>
 								<box>
 									<pen lineWidth="0.75"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -149,13 +149,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="35" uuid="1e104a07-a4ef-4d01-beab-0927a3677dcc">
+					<jr:column width="31" uuid="1e104a07-a4ef-4d01-beab-0927a3677dcc">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="35" height="15" uuid="2e3f92d2-4691-41a9-8c2c-938f923d8f3a"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="31" height="15" uuid="2e3f92d2-4691-41a9-8c2c-938f923d8f3a"/>
 								<box>
 									<pen lineWidth="0.75"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -170,13 +170,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="35" uuid="a56b2eb7-a33f-45dc-ab4e-26647d251e80">
+					<jr:column width="31" uuid="a56b2eb7-a33f-45dc-ab4e-26647d251e80">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="35" height="15" uuid="58ae82c1-cc0c-43ca-9df3-04358ab1266b"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="31" height="15" uuid="58ae82c1-cc0c-43ca-9df3-04358ab1266b"/>
 								<box>
 									<pen lineWidth="0.75"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -191,13 +191,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="35" uuid="1ebf8d8f-3dde-4d9a-9dcb-6d7fee60afb4">
+					<jr:column width="31" uuid="1ebf8d8f-3dde-4d9a-9dcb-6d7fee60afb4">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="35" height="15" uuid="d4fc03b7-4a52-4370-a9de-57f4285ba62b"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="31" height="15" uuid="d4fc03b7-4a52-4370-a9de-57f4285ba62b"/>
 								<box>
 									<pen lineWidth="0.75"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -212,13 +212,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="35" uuid="8295e087-ce1d-4434-90ea-174ea4fcc4e6">
+					<jr:column width="31" uuid="8295e087-ce1d-4434-90ea-174ea4fcc4e6">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="35" height="15" uuid="017cca45-ce73-41a7-be02-db945ba2af49"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="31" height="15" uuid="017cca45-ce73-41a7-be02-db945ba2af49"/>
 								<box>
 									<pen lineWidth="0.75"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -233,13 +233,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="35" uuid="4072b66e-de47-480b-b406-f5964bdf78db">
+					<jr:column width="31" uuid="4072b66e-de47-480b-b406-f5964bdf78db">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="35" height="15" uuid="a3b3c0f9-d9bb-46c0-80a8-bb501451df6d"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="31" height="15" uuid="a3b3c0f9-d9bb-46c0-80a8-bb501451df6d"/>
 								<box>
 									<pen lineWidth="0.75"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -254,13 +254,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="35" uuid="83389691-3922-4240-9cb4-13faefa0d1ba">
+					<jr:column width="31" uuid="83389691-3922-4240-9cb4-13faefa0d1ba">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="35" height="15" uuid="fe96ab1b-2e28-4e89-b708-2335b87e8e4f"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="31" height="15" uuid="fe96ab1b-2e28-4e89-b708-2335b87e8e4f"/>
 								<box>
 									<pen lineWidth="0.75"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
