@@ -25,7 +25,7 @@
 		<band height="15" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="115" height="15" isRemoveLineWhenBlank="true" uuid="69613882-1ccf-4059-98fb-e76a57d32986">
+				<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="130" height="15" isRemoveLineWhenBlank="true" uuid="69613882-1ccf-4059-98fb-e76a57d32986">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[$F{enriquecimentoCurricular} != null]]></printWhenExpression>
@@ -39,8 +39,9 @@
 				<text><![CDATA[Projetos/atividades complementares]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="115" y="0" width="443" height="15" isRemoveLineWhenBlank="true" uuid="fb4c7f1b-debd-4b29-bf76-fc0b21b30b0d">
+				<reportElement x="130" y="0" width="443" height="15" isRemoveLineWhenBlank="true" uuid="fb4c7f1b-debd-4b29-bf76-fc0b21b30b0d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("projetosAtividadesComplementares")]]></subreportParameterExpression>

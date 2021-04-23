@@ -1,6 +1,10 @@
 eclipse.preferences.version=1
 encoding/AreasConhecimento.jrxml=UTF-8
+encoding/BaseNacionalComum.jrxml=UTF-8
+encoding/ComponentesCurriculares.jrxml=UTF-8
 encoding/ContainerHistorico.jrxml=UTF-8
+encoding/EnriquecimentoCurricular.jrxml=UTF-8
 encoding/EstudosRealizados.jrxml=UTF-8
 encoding/GrupoComponentesComNota.jrxml=UTF-8
 encoding/HistoricoEscolar.jrxml=UTF-8
+encoding/ProjetosAtividadesComplementares.jrxml=UTF-8
