@@ -152,7 +152,7 @@ namespace SME.SR.Data
             }
 
             query.AppendLine(@" group by fa.codigo_aluno, fa.tipo, fa.disciplina_id, fa.periodo_inicio, 
-                                fa.periodo_fim, fa.bimestre, fa.periodo_escolar_id, t.ano_letivo, t.modalidade_codigo");
+                                fa.periodo_fim, fa.bimestre, fa.periodo_escolar_id, t.turma_id, t.ano_letivo, t.modalidade_codigo");
 
             var parametros = new { codigosAluno, anoLetivo, modalidade, semestre };
 
