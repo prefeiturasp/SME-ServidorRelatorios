@@ -89,6 +89,11 @@ namespace SME.SR.Application
                 notas = ConverterTurmasAssociadasParaRegular(notas, turmasAssociadasCodigo, todasTurmasAssociadas);
             }
 
+            if (frequencias.Any(n => turmasAssociadasCodigo.Contains(n.Key)))
+            {
+                frequencias = ConverterTurmasAssociadasParaRegular(frequencias, turmasAssociadasCodigo, todasTurmasAssociadas);
+            }
+
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
 
             var dre = await ObterDrePorCodigo(filtros.DreCodigo);
@@ -166,6 +171,20 @@ namespace SME.SR.Application
             }
             else
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+        }
+
+        private IEnumerable<IGrouping<string, FrequenciaAluno>> ConverterTurmasAssociadasParaRegular(IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias, IEnumerable<string> turmasAssociadasCodigo, IEnumerable<(string Codigo, string RegularCodigo)> todasTurmasAssociadas)
+        {
+            var frequenciasLista = frequencias.SelectMany(e => e).ToList();
+
+            foreach (var frequencia in frequenciasLista.Where(cc => turmasAssociadasCodigo.Contains(cc.TurmaId)))
+            {
+                var turmaRegularId = todasTurmasAssociadas.FirstOrDefault(tr => tr.Codigo == frequencia.TurmaId).RegularCodigo;
+
+                frequencia.TurmaId = turmaRegularId;
+            }
+
+            return frequenciasLista.GroupBy(cc => cc.TurmaId);
         }
 
         private IEnumerable<IGrouping<string, NotasAlunoBimestre>> ConverterTurmasAssociadasParaRegular(IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas, IEnumerable<string> turmasAssociadasCodigo, IEnumerable<(string Codigo, string RegularCodigo)> todasTurmasAssociadas)

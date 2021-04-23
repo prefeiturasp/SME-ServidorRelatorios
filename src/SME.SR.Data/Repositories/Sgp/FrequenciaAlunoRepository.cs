@@ -130,7 +130,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunosParaHistoricoEscolar(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
-            var query = new StringBuilder(@$"select fa.codigo_aluno CodigoAluno, t.ano_letivo as AnoTurma, t.modalidade_codigo as ModalidadeTurma,
+            var query = new StringBuilder(@$"select fa.codigo_aluno CodigoAluno, t.turma_id TurmaId, t.ano_letivo as AnoTurma, t.modalidade_codigo as ModalidadeTurma,
                             fa.tipo, fa.disciplina_id DisciplinaId, fa.periodo_inicio PeriodoInicio, 
                             fa.periodo_fim PeriodoFim, fa.bimestre, sum(fa.total_aulas) TotalAulas, 
                             sum(fa.total_ausencias) TotalAusencias, sum(fa.total_compensacoes) TotalCompensacoes, 
