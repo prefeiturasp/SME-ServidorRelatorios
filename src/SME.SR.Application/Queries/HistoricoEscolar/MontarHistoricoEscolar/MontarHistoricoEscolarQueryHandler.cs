@@ -210,7 +210,7 @@ namespace SME.SR.Application
                         Nome = componentes.Key.Nome,
                         AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
                         {
-                            Nome = ac.Key.Nome,
+                            Nome = !string.IsNullOrEmpty(ac.Key.Nome) ? ac.Key.Nome : string.Empty,
                             ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
                                                     ObterComponentesDasAreasDeConhecimento(componentes, ac),
                                                     notasAlunos, frequencias, mediasFrequencia, ac)?.OrderBy(o => o.Nome).ToList()
@@ -239,7 +239,7 @@ namespace SME.SR.Application
                 {
                     AreasDeConhecimento = areasConhecimento.Select(ac => new AreaDeConhecimentoDto()
                     {
-                        Nome = ac.Key.Nome,
+                        Nome = !string.IsNullOrEmpty(ac.Key.Nome) ? ac.Key.Nome : string.Empty,
                         ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
                                                 ObterComponentesDasAreasDeConhecimento(componentesCurricularesDaTurma, ac),
                                                 notasAlunos, frequencias, mediasFrequencia, ac)?.OrderBy(o => o.Nome).ToList()
