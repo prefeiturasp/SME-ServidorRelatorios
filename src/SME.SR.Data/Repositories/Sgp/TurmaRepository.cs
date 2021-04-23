@@ -223,6 +223,7 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasRegulares;
                         select 
 	                        t.turma_id as TurmaCodigo,
+                            null as TurmaRegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
@@ -252,6 +253,7 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasComplementares;
                         select 
 	                        t.turma_id as TurmaCodigo,
+                            tr.turma_id as TurmaRegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
@@ -267,6 +269,15 @@ namespace SME.SR.Data
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccat
 	                        on cca.id = ccat.conselho_classe_aluno_id
+                        inner join 
+	                        conselho_classe cc
+	                        on cc.id = t1.ConselhoClasseId
+                        inner join
+	                        fechamento_turma ft
+	                        on cc.fechamento_turma_id = ft.id
+                        inner join 
+	                        turma tr
+	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
 	                        on t.id = ccat.turma_id
@@ -367,12 +378,12 @@ namespace SME.SR.Data
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
                         inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
                         inner join ue u on t.ue_id  = u.id
-                        where u.id = @ueId and tc.id = @tipoCicloId and t.ano_letivo = @anoLetivo and tca.ano = @ano";
+                        where u.id = @ueId and tc.id = @tipoCicloId and t.ano_letivo = @anoLetivo and tca.ano = @ano and t.tipo_turma = @tipoTurmaRegular";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano });
+            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano, tipoTurmaRegular = TipoTurma.Regular });
         }
         public async Task<IEnumerable<AlunoTurmaRegularRetornoDto>> ObterAlunosTurmasRegularesPorTurmaRecuperacaoCodigoQuery(long turmaCodigo)
         {
@@ -716,6 +727,7 @@ namespace SME.SR.Data
             var query = @"drop table if exists tempTurmaRegularConselhoAluno;
                         select distinct 
                             t.turma_id as TurmaCodigo,
+                            null as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
@@ -765,6 +777,7 @@ namespace SME.SR.Data
                         drop table if exists tempTurmaComplementarConselhoAluno;
                         select distinct 
                             t.turma_id as TurmaCodigo,
+                            tr.turma_id as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
@@ -779,6 +792,15 @@ namespace SME.SR.Data
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccatc 
 	                        on cca.id = ccatc .conselho_classe_aluno_id 
+                         inner join 
+	                        conselho_classe cc
+	                        on cc.id = cca.conselho_classe_id
+                        inner join
+	                        fechamento_turma ft
+	                        on cc.fechamento_turma_id = ft.id
+                        inner join 
+	                        turma tr
+	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
 	                        on ccatc .turma_id = t.id
