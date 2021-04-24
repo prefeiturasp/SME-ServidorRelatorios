@@ -147,7 +147,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["Unidade Escolar(UE): "+($F{nomeUe} != null ? $F{nomeUe} : "")]]></textFieldExpression>
@@ -158,7 +158,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["ENDEREÇO: "+($F{endereco} != null ?$F{endereco}: "")]]></textFieldExpression>
@@ -170,7 +170,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["ATO DE AUTORIZAÇÃO: "+($F{atoAutorizacao} != null ? $F{atoAutorizacao}: "")]]></textFieldExpression>
@@ -181,7 +181,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["ATO DE CRIAÇÃO: "+($F{atoCriacao} != null ? $F{atoCriacao}:"")]]></textFieldExpression>
@@ -196,7 +196,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["ALUNO: "+($F{nome}!= null?$F{nome}: "")]]></textFieldExpression>
@@ -207,7 +207,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["RGA: "+($F{rga}!=null?$F{rga}:"")]]></textFieldExpression>
@@ -218,7 +218,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["CIDADE NATAL: "+($F{cidadeNatal}!= null ? $F{cidadeNatal}:"")]]></textFieldExpression>
@@ -229,7 +229,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["ESTADO NATAL: "+($F{estadoNatal}!= null ? $F{estadoNatal}:"")]]></textFieldExpression>
@@ -240,7 +240,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["NACIONALIDADE: "+($F{nacionalidade}!=null?$F{nacionalidade}:"")]]></textFieldExpression>
@@ -251,7 +251,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["NASC: "+($F{nascimento}!=null?$F{nascimento}:"")]]></textFieldExpression>
@@ -268,7 +268,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 					<printWhenExpression><![CDATA[$F{historicoEscolar} != null]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="10">
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
