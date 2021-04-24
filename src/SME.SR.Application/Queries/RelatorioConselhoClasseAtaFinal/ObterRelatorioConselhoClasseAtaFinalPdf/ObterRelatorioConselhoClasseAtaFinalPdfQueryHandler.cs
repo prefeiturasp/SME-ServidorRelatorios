@@ -26,39 +26,29 @@ namespace SME.SR.Application
         {
             var mensagensErro = new StringBuilder();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
-       
-            foreach (var turmaCodigo in request.Filtro.TurmasCodigos)
+
+            if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Turma)
             {
-                try
+                foreach (var turmaCodigo in request.Filtro.TurmasCodigos)
                 {
-                    var turma = await ObterTurma(turmaCodigo);
-                    
-
-                    if (turma.TipoTurma == TipoTurma.Itinerarios2AAno &&
-                        request.FiltroConselhoClasseAtaFinal.Visualizacao == AtaFinalTipoVisualizacao.Estudantes)
-                        continue;
-
-                    if (request.FiltroConselhoClasseAtaFinal.Visualizacao == AtaFinalTipoVisualizacao.Estudantes)
+                    try
                     {
-                        //obter relatorio estudante 
-                        //só com turmas regulares 
-                    }
-                    else
-                    {
-                        var retorno = await ObterRelatorioTurma(turma, request);
+                        var turma = await ObterTurma(turmaCodigo);
+
+
+                        var retorno = await ObterRelatorioTurma(turma, request.Filtro, request.Usuario);
 
                         if (retorno != null && retorno.Any())
                             relatoriosTurmas.AddRange(retorno);
                     }
-
-
-                }
-                catch (Exception e)
-                {
-                    var turma = await ObterTurma(turmaCodigo);
-                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e}");
+                    catch (Exception e)
+                    {
+                        var turma = await ObterTurma(turmaCodigo);
+                        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e}");
+                    }
                 }
             }
+
 
             if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
                 throw new NegocioException(mensagensErro.ToString());
@@ -66,7 +56,7 @@ namespace SME.SR.Application
             return relatoriosTurmas;
         }
 
-        private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(Turma turma, ObterRelatorioConselhoClasseAtaFinalPdfQuery filtro)
+        private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, Usuario usuario)
         {
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
@@ -76,8 +66,8 @@ namespace SME.SR.Application
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var cabecalho = await ObterCabecalho(turma.Codigo);
-            var listaturmas  = notas.Select(n => n.Key).ToArray();
-            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaturmas.ToArray(), turma.UeCodigo, turma.ModalidadeCodigo, filtro.UsuarioLogadoRF);
+            var listaturmas = notas.Select(n => n.Key).ToArray();
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaturmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo, usuario) ;
             var frequenciaAlunos = await ObterFrequenciaComponente(turma.Codigo, tipoCalendarioId, periodosEscolares);
             var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.Codigo);
             var pareceresConclusivos = await ObterPareceresConclusivos(turma.Codigo);
@@ -85,8 +75,8 @@ namespace SME.SR.Application
 
 
             var notasFinais = await ObterNotasFinaisPorTurma(turma.Codigo);
-            var componentesCurriculares = await ObterComponentesCurriculares(turma.Codigo, filtro.UsuarioLogadoRF, filtro.PerfilUsuario);
-            var dadosRelatorio = await MontarEstruturaRelatorio(turma.ModalidadeCodigo, cabecalho, alunos, componentesCurriculares, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma.Codigo);
+            //var componentesCurriculares = await ObterComponentesCurriculares(turma.Codigo, filtro.UsuarioLogadoRF, filtro.PerfilUsuario);
+            var dadosRelatorio = await MontarEstruturaRelatorio(turma.ModalidadeCodigo, cabecalho, alunos, new List<ComponenteCurricularPorTurma>(), notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma.Codigo);
             return MontarEstruturaPaginada(dadosRelatorio);
 
 
@@ -95,7 +85,7 @@ namespace SME.SR.Application
 
             //
 
-          
+
             //
             //var frequenciaAlunos = await ObterFrequenciaComponente(turmaCodigo, tipoCalendarioId, periodosEscolares);
             //var frequenciaAlunosGeral = await ObterFrequenciaGeral(turmaCodigo);
