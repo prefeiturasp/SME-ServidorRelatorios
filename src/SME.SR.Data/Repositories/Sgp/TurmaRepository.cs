@@ -958,7 +958,7 @@ namespace SME.SR.Data
         {
             var query = @"select t.turma_id Codigo, t.nome
 			                    , t.modalidade_codigo  ModalidadeCodigo, t.semestre
-                                , t.ano, t.ano_letivo AnoLetivo,
+                                , t.ano, t.ano_letivo AnoLetivo
 			                from turma t
 			                where t.id = @id";
 

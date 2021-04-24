@@ -7,13 +7,20 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQueryHandler : IRequestHandler<ObterRelatorioAcompanhamentoAprendizagemQuery, RelatorioAcompanhamentoAprendizagemDto>
     {
-        public Task<RelatorioAcompanhamentoAprendizagemDto> Handle(ObterRelatorioAcompanhamentoAprendizagemQuery request, CancellationToken cancellationToken)
+        private readonly IMediator mediator;
+
+        public ObterRelatorioAcompanhamentoAprendizagemQueryHandler(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
+        }
+
+        public async Task<RelatorioAcompanhamentoAprendizagemDto> Handle(ObterRelatorioAcompanhamentoAprendizagemQuery request, CancellationToken cancellationToken)
         {
             var retorno = new RelatorioAcompanhamentoAprendizagemDto();
             retorno.Cabecalho = GerarCabecalho();
             retorno.Alunos.Add(GerarAluno());
 
-            return Task.FromResult(retorno);
+            return await Task.FromResult(retorno);
         }
 
         private RelatorioAcompanhamentoAprendizagemAlunoDto GerarAluno()
