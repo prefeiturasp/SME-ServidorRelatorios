@@ -54,7 +54,7 @@
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box leftPadding="10">
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
@@ -67,7 +67,7 @@
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -82,7 +82,7 @@ conhecimento]]></text>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -93,7 +93,7 @@ curriculares]]></text>
 				<staticText>
 					<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="22" width="35" height="75" backcolor="#F3F3F3" uuid="2fc78440-d94f-49bc-92bb-99547be0f242"/>
 					<box leftPadding="0">
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
 						<font size="6" isBold="true"/>
@@ -105,7 +105,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
@@ -118,7 +118,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -131,7 +131,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -144,7 +144,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -157,7 +157,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -170,7 +170,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -180,7 +180,7 @@ curriculares]]></text>
 				<staticText>
 					<reportElement x="338" y="67" width="31" height="15" uuid="080d2557-fe3a-47aa-90c3-409ceaa325e8"/>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -190,7 +190,7 @@ curriculares]]></text>
 				<staticText>
 					<reportElement x="400" y="67" width="31" height="15" uuid="067618ff-2842-49ef-b422-5a8a569143e9"/>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -203,7 +203,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -213,7 +213,7 @@ curriculares]]></text>
 				<staticText>
 					<reportElement x="462" y="67" width="31" height="15" uuid="97c7c455-a776-4381-bfee-e70f8ef46079"/>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -226,7 +226,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -236,7 +236,7 @@ curriculares]]></text>
 				<staticText>
 					<reportElement x="524" y="67" width="31" height="15" uuid="9a7214c5-fca4-4ef6-bf5f-d87eca17cc51"/>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -249,7 +249,7 @@ curriculares]]></text>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
-						<pen lineWidth="0.75"/>
+						<pen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
@@ -272,7 +272,11 @@ curriculares]]></text>
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
 								</reportElement>
 								<box leftPadding="5">
-									<pen lineWidth="0.75"/>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 								</box>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>

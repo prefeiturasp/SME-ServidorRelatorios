@@ -99,6 +99,10 @@
 								<reportElement x="0" y="0" width="192" height="15" uuid="4946bac3-0379-4af6-9cd4-f7952517d4c1"/>
 								<box leftPadding="5">
 									<pen lineWidth="0.75"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 								</box>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>

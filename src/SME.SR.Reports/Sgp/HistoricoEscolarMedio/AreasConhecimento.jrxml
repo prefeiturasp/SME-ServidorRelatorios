@@ -49,7 +49,7 @@
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							</reportElement>
 							<box leftPadding="5">
-								<pen lineWidth="0.75"/>
+								<pen lineWidth="0.5"/>
 							</box>
 							<textElement verticalAlignment="Middle">
 								<font size="6" isBold="true"/>
