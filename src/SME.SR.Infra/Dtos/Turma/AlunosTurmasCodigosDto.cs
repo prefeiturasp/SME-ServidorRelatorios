@@ -4,6 +4,7 @@
     {
         public long AlunoCodigo { get; set; }
         public string TurmaCodigo { get; set; }
+        public string TurmaRegularCodigo { get; set; }
         public Modalidade Modalidade { get; set; }
         public int Ano { get; set; }
         public int EtapaEJA { get; set; }

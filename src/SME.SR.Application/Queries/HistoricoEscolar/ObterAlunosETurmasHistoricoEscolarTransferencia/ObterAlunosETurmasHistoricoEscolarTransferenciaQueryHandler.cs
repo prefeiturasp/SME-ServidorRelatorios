@@ -46,7 +46,7 @@ namespace SME.SR.Application
                             ModalidadeCodigo = turmaDoAluno.Modalidade,
                             EtapaEJA = turmaDoAluno.EtapaEJA,
                             Ciclo = turmaDoAluno.Ciclo,
-                            TipoTurma = turmaDoAluno.TipoTurma
+                            RegularCodigo = turmaDoAluno.TurmaRegularCodigo
                         });
                     }
 
@@ -86,7 +86,7 @@ namespace SME.SR.Application
                                 ModalidadeCodigo = x.Modalidade,
                                 EtapaEJA = x.EtapaEJA,
                                 Ciclo = x.Ciclo,
-                                TipoTurma = x.TipoTurma
+                                RegularCodigo = x.TurmaRegularCodigo
                             })
                             .ToList();
                         alunoTurmasNotasFrequenciasDto.Turmas.AddRange(turmasDoAluno);
