@@ -160,7 +160,7 @@
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<staticText>
-					<reportElement x="35" y="0" width="95" height="60" uuid="474eb944-ca05-462b-a966-3adb8ace57b2">
+					<reportElement x="35" y="0" width="80" height="60" uuid="474eb944-ca05-462b-a966-3adb8ace57b2">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -174,7 +174,7 @@
 conhecimento]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="130" y="0" width="215" height="60" uuid="de8825b5-5330-4ac3-90d9-955966d87da8">
+					<reportElement x="115" y="0" width="230" height="60" uuid="de8825b5-5330-4ac3-90d9-955966d87da8">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -190,8 +190,8 @@ curriculares]]></text>
 				</staticText>
 				<componentElement>
 					<reportElement positionType="Float" x="35" y="60" width="520" height="15" uuid="4343193c-4686-4994-bd03-3263c86d0d4e">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 						<datasetRun subDataset="DatasetComponentesBaseNacional" uuid="ccc38101-8b21-4116-9388-9c8b60a1dbce">
@@ -199,7 +199,7 @@ curriculares]]></text>
 						</datasetRun>
 						<jr:listContents height="15" width="520">
 							<textField textAdjust="StretchHeight">
-								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="95" height="15" uuid="f5bb00cb-80d9-49e1-9f2e-c292287f34a0">
+								<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="80" height="15" uuid="f5bb00cb-80d9-49e1-9f2e-c292287f34a0">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
 								</reportElement>
@@ -209,10 +209,12 @@ curriculares]]></text>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{nome}.trim()]]></textFieldExpression>
 							</textField>
 							<subreport>
-								<reportElement x="95" y="0" width="315" height="15" uuid="805d560e-727e-49e8-a32b-962d5b460a40"/>
+								<reportElement x="80" y="0" width="330" height="15" uuid="805d560e-727e-49e8-a32b-962d5b460a40">
+									<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								</reportElement>
 								<subreportParameter name="REPORT_DATA_SOURCE">
 									<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
 								</subreportParameter>
