@@ -55,7 +55,7 @@ namespace SME.SR.Infra
             if (Semestre == 0)
                 return string.Empty;
             
-            return $"{Semestre}º de Semestre de {DateTime.Now.Year}";
+            return $"{Semestre}º SEMESTRE {DateTime.Now.Year}";
         }
 
         public string UeNomeFormatado()
