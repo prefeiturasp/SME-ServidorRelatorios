@@ -19,19 +19,21 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<AcompanhamentoAprendizagemAlunoRetornoDto> ObterAcompanhamentoAprendizagemPorTurmaESemestre(long turmaId, string alunoCodigo, int semestre)
+        public async Task<IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto>> ObterAcompanhamentoAprendizagemPorTurmaESemestre(long turmaId, string alunoCodigo, int semestre)
         {
             var query = new StringBuilder(@" select aa.id,
                                                    t.id, 
                                                    t.nome as TurmaNome,         
                                                    u.nome as UeNome,
+                                                   u.tipo_escola as TipoEscola,
                                                    d.nome as DreNome,
                                                    d.abreviacao as DreAbreviacao,
                                                    aa.aluno_codigo as AlunoCodigo,
                                                    at2.apanhado_geral as ApanhadoGeral,
                                                    aas.observacoes as Observacoes,
+                                                   at2.semestre,
                                                    arq.codigo,
-                                                   arq.tipo_conteudo as TipoArquivo  
+                                                   arq.tipo_conteudo as TipoArquivo                                                   
                                               from turma t
                                               inner join ue u on u.id = t.ue_id
                                               inner join dre d on d.id = u.dre_id 
@@ -43,7 +45,7 @@ namespace SME.SR.Data
                                               where t.id = @turmaId                                                 
                                                 and aaf.miniatura_id is not null ");
 
-            if (string.IsNullOrEmpty(alunoCodigo))            
+            if (!string.IsNullOrEmpty(alunoCodigo))            
                 query.AppendLine("and aa.aluno_codigo = @alunoCodigo");
             
             if (semestre > 0)
@@ -51,7 +53,7 @@ namespace SME.SR.Data
 
             var parametros = new { turmaId, alunoCodigo, semestre };
 
-            var lookup = new Dictionary<long, AcompanhamentoAprendizagemAlunoRetornoDto>();            
+            var lookup = new Dictionary<string, AcompanhamentoAprendizagemAlunoRetornoDto>();            
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -61,10 +63,10 @@ namespace SME.SR.Data
                      AcompanhamentoAprendizagemAlunoRetornoDto acompanhamentoAprendizagem = new AcompanhamentoAprendizagemAlunoRetornoDto();
 
                      
-                     if (!lookup.TryGetValue(acompanhamentoAprendizagemAlunoRetornoDto.Id, out acompanhamentoAprendizagem))
+                     if (!lookup.TryGetValue(acompanhamentoAprendizagemAlunoRetornoDto.AlunoCodigo, out acompanhamentoAprendizagem))
                      {
                          acompanhamentoAprendizagem = acompanhamentoAprendizagemAlunoRetornoDto;
-                         lookup.Add(acompanhamentoAprendizagem.Id, acompanhamentoAprendizagemAlunoRetornoDto);
+                         lookup.Add(acompanhamentoAprendizagem.AlunoCodigo, acompanhamentoAprendizagemAlunoRetornoDto);
                      }
                      if (acompanhamentoAprendizagemAlunoFotoDto != null)
                          acompanhamentoAprendizagem.Add(acompanhamentoAprendizagemAlunoFotoDto);
@@ -73,7 +75,7 @@ namespace SME.SR.Data
                  }, param: parametros, splitOn: "codigo");
              
             }
-            return lookup.Values.FirstOrDefault();
+            return lookup.Values;
         }
     }
 }

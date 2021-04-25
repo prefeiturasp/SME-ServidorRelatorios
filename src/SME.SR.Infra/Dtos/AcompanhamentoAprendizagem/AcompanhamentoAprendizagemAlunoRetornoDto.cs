@@ -1,5 +1,7 @@
 ﻿using SME.SR.Infra.Utilitarios;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace SME.SR.Infra
@@ -16,9 +18,11 @@ namespace SME.SR.Infra
         public string ApanhadoGeral { get; set; }
         public string Observacoes { get; set; }
         public string UeNome { get; set; }
+        public TipoEscola TipoEscola { get; set; }
         public string DreNome { get; set; }
         public string DreAbreviacao { get; set; }
         public string TurmaNome { get; set; }
+        public int Semestre { get; set; }
         public List<AcompanhamentoAprendizagemAlunoFotoDto> Fotos { get; set; }
 
         public void Add(AcompanhamentoAprendizagemAlunoFotoDto acompanhamentoAprendizagemAlunoFotoDto)
@@ -35,6 +39,31 @@ namespace SME.SR.Infra
 
             var registroFormatado = UtilRegex.RemoverTagsHtmlMidia(Observacoes);
             return UtilRegex.RemoverTagsHtml(registroFormatado);
+        }
+
+        public string PercusoTurmaFormatado()
+        {
+            if (string.IsNullOrEmpty(ApanhadoGeral))
+                return string.Empty;
+
+            var registroFormatado = UtilRegex.RemoverTagsHtmlMidia(ApanhadoGeral);
+            return UtilRegex.RemoverTagsHtml(registroFormatado);
+        }
+
+        public string SemestreFormatado()
+        {
+            if (Semestre == 0)
+                return string.Empty;
+            
+            return $"{Semestre}º SEMESTRE {DateTime.Now.Year}";
+        }
+
+        public string UeNomeFormatado()
+        {
+            if (UeNome == null)
+                return string.Empty;
+
+            return $"{TipoEscola.GetAttribute<DisplayAttribute>().ShortName} {UeNome}";
         }
     }
 }

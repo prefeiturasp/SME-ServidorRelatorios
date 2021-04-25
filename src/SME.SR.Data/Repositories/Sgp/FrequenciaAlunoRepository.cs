@@ -229,7 +229,8 @@ namespace SME.SR.Data
                                                     , fa.turma_id as TurmaId
                                                     , fa.total_aulas as TotalAulas
                                                     , fa.total_ausencias as TotalAusencias
-                                                    , fa.total_compensacoes as TotalCompensacoes 
+                                                    , fa.total_compensacoes as TotalCompensacoes
+                                                    , fa.bimestre
                                               from frequencia_aluno fa
                                              inner join turma t on fa.turma_id = t.turma_id
                                              inner join periodo_escolar pe on fa.periodo_escolar_id = pe.id

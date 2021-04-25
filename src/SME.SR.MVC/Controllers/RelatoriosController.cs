@@ -7455,13 +7455,11 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             try
             {
-                var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioAcompanhamentoAprendizagemDto() { Semestre = 1, TurmaId = 623103 } , new JsonSerializerSettings
+                var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioAcompanhamentoAprendizagemDto() { Semestre = 1, TurmaId = 615813 } , new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
                 });
                 
-
-
                 await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
            //  var model = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(615822, "6731135", 1));
                 return View("RelatorioAcompanhamentoAprendizagem", null);
