@@ -24,10 +24,14 @@ namespace SME.SR.Application
 
             if (turma == null)
                 throw new NegocioException("Turma não encontrada");
-            
+
+            var turmaCodigo = new string[1] { turma.Codigo };
+            var professores = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmaCodigo));
+
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo));
             if (alunosEol == null || !alunosEol.Any())
                 throw new NegocioException("Alunos não encontrados");
+
             
             var acompanhmentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
             if (acompanhmentosAlunos == null)
@@ -47,7 +51,7 @@ namespace SME.SR.Application
             {
                 var relatorioDto = new RelatorioAcompanhamentoAprendizagemDto();
 
-                relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(alunosEol, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias));
+                relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias));
 
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao));
 

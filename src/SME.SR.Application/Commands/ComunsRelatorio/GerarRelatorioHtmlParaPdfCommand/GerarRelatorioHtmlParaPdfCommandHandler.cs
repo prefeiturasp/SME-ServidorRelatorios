@@ -42,7 +42,6 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 return string.Empty;
             }
             else return request.CodigoCorrelacao.ToString();
-
         }
     }
 }

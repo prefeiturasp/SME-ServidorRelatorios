@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -21,6 +22,7 @@ namespace SME.SR.Application
         {
 
             var alunosEol = request.AlunosEol;
+            var professores = request.Professores;
             var acompanhmentosAlunos = request.AcompanhamentosAlunos;
             var frequenciaAlunos = request.FrequenciaAlunos;
             var registrosIndividuais = request.RegistrosIndividuais;
@@ -28,21 +30,27 @@ namespace SME.SR.Application
 
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
-                Cabecalho = MontarCabecalho(acompanhmentosAlunos.FirstOrDefault()),
+                Cabecalho = MontarCabecalho(acompanhmentosAlunos.FirstOrDefault(), professores),
                 Alunos = MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias),
             };            
 
             return relatorio;            
         }
 
-        private RelatorioAcompanhamentoAprendizagemCabecalhoDto MontarCabecalho(AcompanhamentoAprendizagemAlunoRetornoDto acompanhamentoAluno)
+        private RelatorioAcompanhamentoAprendizagemCabecalhoDto MontarCabecalho(AcompanhamentoAprendizagemAlunoRetornoDto acompanhamentoAluno, IEnumerable<ProfessorTitularComponenteCurricularDto> professores)
         {
+            var professoresCabecalho = "";
+
+            if (professores != null && professores.Any())
+                professoresCabecalho = String.Join(", ", professores.Select(p => p.NomeProfessor).ToArray());
+
             var cabecalho = new RelatorioAcompanhamentoAprendizagemCabecalhoDto
             {
                 Dre = acompanhamentoAluno.DreAbreviacao,
                 Ue = acompanhamentoAluno.UeNomeFormatado(),
                 Turma = acompanhamentoAluno.TurmaNome,
                 Semestre = acompanhamentoAluno.SemestreFormatado(),
+                Professores = professoresCabecalho,
             };
 
             return cabecalho;
@@ -50,8 +58,7 @@ namespace SME.SR.Application
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias)
         {
-            var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
-            
+            var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();           
 
             foreach (var aluno in alunosAcompanhamento)
             {                
@@ -158,105 +165,6 @@ namespace SME.SR.Application
                 ocorrenciasRelatorio.Add(ocorrenciaRelatorio);
             }
             return ocorrenciasRelatorio;
-        }
-
-        private RelatorioAcompanhamentoAprendizagemAlunoDto GerarAluno()
-        {
-            var aluno = new RelatorioAcompanhamentoAprendizagemAlunoDto();
-            aluno.CodigoEol = "4241513";
-            aluno.DataNascimento = "02/02/2012";
-            aluno.Nome = "Nº1 - ALANA FERREIRA DE OLIVEIRA";
-            aluno.Responsavel = "JONATHAN DA SILVA PEREIRA (FILIAÇÃO1)";
-            aluno.Telefone = "(11) 94596-3666 (Atualizado - 26/06/2018)";
-            aluno.Situacao = "MATRICULADO EM 04/02/2019";
-
-            aluno.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto()
-            {
-                Caminho = "https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg"
-            });
-
-            aluno.Frequencias.Add(new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto()
-            {
-                Aulas = 50,
-                Ausencias = 5,
-                Frequencia = "90%",
-                Bimestre = "1º"
-            });
-
-            aluno.Frequencias.Add(new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto()
-            {
-                Aulas = 50,
-                Ausencias = 10,
-                Frequencia = "80%",
-                Bimestre = "2º"
-            });
-
-            aluno.Ocorrencias.Add(new RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto()
-            {
-                Data = "02/10/2020",
-                Tipo = "LISTAS OS TIPOS",
-                Descricao = "No mundo atual, a expansão dos mercados mundiais exige a precisão e a definição do retorno esperado a longo prazo.",
-                Titulo = "Títutlo de teste"
-            });
-
-            aluno.Ocorrencias.Add(new RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto()
-            {
-                Data = "02/10/2020",
-                Tipo = "LISTAS OS TIPOS",
-                Descricao = "No mundo atual, a expansão dos mercados mundiais exige a precisão e a definição do retorno esperado a longo prazo.",
-                Titulo = "Títutlo de teste"
-            });
-
-            aluno.Ocorrencias.Add(new RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto()
-            {
-                Data = "02/10/2020",
-                Tipo = "LISTAS OS TIPOS",
-                Descricao = "No mundo atual, a expansão dos mercados mundiais exige a precisão e a definição do retorno esperado a longo prazo.",
-                Titulo = "Títutlo de teste"
-            });
-
-            aluno.Observacoes = "O cuidado em identificar pontos críticos no novo modelo estrutural aqui preconizado nos obriga à análise do sistema de formação de quadros que corresponde às necessidades.";
-
-            aluno.RegistrosIndividuais.Add(new RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto()
-            {
-                Data = "04/12/2020",
-                Descricao = "Desta maneira, o desenvolvimento contínuo de distintas formas de atuação garante a contribuição de um grupo importante na determinação das direções preferenciais no sentido do progresso."
-            });
-
-            aluno.RegistrosIndividuais.Add(new RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto()
-            {
-                Data = "04/12/2020",
-                Descricao = "O cuidado em identificar pontos críticos na necessidade de renovação processual ainda não demonstrou convincentemente que vai participar na mudança das condições financeiras e administrativas exigidas."
-            });
-
-            aluno.RegistrosIndividuais.Add(new RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto()
-            {
-                Data = "04/12/2020",
-                Descricao = "Todas estas questões, devidamente ponderadas, levantam dúvidas sobre se o novo modelo estrutural aqui preconizado desafia a capacidade de equalização dos procedimentos normalmente adotados."
-            });
-
-            aluno.RegistrosIndividuais.Add(new RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto()
-            {
-                Data = "04/12/2020",
-                Descricao = "O cuidado em identificar pontos críticos na necessidade de renovação processual ainda não demonstrou convincentemente que vai participar na mudança das condições financeiras e administrativas exigidas."
-            });
-
-            aluno.RegistroPercursoTurma = "Gostaria de enfatizar que o surgimento do comércio virtual apresenta tendências no sentido de aprovar a manutenção das condições financeiras e administrativas exigidas.";
-
-            return aluno;
-        }
-
-        private RelatorioAcompanhamentoAprendizagemCabecalhoDto GerarCabecalho()
-        {
-            return new RelatorioAcompanhamentoAprendizagemCabecalhoDto()
-            {
-                Dre = "BUTANTA",
-                Ue = "EMEI ANTONIO BENTO",
-                Turma = "5B",
-                Professores = "FRANCISCA DA SILTA MATA, JESSICA DE OLIVEIRA",
-                Semestre = "1º SEMESTRE 2021"
-            };
-
         }
     }
 }
