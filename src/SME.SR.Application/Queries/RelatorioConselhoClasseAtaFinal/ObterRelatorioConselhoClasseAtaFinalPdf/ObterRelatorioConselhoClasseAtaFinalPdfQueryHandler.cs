@@ -34,10 +34,7 @@ namespace SME.SR.Application
                     try
                     {
                         var turma = await ObterTurma(turmaCodigo);
-
-
                         var retorno = await ObterRelatorioTurma(turma, request.Filtro, request.Usuario);
-
                         if (retorno != null && retorno.Any())
                             relatoriosTurmas.AddRange(retorno);
                     }
@@ -48,6 +45,26 @@ namespace SME.SR.Application
                     }
                 }
             }
+
+            else if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Estudantes)
+            {
+                foreach (var turmaCodigo in request.Filtro.TurmasCodigos)
+                {
+                    try
+                    {
+                        var turma = await ObterTurma(turmaCodigo);
+                        var retorno = await ObterRelatorioEstudante(turma, request.Filtro, request.Usuario);
+                        if (retorno != null && retorno.Any())
+                            relatoriosTurmas.AddRange(retorno);
+                    }
+                    catch (Exception e)
+                    {
+                        var turma = await ObterTurma(turmaCodigo);
+                        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e}");
+                    }
+                }
+            }
+
 
 
             if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
@@ -91,6 +108,49 @@ namespace SME.SR.Application
                     Conceito = nf.NotaConceito.Conceito,
                     Sintese = nf.NotaConceito.Sintese
                 }));
+            }
+
+            var dadosRelatorio = await MontarEstruturaRelatorio(turma.ModalidadeCodigo, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma.Codigo);
+            return MontarEstruturaPaginada(dadosRelatorio);
+        }
+
+
+
+        private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioEstudante(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, Usuario usuario)
+        {
+            var alunos = await ObterAlunos(turma.Codigo);
+            var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+            var notas = await ObterNotasAlunos(alunosCodigos, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, (int)turma.TipoTurma);
+            if (notas == null || !notas.Any())
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
+            var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
+            var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
+            var cabecalho = await ObterCabecalho(turma.Codigo);
+            var listaturmas = notas.Select(n => n.Key).ToArray();
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaturmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo, usuario);
+            var frequenciaAlunos = await ObterFrequenciaComponente(turma.Codigo, tipoCalendarioId, periodosEscolares);
+            var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.Codigo);
+            var pareceresConclusivos = await ObterPareceresConclusivos(turma.Codigo);
+
+            List<ComponenteCurricularPorTurma> componentesDaTurma = new List<ComponenteCurricularPorTurma>();
+            foreach (var componente in componentesCurriculares)
+            {
+                componentesDaTurma.AddRange(componente.ToList());
+            }
+
+            List<NotaConceitoBimestreComponente> notasFinais = new List<NotaConceitoBimestreComponente>();
+            foreach (var nota in notas)
+            {
+                notasFinais.AddRange(nota.Select(nf => new NotaConceitoBimestreComponente()
+                {
+                    AlunoCodigo = nf.CodigoAluno,
+                    Nota = nf.NotaConceito.Nota,
+                    Bimestre = nf.PeriodoEscolar.Bimestre,
+                     ComponenteCurricularCodigo = Convert.ToInt64(nf.CodigoComponenteCurricular),
+                   ConceitoId = nf.NotaConceito.ConceitoId,
+                     Conceito = nf.NotaConceito.Conceito,
+                   Sintese = nf.NotaConceito.Sintese
+                }));;
             }
 
             var dadosRelatorio = await MontarEstruturaRelatorio(turma.ModalidadeCodigo, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma.Codigo);
