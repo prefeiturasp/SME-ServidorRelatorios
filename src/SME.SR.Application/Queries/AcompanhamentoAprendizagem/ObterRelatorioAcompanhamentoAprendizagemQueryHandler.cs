@@ -68,6 +68,7 @@ namespace SME.SR.Application
                     throw new NegocioException("AlunoEol não encontrado");
 
                 var alunoRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoDto();
+                alunoRelatorio.NomeEol = alunoEol.NomeAluno;
                 alunoRelatorio.Nome = alunoEol.NomeRelatorio;
                 alunoRelatorio.DataNascimento = alunoEol.DataNascimentoFormatado();
                 alunoRelatorio.CodigoEol = alunoEol.AlunoCodigo.ToString();
