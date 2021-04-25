@@ -48,8 +48,8 @@ namespace SME.SR.HtmlPdf
                 doc.Objects.Add(new ObjectSettings()
                 {
                     HtmlContent = html,
-                    WebSettings = { DefaultEncoding = "utf-8" },
-                    PagesCount = false                    
+                    WebSettings = { DefaultEncoding = "utf-8" } ,
+                    PagesCount = true,
                 });
 
 
