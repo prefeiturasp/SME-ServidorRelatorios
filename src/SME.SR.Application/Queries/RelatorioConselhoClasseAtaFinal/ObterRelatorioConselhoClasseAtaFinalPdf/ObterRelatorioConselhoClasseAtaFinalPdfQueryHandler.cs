@@ -94,19 +94,19 @@ namespace SME.SR.Application
             var frequenciaAlunos = await ObterFrequenciaComponente(turma.Codigo, tipoCalendarioId, periodosEscolares);
             var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.Codigo);
 
-            IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos = new List<ConselhoClasseParecerConclusivo>();
+            List<ConselhoClasseParecerConclusivo> pareceresConclusivos = new List<ConselhoClasseParecerConclusivo>();
             if (turma.TipoTurma == TipoTurma.Itinerarios2AAno)
             {
                 foreach(var key in notas.Where(n => n.Key != turma.Codigo))
                 {
                     var checarTurma = await ObterTurma(key.Key);
                     if(checarTurma.TipoTurma == TipoTurma.Regular)
-                        pareceresConclusivos = await ObterPareceresConclusivos(checarTurma.Codigo);
+                        pareceresConclusivos.AddRange(await ObterPareceresConclusivos(checarTurma.Codigo));
                 }
             }
             else
             {
-                pareceresConclusivos = await ObterPareceresConclusivos(turma.Codigo);
+                pareceresConclusivos.AddRange(await ObterPareceresConclusivos(turma.Codigo));
             }
 
             List<ComponenteCurricularPorTurma> componentesDaTurma = new List<ComponenteCurricularPorTurma>();
