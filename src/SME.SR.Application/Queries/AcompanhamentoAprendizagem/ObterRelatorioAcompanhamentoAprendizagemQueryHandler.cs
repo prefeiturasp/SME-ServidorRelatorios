@@ -98,9 +98,12 @@ namespace SME.SR.Application
             var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();           
 
             if (frequenciasAlunos == null || !frequenciasAlunos.Any())
-                return null;
+                return freqenciasRelatorio;
 
             var frequenciasFiltrada = frequenciasAlunos.Where(f => f.CodigoAluno == alunoCodigo);
+
+            if (frequenciasFiltrada == null || !frequenciasFiltrada.Any())
+                return freqenciasRelatorio;
 
             foreach (var frequencia in frequenciasFiltrada.OrderBy(b => b.Bimestre))
             {
@@ -122,12 +125,12 @@ namespace SME.SR.Application
             var registrosIndividuaisRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto>();            
 
             if (registrosIndividuais == null || !registrosIndividuais.Any())
-                return null;
+                return registrosIndividuaisRelatorio;
 
             var registrosIndividuaisFiltrados = registrosIndividuais.Where(r => r.AlunoCodigo == long.Parse(alunoCodigo));
 
             if (registrosIndividuaisFiltrados == null || !registrosIndividuaisFiltrados.Any())
-                return null;
+                return registrosIndividuaisRelatorio;
 
             foreach (var registro in registrosIndividuaisFiltrados.OrderByDescending(b => b.DataRegistro))
             {
@@ -146,12 +149,12 @@ namespace SME.SR.Application
             var ocorrenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();            
 
             if (ocorrencias == null || !ocorrencias.Any())
-                return null;
+                return ocorrenciasRelatorio;
 
             var ocorrenciasFiltradas = ocorrencias.Where(r => r.AlunoCodigo == long.Parse(alunoCodigo));
 
             if (ocorrenciasFiltradas == null || !ocorrenciasFiltradas.Any())
-                return null;
+                return ocorrenciasRelatorio;
 
             foreach (var ocorrencia in ocorrenciasFiltradas.OrderByDescending(o => o.DataOcorrencia))
             {
