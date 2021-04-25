@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using SME.SR.Infra;
+using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery : IRequest<AcompanhamentoAprendizagemAlunoRetornoDto>
+    public class ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery : IRequest<IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto>>
     {
         public ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(long turmaId, string alunoCodigo, int semestre)
         {
