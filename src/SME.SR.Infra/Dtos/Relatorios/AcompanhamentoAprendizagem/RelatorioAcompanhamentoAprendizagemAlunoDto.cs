@@ -18,6 +18,7 @@ namespace SME.SR.Infra
         public string Telefone { get; set; }
         public string RegistroPercursoTurma { get; set; }
         public string Observacoes { get; set; }
+        public string NomeEol { get; set; }
 
         public List<RelatorioAcompanhamentoAprendizagemAlunoFotoDto> Fotos { get; set; }
         public List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> Frequencias { get; set; }
