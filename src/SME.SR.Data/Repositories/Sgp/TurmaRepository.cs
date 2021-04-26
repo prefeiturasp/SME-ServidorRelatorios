@@ -815,16 +815,14 @@ namespace SME.SR.Data
                         select 
 	                        *
                         from 
-	                        (select TurmaCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo from tempTurmaRegularConselhoAluno) as Regulares
+	                        (select TurmaRegularCodigo, TurmaCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo from tempTurmaRegularConselhoAluno) as Regulares
                         union
 	                        (select * from tempTurmaComplementarConselhoAluno)";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            var codigos = codigoAlunos.Select(a => a.ToString()).ToArray();
-
-            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigos });
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigoAlunos.Select(a => a.ToString()).ToArray() });
         }
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaSemParecerConclusivo(long turmaCodigo)
