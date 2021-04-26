@@ -7,31 +7,11 @@
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarComponente(string componenteNome, bool removerBorderTop = false)
-    {
-        // Contar
-        contadorQuebrarPagina = contadorQuebrarPagina + 2;
-        var stiloBorderTop = removerBorderTop ? "border-top: none;" : "";
-        var str = $@"<table class='tabela-alunos'>
-<tbody>
-<tr>
-<td style='border-bottom: none;{stiloBorderTop}'></td>
-</tr>
-</tbody>
-</table>
-<table class='tabela-alunos'>
-<thead>
-<tr><th>{componenteNome}</th></tr>
-</thead>
-</table>";
-        return Html.Raw(str);
-    }
-
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
         paginaAtual++;
         var str = $@"<footer class='rodape-rel-aprendizagem'>
-                <div class='titulo-sgp-rodape'>QWERTY</div>
+                <div class='titulo-sgp-rodape'></div>
             </footer>
             <div style='page-break-before:always' />";
         return Html.Raw(str);
@@ -256,7 +236,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
             <tbody>
                 <tr>
                     <td class="alinhar-esquerda espaco-esquerda-15 espaco-esquerda-15">
-                        @registroPercursoTurma
+                        @Html.Raw(registroPercursoTurma)
                     </td>
                 </tr>
             </tbody>
@@ -346,7 +326,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
                     SomaLinhasContador(numeroLinhasRegistroIndividual);
 
                     <tr>
-                        <td width="15%" class='centralizar '>@registroIndividual.Data L -> @contadorQuebrarPagina</td>
+                        <td width="15%" class='centralizar '>@registroIndividual.Data</td>
                         <td width="85%" class='alinhar-esquerda espaco-esquerda-15 '>@descricaoRegistroIndividual</td>
                     </tr>
                 }
@@ -470,6 +450,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
             min-height: 29.7cm;
             background: white;
             color: #42474a;
+            position: relative;
         }
 
         .titulo-sgp {
@@ -500,9 +481,9 @@ PROFESSORES: {Model.Cabecalho.Professores}
             margin-bottom: 22px;
         }
 
-            .header-pagina td {
-                text-align: left;
-            }
+        .header-pagina td {
+            text-align: left;
+        }
 
         .campo-dre {
             width: 20%;
@@ -583,6 +564,10 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
         .rodape-rel-aprendizagem {
             font-size: 12px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: grey;
         }
 
         .titulo-sgp-rodape {
@@ -659,7 +644,10 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 @Html.Raw(EspacoEmBranco())
                 contadorQuebrarPagina++;
 
-                MontarOcorrencias(aluno);
+                if (aluno.Ocorrencias.Count() > 0)
+                {
+                    MontarOcorrencias(aluno);
+                }
 
                 QuebrarLinhas(3, aluno.Nome);
                 MontarAssinatura();
@@ -670,9 +658,8 @@ PROFESSORES: {Model.Cabecalho.Professores}
                     contadorQuebrarPagina = 0;
                 }
                 contarAlunos++;
-
             }
         }
-     </div>
+    </div>
  </body>
 </html>
