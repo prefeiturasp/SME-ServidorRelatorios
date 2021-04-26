@@ -17,7 +17,7 @@ namespace SME.SR.HtmlPdf
             this.converter = converter;
         }
 
-        public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "")
+        public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true)
         {
             nomeArquivo = String.Format("{0}.pdf", nomeArquivo);
 
@@ -31,17 +31,27 @@ namespace SME.SR.HtmlPdf
                     Out=nomeArquivo
                 }
             };
-            doc.Objects.Add(new ObjectSettings()
-            {
-                HtmlContent = html,
-                WebSettings = { DefaultEncoding = "utf-8" },
-                PagesCount = true,
-                FooterSettings = { 
-                    FontName="Roboto", 
-                    FontSize = 9, Right = "[page] / [toPage]", 
-                    Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
-                }
-            });
+            
+            if (gerarPaginacao)
+                doc.Objects.Add(new ObjectSettings()
+                {
+                    HtmlContent = html,
+                    WebSettings = { DefaultEncoding = "utf-8" },
+                    PagesCount = true,
+                    FooterSettings = { 
+                        FontName="Roboto", 
+                        FontSize = 9, Right = "[page] / [toPage]", 
+                        Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
+                    }
+                }); 
+            else
+                doc.Objects.Add(new ObjectSettings()
+                {
+                    HtmlContent = html,
+                    WebSettings = { DefaultEncoding = "utf-8" } ,
+                    PagesCount = true,
+                });
+
 
             converter.Convert(doc);
         }

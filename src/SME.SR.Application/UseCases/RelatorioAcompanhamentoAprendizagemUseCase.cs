@@ -53,7 +53,7 @@ namespace SME.SR.Application
 
                 relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias));
 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, gerarPaginacao: false));
 
             }
             catch (Exception ex)
