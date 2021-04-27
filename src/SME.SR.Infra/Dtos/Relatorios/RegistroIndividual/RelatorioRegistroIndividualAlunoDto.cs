@@ -1,10 +1,14 @@
-﻿namespace SME.SR.Infra
+﻿using System.Collections.Generic;
+
+namespace SME.SR.Infra
 {
     public class RelatorioRegistroIndividualAlunoDto
     {
+        public RelatorioRegistroIndividualAlunoDto()
+        {
+            Registros = new List<RelatorioRegistroIndividualDetalhamentoDto>();
+        }
         public string Nome { get; set; }
-        public string DataRegistro { get; set; }
-        public string Descricao { get; set; }
-        public string RegistradoPor { get; set; }
+        public List<RelatorioRegistroIndividualDetalhamentoDto> Registros { get; set; }
     }
 }
