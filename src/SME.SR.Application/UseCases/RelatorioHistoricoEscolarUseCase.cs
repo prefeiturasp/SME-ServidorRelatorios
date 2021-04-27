@@ -96,6 +96,8 @@ namespace SME.SR.Application
 
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
 
+            var ordenacaoGrupoArea = await ObterOrdenacaoAreasConhecimento(componentesCurriculares, areasDoConhecimento);
+
             var dre = await ObterDrePorCodigo(filtros.DreCodigo);
 
             var ue = await ObterUePorCodigo(filtros.UeCodigo);
@@ -131,7 +133,7 @@ namespace SME.SR.Application
                   frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray()));
 
             if ((turmasFundMedio != null && turmasFundMedio.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
-                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,
+                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
             else if ((turmasEja != null && turmasEja.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
@@ -275,6 +277,14 @@ namespace SME.SR.Application
             listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => !cc.Regencia).Select(a => a.CodDisciplina));
 
             return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.Distinct().ToArray()));
+        }
+
+        private async Task<IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto>> ObterOrdenacaoAreasConhecimento(IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares, IEnumerable<AreaDoConhecimento> areasDoConhecimento)
+        {
+            var listaGrupoMatrizId = componentesCurriculares?.SelectMany(a => a)?.Select(a => a.GrupoMatriz.Id)?.Distinct().ToArray();
+            var listaAreaConhecimentoId = areasDoConhecimento?.Select(a => a.Id).ToArray();
+
+            return await mediator.Send(new ObterComponenteCurricularGrupoAreaOrdenacaoQuery(listaGrupoMatrizId, listaAreaConhecimentoId));
         }
 
         private async Task<IEnumerable<AlunoTurmasHistoricoEscolarDto>> MontarAlunosTurmas(FiltroHistoricoEscolarDto filtros)
