@@ -39,8 +39,8 @@ namespace SME.SR.Infra
         {
             if (string.IsNullOrEmpty(ResponsavelDDD))
                 return string.Empty;
-
-            return $"({ResponsavelDDD.Trim()}) {ResponsavelCelular.Trim()} (Atualizado - {DataAtualizacaoContato:dd/MM/yyyy})";
+            
+            return $"({ResponsavelDDD.Trim()}) {ResponsavelCelular.Substring(0,5).Trim()}-{ResponsavelCelular.Substring(5, 4).Trim()} (Atualizado - {DataAtualizacaoContato:dd/MM/yyyy})";
         }
 
         public string DataNascimentoFormatado()

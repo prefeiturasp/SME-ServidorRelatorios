@@ -32,9 +32,9 @@ namespace SME.SR.Application
             {
                 Cabecalho = MontarCabecalho(acompanhmentosAlunos.FirstOrDefault(), professores),
                 Alunos = MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias),
-            };            
+            };
 
-            return relatorio;            
+            return relatorio;
         }
 
         private RelatorioAcompanhamentoAprendizagemCabecalhoDto MontarCabecalho(AcompanhamentoAprendizagemAlunoRetornoDto acompanhamentoAluno, IEnumerable<ProfessorTitularComponenteCurricularDto> professores)
@@ -58,10 +58,10 @@ namespace SME.SR.Application
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias)
         {
-            var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();           
+            var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             foreach (var aluno in alunosAcompanhamento)
-            {                
+            {
                 var alunoEol = alunosEol.FirstOrDefault(a => a.AlunoCodigo == long.Parse(aluno.AlunoCodigo));
 
                 if (alunoEol == null)
@@ -81,7 +81,11 @@ namespace SME.SR.Application
                 // TODO : Verificar como recuperar o caminho da foto
                 foreach (var foto in aluno.Fotos)
                 {
-                    alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto{ Caminho = "https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg" });
+                    alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
+                    {
+                        TipoArquivo = foto.TipoArquivo,
+                        Caminho = foto.ArquivoBase64()
+                    });
                 }
 
                 alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos);
@@ -96,7 +100,7 @@ namespace SME.SR.Application
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos)
         {
-            var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();           
+            var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
 
             if (frequenciasAlunos == null || !frequenciasAlunos.Any())
                 return freqenciasRelatorio;
@@ -114,7 +118,7 @@ namespace SME.SR.Application
                     Aulas = frequencia.TotalAulas,
                     Ausencias = frequencia.TotalAusencias,
                     Frequencia = $"{frequencia.PercentualFrequencia}%",
-                };               
+                };
 
                 freqenciasRelatorio.Add(freqenciaRelatorio);
             }
@@ -123,7 +127,7 @@ namespace SME.SR.Application
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> MontarRegistrosIndividuais(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais)
         {
-            var registrosIndividuaisRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto>();            
+            var registrosIndividuaisRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto>();
 
             if (registrosIndividuais == null || !registrosIndividuais.Any())
                 return registrosIndividuaisRelatorio;
@@ -139,7 +143,7 @@ namespace SME.SR.Application
                 {
                     Data = registro.DataRelatorio,
                     Descricao = registro.RegistroFormatado(),
-                };                
+                };
 
                 registrosIndividuaisRelatorio.Add(registroIndividualRelatorio);
             }
@@ -147,7 +151,7 @@ namespace SME.SR.Application
         }
         private List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto> MontarOcorrencias(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias)
         {
-            var ocorrenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();            
+            var ocorrenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();
 
             if (ocorrencias == null || !ocorrencias.Any())
                 return ocorrenciasRelatorio;

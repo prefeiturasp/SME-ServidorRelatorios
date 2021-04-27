@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SME.SR.Infra
 {
@@ -45,16 +46,33 @@ namespace SME.SR.Infra
         {
             if (string.IsNullOrEmpty(ApanhadoGeral))
                 return string.Empty;
+            
+            var i = 1;
 
-            var registroFormatado = UtilRegex.RemoverTagsHtmlMidia(ApanhadoGeral);
-            return UtilRegex.RemoverTagsHtml(registroFormatado);
+            var imagens = Regex.Matches(ApanhadoGeral, "<img.+?>");
+
+            foreach (var imagem in imagens)
+            {
+                var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $"#{i++}");
+                ApanhadoGeral = textoSemImagem;
+            }
+
+            i = 1;
+            var registro = UtilRegex.RemoverTagsHtml(ApanhadoGeral);            
+
+            foreach (var imagem in imagens)
+            {
+                var textoSemTagsComImagens = registro.Replace($"#{i++}", imagem.ToString());
+                registro = textoSemTagsComImagens;
+            }            
+             return registro;
         }
 
         public string SemestreFormatado()
         {
             if (Semestre == 0)
                 return string.Empty;
-            
+
             return $"{Semestre}º SEMESTRE {DateTime.Now.Year}";
         }
 

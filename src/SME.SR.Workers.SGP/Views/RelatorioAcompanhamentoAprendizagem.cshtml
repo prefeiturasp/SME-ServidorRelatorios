@@ -196,18 +196,23 @@ PROFESSORES: {Model.Cabecalho.Professores}
             </tbody>
         </table>
 
-        return "";
-    }
+                    return "";
+                }
 
-    string MontarFotos(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
-    {
-        MontarTitulo("FOTOS");
+                string MontarFotos(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+                {
+                    MontarTitulo("FOTOS");
 
         <table class='tabela-alunos sem-border-bottom'>
             <tbody>
                 <tr>
                     <td width="33%" class='centralizar'>
-                        <img style="margin:3px; max-width: 257px;" src="@aluno.Fotos.ElementAt(0).Caminho" height="180px" />
+                        @{
+                            var caminho = $"data:image/jpeg;base64,{aluno.Fotos.ElementAt(0).Caminho.ToString()}";
+
+                            <img style="margin:3px; max-width: 257px;" src="@caminho" height="180px" />
+                        }
+
                     </td>
                     <td width="33%" class='centralizar'>
                         @if (aluno.Fotos.ElementAtOrDefault(1) != null)
