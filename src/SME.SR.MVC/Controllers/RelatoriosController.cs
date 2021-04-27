@@ -1,13 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SME.SR.Application;
+using SME.SR.Application.Interfaces;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.MVC.Controllers
@@ -7445,6 +7448,30 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             return View("RelatorioRegistroItinerancia", model);
         }
+
+
+        [HttpGet("acompanhamento-aprendizagem")]
+        public async Task<IActionResult> AcompanhamentoAprendizagem([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+            try
+            {
+                var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioAcompanhamentoAprendizagemDto() { Semestre = 1, TurmaId = 615813 } , new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+                
+                await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
+           //  var model = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(615822, "6731135", 1));
+                return View("RelatorioAcompanhamentoAprendizagem", null);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
+        }
+
 
        
         

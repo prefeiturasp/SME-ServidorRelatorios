@@ -1303,5 +1303,110 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<AlunoNomeDto>(query, new { codigos });
             }
         }
-    }
+
+		public async Task<IEnumerable<AlunoRetornoDto>> ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long turmaCodigo, long? alunoCodigo)
+        {
+			var query = @$"SELECT distinct aluno.cd_aluno AlunoCodigo,
+					   aluno.nm_aluno NomeAluno,
+					   aluno.nm_social_aluno NomeSocialAluno,
+					   mte.nr_chamada_aluno NumeroAlunoChamada,
+                       mte.cd_turma_escola TurmaCodigo,
+                       aluno.dt_nascimento_aluno DataNascimento,
+                       mte.cd_situacao_aluno CodigoSituacaoMatricula,
+					        CASE
+							    WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+							    WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+							    WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+							    WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+							    WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+							    WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+							    WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+							    WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+							    WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+							    WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+							    WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+							    WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+							    WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+							    WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							    ELSE 'Fora do domínio liberado pela PRODAM'
+							END SituacaoMatricula,
+						    mte.dt_situacao_aluno DataSituacao,
+						    LTRIM(RTRIM(nm_responsavel)) ResponsavelNome,
+		                    ra.tp_pessoa_responsavel TipoResponsavel, 
+		                    LTRIM(RTRIM(ra.cd_ddd_celular_responsavel)) ResponsavelDDD, 
+		                    LTRIM(RTRIM(ra.nr_celular_responsavel)) ResponsavelCelular,
+		                    ra.dt_atualizacao_tabela DataAtualizacaoContato
+			      FROM v_aluno_cotic aluno
+				 INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+				 INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+				  LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+				  LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
+				 WHERE mte.cd_turma_escola = @turmaCodigo
+				   {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "")}		 
+				   AND mte.cd_situacao_aluno in (1,5,6,10,13)
+		   UNION 
+				 SELECT aluno.cd_aluno AlunoCodigo,
+						aluno.nm_aluno NomeAluno,						
+						aluno.nm_social_aluno NomeSocialAluno,						
+						mte.nr_chamada_aluno NumeroAlunoChamada,
+						mte.cd_turma_escola TurmaCodigo,
+						aluno.dt_nascimento_aluno DataNascimento,
+								   mte.cd_situacao_aluno CodigoSituacaoMatricula,
+										CASE
+											WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+											WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+											WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+											WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+											WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+											WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+											WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+											WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+											WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+											WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+											WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+											WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+											WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+											WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+											ELSE 'Fora do domínio liberado pela PRODAM'
+											END SituacaoMatricula,
+										mte.dt_situacao_aluno DataSituacao,
+										LTRIM(RTRIM(nm_responsavel)) ResponsavelNome,
+										ra.tp_pessoa_responsavel TipoResponsavel, 
+										LTRIM(RTRIM(ra.cd_ddd_celular_responsavel)) ResponsavelDDD, 
+										LTRIM(RTRIM(ra.nr_celular_responsavel)) ResponsavelCelular,
+										ra.dt_atualizacao_tabela DataAtualizacaoContato
+				   FROM v_aluno_cotic aluno
+				  INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+				  INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+				   LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+				   LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
+				  WHERE mte.cd_turma_escola = @turmaCodigo
+					{(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "")}
+					AND mte.cd_situacao_aluno in (1,5,6,10,13)
+					AND mte.dt_situacao_aluno =  (
+	    										   SELECT max(mte2.dt_situacao_aluno) 
+													 FROM v_historico_matricula_cotic  matr2
+													INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+													WHERE matr2.cd_aluno = matr.cd_aluno
+													  AND mte2.cd_turma_escola = @turmaCodigo
+													  {(alunoCodigo != null ? "AND matr2.cd_aluno = @alunoCodigo" : "")}
+										   
+												  )
+				  AND NOT EXISTS( 
+	  							  SELECT 1 
+									FROM v_matricula_cotic matr3
+								   INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
+								   WHERE mte.cd_matricula = mte3.cd_matricula
+									 AND mte.cd_turma_escola = @turmaCodigo 
+									 {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "")}
+									 AND mte.cd_situacao_aluno in (1,5,6,10,13))";
+
+			var parametros = new { turmaCodigo, alunoCodigo };
+
+			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+			{
+				return await conexao.QueryAsync<AlunoRetornoDto>(query, parametros);
+			}
+		}
+	}
 }

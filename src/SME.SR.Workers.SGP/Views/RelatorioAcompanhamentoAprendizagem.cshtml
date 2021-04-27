@@ -1,0 +1,665 @@
+﻿@model SME.SR.Infra.RelatorioAcompanhamentoAprendizagemDto
+
+@{
+    int paginaAtual = 0;
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 47;
+    int contadorMaximoDescricao = 0;
+    bool quebrou = false;
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
+    {
+        paginaAtual++;
+        var str = $@"<footer class='rodape-rel-aprendizagem'>
+                <div class='titulo-sgp-rodape'></div>
+            </footer>
+            <div style='page-break-before:always' />";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        var str =
+   $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'>RELATÓRIO DO ACOMPANHAMENTO DA APRENDIZAGEM</div>
+<div class='titulo-sub-relatorio'>{Model.Cabecalho.Semestre}</div>
+<div class='fonte-14 header-pagina'>
+<table>
+<tbody>
+<tr>
+<td class='campo-dre espaco-esquerda-15'>DRE: {Model.Cabecalho.Dre}</td>
+<td class='campo-ue espaco-esquerda-15'>UE: {Model.Cabecalho.Ue}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td class='campo-bimestre espaco-esquerda-15'>TURMA: {Model.Cabecalho.Turma}</td>
+<td class='campo-componente-curricular espaco-esquerda-15'>
+PROFESSORES: {Model.Cabecalho.Professores}
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return Html.Raw(str);
+    }
+
+    string EspacoEmBranco()
+    {
+        if (quebrou)
+        {
+            return "";
+        }
+
+        return @"<table><tbody><tr><td height='17px' width='100%' class='tabela-cabecalho sem-border-bottom'></td></tr></tbody></table>";
+    }
+
+    void SomaLinhasContador(int numeroLinhasDescricao)
+    {
+        if (numeroLinhasDescricao > 1)
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
+        }
+        else
+        {
+            contadorQuebrarPagina++;
+        }
+    }
+
+    bool VerificaQuebra(int numeroLinhasDescricao = 0)
+    {
+        if (contadorQuebrarPagina + numeroLinhasDescricao >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+            quebrou = true;
+            return true;
+        }
+        quebrou = false;
+        return false;
+
+    }
+
+    int CalcularLinhas(int valorLinha = 0)
+    {
+        if (contadorMaximoDescricao == 1)
+        {
+            contadorMaximoDescricao = 0;
+        }
+        else
+        {
+            contadorMaximoDescricao++;
+        }
+
+        if (valorLinha > 0)
+        {
+            return valorLinha / 220;
+        }
+
+        return 1;
+    }
+
+    string MontarTitulo(string titulo)
+    {
+        <table class='tabela-alunos'>
+            <thead>
+                <tr>
+                    <td width='100%' class='centralizar sem-border-bottom negrito'>@titulo</td>
+                </tr>
+            </thead>
+        </table>
+
+        contadorQuebrarPagina++;
+
+        return "";
+    }
+
+    void QuebrarLinhas(int numeroQuebras = 2, string estudante = "", string titulo = "")
+    {
+        bool quebra = VerificaQuebra(numeroQuebras);
+
+        if (quebra)
+        {
+            @Html.Raw("</tbody></table>");
+            @Html.Raw("<div style='page-break-before:always'></div>");
+            @Html.Raw(MontarCabecalho());
+
+            if (!String.IsNullOrEmpty(estudante))
+            {
+                @Html.Raw(MontarTitulo(estudante));
+            }
+
+            if (!String.IsNullOrEmpty(titulo))
+            {
+                @Html.Raw(MontarTitulo(titulo));
+            }
+
+            @Html.Raw("<table class='tabela-alunos'>");
+
+            contadorQuebrarPagina = contadorQuebrarPagina + numeroQuebras;
+        }
+    }
+
+    string MontarEstudantes(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    {
+        MontarTitulo(aluno.Nome);
+
+        <table class='tabela-alunos'>
+            <thead>
+                <tr>
+                    <td class='centralizar sem-border-bottom negrito'>DATA NASCIMENTO</td>
+                    <td class='centralizar sem-border-bottom negrito'>CÓDIGO EOL</td>
+                    <td class='centralizar sem-border-bottom negrito'>SITUAÇÃO</td>
+                    <td class='centralizar sem-border-bottom negrito'>RESPONSÁVEL</td>
+                    <td class='centralizar sem-border-bottom negrito'>TELEFONE</td>
+                </tr>
+            </thead>
+
+            @{ contadorQuebrarPagina++; }
+
+            <tbody>
+                <tr>
+                    <td width="20%" class='centralizar sem-border-bottom'>@aluno.DataNascimento</td>
+                    <td width="14%" class='centralizar sem-border-bottom'>@aluno.CodigoEol</td>
+                    <td width="22%" class='centralizar sem-border-bottom' style="padding:3px;">@aluno.Situacao</td>
+                    <td width="22%" class='centralizar sem-border-bottom'>@aluno.Responsavel</td>
+                    <td width="22%" class='centralizar sem-border-bottom'>@aluno.Telefone</td>
+                </tr>
+            </tbody>
+        </table>
+
+        return "";
+    }
+
+    string MontarFotos(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    {
+        MontarTitulo("FOTOS");
+
+        <table class='tabela-alunos sem-border-bottom'>
+            <tbody>
+                <tr>
+                    <td width="33%" class='centralizar'>
+                        <img style="margin:3px; max-width: 257px;" src="@aluno.Fotos.ElementAt(0).Caminho" height="180px" />
+                    </td>
+                    <td width="33%" class='centralizar'>
+                        @if (aluno.Fotos.ElementAtOrDefault(1) != null)
+                        {
+                            <img style="margin:3px; max-width: 257px;" src="@aluno.Fotos.ElementAt(1).Caminho" height="180px"/>
+                        }
+                    </td>
+                    <td width="33%" class='centralizar'>
+                        @if (aluno.Fotos.ElementAtOrDefault(2) != null)
+                        {
+                            <img style="margin:3px; max-width: 257px;" src="@aluno.Fotos.ElementAt(2).Caminho" height="180px"/>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        return "";
+    }
+
+    string MontarRegistroPercurso(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    {
+        var registroPercursoTurma = aluno.RegistroPercursoTurma;
+        int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
+
+        if (numeroLinhasRegistroPercursoTurma < 2)
+        {
+            contadorMaximoLinhasPorPagina = 50;
+        }
+        else
+        {
+            contadorMaximoLinhasPorPagina = 47;
+        }
+
+        QuebrarLinhas(numeroLinhasRegistroPercursoTurma, aluno.Nome);
+
+        SomaLinhasContador(numeroLinhasRegistroPercursoTurma);
+
+        var classeRegistroPercurso = !quebrou ? "" : "sem-border-top";
+        <table class='tabela-alunos sem-border-top'>
+            <thead>
+                <tr>
+                    <td width='100%' class='centralizar negrito {classeRegistroPercurso}'>REGISTRO DO PERCURSO DA TURMA</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="alinhar-esquerda espaco-esquerda-15 espaco-esquerda-15">
+                        @Html.Raw(registroPercursoTurma)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        return "";
+    }
+
+    string MontarFrequencia(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    {
+        MontarTitulo("FREQUÊNCIA");
+
+        <table class='tabela-alunos'>
+            <thead>
+                <tr>
+                    <td class='centralizar sem-border-bottom negrito'>BIMESTRE</td>
+                    <td class='centralizar sem-border-bottom negrito'>AULAS</td>
+                    <td class='centralizar sem-border-bottom negrito'>AUSÊNCIAS</td>
+                    <td class='centralizar sem-border-bottom negrito'>FREQUÊNCIA</td>
+                </tr>
+            </thead>
+
+            @{ contadorQuebrarPagina++; }
+
+            <tbody>
+
+                @foreach (var frequencia in aluno.Frequencias)
+                {
+                    <tr>
+
+                        <td width="25%" class='centralizar'>@frequencia.Bimestre</td>
+                        <td width="25%" class='centralizar'>@frequencia.Aulas</td>
+                        <td width="25%" class='centralizar'>@frequencia.Ausencias</td>
+                        <td width="25%" class='centralizar'>@frequencia.Frequencia</td>
+                    </tr>
+
+                    contadorQuebrarPagina++;
+
+                    QuebrarLinhas(0, aluno.Nome);
+                }
+
+            </tbody>
+        </table>
+
+        return "";
+    }
+
+    string MontarCabecalhoRegistroIndividual()
+    {
+        var classeRegistroIndividual = !quebrou ? "sem-border-top" : "";
+
+        <thead>
+            <tr>
+                <td width="20%" class='centralizar sem-border-bottom negrito {classeRegistroIndividual}'>DATA DO REGISTRO</td>
+                <td class='centralizar sem-border-bottom negrito'>REGISTRO</td>
+            </tr>
+        </thead>
+        return "";
+    }
+
+    string MontarRegistroIndividual(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    {
+        QuebrarLinhas(3, aluno.Nome);
+
+        var titulo = "REGISTRO INDIVIDUAL";
+        MontarTitulo(titulo);
+
+        <table class='tabela-alunos'>
+            @Html.Raw(MontarCabecalhoRegistroIndividual())
+
+            @{ contadorQuebrarPagina++; }
+
+            <tbody>
+
+                @foreach (var registroIndividual in aluno.RegistrosIndividuais)
+                {
+                    var descricaoRegistroIndividual = registroIndividual.Descricao;
+                    int numeroLinhasRegistroIndividual = CalcularLinhas(descricaoRegistroIndividual.Length);
+
+                    QuebrarLinhas(numeroLinhasRegistroIndividual, aluno.Nome, titulo);
+
+                    if (quebrou)
+                    {
+                        @Html.Raw(MontarCabecalhoRegistroIndividual())
+                    }
+
+                    SomaLinhasContador(numeroLinhasRegistroIndividual);
+
+                    <tr>
+                        <td width="15%" class='centralizar '>@registroIndividual.Data</td>
+                        <td width="85%" class='alinhar-esquerda espaco-esquerda-15 '>@descricaoRegistroIndividual</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+
+        return "";
+    }
+
+    string MontarObservacoes(string observacao)
+    {
+        <table class='tabela-alunos sem-border-top'>
+            <thead>
+                <tr>
+                    <td width='100%' class='centralizar negrito'>OBSERVAÇÕES</td>
+                </tr>
+            </thead>
+
+            @{ contadorQuebrarPagina++; }
+
+            <tbody>
+                <tr>
+                    <td class="alinhar-esquerda espaco-esquerda-15">
+                        @observacao
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        return "";
+    }
+
+    string MontarOcorrencias(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    {
+        var tituloOcorrencias = "OCORRÊNCIAS";
+
+        MontarTitulo(tituloOcorrencias);
+
+        <table class='tabela-alunos'>
+            <thead>
+                <tr>
+                    <th class="centralizar sem-border-bottom negrito">DATA DO OCORRÊNCIA</th>
+                    <th class="centralizar sem-border-bottom negrito">TIPO</th>
+                    <th class="centralizar sem-border-bottom negrito">DESCRIÇÃO DA OCORRÊNCIA</th>
+                </tr>
+            </thead>
+
+            @{ contadorQuebrarPagina++; }
+
+            <tbody>
+
+                @foreach (var ocorrencia in aluno.Ocorrencias)
+                {
+                    var descricaoOcorrencia = ocorrencia.Descricao;
+                    int numeroLinhasOcorrencia = CalcularLinhas(descricaoOcorrencia.Length);
+
+                    QuebrarLinhas(numeroLinhasOcorrencia + 2, aluno.Nome, tituloOcorrencias);
+
+                    SomaLinhasContador(numeroLinhasOcorrencia);
+
+
+                    <tr>
+                        <td rowspan="2" width="15%">@ocorrencia.Data</td>
+                        <td rowspan="2" width="15%">@ocorrencia.Tipo</td>
+                        <td class="alinhar-esquerda espaco-esquerda-15">@ocorrencia.Titulo</td>
+                    </tr>
+
+                    contadorQuebrarPagina++;
+
+                    <tr>
+                        <td class="alinhar-esquerda espaco-esquerda-15">@descricaoOcorrencia</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+                    return "";
+                }
+
+    string MontarAssinatura()
+    {
+        MontarTitulo("ESTOU CIENTE DESTE RELATÓRIO");
+
+        <table class='tabela-alunos'>
+            <thead>
+                <tr>
+                    <td class='centralizar sem-border-bottom negrito'>DATA ASSINATURA</td>
+                    <td class='centralizar sem-border-bottom negrito'>ASSINATURA</td>
+                </tr>
+            </thead>
+
+            @{ contadorQuebrarPagina++; }
+
+            <tbody>
+                <tr>
+                    <td width="20%" class='centralizar'></td>
+                    <td width="80%" class='centralizar'></td>
+                </tr>
+            </tbody>
+        </table>
+
+        return "";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DO ACOMPANHAMENTO DA APRENDIZAGEM</title>
+</head>
+<body class="body-rel-acompanhamento-aprendizagem">
+    <style>
+        .body-rel-acompanhamento-aprendizagem {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+            position: relative;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .titulo-sub-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+        }
+
+        .campo-dre {
+            width: 20%;
+        }
+
+        .campo-ue {
+            width: 80%
+        }
+
+        .campo-ano {
+            width: 15%
+        }
+
+        .campo-bimestre {
+            width: 20%;
+            border-top: none;
+        }
+
+        .campo-componente-curricular {
+            width: 80%;
+            border-top: none;
+        }
+
+        .campo-usuario {
+            width: 60%;
+            border-top: none;
+        }
+
+        .campo-rf-data {
+            width: 20%;
+            border-top: none;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+            padding: 3px 0;
+        }
+
+        .tabela-alunos tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .rodape-rel-aprendizagem {
+            font-size: 12px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: grey;
+        }
+
+        .titulo-sgp-rodape {
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .somente-border-top {
+            border-bottom: 0;
+            border-left: 0;
+            border-right: 0;
+        }
+    </style>
+
+    <div>
+        @{
+            var alunosOrdenados = Model.Alunos.OrderBy(a => a.NomeEol);
+            int contarAlunos = 0;
+            foreach (var aluno in alunosOrdenados)
+            {
+                @MontarCabecalho()
+
+                MontarEstudantes(aluno);
+                contadorQuebrarPagina++;
+
+                @Html.Raw(EspacoEmBranco())
+                contadorQuebrarPagina++;
+
+                @if (aluno.Fotos.Any())
+                {
+                    MontarFotos(aluno);
+
+                    contadorQuebrarPagina = contadorQuebrarPagina + 8;
+                }
+
+                MontarRegistroPercurso(aluno);
+                contadorQuebrarPagina++;
+
+                QuebrarLinhas(4, aluno.Nome);
+
+                @Html.Raw(EspacoEmBranco())
+                contadorQuebrarPagina++;
+
+                MontarFrequencia(aluno);
+
+                MontarRegistroIndividual(aluno);
+
+                var descricaoObservacoes = aluno.Observacoes;
+                if (!String.IsNullOrEmpty(descricaoObservacoes))
+                {
+                    int numeroLinhasObservacoes = CalcularLinhas(descricaoObservacoes.Length);
+
+                    QuebrarLinhas(numeroLinhasObservacoes + 2, aluno.Nome);
+                    @Html.Raw(EspacoEmBranco())
+                    contadorQuebrarPagina++;
+
+                    MontarObservacoes(aluno.Observacoes);
+                    SomaLinhasContador(numeroLinhasObservacoes);
+                }
+
+                QuebrarLinhas(5, aluno.Nome);
+
+                @Html.Raw(EspacoEmBranco())
+                contadorQuebrarPagina++;
+
+                if (aluno.Ocorrencias.Count() > 0)
+                {
+                    MontarOcorrencias(aluno);
+                }
+
+                QuebrarLinhas(3, aluno.Nome);
+                MontarAssinatura();
+
+                if (contarAlunos < alunosOrdenados.Count() - 1)
+                {
+                    @Html.Raw(MontarQuebrarPagina());
+                    contadorQuebrarPagina = 0;
+                }
+                contarAlunos++;
+            }
+        }
+    </div>
+ </body>
+</html>
