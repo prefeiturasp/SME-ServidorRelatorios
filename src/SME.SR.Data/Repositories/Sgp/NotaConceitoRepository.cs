@@ -95,7 +95,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre, int[] tiposTurma)
         {
             const string queryNotasRegular = @"
-                        select t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, fa.aluno_codigo CodigoAluno,
+                        select t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, fa.aluno_codigo CodigoAluno,
                                fn.disciplina_id CodigoComponenteCurricular,
                                coalesce(ccp.aprovado, false) as Aprovado,
                                coalesce(pe.bimestre,0) Bimestre,  pe.periodo_inicio PeriodoInicio,
@@ -111,6 +111,7 @@ namespace SME.SR.Data
                          left join conceito_valores cvf on fn.conceito_id = cvf.id
                          left join conselho_classe cc on cc.fechamento_turma_id = ft.id
                          left join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id and cca.aluno_codigo = fa.aluno_codigo 
+                         left join conselho_classe_aluno_turma_complementar ccatc on cca.id = ccatc.conselho_classe_aluno_id
                          left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
                          left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and ccn.componente_curricular_codigo = fn.disciplina_id 
                          left join conceito_valores cvc on ccn.conceito_id = cvc.id
@@ -118,7 +119,7 @@ namespace SME.SR.Data
                            and t.ano_letivo = @anoLetivo";
 
             const string queryNotasComplementar = @"
-                        select t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, cca.aluno_codigo CodigoAluno,
+                        select t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, cca.aluno_codigo CodigoAluno,
                                ccn.componente_curricular_codigo CodigoComponenteCurricular,
                                coalesce(ccp.aprovado, false) as Aprovado,
                                coalesce(pe.bimestre,0) Bimestre, pe.periodo_inicio PeriodoInicio,
@@ -127,10 +128,11 @@ namespace SME.SR.Data
                                coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
                           left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
-                         inner join turma t on t.id = ft.turma_id 
                          inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
                          inner join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id
                          inner join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
+                         left join conselho_classe_aluno_turma_complementar ccatc on cca.id = ccatc.conselho_classe_aluno_id
+                         inner join turma t on t.id = ccatc.turma_id 
                          left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
                           left join conceito_valores cvc on ccn.conceito_id = cvc.id
                           left join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id

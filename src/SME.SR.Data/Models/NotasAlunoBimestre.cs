@@ -7,6 +7,8 @@ namespace SME.SR.Data
         public string CodigoTurma { get; set; }
         public TipoTurma TipoTurma { get; set; }
 
+        public long TurmaComplementarId { get; set; }
+
         public string CodigoAluno { get; set; }
 
         public string CodigoComponenteCurricular { get; set; }
