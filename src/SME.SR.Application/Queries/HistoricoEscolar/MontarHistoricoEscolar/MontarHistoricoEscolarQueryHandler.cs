@@ -327,7 +327,34 @@ namespace SME.SR.Application
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos)
         {
             if (turma != null)
-                return frequenciaAlunos.FirstOrDefault(f => f.DisciplinaId == codigoComponente && f.TurmaId == turma.Codigo)?.PercentualFrequencia.ToString() ?? "100";
+            {
+                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente);
+                FrequenciaAluno frequenciaAluno;
+
+                if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
+                {
+                    frequenciaAluno = new FrequenciaAluno() { DisciplinaId = codigoComponente, TurmaId = turma.Codigo };
+                }
+                else if (frequenciasAlunoParaTratar.Count() == 1)
+                {
+                    frequenciaAluno = frequenciasAlunoParaTratar.FirstOrDefault();
+                }
+                else
+                {
+                    frequenciaAluno = new FrequenciaAluno()
+                    {
+                        DisciplinaId = codigoComponente,
+                        CodigoAluno = frequenciasAlunoParaTratar.FirstOrDefault().CodigoAluno
+                    };
+
+
+                    frequenciaAluno.TotalAulas = frequenciasAlunoParaTratar.Sum(a => a.TotalAulas);
+                    frequenciaAluno.TotalAusencias = frequenciasAlunoParaTratar.Sum(a => a.TotalAusencias);
+                    frequenciaAluno.TotalCompensacoes = frequenciasAlunoParaTratar.Sum(a => a.TotalCompensacoes);
+                }
+
+                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia.ToString() ?? "100" : "100";
+            }
             else
                 return null;
         }
