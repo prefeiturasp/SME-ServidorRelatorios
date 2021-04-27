@@ -112,7 +112,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<Turma> ObterPorCodigo(string codigoTurma)
+        public async Task<Turma> ObterComDreUePorCodigo(string codigoTurma)
         {
             var query = @"select t.turma_id Codigo, t.nome, 
 			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA,
@@ -229,7 +229,8 @@ namespace SME.SR.Data
 	                        t.ano,
 	                        t.etapa_eja as EtapaEJA,
 	                        t1.ParecerConclusivo,
-	                        tc.descricao Ciclo
+	                        tc.descricao Ciclo,
+                            t.tipo_turma as TipoTurma
                         into temp tempAlunosTurmasRegulares
                         from 
 	                        tempAlunosConselhoDeClasse t1
@@ -259,13 +260,14 @@ namespace SME.SR.Data
 	                        t.ano,
 	                        t.etapa_eja as EtapaEJA,
 	                        t1.ParecerConclusivo,
-	                        tc.descricao Ciclo
+	                        tc.descricao Ciclo,
+                            t.tipo_turma as TipoTurma
                         into temp tempAlunosTurmasComplementares  
                         from 
 	                        tempAlunosConselhoDeClasse t1
                         inner join
 	                        conselho_classe_aluno cca
-	                        on t1.ConselhoClasseId = cca.conselho_classe_id 
+	                        on t1.ConselhoClasseId = cca.conselho_classe_id and t1.AlunoCodigo = cca.aluno_codigo
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccat
 	                        on cca.id = ccat.conselho_classe_aluno_id
@@ -733,6 +735,7 @@ namespace SME.SR.Data
                             t.ano,
                             t.etapa_eja as EtapaEJA,
                             tc.descricao as Ciclo,
+                            t.tipo_turma as TipoTurma,
                             cca.id as ConselhoClasseAlunoId
                         into tempTurmaRegularConselhoAluno
                         from
@@ -782,7 +785,8 @@ namespace SME.SR.Data
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
                             t.etapa_eja as EtapaEJA,
-                            tc.descricao as Ciclo
+                            tc.descricao as Ciclo,
+                            t.tipo_turma as TipoTurma
                         into tempTurmaComplementarConselhoAluno
                         from 
 	                        tempConselhoAlunos t1
@@ -815,7 +819,7 @@ namespace SME.SR.Data
                         select 
 	                        *
                         from 
-	                        (select TurmaCodigo,TurmaRegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo from tempTurmaRegularConselhoAluno) as Regulares
+	                        (select TurmaCodigo,TurmaRegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
                         union
 	                        (select * from tempTurmaComplementarConselhoAluno)";
 
@@ -856,7 +860,8 @@ namespace SME.SR.Data
                                 and not cc2.excluido 
                                 and ft2.turma_id = ft.turma_id 
 	                    	    and	cca2.aluno_codigo = cca.aluno_codigo 
-	                    	    and ft2.periodo_escolar_id is null)";
+	                    	    and ft2.periodo_escolar_id is null
+                                and cca2.conselho_classe_parecer_id is not null)";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
@@ -978,13 +983,27 @@ namespace SME.SR.Data
         {
             var query = @"select t.turma_id Codigo, t.nome
 			                    , t.modalidade_codigo  ModalidadeCodigo, t.semestre
-                                , t.ano, t.ano_letivo AnoLetivo,
+                                , t.ano, t.ano_letivo AnoLetivo
 			                from turma t
 			                where t.id = @id";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryFirstOrDefaultAsync<Turma>(query, new { id });
+            }
+        }
+
+        public async Task<Turma> ObterPorCodigo(string turmaCodigo)
+        {
+            var query = @"select t.turma_id Codigo, t.nome
+			                    , t.modalidade_codigo  ModalidadeCodigo, t.semestre
+                                , t.ano, t.ano_letivo AnoLetivo
+			                from turma t
+			                where t.turma_id = @turmaCodigo";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<Turma>(query, new { turmaCodigo });
             }
         }
     }

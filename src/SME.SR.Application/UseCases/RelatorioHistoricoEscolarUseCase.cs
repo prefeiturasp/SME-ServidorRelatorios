@@ -72,7 +72,11 @@ namespace SME.SR.Application
             IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes = null;
 
             if (todosAlunos != null && todosAlunos.Any())
-                historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
+            {
+                historicoUes = !filtros.AlunosCodigo?.Any() ?? true
+                    ? await ObterUesConclusaoParaTurma(alunosCodigo, filtros.Modalidade)
+                    : await ObterUesConclusaoParaAluno(alunosCodigo, todosAlunosTurmas);
+            }
 
             var notas = await ObterNotasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
             var frequencias = await ObterFrequenciasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
@@ -350,11 +354,25 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusao(long[] alunosCodigo, Modalidade modalidade)
+        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusaoParaTurma(IEnumerable<string> alunosCodigo, Modalidade modalidade)
         {
+            var alunosCodigosFiltro = alunosCodigo.Select(long.Parse).ToArray();
+
             return await mediator.Send(new ObterUesConclusaoQuery()
             {
-                CodigosAlunos = alunosCodigo,
+                CodigosAlunos = alunosCodigosFiltro,
+                Modalidade = modalidade
+            });
+        }
+
+        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusaoParaAluno(IEnumerable<string> alunosCodigo, List<AlunoTurmasHistoricoEscolarDto> alunosTurmas)
+        {
+            var alunosCodigosFiltro = alunosCodigo.Select(long.Parse).ToArray();
+            var modalidade = alunosTurmas.SelectMany(x => x.Turmas).FirstOrDefault(x => x.TipoTurma == TipoTurma.Regular).ModalidadeCodigo;
+
+            return await mediator.Send(new ObterUesConclusaoQuery()
+            {
+                CodigosAlunos = alunosCodigosFiltro,
                 Modalidade = modalidade
             });
         }

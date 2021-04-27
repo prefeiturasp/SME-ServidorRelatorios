@@ -10,7 +10,7 @@ namespace SME.SR.Data.Interfaces
         Task<DreUe> ObterDreUe(string codigoTurma);
         Task<TurmaResumoDto> ObterTurmaResumoComDreUePorId(long turmaId);
         Task<IEnumerable<Aluno>> ObterDadosAlunos(string codigoTurma);
-        Task<Turma> ObterPorCodigo(string codigoTurma);
+        Task<Turma> ObterComDreUePorCodigo(string codigoTurma);
 
         Task<IEnumerable<Turma>> ObterTurmasPorAno(int anoLetivo, string[] anosEscolares);
 
@@ -19,6 +19,7 @@ namespace SME.SR.Data.Interfaces
         Task<string> ObterCicloAprendizagem(string turmaCodigo);
         Task<IEnumerable<AlunoSituacaoDto>> ObterDadosAlunosSituacao(string turmaCodigo);
         Task<Turma> ObterPorId(long id);
+        Task<Turma> ObterPorCodigo(string turmaCodigo);
         Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null);
         Task<IEnumerable<long>> ObterTurmasCodigoPorUeAnoSondagemAsync(string ano, string ueCodigo, int anoLetivo, long dreCodigo);
         Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterPorUeCicloAno(int anoLetivo, string ano, long tipoCicloId, long ueId);
