@@ -207,8 +207,6 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioDevolutivasUseCase, RelatorioDevolutivasUseCase>();
             services.TryAddScoped<IRelatorioItineranciasUseCase, RelatorioItineranciasUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoAprendizagemUseCase, RelatorioAcompanhamentoAprendizagemUseCase>();
-
-
             services.TryAddScoped<IRelatorioRegistroIndividualUseCase, RelatorioRegistroIndividualUseCase>();
 
         }

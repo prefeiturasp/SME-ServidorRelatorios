@@ -7471,32 +7471,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             }
             
         }
-
-
-       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         [HttpGet("registro-individual")]
         public async Task<IActionResult> RegistroIndividual([FromServices] IMediator mediator)

@@ -2,8 +2,6 @@
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -29,7 +27,7 @@ namespace SME.SR.Application
 
                 relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery());
 
-               // await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao, gerarPaginacao: false));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao, gerarPaginacao: false));
 
             }
             catch (Exception ex)

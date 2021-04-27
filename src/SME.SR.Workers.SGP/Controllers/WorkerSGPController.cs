@@ -243,14 +243,6 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-
-
-
-
-
-
-
-
         [HttpGet("relatorios/registro-individual")]
         [Action("relatorios/registro-individual", typeof(IRelatorioItineranciasUseCase))]
         public async Task<bool> RegistroIndividual([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioRegistroIndividualUseCase relatorioUseCase)
