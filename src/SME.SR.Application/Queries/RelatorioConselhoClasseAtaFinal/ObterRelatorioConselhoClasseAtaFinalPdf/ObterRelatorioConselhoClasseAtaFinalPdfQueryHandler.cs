@@ -76,6 +76,7 @@ namespace SME.SR.Application
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, Usuario usuario)
         {
             var alunos = await ObterAlunos(turma.Codigo);
+            alunos = alunos.Where(a => a.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Ativo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
             List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
             if (turma.TipoTurma == TipoTurma.Regular)
@@ -89,18 +90,19 @@ namespace SME.SR.Application
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var cabecalho = await ObterCabecalho(turma.Codigo);
-            var listaturmas = turma.TipoTurma == TipoTurma.Itinerarios2AAno ? new string[] { turma.Codigo } : notas.Select(n => n.Key).ToArray();
-            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaturmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo, usuario);
+            var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
+            var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas, turma.Ue.Codigo, turma.ModalidadeCodigo, usuario);
             var frequenciaAlunos = await ObterFrequenciaComponente(turma.Codigo, tipoCalendarioId, periodosEscolares);
             var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.Codigo);
 
             List<ConselhoClasseParecerConclusivo> pareceresConclusivos = new List<ConselhoClasseParecerConclusivo>();
+
             if (turma.TipoTurma == TipoTurma.Itinerarios2AAno)
             {
-                foreach(var key in notas.Where(n => n.Key != turma.Codigo))
+                foreach (var checarTurma in turmas.Where(t => t.Codigo != turma.Codigo))
                 {
-                    var checarTurma = await ObterTurma(key.Key);
-                    if(checarTurma.TipoTurma == TipoTurma.Regular)
+                    if (checarTurma.TipoTurma == TipoTurma.Regular)
                         pareceresConclusivos.AddRange(await ObterPareceresConclusivos(checarTurma.Codigo));
                 }
             }
@@ -134,7 +136,32 @@ namespace SME.SR.Application
             return MontarEstruturaPaginada(dadosRelatorio);
         }
 
+        private async Task<List<Turma>> ObterTurmasPorCodigo(string[] codigos)
+        {
+            List<Turma> turmas = new List<Turma>();
 
+            foreach (var codigo in codigos)
+                turmas.Add(await ObterTurma(codigo));
+
+
+            return turmas;
+        }
+
+        private string[] ObterCodigosTurmaParaListagem(TipoTurma tipoTurma, string codigo, List<Turma> turmas)
+        {
+            if (tipoTurma == TipoTurma.Itinerarios2AAno)
+                return new string[] { codigo };
+
+            List<string> codigos = new List<string>();
+            codigos.Add(codigo);
+
+            foreach (var turma in turmas)
+            {
+                if (turma.TipoTurma != TipoTurma.Regular)
+                    codigos.Add(turma.Codigo);
+            }
+            return codigos.ToArray();
+        }
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioEstudante(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, Usuario usuario)
         {
@@ -419,7 +446,7 @@ namespace SME.SR.Application
                         Nome = grupoMatriz.Key.Nome
                     };
 
-                    foreach (var componenteCurricular in grupoMatriz.OrderBy(c => c.Disciplina)) 
+                    foreach (var componenteCurricular in grupoMatriz.OrderBy(c => c.Disciplina))
                     {
                         grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre));
                     }
