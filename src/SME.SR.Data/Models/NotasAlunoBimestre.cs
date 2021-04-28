@@ -1,8 +1,13 @@
-﻿namespace SME.SR.Data
+﻿using SME.SR.Infra;
+
+namespace SME.SR.Data
 {
     public class NotasAlunoBimestre
     {
         public string CodigoTurma { get; set; }
+        public TipoTurma TipoTurma { get; set; }
+
+        public long TurmaComplementarId { get; set; }
 
         public string CodigoAluno { get; set; }
 
