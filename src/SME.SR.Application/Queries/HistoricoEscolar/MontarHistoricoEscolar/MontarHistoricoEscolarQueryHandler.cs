@@ -86,10 +86,12 @@ namespace SME.SR.Application
         private LegendaDto ObterLegenda(IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<TransferenciaDto> transferencias, LegendaDto legenda)
         {
             var legendaRetorno = new LegendaDto() { Texto = String.Empty };
-            if (notasAluno.Any(c => c.NotaConceito.ConceitoId != null) || transferencias.Any(x => x.Legenda.Texto.Contains("Satisfatório")))
+            if ((notasAluno != null && notasAluno.Any(c => c.NotaConceito.ConceitoId != null)) ||
+                (transferencias != null && transferencias.Any(x => x.Legenda.Texto.Contains("Satisfatório"))))
                 legendaRetorno.Texto = legenda.TextoConceito;
 
-            if (notasAluno.Any(c => c.NotaConceito.Sintese != null) || transferencias.Any(x => x.Legenda.Texto.Contains("Frequente")))
+            if ((notasAluno != null && notasAluno.Any(c => c.NotaConceito.Sintese != null)) ||
+                (transferencias != null && transferencias.Any(x => x.Legenda.Texto.Contains("Frequente"))))
                 legendaRetorno.Texto = legendaRetorno.Texto != String.Empty ? $"{legendaRetorno.Texto},{legenda.TextoSintese}" : legenda.TextoSintese;
 
             return legendaRetorno;
