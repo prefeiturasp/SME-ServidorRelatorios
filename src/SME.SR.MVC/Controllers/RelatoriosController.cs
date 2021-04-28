@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SME.SR.Application;
+using SME.SR.Application.Interfaces;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -7447,10 +7449,23 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         }
 
         [HttpGet("registro-individual")]
-        public async Task<IActionResult> RegistroIndividual([FromServices] IMediator mediator)
+        public async Task<IActionResult> RegistroIndividual([FromServices] IRelatorioRegistroIndividualUseCase useCase)
         {
-            var model = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery());
-            return View("RelatorioRegistroIndividual", model);
+            try
+            {
+                var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioRegistroIndividualDto() { TurmaId = 615813, AlunoCodigo = 6791823, DataInicio = DateTime.Now.AddDays(-60), DataFim = DateTime.Now, UsuarioNome = "ALANA FERREIRA DE OLIVEIRA", UsuarioRF = "1234567" }, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+                await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem});
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            //var model = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery());
+            return View("RelatorioRegistroIndividual", null);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto filtro)
         {
-            var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioRegistroIndividualDto>();
+            var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioRegistroIndividualDto>();            
 
             var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
             if (turma == null)
@@ -30,11 +30,13 @@ namespace SME.SR.Application
             if (alunosEol == null || !alunosEol.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var registrosIndividuais = await mediator.Send(new ObterRegistrosIndividuaisPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, parametros.DataInicio, parametros.DataFim));
+            var alunosCodigos = alunosEol.Select(a => a.AlunoCodigo).ToArray();
+
+            var registrosIndividuais = await mediator.Send(new ObterRegistrosIndividuaisPorTurmaEAlunoQuery(parametros.TurmaId, alunosCodigos, parametros.DataInicio, parametros.DataFim));
             if (registrosIndividuais == null || !registrosIndividuais.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery(turma, ueEndereco, alunosEol, registrosIndividuais));
+            var relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery(turma, ueEndereco, alunosEol, registrosIndividuais, parametros));
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao));
         }

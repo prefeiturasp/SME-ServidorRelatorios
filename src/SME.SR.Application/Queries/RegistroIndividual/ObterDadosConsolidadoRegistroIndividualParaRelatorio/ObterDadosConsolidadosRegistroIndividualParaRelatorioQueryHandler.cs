@@ -1,7 +1,8 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Infra;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,58 +12,68 @@ namespace SME.SR.Application
     {
         public Task<RelatorioRegistroIndividualDto> Handle(ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery request, CancellationToken cancellationToken)
         {
-            var retorno = new RelatorioRegistroIndividualDto();
-            retorno.Cabecalho = GerarCabecalho();
-            retorno.Alunos.Add(GerarAluno());
 
-            return Task.FromResult(retorno);
+            var alunosEol = request.AlunosEol;
+            var turma = request.Turma;
+            var ueEndereco = request.UeEndereco;
+            var registrosIndividuais = request.RegistrosIndividuais;
+            var filtro = request.Filtro;
+
+            var relatorio = new RelatorioRegistroIndividualDto
+            {
+                Cabecalho = GerarCabecalho(turma, ueEndereco, filtro),
+                Alunos = GerarAlunos(registrosIndividuais, alunosEol),
+            };
+
+            return Task.FromResult(relatorio);
         }
 
-        private RelatorioRegistroIndividualCabecalhoDto GerarCabecalho()
+        private RelatorioRegistroIndividualCabecalhoDto GerarCabecalho(Turma turma, UeEolEnderecoDto ueEndereco, FiltroRelatorioRegistroIndividualDto filtro)
         {
             return new RelatorioRegistroIndividualCabecalhoDto()
             {
-                Dre = "DRE - BT",
-                Ue = "EMEI ANTONIO BENTO",
-                Endereco = "RUA JOÃO BATISTA DE SOUSA FILHO, 405 - CAXINGUI",
-                Telefone = "(11) 5555-555",
-                Turma = "5B",
-                Usuario = "ALANA FERREIRA DE OLIVEIRA",
-                RF = "1234567",    
-                Periodo = "21/02/2021 À 30/03/2021",
+                Dre = turma.Dre.Abreviacao,
+                Ue = turma.Ue.NomeComTipoEscola,
+                Endereco = ueEndereco.Endereco,
+                Telefone = ueEndereco.TelefoneFormatado,
+                Turma = turma.NomeRelatorio,
+                Usuario = filtro.UsuarioNome,
+                RF = filtro.UsuarioRF,
+                Periodo = filtro.Periodo,
             };
         }
 
-        private RelatorioRegistroIndividualAlunoDto GerarAluno()
+        private List<RelatorioRegistroIndividualAlunoDto> GerarAlunos(IEnumerable<RegistroIndividualRetornoDto> registrosIndividuais, IEnumerable<AlunoReduzidoDto> alunosEol)
         {
-            var registrosIndividuais = new List<RelatorioRegistroIndividualDetalhamentoDto>();
+            var registrosIndividuaisAlunos = new List<RelatorioRegistroIndividualAlunoDto>();
 
-            var aluno = new RelatorioRegistroIndividualAlunoDto()
-            {
-                Nome = "ANTONIO CARLOS DOS SANTOS (1234567)",
-                Registros = registrosIndividuais,
-            };
+            var alunosCodigosFiltrados = registrosIndividuais.Select(r => r.AlunoCodigo).Distinct();
 
-            registrosIndividuais.Add( new RelatorioRegistroIndividualDetalhamentoDto()
+            foreach (var alunoCodigo in alunosCodigosFiltrados)
             {
-                DataRegistro = DateTime.Now.ToString("dd/MM/yyyy"),
-                Descricao = "No mundo atual, a expansão dos mercados mundiais exige a precisão e a definição do retorno esperado a longo prazo.",
-                RegistradoPor = "IVANA MENDES DE CARVALHO (1234567)",
-            });
-            registrosIndividuais.Add( new RelatorioRegistroIndividualDetalhamentoDto()
-            {
-                DataRegistro = DateTime.Now.ToString("dd/MM/yyyy"),
-                Descricao = "No mundo atual, a expansão dos mercados mundiais exige a precisão e a definição do retorno esperado a longo prazo.",
-                RegistradoPor = "IVANA MENDES DE CARVALHO (1234567)",
-            });
-            registrosIndividuais.Add( new RelatorioRegistroIndividualDetalhamentoDto()
-            {
-                DataRegistro = DateTime.Now.ToString("dd/MM/yyyy"),
-                Descricao = "No mundo atual, a expansão dos mercados mundiais exige a precisão e a definição do retorno esperado a longo prazo.",
-                RegistradoPor = "IVANA MENDES DE CARVALHO (1234567)",
-            });
+                registrosIndividuaisAlunos.Add(new RelatorioRegistroIndividualAlunoDto
+                {
+                    Nome = alunosEol.FirstOrDefault(a => a.AlunoCodigo == alunoCodigo).NomeRelatorio,
+                    Registros = GerarRegistros(registrosIndividuais.Where(r => r.AlunoCodigo == alunoCodigo).OrderByDescending(r => r.DataRegistro)),
+                });
+            }
+            return registrosIndividuaisAlunos.OrderBy(a => a.Nome).ToList();
+        }
 
-            return aluno;
+        private List<RelatorioRegistroIndividualDetalhamentoDto> GerarRegistros(IEnumerable<RegistroIndividualRetornoDto> registrosIndividuais)
+        {
+            var registros = new List<RelatorioRegistroIndividualDetalhamentoDto>();
+
+            foreach (var registro in registrosIndividuais)
+            {
+                registros.Add(new RelatorioRegistroIndividualDetalhamentoDto
+                {
+                    DataRegistro = registro.DataRelatorioFormatada(), //registro.DataRelatorio,
+                    Descricao = registro.RegistroFormatado(),
+                    RegistradoPor = registro.RegistradoPor,
+                });
+            }
+            return registros;
         }
     }
 }

@@ -18,26 +18,24 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RegistroIndividualRetornoDto>> ObterRegistrosIndividuaisPorTurmaEAluno(long turmaId, long? alunoCodigo, DateTime dataInicio, DateTime dataFim)
+        public async Task<IEnumerable<RegistroIndividualRetornoDto>> ObterRegistrosIndividuaisPorTurmaEAluno(long turmaId, long[] alunosCodigo, DateTime dataInicio, DateTime dataFim)
         {
             var query = new StringBuilder(@"select turma_id as TurmaId,
-	                             aluno_codigo as AlunoCodigo,
-	                             registro,
-	                             data_registro as DataRegistro,
-	                             criado_por as CriadoPor,
-	                             criado_rf as CriadoRf 
-                            from registro_individual
-                           where turma_id = @turmaId                             
-                             and data_registro::date between @dataInicio and @dataFim
-                             and not excluido ");
-
-            if (alunoCodigo != null)
-                query.AppendLine("and aluno_codigo = @alunoCodigo");
+	                                               aluno_codigo as AlunoCodigo,
+	                                               registro,
+	                                               data_registro as DataRegistro,
+	                                               criado_por as CriadoPor,
+	                                               criado_rf as CriadoRf 
+                                              from registro_individual
+                                             where turma_id = @turmaId
+                                               and aluno_codigo = Any(@alunosCodigo)
+                                               and data_registro::date between @dataInicio and @dataFim
+                                               and not excluido ");           
 
             var parametros = new
             {
                 turmaId,
-                alunoCodigo,
+                alunosCodigo,
                 dataInicio,
                 dataFim
             };
