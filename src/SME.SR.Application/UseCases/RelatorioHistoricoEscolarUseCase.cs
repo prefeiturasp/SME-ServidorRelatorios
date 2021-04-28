@@ -25,7 +25,7 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
 
-            var legenda = new LegendaDto(await ObterLegenda());
+            var legenda = await ObterLegenda();
 
             var cabecalho = await MontarCabecalho(filtros);
 
@@ -72,7 +72,11 @@ namespace SME.SR.Application
             IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes = null;
 
             if (todosAlunos != null && todosAlunos.Any())
-                historicoUes = await ObterUesConclusao(alunosCodigo.Select(long.Parse).ToArray(), filtros.Modalidade);
+            {
+                historicoUes = !filtros.AlunosCodigo?.Any() ?? true
+                    ? await ObterUesConclusaoParaTurma(alunosCodigo, filtros.Modalidade)
+                    : await ObterUesConclusaoParaAluno(alunosCodigo, todosAlunosTurmas);
+            }
 
             var notas = await ObterNotasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
             var frequencias = await ObterFrequenciasAlunos(alunosCodigo.ToArray(), filtros.AnoLetivo, filtros.Modalidade, filtros.Semestre);
@@ -95,6 +99,8 @@ namespace SME.SR.Application
             }
 
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
+
+            var ordenacaoGrupoArea = await ObterOrdenacaoAreasConhecimento(componentesCurriculares, areasDoConhecimento);
 
             var dre = await ObterDrePorCodigo(filtros.DreCodigo);
 
@@ -128,14 +134,14 @@ namespace SME.SR.Application
 
             if (turmasTransferencia != null && turmasTransferencia.Any())
                 resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
-                  frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray()));
+                  frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray(), legenda));
 
             if ((turmasFundMedio != null && turmasFundMedio.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
-                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,
+                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
             else if ((turmasEja != null && turmasEja.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
-                resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,
+                resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
@@ -143,11 +149,6 @@ namespace SME.SR.Application
             {
                 resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
                 resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
-
-                foreach (var item in resultadoFinalMedio)
-                {
-                    item.Legenda.Texto = string.Empty;
-                }
             }
 
             if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) ||
@@ -277,6 +278,14 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.Distinct().ToArray()));
         }
 
+        private async Task<IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto>> ObterOrdenacaoAreasConhecimento(IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares, IEnumerable<AreaDoConhecimento> areasDoConhecimento)
+        {
+            var listaGrupoMatrizId = componentesCurriculares?.SelectMany(a => a)?.Select(a => a.GrupoMatriz.Id)?.Distinct().ToArray();
+            var listaAreaConhecimentoId = areasDoConhecimento?.Select(a => a.Id).ToArray();
+
+            return await mediator.Send(new ObterComponenteCurricularGrupoAreaOrdenacaoQuery(listaGrupoMatrizId, listaAreaConhecimentoId));
+        }
+
         private async Task<IEnumerable<AlunoTurmasHistoricoEscolarDto>> MontarAlunosTurmas(FiltroHistoricoEscolarDto filtros)
         {
 
@@ -340,11 +349,25 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusao(long[] alunosCodigo, Modalidade modalidade)
+        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusaoParaTurma(IEnumerable<string> alunosCodigo, Modalidade modalidade)
         {
+            var alunosCodigosFiltro = alunosCodigo.Select(long.Parse).ToArray();
+
             return await mediator.Send(new ObterUesConclusaoQuery()
             {
-                CodigosAlunos = alunosCodigo,
+                CodigosAlunos = alunosCodigosFiltro,
+                Modalidade = modalidade
+            });
+        }
+
+        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusaoParaAluno(IEnumerable<string> alunosCodigo, List<AlunoTurmasHistoricoEscolarDto> alunosTurmas)
+        {
+            var alunosCodigosFiltro = alunosCodigo.Select(long.Parse).ToArray();
+            var modalidade = alunosTurmas.SelectMany(x => x.Turmas).FirstOrDefault(x => x.TipoTurma == TipoTurma.Regular).ModalidadeCodigo;
+
+            return await mediator.Send(new ObterUesConclusaoQuery()
+            {
+                CodigosAlunos = alunosCodigosFiltro,
                 Modalidade = modalidade
             });
         }
@@ -376,10 +399,34 @@ namespace SME.SR.Application
             else return null;
         }
 
-        private async Task<string> ObterLegenda()
+        private async Task<LegendaDto> ObterLegenda()
+        {
+            var legenda = new LegendaDto
+            {
+                TextoConceito = await ObterLegendaConceito(),
+                TextoSintese = await ObterLegendaSintese()
+            };
+            legenda.Texto = legenda.TextoConceito;
+            return legenda;
+        }
+
+        private async Task<string> ObterLegendaConceito()
         {
             var sb = new StringBuilder();
-            var legendas = await mediator.Send(new ObterLegendaQuery());
+            var legendas = await mediator.Send(new ObterLegendaQuery(TipoLegenda.Conceito));
+            foreach (var conceito in legendas)
+            {
+                sb.Append($"{conceito.Valor} = {conceito.Descricao}, ");
+            }
+
+            var resultado = sb.ToString().Replace("\t", "");
+            return resultado.Substring(0, resultado.Length - 2);
+        }
+
+        private async Task<string> ObterLegendaSintese()
+        {
+            var sb = new StringBuilder();
+            var legendas = await mediator.Send(new ObterLegendaQuery(TipoLegenda.Sintese));
             foreach (var conceito in legendas)
             {
                 sb.Append($"{conceito.Valor} = {conceito.Descricao}, ");

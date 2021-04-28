@@ -795,7 +795,7 @@ namespace SME.SR.Data
 	                        on t1.ConselhoClasseAlunoId = cca.id 
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccatc 
-	                        on cca.id = ccatc .conselho_classe_aluno_id 
+	                        on cca.id = ccatc.conselho_classe_aluno_id 
                          inner join 
 	                        conselho_classe cc
 	                        on cc.id = cca.conselho_classe_id
@@ -807,7 +807,7 @@ namespace SME.SR.Data
 	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
-	                        on ccatc .turma_id = t.id
+	                        on ccatc.turma_id = t.id
                         left join 
 	                        tipo_ciclo_ano tca 
 	                        on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
@@ -819,16 +819,14 @@ namespace SME.SR.Data
                         select 
 	                        *
                         from 
-	                        (select TurmaCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
+	                        (select TurmaCodigo,TurmaRegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
                         union
 	                        (select * from tempTurmaComplementarConselhoAluno)";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            var codigos = codigoAlunos.Select(a => a.ToString()).ToArray();
-
-            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigos });
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigoAlunos.Select(a => a.ToString()).ToArray() });
         }
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaSemParecerConclusivo(long turmaCodigo)

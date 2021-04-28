@@ -94,6 +94,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(ICicloRepository), typeof(CicloRepository));
             services.TryAddScoped(typeof(IComponenteCurricularRepository), typeof(ComponenteCurricularRepository));
+            services.TryAddScoped(typeof(IComponenteCurricularGrupoAreaOrdenacaoRepository), typeof(ComponenteCurricularGrupoAreaOrdenacaoRepository));
             services.TryAddScoped(typeof(IConselhoClasseRepository), typeof(ConselhoClasseRepository));
             services.TryAddScoped(typeof(IConselhoClasseAlunoRepository), typeof(ConselhoClasseAlunoRepository));
             services.TryAddScoped(typeof(IConselhoClasseNotaRepository), typeof(ConselhoClasseNotaRepository));

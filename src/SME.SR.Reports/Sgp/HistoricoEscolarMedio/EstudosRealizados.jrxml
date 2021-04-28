@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EstudoRealizados" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="79ce0d69-2491-417c-8e95-e355e80b4597">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -75,7 +75,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -85,7 +85,7 @@
 			<staticText>
 				<reportElement x="0" y="32" width="70" height="15" uuid="d07fc4d4-611a-4282-b206-9b33939cd886"/>
 				<box>
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
@@ -95,7 +95,7 @@
 			<staticText>
 				<reportElement x="70" y="32" width="295" height="15" uuid="90cc6239-82fe-46c1-b970-7c95dc1daaaf"/>
 				<box>
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
@@ -105,7 +105,7 @@
 			<staticText>
 				<reportElement x="365" y="32" width="150" height="15" uuid="be22932f-ec5f-4c3b-9d16-f363967109f6"/>
 				<box>
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
@@ -115,7 +115,7 @@
 			<staticText>
 				<reportElement x="515" y="32" width="40" height="15" uuid="d2ed7538-ee67-4db0-9fb9-d3d266f965c2"/>
 				<box>
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>

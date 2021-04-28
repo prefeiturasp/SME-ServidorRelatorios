@@ -218,7 +218,7 @@ namespace SME.SR.Data
                          left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and ccn.componente_curricular_codigo = fn.disciplina_id 
                          left join conceito_valores cvc on ccn.conceito_id = cvc.id
                          where fa.aluno_codigo = ANY(@codigosAluno)
-                           and t.ano_letivo = @anoLetivo ";
+                           and t.ano_letivo <= @anoLetivo ";
 
             const string queryNotasComplementar = @"
                         select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
@@ -243,7 +243,7 @@ namespace SME.SR.Data
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
                          where cca.aluno_codigo = ANY(@codigosAluno)
-                           and t.ano_letivo = @anoLetivo ";
+                           and t.ano_letivo <= @anoLetivo ";
 
             var queryRegular = new StringBuilder(queryNotasRegular);
             var queryComplementar = new StringBuilder(queryNotasComplementar);
