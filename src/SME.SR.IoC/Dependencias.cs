@@ -32,7 +32,7 @@ namespace SME.SR.IoC
                 HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
                 UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
                 Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
-                VirtualHost = configuration.GetSection("ConfiguracaoRabbitOptions:Virtualhost").Value
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
             };
 
             var conexaoRabbit = factory.CreateConnection();
