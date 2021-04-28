@@ -115,7 +115,7 @@ namespace SME.SR.Data
         public async Task<Turma> ObterComDreUePorCodigo(string codigoTurma)
         {
             var query = @"select t.turma_id Codigo, t.nome, 
-			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA,
+			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA, t.tipo_turma TipoTurma,
 			                ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
 			                dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
 			                from  turma t
