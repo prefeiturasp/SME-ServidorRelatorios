@@ -46,8 +46,8 @@
             <table>
                 <tbody>
                     <tr>
-                        <td width='14%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Cabecalho.Turma</td>
-                        <td width='52%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Cabecalho.Usuario</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Cabecalho.Turma</td>
+                        <td width='46%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Cabecalho.Usuario</td>
                         <td width='16%' class='sem-border-top espaco-esquerda-15'>RF: @Model.Cabecalho.RF</td>
                         <td width='18%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.Cabecalho.Data</td>
                     </tr>
@@ -288,7 +288,7 @@
                     </tbody>
                 </table>
 
-                if (alunosIndex < alunos.Registros.Count() - 1)
+                if (Model.Alunos.Count() > 1 && alunosIndex < Model.Alunos.Count() - 1)
                 {
                     contadorQuebrarPagina = 0;
                     @Html.Raw("<div style='page-break-before:always'></div>")

@@ -38,7 +38,15 @@ namespace SME.SR.Application
 
             var relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery(turma, ueEndereco, alunosEol, registrosIndividuais, parametros));
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao));
+            try
+            {
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
         }
     }
 }
