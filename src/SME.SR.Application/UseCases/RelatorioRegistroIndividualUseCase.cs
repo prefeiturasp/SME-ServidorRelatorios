@@ -22,17 +22,17 @@ namespace SME.SR.Application
 
             var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
             if (turma == null)
-                throw new NegocioException("Turma não encontrada");
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             var ueEndereco = await mediator.Send(new ObterEnderecoUeEolPorCodigoQuery(long.Parse(turma.Ue.Codigo)));
 
             var alunosEol = await mediator.Send(new ObterAlunosReduzidosPorTurmaEAlunoQuery(turma.Codigo, parametros.AlunoCodigo));
             if (alunosEol == null || !alunosEol.Any())
-                throw new NegocioException("Alunos não encontrados");
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             var registrosIndividuais = await mediator.Send(new ObterRegistrosIndividuaisPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, parametros.DataInicio, parametros.DataFim));
             if (registrosIndividuais == null || !registrosIndividuais.Any())
-                throw new NegocioException("Alunos não encontrados");            
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             var relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery(turma, ueEndereco, alunosEol, registrosIndividuais));
 
