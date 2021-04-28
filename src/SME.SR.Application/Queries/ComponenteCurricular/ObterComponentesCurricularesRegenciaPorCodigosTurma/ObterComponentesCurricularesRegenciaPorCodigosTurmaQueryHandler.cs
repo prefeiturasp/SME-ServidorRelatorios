@@ -32,7 +32,7 @@ namespace SME.SR.Application
                     ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery()
                 {
                     CodigosTurma = request.CodigosTurma,
-                    ComponentesCurricularesApiEol = request.ComponentesCurricularesApiEol,
+                    ComponentesCurriculares = request.ComponentesCurriculares,
                     GruposMatriz = request.GruposMatriz,
                     Usuario = request.Usuario
                 });

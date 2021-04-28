@@ -10,6 +10,7 @@ namespace SME.SR.Application
   public  class MontarHistoricoEscolarTransferenciaQuery : IRequest<IEnumerable<TransferenciaDto>>
     {
         public MontarHistoricoEscolarTransferenciaQuery(IEnumerable<AreaDoConhecimento> areasConhecimento,
+                                            IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> grupoAreaOrdenacao,
                                             IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas,
                                             IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas,
                                             IEnumerable<MediaFrequencia> mediasFrequencia,
@@ -20,6 +21,7 @@ namespace SME.SR.Application
         {
             AreasConhecimento = areasConhecimento;
             ComponentesCurricularesTurmas = componentesCurricularesTurmas;
+            GrupoAreaOrdenacao = grupoAreaOrdenacao;
             AlunosTurmas = alunosTurmas;
             TurmasCodigo = turmasCodigo;
             TiposNota = tiposNota;
@@ -33,6 +35,7 @@ namespace SME.SR.Application
         public IEnumerable<IGrouping<string, FrequenciaAluno>> Frequencias { get; set; }
         public IEnumerable<MediaFrequencia> MediasFrequencia { get; set; }
         public IEnumerable<AreaDoConhecimento> AreasConhecimento { get; set; }
+        public IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> GrupoAreaOrdenacao { get; set; }
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }
         public IEnumerable<TipoNotaCicloAno> TiposNota { get; set; }

@@ -133,7 +133,7 @@ namespace SME.SR.Application
             IEnumerable<TransferenciaDto> resultadoTransferencia = null;
 
             if (turmasTransferencia != null && turmasTransferencia.Any())
-                resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
+                resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, ordenacaoGrupoArea, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
                   frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray(), legenda));
 
             if ((turmasFundMedio != null && turmasFundMedio.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))

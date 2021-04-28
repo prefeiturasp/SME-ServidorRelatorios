@@ -86,10 +86,12 @@ namespace SME.SR.Application
         private LegendaDto ObterLegenda(IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<TransferenciaDto> transferencias, LegendaDto legenda)
         {
             var legendaRetorno = new LegendaDto() { Texto = String.Empty };
-            if (notasAluno.Any(c => c.NotaConceito.ConceitoId != null) || transferencias.Any(x => x.Legenda.Texto.Contains("Satisfatório")))
+            if ((notasAluno != null && notasAluno.Any(c => c.NotaConceito.ConceitoId != null)) ||
+                (transferencias != null && transferencias.Any(x => x.Legenda.Texto.Contains("Satisfatório"))))
                 legendaRetorno.Texto = legenda.TextoConceito;
 
-            if (notasAluno.Any(c => c.NotaConceito.Sintese != null) || transferencias.Any(x => x.Legenda.Texto.Contains("Frequente")))
+            if ((notasAluno != null && notasAluno.Any(c => c.NotaConceito.Sintese != null)) ||
+                (transferencias != null && transferencias.Any(x => x.Legenda.Texto.Contains("Frequente"))))
                 legendaRetorno.Texto = legendaRetorno.Texto != String.Empty ? $"{legendaRetorno.Texto},{legenda.TextoSintese}" : legenda.TextoSintese;
 
             return legendaRetorno;
@@ -232,7 +234,7 @@ namespace SME.SR.Application
                 }
             }
 
-            return gruposComponentes;
+            return gruposComponentes?.Select(gc => gc.ObterAreasComNotaValida)?.Where(gc => gc.AreasDeConhecimento.Any())?.ToList();
         }
 
         private BaseNacionalComumDto ObterBaseNacionalComum(IEnumerable<Turma> turmas,
@@ -261,7 +263,7 @@ namespace SME.SR.Application
                 };
             }
 
-            return baseNacional;
+            return baseNacional.ObterAreasComNotaValida;
         }
 
         private IEnumerable<ComponenteCurricularPorTurma> ObterComponentesDasAreasDeConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
@@ -333,7 +335,7 @@ namespace SME.SR.Application
                 }
             }
 
-            return componentes;
+            return componentes?.Where(c => c.PossuiNotaValida);
         }
 
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos)
@@ -427,7 +429,7 @@ namespace SME.SR.Application
                 });
             }
 
-            return componentes;
+            return componentes?.Where(c => c.PossuiNotaValida);
         }
 
         private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)

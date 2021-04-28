@@ -40,6 +40,21 @@ namespace SME.SR.Infra
         [JsonProperty("frequenciaQuartoBimestre")]
         public string FrequenciaQuartoBimestre { get; set; }
 
+        [JsonIgnore]
+        public bool PossuiNotaValida
+        {
+            get
+            {
+                if (Nota && (!string.IsNullOrEmpty(NotaConceitoPrimeiroBimestre) ||
+                    !string.IsNullOrEmpty(NotaConceitoSegundoBimestre) ||
+                    !string.IsNullOrEmpty(NotaConceitoTerceiroBimestre) ||
+                    !string.IsNullOrEmpty(NotaConceitoQuartoBimestre)))
+                    return true;
+
+                return false;
+            }
+        }
+
 
     }
 }
