@@ -68,7 +68,7 @@ namespace SME.SR.Application
             {
                 registros.Add(new RelatorioRegistroIndividualDetalhamentoDto
                 {
-                    DataRegistro = registro.DataRelatorioFormatada(),
+                    DataRegistro = registro.DataRelatorioFormatada(), 
                     Descricao = registro.RegistroFormatado(),
                     RegistradoPor = registro.RegistradoPor,
                 });
