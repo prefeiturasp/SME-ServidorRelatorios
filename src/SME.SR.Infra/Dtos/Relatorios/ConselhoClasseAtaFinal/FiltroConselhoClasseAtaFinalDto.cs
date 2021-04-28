@@ -8,5 +8,6 @@ namespace SME.SR.Infra
         public IEnumerable<string> TurmasCodigos { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
         public AtaFinalTipoVisualizacao? Visualizacao { get; set; }
+        public int AnoLetivo { get; set; }
     }
 }

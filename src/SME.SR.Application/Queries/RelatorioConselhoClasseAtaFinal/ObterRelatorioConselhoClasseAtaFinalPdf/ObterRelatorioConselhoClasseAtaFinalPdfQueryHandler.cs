@@ -37,6 +37,7 @@ namespace SME.SR.Application
                         var retorno = await ObterRelatorioTurma(turma, request.Filtro, request.Usuario);
                         if (retorno != null && retorno.Any())
                             relatoriosTurmas.AddRange(retorno);
+                    
                     }
                     catch (Exception e)
                     {
@@ -53,9 +54,13 @@ namespace SME.SR.Application
                     try
                     {
                         var turma = await ObterTurma(turmaCodigo);
-                        var retorno = await ObterRelatorioEstudante(turma, request.Filtro, request.Usuario);
-                        if (retorno != null && retorno.Any())
-                            relatoriosTurmas.AddRange(retorno);
+                        if(turma.TipoTurma == TipoTurma.Regular)
+                        {
+                            var retorno = await ObterRelatorioEstudante(turma, request.Filtro, request.Usuario);
+                            if (retorno != null && retorno.Any())
+                                relatoriosTurmas.AddRange(retorno);
+                        }
+                     
                     }
                     catch (Exception e)
                     {
@@ -91,24 +96,7 @@ namespace SME.SR.Application
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var cabecalho = await ObterCabecalho(turma.Codigo);
             var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
-            //var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
-           
-
-            var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray()));
-            listaAlunos = listaAlunos.Where(x => x.AnoLetivo == 2021);
-
-            var listaTurmasAlunos = listaAlunos.GroupBy(x => x.CodigoTurma);
-            List<string> listaTurmas = new List<string>();
-            listaTurmas.Add(turma.Codigo);
-            foreach (var lta in listaTurmasAlunos)
-            {
-
-                var turmaAluno = await ObterTurma(lta.Key.ToString());
-                if (turmaAluno.TipoTurma != TipoTurma.Regular)
-                    listaTurmas.Add(turmaAluno.Codigo);
-            }
-
-            listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
+            var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo, usuario);
             var frequenciaAlunos = await ObterFrequenciaComponente(turma.Codigo, tipoCalendarioId, periodosEscolares);
@@ -151,7 +139,7 @@ namespace SME.SR.Application
                 }));
             }
 
-            var dadosRelatorio = await MontarEstruturaRelatorio(turma.ModalidadeCodigo, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma.Codigo, listaTurmasAlunos);
+            var dadosRelatorio = await MontarEstruturaRelatorio(turma.ModalidadeCodigo, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma.Codigo, null);
             return MontarEstruturaPaginada(dadosRelatorio);
         }
 
@@ -195,7 +183,7 @@ namespace SME.SR.Application
             var cabecalho = await ObterCabecalho(turma.Codigo);
 
             var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray()));
-            listaAlunos = listaAlunos.Where(x => x.AnoLetivo == 2021);
+            listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
 
             var listaTurmasAlunos = listaAlunos.GroupBy(x => x.CodigoTurma);
             List<string> listaTurmas = new List<string>();
@@ -371,7 +359,7 @@ namespace SME.SR.Application
                 Situacao = aluno.SituacaoMatricula,
                 Inativo = aluno.Inativo
             };
-
+            bool possuiComponente = true;
             var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
 
             foreach (var grupoMatriz in gruposMatrizes)
@@ -379,10 +367,13 @@ namespace SME.SR.Application
                 foreach (var componente in grupoMatriz)
                 {
                     var coluna = 0;
+
+                    if(listaTurmasAlunos != null)
+                       possuiComponente = listaTurmasAlunos.Any(lt => lt.Key.ToString() == componente.CodigoTurma && lt.ToList().Any(a => a.CodigoAluno == aluno.CodigoAluno));
                     // Monta Colunas notas dos bimestres
                     foreach (var bimestre in periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre))
                     {
-                        var possuiComponente = listaTurmasAlunos.Any(lt => lt.Key.ToString() == componente.CodigoTurma && lt.ToList().Any(a => a.CodigoAluno == aluno.CodigoAluno));
+                       
 
                         var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
@@ -406,9 +397,9 @@ namespace SME.SR.Application
 
                     linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            componente.LancaNota ?
+                                            possuiComponente ?( componente.LancaNota ?
                                                 notaConceitofinal?.NotaConceito ?? "" :
-                                                notaConceitofinal?.Sintese ?? sintese,
+                                                notaConceitofinal?.Sintese ?? sintese) : "-",
                                             ++coluna);
 
                     // Monta colunas frequencia F - CA - %
@@ -416,15 +407,15 @@ namespace SME.SR.Application
 
                     linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            frequenciaAluno?.TotalAusencias.ToString() ?? "0",
+                                           possuiComponente ?  (frequenciaAluno?.TotalAusencias.ToString() ?? "0") : "-",
                                             ++coluna);
                     linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            frequenciaAluno?.TotalCompensacoes.ToString() ?? "0",
+                                             possuiComponente ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0" ): "-" ,
                                             ++coluna);
                     linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            (turma.AnoLetivo.Equals(2020) ? frequenciaAluno?.PercentualFrequenciaFinal.ToString() : frequenciaAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100,
+                                         possuiComponente? (   (turma.AnoLetivo.Equals(2020) ? frequenciaAluno?.PercentualFrequenciaFinal.ToString() : frequenciaAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100) : "-",
                                             ++coluna);
                 }
             }
