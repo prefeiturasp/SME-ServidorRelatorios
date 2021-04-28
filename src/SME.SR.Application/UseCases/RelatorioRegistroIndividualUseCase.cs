@@ -23,20 +23,12 @@ namespace SME.SR.Application
 
             var turma = await mediator.Send(new ObterTurmaPorIdQuery(parametros.TurmaId));
 
-            try
-            {
-                var relatorioDto = new RelatorioRegistroIndividualDto();
+            var relatorioDto = new RelatorioRegistroIndividualDto();
 
-                relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery());
+            relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery());
 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao));
 
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
         }
     }
 }
