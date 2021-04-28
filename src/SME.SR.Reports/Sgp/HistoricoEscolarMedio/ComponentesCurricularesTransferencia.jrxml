@@ -149,7 +149,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaPrimeiroBimestre}!= null ? $F{frequenciaPrimeiroBimestre} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoPrimeiroBimestre}!= null ? ($F{frequenciaPrimeiroBimestre}!= null ? $F{frequenciaPrimeiroBimestre} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -191,7 +191,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaSegundoBimestre} != null ? $F{frequenciaSegundoBimestre} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoSegundoBimestre}!= null ? ($F{frequenciaSegundoBimestre}!= null ? $F{frequenciaSegundoBimestre} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -233,7 +233,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaTerceiroBimestre} != null ? $F{frequenciaTerceiroBimestre} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoTerceiroBimestre}!= null ? ($F{frequenciaTerceiroBimestre}!= null ? $F{frequenciaTerceiroBimestre} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -275,7 +275,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaQuartoBimestre} != null ? $F{frequenciaQuartoBimestre}: "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoQuartoBimestre}!= null ? ($F{frequenciaQuartoBimestre}!= null ? $F{frequenciaQuartoBimestre} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

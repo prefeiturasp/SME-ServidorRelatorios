@@ -16,7 +16,7 @@ namespace SME.SR.Application
                                             IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
                                             IEnumerable<TipoNotaCicloAno> tiposNota,
-                                            string[] turmasCodigo)
+                                            string[] turmasCodigo, LegendaDto legenda)
         {
             AreasConhecimento = areasConhecimento;
             ComponentesCurricularesTurmas = componentesCurricularesTurmas;
@@ -26,6 +26,7 @@ namespace SME.SR.Application
             Notas = notas;
             Frequencias = frequencias;
             MediasFrequencia = mediasFrequencia;
+            Legenda = legenda;
         }
 
         public IEnumerable<IGrouping<string, NotasAlunoBimestre>> Notas { get; set; }
@@ -36,5 +37,6 @@ namespace SME.SR.Application
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }
         public IEnumerable<TipoNotaCicloAno> TiposNota { get; set; }
         public string[] TurmasCodigo { get; set; }
+        public LegendaDto Legenda { get; set; }
     }
 }

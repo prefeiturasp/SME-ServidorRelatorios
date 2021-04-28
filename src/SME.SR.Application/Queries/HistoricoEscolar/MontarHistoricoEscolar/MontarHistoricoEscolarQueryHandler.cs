@@ -67,7 +67,7 @@ namespace SME.SR.Application
                         InformacoesAluno = aluno.Select(a => a.Aluno).FirstOrDefault(),
                         DadosHistorico = ObterDadosHistorico(diversificadosDto, baseNacionalDto, enriquecimentoDto, projetosDto, tiposNotaDto, pareceresDto),
                         Modalidade = agrupamentoTurmas.Key,
-                        Legenda = request.Legenda,
+                        Legenda = ObterLegenda(notasAluno, request.Transferencias, request.Legenda),
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
                         EstudosRealizados = estudosRealizados.Count() > 0 ? estudosRealizados : null,
@@ -81,6 +81,18 @@ namespace SME.SR.Application
             listaRetorno = listaRetorno.OrderBy(a => a.InformacoesAluno.Nome).ToList();
 
             return await Task.FromResult(listaRetorno);
+        }
+
+        private LegendaDto ObterLegenda(IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<TransferenciaDto> transferencias, LegendaDto legenda)
+        {
+            var legendaRetorno = new LegendaDto() { Texto = String.Empty };
+            if (notasAluno.Any(c => c.NotaConceito.ConceitoId != null) || transferencias.Any(x => x.Legenda.Texto.Contains("Satisfatório")))
+                legendaRetorno.Texto = legenda.TextoConceito;
+
+            if (notasAluno.Any(c => c.NotaConceito.Sintese != null) || transferencias.Any(x => x.Legenda.Texto.Contains("Frequente")))
+                legendaRetorno.Texto = legendaRetorno.Texto != String.Empty ? $"{legendaRetorno.Texto},{legenda.TextoSintese}" : legenda.TextoSintese;
+
+            return legendaRetorno;
         }
 
         private IEnumerable<UeConclusaoDto> ObterHistoricoUes(List<UeConclusaoPorAlunoAno> uesHistorico)
