@@ -26,5 +26,14 @@ namespace SME.SR.Infra
             var registroFormatado = UtilRegex.RemoverTagsHtmlMidia(Registro);
             return UtilRegex.RemoverTagsHtml(registroFormatado);
         }
+        
+        public string DataRelatorioFormatada()
+        {
+            var elapsedTicks = DataRegistro.Date.Ticks - DataRegistro.Ticks;
+            if(elapsedTicks == 0)
+                return $"{DataRegistro:dd/MM/yyyy}";
+
+            return $"{DataRegistro:dd/MM/yyyy HH:mm:ss}"; ;
+        }
     }
 }

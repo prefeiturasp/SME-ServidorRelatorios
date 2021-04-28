@@ -7,6 +7,6 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IRegistroIndividualRepository
     {
-        Task<IEnumerable<RegistroIndividualRetornoDto>> ObterRegistrosIndividuaisPorTurmaEAluno(long turmaId, long? alunoCodigo, DateTime dataInicio, DateTime dataFim);
+        Task<IEnumerable<RegistroIndividualRetornoDto>> ObterRegistrosIndividuaisPorTurmaEAluno(long turmaId, long[] alunoCodigo, DateTime dataInicio, DateTime dataFim);
     }
 }

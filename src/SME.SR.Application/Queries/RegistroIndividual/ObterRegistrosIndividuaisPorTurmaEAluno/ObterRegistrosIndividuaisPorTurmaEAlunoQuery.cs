@@ -7,7 +7,7 @@ namespace SME.SR.Application
 {
     public class ObterRegistrosIndividuaisPorTurmaEAlunoQuery : IRequest<IEnumerable<RegistroIndividualRetornoDto>>
     {
-        public ObterRegistrosIndividuaisPorTurmaEAlunoQuery(long turmaId, long? alunoCodigo, DateTime dataInicio, DateTime dataFim)
+        public ObterRegistrosIndividuaisPorTurmaEAlunoQuery(long turmaId, long[] alunoCodigo, DateTime dataInicio, DateTime dataFim)
         {
             TurmaId = turmaId;
             AlunoCodigo = alunoCodigo;
@@ -16,7 +16,7 @@ namespace SME.SR.Application
         }
 
         public long TurmaId { get; set; }
-        public long? AlunoCodigo { get; set; }        
+        public long[] AlunoCodigo { get; set; }        
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
     }
