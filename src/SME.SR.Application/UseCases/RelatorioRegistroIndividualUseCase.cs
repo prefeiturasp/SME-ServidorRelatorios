@@ -2,8 +2,7 @@
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -21,14 +20,23 @@ namespace SME.SR.Application
         {
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioRegistroIndividualDto>();
 
-            var turma = await mediator.Send(new ObterTurmaPorIdQuery(parametros.TurmaId));
+            var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
+            if (turma == null)
+                throw new NegocioException("Turma não encontrada");
 
-            var relatorioDto = new RelatorioRegistroIndividualDto();
+            var ueEndereco = await mediator.Send(new ObterEnderecoUeEolPorCodigoQuery(long.Parse(turma.Ue.Codigo)));
 
-            relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery());
+            var alunosEol = await mediator.Send(new ObterAlunosReduzidosPorTurmaEAlunoQuery(turma.Codigo, parametros.AlunoCodigo));
+            if (alunosEol == null || !alunosEol.Any())
+                throw new NegocioException("Alunos não encontrados");
+
+            var registrosIndividuais = await mediator.Send(new ObterRegistrosIndividuaisPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, parametros.DataInicio, parametros.DataFim));
+            if (registrosIndividuais == null || !registrosIndividuais.Any())
+                throw new NegocioException("Alunos não encontrados");            
+
+            var relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery(turma, ueEndereco, alunosEol, registrosIndividuais));
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao));
-
         }
     }
 }
