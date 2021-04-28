@@ -124,7 +124,7 @@ namespace SME.SR.Application
                 }
             }
 
-            return gruposComponentes;
+            return gruposComponentes?.Select(gc => gc.ObterAreasComNotaValida)?.Where(gc => gc.AreasDeConhecimento.Any())?.ToList();
         }
 
         private BaseNacionalComumTransferenciaDto ObterBaseNacionalComum(IEnumerable<Turma> turmas,
@@ -153,7 +153,7 @@ namespace SME.SR.Application
                 };
             }
 
-            return baseNacional;
+            return baseNacional.ObterAreasComNotaValida;
         }
 
         private IEnumerable<ComponenteCurricularPorTurma> ObterComponentesDasAreasDeConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
@@ -218,7 +218,7 @@ namespace SME.SR.Application
                 }
             }
 
-            return componentes;
+            return componentes?.Where(c => c.PossuiNotaValida);
         }
 
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos, int bimestre)
@@ -315,7 +315,7 @@ namespace SME.SR.Application
                 });
             }
 
-            return componentes;
+            return componentes?.Where(c => c.PossuiNotaValida);
         }
 
         private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
