@@ -140,6 +140,34 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<Turma> ObterComDreUePorId(long turmaId)
+        {
+            var query = @"select t.turma_id Codigo, t.nome, 
+			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA,
+			                ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
+			                dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
+			                from  turma t
+			                inner join ue on ue.id = t.ue_id 
+			                inner join dre on ue.dre_id = dre.id 
+                            left join tipo_ciclo_ano tca on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
+                            left join tipo_ciclo tc on tca.tipo_ciclo_id = tc.id
+			                where t.Id = @turmaId";
+
+            var parametros = new { turmaId };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<Turma, Ue, Dre, Turma>(query, (turma, ue, dre) =>
+                {
+                    turma.Dre = dre;
+                    turma.Ue = ue;
+
+                    return turma;
+                }
+                , parametros, splitOn: "Codigo,Id,Id")).FirstOrDefault();
+            }
+        }
+
         public async Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
         {
             StringBuilder query = new StringBuilder();
