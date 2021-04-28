@@ -1,9 +1,12 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Drawing.Pictures;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -78,15 +81,48 @@ namespace SME.SR.Application
                 alunoRelatorio.RegistroPercursoTurma = aluno.PercusoTurmaFormatado();
                 alunoRelatorio.Observacoes = aluno.ObservacoesFormatado();
 
-                // TODO : Verificar como recuperar o caminho da foto
-                foreach (var foto in aluno.Fotos)
+
+                var novaImagem = @"";
+
+                using (var client = new HttpClient())
                 {
-                    alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
+                    try
                     {
-                        TipoArquivo = foto.TipoArquivo,
-                        Caminho = foto.ArquivoBase64()
-                    });
+                        using (Stream stream = client.GetStreamAsync("https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg").Result)
+                        {
+                       
+                            byte[] buffer = new byte[16384];
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                while (true)
+                                {
+                                    int num = stream.ReadAsync(buffer, 0, buffer.Length).Result;
+                                    int read;
+                                    if ((read = num) > 0)
+                                        ms.Write(buffer, 0, read);
+                                    else
+                                        break;
+                                }
+                                novaImagem = Convert.ToBase64String(ms.ToArray());
+                            }
+                            buffer = (byte[])null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
+
+                //// TODO : Verificar como recuperar o caminho da foto
+                //foreach (var foto in aluno.Fotos)
+                //{
+                //    alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
+                //    {
+                //        TipoArquivo = foto.TipoArquivo,
+                //        Caminho = foto.ArquivoBase64()
+                //    });
+                //}
 
                 alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos);
                 alunoRelatorio.RegistrosIndividuais = MontarRegistrosIndividuais(alunoRelatorio.CodigoEol, registrosIndividuais);
