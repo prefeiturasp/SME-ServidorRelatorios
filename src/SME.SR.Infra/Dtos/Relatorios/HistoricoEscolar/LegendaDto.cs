@@ -6,10 +6,11 @@ namespace SME.SR.Infra
     {
         [JsonProperty("texto")]
         public string Texto { get; set; }
+        public string TextoSintese { get; set; }
+        public string TextoConceito { get; set; }
 
-        public LegendaDto(string texto)
+        public LegendaDto()
         {
-            Texto = texto;
         }
     }
 }
