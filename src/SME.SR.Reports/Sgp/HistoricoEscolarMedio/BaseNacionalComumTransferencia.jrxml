@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HistoricoTransferencia" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8de16628-bd24-4c8b-9795-695beb46f03c">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -44,10 +44,12 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="97" splitType="Stretch">
+		<band height="92" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement positionType="Float" x="0" y="0" width="555" height="97" uuid="4641d7d5-27a3-451f-a8db-3c7e18153400"/>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="92" uuid="4641d7d5-27a3-451f-a8db-3c7e18153400">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textField textAdjust="StretchHeight">
 					<reportElement mode="Opaque" x="0" y="0" width="555" height="22" backcolor="#F3F3F3" uuid="b24c9ace-d5f3-4e7f-ac84-4218c2cbb959">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -62,8 +64,7 @@
 					<textFieldExpression><![CDATA["TRANSFERÊNCIA DO ANO LETIVO ATÉ: "+$F{data}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="35" y="22" width="80" height="60" uuid="804eb90c-4d05-455d-88b6-ad66cd8f3477">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<reportElement x="35" y="22" width="80" height="55" uuid="804eb90c-4d05-455d-88b6-ad66cd8f3477">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
@@ -76,10 +77,10 @@
 conhecimento]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="115" y="22" width="192" height="60" uuid="33e41d52-dc4a-4f47-ab16-548004f51f35">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<reportElement x="115" y="22" width="192" height="55" uuid="33e41d52-dc4a-4f47-ab16-548004f51f35">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -91,7 +92,9 @@ conhecimento]]></text>
 curriculares]]></text>
 				</staticText>
 				<staticText>
-					<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="22" width="35" height="75" backcolor="#F3F3F3" uuid="2fc78440-d94f-49bc-92bb-99547be0f242"/>
+					<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="22" width="35" height="70" backcolor="#F3F3F3" uuid="2fc78440-d94f-49bc-92bb-99547be0f242">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<box leftPadding="0">
 						<pen lineWidth="0.5"/>
 					</box>
@@ -101,7 +104,8 @@ curriculares]]></text>
 					<text><![CDATA[BASE NACIONAL COMUM]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="307" y="22" width="248" height="25" uuid="b65585fa-5a2c-4625-b8c5-c469eef4a013">
+					<reportElement x="307" y="22" width="248" height="22" uuid="b65585fa-5a2c-4625-b8c5-c469eef4a013">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
@@ -113,8 +117,9 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="307" y="47" width="62" height="20" uuid="1de17fb0-e95e-4144-bf3a-587b76e52c71">
+					<reportElement x="307" y="44" width="62" height="18" uuid="1de17fb0-e95e-4144-bf3a-587b76e52c71">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
@@ -126,9 +131,8 @@ curriculares]]></text>
 					<text><![CDATA[1º Bimestre]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="369" y="47" width="62" height="20" uuid="cd4bd2b4-736d-4010-beb3-b7e17f3efe24">
+					<reportElement x="369" y="44" width="62" height="18" uuid="cd4bd2b4-736d-4010-beb3-b7e17f3efe24">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -139,9 +143,8 @@ curriculares]]></text>
 					<text><![CDATA[2º Bimestre]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="431" y="47" width="62" height="20" uuid="82fc0dc9-fbfc-4172-997a-bd845d315b4b">
+					<reportElement x="431" y="44" width="62" height="18" uuid="82fc0dc9-fbfc-4172-997a-bd845d315b4b">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -152,9 +155,8 @@ curriculares]]></text>
 					<text><![CDATA[3º Bimestre]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="493" y="47" width="62" height="20" uuid="6220d641-200a-41fc-9d3c-2d22ebee4d02">
+					<reportElement x="493" y="44" width="62" height="18" uuid="6220d641-200a-41fc-9d3c-2d22ebee4d02">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -165,7 +167,7 @@ curriculares]]></text>
 					<text><![CDATA[4º Bimestre]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="307" y="67" width="31" height="15" uuid="dda59ecf-ec75-4e74-94d3-333fcc90d362">
+					<reportElement x="307" y="62" width="31" height="15" uuid="dda59ecf-ec75-4e74-94d3-333fcc90d362">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -178,7 +180,7 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="338" y="67" width="31" height="15" uuid="080d2557-fe3a-47aa-90c3-409ceaa325e8"/>
+					<reportElement x="338" y="62" width="31" height="15" uuid="080d2557-fe3a-47aa-90c3-409ceaa325e8"/>
 					<box>
 						<pen lineWidth="0.5"/>
 					</box>
@@ -188,7 +190,7 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="400" y="67" width="31" height="15" uuid="067618ff-2842-49ef-b422-5a8a569143e9"/>
+					<reportElement x="400" y="62" width="31" height="15" uuid="067618ff-2842-49ef-b422-5a8a569143e9"/>
 					<box>
 						<pen lineWidth="0.5"/>
 					</box>
@@ -198,7 +200,7 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="369" y="67" width="31" height="15" uuid="301c7b07-77c5-447b-a817-9dd28ee92c0d">
+					<reportElement x="369" y="62" width="31" height="15" uuid="301c7b07-77c5-447b-a817-9dd28ee92c0d">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -211,7 +213,7 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="462" y="67" width="31" height="15" uuid="97c7c455-a776-4381-bfee-e70f8ef46079"/>
+					<reportElement x="462" y="62" width="31" height="15" uuid="97c7c455-a776-4381-bfee-e70f8ef46079"/>
 					<box>
 						<pen lineWidth="0.5"/>
 					</box>
@@ -221,7 +223,7 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="431" y="67" width="31" height="15" uuid="0d75f2cc-e730-43fb-8890-a3f489deed83">
+					<reportElement x="431" y="62" width="31" height="15" uuid="0d75f2cc-e730-43fb-8890-a3f489deed83">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -234,7 +236,7 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="524" y="67" width="31" height="15" uuid="9a7214c5-fca4-4ef6-bf5f-d87eca17cc51"/>
+					<reportElement x="524" y="62" width="31" height="15" uuid="9a7214c5-fca4-4ef6-bf5f-d87eca17cc51"/>
 					<box>
 						<pen lineWidth="0.5"/>
 					</box>
@@ -244,7 +246,7 @@ curriculares]]></text>
 					<text><![CDATA[F]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="493" y="67" width="31" height="15" uuid="d2184b92-9fa7-4b87-811a-b1c66d05fed8">
+					<reportElement x="493" y="62" width="31" height="15" uuid="d2184b92-9fa7-4b87-811a-b1c66d05fed8">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -257,7 +259,7 @@ curriculares]]></text>
 					<textFieldExpression><![CDATA[$F{tipoNota}]]></textFieldExpression>
 				</textField>
 				<componentElement>
-					<reportElement positionType="Float" x="35" y="82" width="520" height="15" uuid="43ffb2f4-0b7f-4015-93ba-1540d33ebe3c">
+					<reportElement positionType="Float" x="35" y="77" width="520" height="15" uuid="43ffb2f4-0b7f-4015-93ba-1540d33ebe3c">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
