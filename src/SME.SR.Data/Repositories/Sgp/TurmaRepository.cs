@@ -115,7 +115,7 @@ namespace SME.SR.Data
         public async Task<Turma> ObterComDreUePorCodigo(string codigoTurma)
         {
             var query = @"select t.turma_id Codigo, t.nome, 
-			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA,
+			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA, t.tipo_turma TipoTurma,
 			                ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
 			                dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
 			                from  turma t
@@ -223,6 +223,7 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasRegulares;
                         select 
 	                        t.turma_id as TurmaCodigo,
+                            null as TurmaRegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
@@ -253,6 +254,7 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasComplementares;
                         select 
 	                        t.turma_id as TurmaCodigo,
+                            tr.turma_id as TurmaRegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
@@ -269,6 +271,15 @@ namespace SME.SR.Data
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccat
 	                        on cca.id = ccat.conselho_classe_aluno_id
+                        inner join 
+	                        conselho_classe cc
+	                        on cc.id = t1.ConselhoClasseId
+                        inner join
+	                        fechamento_turma ft
+	                        on cc.fechamento_turma_id = ft.id
+                        inner join 
+	                        turma tr
+	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
 	                        on t.id = ccat.turma_id
@@ -718,6 +729,7 @@ namespace SME.SR.Data
             var query = @"drop table if exists tempTurmaRegularConselhoAluno;
                         select distinct 
                             t.turma_id as TurmaCodigo,
+                            null as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
@@ -768,6 +780,7 @@ namespace SME.SR.Data
                         drop table if exists tempTurmaComplementarConselhoAluno;
                         select distinct 
                             t.turma_id as TurmaCodigo,
+                            tr.turma_id as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
@@ -782,10 +795,19 @@ namespace SME.SR.Data
 	                        on t1.ConselhoClasseAlunoId = cca.id 
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccatc 
-	                        on cca.id = ccatc .conselho_classe_aluno_id 
+	                        on cca.id = ccatc.conselho_classe_aluno_id 
+                         inner join 
+	                        conselho_classe cc
+	                        on cc.id = cca.conselho_classe_id
+                        inner join
+	                        fechamento_turma ft
+	                        on cc.fechamento_turma_id = ft.id
+                        inner join 
+	                        turma tr
+	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
-	                        on ccatc .turma_id = t.id
+	                        on ccatc.turma_id = t.id
                         left join 
 	                        tipo_ciclo_ano tca 
 	                        on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
@@ -797,16 +819,14 @@ namespace SME.SR.Data
                         select 
 	                        *
                         from 
-	                        (select TurmaCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
+	                        (select TurmaCodigo,TurmaRegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
                         union
 	                        (select * from tempTurmaComplementarConselhoAluno)";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            var codigos = codigoAlunos.Select(a => a.ToString()).ToArray();
-
-            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigos });
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigoAlunos.Select(a => a.ToString()).ToArray() });
         }
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaSemParecerConclusivo(long turmaCodigo)

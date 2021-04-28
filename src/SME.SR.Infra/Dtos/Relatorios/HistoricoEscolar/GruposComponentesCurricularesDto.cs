@@ -13,6 +13,16 @@ namespace SME.SR.Infra
         public List<AreaDeConhecimentoDto> AreasDeConhecimento { get; set; }
 
         [JsonIgnore]
+        public GruposComponentesCurricularesDto ObterAreasComNotaValida
+        {
+            get
+            {
+                AreasDeConhecimento = AreasDeConhecimento.Where(ac => ac.ComponentesCurriculares.Any())?.ToList();
+                return this;
+            }
+        }
+
+        [JsonIgnore]
         public bool PossuiNotaValida
         {
             get

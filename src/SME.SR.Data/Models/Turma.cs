@@ -7,6 +7,7 @@ namespace SME.SR.Data
     public class Turma
     {
         public string Codigo { get; set; }
+        public string RegularCodigo { get; set; }
         public string turma_id { get; set; }
         public int AnoLetivo { get; set; }
         public string Ano { get; set; }
