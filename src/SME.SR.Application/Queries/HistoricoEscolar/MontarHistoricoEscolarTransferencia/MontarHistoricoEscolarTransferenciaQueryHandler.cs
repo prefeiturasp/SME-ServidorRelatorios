@@ -62,6 +62,7 @@ namespace SME.SR.Application
                         BaseNacionalComum = baseNacionalDto,
                         EnriquecimentoCurricular = enriquecimentoDto,
                         ProjetosAtividadesComplementares = projetosDto,
+                        Legenda = ObterLegenda(notasAluno, enriquecimentoDto, request.Legenda)
                     };
 
                     listaRetorno.Add(transferenciaDto);
@@ -69,6 +70,18 @@ namespace SME.SR.Application
             }
 
             return await Task.FromResult(listaRetorno);
+        }
+
+        private LegendaDto ObterLegenda(IEnumerable<NotasAlunoBimestre> notasAluno, List<ComponenteCurricularHistoricoEscolarTransferenciaDto> enriquecimentoDto, LegendaDto legenda)
+        {
+             var legendaRetorno = new LegendaDto() { Texto = String.Empty };
+            if (notasAluno.Any(c => c.NotaConceito.ConceitoId != null))
+                legendaRetorno.Texto = legenda.TextoConceito;
+
+            if (notasAluno.Any(c => c.NotaConceito.Sintese != null) || (enriquecimentoDto != null && !enriquecimentoDto.Any(c => c.Nota)))
+                legendaRetorno.Texto = legendaRetorno.Texto != String.Empty ? $"{legendaRetorno.Texto},{legenda.TextoSintese}" : legenda.TextoSintese;
+
+            return legendaRetorno;
         }
 
         private string MapearTiposNota(Modalidade modalidade, IEnumerable<TipoNotaCicloAno> tiposNota, Turma turma)

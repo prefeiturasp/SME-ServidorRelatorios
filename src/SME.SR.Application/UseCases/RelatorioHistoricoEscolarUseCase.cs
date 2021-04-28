@@ -25,7 +25,7 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
 
-            var legenda = new LegendaDto(await ObterLegenda());
+            var legenda = await ObterLegenda();
 
             var cabecalho = await MontarCabecalho(filtros);
 
@@ -134,14 +134,14 @@ namespace SME.SR.Application
 
             if (turmasTransferencia != null && turmasTransferencia.Any())
                 resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
-                  frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray()));
+                  frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray(), legenda));
 
             if ((turmasFundMedio != null && turmasFundMedio.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
             else if ((turmasEja != null && turmasEja.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
-                resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, todosAlunosTurmas, mediasFrequencia, notas,
+                resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
@@ -150,10 +150,12 @@ namespace SME.SR.Application
                 resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
                 resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
 
-                foreach (var item in resultadoFinalMedio)
-                {
-                    item.Legenda.Texto = string.Empty;
-                }
+                //foreach (var item in resultadoFinalMedio)
+                //{
+                //    item.Legenda.Texto = string.Empty;
+                //}
+
+                
             }
 
             if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) ||
@@ -404,10 +406,34 @@ namespace SME.SR.Application
             else return null;
         }
 
-        private async Task<string> ObterLegenda()
+        private async Task<LegendaDto> ObterLegenda()
+        {
+            var legenda = new LegendaDto
+            {
+                TextoConceito = await ObterLegendaConceito(),
+                TextoSintese = await ObterLegendaSintese()
+            };
+            legenda.Texto = legenda.TextoConceito;
+            return legenda;
+        }
+
+        private async Task<string> ObterLegendaConceito()
         {
             var sb = new StringBuilder();
-            var legendas = await mediator.Send(new ObterLegendaQuery());
+            var legendas = await mediator.Send(new ObterLegendaQuery(TipoLegenda.Conceito));
+            foreach (var conceito in legendas)
+            {
+                sb.Append($"{conceito.Valor} = {conceito.Descricao}, ");
+            }
+
+            var resultado = sb.ToString().Replace("\t", "");
+            return resultado.Substring(0, resultado.Length - 2);
+        }
+
+        private async Task<string> ObterLegendaSintese()
+        {
+            var sb = new StringBuilder();
+            var legendas = await mediator.Send(new ObterLegendaQuery(TipoLegenda.Sintese));
             foreach (var conceito in legendas)
             {
                 sb.Append($"{conceito.Valor} = {conceito.Descricao}, ");
