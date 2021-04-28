@@ -80,7 +80,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, Usuario usuario)
         {
-            var alunos = await ObterAlunos(turma.Codigo);
+           var alunos = await ObterAlunos(turma.Codigo);
             alunos = alunos.Where(a => a.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Ativo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
             List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
@@ -359,7 +359,7 @@ namespace SME.SR.Application
                 Situacao = aluno.SituacaoMatricula,
                 Inativo = aluno.Inativo
             };
-            bool possuiComponente = true;
+            bool possuiComponente = false;
             var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
 
             foreach (var grupoMatriz in gruposMatrizes)
