@@ -149,13 +149,6 @@ namespace SME.SR.Application
             {
                 resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
                 resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
-
-                //foreach (var item in resultadoFinalMedio)
-                //{
-                //    item.Legenda.Texto = string.Empty;
-                //}
-
-                
             }
 
             if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) ||
