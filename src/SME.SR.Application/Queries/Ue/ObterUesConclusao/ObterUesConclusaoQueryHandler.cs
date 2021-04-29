@@ -30,6 +30,9 @@ namespace SME.SR.Application
             if (!informacoesDosAlunos.Any())
                 throw new NegocioException("Não foi possível obter a informação dos alunos.");
 
+            var codigosTurma = informacoesDosAlunos.Select(x => Convert.ToInt64(x.CodigoTurma)).Distinct().ToArray();
+
+            var turmasDetalhe = await mediator.Send(new ObterTurmasDetalhePorCodigoQuery(codigosTurma));
             //Obter as turmas dos Alunos
             var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigosAlunos, pareceresConclusivosIds.ToArray()));
             var turmasRegularesDosAlunos = turmasDosAlunos?.Where(x => x.TipoTurma == TipoTurma.Regular).ToList();
@@ -52,6 +55,7 @@ namespace SME.SR.Application
                 if (turmaAlunoEol != null)
                 {
                     var ue = ues.FirstOrDefault(ue => ue.Codigo == turmaAlunoEol.CodigoEscola);
+                    var turmaDetalhe = turmasDetalhe.FirstOrDefault(t => t.Codigo == turmaAlunoEol.CodigoTurma.ToString());
 
                     foreach (var ciclo in ciclos)
                     {
@@ -80,6 +84,8 @@ namespace SME.SR.Application
                             }
                             else
                             {
+                                if(request.Modalidade != Modalidade.Medio ||
+                                   (ciclo.Ano < 4 || (ciclo.Ano > 3 && turmaDetalhe.EhTurmaMagisterio)))
                                 uesConclusao.Add(new UeConclusaoPorAlunoAno()
                                 {
                                     AlunoCodigo = turmaRegularAluno.AlunoCodigo,
