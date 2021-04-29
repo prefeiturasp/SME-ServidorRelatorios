@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
@@ -42,7 +43,7 @@ namespace SME.SR.Application
 
                     var turmasHistorico = agrupamentoTurmas.Where(t => request.Transferencias == null || !request.Transferencias.Any(tt => tt.CodigoTurma == t.Codigo && tt.CodigoAluno == aluno.Key));
 
-                    var notasAluno = request.Notas.Where(n => turmasHistorico.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Key && w.PeriodoEscolar == null && w.Aprovado);
+                    var notasAluno = request.Notas.Where(n => turmasHistorico.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Key && (w.PeriodoEscolar == null || w.PeriodoEscolar.Bimestre == 0) && w.Aprovado);
                     var frequenciasAluno = request.Frequencias.Where(f => turmasHistorico.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Key);
 
                     var baseNacionalDto = ObterBaseNacionalComum(turmasHistorico, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento, request.GrupoAreaOrdenacao);
@@ -55,7 +56,7 @@ namespace SME.SR.Application
 
                     var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
 
-                    var uesHistorico = request.HistoricoUes.FirstOrDefault(ue => ue.Key.ToString() == aluno.Key)?.ToList();
+                    var uesHistorico = request.HistoricoUes?.FirstOrDefault(ue => ue.Key.ToString() == aluno.Key)?.ToList();
 
                     var historicoDto = new HistoricoEscolarEJADto()
                     {
@@ -82,10 +83,12 @@ namespace SME.SR.Application
         private LegendaDto ObterLegenda(IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<TransferenciaDto> transferencias, LegendaDto legenda)
         {
             var legendaRetorno = new LegendaDto() { Texto = String.Empty };
-            if (notasAluno.Any(c => c.NotaConceito.ConceitoId != null) || transferencias.Any(x => x.Legenda.Texto.Contains("Satisfatório")))
+            if ((notasAluno != null && notasAluno.Any(c => c.NotaConceito.ConceitoId != null)) ||
+                (transferencias != null && transferencias.Any(x => x.Legenda.Texto.Contains("Satisfatório"))))
                 legendaRetorno.Texto = legenda.TextoConceito;
 
-            if (notasAluno.Any(c => c.NotaConceito.Sintese != null) || transferencias.Any(x => x.Legenda.Texto.Contains("Frequente")))
+            if ((notasAluno != null && notasAluno.Any(c => c.NotaConceito.Sintese != null)) ||
+                (transferencias != null && transferencias.Any(x => x.Legenda.Texto.Contains("Frequente"))))
                 legendaRetorno.Texto = legendaRetorno.Texto != String.Empty ? $"{legendaRetorno.Texto},{legenda.TextoSintese}" : legenda.TextoSintese;
 
             return legendaRetorno;
@@ -223,7 +226,7 @@ namespace SME.SR.Application
                 }
             }
 
-            return gruposComponentes;
+            return gruposComponentes?.Select(gc => gc.ObterAreasComNotaValida)?.Where(gc => gc.AreasDeConhecimento.Any())?.ToList();
         }
 
         private BaseNacionalComumEJADto ObterBaseNacionalComum(IEnumerable<Turma> turmas,
@@ -247,12 +250,12 @@ namespace SME.SR.Application
                         Nome = ac.Key.Nome,
                         ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
                                                 ObterComponentesDasAreasDeConhecimento(componentesCurricularesDaTurma, ac),
-                                                notasAlunos, frequencias, mediasFrequencia, ac)?.ToList()
+                                                notasAlunos, frequencias, mediasFrequencia, ac)?.OrderBy(o => o.Nome).ToList()
                     }).ToList()
                 };
             }
 
-            return baseNacional;
+            return baseNacional.ObterAreasComNotaValida;
         }
 
         private IEnumerable<ComponenteCurricularPorTurma> ObterComponentesDasAreasDeConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
@@ -260,7 +263,7 @@ namespace SME.SR.Application
         {
             return componentesCurricularesDaTurma.Where(c => (!c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)) ||
                                                             (c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Any(cr =>
-                                                            c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr))));
+                                                            c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr)))).OrderBy(cc => cc.Disciplina); ;
         }
 
         private IEnumerable<IGrouping<(string Nome, int? Ordem, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
@@ -322,7 +325,7 @@ namespace SME.SR.Application
                 }
             }
 
-            return componentes;
+            return componentes?.Where(c => c.PossuiNotaValida);
         }
 
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos)
@@ -386,7 +389,7 @@ namespace SME.SR.Application
                 });
             }
 
-            return componentes;
+            return componentes?.Where(c => c.PossuiNotaValida);
         }
 
         private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
