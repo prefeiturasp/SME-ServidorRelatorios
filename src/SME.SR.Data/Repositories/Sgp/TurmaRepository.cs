@@ -1006,5 +1006,66 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<Turma>(query, new { turmaCodigo });
             }
         }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasDetalhePorCodigos(long[] turmaCodigos)
+        {
+            var query = @"  SELECT DISTINCT	
+                                    tur.cd_escola AS ueCodigo,
+				                    tur.cd_turma_escola AS codigo,
+                                    tur.cd_tipo_turma AS tipoTurma,
+				                    tur.dt_inicio_turma AS dataInicioTurma,
+				                    tur.dt_fim AS dataFimTurma,
+				                    tur.an_letivo AS anoletivo,				                    
+				                    tur.dc_turma_escola AS nometurma,
+									tur.dt_atualizacao_tabela as DataAtualizacao,
+									tur.dt_status_turma_escola as DataStatusTurmaEscola,
+				                    Iif(tur.cd_tipo_turma IN (1, 5, 6), se.sg_resumida_serie, 
+				                    CASE
+					                    WHEN tur.cd_tipo_turma = 2 THEN SUBSTRING(TUR.dc_turma_escola, 1, 1) 
+					                    WHEN tur.cd_tipo_turma = 7 THEN '2' -- 2ª serie novo EM
+					                    WHEN tur.cd_tipo_turma = 3 THEN '0' -- Turma de Programa
+				                    END) AS ano,
+				                    dtt.qt_hora_duracao AS duracaoturno,
+				                    tur.cd_tipo_turno AS tipoturno, 			
+				                    Iif((se.cd_etapa_ensino = 13) AND (se.cd_modalidade_ensino = 2) , 1, 0) AS ensinoEspecial,
+				                    se.dc_serie_ensino AS serieEnsino,
+				                    IIf(tur.st_turma_escola = 'E', 1, 0) Extinta,
+				                    tur.st_turma_escola AS situacao,
+                                    ee.cd_etapa_ensino as EtapaEnsino,
+                                    se.cd_ciclo_ensino as CicloEnsino,
+                                    esc.tp_escola as TipoEscola
+				                    FROM turma_escola (nolock) tur
+					                    INNER JOIN tipo_turno (nolock) t_trn
+						                    ON t_trn.cd_tipo_turno = tur.cd_tipo_turno
+					                    INNER JOIN duracao_tipo_turno (nolock) dtt
+						                    ON t_trn.cd_tipo_turno = dtt.cd_tipo_turno
+					                    AND tur.cd_duracao = dtt.cd_duracao
+					                    INNER JOIN tipo_periodicidade (nolock) tper
+						                    ON tur.cd_tipo_periodicidade = tper.cd_tipo_periodicidade
+							                       -- Unidades Educacionais
+					                    INNER JOIN v_cadastro_unidade_educacao (nolock) vue
+						                    ON vue.cd_unidade_educacao = tur.cd_escola
+					                    INNER JOIN escola (nolock) esc
+						                    ON esc.cd_escola = vue.cd_unidade_educacao
+					                    -- Serie Ensino(turma tipo = 1)
+					                    LEFT JOIN  serie_turma_escola (nolock) ste
+						                    ON tur.cd_turma_escola = ste.cd_turma_escola
+							                    AND        ste.dt_fim IS NULL
+					                    LEFT JOIN serie_ensino (nolock) se
+						                    ON         se.cd_serie_ensino = ste.cd_serie_ensino
+					                    LEFT JOIN  etapa_ensino (nolock) ee
+						                    ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+											LEFT JOIN  serie_turma_grade (nolock) stg
+								ON tur.cd_turma_escola = stg.cd_turma_escola
+									AND tur.cd_escola = stg.cd_escola
+									AND ste.cd_serie_ensino = stg.cd_serie_ensino
+									AND stg.dt_fim IS NULL									
+				                    WHERE tur.cd_turma_escola IN @turmaCodigos";
+
+            using (var conexao = new SqlConnection((variaveisAmbiente.ConnectionStringEol)))
+            {
+                return await conexao.QueryAsync<Turma>(query, new { turmaCodigos });
+            }
+        }
     }
 }
