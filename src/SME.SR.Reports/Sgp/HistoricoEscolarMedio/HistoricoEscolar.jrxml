@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Principal" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="05587c97-f3c6-4cf2-9a1d-2b32c0508906">
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Principal" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="05587c97-f3c6-4cf2-9a1d-2b32c0508906">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
 	<property name="ireport.jasperserver.user" value="ebufaino"/>
 	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar_files/main_jrxml"/>
 	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="jsonString" class="java.lang.String">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
@@ -142,7 +151,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<text><![CDATA[HISTÓRICO ESCOLAR]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="0" y="70" width="555" height="22" uuid="e9d29827-3256-4336-b4b1-cee51ee8c44d">
+				<reportElement x="0" y="67" width="555" height="22" uuid="e9d29827-3256-4336-b4b1-cee51ee8c44d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -153,7 +162,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["Unidade Escolar(UE): "+($F{nomeUe} != null ? $F{nomeUe} : "")]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="0" y="92" width="555" height="22" uuid="04fdb2e2-7182-4e46-b0ed-5b17e5751106">
+				<reportElement x="0" y="89" width="555" height="22" uuid="04fdb2e2-7182-4e46-b0ed-5b17e5751106">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -164,7 +173,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["ENDEREÇO: "+($F{endereco} != null ?$F{endereco}: "")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="278" y="114" width="277" height="22" uuid="e6780fe1-c1d4-453b-9c1a-b34964aa6066">
+				<reportElement x="278" y="111" width="277" height="22" uuid="e6780fe1-c1d4-453b-9c1a-b34964aa6066">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -176,7 +185,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["ATO DE AUTORIZAÇÃO: "+($F{atoAutorizacao} != null ? $F{atoAutorizacao}: "")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="114" width="278" height="22" uuid="b1ffb74c-fc80-451a-8d14-61548182db6b">
+				<reportElement x="0" y="111" width="278" height="22" uuid="b1ffb74c-fc80-451a-8d14-61548182db6b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -189,9 +198,9 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="80" splitType="Stretch">
+		<band height="66" splitType="Stretch">
 			<textField textAdjust="StretchHeight">
-				<reportElement x="0" y="22" width="286" height="22" uuid="3061595e-75fc-4955-aebd-9a4226848d11">
+				<reportElement x="0" y="13" width="286" height="22" uuid="3061595e-75fc-4955-aebd-9a4226848d11">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -202,7 +211,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["ALUNO: "+($F{nome}!= null?$F{nome}: "")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="ElementGroupHeight" x="400" y="22" width="154" height="22" uuid="20ae45b4-e051-46e5-8840-9fbf8692b4fb">
+				<reportElement stretchType="ElementGroupHeight" x="400" y="13" width="154" height="22" uuid="20ae45b4-e051-46e5-8840-9fbf8692b4fb">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -213,7 +222,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["RGA: "+($F{rga}!=null?$F{rga}:"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="44" width="276" height="22" uuid="d005aaff-8c61-4402-9a4f-ba3460de02ff">
+				<reportElement x="0" y="35" width="276" height="22" uuid="d005aaff-8c61-4402-9a4f-ba3460de02ff">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -224,7 +233,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["CIDADE NATAL: "+($F{cidadeNatal}!= null ? $F{cidadeNatal}:"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="276" y="44" width="124" height="22" uuid="ed8a7f74-6e15-4f44-b455-d68013983e95">
+				<reportElement x="276" y="35" width="124" height="22" uuid="ed8a7f74-6e15-4f44-b455-d68013983e95">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -235,7 +244,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["ESTADO NATAL: "+($F{estadoNatal}!= null ? $F{estadoNatal}:"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="400" y="44" width="154" height="22" uuid="4102c9eb-2973-4f29-b3dc-2830888c2fa0">
+				<reportElement x="400" y="35" width="154" height="22" uuid="4102c9eb-2973-4f29-b3dc-2830888c2fa0">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -246,7 +255,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 				<textFieldExpression><![CDATA["NACIONALIDADE: "+($F{nacionalidade}!=null?$F{nacionalidade}:"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="286" y="22" width="114" height="22" uuid="40c7ae8a-980c-43e5-bff0-224ca0db764d">
+				<reportElement x="286" y="13" width="114" height="22" uuid="40c7ae8a-980c-43e5-bff0-224ca0db764d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -344,36 +353,45 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="30" splitType="Stretch">
+		<band height="16" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="1" y="4" width="318" height="23" uuid="b94f6746-6d14-4bd6-8a42-4fd4b2c489ee">
+				<reportElement x="1" y="0" width="318" height="16" uuid="b94f6746-6d14-4bd6-8a42-4fd4b2c489ee">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA["SGP - Sistema de gestão Pedagógica | HISTÓRICO ESCOLAR  "]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="500" y="4" width="25" height="23" uuid="f3d61aae-d229-455a-a8a3-50d6dc12d987">
+				<reportElement positionType="Float" x="500" y="0" width="25" height="16" uuid="f3d61aae-d229-455a-a8a3-50d6dc12d987">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12"/>
+					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="525" y="4" width="5" height="23" uuid="c3d0c76d-f6f9-41d6-b2d1-e488b591ac1a">
+				<reportElement positionType="Float" x="525" y="0" width="5" height="16" uuid="c3d0c76d-f6f9-41d6-b2d1-e488b591ac1a">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
 				<text><![CDATA[/]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight" evaluationTime="Report">
-				<reportElement positionType="Float" x="530" y="4" width="24" height="23" uuid="d5fa6dd8-2fdf-4e42-9785-70514b7173b3">
+				<reportElement positionType="Float" x="530" y="0" width="24" height="16" uuid="d5fa6dd8-2fdf-4e42-9785-70514b7173b3">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12"/>
+					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
