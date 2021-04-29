@@ -76,13 +76,13 @@
 
             return numeroLinhasDescricao;
         }
-        return 2;
+        return 1;
     }
 
     string QuebrarLinhas(string estudante, int numeroQuebras = 1)
     {
         var quebra = VerificaQuebra(numeroQuebras);
-     
+
         if (quebra)
         {
             informacoesQuebra();
@@ -97,7 +97,7 @@
         }
         return "";
     }
-    
+
     string SomaLinhasContador(int numeroLinhasDescricao)
     {
         if (numeroLinhasDescricao > 1)
@@ -108,7 +108,7 @@
         {
             contadorQuebrarPagina++;
         }
-        return"";
+        return "";
     }
 
     string MontarCabecalhoRegistros(string nome)
@@ -123,6 +123,46 @@
                 <td>REGISTRADO POR</td>
             </tr>
         </thead>
+        return "";
+    }
+
+    string MontarDescricao(string dataRegistro, string descricao, string registradoPor)
+    {
+        <tr>
+            <td width="10%">@dataRegistro</td>
+            <td width="60%" class="alinhar-esquerda espaco-esquerda-15">@descricao</td>
+            <td width="30%" style="padding:0 3px">@registradoPor</td>
+        </tr>
+        return "";
+    }
+
+    string CalcularDescricao(string estudante, string descricaoRetante, string dataRegistro, string registradoPor)
+    {
+        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRetante.Length, 100);
+
+        if (numeroLinhasDescricaoRestante > 50)
+        {
+            DivideDescricao(estudante, descricaoRetante, dataRegistro, registradoPor);
+        }
+        else
+        {
+            @Html.Raw(QuebrarLinhas(estudante, numeroLinhasDescricaoRestante))
+            @Html.Raw(MontarDescricao(dataRegistro, descricaoRetante, registradoPor))
+            @Html.Raw(SomaLinhasContador(numeroLinhasDescricaoRestante))
+        }
+
+        return "";
+    }
+
+    string DivideDescricao(string estudante, string descricao, string dataRegistro, string registradoPor)
+    {
+        var descricaoDivida = descricao.Substring(0, 5000);
+        var descricaoRetante = descricao.Substring(5001);
+        @Html.Raw(QuebrarLinhas(estudante, 43))
+        @Html.Raw(MontarDescricao(dataRegistro, descricaoDivida, registradoPor))
+        @Html.Raw(SomaLinhasContador(43))
+        CalcularDescricao(estudante, descricaoRetante, dataRegistro, registradoPor);
+
         return "";
     }
 
@@ -268,25 +308,29 @@
                     <tbody>
                         @foreach (var registros in @alunos.Registros)
                         {
+                            var estudante = alunos.Nome;
                             var descricao = registros.Descricao;
                             var registradoPor = registros.RegistradoPor;
+                            var dataRegistro = registros.DataRegistro;
+
                             int numeroLinhasDescricao = CalcularLinhas(descricao.Length, 100);
                             int numeroLinhasResgistradoPor = CalcularLinhas(registradoPor.Length, 30);
                             int numeroCalulo = numeroLinhasDescricao > numeroLinhasResgistradoPor ? numeroLinhasDescricao : numeroLinhasResgistradoPor;
-                           
-                            @Html.Raw(QuebrarLinhas(@alunos.Nome, numeroCalulo))
-                            @Html.Raw(SomaLinhasContador(numeroCalulo))
-                            
-                           <tr>
-                                <td width="10%">@registros.DataRegistro</td>
-                                <td width="60%" class="alinhar-esquerda espaco-esquerda-15">@descricao</td>
-                                <td width="30%" style="padding:0 3px">@registradoPor</td>
-                            </tr>
 
-                            contadorQuebrarPagina++;
+                            if (numeroLinhasDescricao > 50)
+                            {
+                                DivideDescricao(estudante, descricao, dataRegistro, registradoPor);
+                            }
+                            else
+                            {
+                                @Html.Raw(QuebrarLinhas(estudante, numeroCalulo))
+                                @Html.Raw(SomaLinhasContador(numeroCalulo))
+                                @Html.Raw(MontarDescricao(dataRegistro, descricao, registradoPor))
+                            }
                         }
                     </tbody>
                 </table>
+
 
                 if (Model.Alunos.Count() > 1 && alunosIndex < Model.Alunos.Count() - 1)
                 {
@@ -297,6 +341,9 @@
                 alunosIndex++;
             }
         </div>
+        <footer style="display:flex; justify-content:flex-end;align-items:flex-end; background:grey">
+            <p>teste</p>
+        </footer>
     </body>
 </html>
 }
