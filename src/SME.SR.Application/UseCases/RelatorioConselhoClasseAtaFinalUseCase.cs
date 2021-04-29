@@ -40,6 +40,7 @@ namespace SME.SR.Application
                     break;
                 case TipoFormatoRelatorio.Pdf:
                     await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
+                    //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtasComColunaFinal", relatoriosTurmas[2], request.CodigoCorrelacao));
                     break;
                 case TipoFormatoRelatorio.Rtf:
                 case TipoFormatoRelatorio.Html:
