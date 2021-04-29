@@ -240,8 +240,8 @@
                     {
                     foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                     {
-                        var celulas = linha.Celulas.Where(a => a.ComponenteCurricular == componenteCurricular.Id).ToList();
-                        foreach (var celula in celulas)
+                    dynamic celulas = linha.Celulas;
+                    foreach (var celula in ((IEnumerable<dynamic>)celulas).Where(a => a.ComponenteCurricular == componenteCurricular.Id))
                         {
                         <td>@celula.Valor</td>
                         }
