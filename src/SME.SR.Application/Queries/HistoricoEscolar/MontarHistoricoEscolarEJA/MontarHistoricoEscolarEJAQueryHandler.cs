@@ -27,11 +27,11 @@ namespace SME.SR.Application
 
             foreach (var aluno in alunosTurmas)
             {
-                var alunoTurmasPorModalidade = aluno.SelectMany(a => a.Turmas).GroupBy(t => t.ModalidadeCodigo);
+                var alunoTurmasPorModalidade = aluno.SelectMany(a => a.Turmas).Where(t => string.IsNullOrEmpty(t.RegularCodigo)).GroupBy(t => t.ModalidadeCodigo);
 
                 foreach (var agrupamentoTurmas in alunoTurmasPorModalidade)
                 {
-                    var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).DistinctBy(d => d.CodDisciplina);
+                    var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).Where(cc => string.IsNullOrEmpty(cc.CodigoTurmaAssociada) || aluno.SelectMany(a => a.Turmas).Any(at => at.Codigo == cc.CodigoTurmaAssociada)).DistinctBy(d => d.CodDisciplina);
                     var componentesPorGrupoMatriz = componentesDaTurma.Where(gm => gm.GrupoMatriz != null).GroupBy(cc => cc.GrupoMatriz);
 
                     //Obter grupo matriz
@@ -331,7 +331,34 @@ namespace SME.SR.Application
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos)
         {
             if (turma != null)
-                return frequenciaAlunos.FirstOrDefault(f => f.DisciplinaId == codigoComponente && f.TurmaId == turma.Codigo)?.PercentualFrequencia.ToString() ?? "100";
+            {
+                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente);
+                FrequenciaAluno frequenciaAluno;
+
+                if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
+                {
+                    frequenciaAluno = new FrequenciaAluno() { DisciplinaId = codigoComponente, TurmaId = turma.Codigo };
+                }
+                else if (frequenciasAlunoParaTratar.Count() == 1)
+                {
+                    frequenciaAluno = frequenciasAlunoParaTratar.FirstOrDefault();
+                }
+                else
+                {
+                    frequenciaAluno = new FrequenciaAluno()
+                    {
+                        DisciplinaId = codigoComponente,
+                        CodigoAluno = frequenciasAlunoParaTratar.FirstOrDefault().CodigoAluno
+                    };
+
+
+                    frequenciaAluno.TotalAulas = frequenciasAlunoParaTratar.Sum(a => a.TotalAulas);
+                    frequenciaAluno.TotalAusencias = frequenciasAlunoParaTratar.Sum(a => a.TotalAusencias);
+                    frequenciaAluno.TotalCompensacoes = frequenciasAlunoParaTratar.Sum(a => a.TotalCompensacoes);
+                }
+
+                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia.ToString() ?? "100" : "100";
+            }
             else
                 return null;
         }
