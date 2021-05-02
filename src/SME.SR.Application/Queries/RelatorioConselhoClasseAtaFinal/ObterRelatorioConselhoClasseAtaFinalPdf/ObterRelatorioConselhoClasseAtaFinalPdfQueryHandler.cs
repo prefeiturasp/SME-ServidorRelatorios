@@ -187,12 +187,17 @@ namespace SME.SR.Application
             var listaTurmasAlunos = listaAlunos.GroupBy(x => x.CodigoTurma);
             List<string> listaTurmas = new List<string>();
             listaTurmas.Add(turma.Codigo);
-            foreach (var lta in listaTurmasAlunos)
-            {
 
-                var turmaAluno = await ObterTurma(lta.Key.ToString());
-                if (turmaAluno.TipoTurma != TipoTurma.Regular)
-                    listaTurmas.Add(turmaAluno.Codigo);
+            var turmaDetalhes = await ObterTurmaDetalhes(turma.Codigo);
+
+            if (turmaDetalhes.EtapaEnsino != (int)EtapaEnsino.Magisterio)
+            {
+                foreach (var lta in listaTurmasAlunos)
+                {
+                    var turmaAluno = await ObterTurma(lta.Key.ToString());
+                    if (turmaAluno.TipoTurma != TipoTurma.Regular)
+                        listaTurmas.Add(turmaAluno.Codigo);
+                }
             }
 
             listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
@@ -509,9 +514,14 @@ namespace SME.SR.Application
         private async Task<ConselhoClasseAtaFinalCabecalhoDto> ObterCabecalho(string turmaCodigo)
             => await mediator.Send(new ObterAtaFinalCabecalhoQuery(turmaCodigo));
 
+        private async Task<Turma> ObterTurmaDetalhes(string turmaCodigo)
+        {
+            var turmas = await mediator.Send(new ObterTurmasDetalhePorCodigoQuery(new long[] { Convert.ToInt64(turmaCodigo) }));
+            return turmas.FirstOrDefault();
+        }
+
         private async Task<Turma> ObterTurma(string turmaCodigo)
             => await mediator.Send(new ObterTurmaQuery(turmaCodigo));
-
         private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string turmaCodigo, long tipoCalendarioId, IEnumerable<PeriodoEscolar> periodosEscolares)
             => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmaCodigo, tipoCalendarioId, periodosEscolares.Select(a => a.Bimestre)));
 
