@@ -190,7 +190,7 @@ namespace SME.SR.Application
 
             var turmaDetalhes = await ObterTurmaDetalhes(turma.Codigo);
 
-            if (turmaDetalhes.EtapaEnsino != 9)
+            if (turmaDetalhes.EtapaEnsino != (int)EtapaEnsino.Magisterio)
             {
                 foreach (var lta in listaTurmasAlunos)
                 {
