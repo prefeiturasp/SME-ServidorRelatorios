@@ -30,18 +30,18 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         {
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
 
-            var obj = (RelatorioRegistroIndividualDto)request.Model;
+            var model = (RelatorioRegistroIndividualDto)request.Model;
 
             var nomeTemplateCabecalho = "relatorios/RelatorioRegistroIndividualCabecalho";
             var nomeTemplateCorpo = "relatorios/RelatorioRegistroIndividualCorpo";
 
-            var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, obj.Cabecalho);
+            var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, model.Cabecalho);
             htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
             htmlCabecalho = htmlCabecalho.Replace("logo.png", SmeConstants.LogoSme);
 
-            foreach (var item in obj.Alunos)
+            foreach (var aluno in model.Alunos)
             {
-                var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, item);
+                var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, aluno);
 
                 var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
                 var iNumPagina = 1;
