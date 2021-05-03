@@ -208,9 +208,8 @@ PROFESSORES: {Model.Cabecalho.Professores}
         return "";
     }
 
-    string MontarRegistroPercurso(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    string MontarRegistroPercurso(string estudante, string registroPercursoTurma)
     {
-        var registroPercursoTurma = aluno.RegistroPercursoTurma;
         int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
 
         if (numeroLinhasRegistroPercursoTurma < 2)
@@ -222,7 +221,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
             contadorMaximoLinhasPorPagina = 47;
         }
 
-        QuebrarLinhas(numeroLinhasRegistroPercursoTurma, aluno.Nome);
+        QuebrarLinhas(numeroLinhasRegistroPercursoTurma, estudante);
 
         SomaLinhasContador(numeroLinhasRegistroPercursoTurma);
 
@@ -614,17 +613,28 @@ PROFESSORES: {Model.Cabecalho.Professores}
                     contadorQuebrarPagina = contadorQuebrarPagina + 8;
                 }
 
-                MontarRegistroPercurso(aluno);
-                contadorQuebrarPagina++;
+                var registroPercursoTurma = aluno.RegistroPercursoTurma;
+                if (!String.IsNullOrEmpty(registroPercursoTurma))
+                {
+                    MontarRegistroPercurso(aluno.Nome, registroPercursoTurma);
+                    contadorQuebrarPagina++;
+                    
+                    QuebrarLinhas(4, aluno.Nome);
 
-                QuebrarLinhas(4, aluno.Nome);
+                    @Html.Raw(EspacoEmBranco())
+                    contadorQuebrarPagina++;
+                }
 
-                @Html.Raw(EspacoEmBranco())
-                contadorQuebrarPagina++;
 
-                MontarFrequencia(aluno);
+                if (aluno.Frequencias.Count() > 0)
+                {
+                    MontarFrequencia(aluno);
+                }
 
-                MontarRegistroIndividual(aluno);
+                if (aluno.RegistrosIndividuais.Count() > 0)
+                {
+                    MontarRegistroIndividual(aluno);
+                }
 
                 var descricaoObservacoes = aluno.Observacoes;
                 if (!String.IsNullOrEmpty(descricaoObservacoes))
