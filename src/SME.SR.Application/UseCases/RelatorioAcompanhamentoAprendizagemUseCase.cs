@@ -30,18 +30,18 @@ namespace SME.SR.Application
 
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo));
             if (alunosEol == null || !alunosEol.Any())
-                throw new NegocioException("Alunos não encontrados");
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             
             var acompanhmentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
-            if (acompanhmentosAlunos == null)
-                throw new NegocioException("Acompanhamentos não encontrados");
+            if (acompanhmentosAlunos == null || !acompanhmentosAlunos.Any())
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
             
             var bimestres = ObterBimestresPorSemestre(parametros.Semestre);
             
             var frequenciaAlunos = await mediator.Send(new ObterFrequenciaGeralAlunosPorTurmaEBimestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), bimestres));
             if (frequenciaAlunos == null || !frequenciaAlunos.Any())
-                throw new NegocioException("Frequências não encontradas");
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
            
             var registrosIndividuais = await mediator.Send(new ObterRegistroIndividualPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo));         
                        
