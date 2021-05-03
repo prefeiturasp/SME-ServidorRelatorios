@@ -458,7 +458,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoSegundaEtapaCiclo4}!= null ? ($F{frequenciaSegundaEtapaCiclo4} != null ? $F{frequenciaPrimeiraEtapaCiclo4} : "-") : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoSegundaEtapaCiclo4}!= null ? ($F{frequenciaSegundaEtapaCiclo4} != null ? $F{frequenciaSegundaEtapaCiclo4} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

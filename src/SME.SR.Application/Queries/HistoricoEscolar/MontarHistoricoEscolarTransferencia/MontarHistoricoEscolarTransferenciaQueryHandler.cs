@@ -29,7 +29,7 @@ namespace SME.SR.Application
 
                 foreach (var agrupamentoTurmas in alunoTurmasPorModalidade)
                 {
-                    var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).DistinctBy(d => d.CodDisciplina);
+                    var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).Where(cc => string.IsNullOrEmpty(cc.CodigoTurmaAssociada) || aluno.Turmas.Any(at => at.Codigo == cc.CodigoTurmaAssociada)).DistinctBy(d => d.CodDisciplina);
                     var componentesPorGrupoMatriz = componentesDaTurma.Where(gm => gm.GrupoMatriz != null).GroupBy(cc => cc.GrupoMatriz);
 
                     //Obter grupo matriz
@@ -223,7 +223,7 @@ namespace SME.SR.Application
         {
             if (turma != null)
             {
-                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente);
+                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente && a.Bimestre == bimestre);
                 FrequenciaAluno frequenciaAluno;
 
                 if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
