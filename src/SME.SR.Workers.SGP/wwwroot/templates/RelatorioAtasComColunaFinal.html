@@ -247,7 +247,7 @@
                         foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                         {
                         foreach (var celula in ((IEnumerable
-                        <dynamic>
+                        <ConselhoClasseAtaFinalCelulaDto>
                             )celulas).Where(a => a.ComponenteCurricular == componenteCurricular.Id))
                             {
                             <td>@celula.Valor</td>
