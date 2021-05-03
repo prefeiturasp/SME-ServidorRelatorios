@@ -20,7 +20,7 @@ namespace SME.SR.Application
         {
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioAcompanhamentoAprendizagemDto>();
             
-            var turma = await mediator.Send(new ObterTurmaPorIdQuery(parametros.TurmaId));
+            var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
 
             if (turma == null)
                 throw new NegocioException("Turma não encontrada");
@@ -31,12 +31,9 @@ namespace SME.SR.Application
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo));
             if (alunosEol == null || !alunosEol.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
-
             
             var acompanhmentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
-            if (acompanhmentosAlunos == null || !acompanhmentosAlunos.Any())
-                throw new NegocioException("Nenhuma informação para os filtros informados.");
-            
+                        
             var bimestres = ObterBimestresPorSemestre(parametros.Semestre);
             
             var frequenciaAlunos = await mediator.Send(new ObterFrequenciaGeralAlunosPorTurmaEBimestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), bimestres));
@@ -51,14 +48,12 @@ namespace SME.SR.Application
             {
                 var relatorioDto = new RelatorioAcompanhamentoAprendizagemDto();
 
-                relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias));
+                relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros));
 
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, gerarPaginacao: false));
-
              }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
