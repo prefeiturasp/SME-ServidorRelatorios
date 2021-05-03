@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using SME.SR.Infra;
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
@@ -226,34 +228,39 @@
 
                 @foreach (var linha in Model.Linhas)
                 {
-                    dynamic celulas = linha.Celulas;
+                IEnumerable
+                <ConselhoClasseAtaFinalCelulaDto>
+                    celulas = linha.Celulas;
 
                     <tr class="@(linha.Inativo ? " estudante-inativo" : "" )">
-                    <td class="alinhar-centro">@linha.Id</td>
-                    @if (linha.Inativo)
-                    {
+                        <td class="alinhar-centro">@linha.Id</td>
+                        @if (linha.Inativo)
+                        {
                         <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
-                    }
-                    else
-                    {
+                        }
+                        else
+                        {
                         <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
-                    }
-                    @foreach (var grupoMatriz in Model.GruposMatriz)
-                    {
+                        }
+                        @foreach (var grupoMatriz in Model.GruposMatriz)
+                        {
                         foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                         {
-                            foreach (var celula in ((IEnumerable<dynamic>)celulas).Where(a => a.ComponenteCurricular == componenteCurricular.Id))
+                        foreach (var celula in ((IEnumerable
+                        <dynamic>
+                            )celulas).Where(a => a.ComponenteCurricular == componenteCurricular.Id))
                             {
-                                <td>@celula.Valor</td>
+                            <td>@celula.Valor</td>
                             }
-                        }
+                            }
+                            }
+                            @foreach (var celula in ((IEnumerable<dynamic>
+                                )celulas).Where(a => a.GrupoMatriz == 99))
+                                {
+                                <td>@celula.Valor</td>
+                                }
+                    </tr>
                     }
-                    @foreach (var celula in ((IEnumerable<dynamic>)celulas).Where(a => a.GrupoMatriz == 99))
-                    {
-                        <td>@celula.Valor</td>
-                    }
-                </tr>
-                }
             </tbody>
         </table>
         <footer class="rodape-rel-atas">
