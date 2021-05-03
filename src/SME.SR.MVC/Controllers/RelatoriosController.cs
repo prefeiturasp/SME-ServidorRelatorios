@@ -7453,19 +7453,45 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             try
             {
-                var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioRegistroIndividualDto() { TurmaId = 615813, AlunoCodigo = 6791823, DataInicio = DateTime.Now.AddDays(-60), DataFim = DateTime.Now, UsuarioNome = "ALANA FERREIRA DE OLIVEIRA", UsuarioRF = "1234567" }, new JsonSerializerSettings
+                var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioRegistroIndividualDto() { TurmaId = 615813, DataInicio = DateTime.Now.AddDays(-90), DataFim = DateTime.Now, UsuarioNome = "ALANA FERREIRA DE OLIVEIRA", UsuarioRF = "1234567" }, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
                 });
-
-                await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem});
+                
+                await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem, CodigoCorrelacao = Guid.NewGuid() });
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            //var model = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery());
-            return View("RelatorioRegistroIndividual", null);
+            
+            return default;
+
+            //var model = new RelatorioRegistroIndividualDto();
+            //model.Cabecalho = new RelatorioRegistroIndividualCabecalhoDto() {  };
+
+            //var aluno1 = new RelatorioRegistroIndividualAlunoDto() { Nome = "Aluno de teste 01", };
+            //var registro1 = new RelatorioRegistroIndividualDetalhamentoDto() {
+            //    DataRegistro = DateTime.Now.ToString(),
+            //    Descricao = "Percebemos, cada vez mais, que a consolidação das estruturas facilita a criação dos conhecimentos estratégicos para atingir a excelência.É importante questionar o quanto a estrutura atual da organização garante a contribuição de um grupo importante na determinação dos paradigmas corporativos.",
+            //    RegistradoPor = "Lobo"
+            //  };
+            //aluno1.Registros.Add(registro1);
+            //model.Alunos.Add(aluno1);
+
+
+            //var aluno2 = new RelatorioRegistroIndividualAlunoDto() { Nome = "Aluno de teste 01", };
+            //var registro2 = new RelatorioRegistroIndividualDetalhamentoDto()
+            //{
+            //    DataRegistro = DateTime.Now.ToString(),
+            //    Descricao = "Percebemos, cada vez mais, que a consolidação das estruturas facilita a criação dos conhecimentos estratégicos para atingir a excelência.É importante questionar o quanto a estrutura atual da organização garante a contribuição de um grupo importante na determinação dos paradigmas corporativos.",
+            //    RegistradoPor = "Lobo"
+            //};
+            //aluno2.Registros.Add(registro2);
+
+
+            //model.Alunos.Add(aluno2);
+            //return View("RelatorioRegistroIndividual", model);
         }
     }
 }

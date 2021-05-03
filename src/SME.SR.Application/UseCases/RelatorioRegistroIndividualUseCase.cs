@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto filtro)
         {
-            var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioRegistroIndividualDto>();            
+            var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioRegistroIndividualDto>();
 
             var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
             if (turma == null)
@@ -38,15 +38,8 @@ namespace SME.SR.Application
 
             var relatorioDto = await mediator.Send(new ObterDadosConsolidadosRegistroIndividualParaRelatorioQuery(turma, ueEndereco, alunosEol, registrosIndividuais, parametros));
 
-            try
-            {
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroIndividual", relatorioDto, filtro.CodigoCorrelacao));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            
+            await mediator.Send(new GerarRelatorioHtmlPDFRegistroIndividualCommand(relatorioDto, filtro.CodigoCorrelacao));
+
         }
     }
 }
