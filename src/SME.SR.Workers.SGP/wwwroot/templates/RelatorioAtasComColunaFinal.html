@@ -246,17 +246,13 @@
                         {
                         foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                         {
-                        foreach (var celula in ((IEnumerable
-                        <ConselhoClasseAtaFinalCelulaDto>
-                            )celulas).Where(a => a.ComponenteCurricular == componenteCurricular.Id))
+                        foreach (var celula in ((IEnumerable<ConselhoClasseAtaFinalCelulaDto>)celulas).Where(a => a.ComponenteCurricular == componenteCurricular.Id))
                             {
-                            <td>@celula.Valor</td>
+                                <td>@celula.Valor</td>
                             }
                             }
-                            }
-                            @foreach (var celula in ((IEnumerable<dynamic>
-                                )celulas).Where(a => a.GrupoMatriz == 99))
-                                {
+                           }
+                            @foreach (var celula in ((IEnumerable<ConselhoClasseAtaFinalCelulaDto>)celulas).Where(a => a.GrupoMatriz == 99)){
                                 <td>@celula.Valor</td>
                                 }
                     </tr>
