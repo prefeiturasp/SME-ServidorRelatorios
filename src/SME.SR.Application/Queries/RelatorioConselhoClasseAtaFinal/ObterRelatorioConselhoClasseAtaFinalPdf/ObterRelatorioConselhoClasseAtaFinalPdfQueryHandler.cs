@@ -198,6 +198,15 @@ namespace SME.SR.Application
                     if (turmaAluno.TipoTurma != TipoTurma.Regular)
                         listaTurmas.Add(turmaAluno.Codigo);
                 }
+            } 
+            else
+            {
+                foreach (var lta in listaTurmasAlunos)
+                {
+                    var turmaAluno = await ObterTurma(lta.Key.ToString());
+                    if (turmaAluno.TipoTurma == TipoTurma.EdFisica)
+                        listaTurmas.Add(turmaAluno.Codigo);
+                }
             }
 
             listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
