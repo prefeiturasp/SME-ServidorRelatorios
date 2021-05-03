@@ -223,7 +223,7 @@ namespace SME.SR.Application
         {
             if (turma != null)
             {
-                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente);
+                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente && a.Bimestre == bimestre);
                 FrequenciaAluno frequenciaAluno;
 
                 if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
@@ -248,7 +248,7 @@ namespace SME.SR.Application
                     frequenciaAluno.TotalCompensacoes = frequenciasAlunoParaTratar.Sum(a => a.TotalCompensacoes);
                 }
 
-                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia.ToString() ?? "100" : "100";
+                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.TotalAusencias.ToString() ?? "0" : "0";
             }
             else
                 return null;
