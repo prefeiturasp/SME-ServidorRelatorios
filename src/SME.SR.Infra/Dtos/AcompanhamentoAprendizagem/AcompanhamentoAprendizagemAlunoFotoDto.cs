@@ -8,49 +8,25 @@ namespace SME.SR.Infra
     {
         public string TipoArquivo { get; set; }
         public Guid Codigo { get; set; }
+        public string NomeOriginal { get; set; }
+        public string Extensao { get => NomeOriginal != String.Empty ? NomeOriginal.Split(".")[NomeOriginal.Split(".").Length - 1] : ""; }
 
-        
-
-        public string Caminho()              
-            => $"https://dev-novosgp.sme.prefeitura.sp.gov.br/arquivos/editor/{Codigo}.{FormatoArquivo.ToString().ToLower()}";        
-
-        public ImageFormat FormatoArquivo
+        public string ArquivoBase64()
         {
-            get
-            {
-                switch (TipoArquivo)
-                {
-                    case "image/jpeg":
-                        return ImageFormat.Jpeg;
-                    case "image/bmp":
-                        return ImageFormat.Bmp;
-                    case "image/emf":
-                        return ImageFormat.Emf;
-                    case "image/exif":
-                        return ImageFormat.Exif;
-                    case "image/gif":
-                        return ImageFormat.Gif;
-                    case "image/icon":
-                        return ImageFormat.Icon;
-                    case "image/png":
-                        return ImageFormat.Png;
-                    case "image/tiff":
-                        return ImageFormat.Tiff;
-                    case "image/wmf":
-                        return ImageFormat.Wmf;
-                    default:
-                        throw new NegocioException("Formato da imagem não identificado");
-                }
-            }
-        }
+            //TODO: Pegar a pasta do servidor onde ficarão as imagens
+            //var diretorio = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Arquivos/Editor");
+            var diretorio = @"C:\Development\AMcom\Projects\SME-NovoSGP\src\SME.SGP.Api\bin\Debug\netcoreapp2.2\Arquivos\FotoAluno";
 
-        public byte[] ArquivoBase64()
-        {
-            var caminho = @"C:\Workspace\SME-NovoSGP\src\SME.SGP.Api\bin\Debug\netcoreapp2.2\Arquivos\FotoAluno\";
-            var nomeArquivo = $"{Codigo}.jpg";
-            var caminhoArquivo = Path.Combine(caminho, nomeArquivo);
+            if (!Directory.Exists(diretorio))
+                Directory.CreateDirectory(diretorio);
+
+            var nomeArquivo = $"{Codigo}.{Extensao}";
+            var caminhoArquivo = Path.Combine(diretorio, nomeArquivo);
+            if (!File.Exists(caminhoArquivo))
+                return "";
+
             var arquivo = File.ReadAllBytes(caminhoArquivo);
-            return arquivo;
+            return $"data:{TipoArquivo};base64,{Convert.ToBase64String(arquivo)}";
         }
     }
 }

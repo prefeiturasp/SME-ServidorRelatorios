@@ -58,7 +58,7 @@ namespace SME.SR.Application
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             foreach (var alunoEol in alunosEol)
-            {                
+            {
                 var acompanhamentoAluno = alunosAcompanhamento.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
 
                 if (alunoEol == null)
@@ -72,51 +72,22 @@ namespace SME.SR.Application
                 alunoRelatorio.Situacao = alunoEol.SituacaoRelatorio;
                 alunoRelatorio.Responsavel = alunoEol.ResponsavelFormatado();
                 alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
-                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno.PercusoTurmaFormatado() ?? "";
-                alunoRelatorio.Observacoes = acompanhamentoAluno.ObservacoesFormatado() ?? "";
+                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamentoAluno.PercusoTurmaFormatado() ?? "") : "";
+                alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
 
-
-                var novaImagem = @"";
-
-                using (var client = new HttpClient())
+                if (acompanhamentoAluno != null)
                 {
-                    try
+                    foreach (var foto in acompanhamentoAluno.Fotos)
                     {
-                        using (Stream stream = client.GetStreamAsync("https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg").Result)
+                        if (!String.IsNullOrEmpty(foto.ArquivoBase64()))
                         {
-                       
-                            byte[] buffer = new byte[16384];
-                            using (MemoryStream ms = new MemoryStream())
+                            alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
                             {
-                                while (true)
-                                {
-                                    int num = stream.ReadAsync(buffer, 0, buffer.Length).Result;
-                                    int read;
-                                    if ((read = num) > 0)
-                                        ms.Write(buffer, 0, read);
-                                    else
-                                        break;
-                                }
-                                novaImagem = Convert.ToBase64String(ms.ToArray());
-                            }
-                            buffer = (byte[])null;
+                                Caminho = foto.ArquivoBase64()
+                            });
                         }
                     }
-                    catch (Exception ex)
-                    {
-
-                    }
                 }
-
-                //// TODO : Verificar como recuperar o caminho da foto
-                //foreach (var foto in aluno.Fotos)
-                //{
-                //    alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
-                //    {
-                //        TipoArquivo = foto.TipoArquivo,
-                //        Caminho = foto.ArquivoBase64()
-                //    });
-                //}
 
                 alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos);
                 alunoRelatorio.RegistrosIndividuais = MontarRegistrosIndividuais(alunoRelatorio.CodigoEol, registrosIndividuais);

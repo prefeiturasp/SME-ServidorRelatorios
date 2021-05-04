@@ -2,7 +2,7 @@
 {
     public class RelatorioAcompanhamentoAprendizagemAlunoFotoDto
     {
-        public byte[] Caminho { get; set; }
+        public string Caminho { get; set; }
         public string TipoArquivo { get; set; }
     }
 }
