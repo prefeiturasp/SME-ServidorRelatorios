@@ -31,8 +31,8 @@ namespace SME.SR.Data
                                               inner join acompanhamento_turma at2 on at2.turma_id = t.id 
                                               inner join acompanhamento_aluno aa on aa.turma_id = t.id 
                                               inner join acompanhamento_aluno_semestre aas on aas.acompanhamento_aluno_id = aa.id 
-                                              inner join acompanhamento_aluno_foto aaf on aaf.acompanhamento_aluno_semestre_id = aas.id 
-                                              inner join arquivo arq on arq.id = aaf.arquivo_id   
+                                               left join acompanhamento_aluno_foto aaf on aaf.acompanhamento_aluno_semestre_id = aas.id 
+                                               left join arquivo arq on arq.id = aaf.arquivo_id   
                                               where t.id = @turmaId                                                 
                                                 and aaf.miniatura_id is not null ");
 
