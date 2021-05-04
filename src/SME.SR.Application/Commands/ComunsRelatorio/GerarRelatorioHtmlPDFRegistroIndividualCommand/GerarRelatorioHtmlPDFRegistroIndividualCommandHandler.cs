@@ -32,8 +32,8 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
             var model = (RelatorioRegistroIndividualDto)request.Model;
 
-            var nomeTemplateCabecalho = "relatorios/RelatorioRegistroIndividualCabecalho";
-            var nomeTemplateCorpo = "relatorios/RelatorioRegistroIndividualCorpo";
+            var nomeTemplateCabecalho = "RelatorioRegistroIndividualCabecalho";
+            var nomeTemplateCorpo = "RelatorioRegistroIndividualCorpo";
 
             var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, model.Cabecalho);
             htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
