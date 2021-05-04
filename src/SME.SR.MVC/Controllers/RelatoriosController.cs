@@ -7457,15 +7457,15 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             var filtro = new FiltroConselhoClasseAtaFinalDto()
             {
                 AnoLetivo = 2021,
-                TurmasCodigos = new[] { "2317819" },
-                Visualizacao = AtaFinalTipoVisualizacao.Turma
+                TurmasCodigos = new[] { "2317820" },
+                Visualizacao = AtaFinalTipoVisualizacao.Estudantes
             };
 
             var mensagensErro = new StringBuilder();
             var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtro, new Data.Usuario() { CodigoRf = "9999999", Nome= "Teste" }));
 
             //var rel = relatoriosTurmas.Where(a => a.GruposMatriz)
-            return View("RelatorioAtasComColunaFinal", relatoriosTurmas[3]);
+            return View("RelatorioAtasComColunaFinal", relatoriosTurmas[2]);
         }
 
 
