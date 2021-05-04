@@ -9,6 +9,16 @@ namespace SME.SR.Infra
         [JsonProperty("areasDeConhecimento")] public List<AreaDeConhecimentoEJADto> AreasDeConhecimento { get; set; }
 
         [JsonIgnore]
+        public BaseNacionalComumEJADto ObterAreasComNotaValida
+        {
+            get
+            {
+                AreasDeConhecimento = AreasDeConhecimento.Where(ac => ac.ComponentesCurriculares.Any())?.ToList();
+                return this;
+            }
+        }
+
+        [JsonIgnore]
         public BaseNacionalComumEJADto ObterComNotaValida
         {
             get

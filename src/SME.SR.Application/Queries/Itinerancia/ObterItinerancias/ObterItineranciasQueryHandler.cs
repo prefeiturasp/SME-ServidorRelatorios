@@ -63,7 +63,7 @@ namespace SME.SR.Application
 
                 yield return new AlunoRegistroItineranciaDto()
                 {
-                    Estudante = nomeAluno,
+                    Estudante = $"{nomeAluno} ({alunoItinerancia.AlunoCodigo})",
                     DescritivoEstudante = UtilRegex.RemoverTagsHtml(alunoItinerancia.Questoes.FirstOrDefault(c => c.Ordem == 0)?.Resposta),
                     AcompanhamentoSituacao = UtilRegex.RemoverTagsHtml(alunoItinerancia.Questoes.FirstOrDefault(c => c.Ordem == 1)?.Resposta),
                     Encaminhamentos = UtilRegex.RemoverTagsHtml(alunoItinerancia.Questoes.FirstOrDefault(c => c.Ordem == 2)?.Resposta)

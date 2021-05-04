@@ -31,7 +31,7 @@
 					<printWhenExpression><![CDATA[$F{enriquecimentoCurricular} != null]]></printWhenExpression>
 				</reportElement>
 				<box>
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
@@ -41,6 +41,7 @@
 			<subreport>
 				<reportElement x="115" y="0" width="439" height="15" isRemoveLineWhenBlank="true" uuid="fb4c7f1b-debd-4b29-bf76-fc0b21b30b0d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<subreportParameter name="REPORT_DATA_SOURCE">
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("enriquecimentoCurricular")]]></subreportParameterExpression>

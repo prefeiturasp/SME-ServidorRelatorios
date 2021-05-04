@@ -7,6 +7,7 @@ namespace SME.SR.Data
     public class Turma
     {
         public string Codigo { get; set; }
+        public string RegularCodigo { get; set; }
         public string turma_id { get; set; }
         public int AnoLetivo { get; set; }
         public string Ano { get; set; }
@@ -14,6 +15,7 @@ namespace SME.SR.Data
         public string Ciclo { get; set; }
         public int Semestre { get; set; }
         public int EtapaEJA { get; set; }
+        public int EtapaEnsino { get; set; }
         public Dre Dre { get; set; }
         public Ue Ue { get; set; }
         public Modalidade ModalidadeCodigo { get; set; }
@@ -24,6 +26,11 @@ namespace SME.SR.Data
             get => ModalidadeCodigo == Modalidade.EJA ?
                 ModalidadeTipoCalendario.EJA :
                 ModalidadeTipoCalendario.FundamentalMedio;
+        }
+
+        public bool EhTurmaMagisterio
+        {
+            get => EtapaEnsino == 9;
         }
 
         public bool EhEja
