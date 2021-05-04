@@ -7479,7 +7479,10 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             try
             {
                 var dto = new AcompanhamentoAprendizagemAlunoRetornoDto();
-                dto.ApanhadoGeral = @"<ul style='list-style-type: disc;'><li><span style='font-size: 48px;'><strong style=''><span style='background-color: rgb(0, 0, 255);'>Teste galante 44<img src='https://localhost:5001/Arquivos/Editor/4e0600ee-682f-407e-b693-d10769de0200.jpg' style='width: 360; height: 200'></span></strong></span></li></ul><p>De acordo com a imagem abaixo:</p><p><img src='https://localhost:5001/Arquivos/Editor/ed1af274-3ba3-47e2-98d4-5b6c1a44e238.jpg' style='width: 360; height: 200'><br></p><p><br></p><table style='width: 100%;'><br></table>";
+                dto.ApanhadoGeral = @"<ul style='list-style-type: disc;'><li><span style='font-size: 48px;'>
+    <strong style=''><span style='background-color: rgb(0, 0, 255);'>teste<img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
+</span></strong></span></li></ul><p>De acordo com a imagem abaixo:</p><p><img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
+<br></p><p><br></p><table style='width: 100%;'><br></table>";
 
                 var percursoFormatado = dto.PercusoTurmaFormatado();
                 return View("RelatorioAcompanhamentoAprendizagemTeste", percursoFormatado);
