@@ -1,0 +1,180 @@
+﻿@model SME.SR.Infra.RelatorioRegistroIndividualCabecalhoDto;
+
+@{
+    int contadorQuebrarPagina = 0;
+
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE REGISTRO INDIVIDUAL</div>
+        <div class='subtitulo-relatorio'>@Model.Periodo</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15 sem-border-bottom'>DRE: @Model.Dre</td>
+                        <td width='80%' class='espaco-esquerda-15 sem-border-bottom'>UE: @Model.Ue</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='75%' class='espaco-esquerda-15'>ENDEREÇO: @Model.Endereco</td>
+                        <td width='25%' class='espaco-esquerda-15'>CONTATO: @Model.Telefone</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Turma</td>
+                        <td width='46%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
+                        <td width='16%' class='sem-border-top espaco-esquerda-15'>RF: @Model.RF</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        return "";
+    }
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registro de Itinerância</title>
+    </head>
+    <body class="body-relatorio">
+        <style>
+
+            .tblTopo th, td {
+                padding: 3px 0;
+                text-align: left;
+            }
+
+            .body-relatorio {
+                margin: 0.5cm auto;
+                font-family: Roboto, sans-serif;
+                width: 21cm;
+                min-height: 29.7cm;
+                background: white;
+                color: #42474a;
+            }
+
+            .titulo-sgp {
+                text-align: right;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .titulo-relatorio {
+                text-align: right;
+                font-size: 14.5px;
+                margin-top: 7px;
+            }
+
+            .subtitulo-relatorio {
+                text-align: right;
+                font-size: 12.5px;
+                margin-top: 7px;
+            }
+
+            .header-pagina {
+                margin-top: 33px;
+                margin-bottom: 22px;
+            }
+
+                .header-pagina td {
+                    text-align: left;
+                }
+
+            table {
+                display: table;
+                width: 100%;
+                border-color: #42474a;
+                empty-cells: show;
+                border: none;
+                border-collapse: collapse;
+            }
+
+            thead {
+                background-color: #f3f3f3;
+            }
+
+            th {
+                border: 1px solid #42474a;
+                font-weight: normal;
+            }
+
+            td {
+                border: 1px solid #42474a;
+                text-align: center;
+            }
+
+            .tabela-cabecalho tr {
+                font-size: 12px;
+                height: 24px;
+            }
+
+            .mt-25 {
+                margin-top: 25px;
+            }
+
+            .fonte-14 {
+                font-size: 14px !important;
+            }
+
+            .alinhar-esquerda {
+                text-align: left;
+            }
+
+            .espaco-esquerda-15 {
+                padding-left: 15px;
+            }
+
+            .fundo-cinza {
+                background-color: #f3f3f3;
+            }
+
+            .negrito {
+                font-weight: bold;
+            }
+
+            .sem-border-bottom {
+                border-bottom: 0;
+            }
+
+            .sem-border-top {
+                border-top: 0;
+            }
+
+            .thLimpo {
+                background-color: #ffffff;
+                border: 0;
+                height: 22px;
+            }
+
+            .img-logo-sgp {
+                height: 64px;
+                float: left;
+            }
+
+            .centralizar {
+                text-align: center;
+            }
+        </style>
+        <div>
+            @MontarCabecalho()            
+            #CONTEUDO_ALUNO
+        </div>
+    </body>
+</html>
+}

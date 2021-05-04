@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SME.SR.Application;
+using SME.SR.Application.Interfaces;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -7462,14 +7464,25 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
 
             var mensagensErro = new StringBuilder();
-            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtro, new Data.Usuario() { CodigoRf = "9999999", Nome= "Teste" }));
+            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtro, new Data.Usuario() { CodigoRf = "9999999", Nome = "Teste" }));
 
             //var rel = relatoriosTurmas.Where(a => a.GruposMatriz)
             return View("RelatorioAtasComColunaFinal", relatoriosTurmas[2]);
         }
 
 
+        [HttpGet("registro-individual")]
+        public async Task<IActionResult> RegistroIndividual([FromServices] IRelatorioRegistroIndividualUseCase useCase)
+        {
+            var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioRegistroIndividualDto() { TurmaId = 615813, DataInicio = DateTime.Now.AddDays(-90), DataFim = DateTime.Now, UsuarioNome = "ALANA FERREIRA DE OLIVEIRA", UsuarioRF = "1234567" }, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
 
+            await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem, CodigoCorrelacao = Guid.NewGuid() });
+
+            return default;
+        }
     }
 }
 
