@@ -167,11 +167,11 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
             <tbody>
                 <tr>
-                    <td width="20%" class='centralizar sem-border-bottom'>@aluno.DataNascimento</td>
-                    <td width="14%" class='centralizar sem-border-bottom'>@aluno.CodigoEol</td>
-                    <td width="22%" class='centralizar sem-border-bottom' style="padding:3px;">@aluno.Situacao</td>
-                    <td width="22%" class='centralizar sem-border-bottom'>@aluno.Responsavel</td>
-                    <td width="22%" class='centralizar sem-border-bottom'>@aluno.Telefone</td>
+                    <td width="20%" class='centralizar'>@aluno.DataNascimento</td>
+                    <td width="14%" class='centralizar'>@aluno.CodigoEol</td>
+                    <td width="22%" class='centralizar' style="padding:3px;">@aluno.Situacao</td>
+                    <td width="22%" class='centralizar'>@aluno.Responsavel</td>
+                    <td width="22%" class='centralizar'>@aluno.Telefone</td>
                 </tr>
             </tbody>
         </table>
@@ -210,10 +210,8 @@ PROFESSORES: {Model.Cabecalho.Professores}
         return "";
     }
 
-    string MontarRegistroPercurso(string estudante, string registroPercursoTurma)
+    string MontarRegistroPercurso(string estudante, string registroPercursoTurma, int numeroLinhasRegistroPercursoTurma)
     {
-        int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
-
         if (numeroLinhasRegistroPercursoTurma < 2)
         {
             contadorMaximoLinhasPorPagina = 50;
@@ -222,10 +220,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
         {
             contadorMaximoLinhasPorPagina = 47;
         }
-
-        QuebrarLinhas(numeroLinhasRegistroPercursoTurma, estudante);
-
-        SomaLinhasContador(numeroLinhasRegistroPercursoTurma);
 
         var classeRegistroPercurso = !quebrou ? "" : "sem-border-top";
         <table class='tabela-alunos sem-border-top'>
@@ -431,7 +425,14 @@ PROFESSORES: {Model.Cabecalho.Professores}
             </tbody>
         </table>
 
-        return "";
+                    return "";
+                }
+
+    int ContarImagens(string registroPercursoTurma)
+    {
+        var verificarImagens = System.Text.RegularExpressions.Regex.Matches(registroPercursoTurma, @"<img[^>]*>", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        return verificarImagens.Count;
+                    
     }
 }
 
@@ -600,16 +601,18 @@ PROFESSORES: {Model.Cabecalho.Professores}
             int contarAlunos = 0;
             foreach (var aluno in alunosOrdenados)
             {
+                bool temFotos = aluno.Fotos.Any();
+
                 @MontarCabecalho()
 
                 MontarEstudantes(aluno);
                 contadorQuebrarPagina++;
 
-                @Html.Raw(EspacoEmBranco())
-                contadorQuebrarPagina++;
-
-                @if (aluno.Fotos.Any())
+                @if (temFotos)
                 {
+                    @Html.Raw(EspacoEmBranco())
+                    contadorQuebrarPagina++;
+
                     MontarFotos(aluno);
 
                     contadorQuebrarPagina = contadorQuebrarPagina + 8;
@@ -618,7 +621,21 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 var registroPercursoTurma = aluno.RegistroPercursoTurma;
                 if (!String.IsNullOrEmpty(registroPercursoTurma))
                 {
-                    MontarRegistroPercurso(aluno.Nome, registroPercursoTurma);
+                    int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
+                    int numeroImagens = ContarImagens(registroPercursoTurma);
+                    int somaRegistrosImagens = numeroLinhasRegistroPercursoTurma + numeroImagens;
+
+                    QuebrarLinhas(somaRegistrosImagens, aluno.Nome);
+                    SomaLinhasContador(somaRegistrosImagens);
+
+                    if (!temFotos && !quebrou)
+                    {
+                        @Html.Raw(EspacoEmBranco())
+                        contadorQuebrarPagina++;
+                    }
+
+
+                    MontarRegistroPercurso(aluno.Nome, registroPercursoTurma, numeroLinhasRegistroPercursoTurma);
                     contadorQuebrarPagina++;
 
                     QuebrarLinhas(4, aluno.Nome);
@@ -626,7 +643,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
                     @Html.Raw(EspacoEmBranco())
                     contadorQuebrarPagina++;
                 }
-
 
                 if (aluno.Frequencias.Count() > 0)
                 {
