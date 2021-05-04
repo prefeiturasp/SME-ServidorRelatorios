@@ -11,9 +11,9 @@
     {
         paginaAtual++;
         var str = $@"<footer class='rodape-rel-aprendizagem'>
-                <div class='titulo-sgp-rodape'></div>
-            </footer>
-            <div style='page-break-before:always' />";
+<div class='titulo-sgp-rodape'></div>
+</footer>
+<div style='page-break-before:always' />";
         return Html.Raw(str);
     }
 
@@ -176,36 +176,33 @@ PROFESSORES: {Model.Cabecalho.Professores}
             </tbody>
         </table>
 
-                    return "";
-                }
+        return "";
+    }
 
-                string MontarFotos(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
-                {
-                    MontarTitulo("FOTOS");
+    string MontarFotos(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    {
+        MontarTitulo("FOTOS");
 
         <table class='tabela-alunos sem-border-bottom'>
             <tbody>
                 <tr>
-                    <td width="33%" class='centralizar'>
-                        @{
-                            var caminho = ""; // $"data:image/jpeg;base64,{aluno.Fotos.ElementAt(0).Caminho.ToString()}";
-
-                            <img style="margin:3px; max-width: 257px;" src="@caminho" height="180px" />
-                        }
-
-                    </td>
-                    <td width="33%" class='centralizar'>
-                        @if (aluno.Fotos.ElementAtOrDefault(1) != null)
+                    @{
+                        for (int i = 0; i < 3; i++)
                         {
-                            <img style="margin:3px; max-width: 257px;" src="@aluno.Fotos.ElementAt(1).Caminho" height="180px"/>
+                            @if (aluno.Fotos.ElementAtOrDefault(i) != null)
+                            {
+                                <td width="33%" class='centralizar'>
+                                    <img style="margin:3px; max-width: 257px;" src="@aluno.Fotos[i].Caminho" height="180px" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td width="33%" class='centralizar'>
+                                    
+                                </td>
+                            }
                         }
-                    </td>
-                    <td width="33%" class='centralizar'>
-                        @if (aluno.Fotos.ElementAtOrDefault(2) != null)
-                        {
-                            <img style="margin:3px; max-width: 257px;" src="@aluno.Fotos.ElementAt(2).Caminho" height="180px"/>
-                        }
-                    </td>
+                    }
                 </tr>
             </tbody>
         </table>
@@ -409,8 +406,8 @@ PROFESSORES: {Model.Cabecalho.Professores}
             </tbody>
         </table>
 
-                    return "";
-                }
+        return "";
+    }
 
     string MontarAssinatura()
     {
@@ -485,9 +482,9 @@ PROFESSORES: {Model.Cabecalho.Professores}
             margin-bottom: 22px;
         }
 
-        .header-pagina td {
-            text-align: left;
-        }
+            .header-pagina td {
+                text-align: left;
+            }
 
         .campo-dre {
             width: 20%;
@@ -623,7 +620,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 {
                     MontarRegistroPercurso(aluno.Nome, registroPercursoTurma);
                     contadorQuebrarPagina++;
-                    
+
                     QuebrarLinhas(4, aluno.Nome);
 
                     @Html.Raw(EspacoEmBranco())
@@ -676,5 +673,5 @@ PROFESSORES: {Model.Cabecalho.Professores}
             }
         }
     </div>
- </body>
+</body>
 </html>

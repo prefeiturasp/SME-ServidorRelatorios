@@ -7,33 +7,11 @@
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarComponente(string componenteNome, bool removerBorderTop = false)
-    {
-        // Contar
-        contadorQuebrarPagina = contadorQuebrarPagina + 2;
-        var stiloBorderTop = removerBorderTop ? "border-top: none;" : "";
-        var str = $@"<table class='tabela-alunos'>
-<tbody>
-<tr>
-<td style='border-bottom: none;{stiloBorderTop}'></td>
-</tr>
-</tbody>
-</table>
-<table class='tabela-alunos'>
-<thead>
-<tr><th>{componenteNome}</th></tr>
-</thead>
-</table>";
-        return Html.Raw(str);
-    }
-
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
         paginaAtual++;
-        var str = $@"<footer class='rodape-rel-faltas-frequencia'>
-<div class='titulo-sgp-rodape'>
-SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
-</div>
+        var str = $@"<footer class='rodape-rel-aprendizagem'>
+<div class='titulo-sgp-rodape'></div>
 </footer>
 <div style='page-break-before:always' />";
         return Html.Raw(str);
@@ -114,7 +92,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
     {
         if (contadorMaximoDescricao == 1)
         {
-            contadorQuebrarPagina++;
             contadorMaximoDescricao = 0;
         }
         else
@@ -209,21 +186,22 @@ PROFESSORES: {Model.Cabecalho.Professores}
         <table class='tabela-alunos sem-border-bottom'>
             <tbody>
                 <tr>
-                    <td width="33%" class='centralizar'>
-                        <img style="margin:3px" src="@aluno.Fotos.ElementAt(0).Caminho" height="180px" />
-                    </td>
-                    <td width="33%" class='centralizar'>
-                        @if (aluno.Fotos.ElementAtOrDefault(1) != null)
+                    @{
+                        for (int i = 0; i < 3; i++)
                         {
-                            <img style="margin:3px" src="@aluno.Fotos.ElementAt(1).Caminho" height="180px" />
+                            @if (aluno.Fotos.ElementAtOrDefault(i) != null)
+                            {
+                                <td width="33%" class='centralizar'>
+                                    <img style="margin:3px; max-width: 257px;" src="@aluno.Fotos[i].Caminho" height="180px" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td width="33%" class='centralizar'>
+                                </td>
+                            }
                         }
-                    </td>
-                    <td width="33%" class='centralizar'>
-                        @if (aluno.Fotos.ElementAtOrDefault(2) != null)
-                        {
-                            <img style="margin:3px" src="@aluno.Fotos.ElementAt(2).Caminho" height="180px" />
-                        }
-                    </td>
+                    }
                 </tr>
             </tbody>
         </table>
@@ -231,12 +209,20 @@ PROFESSORES: {Model.Cabecalho.Professores}
         return "";
     }
 
-    string MontarRegistroPercurso(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    string MontarRegistroPercurso(string estudante, string registroPercursoTurma)
     {
-        var registroPercursoTurma = aluno.RegistroPercursoTurma;
         int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
 
-        QuebrarLinhas(numeroLinhasRegistroPercursoTurma, aluno.Nome);
+        if (numeroLinhasRegistroPercursoTurma < 2)
+        {
+            contadorMaximoLinhasPorPagina = 50;
+        }
+        else
+        {
+            contadorMaximoLinhasPorPagina = 47;
+        }
+
+        QuebrarLinhas(numeroLinhasRegistroPercursoTurma, estudante);
 
         SomaLinhasContador(numeroLinhasRegistroPercursoTurma);
 
@@ -244,13 +230,13 @@ PROFESSORES: {Model.Cabecalho.Professores}
         <table class='tabela-alunos sem-border-top'>
             <thead>
                 <tr>
-                    <td width='100%' class='centralizar negrito {classeRegistroPercurso}'>"REGISTRO DO PERCURSO DA TURMA"</td>
+                    <td width='100%' class='centralizar negrito {classeRegistroPercurso}'>REGISTRO DO PERCURSO DA TURMA</td>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td class="alinhar-esquerda espaco-esquerda-15 espaco-esquerda-15">
-                        @registroPercursoTurma
+                        @Html.Raw(registroPercursoTurma)
                     </td>
                 </tr>
             </tbody>
@@ -421,6 +407,31 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
         return "";
     }
+
+    string MontarAssinatura()
+    {
+        MontarTitulo("ESTOU CIENTE DESTE RELATÓRIO");
+
+        <table class='tabela-alunos'>
+            <thead>
+                <tr>
+                    <td class='centralizar sem-border-bottom negrito'>DATA ASSINATURA</td>
+                    <td class='centralizar sem-border-bottom negrito'>ASSINATURA</td>
+                </tr>
+            </thead>
+
+            @{ contadorQuebrarPagina++; }
+
+            <tbody>
+                <tr>
+                    <td width="20%" class='centralizar'></td>
+                    <td width="80%" class='centralizar'></td>
+                </tr>
+            </tbody>
+        </table>
+
+        return "";
+    }
 }
 
 <!DOCTYPE html>
@@ -439,6 +450,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
             min-height: 29.7cm;
             background: white;
             color: #42474a;
+            position: relative;
         }
 
         .titulo-sgp {
@@ -474,11 +486,11 @@ PROFESSORES: {Model.Cabecalho.Professores}
             }
 
         .campo-dre {
-            width: 25%;
+            width: 20%;
         }
 
         .campo-ue {
-            width: 60%
+            width: 80%
         }
 
         .campo-ano {
@@ -550,14 +562,15 @@ PROFESSORES: {Model.Cabecalho.Professores}
             padding-left: 15px;
         }
 
-        .rodape-rel-faltas-frequencia {
-            margin-top: 10px;
-            font-size: 9px;
-            font-weight: bold;
+        .rodape-rel-aprendizagem {
+            font-size: 12px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: grey;
         }
 
         .titulo-sgp-rodape {
-            float: left;
         }
 
         .contador-pagina {
@@ -582,10 +595,12 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
     <div>
         @{
-            @MontarCabecalho()
-
-            foreach (var aluno in Model.Alunos)
+            var alunosOrdenados = Model.Alunos.OrderBy(a => a.NomeEol);
+            int contarAlunos = 0;
+            foreach (var aluno in alunosOrdenados)
             {
+                @MontarCabecalho()
+
                 MontarEstudantes(aluno);
                 contadorQuebrarPagina++;
 
@@ -599,34 +614,61 @@ PROFESSORES: {Model.Cabecalho.Professores}
                     contadorQuebrarPagina = contadorQuebrarPagina + 8;
                 }
 
-                MontarRegistroPercurso(aluno);
-                contadorQuebrarPagina++;
+                var registroPercursoTurma = aluno.RegistroPercursoTurma;
+                if (!String.IsNullOrEmpty(registroPercursoTurma))
+                {
+                    MontarRegistroPercurso(aluno.Nome, registroPercursoTurma);
+                    contadorQuebrarPagina++;
 
-                QuebrarLinhas(4, aluno.Nome);
+                    QuebrarLinhas(4, aluno.Nome);
 
-                @Html.Raw(EspacoEmBranco())
-                contadorQuebrarPagina++;
+                    @Html.Raw(EspacoEmBranco())
+                    contadorQuebrarPagina++;
+                }
 
-                MontarFrequencia(aluno);
 
-                MontarRegistroIndividual(aluno);
+                if (aluno.Frequencias.Count() > 0)
+                {
+                    MontarFrequencia(aluno);
+                }
+
+                if (aluno.RegistrosIndividuais.Count() > 0)
+                {
+                    MontarRegistroIndividual(aluno);
+                }
 
                 var descricaoObservacoes = aluno.Observacoes;
-                int numeroLinhasObservacoes = CalcularLinhas(descricaoObservacoes.Length);
+                if (!String.IsNullOrEmpty(descricaoObservacoes))
+                {
+                    int numeroLinhasObservacoes = CalcularLinhas(descricaoObservacoes.Length);
 
-                QuebrarLinhas(numeroLinhasObservacoes + 2, aluno.Nome);
-                @Html.Raw(EspacoEmBranco())
-                contadorQuebrarPagina++;
+                    QuebrarLinhas(numeroLinhasObservacoes + 2, aluno.Nome);
+                    @Html.Raw(EspacoEmBranco())
+                    contadorQuebrarPagina++;
 
-                MontarObservacoes(aluno.Observacoes);
-                SomaLinhasContador(numeroLinhasObservacoes);
+                    MontarObservacoes(aluno.Observacoes);
+                    SomaLinhasContador(numeroLinhasObservacoes);
+                }
 
                 QuebrarLinhas(5, aluno.Nome);
 
                 @Html.Raw(EspacoEmBranco())
                 contadorQuebrarPagina++;
 
-                MontarOcorrencias(aluno);
+                if (aluno.Ocorrencias.Count() > 0)
+                {
+                    MontarOcorrencias(aluno);
+                }
+
+                QuebrarLinhas(3, aluno.Nome);
+                MontarAssinatura();
+
+                if (contarAlunos < alunosOrdenados.Count() - 1)
+                {
+                    @Html.Raw(MontarQuebrarPagina());
+                    contadorQuebrarPagina = 0;
+                }
+                contarAlunos++;
             }
         }
     </div>

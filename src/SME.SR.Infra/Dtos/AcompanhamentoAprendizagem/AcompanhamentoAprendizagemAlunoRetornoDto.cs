@@ -62,7 +62,7 @@ namespace SME.SR.Infra
 
             foreach (var imagem in imagens)
             {
-                var textoSemTagsComImagens = registro.Replace($"#{i++}", imagem.ToString());
+                var textoSemTagsComImagens = registro.Replace($"#{i++}", imagem.ToString().Replace("<img", "<img height='72'"));
                 registro = textoSemTagsComImagens;
             }            
              return registro;
