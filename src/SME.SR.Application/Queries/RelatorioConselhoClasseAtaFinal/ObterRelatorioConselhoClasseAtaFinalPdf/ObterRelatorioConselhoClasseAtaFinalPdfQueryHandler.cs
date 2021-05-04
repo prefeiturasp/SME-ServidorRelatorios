@@ -244,7 +244,7 @@ namespace SME.SR.Application
 
         private List<ConselhoClasseAtaFinalPaginaDto> MontarEstruturaPaginada(ConselhoClasseAtaFinalDto dadosRelatorio)
         {
-            var maximoComponentesPorPagina = 7;
+            var maximoComponentesPorPagina = 8;
             var maximoComponentesPorPaginaFinal = 3;
             var quantidadeDeLinhasPorPagina = 20;
 
@@ -377,13 +377,14 @@ namespace SME.SR.Application
 
             foreach (var grupoMatriz in gruposMatrizes)
             {
-                foreach (var componente in grupoMatriz)
+                var componentes = grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault());
+                foreach (var componente in componentes)
                 {
                     var coluna = 0;
 
                     if (listaTurmasAlunos != null)
-                        possuiComponente = listaTurmasAlunos.Any(lt => lt.Key.ToString() == componente.CodigoTurma && lt.ToList().Any(a => a.CodigoAluno == aluno.CodigoAluno));
-                    // Monta Colunas notas dos bimestres
+                        possuiComponente = listaTurmasAlunos.Any(lt =>  grupoMatriz.ToList().Any(a => a.CodigoTurma == lt.Key.ToString() && a.CodDisciplina == componente.CodDisciplina) && lt.ToList().Any(a => a.CodigoAluno == aluno.CodigoAluno));
+                    // Monta Colunas notComponenteCurricularRepositoryas dos bimestres
                     foreach (var bimestre in periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre))
                     {
 
@@ -491,7 +492,7 @@ namespace SME.SR.Application
                         Nome = grupoMatriz.Key.Nome
                     };
 
-                    foreach (var componenteCurricular in grupoMatriz.OrderBy(c => c.Disciplina))
+                    foreach (var componenteCurricular in grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()))
                     {
                         grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre));
                     }
