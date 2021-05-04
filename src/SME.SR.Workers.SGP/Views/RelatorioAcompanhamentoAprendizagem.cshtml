@@ -188,7 +188,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 <tr>
                     <td width="33%" class='centralizar'>
                         @{
-                            var caminho = $"data:image/jpeg;base64,{aluno.Fotos.ElementAt(0).Caminho.ToString()}";
+                            var caminho = ""; // $"data:image/jpeg;base64,{aluno.Fotos.ElementAt(0).Caminho.ToString()}";
 
                             <img style="margin:3px; max-width: 257px;" src="@caminho" height="180px" />
                         }

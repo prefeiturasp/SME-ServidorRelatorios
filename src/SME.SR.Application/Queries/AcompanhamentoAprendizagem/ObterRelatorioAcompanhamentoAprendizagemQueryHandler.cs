@@ -79,7 +79,7 @@ namespace SME.SR.Application
                         alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
                         {
                             TipoArquivo = foto.TipoArquivo,
-                            Caminho = foto.ArquivoBase64()
+                            Caminho = null, //foto.ArquivoBase64()
                         });
                     }
                 alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos);
