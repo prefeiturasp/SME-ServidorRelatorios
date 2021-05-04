@@ -1342,8 +1342,8 @@ namespace SME.SR.Data
 				  LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 				  LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
 				 WHERE mte.cd_turma_escola = @turmaCodigo
-				   {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "")}		 
-				   AND mte.cd_situacao_aluno in (1,5,6,10,13)
+				   {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "AND mte.cd_situacao_aluno in (1,5,6,10,13)")}		 
+				   
 		   UNION 
 				 SELECT aluno.cd_aluno AlunoCodigo,
 						aluno.nm_aluno NomeAluno,						
@@ -1381,16 +1381,14 @@ namespace SME.SR.Data
 				   LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 				   LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
 				  WHERE mte.cd_turma_escola = @turmaCodigo
-					{(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "")}
-					AND mte.cd_situacao_aluno in (1,5,6,10,13)
+					{(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "AND mte.cd_situacao_aluno in (1,5,6,10,13)")}					
 					AND mte.dt_situacao_aluno =  (
 	    										   SELECT max(mte2.dt_situacao_aluno) 
 													 FROM v_historico_matricula_cotic  matr2
 													INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 													WHERE matr2.cd_aluno = matr.cd_aluno
 													  AND mte2.cd_turma_escola = @turmaCodigo
-													  {(alunoCodigo != null ? "AND matr2.cd_aluno = @alunoCodigo" : "")}
-										   
+													  {(alunoCodigo != null ? "AND matr2.cd_aluno = @alunoCodigo" : "")}										   
 												  )
 				  AND NOT EXISTS( 
 	  							  SELECT 1 
@@ -1398,8 +1396,8 @@ namespace SME.SR.Data
 								   INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 								   WHERE mte.cd_matricula = mte3.cd_matricula
 									 AND mte.cd_turma_escola = @turmaCodigo 
-									 {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "")}
-									 AND mte.cd_situacao_aluno in (1,5,6,10,13))";
+									 {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "AND mte.cd_situacao_aluno in (1,5,6,10,13)")}									 
+								)";
 
 			var parametros = new { turmaCodigo, alunoCodigo };
 

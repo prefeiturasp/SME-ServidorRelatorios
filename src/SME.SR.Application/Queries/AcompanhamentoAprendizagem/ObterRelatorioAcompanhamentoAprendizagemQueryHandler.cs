@@ -1,9 +1,12 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Drawing.Pictures;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,33 +14,27 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQueryHandler : IRequestHandler<ObterRelatorioAcompanhamentoAprendizagemQuery, RelatorioAcompanhamentoAprendizagemDto>
     {
-        private readonly IMediator mediator;
-
-        public ObterRelatorioAcompanhamentoAprendizagemQueryHandler(IMediator mediator)
+        public Task<RelatorioAcompanhamentoAprendizagemDto> Handle(ObterRelatorioAcompanhamentoAprendizagemQuery request, CancellationToken cancellationToken)
         {
-            this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
-        }
-
-        public async Task<RelatorioAcompanhamentoAprendizagemDto> Handle(ObterRelatorioAcompanhamentoAprendizagemQuery request, CancellationToken cancellationToken)
-        {
-
+            var turma = request.Turma;
             var alunosEol = request.AlunosEol;
             var professores = request.Professores;
             var acompanhmentosAlunos = request.AcompanhamentosAlunos;
             var frequenciaAlunos = request.FrequenciaAlunos;
             var registrosIndividuais = request.RegistrosIndividuais;
             var ocorrencias = request.Ocorrencias;
+            var filtro = request.Filtro;
 
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
-                Cabecalho = MontarCabecalho(acompanhmentosAlunos.FirstOrDefault(), professores),
+                Cabecalho = MontarCabecalho(turma, professores, filtro),
                 Alunos = MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias),
-            };            
+            };
 
-            return relatorio;            
+            return Task.FromResult(relatorio);
         }
 
-        private RelatorioAcompanhamentoAprendizagemCabecalhoDto MontarCabecalho(AcompanhamentoAprendizagemAlunoRetornoDto acompanhamentoAluno, IEnumerable<ProfessorTitularComponenteCurricularDto> professores)
+        private RelatorioAcompanhamentoAprendizagemCabecalhoDto MontarCabecalho(Turma turma, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, FiltroRelatorioAcompanhamentoAprendizagemDto filtro)
         {
             var professoresCabecalho = "";
 
@@ -46,10 +43,10 @@ namespace SME.SR.Application
 
             var cabecalho = new RelatorioAcompanhamentoAprendizagemCabecalhoDto
             {
-                Dre = acompanhamentoAluno.DreAbreviacao,
-                Ue = acompanhamentoAluno.UeNomeFormatado(),
-                Turma = acompanhamentoAluno.TurmaNome,
-                Semestre = acompanhamentoAluno.SemestreFormatado(),
+                Dre = turma.Dre.Abreviacao,
+                Ue = turma.Ue.NomeComTipoEscola,
+                Turma = turma.NomeRelatorio,
+                Semestre = filtro.SemestreFormatado(),
                 Professores = professoresCabecalho,
             };
 
@@ -58,11 +55,11 @@ namespace SME.SR.Application
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias)
         {
-            var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();           
+            var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
-            foreach (var aluno in alunosAcompanhamento)
+            foreach (var alunoEol in alunosEol)
             {                
-                var alunoEol = alunosEol.FirstOrDefault(a => a.AlunoCodigo == long.Parse(aluno.AlunoCodigo));
+                var acompanhamentoAluno = alunosAcompanhamento.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
 
                 if (alunoEol == null)
                     throw new NegocioException("AlunoEol não encontrado");
@@ -75,14 +72,51 @@ namespace SME.SR.Application
                 alunoRelatorio.Situacao = alunoEol.SituacaoRelatorio;
                 alunoRelatorio.Responsavel = alunoEol.ResponsavelFormatado();
                 alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
-                alunoRelatorio.RegistroPercursoTurma = aluno.PercusoTurmaFormatado();
-                alunoRelatorio.Observacoes = aluno.ObservacoesFormatado();
+                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno.PercusoTurmaFormatado() ?? "";
+                alunoRelatorio.Observacoes = acompanhamentoAluno.ObservacoesFormatado() ?? "";
 
-                // TODO : Verificar como recuperar o caminho da foto
-                foreach (var foto in aluno.Fotos)
+
+                var novaImagem = @"";
+
+                using (var client = new HttpClient())
                 {
-                    alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto{ Caminho = "https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg" });
+                    try
+                    {
+                        using (Stream stream = client.GetStreamAsync("https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg").Result)
+                        {
+                       
+                            byte[] buffer = new byte[16384];
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                while (true)
+                                {
+                                    int num = stream.ReadAsync(buffer, 0, buffer.Length).Result;
+                                    int read;
+                                    if ((read = num) > 0)
+                                        ms.Write(buffer, 0, read);
+                                    else
+                                        break;
+                                }
+                                novaImagem = Convert.ToBase64String(ms.ToArray());
+                            }
+                            buffer = (byte[])null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
+
+                //// TODO : Verificar como recuperar o caminho da foto
+                //foreach (var foto in aluno.Fotos)
+                //{
+                //    alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
+                //    {
+                //        TipoArquivo = foto.TipoArquivo,
+                //        Caminho = foto.ArquivoBase64()
+                //    });
+                //}
 
                 alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos);
                 alunoRelatorio.RegistrosIndividuais = MontarRegistrosIndividuais(alunoRelatorio.CodigoEol, registrosIndividuais);
@@ -92,11 +126,9 @@ namespace SME.SR.Application
             }
             return alunosRelatorio;
         }
-
-
         private List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos)
         {
-            var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();           
+            var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
 
             if (frequenciasAlunos == null || !frequenciasAlunos.Any())
                 return freqenciasRelatorio;
@@ -114,7 +146,7 @@ namespace SME.SR.Application
                     Aulas = frequencia.TotalAulas,
                     Ausencias = frequencia.TotalAusencias,
                     Frequencia = $"{frequencia.PercentualFrequencia}%",
-                };               
+                };
 
                 freqenciasRelatorio.Add(freqenciaRelatorio);
             }
@@ -123,7 +155,7 @@ namespace SME.SR.Application
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> MontarRegistrosIndividuais(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais)
         {
-            var registrosIndividuaisRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto>();            
+            var registrosIndividuaisRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto>();
 
             if (registrosIndividuais == null || !registrosIndividuais.Any())
                 return registrosIndividuaisRelatorio;
@@ -139,7 +171,7 @@ namespace SME.SR.Application
                 {
                     Data = registro.DataRelatorio,
                     Descricao = registro.RegistroFormatado(),
-                };                
+                };
 
                 registrosIndividuaisRelatorio.Add(registroIndividualRelatorio);
             }
@@ -147,7 +179,7 @@ namespace SME.SR.Application
         }
         private List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto> MontarOcorrencias(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias)
         {
-            var ocorrenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();            
+            var ocorrenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();
 
             if (ocorrencias == null || !ocorrencias.Any())
                 return ocorrenciasRelatorio;

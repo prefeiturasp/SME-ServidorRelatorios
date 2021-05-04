@@ -19,8 +19,8 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto filtro)
         {
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioAcompanhamentoAprendizagemDto>();
-            
-            var turma = await mediator.Send(new ObterTurmaPorIdQuery(parametros.TurmaId));
+
+            var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
 
             if (turma == null)
                 throw new NegocioException("Turma não encontrada");
@@ -30,37 +30,23 @@ namespace SME.SR.Application
 
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo));
             if (alunosEol == null || !alunosEol.Any())
-                throw new NegocioException("Alunos não encontrados");
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            
             var acompanhmentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
-            if (acompanhmentosAlunos == null)
-                throw new NegocioException("Acompanhamentos não encontrados");
-            
+
             var bimestres = ObterBimestresPorSemestre(parametros.Semestre);
-            
+
             var frequenciaAlunos = await mediator.Send(new ObterFrequenciaGeralAlunosPorTurmaEBimestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), bimestres));
             if (frequenciaAlunos == null || !frequenciaAlunos.Any())
-                throw new NegocioException("Frequências não encontradas");
-           
-            var registrosIndividuais = await mediator.Send(new ObterRegistroIndividualPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo));         
-                       
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
+
+            var registrosIndividuais = await mediator.Send(new ObterRegistroIndividualPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo));
+
             var Ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo));            
 
-            try
-            {
-                var relatorioDto = new RelatorioAcompanhamentoAprendizagemDto();
+            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros));
 
-                relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias));
-
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, gerarPaginacao: false));
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, gerarPaginacao: false));
         }
 
         private static int[] ObterBimestresPorSemestre(int semestre)
