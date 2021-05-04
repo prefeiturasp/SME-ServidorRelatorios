@@ -126,49 +126,6 @@ namespace SME.SR.Application
             }
             return alunosRelatorio;
         }
-
-        //private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias)
-        //{
-        //    var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
-
-        //    foreach (var alunoAcompanhamento in alunosAcompanhamento)
-        //    {
-        //        var alunoEol = alunosEol.FirstOrDefault(a => a.AlunoCodigo == long.Parse(alunoAcompanhamento.AlunoCodigo));
-
-        //        if (alunoEol == null)
-        //            throw new NegocioException("AlunoEol não encontrado");
-
-        //        var alunoRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoDto();
-        //        alunoRelatorio.NomeEol = alunoEol.NomeAluno;
-        //        alunoRelatorio.Nome = alunoEol.NomeRelatorio;
-        //        alunoRelatorio.DataNascimento = alunoEol.DataNascimentoFormatado();
-        //        alunoRelatorio.CodigoEol = alunoEol.AlunoCodigo.ToString();
-        //        alunoRelatorio.Situacao = alunoEol.SituacaoRelatorio;
-        //        alunoRelatorio.Responsavel = alunoEol.ResponsavelFormatado();
-        //        alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
-        //        alunoRelatorio.RegistroPercursoTurma = alunoAcompanhamento.PercusoTurmaFormatado();
-        //        alunoRelatorio.Observacoes = alunoAcompanhamento.ObservacoesFormatado();
-
-        //        // TODO : Verificar como recuperar o caminho da foto
-        //        if(alunoAcompanhamento.Fotos != null && alunoAcompanhamento.Fotos.Any())                
-        //            foreach (var foto in alunoAcompanhamento.Fotos)
-        //            {
-        //                alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
-        //                {
-        //                    TipoArquivo = foto.TipoArquivo,
-        //                    Caminho = foto.ArquivoBase64()
-        //                });
-        //            }
-        //        alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos);
-        //        alunoRelatorio.RegistrosIndividuais = MontarRegistrosIndividuais(alunoRelatorio.CodigoEol, registrosIndividuais);
-        //        alunoRelatorio.Ocorrencias = MontarOcorrencias(alunoRelatorio.CodigoEol, Ocorrencias);
-
-        //        alunosRelatorio.Add(alunoRelatorio);
-        //    }
-        //    return alunosRelatorio;
-        //}
-
-
         private List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos)
         {
             var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
