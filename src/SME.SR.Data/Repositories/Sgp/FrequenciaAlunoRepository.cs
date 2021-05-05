@@ -206,20 +206,35 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunosPorTurma(string codigoTurma)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunoPorAnoModalidadeSemestre(int anoTurma, long tipoCalendarioId)
         {
-            var query = @$"select fa.id Id
+            var query = new StringBuilder($@"select fa.id Id
                                 , fa.codigo_aluno as CodigoAluno
                                 , fa.turma_id as TurmaId
                                 , fa.total_aulas as TotalAulas
                                 , fa.total_ausencias as TotalAusencias
                                 , fa.total_compensacoes as TotalCompensacoes
-                              from frequencia_aluno fa 
-                            where fa.turma_id = @codigoTurma and fa.tipo = 2 ";
+                            from frequencia_aluno fa
+                            inner join turma t on fa.turma_id = t.turma_id ");
+
+            if (tipoCalendarioId > 0)
+                query.AppendLine("inner join periodo_escolar pe on fa.periodo_escolar_id = pe.id");
+
+            query.AppendLine(@" where fa.tipo = 2 
+                and t.ano_letivo = @anoTurma 
+                and t.tipo_turma in(1,2,7) ");
+
+            if (tipoCalendarioId > 0)
+                query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigoTurma });
+                return await conexao
+                .QueryAsync<FrequenciaAluno>(query.ToString(), new
+                {
+                    anoTurma,
+                    tipoCalendarioId
+                });
             }
         }
 

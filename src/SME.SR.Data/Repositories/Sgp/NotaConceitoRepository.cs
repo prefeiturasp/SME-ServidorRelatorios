@@ -109,14 +109,14 @@ namespace SME.SR.Data
                          inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
                          inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
                          left join conceito_valores cvf on fn.conceito_id = cvf.id
-                         left join conselho_classe cc on cc.fechamento_turma_id = ft.id
+                         inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
                          left join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id and cca.aluno_codigo = fa.aluno_codigo 
                          left join conselho_classe_aluno_turma_complementar ccatc on cca.id = ccatc.conselho_classe_aluno_id
                          left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
                          left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and ccn.componente_curricular_codigo = fn.disciplina_id 
                          left join conceito_valores cvc on ccn.conceito_id = cvc.id
                          where fa.aluno_codigo = ANY(@codigosAlunos)
-                           and t.ano_letivo = @anoLetivo and pe.periodo_inicio <= now() ";
+                           and t.ano_letivo = @anoLetivo ";
 
             const string queryNotasComplementar = @"
                         select t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, cca.aluno_codigo CodigoAluno,
@@ -142,7 +142,7 @@ namespace SME.SR.Data
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
                          where cca.aluno_codigo = ANY(@codigosAlunos)
-                           and t.ano_letivo = @anoLetivo and pe.periodo_inicio <= now() ";
+                           and t.ano_letivo = @anoLetivo ";
 
             var queryRegular = new StringBuilder(queryNotasRegular);
             var queryComplementar = new StringBuilder(queryNotasComplementar);

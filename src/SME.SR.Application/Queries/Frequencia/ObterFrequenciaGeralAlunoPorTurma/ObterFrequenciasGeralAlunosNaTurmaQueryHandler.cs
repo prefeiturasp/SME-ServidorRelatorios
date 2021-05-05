@@ -23,7 +23,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<FrequenciaAluno>> Handle(ObterFrequenciasGeralAlunosNaTurmaQuery request, CancellationToken cancellationToken)
         {
-            var frequenciaTurma = await frequenciaRepository.ObterFrequenciaGeralAlunosPorTurma(request.CodigoTurma);
+            var frequenciaTurma = await frequenciaRepository.ObterFrequenciaGeralAlunoPorAnoModalidadeSemestre(request.AnoTurma, request.TipoCalendarioId);
 
             if (frequenciaTurma == null || !frequenciaTurma.Any())
                 return Enumerable.Empty<FrequenciaAluno>();
