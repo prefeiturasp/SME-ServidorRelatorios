@@ -81,7 +81,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string turmaCodigo, long tipoCalendarioId)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string[] turmasCodigo, string[] componentesCurricularesId, long tipoCalendarioId)
         {
             var query = @"select  fa.id Id
                                 , fa.codigo_aluno as CodigoAluno
@@ -94,12 +94,13 @@ namespace SME.SR.Data
                            inner join periodo_escolar pe on pe.id = fa.periodo_escolar_id
                             where not excluido 
                               and fa.tipo = 1
-                              and fa.turma_id = @turmaCodigo
+                              and fa.turma_id = ANY(@turmasCodigo)
+                              and fa.disciplina_id = ANY(@componentesCurricularesId)
                               and pe.tipo_calendario_id = @tipoCalendarioId ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<FrequenciaAluno>(query, new { turmaCodigo, tipoCalendarioId });
+                return await conexao.QueryAsync<FrequenciaAluno>(query, new { turmasCodigo, componentesCurricularesId, tipoCalendarioId });
             }
         }
 
