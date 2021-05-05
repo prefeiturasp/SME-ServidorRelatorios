@@ -54,10 +54,10 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="50" splitType="Prevent">
+		<band height="60" splitType="Prevent">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="555" height="50" uuid="e666c85b-7b78-4071-8857-8ba703157647">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="555" height="60" uuid="e666c85b-7b78-4071-8857-8ba703157647">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -83,7 +83,7 @@
 					<subreportExpression><![CDATA["GrupoComponentesComNotaTransferencia.jasper"]]></subreportExpression>
 				</subreport>
 				<subreport>
-					<reportElement positionType="Float" x="0" y="20" width="555" height="10" isRemoveLineWhenBlank="true" uuid="8fe88398-24fe-44df-a578-6a9275ebe906">
+					<reportElement positionType="Float" x="0" y="30" width="555" height="10" isRemoveLineWhenBlank="true" uuid="8fe88398-24fe-44df-a578-6a9275ebe906">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<printWhenExpression><![CDATA[$F{enriquecimentoCurricular} != null]]></printWhenExpression>
@@ -94,7 +94,7 @@
 					<subreportExpression><![CDATA["EnriquecimentoCurricularTransferencia.jasper"]]></subreportExpression>
 				</subreport>
 				<subreport>
-					<reportElement positionType="Float" x="0" y="30" width="555" height="10" isRemoveLineWhenBlank="true" uuid="22ace746-9768-4dcd-8a06-493038208740">
+					<reportElement positionType="Float" x="0" y="40" width="555" height="10" isRemoveLineWhenBlank="true" uuid="22ace746-9768-4dcd-8a06-493038208740">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -106,10 +106,24 @@
 					<subreportExpression><![CDATA["ProjetosAtividadesComplementaresTransferencia.jasper"]]></subreportExpression>
 				</subreport>
 				<textField>
-					<reportElement positionType="Float" x="0" y="40" width="555" height="10" isRemoveLineWhenBlank="true" uuid="1f9a6c44-5914-42db-aaaf-e9c7122da8f5">
+					<reportElement positionType="Float" x="0" y="50" width="555" height="10" isRemoveLineWhenBlank="true" uuid="1f9a6c44-5914-42db-aaaf-e9c7122da8f5">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<printWhenExpression><![CDATA[$F{projetosAtividadesComplementares} != null || $F{enriquecimentoCurricular} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{rodape}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement positionType="Float" x="0" y="20" width="555" height="10" isRemoveLineWhenBlank="true" uuid="11ffcdd6-d09d-4f8c-b307-620726675fb5">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<printWhenExpression><![CDATA[$F{projetosAtividadesComplementares} == null && $F{enriquecimentoCurricular} == null]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
