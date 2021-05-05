@@ -408,7 +408,7 @@ namespace SME.SR.Application
                     // Monta coluna Sintese Final - SF
                     var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                             && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                            && !c.Bimestre.HasValue);
+                                            && (!c.Bimestre.HasValue || c.Bimestre.Value == 0));
 
                     var frequenciaAluno = await ObterFrequenciaAluno(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, turmaCodigo);
 
