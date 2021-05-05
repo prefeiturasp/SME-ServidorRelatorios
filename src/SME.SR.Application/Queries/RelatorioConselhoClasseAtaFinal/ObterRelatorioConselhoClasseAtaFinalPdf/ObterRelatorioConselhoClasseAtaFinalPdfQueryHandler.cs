@@ -498,7 +498,7 @@ namespace SME.SR.Application
                         Nome = grupoMatriz.Key.Nome
                     };
 
-                    foreach (var componenteCurricular in grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()))
+                    foreach (var componenteCurricular in grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()).OrderBy(c => c.Disciplina))
                     {
                         grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre));
                     }
