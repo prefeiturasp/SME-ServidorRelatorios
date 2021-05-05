@@ -6,7 +6,8 @@
     int contadorMaximoLinhasPorPagina = 47;
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
-
+    int caracterContado = 0;
+    var qntCaracteresMaxPorLinha = 200;
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
         paginaAtual++;
@@ -209,24 +210,9 @@ PROFESSORES: {Model.Cabecalho.Professores}
         return "";
     }
 
-    string MontarRegistroPercurso(string estudante, string registroPercursoTurma)
+
+    void PlotarRegistroPercursoTurma(string registroPercursoTurma)
     {
-        int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
-
-        if (numeroLinhasRegistroPercursoTurma < 2)
-        {
-            contadorMaximoLinhasPorPagina = 50;
-        }
-        else
-        {
-            contadorMaximoLinhasPorPagina = 47;
-        }
-
-        QuebrarLinhas(numeroLinhasRegistroPercursoTurma, estudante);
-
-        SomaLinhasContador(numeroLinhasRegistroPercursoTurma);
-
-        var classeRegistroPercurso = !quebrou ? "" : "sem-border-top";
         <table class='tabela-alunos sem-border-top'>
             <thead>
                 <tr>
@@ -241,13 +227,80 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 </tr>
             </tbody>
         </table>
+                        }
+                        string ObterTextoParaPlotar(string texto)
+                        {
+                            var textoParaTratar = texto.Substring(caracterContado, qntCaracteresMaxPorLinha);
+                            if (textoParaTratar.Contains("<img"))
+                            {
+                                //CONTAR A QUANTIDADE DE IMAGENS
+                               
 
-        return "";
-    }
 
-    string MontarFrequencia(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
-    {
-        MontarTitulo("FREQUÊNCIA");
+
+                                if (!textoParaTratar.Contains("/>"))
+                                {
+                                    var iAondeEstaAImagem = textoParaTratar.IndexOf("<img");
+                                    var textoParaRetornar = textoParaTratar.Substring(0, iAondeEstaAImagem);
+                                    caracterContado += textoParaRetornar.Length;
+                                    return textoParaRetornar;
+                                } else
+                                {
+                                    //TENHO A IMAGEM INTEIRA NA LINHA
+                                    //CONTAR QNT É O TAMANHO DA IMAGENS ! -- PODE TER MAIS DE 1
+                                    
+                                    return "";
+                                }
+                                //TODO: confirmar média de caracteres para a direita
+
+                            } else
+                            {
+                                caracterContado += textoParaTratar.Length;
+                                return textoParaTratar;
+                            }
+
+                        }
+                        void MontarRegistroPercurso(string estudante, string registroPercursoTurma)
+                        {
+                            //1 linha = 200;
+
+                            var qntLinhasRestantes = contadorMaximoLinhasPorPagina - contadorQuebrarPagina;
+
+
+                            while (qntLinhasRestantes > 0)
+                            {
+                                var textoParaPlotar = "";
+                                textoParaPlotar += ObterTextoParaPlotar(registroPercursoTurma);
+                                qntLinhasRestantes--;
+
+                            }
+
+                            var tamanhoRestanteAtual = contadorQuebrarPagina;
+                            //int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
+
+                            //if (numeroLinhasRegistroPercursoTurma < 2)
+                            //{
+                            //    contadorMaximoLinhasPorPagina = 50;
+                            //}
+                            //else
+                            //{
+                            //    contadorMaximoLinhasPorPagina = 47;
+                            //}
+
+                            //QuebrarLinhas(numeroLinhasRegistroPercursoTurma, estudante);
+
+                            //SomaLinhasContador(numeroLinhasRegistroPercursoTurma);
+
+                            //var classeRegistroPercurso = !quebrou ? "" : "sem-border-top";
+
+                            PlotarRegistroPercursoTurma("");
+
+
+                        }
+
+                        string MontarFrequencia(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+                        {
+                            MontarTitulo("FREQUÊNCIA");
 
         <table class='tabela-alunos'>
             <thead>

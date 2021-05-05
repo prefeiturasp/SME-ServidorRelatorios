@@ -7460,9 +7460,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     NullValueHandling = NullValueHandling.Ignore
                 });
                 
-                await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
-           //  var model = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(615822, "6731135", 1));
-                return View("RelatorioAcompanhamentoAprendizagem", null);
+                var model = await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem, CodigoCorrelacao = Guid.NewGuid() });
+                //  var model = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(615822, "6731135", 1));
+                 return View("RelatorioAcompanhamentoAprendizagem", model);                
             }
             catch (Exception ex)
             {

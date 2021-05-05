@@ -62,7 +62,9 @@ namespace SME.SR.Infra
 
             foreach (var imagem in imagens)
             {
-                var textoSemTagsComImagens = registro.Replace($"#{i++}", imagem.ToString().Replace("<img", "<img height='72'"));
+                //TODO: PASSAR PARA A BASE 64
+                //var textoSemTagsComImagens = registro.Replace($"#{i++}", imagem.ToString().Replace("<img", "<img height='72'"));
+                var textoSemTagsComImagens = registro.Replace($"#{i++}", "<img height='72' width='72' src='https://upload.wikimedia.org/wikipedia/commons/b/b8/Cryptocurrency_logos.jpg' />");
                 registro = textoSemTagsComImagens;
             }            
              return registro;
