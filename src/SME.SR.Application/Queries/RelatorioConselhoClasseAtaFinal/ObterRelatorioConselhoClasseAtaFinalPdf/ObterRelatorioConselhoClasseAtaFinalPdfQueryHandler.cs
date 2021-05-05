@@ -99,7 +99,7 @@ namespace SME.SR.Application
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo, usuario);
             var frequenciaAlunos = await ObterFrequenciaComponente(turma.Codigo, tipoCalendarioId, periodosEscolares);
-            var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.Codigo);
+            var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.AnoLetivo, tipoCalendarioId);
 
             var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos.Select(long.Parse).ToArray()));
             listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
@@ -219,7 +219,7 @@ namespace SME.SR.Application
 
             var componentesDaTurma = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo, usuario);
             var frequenciaAlunos = await ObterFrequenciaComponente(turma.Codigo, tipoCalendarioId, periodosEscolares);
-            var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.Codigo);
+            var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.AnoLetivo, tipoCalendarioId);
             var pareceresConclusivos = await ObterPareceresConclusivos(turma.Codigo);
 
             List<ComponenteCurricularPorTurma> componentesCurriculares = new List<ComponenteCurricularPorTurma>();
@@ -541,8 +541,8 @@ namespace SME.SR.Application
         private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string turmaCodigo, long tipoCalendarioId, IEnumerable<PeriodoEscolar> periodosEscolares)
             => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmaCodigo, tipoCalendarioId, periodosEscolares.Select(a => a.Bimestre)));
 
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeral(string turmaCodigo)
-            => await mediator.Send(new ObterFrequenciasGeralAlunosNaTurmaQuery(turmaCodigo));
+        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeral(int anoTurma, long tipoCalendarioId)
+            => await mediator.Send(new ObterFrequenciasGeralAlunosNaTurmaQuery(anoTurma, tipoCalendarioId));
 
         private async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasFinaisPorTurma(string turmaCodigo)
         {
