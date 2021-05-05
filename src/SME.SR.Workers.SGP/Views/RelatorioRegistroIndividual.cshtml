@@ -1,0 +1,349 @@
+﻿@model SME.SR.Infra.RelatorioRegistroIndividualDto;
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 55;
+    int contadorPagina = 0;
+    int contadorDescricao = 0;
+
+    bool VerificaQuebra(int linhas = 0)
+    {
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE REGISTRO INDIVIDUAL</div>
+        <div class='subtitulo-relatorio'>@Model.Cabecalho.Periodo</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15 sem-border-bottom'>DRE: @Model.Cabecalho.Dre</td>
+                        <td width='80%' class='espaco-esquerda-15 sem-border-bottom'>UE: @Model.Cabecalho.Ue</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='75%' class='espaco-esquerda-15'>ENDEREÇO: @Model.Cabecalho.Endereco</td>
+                        <td width='25%' class='espaco-esquerda-15'>CONTATO: @Model.Cabecalho.Telefone</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Cabecalho.Turma</td>
+                        <td width='46%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Cabecalho.Usuario</td>
+                        <td width='16%' class='sem-border-top espaco-esquerda-15'>RF: @Model.Cabecalho.RF</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.Cabecalho.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        return "";
+    }
+
+    string informacoesQuebra()
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");
+        @Html.Raw(MontarCabecalho())
+        @Html.Raw("<table class='tabela-cabecalho'>");
+
+        return "";
+    }
+
+    int CalcularLinhas(int valorLinha = 0, int caracteres = 0)
+    {
+        if (valorLinha > 0)
+        {
+            var numeroLinhasDescricao = valorLinha / caracteres;
+
+            return numeroLinhasDescricao;
+        }
+        return 1;
+    }
+
+    string QuebrarLinhas(string estudante, int numeroQuebras = 1)
+    {
+        var quebra = VerificaQuebra(numeroQuebras);
+
+        if (quebra)
+        {
+            informacoesQuebra();
+            contadorQuebrarPagina = contadorQuebrarPagina + numeroQuebras;
+            MontarCabecalhoRegistros(estudante);
+        }
+
+        if (contadorDescricao > 1)
+        {
+            contadorDescricao = 0;
+            contadorQuebrarPagina++;
+        }
+        return "";
+    }
+
+    string SomaLinhasContador(int numeroLinhasDescricao)
+    {
+        if (numeroLinhasDescricao > 1)
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
+        }
+        else
+        {
+            contadorQuebrarPagina++;
+        }
+        return "";
+    }
+
+    string MontarCabecalhoRegistros(string nome)
+    {
+        <thead>
+            <tr>
+                <td colspan="3">@nome</td>
+            </tr>
+            <tr>
+                <td>DATA</td>
+                <td>DESCRIÇÃO</td>
+                <td>REGISTRADO POR</td>
+            </tr>
+        </thead>
+        return "";
+    }
+
+    string MontarDescricao(string dataRegistro, string descricao, string registradoPor)
+    {
+        <tr>
+            <td width="10%">@dataRegistro</td>
+            <td width="60%" class="alinhar-esquerda espaco-esquerda-15">@descricao</td>
+            <td width="30%" style="padding:0 3px">@registradoPor</td>
+        </tr>
+        return "";
+    }
+
+    string CalcularDescricao(string estudante, string descricaoRetante, string dataRegistro, string registradoPor)
+    {
+        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRetante.Length, 100);
+
+        if (numeroLinhasDescricaoRestante > 50)
+        {
+            DivideDescricao(estudante, descricaoRetante, dataRegistro, registradoPor);
+        }
+        else
+        {
+            @Html.Raw(QuebrarLinhas(estudante, numeroLinhasDescricaoRestante))
+            @Html.Raw(MontarDescricao(dataRegistro, descricaoRetante, registradoPor))
+            @Html.Raw(SomaLinhasContador(numeroLinhasDescricaoRestante))
+        }
+
+        return "";
+    }
+
+    string DivideDescricao(string estudante, string descricao, string dataRegistro, string registradoPor)
+    {
+        var descricaoDivida = descricao.Substring(0, 5000);
+        var descricaoRetante = descricao.Substring(5001);
+        @Html.Raw(QuebrarLinhas(estudante, 43))
+        @Html.Raw(MontarDescricao(dataRegistro, descricaoDivida, registradoPor))
+        @Html.Raw(SomaLinhasContador(43))
+        CalcularDescricao(estudante, descricaoRetante, dataRegistro, registradoPor);
+
+        return "";
+    }
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registro Individual</title>
+    </head>
+    <body class="body-relatorio">
+        <style>
+
+            .tblTopo th, td {
+                padding: 3px 0;
+                text-align: left;
+            }
+
+            .body-relatorio {
+                margin: 0.5cm auto;
+                font-family: Roboto, sans-serif;
+                width: 21cm;
+                min-height: 29.7cm;
+                background: white;
+                color: #42474a;
+            }
+
+            .titulo-sgp {
+                text-align: right;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .titulo-relatorio {
+                text-align: right;
+                font-size: 14.5px;
+                margin-top: 7px;
+            }
+
+            .subtitulo-relatorio {
+                text-align: right;
+                font-size: 12.5px;
+                margin-top: 7px;
+            }
+
+            .header-pagina {
+                margin-top: 33px;
+                margin-bottom: 22px;
+            }
+
+                .header-pagina td {
+                    text-align: left;
+                }
+
+            table {
+                display: table;
+                width: 100%;
+                border-color: #42474a;
+                empty-cells: show;
+                border: none;
+                border-collapse: collapse;
+            }
+
+            thead {
+                background-color: #f3f3f3;
+            }
+
+            th {
+                border: 1px solid #42474a;
+                font-weight: normal;
+            }
+
+            td {
+                border: 1px solid #42474a;
+                text-align: center;
+            }
+
+            .tabela-cabecalho tr {
+                font-size: 12px;
+                height: 24px;
+            }
+
+            .mt-25 {
+                margin-top: 25px;
+            }
+
+            .fonte-14 {
+                font-size: 14px !important;
+            }
+
+            .alinhar-esquerda {
+                text-align: left;
+            }
+
+            .espaco-esquerda-15 {
+                padding-left: 15px;
+            }
+
+            .fundo-cinza {
+                background-color: #f3f3f3;
+            }
+
+            .negrito {
+                font-weight: bold;
+            }
+
+            .sem-border-bottom {
+                border-bottom: 0;
+            }
+
+            .sem-border-top {
+                border-top: 0;
+            }
+
+            .thLimpo {
+                background-color: #ffffff;
+                border: 0;
+                height: 22px;
+            }
+
+            .img-logo-sgp {
+                height: 64px;
+                float: left;
+            }
+
+            .centralizar {
+                text-align: center;
+            }
+        </style>
+        <div>
+            @{ int alunosIndex = 0; }
+
+            @foreach (var alunos in Model.Alunos)
+            {
+                MontarCabecalho();
+
+                contadorQuebrarPagina = contadorQuebrarPagina + 2;
+
+                <table class="tabela-cabecalho">
+
+                    @Html.Raw(MontarCabecalhoRegistros(@alunos.Nome))
+
+                    <tbody>
+                        @foreach (var registros in @alunos.Registros)
+                        {
+                            var estudante = alunos.Nome;
+                            var descricao = registros.Descricao;
+                            var registradoPor = registros.RegistradoPor;
+                            var dataRegistro = registros.DataRegistro;
+
+                            int numeroLinhasDescricao = CalcularLinhas(descricao.Length, 100);
+                            int numeroLinhasResgistradoPor = CalcularLinhas(registradoPor.Length, 30);
+                            int numeroCalulo = numeroLinhasDescricao > numeroLinhasResgistradoPor ? numeroLinhasDescricao : numeroLinhasResgistradoPor;
+
+                            if (numeroLinhasDescricao > 50)
+                            {
+                                DivideDescricao(estudante, descricao, dataRegistro, registradoPor);
+                            }
+                            else
+                            {
+                                @Html.Raw(QuebrarLinhas(estudante, numeroCalulo))
+                                @Html.Raw(SomaLinhasContador(numeroCalulo))
+                                @Html.Raw(MontarDescricao(dataRegistro, descricao, registradoPor))
+                            }
+                        }
+                    </tbody>
+                </table>
+
+
+                if (Model.Alunos.Count() > 1 && alunosIndex < Model.Alunos.Count() - 1)
+                {
+                    contadorQuebrarPagina = 0;
+                    @Html.Raw("<div style='page-break-before:always'></div>")
+                }
+
+                alunosIndex++;
+            }
+        </div>
+        <footer style="display:flex; justify-content:flex-end;align-items:flex-end; background:grey">
+            <p>teste</p>
+        </footer>
+    </body>
+</html>
+}

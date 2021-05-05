@@ -50,6 +50,11 @@ namespace SME.SR.Infra
                     !string.IsNullOrEmpty(NotaConceitoTerceiroBimestre) ||
                     !string.IsNullOrEmpty(NotaConceitoQuartoBimestre)))
                     return true;
+                else if (!Nota && (!string.IsNullOrEmpty(FrequenciaPrimeiroBimestre) ||
+                   !string.IsNullOrEmpty(FrequenciaSegundoBimestre) ||
+                   !string.IsNullOrEmpty(FrequenciaTerceiroBimestre) ||
+                   !string.IsNullOrEmpty(FrequenciaQuartoBimestre)))
+                    return true;
 
                 return false;
             }

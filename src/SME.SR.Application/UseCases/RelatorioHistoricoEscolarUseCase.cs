@@ -210,6 +210,7 @@ namespace SME.SR.Application
             {
                 var turmaRegularId = todasTurmasAssociadas.FirstOrDefault(tr => tr.Codigo == componenteDaTurma.CodigoTurma).RegularCodigo;
 
+                componenteDaTurma.CodigoTurmaAssociada = componenteDaTurma.CodigoTurma;
                 componenteDaTurma.CodigoTurma = turmaRegularId;
             }
 

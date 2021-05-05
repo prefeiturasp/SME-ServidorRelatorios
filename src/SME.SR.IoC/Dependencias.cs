@@ -158,6 +158,8 @@ namespace SME.SR.IoC
             
             services.TryAddScoped(typeof(IDevolutivaRepository), typeof(DevolutivaRepository));
             services.TryAddScoped(typeof(IItineranciaRepository), typeof(ItineranciaRepository));
+            services.TryAddScoped(typeof(IRegistroIndividualRepository), typeof(RegistroIndividualRepository));
+            services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -202,6 +204,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioPlanejamentoDiarioUseCase, RelatorioPlanejamentoDiarioUseCase>();
             services.TryAddScoped<IRelatorioDevolutivasUseCase, RelatorioDevolutivasUseCase>();
             services.TryAddScoped<IRelatorioItineranciasUseCase, RelatorioItineranciasUseCase>();
+            services.TryAddScoped<IRelatorioRegistroIndividualUseCase, RelatorioRegistroIndividualUseCase>();
 
         }
     }

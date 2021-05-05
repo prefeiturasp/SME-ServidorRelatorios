@@ -29,7 +29,7 @@ namespace SME.SR.Application
 
                 foreach (var agrupamentoTurmas in alunoTurmasPorModalidade)
                 {
-                    var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).DistinctBy(d => d.CodDisciplina);
+                    var componentesDaTurma = request.ComponentesCurricularesTurmas.Where(cc => agrupamentoTurmas.Select(c => c.Codigo).Contains(cc.Key)).SelectMany(ct => ct).Where(cc => string.IsNullOrEmpty(cc.CodigoTurmaAssociada) || aluno.Turmas.Any(at => at.Codigo == cc.CodigoTurmaAssociada)).DistinctBy(d => d.CodDisciplina);
                     var componentesPorGrupoMatriz = componentesDaTurma.Where(gm => gm.GrupoMatriz != null).GroupBy(cc => cc.GrupoMatriz);
 
                     //Obter grupo matriz
@@ -69,8 +69,6 @@ namespace SME.SR.Application
                     listaRetorno.Add(transferenciaDto);
                 }
             }
-
-            var json = JsonConvert.SerializeObject(listaRetorno);
 
             return await Task.FromResult(listaRetorno);
         }
@@ -124,7 +122,7 @@ namespace SME.SR.Application
                 }
             }
 
-            return gruposComponentes?.Select(gc => gc.ObterAreasComNotaValida)?.Where(gc => gc.AreasDeConhecimento.Any())?.ToList();
+            return gruposComponentes;
         }
 
         private BaseNacionalComumTransferenciaDto ObterBaseNacionalComum(IEnumerable<Turma> turmas,
@@ -153,7 +151,7 @@ namespace SME.SR.Application
                 };
             }
 
-            return baseNacional.ObterAreasComNotaValida;
+            return baseNacional;
         }
 
         private IEnumerable<ComponenteCurricularPorTurma> ObterComponentesDasAreasDeConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
@@ -218,14 +216,14 @@ namespace SME.SR.Application
                 }
             }
 
-            return componentes?.Where(c => c.PossuiNotaValida);
+            return componentes;
         }
 
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos, int bimestre)
         {
             if (turma != null)
             {
-                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente);
+                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente && a.Bimestre == bimestre);
                 FrequenciaAluno frequenciaAluno;
 
                 if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
@@ -250,7 +248,7 @@ namespace SME.SR.Application
                     frequenciaAluno.TotalCompensacoes = frequenciasAlunoParaTratar.Sum(a => a.TotalCompensacoes);
                 }
 
-                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia.ToString() ?? "100" : "100";
+                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.TotalAusencias.ToString() ?? "0" : "0";
             }
             else
                 return null;
@@ -315,7 +313,7 @@ namespace SME.SR.Application
                 });
             }
 
-            return componentes?.Where(c => c.PossuiNotaValida);
+            return componentes;
         }
 
         private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)

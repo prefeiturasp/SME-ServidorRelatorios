@@ -35,5 +35,6 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, long anoLetivo);
         Task<IEnumerable<TurmaResumoDto>> ObterTurmasResumoPorCodigos(string[] turmaCodigos);
         Task<IEnumerable<Turma>> ObterTurmasDetalhePorCodigos(long[] turmaCodigos);
+        Task<Turma> ObterComDreUePorId(long turmaId);
     }
 }
