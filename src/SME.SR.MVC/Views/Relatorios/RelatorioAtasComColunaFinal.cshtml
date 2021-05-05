@@ -1,255 +1,267 @@
 ﻿@model SME.SR.Infra.ConselhoClasseAtaFinalPaginaDto
 
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Relatório Atas de Conselho</title>
-    </head>
-    <body class="body-rel-atas">
-        <style>
-            @@page {
-                size: landscape;
-            }
+@{
+    var i = 0;
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório Atas de Conselho</title>
+</head>
+<body class="body-rel-atas">
+    <style>
+        @@page {
+            size: landscape;
+        }
 
-            .body-rel-atas {
-                font-family: Roboto, sans-serif;
-                color: #42474a;
-            }
+        .body-rel-atas {
+            font-family: Roboto, sans-serif;
+            color: #42474a;
+        }
 
-            .titulo-sgp {
-                text-align: right;
-                font-size: 14px;
-                font-weight: bold;
-            }
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
 
-            .titulo-ata {
-                text-align: right;
-                font-size: 14.5px;
-                margin-top: 7px;
-            }
+        .titulo-ata {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
 
-            .img-logo-sgp {
-                height: 64px;
-                float: left;
-            }
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
 
-            .header-pagina {
-                margin-top: 33px;
-                margin-bottom: 22px;
-            }
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
 
-                .header-pagina td {
-                    text-align: left;
-                }
-
-            .campo-dre {
-                width: 345px;
-            }
-
-            .campo-ue {
-                width: 353px;
-            }
-
-            .campo-turma {
-                width: 188px;
-            }
-
-            .campo-data-ano {
-                width: 188px;
-                border-top: none;
-            }
-
-            .campo-ciclo {
-                width: 692px;
-                border-top: none;
-            }
-
-            table {
-                display: table;
-                width: 100%;
-                border-color: #42474a;
-                empty-cells: show;
-                border: none;
-                border-collapse: collapse;
-            }
-
-            thead {
-                background-color: #dedede;
-            }
-
-            th {
-                border: 1px solid #42474a;
-                font-weight: normal;
-            }
-
-            td {
-                border: 1px solid #42474a;
-                text-align: center;
-                min-width: 13px;
-            }
-
-            .tabela-alunos tr {
-                font-size: 7px;
-                height: 28px;
-            }
-
-            .fonte-10 {
-                font-size: 10px !important;
-            }
-
-            .fonte-8 {
-                font-size: 8px !important;
-            }
-
-            .fonte-14 {
-                font-size: 14px !important;
-            }
-
-            .tamanho-15 {
-                width: 15px !important;
-            }
-
-            .tamanho-115 {
-                width: 115px !important;
-            }
-
-            .alinhar-esquerda {
+            .header-pagina td {
                 text-align: left;
             }
 
-            .alinhar-centro {
-                text-align: center;
-            }
+        .campo-dre {
+            width: 345px;
+        }
 
-            .rodape-rel-atas {
-                margin-top: 10px;
-                font-size: 9px;
-                font-weight: bold;
-            }
+        .campo-ue {
+            width: 353px;
+        }
 
-            .titulo-sgp-rodape {
-                text-align: left;
-            }
+        .campo-turma {
+            width: 188px;
+        }
 
-            .contador-pagina {
-                text-align: right;
-                font-size: 12px;
-            }
+        .campo-data-ano {
+            width: 188px;
+            border-top: none;
+        }
 
-            .estudante-inativo {
-                background-color: #f2f2f2;
-            }
-        </style>
+        .campo-ciclo {
+            width: 692px;
+            border-top: none;
+        }
 
-        <div class="margin-rel-atas">
-            <div>
-                <img class="img-logo-sgp" src="logo.png" alt="Logo SGP" />
-            </div>
-            <div class="titulo-sgp">SGP - Sistema de gestão Pedagógica</div>
-            <div class="titulo-ata">ATA FINAL DE RESULTADOS</div>
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
 
-            <div class="fonte-14 header-pagina">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="campo-dre">DRE: @Model.Cabecalho.Dre</td>
-                            <td class="campo-ue">Unidade Escolar (UE): @Model.Cabecalho.Ue</td>
-                            <td class="campo-turma">TURMA: @Model.Cabecalho.Turma</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="campo-ciclo">CICLO: @Model.Cabecalho.Ciclo</td>
-                            <td class="campo-data-ano">ANO LETIVO: @Model.Cabecalho.AnoLetivo</td>
-                            <td class="campo-data-ano">DATA: @Model.Cabecalho.Data</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        thead {
+            background-color: #dedede;
+        }
 
-            <table class="tabela-alunos">
-                <thead>
-                    <tr class="fonte-10">
-                        <th rowspan="2" colspan="2"></th>
-                        @foreach (var grupoMatriz in Model.GruposMatriz)
-                        {
-                        <th colspan="@grupoMatriz.QuantidadeColunas">@grupoMatriz.Nome</th>
-                        }
-                        @if (Model.FinalHorizontal)
-                        {
-                        <th rowspan="2" colspan="4">Anual</th>
-                        }
-                    </tr>
-                    <tr class="fonte-10">
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
 
-                        @foreach (var grupoMatriz in Model.GruposMatriz)
-                        {
-                        foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
-                        {
-                        if (Model.EhEJA)
-                        {
-                        <th colspan="6">@componenteCurricular.Nome</th>
-                        }
-                        else
-                        {
-                        <th colspan="8">@componenteCurricular.Nome</th>
-                        }
-                        }
-                        }
-                    </tr>
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+            min-width: 13px;
+        }
+
+        .tabela-alunos tr {
+            font-size: 7px;
+            height: 28px;
+        }
+
+        .fonte-10 {
+            font-size: 10px !important;
+        }
+
+        .fonte-8 {
+            font-size: 8px !important;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .tamanho-15 {
+            width: 15px !important;
+        }
+
+        .tamanho-115 {
+            width: 115px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .alinhar-centro {
+            text-align: center;
+        }
+
+        .rodape-rel-atas {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            text-align: left;
+        }
+
+        .contador-pagina {
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .estudante-inativo {
+            background-color: #f2f2f2;
+        }
+    </style>
+
+    <div class="margin-rel-atas">
+        <div>
+            <img class="img-logo-sgp" src="logo.png" alt="Logo SGP" />
+        </div>
+        <div class="titulo-sgp">SGP - Sistema de gestão Pedagógica</div>
+        <div class="titulo-ata">ATA FINAL DE RESULTADOS</div>
+
+        <div class="fonte-14 header-pagina">
+            <table>
+                <tbody>
                     <tr>
-                        <th class="fonte-10 tamanho-15 alinhar-centro">Nº</th>
-                        <th class="fonte-10 tamanho-115 alinhar-esquerda">Nome</th>
+                        <td class="campo-dre">DRE: @Model.Cabecalho.Dre</td>
+                        <td class="campo-ue">Unidade Escolar (UE): @Model.Cabecalho.Ue</td>
+                        <td class="campo-turma">TURMA: @Model.Cabecalho.Turma</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="campo-ciclo">CICLO: @Model.Cabecalho.Ciclo</td>
+                        <td class="campo-data-ano">ANO LETIVO: @Model.Cabecalho.AnoLetivo</td>
+                        <td class="campo-data-ano">DATA: @Model.Cabecalho.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-                        @foreach (var grupoMatriz in Model.GruposMatriz)
-                        {
+        <table class="tabela-alunos">
+            <thead>
+                <tr class="fonte-10">
+                    <th rowspan="2" colspan="2"></th>
+                    @foreach (var grupoMatriz in Model.GruposMatriz)
+                    {
+                        <th colspan="@grupoMatriz.QuantidadeColunas">@grupoMatriz.Nome</th>
+                    }
+                    @if (Model.FinalHorizontal)
+                    {
+                        <th rowspan="2" colspan="4">Anual</th>
+                    }
+                </tr>
+                <tr class="fonte-10">
+
+                    @foreach (var grupoMatriz in Model.GruposMatriz)
+                    {
                         foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                         {
-                        foreach (var coluna in componenteCurricular.Colunas)
+                            if (Model.EhEJA)
+                            {
+                                <th colspan="6">@componenteCurricular.Nome</th>
+                            }
+                            else
+                            {
+                                <th colspan="8">@componenteCurricular.Nome</th>
+                            }
+                        }
+                    }
+                </tr>
+                <tr>
+                    <th class="fonte-10 tamanho-15 alinhar-centro">Nº</th>
+                    <th class="fonte-10 tamanho-115 alinhar-esquerda">Nome</th>
+
+                    @foreach (var grupoMatriz in Model.GruposMatriz)
+                    {
+                        foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                         {
-                        <th>@coluna.Nome</th>
+                            foreach (var coluna in componenteCurricular.Colunas)
+                            {
+                                <th>@coluna.Nome</th>
+                            }
                         }
-                        }
-                        }
-                        @if (Model.FinalHorizontal)
-                        {
+                    }
+                    @if (Model.FinalHorizontal)
+                    {
                         <th>F</th>
                         <th>CA</th>
                         <th>%</th>
                         <th>Parecer conclusivo</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var linha in Model.Linhas)
-                    {
+                    }
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var linha in Model.Linhas)
+                {
                     <tr class="@(linha.Inativo ? " estudante-inativo" : "" )">
                         <td class="alinhar-centro">@linha.Id</td>
                         @if (linha.Inativo)
                         {
-                        <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
-                        } else
-                        {
-                        <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
+                            <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
                         }
-                        @foreach (var celula in linha.Celulas)
+                        else
                         {
-                        <td>@celula.Valor</td>
+                            <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
+                        }
+                        @foreach (var grupoMatriz in Model.GruposMatriz)
+                        {
+                            foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
+                            {
+
+                                @foreach (var celula in linha.Celulas.Where(a => a.ComponenteCurricular == componenteCurricular.Id))
+                                {
+                                    <td>@celula.Valor</td>
+                                }
+                            }
                         }
                     </tr>
-                    }
-                </tbody>
-            </table>
-            <footer class="rodape-rel-atas">
-                <div class="titulo-sgp-rodape">
-                    SGP - SISTEMA DE GESTÃO PEDAGÓGICA | ATA FINAL DE RESULTADOS
-                </div>
-                <div class="contador-pagina">@Model.NumeroPagina / @Model.TotalPaginas</div>
-            </footer>
-        </div>
-    </body>
+                }
+            </tbody>
+        </table>
+        <footer class="rodape-rel-atas">
+            <div class="titulo-sgp-rodape">
+                SGP - SISTEMA DE GESTÃO PEDAGÓGICA | ATA FINAL DE RESULTADOS
+            </div>
+            <div class="contador-pagina">@Model.NumeroPagina / @Model.TotalPaginas</div>
+        </footer>
+    </div>
+</body>
 </html>

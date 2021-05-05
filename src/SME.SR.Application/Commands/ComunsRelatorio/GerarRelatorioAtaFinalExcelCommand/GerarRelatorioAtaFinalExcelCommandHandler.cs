@@ -18,7 +18,7 @@ namespace SME.SR.Application
     public class GerarRelatorioAtaFinalExcelCommandHandler : IRequestHandler<GerarRelatorioAtaFinalExcelCommand, Unit>
     {
         private readonly IMediator mediator;
-        private readonly IServicoFila servicoFila;
+        
 
         private const int LINHA_CABECALHO_DRE = 6;
         private const int LINHA_CABECALHO_CICLO = 7;
@@ -28,8 +28,7 @@ namespace SME.SR.Application
 
         public GerarRelatorioAtaFinalExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));            
         }
 
         public async Task<Unit> Handle(GerarRelatorioAtaFinalExcelCommand request, CancellationToken cancellationToken)
@@ -48,6 +47,10 @@ namespace SME.SR.Application
                 {
                     using (var workbook = new XLWorkbook())
                     {
+                        var codigoCorrelacao = Guid.NewGuid();
+                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
 
                         var objetoExportacao = dadosAgrupadosTurma.ElementAt(i);
@@ -62,22 +65,19 @@ namespace SME.SR.Application
 
                         AdicionarEstilo(worksheet, tabelaDados);
 
-                        var codigoCorrelacao = Guid.NewGuid();
-
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
-                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
-
-                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
-                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");                        
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
                 }
 
                 foreach (var codigoCorrelacao in lstCodigosCorrelacao)
-                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, codigoCorrelacao.Key));
+                {
+                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, codigoCorrelacao.Key, request.UsuarioRf)));                    
+                }                   
 
                 return await Task.FromResult(Unit.Value);
             }
