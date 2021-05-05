@@ -27,7 +27,7 @@ namespace SME.SR.Application
             var mensagensErro = new StringBuilder();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
 
-            if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Turma)
+            if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Turma || !request.Filtro.Visualizacao.HasValue)
             {
                 foreach (var turmaCodigo in request.Filtro.TurmasCodigos)
                 {
