@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using System.Timers;
 
 namespace SME.SR.Infra.Utilitarios
 {
@@ -20,6 +19,13 @@ namespace SME.SR.Infra.Utilitarios
         {
             texto = Regex.Replace(texto, @"<img[^>]*>", " [arquivo indisponível na impressão] ");
             texto = Regex.Replace(texto, @"<iframe[^>]*>", " [arquivo indisponível na impressão] ");
+            return texto;
+        }
+        public static string RemoverTagsHtmlMultiMidia(string texto)
+        {
+            texto = Regex.Replace(texto, @"<img[^>]*>", " [arquivo indisponível na impressão] ");
+            texto = Regex.Replace(texto, @"<iframe[^>]*>", " [arquivo indisponível na impressão] ");
+            texto = Regex.Replace(texto, @"<video.+</video>", " [arquivo indisponível na impressão] ");
             return texto;
         }
 
