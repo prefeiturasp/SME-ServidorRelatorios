@@ -419,7 +419,8 @@ namespace SME.SR.Application
                     var coluna = 0;
 
                     if (listaTurmasAlunos != null)
-                        possuiComponente = listaTurmasAlunos.Any(lt => grupoMatriz.ToList().Any(a => a.CodDisciplina == componente.CodDisciplina) && lt.ToList().Any(a => a.CodigoAluno == aluno.CodigoAluno));
+                        possuiComponente = listaTurmasAlunos.Any(lt => componentes.ToList().Any(a => a.CodDisciplina == componente.CodDisciplina) && lt.ToList().Any(a => a.CodigoAluno == aluno.CodigoAluno));
+                    
                     // Monta Colunas notComponenteCurricularRepositoryas dos bimestres
                     foreach (var bimestre in periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre))
                     {
