@@ -95,7 +95,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre, int[] tiposTurma)
         {
             const string queryNotasRegular = @"
-                        select t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, fa.aluno_codigo CodigoAluno,
+                        select cca.id as ConselhoClasseAlunoId, t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, fa.aluno_codigo CodigoAluno,
                                fn.disciplina_id CodigoComponenteCurricular,
                                coalesce(ccp.aprovado, false) as Aprovado,
                                coalesce(pe.bimestre,0) Bimestre,  pe.periodo_inicio PeriodoInicio,
@@ -109,7 +109,7 @@ namespace SME.SR.Data
                          inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
                          inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
                          left join conceito_valores cvf on fn.conceito_id = cvf.id
-                         inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
+                         left join conselho_classe cc on cc.fechamento_turma_id = ft.id
                          left join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id and cca.aluno_codigo = fa.aluno_codigo 
                          left join conselho_classe_aluno_turma_complementar ccatc on cca.id = ccatc.conselho_classe_aluno_id
                          left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
@@ -119,7 +119,7 @@ namespace SME.SR.Data
                            and t.ano_letivo = @anoLetivo ";
 
             const string queryNotasComplementar = @"
-                        select t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, cca.aluno_codigo CodigoAluno,
+                        select cca.id as ConselhoClasseAlunoId, t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, cca.aluno_codigo CodigoAluno,
                                ccn.componente_curricular_codigo CodigoComponenteCurricular,
                                coalesce(ccp.aprovado, false) as Aprovado,
                                coalesce(pe.bimestre,0) Bimestre, pe.periodo_inicio PeriodoInicio,
@@ -145,7 +145,7 @@ namespace SME.SR.Data
                            and t.ano_letivo = @anoLetivo ";
 
             const string queryNotasConselhoClasse = @"
-                        select t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, null as TurmaComplementarId, cca.aluno_codigo CodigoAluno,
+                        select cca.id as ConselhoClasseAlunoId, t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, null as TurmaComplementarId, cca.aluno_codigo CodigoAluno,
                                ccn.componente_curricular_codigo CodigoComponenteCurricular,
                                coalesce(ccp.aprovado, false) as Aprovado,
                                coalesce(pe.bimestre,0) as bimestre, pe.periodo_inicio PeriodoInicio,
