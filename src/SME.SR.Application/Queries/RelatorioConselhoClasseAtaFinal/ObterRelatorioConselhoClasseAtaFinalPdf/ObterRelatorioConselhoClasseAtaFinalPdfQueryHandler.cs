@@ -261,8 +261,8 @@ namespace SME.SR.Application
             //TODO: MELHORAR CODIGO
             var listaCodigosComponentes = new List<long>();
 
-            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => cc.Regencia).SelectMany(a => a.ComponentesCurricularesRegencia).Select(cc => cc.CodDisciplina));
-            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => !cc.Regencia).Select(a => a.CodDisciplina));
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => cc.Regencia).SelectMany(a => a.ComponentesCurricularesRegencia).Select(cc => cc.CodDisciplina).ToList());
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => !cc.Regencia).Select(a => a.CodDisciplina).ToList());
 
             return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.Distinct().ToArray()));
         }
@@ -518,6 +518,7 @@ namespace SME.SR.Application
 
         private void MontarEstruturaGruposMatriz(ConselhoClasseAtaFinalDto relatorio, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<PeriodoEscolar> periodosEscolares, IEnumerable<AreaDoConhecimento> areasDoConhecimento, IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> ordenacaoGrupoArea)
         {
+            var bimestres = periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre);
             if (gruposMatrizes != null)
                 foreach (var grupoMatriz in gruposMatrizes.OrderBy(gm => gm.Key.Id))
                 {
@@ -532,10 +533,18 @@ namespace SME.SR.Application
                     foreach (var areas in areasConhecimento)
                     {
                         var componentes = ObterComponentesDasAreasDeConhecimento(grupoMatriz, areas);
+                        
 
                         foreach (var componenteCurricular in componentes)
                         {
-                            grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre));
+                            if (componenteCurricular.Regencia)
+                                foreach (var componenteCurricularRegencia in componenteCurricular.ComponentesCurricularesRegencia)
+                                {
+                                    if (!grupoMatrizDto.ComponentesCurriculares.Any( a => a.Id == componenteCurricularRegencia.CodDisciplina))
+                                        grupoMatrizDto.AdicionarComponente(componenteCurricularRegencia.CodDisciplina, componenteCurricularRegencia.Disciplina, grupoMatrizDto.Id, bimestres);
+                                }
+                            else
+                                grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres);
                         }
                     }
 
@@ -547,8 +556,8 @@ namespace SME.SR.Application
                                                                                                IEnumerable<AreaDoConhecimento> areaDoConhecimento)
         {
             return componentesCurricularesDaTurma.Where(c => (!c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)) ||
-                                                            (c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Any(cr =>
-                                                            c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr)))).OrderBy(cc => cc.Disciplina);
+                                                             (c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Any(cr =>
+                                                             c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr)))).OrderBy(cc => cc.Disciplina);
         }
 
         private IEnumerable<IGrouping<(string Nome, int? Ordem, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
@@ -664,12 +673,11 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade, Usuario usuario)
         {
-            return await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioBoletimQuery()
+            return await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery()
             {
                 CodigosTurma = turmaCodigo,
                 CodigoUe = codigoUe,
-                Modalidade = modalidade,
-                Usuario = usuario
+                Modalidade = modalidade
             });
         }
     }
