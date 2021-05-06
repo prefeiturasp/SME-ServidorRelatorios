@@ -375,6 +375,7 @@ namespace SME.SR.Application
             relatorio.Modalidade = modalidadeCodigo;
 
             relatorio.Cabecalho = cabecalho;
+            componentesCurriculares = componentesCurriculares.OrderBy(a => a.Disciplina).ToList() ;
             var gruposMatrizes = componentesCurriculares.Distinct().Where(c => c.GrupoMatriz != null).GroupBy(c => c.GrupoMatriz).ToList();
 
             MontarEstruturaGruposMatriz(relatorio, gruposMatrizes, periodosEscolares, areasDoConhecimento, ordenacaoGrupoArea);
@@ -506,6 +507,7 @@ namespace SME.SR.Application
                 }
             }
 
+            
             var frequenciaGlobalAluno = frequenciaAlunosGeral
                 .FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString());
 
