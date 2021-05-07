@@ -52,8 +52,7 @@ namespace SME.SR.Application
             {
                 foreach (var turmaCodigo in request.Filtro.TurmasCodigos)
                 {
-                    try
-                    {
+                   
                         var turma = await ObterTurma(turmaCodigo);
                         if (turma.TipoTurma == TipoTurma.Regular)
                         {
@@ -62,12 +61,7 @@ namespace SME.SR.Application
                                 relatoriosTurmas.AddRange(retorno);
                         }
 
-                    }
-                    catch (Exception e)
-                    {
-                        var turma = await ObterTurma(turmaCodigo);
-                        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                    }
+                   
                 }
             }
 
@@ -228,7 +222,7 @@ namespace SME.SR.Application
             var pareceresConclusivos = await ObterPareceresConclusivos(turma.Codigo);
 
             var componentesCurriculares = componentesDaTurma.SelectMany(cc => cc).ToList();
-            var componentesCurricularesPorTurma = componentesCurriculares.Select(cc => (cc.CodigoTurma, cc.CodDisciplina)).Distinct();
+          var componentesCurricularesPorTurma = componentesCurriculares.Select(cc => (cc.CodigoTurma, cc.CodDisciplina)).Distinct();
 
             var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
             var frequenciaAlunos = await ObterFrequenciaComponente(listaTurmas.ToArray(), componentesCurricularesPorTurma, bimestres, tipoCalendarioId);
@@ -417,6 +411,7 @@ namespace SME.SR.Application
             foreach (var grupoMatriz in gruposMatrizes)
             {
                 var componentes = ObterComponentesCurriculares(grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()).ToList());
+                var componentesTurmas = ObterComponentesCurriculares(grupoMatriz.ToList());
                 foreach (var componente in componentes)
                 {
                     var coluna = 0;
@@ -424,7 +419,7 @@ namespace SME.SR.Application
                     if (listaTurmasAlunos != null)
                     {
                         var turmasDoAluno = listaTurmasAlunos.SelectMany(a => a.Where(b => b.CodigoAluno == aluno.CodigoAluno)).Select(a => a.CodigoTurma).Distinct().ToArray();
-                        var componentesDoAluno = componentes.Where(a => a.CodigoTurma != null && turmasDoAluno.Contains(int.Parse(a.CodigoTurma)) && a.CodDisciplina == componente.CodDisciplina).ToList();
+                        var componentesDoAluno = componentesTurmas.Where(a => a.CodigoTurma!= null && turmasDoAluno.Contains(int.Parse(a.CodigoTurma)) && a.CodDisciplina == componente.CodDisciplina).ToList();
                         possuiComponente = componentesDoAluno.Any();
                     }
 
