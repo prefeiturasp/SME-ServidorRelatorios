@@ -424,7 +424,7 @@ namespace SME.SR.Application
                     if (listaTurmasAlunos != null)
                     {
                         var turmasDoAluno = listaTurmasAlunos.SelectMany(a => a.Where(b => b.CodigoAluno == aluno.CodigoAluno)).Select(a => a.CodigoTurma).Distinct().ToArray();
-                        var componentesDoAluno = componentes.Where(a => a.CodigoTurma!= null && turmasDoAluno.Contains(int.Parse(a.CodigoTurma)) && a.CodDisciplina == componente.CodDisciplina).ToList();
+                        var componentesDoAluno = componentes.Where(a => a.CodigoTurma != null && turmasDoAluno.Contains(int.Parse(a.CodigoTurma)) && a.CodDisciplina == componente.CodDisciplina).ToList();
                         possuiComponente = componentesDoAluno.Any();
                     }
 
@@ -461,8 +461,8 @@ namespace SME.SR.Application
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "-", ++coluna);
                     }
 
-                    var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() && 
-                                                                            n.ConselhoClasseAlunoId != 0 && 
+                    var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() &&
+                                                                            n.ConselhoClasseAlunoId != 0 &&
                                                                             n.ComponenteCurricularCodigo == componente.CodDisciplina);
 
 
@@ -473,8 +473,8 @@ namespace SME.SR.Application
                     if (possuiConselhoParaExibirFrequencias)
                     {
                         var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina 
-                                            && c.ConselhoClasseAlunoId != 0 
+                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                            && c.ConselhoClasseAlunoId != 0
                                             && (!c.Bimestre.HasValue || c.Bimestre.Value == 0));
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
@@ -535,11 +535,12 @@ namespace SME.SR.Application
                 if (textoParecer == null)
                     textoParecer = (aluno.CodigoSituacaoMatricula != SituacaoMatriculaAluno.Ativo) ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
                 linhaDto.AdicionaCelula(99, 99, textoParecer, 4);
-            } else
+            }
+            else
             {
-                linhaDto.AdicionaCelula(99, 99, "0",1 );
-                linhaDto.AdicionaCelula(99, 99, "0",2);
-                linhaDto.AdicionaCelula(99, 99, FREQUENCIA_100, 3);                
+                linhaDto.AdicionaCelula(99, 99, "0", 1);
+                linhaDto.AdicionaCelula(99, 99, "0", 2);
+                linhaDto.AdicionaCelula(99, 99, FREQUENCIA_100, 3);
                 linhaDto.AdicionaCelula(99, 99, "Sem parecer", 4);
             }
         }
@@ -603,6 +604,7 @@ namespace SME.SR.Application
         {
             var bimestres = periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre);
             if (gruposMatrizes != null)
+            {
                 foreach (var grupoMatriz in gruposMatrizes.OrderBy(gm => gm.Key.Id))
                 {
                     var grupoMatrizDto = new ConselhoClasseAtaFinalGrupoDto()
@@ -611,44 +613,47 @@ namespace SME.SR.Application
                         Nome = grupoMatriz.Key.Nome
                     };
 
-                    var areasConhecimento = MapearAreasDoConhecimento(grupoMatriz, areasDoConhecimento, ordenacaoGrupoArea, grupoMatriz.Key.Id);
+                    var componentes = ObterComponentesCurriculares(grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()).ToList());
 
-                    foreach (var areas in areasConhecimento)
+                    foreach (var componenteCurricular in componentes)
                     {
-                        //var componentes = ObterComponentesDasAreasDeConhecimento(grupoMatriz, areas);
+                        if (!grupoMatrizDto.ComponentesCurriculares.Any(a => a.Id == componenteCurricular.CodDisciplina))
+                            grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres);
 
-                        var componentes = ObterComponentesCurriculares(grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()).ToList());
-
-                        foreach (var componenteCurricular in componentes)
-                        {
-                            if (!grupoMatrizDto.ComponentesCurriculares.Any(a => a.Id == componenteCurricular.CodDisciplina))
-                                grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres);
-
-                        }
                     }
 
                     relatorio.GruposMatriz.Add(grupoMatrizDto);
                 }
+
+                foreach (var grupoMatriz in relatorio.GruposMatriz)
+                {
+                    var componentesDoGrupo = new List<ConselhoClasseAtaFinalComponenteDto>();
+                    var areasConhecimento = MapearAreasDoConhecimento(grupoMatriz.ComponentesCurriculares, areasDoConhecimento, ordenacaoGrupoArea, grupoMatriz.Id);
+
+                    foreach (var area in areasConhecimento)
+                    {
+                        componentesDoGrupo.AddRange(ObterComponentesDasAreasDeConhecimento(grupoMatriz.ComponentesCurriculares, area));
+                    }
+
+                    grupoMatriz.ComponentesCurriculares = componentesDoGrupo;
+
+                }
+            }
         }
 
-        private IEnumerable<ComponenteCurricularPorTurma> ObterComponentesDasAreasDeConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
+        private IEnumerable<ConselhoClasseAtaFinalComponenteDto> ObterComponentesDasAreasDeConhecimento(IEnumerable<ConselhoClasseAtaFinalComponenteDto> componentesCurricularesDaTurma,
                                                                                                IEnumerable<AreaDoConhecimento> areaDoConhecimento)
         {
-            return componentesCurricularesDaTurma.Where(c => (!c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)) ||
-                                                             (c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Any(cr =>
-                                                             c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr)))).OrderBy(cc => cc.Disciplina);
+            return componentesCurricularesDaTurma.Where(c => areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.Id)).OrderBy(cc => cc.Nome);
         }
 
-        private IEnumerable<IGrouping<(string Nome, int? Ordem, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
+        private IEnumerable<IGrouping<(string Nome, int? Ordem, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ConselhoClasseAtaFinalComponenteDto> componentesCurricularesDaTurma,
                                                                                                            IEnumerable<AreaDoConhecimento> areasDoConhecimentos,
                                                                                                            IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> grupoAreaOrdenacao,
                                                                                                            long grupoMatrizId)
         {
 
-            return areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Where(cc => !cc.Regencia).Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)) ||
-                                                                    (componentesCurricularesDaTurma.Any(cc => cc.Regencia) &&
-                                                                     componentesCurricularesDaTurma.Where(cc => cc.Regencia).SelectMany(cc => cc.ComponentesCurricularesRegencia).
-                                                                     Select(r => r.CodDisciplina).Contains(a.CodigoComponenteCurricular)))).
+            return areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Select(cc => cc.Id).Contains(a.CodigoComponenteCurricular)))).
                                                                      Select(a => { a.DefinirOrdem(grupoAreaOrdenacao, grupoMatrizId); return a; }).GroupBy(g => (g.Nome, g.Ordem, g.Id)).
                                                                      OrderByDescending(c => c.Key.Id > 0 && !string.IsNullOrEmpty(c.Key.Nome))
                                                                      .ThenByDescending(c => c.Key.Ordem.HasValue).ThenBy(c => c.Key.Ordem)

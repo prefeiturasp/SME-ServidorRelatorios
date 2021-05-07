@@ -11,6 +11,7 @@ namespace SME.SR.Data
         public string Nome { get; set; }
 
         public long CodigoComponenteCurricular { get; set; }
+        public string NomeComponenteCurricular { get; set; }
 
         public int? Ordem { get; private set; }
 
