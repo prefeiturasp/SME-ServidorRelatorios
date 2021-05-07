@@ -1092,7 +1092,7 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection((variaveisAmbiente.ConnectionStringEol)))
             {
-                return await conexao.QueryAsync<Turma>(query, new { turmaCodigos });
+                return await conexao.QueryAsync<Turma>(query, new { turmaCodigos }, commandTimeout: 120);
             }
         }
     }
