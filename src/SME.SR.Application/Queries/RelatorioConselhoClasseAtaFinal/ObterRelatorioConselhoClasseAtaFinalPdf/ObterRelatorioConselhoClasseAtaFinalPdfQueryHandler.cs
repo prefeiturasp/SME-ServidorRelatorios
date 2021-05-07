@@ -375,7 +375,7 @@ namespace SME.SR.Application
             relatorio.Modalidade = modalidadeCodigo;
 
             relatorio.Cabecalho = cabecalho;
-            componentesCurriculares = componentesCurriculares.OrderBy(a => a.Disciplina).ToList() ;
+            componentesCurriculares = componentesCurriculares.OrderBy(a => a.Disciplina).ToList();
             var gruposMatrizes = componentesCurriculares.Distinct().Where(c => c.GrupoMatriz != null).GroupBy(c => c.GrupoMatriz).ToList();
 
             MontarEstruturaGruposMatriz(relatorio, gruposMatrizes, periodosEscolares, areasDoConhecimento, ordenacaoGrupoArea);
@@ -430,28 +430,35 @@ namespace SME.SR.Application
 
 
                     // Monta Colunas notComponenteCurricularRepositoryas dos bimestres
+                    var ultimoBimestreAtivo = aluno.Inativo ?
+                        periodosEscolares.FirstOrDefault(p => p.PeriodoInicio <= aluno.DataSituacaoAluno && p.PeriodoFim >= aluno.DataSituacaoAluno)?.Bimestre : 4;
                     foreach (var bimestre in periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre))
                     {
 
                         var possuiConselho = notasFinais.Any(n => n.Bimestre == bimestre
                         && n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0);
 
-                        if (possuiConselho)
-                        {
-                            var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                                    && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                    && c.Bimestre == bimestre);
 
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
-                                                    componente.CodDisciplina,
-                                                    possuiComponente ? (componente.LancaNota ?
-                                                        notaConceito?.NotaConceito ?? "" :
-                                                        notaConceito?.Sintese) : "-",
-                                                    ++coluna);
+                        if (bimestre <= ultimoBimestreAtivo)
+                        {
+                            if (possuiConselho)
+                            {
+                                var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                                        && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                                        && c.Bimestre == bimestre);
+
+                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
+                                                        componente.CodDisciplina,
+                                                        possuiComponente ? (componente.LancaNota ?
+                                                            notaConceito?.NotaConceito ?? "" :
+                                                            notaConceito?.Sintese) : "-",
+                                                        ++coluna);
+                            }
+                            else
+                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : "-", ++coluna);
                         }
                         else
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : "-", ++coluna);
-
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "-", ++coluna);
                     }
 
                     var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() && 
