@@ -461,9 +461,10 @@ namespace SME.SR.Application
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "-", ++coluna);
                     }
 
-                    var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0);
+                    var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() && 
+                                                                            n.ConselhoClasseAlunoId != 0 && 
+                                                                            n.ComponenteCurricularCodigo == componente.CodDisciplina);
 
-                    // Monta coluna Sintese Final - SF
 
                     var frequenciaAluno = await ObterFrequenciaAluno(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, turmaCodigo);
 
@@ -472,7 +473,8 @@ namespace SME.SR.Application
                     if (possuiConselhoParaExibirFrequencias)
                     {
                         var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina 
+                                            && c.ConselhoClasseAlunoId != 0 
                                             && (!c.Bimestre.HasValue || c.Bimestre.Value == 0));
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
@@ -497,18 +499,13 @@ namespace SME.SR.Application
                     }
                     else
                     {
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : "-", ++coluna);
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : "-", ++coluna);
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : "-", ++coluna);
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : "-", ++coluna);
+                        var textoParaExibir = possuiComponente ? "" : "-";
+
+                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, (!aluno.Inativo && possuiComponente) ? "" : "-", ++coluna);
+                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
+                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
+                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
                     }
-
-
-
-                    // Monta colunas frequencia F - CA - %
-
-
-
                 }
             }
 
@@ -536,7 +533,7 @@ namespace SME.SR.Application
                 var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
                 var textoParecer = parecerConclusivo?.ParecerConclusivo;
                 if (textoParecer == null)
-                    textoParecer = aluno.SituacaoMatricula != null ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
+                    textoParecer = (aluno.CodigoSituacaoMatricula != SituacaoMatriculaAluno.Ativo) ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
                 linhaDto.AdicionaCelula(99, 99, textoParecer, 4);
             } else
             {
