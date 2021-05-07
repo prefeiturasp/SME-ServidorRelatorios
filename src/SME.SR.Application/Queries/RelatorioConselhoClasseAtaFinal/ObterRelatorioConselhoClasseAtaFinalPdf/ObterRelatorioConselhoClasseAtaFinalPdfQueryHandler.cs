@@ -454,8 +454,7 @@ namespace SME.SR.Application
 
                     }
 
-                    var possuiConselhoFinal = notasFinais.Any(n => (!n.Bimestre.HasValue || n.Bimestre.Value == 0)
-                        && n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0);
+                    var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0);
 
                     // Monta coluna Sintese Final - SF
 
@@ -463,7 +462,7 @@ namespace SME.SR.Application
 
                     var sintese = await ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente);
 
-                    if (possuiConselhoFinal)
+                    if (possuiConselhoParaExibirFrequencias)
                     {
                         var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                             && c.ComponenteCurricularCodigo == componente.CodDisciplina
