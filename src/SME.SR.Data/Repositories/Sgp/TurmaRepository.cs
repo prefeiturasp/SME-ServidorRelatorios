@@ -97,7 +97,7 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo });
+                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo },  commandTimeout: 120);
             }
         }
 
