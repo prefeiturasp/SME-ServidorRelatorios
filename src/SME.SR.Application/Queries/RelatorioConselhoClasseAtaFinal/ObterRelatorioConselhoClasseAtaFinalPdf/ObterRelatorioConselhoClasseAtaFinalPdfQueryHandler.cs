@@ -570,7 +570,8 @@ namespace SME.SR.Application
                                 CodDisciplinaPai = componenteCurricularRegencia.CodDisciplinaPai,
                                 LancaNota = componenteCurricularRegencia.LancaNota,
                                 Disciplina = componenteCurricularRegencia.Disciplina,
-                                GrupoMatriz = componente.GrupoMatriz
+                                GrupoMatriz = componente.GrupoMatriz,
+                                CodigoTurma = componente.CodigoTurma
                             });
                     }
                 else
