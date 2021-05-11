@@ -12,6 +12,7 @@ namespace SME.SR.Infra
         public AcompanhamentoAprendizagemAlunoRetornoDto()
         {
             Fotos = new List<AcompanhamentoAprendizagemAlunoFotoDto>();
+            PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
         }
 
         public long Id { get; set; }
@@ -25,6 +26,7 @@ namespace SME.SR.Infra
         public string TurmaNome { get; set; }
         public int Semestre { get; set; }
         public List<AcompanhamentoAprendizagemAlunoFotoDto> Fotos { get; set; }
+        public List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> PercursoTurmaImagens { get; set; }
 
         public void Add(AcompanhamentoAprendizagemAlunoFotoDto acompanhamentoAprendizagemAlunoFotoDto)
         {
@@ -42,7 +44,7 @@ namespace SME.SR.Infra
             return UtilRegex.RemoverTagsHtml(registroFormatado);
         }
 
-        public string PercusoTurmaFormatado()
+        public string PercursoTurmaFormatado()
         {
             if (string.IsNullOrEmpty(ApanhadoGeral))
                 return string.Empty;
@@ -53,19 +55,17 @@ namespace SME.SR.Infra
 
             foreach (var imagem in imagens)
             {
-                var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $"#{i++}");
+                var numeroImagem = i++;
+                var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $"<b>imagem {numeroImagem}</b>");
+                PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+                {
+                    NomeImagem = $"imagem {numeroImagem}",
+                    Imagem = imagem.ToString().Replace("<img", "<img height='328' width='328'")
+                });
                 ApanhadoGeral = textoSemImagem;
             }
 
-            i = 1;
-            var registro = UtilRegex.RemoverTagsHtml(ApanhadoGeral);            
-
-            foreach (var imagem in imagens)
-            {
-                var textoSemTagsComImagens = registro.Replace($"#{i++}", imagem.ToString().Replace("<img", "<img height='72'"));
-                registro = textoSemTagsComImagens;
-            }            
-             return registro;
+            return ApanhadoGeral;           
         }
 
         public string SemestreFormatado()

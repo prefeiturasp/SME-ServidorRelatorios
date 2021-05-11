@@ -1,12 +1,9 @@
-﻿using DocumentFormat.OpenXml.Drawing.Pictures;
-using MediatR;
+﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -72,8 +69,9 @@ namespace SME.SR.Application
                 alunoRelatorio.Situacao = alunoEol.SituacaoRelatorio;
                 alunoRelatorio.Responsavel = alunoEol.ResponsavelFormatado();
                 alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
-                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamentoAluno.PercusoTurmaFormatado() ?? "") : "";
+                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoTurmaFormatado() ?? "") : "";
                 alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
+                alunoRelatorio.PercursoTurmaImagens = acompanhamentoAluno.PercursoTurmaImagens;
 
                 if (acompanhamentoAluno != null)
                 {
