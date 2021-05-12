@@ -418,53 +418,47 @@ PROFESSORES: {Model.Cabecalho.Professores}
         return "";
     }
 
-    string MontarImagensAnexas(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    string MontarImagensAnexas(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno,int minimoImpressaoFotos,int maximoImpressaoFotos)
     {
         MontarTitulo("IMAGENS ANEXAS");
 
         <table class='tabela-alunos sem-border-bottom'>
             <tbody>
                 <tr>
-                    @{
-                        int numeroMaximoFotos = 3;
-                        int maximoFotos = aluno.PercursoTurmaImagens.Count;
-                        for (int i = 0; i < maximoFotos; i++)
+                    @for (int i = minimoImpressaoFotos; i < maximoImpressaoFotos; i++)
+                    {
+                        @if (aluno.PercursoTurmaImagens.ElementAtOrDefault(i) != null)
                         {
-                            if (i > 0 && i % numeroMaximoFotos == 0)
-                            {
-                                @Html.Raw("<tr>")
-                            }
-                            <td width="33%" class='centralizar'>                                
-                                <div style="height: 328px; padding: 3px">
-                                    <img style="max-width: 260px;" src="@aluno.PercursoTurmaImagens[i].Imagem" height="328px" />
-                                </div>
-                                        
-                                <div style="height: 24px; border: 1px solid #42474a">
-                                    @aluno.PercursoTurmaImagens[i].NomeImagem
-                                </div>
+                            <td width="33%" class='centralizar'>
+                                <img style="margin:3px; max-width: 257px;" src="@aluno.PercursoTurmaImagens[i].Imagem" height="180px" />
                             </td>
-
                         }
-
-                        int faltouImprimir = maximoFotos > 3 ? numeroMaximoFotos - (maximoFotos % 3) : numeroMaximoFotos - maximoFotos;
-                        if (faltouImprimir > 1)
+                        else
                         {
-                            for (int i = 0; i < maximoFotos; i++)
-                            {
-                                <td width="33%" class='centralizar' style="border: 1px solid #42474a">
-                                    <div style="height: 328px; padding: 3px">
-                                    </div>
-
-                                    <div style="height: 24px; border: 1px solid #42474a">
-                                    </div>
-                                </td>
-                            }
+                            <td width="33%" class='centralizar'>
+                            </td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @for (int i = minimoImpressaoFotos; i < maximoImpressaoFotos; i++)
+                    {
+                        @if (aluno.PercursoTurmaImagens.ElementAtOrDefault(i) != null)
+                        {
+                            <td width="33%" class='centralizar'>
+                                @aluno.PercursoTurmaImagens[i].NomeImagem
+                            </td>
+                        }
+                        else
+                        {
+                            <td width="33%" class='centralizar'>
+                            </td>
                         }
                     }
                 </tr>
             </tbody>
-        </table>
-
+        </table>       
+      
         return "";
     }
 }
@@ -516,9 +510,9 @@ PROFESSORES: {Model.Cabecalho.Professores}
             margin-bottom: 22px;
         }
 
-        .header-pagina td {
-            text-align: left;
-        }
+            .header-pagina td {
+                text-align: left;
+            }
 
         .campo-dre {
             width: 20%;
@@ -681,27 +675,56 @@ PROFESSORES: {Model.Cabecalho.Professores}
                     contadorQuebrarPagina++;
                 }
 
-                 @if (aluno.PercursoTurmaImagens.Any())
-                 {
-                     MontarImagensAnexas(aluno);
-                 }
+                @if (aluno.PercursoTurmaImagens.Any())
+                {
+                    int numeroMaximoFotos = 3;
+                    int maximoFotos = aluno.PercursoTurmaImagens.Count;
+                    int minimoImpressaoFotos = 0;
+                    int maximoImpressaoFotos = 3;
+                    int numeroLinhas = maximoFotos / numeroMaximoFotos;
+                    int restoLinhas = maximoFotos / numeroMaximoFotos;
 
-                 if (aluno.Frequencias.Count() > 0)
-                 {
-                     MontarFrequencia(aluno);
-                 }
 
-                 if (aluno.RegistrosIndividuais.Count() > 0)
-                 {
-                     MontarRegistroIndividual(aluno);
-                 }
+                    //x && r != 0 ? x + 1 => 3 * x , 6 + (3 * (x - 1)) :  x;
+                    //4 / 3 = 1  1
+                    //5 / 3 = 1  2
+                    //6 / 3 = 2  0
 
-                 var descricaoObservacoes = aluno.Observacoes;
-                 if (!String.IsNullOrEmpty(descricaoObservacoes))
-                 {
-                     int numeroLinhasObservacoes = CalcularLinhas(descricaoObservacoes.Length);
+                    //7 / 3 = 2  1
+                    //8 / 3 = 2  2
+                    //9 / 3 = 3  0
 
-                     QuebrarLinhas(numeroLinhasObservacoes + 2, aluno.Nome);
+                    int contarImpressao = 0;
+                    while (contarImpressao < numeroLinhas)
+                    {
+                        if (maximoFotos > 3 && restoLinhas != 0)
+                        {
+                            numeroLinhas = numeroLinhas + 1;
+                            minimoImpressaoFotos = 3 * numeroLinhas;
+                            maximoImpressaoFotos = 6 + (3 * (numeroLinhas - 1));
+                        }
+
+                        MontarImagensAnexas(aluno, minimoImpressaoFotos, maximoImpressaoFotos);
+                        contarImpressao++;
+                    }
+                }
+
+                if (aluno.Frequencias.Count() > 0)
+                {
+                    MontarFrequencia(aluno);
+                }
+
+                if (aluno.RegistrosIndividuais.Count() > 0)
+                {
+                    MontarRegistroIndividual(aluno);
+                }
+
+                var descricaoObservacoes = aluno.Observacoes;
+                if (!String.IsNullOrEmpty(descricaoObservacoes))
+                {
+                    int numeroLinhasObservacoes = CalcularLinhas(descricaoObservacoes.Length);
+
+                    QuebrarLinhas(numeroLinhasObservacoes + 2, aluno.Nome);
                     @Html.Raw(EspacoEmBranco())
                     contadorQuebrarPagina++;
 
