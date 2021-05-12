@@ -7515,8 +7515,10 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 </span></strong></span></li></ul><p>De acordo com a imagem abaixo:</p><p><img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
 <br></p><p><br></p><table style='width: 100%;'><br></table>";
 
-                var percursoFormatado = dto.PercusoTurmaFormatado();
-                return View("RelatorioAcompanhamentoAprendizagemTeste", percursoFormatado);
+                //var percursoFormatado = dto.PercusoTurmaFormatado();
+                //return View("RelatorioAcompanhamentoAprendizagemTeste", percursoFormatado);
+
+                return default;
             }
             catch (Exception ex)
             {
