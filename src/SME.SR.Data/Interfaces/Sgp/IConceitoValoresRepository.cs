@@ -6,6 +6,6 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IConceitoValoresRepository
     {
-        Task<IEnumerable<ConceitoDto>> ObterDadosLegendaHistoricoEscolar();
+        Task<IEnumerable<ConceitoDto>> ObterDadosLegendaHistoricoEscolar(TipoLegenda tipoLegenda);
     }
 }

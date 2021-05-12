@@ -308,7 +308,7 @@ namespace SME.SR.Application
             if (filtros.Bimestres == null || filtros.Bimestres.Count > 1)
                 relatorioNotasEConceitosFinaisDto.Bimestre = "Todos";
             else if (filtros.Bimestres != null && filtros.Bimestres.Count == 1)
-                relatorioNotasEConceitosFinaisDto.Bimestre = $"{filtros.Bimestres[0]}º";
+                relatorioNotasEConceitosFinaisDto.Bimestre = $"{(filtros.Bimestres[0] == 0 ? $"FINAL" : $"{filtros.Bimestres[0]}º")}";
 
             if (filtros.Anos == null || filtros.Anos.Length == 0)
                 relatorioNotasEConceitosFinaisDto.Ano = "Todos";

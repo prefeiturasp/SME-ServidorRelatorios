@@ -490,7 +490,7 @@ namespace SME.SR.Data
 						matr.cd_escola CodigoEscola,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
 						mun.nm_municipio CidadeNatal,
-						aluno.sg_uf_registro_aluno_estado EstadoNatal,
+						aluno.sg_uf_nascimento_aluno EstadoNatal,
 						CASE
 							WHEN aluno.cd_nacionalidade_aluno = 'B' THEN 'Brasileira'
 							ELSE 'Estrangeira'
@@ -539,7 +539,7 @@ namespace SME.SR.Data
 						matr.cd_escola CodigoEscola,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
 						mun.nm_municipio CidadeNatal,
-						aluno.sg_uf_registro_aluno_estado EstadoNatal,
+						aluno.sg_uf_nascimento_aluno EstadoNatal,
 						CASE
 							WHEN aluno.cd_nacionalidade_aluno = 'B' THEN 'Brasileira'
 							ELSE 'Estrangeira'
@@ -615,7 +615,7 @@ namespace SME.SR.Data
             var parametros = new { CodigosAluno = codigosAlunos };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros, commandTimeout: 60);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros, commandTimeout: 600);
         }
 
         public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
@@ -1304,8 +1304,58 @@ namespace SME.SR.Data
             }
         }
 
+		public async Task<IEnumerable<AlunoReduzidoDto>> ObterAlunosReduzidosPorTurmaEAluno(long turmaCodigo, long? alunoCodigo)
+		{
+			var query = @$"SELECT distinct aluno.cd_aluno AlunoCodigo,
+										   aluno.nm_aluno NomeAluno,
+										   aluno.nm_social_aluno NomeSocialAluno,					   
+										   mte.cd_turma_escola TurmaCodigo                       
+									  FROM v_aluno_cotic aluno
+									 INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+									 INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+									  LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno				  
+									 WHERE mte.cd_turma_escola = @turmaCodigo
+									   {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "AND mte.cd_situacao_aluno in (1,5,6,10,13)")}
+							 UNION 
+							 SELECT aluno.cd_aluno AlunoCodigo,
+									aluno.nm_aluno NomeAluno,						
+									aluno.nm_social_aluno NomeSocialAluno,
+									mte.cd_turma_escola TurmaCodigo
+							   FROM v_aluno_cotic aluno
+							  INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+							  INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+							   LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno				   
+							  WHERE mte.cd_turma_escola = @turmaCodigo
+								{(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "AND mte.cd_situacao_aluno in (1,5,6,10,13)")}								
+								AND mte.dt_situacao_aluno =  (
+	    													   SELECT max(mte2.dt_situacao_aluno) 
+																 FROM v_historico_matricula_cotic  matr2
+																INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+																WHERE matr2.cd_aluno = matr.cd_aluno
+																  AND mte2.cd_turma_escola = @turmaCodigo
+																  {(alunoCodigo != null ? "AND matr2.cd_aluno = @alunoCodigo" : "")}
+										   
+															  )
+							  AND NOT EXISTS( 
+	  										  SELECT 1 
+												FROM v_matricula_cotic matr3
+											   INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
+											   WHERE mte.cd_matricula = mte3.cd_matricula
+												 AND mte.cd_turma_escola = @turmaCodigo 
+												 {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : "")}
+												 AND mte.cd_situacao_aluno in (1,5,6,10,13)
+											 )";
+
+			var parametros = new { turmaCodigo, alunoCodigo };
+
+			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+			{
+				return await conexao.QueryAsync<AlunoReduzidoDto>(query, parametros);
+			}
+		}
+
 		public async Task<IEnumerable<AlunoRetornoDto>> ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long turmaCodigo, long? alunoCodigo)
-        {
+		{
 			var query = @$"SELECT distinct aluno.cd_aluno AlunoCodigo,
 					   aluno.nm_aluno NomeAluno,
 					   aluno.nm_social_aluno NomeSocialAluno,
