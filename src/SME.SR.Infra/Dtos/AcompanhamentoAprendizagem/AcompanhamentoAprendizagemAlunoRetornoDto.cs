@@ -51,13 +51,14 @@ namespace SME.SR.Infra
                 return string.Empty;
             
             var i = 1;
+            var j = 1;
 
             var imagens = Regex.Matches(ApanhadoGeral, "<img.+?>");
 
             foreach (var imagem in imagens)
             {
                 var numeroImagem = i++;
-                var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $"<b>imagem {numeroImagem}</b>");
+                var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $" imagem {numeroImagem} ");                
 
                 string pattern = @"(https|http):.*(jpg|jpeg|gif|png|bmp)";
                 string input = imagem.ToString();
@@ -74,7 +75,18 @@ namespace SME.SR.Infra
                 }                
                 ApanhadoGeral = textoSemImagem;
             }
-            return ApanhadoGeral;           
+
+            var registroFormatado = UtilRegex.RemoverTagsHtmlMidia(ApanhadoGeral);
+            var registrosemTag = UtilRegex.RemoverTagsHtml(registroFormatado);
+
+            foreach(var img in imagens)
+            {
+                var numeroImagem = j++;
+                var textoSemImagem = registrosemTag.Replace($"imagem {numeroImagem}", $"<b>imagem {numeroImagem}</b>");
+
+                registrosemTag = textoSemImagem;
+            }
+            return registrosemTag;           
         }
 
         public string SemestreFormatado()
