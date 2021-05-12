@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -57,14 +58,22 @@ namespace SME.SR.Infra
             {
                 var numeroImagem = i++;
                 var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $"<b>imagem {numeroImagem}</b>");
-                PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+
+                string pattern = @"(https|http):.*(jpg|jpeg|gif|png|bmp)";
+                string input = imagem.ToString();
+                Match m = Regex.Match(input, pattern, RegexOptions.IgnoreCase);                
+
+                if (m.Success)
                 {
-                    NomeImagem = $"imagem {numeroImagem}",
-                    Imagem = imagem.ToString().Replace("<img", "<img height='328' width='328'")
-                });
+
+                    PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+                    {
+                        NomeImagem = $"imagem {numeroImagem}",
+                        Imagem = m.Value
+                    }); ;
+                }                
                 ApanhadoGeral = textoSemImagem;
             }
-
             return ApanhadoGeral;           
         }
 
@@ -82,6 +91,6 @@ namespace SME.SR.Infra
                 return string.Empty;
 
             return $"{TipoEscola.GetAttribute<DisplayAttribute>().ShortName} {UeNome}";
-        }
+        }       
     }
 }
