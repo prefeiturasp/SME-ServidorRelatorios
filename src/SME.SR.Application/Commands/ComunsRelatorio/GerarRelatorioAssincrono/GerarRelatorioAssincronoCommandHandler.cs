@@ -68,14 +68,14 @@ namespace SME.SR.Application
                 if (exportacaoId != null)
                 {
                     var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
-                    var publicacaoFila = new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando, null, request.CodigoCorrelacao);
+                    var publicacaoFila = new PublicaFilaDto(dadosRelatorio, RotasRabbit.RotaRelatoriosProcessando, null, request.CodigoCorrelacao);
 
                     servicoFila.PublicaFila(publicacaoFila);
 
                     var jsonPublicaFila = UtilJson.ConverterApenasCamposNaoNulos(publicacaoFila);
                     Console.WriteLine(jsonPublicaFila);
 
-                    SentrySdk.CaptureMessage("6.5 - Sucesso na publicação da fila: " + publicacaoFila.NomeFila);
+                    SentrySdk.CaptureMessage("6.5 - Sucesso na publicação da fila: " + publicacaoFila.Rota);
                     return true;
                 }
 
