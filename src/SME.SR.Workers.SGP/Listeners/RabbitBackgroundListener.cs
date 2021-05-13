@@ -45,10 +45,15 @@ namespace SME.SR.Workers.SGP.Services
         private void InitRabbit()
         {
             _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Topic);
-            _channel.QueueDeclare(RotasRabbit.FilaWorkerRelatorios, false, false, false, null);
+            _channel.ExchangeDeclare(RotasRabbit.ExchangeSgp, ExchangeType.Topic);
 
-            //esperando todas as filas a partir de 'sme.sr.workers.sgp'
-            _channel.QueueBind(RotasRabbit.FilaWorkerRelatorios, RotasRabbit.ExchangeListenerWorkerRelatorios, "*", null);
+            _channel.QueueDeclare(RotasRabbit.FilaWorkerRelatorios, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatorioComErro, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatorioCorrelacaoCopiar, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatorioCorrelacaoInserir, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosProcessando, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosProntosSgp, false, false, false, null);
+
             _channel.BasicQos(0, 1, false);
         }
 
@@ -107,7 +112,6 @@ namespace SME.SR.Workers.SGP.Services
             var mensagem = JsonConvert.SerializeObject(mensagemRabbit);
             var body = Encoding.UTF8.GetBytes(mensagem);
 
-            _channel.QueueBind(RotasRabbit.FilaSgp, RotasRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro);
             _channel.BasicPublish(RotasRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro, null, body);
         }
 
