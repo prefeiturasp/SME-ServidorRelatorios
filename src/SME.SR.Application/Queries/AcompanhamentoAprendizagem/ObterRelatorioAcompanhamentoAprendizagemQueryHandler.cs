@@ -109,7 +109,7 @@ namespace SME.SR.Application
                 var freqenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {
                     Bimestre = $"{qtdAulas.Bimestre}º",
-                    Aulas = qtdAulas.Quantidade,
+                    Aulas = frequenciaAluno == null ? qtdAulas.Quantidade : frequenciaAluno.TotalAulas,
                     Ausencias = frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias,
                     Frequencia = frequenciaAluno == null ? "100%" : $"{frequenciaAluno.PercentualFrequencia}%",
                 };
