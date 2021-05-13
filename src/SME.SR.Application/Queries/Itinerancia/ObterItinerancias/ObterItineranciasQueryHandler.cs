@@ -38,12 +38,13 @@ namespace SME.SR.Application
         {
             foreach (var itinerancia in itinerancias)
             {
+                var dataRetorno = itinerancia.DataRetorno.HasValue ? $"{itinerancia.DataRetorno:dd/MM/yyyy}" : "";
                 var itineranciaDto = new RegistrosRegistroItineranciaDto()
                 {
                     Dre = itinerancia.Ue.Dre.Abreviacao,
                     Ue = itinerancia.Ue.NomeRelatorio,
                     DataVisita = $"{itinerancia.DataVisita:dd/MM/yyyy}",
-                    DataRetorno = $"{itinerancia.DataRetorno:dd/MM/yyyy}",
+                    DataRetorno = dataRetorno,
                     Objetivos = ObterObjetivosItinerancia(itinerancia.Id, objetivos),
                     Alunos = ObterAlunosItinerancia(itinerancia.Id, alunosItinerancias, nomesAlunos)
                 };
@@ -62,7 +63,7 @@ namespace SME.SR.Application
 
                 yield return new AlunoRegistroItineranciaDto()
                 {
-                    Estudante = nomeAluno,
+                    Estudante = $"{nomeAluno} ({alunoItinerancia.AlunoCodigo})",
                     DescritivoEstudante = UtilRegex.RemoverTagsHtml(alunoItinerancia.Questoes.FirstOrDefault(c => c.Ordem == 0)?.Resposta),
                     AcompanhamentoSituacao = UtilRegex.RemoverTagsHtml(alunoItinerancia.Questoes.FirstOrDefault(c => c.Ordem == 1)?.Resposta),
                     Encaminhamentos = UtilRegex.RemoverTagsHtml(alunoItinerancia.Questoes.FirstOrDefault(c => c.Ordem == 2)?.Resposta)

@@ -22,12 +22,14 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<FrequenciaAluno>> Handle(ObterFrequenciaComponenteGlobalPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            var frequenciaTurma = await frequenciaRepository.ObterFrequenciaDisciplinaGlobalPorTurma(request.TurmaCodigo, request.TipoCalendarioId);
+            var componentesCurricularesId = request.ComponentesCurricularesPorTurma.Select(cc => cc.ComponenteCurricularId.ToString()).Distinct().ToArray();
 
-            return await TratarFrequenciaAnualAluno(frequenciaTurma, request.Bimestres, request.TurmaCodigo, request.TipoCalendarioId);
+            var frequenciaTurma = await frequenciaRepository.ObterFrequenciaDisciplinaGlobalPorTurma(request.TurmasCodigo, componentesCurricularesId, request.TipoCalendarioId);
+
+            return await TratarFrequenciaAnualAluno(frequenciaTurma, request.Bimestres, request.ComponentesCurricularesPorTurma, request.TipoCalendarioId);
         }
 
-        private async Task<IEnumerable<FrequenciaAluno>> TratarFrequenciaAnualAluno(IEnumerable<FrequenciaAluno> frequenciaTurma, IEnumerable<int> bimestres, string turmaCodigo, long tipoCalendarioId)
+        private async Task<IEnumerable<FrequenciaAluno>> TratarFrequenciaAnualAluno(IEnumerable<FrequenciaAluno> frequenciaTurma, int[] bimestres, IEnumerable<(string CodigoTurma, long ComponenteCurricularId)> componentesCurricularesPorTurma, long tipoCalendarioId)
         {
             var frequenciaGlobalAlunos = new List<FrequenciaAluno>();
 
@@ -39,6 +41,8 @@ namespace SME.SR.Application
                     CodigoAluno = alunoComponente.Key.CodigoAluno,
                     DisciplinaId = alunoComponente.Key.DisciplinaId
                 };
+
+                var turmaCodigo = componentesCurricularesPorTurma.FirstOrDefault(cc => cc.ComponenteCurricularId.ToString() == alunoComponente.Key.DisciplinaId).CodigoTurma;
 
                 foreach (var bimestre in bimestres)
                 {

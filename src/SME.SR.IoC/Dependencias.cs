@@ -94,6 +94,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(ICicloRepository), typeof(CicloRepository));
             services.TryAddScoped(typeof(IComponenteCurricularRepository), typeof(ComponenteCurricularRepository));
+            services.TryAddScoped(typeof(IComponenteCurricularGrupoAreaOrdenacaoRepository), typeof(ComponenteCurricularGrupoAreaOrdenacaoRepository));
             services.TryAddScoped(typeof(IConselhoClasseRepository), typeof(ConselhoClasseRepository));
             services.TryAddScoped(typeof(IConselhoClasseAlunoRepository), typeof(ConselhoClasseAlunoRepository));
             services.TryAddScoped(typeof(IConselhoClasseNotaRepository), typeof(ConselhoClasseNotaRepository));
@@ -160,8 +161,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IAcompanhamentoAprendizagemRepository), typeof(AcompanhamentoAprendizagemRepository));
             services.TryAddScoped(typeof(IRegistroIndividualRepository), typeof(RegistroIndividualRepository));
             services.TryAddScoped(typeof(IOcorrenciaRepository), typeof(OcorrenciaRepository));
-
-            
+            services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -206,6 +206,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioPlanejamentoDiarioUseCase, RelatorioPlanejamentoDiarioUseCase>();
             services.TryAddScoped<IRelatorioDevolutivasUseCase, RelatorioDevolutivasUseCase>();
             services.TryAddScoped<IRelatorioItineranciasUseCase, RelatorioItineranciasUseCase>();
+            services.TryAddScoped<IRelatorioRegistroIndividualUseCase, RelatorioRegistroIndividualUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoAprendizagemUseCase, RelatorioAcompanhamentoAprendizagemUseCase>();
 
         }

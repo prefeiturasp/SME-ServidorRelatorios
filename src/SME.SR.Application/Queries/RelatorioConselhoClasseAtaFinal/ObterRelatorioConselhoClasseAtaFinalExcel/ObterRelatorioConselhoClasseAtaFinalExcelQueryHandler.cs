@@ -113,9 +113,11 @@ namespace SME.SR.Application
             {
                 linhaGrupos[colunaGrupo] = grupo.Nome;
 
-                colunaGrupo += grupo.QuantidadeColunas;
+                var componentesDoGrupo = componentes.FirstOrDefault(c => c.Key == grupo.Id).DistinctBy(c => c.Id);
 
-                foreach (var componente in componentes.FirstOrDefault(c => c.Key == grupo.Id).DistinctBy(c => c.Id))
+                colunaGrupo += componentesDoGrupo.Sum(cg => cg.Colunas.Count);
+
+                foreach (var componente in componentesDoGrupo)
                 {
                     linhaComponentes[colunaComponente] = componente.Nome;
 

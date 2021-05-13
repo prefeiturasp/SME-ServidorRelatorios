@@ -97,7 +97,7 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo });
+                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo },  commandTimeout: 120);
             }
         }
 
@@ -112,10 +112,10 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<Turma> ObterPorCodigo(string codigoTurma)
+        public async Task<Turma> ObterComDreUePorCodigo(string codigoTurma)
         {
             var query = @"select t.turma_id Codigo, t.nome, 
-			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA,
+			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA, t.tipo_turma TipoTurma,
 			                ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
 			                dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
 			                from  turma t
@@ -251,12 +251,14 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasRegulares;
                         select 
 	                        t.turma_id as TurmaCodigo,
+                            null as TurmaRegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
 	                        t.etapa_eja as EtapaEJA,
 	                        t1.ParecerConclusivo,
-	                        tc.descricao Ciclo
+	                        tc.descricao Ciclo,
+                            t.tipo_turma as TipoTurma
                         into temp tempAlunosTurmasRegulares
                         from 
 	                        tempAlunosConselhoDeClasse t1
@@ -280,21 +282,32 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasComplementares;
                         select 
 	                        t.turma_id as TurmaCodigo,
+                            tr.turma_id as TurmaRegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
 	                        t.etapa_eja as EtapaEJA,
 	                        t1.ParecerConclusivo,
-	                        tc.descricao Ciclo
+	                        tc.descricao Ciclo,
+                            t.tipo_turma as TipoTurma
                         into temp tempAlunosTurmasComplementares  
                         from 
 	                        tempAlunosConselhoDeClasse t1
                         inner join
 	                        conselho_classe_aluno cca
-	                        on t1.ConselhoClasseId = cca.conselho_classe_id 
+	                        on t1.ConselhoClasseId = cca.conselho_classe_id and t1.AlunoCodigo = cca.aluno_codigo
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccat
 	                        on cca.id = ccat.conselho_classe_aluno_id
+                        inner join 
+	                        conselho_classe cc
+	                        on cc.id = t1.ConselhoClasseId
+                        inner join
+	                        fechamento_turma ft
+	                        on cc.fechamento_turma_id = ft.id
+                        inner join 
+	                        turma tr
+	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
 	                        on t.id = ccat.turma_id
@@ -395,12 +408,12 @@ namespace SME.SR.Data
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
                         inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
                         inner join ue u on t.ue_id  = u.id
-                        where u.id = @ueId and tc.id = @tipoCicloId and t.ano_letivo = @anoLetivo and tca.ano = @ano";
+                        where u.id = @ueId and tc.id = @tipoCicloId and t.ano_letivo = @anoLetivo and tca.ano = @ano and t.tipo_turma = @tipoTurmaRegular";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano });
+            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano, tipoTurmaRegular = TipoTurma.Regular });
         }
         public async Task<IEnumerable<AlunoTurmaRegularRetornoDto>> ObterAlunosTurmasRegularesPorTurmaRecuperacaoCodigoQuery(long turmaCodigo)
         {
@@ -744,11 +757,13 @@ namespace SME.SR.Data
             var query = @"drop table if exists tempTurmaRegularConselhoAluno;
                         select distinct 
                             t.turma_id as TurmaCodigo,
+                            null as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
                             t.etapa_eja as EtapaEJA,
                             tc.descricao as Ciclo,
+                            t.tipo_turma as TipoTurma,
                             cca.id as ConselhoClasseAlunoId
                         into tempTurmaRegularConselhoAluno
                         from
@@ -793,11 +808,13 @@ namespace SME.SR.Data
                         drop table if exists tempTurmaComplementarConselhoAluno;
                         select distinct 
                             t.turma_id as TurmaCodigo,
+                            tr.turma_id as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
                             cca.aluno_codigo as AlunoCodigo,
                             t.ano,
                             t.etapa_eja as EtapaEJA,
-                            tc.descricao as Ciclo
+                            tc.descricao as Ciclo,
+                            t.tipo_turma as TipoTurma
                         into tempTurmaComplementarConselhoAluno
                         from 
 	                        tempConselhoAlunos t1
@@ -806,10 +823,19 @@ namespace SME.SR.Data
 	                        on t1.ConselhoClasseAlunoId = cca.id 
                         inner join 
 	                        conselho_classe_aluno_turma_complementar ccatc 
-	                        on cca.id = ccatc .conselho_classe_aluno_id 
+	                        on cca.id = ccatc.conselho_classe_aluno_id 
+                         inner join 
+	                        conselho_classe cc
+	                        on cc.id = cca.conselho_classe_id
+                        inner join
+	                        fechamento_turma ft
+	                        on cc.fechamento_turma_id = ft.id
+                        inner join 
+	                        turma tr
+	                        on tr.id = ft.turma_id
                         inner join 
 	                        turma t
-	                        on ccatc .turma_id = t.id
+	                        on ccatc.turma_id = t.id
                         left join 
 	                        tipo_ciclo_ano tca 
 	                        on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
@@ -821,16 +847,14 @@ namespace SME.SR.Data
                         select 
 	                        *
                         from 
-	                        (select TurmaCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo from tempTurmaRegularConselhoAluno) as Regulares
+	                        (select TurmaCodigo,TurmaRegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
                         union
 	                        (select * from tempTurmaComplementarConselhoAluno)";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            var codigos = codigoAlunos.Select(a => a.ToString()).ToArray();
-
-            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigos });
+            return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigoAlunos.Select(a => a.ToString()).ToArray() });
         }
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaSemParecerConclusivo(long turmaCodigo)
@@ -864,7 +888,8 @@ namespace SME.SR.Data
                                 and not cc2.excluido 
                                 and ft2.turma_id = ft.turma_id 
 	                    	    and	cca2.aluno_codigo = cca.aluno_codigo 
-	                    	    and ft2.periodo_escolar_id is null)";
+	                    	    and ft2.periodo_escolar_id is null
+                                and cca2.conselho_classe_parecer_id is not null)";
 
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
@@ -993,6 +1018,81 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryFirstOrDefaultAsync<Turma>(query, new { id });
+            }
+        }
+
+        public async Task<Turma> ObterPorCodigo(string turmaCodigo)
+        {
+            var query = @"select t.turma_id Codigo, t.nome
+			                    , t.modalidade_codigo  ModalidadeCodigo, t.semestre
+                                , t.ano, t.ano_letivo AnoLetivo
+			                from turma t
+			                where t.turma_id = @turmaCodigo";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<Turma>(query, new { turmaCodigo });
+            }
+        }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasDetalhePorCodigos(long[] turmaCodigos)
+        {
+            var query = @"  SELECT DISTINCT	
+                                    tur.cd_escola AS ueCodigo,
+				                    tur.cd_turma_escola AS codigo,
+                                    tur.cd_tipo_turma AS tipoTurma,
+				                    tur.dt_inicio_turma AS dataInicioTurma,
+				                    tur.dt_fim AS dataFimTurma,
+				                    tur.an_letivo AS anoletivo,				                    
+				                    tur.dc_turma_escola AS nometurma,
+									tur.dt_atualizacao_tabela as DataAtualizacao,
+									tur.dt_status_turma_escola as DataStatusTurmaEscola,
+				                    Iif(tur.cd_tipo_turma IN (1, 5, 6), se.sg_resumida_serie, 
+				                    CASE
+					                    WHEN tur.cd_tipo_turma = 2 THEN SUBSTRING(TUR.dc_turma_escola, 1, 1) 
+					                    WHEN tur.cd_tipo_turma = 7 THEN '2' -- 2ª serie novo EM
+					                    WHEN tur.cd_tipo_turma = 3 THEN '0' -- Turma de Programa
+				                    END) AS ano,
+				                    dtt.qt_hora_duracao AS duracaoturno,
+				                    tur.cd_tipo_turno AS tipoturno, 			
+				                    Iif((se.cd_etapa_ensino = 13) AND (se.cd_modalidade_ensino = 2) , 1, 0) AS ensinoEspecial,
+				                    se.dc_serie_ensino AS serieEnsino,
+				                    IIf(tur.st_turma_escola = 'E', 1, 0) Extinta,
+				                    tur.st_turma_escola AS situacao,
+                                    ee.cd_etapa_ensino as EtapaEnsino,
+                                    se.cd_ciclo_ensino as CicloEnsino,
+                                    esc.tp_escola as TipoEscola
+				                    FROM turma_escola (nolock) tur
+					                    INNER JOIN tipo_turno (nolock) t_trn
+						                    ON t_trn.cd_tipo_turno = tur.cd_tipo_turno
+					                    INNER JOIN duracao_tipo_turno (nolock) dtt
+						                    ON t_trn.cd_tipo_turno = dtt.cd_tipo_turno
+					                    AND tur.cd_duracao = dtt.cd_duracao
+					                    INNER JOIN tipo_periodicidade (nolock) tper
+						                    ON tur.cd_tipo_periodicidade = tper.cd_tipo_periodicidade
+							                       -- Unidades Educacionais
+					                    INNER JOIN v_cadastro_unidade_educacao (nolock) vue
+						                    ON vue.cd_unidade_educacao = tur.cd_escola
+					                    INNER JOIN escola (nolock) esc
+						                    ON esc.cd_escola = vue.cd_unidade_educacao
+					                    -- Serie Ensino(turma tipo = 1)
+					                    LEFT JOIN  serie_turma_escola (nolock) ste
+						                    ON tur.cd_turma_escola = ste.cd_turma_escola
+							                    AND        ste.dt_fim IS NULL
+					                    LEFT JOIN serie_ensino (nolock) se
+						                    ON         se.cd_serie_ensino = ste.cd_serie_ensino
+					                    LEFT JOIN  etapa_ensino (nolock) ee
+						                    ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+											LEFT JOIN  serie_turma_grade (nolock) stg
+								ON tur.cd_turma_escola = stg.cd_turma_escola
+									AND tur.cd_escola = stg.cd_escola
+									AND ste.cd_serie_ensino = stg.cd_serie_ensino
+									AND stg.dt_fim IS NULL									
+				                    WHERE tur.cd_turma_escola IN @turmaCodigos";
+
+            using (var conexao = new SqlConnection((variaveisAmbiente.ConnectionStringEol)))
+            {
+                return await conexao.QueryAsync<Turma>(query, new { turmaCodigos }, commandTimeout: 120);
             }
         }
     }

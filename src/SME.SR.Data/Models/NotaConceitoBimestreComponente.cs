@@ -12,5 +12,6 @@ namespace SME.SR.Data
         public double Nota { get; set; }
         public string Sintese { get; set; }
         public string NotaConceito { get => ConceitoId.HasValue ? Conceito : Nota.ToString("0.0", CultureInfo.InvariantCulture); }
+        public long ConselhoClasseAlunoId { get; set; }
     }
 }

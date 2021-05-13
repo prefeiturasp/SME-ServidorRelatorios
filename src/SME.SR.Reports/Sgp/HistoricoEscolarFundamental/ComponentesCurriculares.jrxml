@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponentesCurriculares" pageWidth="595" pageHeight="15" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e3ee2222-29b6-4b72-be8e-6d46728ffeab">
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -181,7 +181,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaPrimeiroAno}!= null ? $F{frequenciaPrimeiroAno} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoPrimeiroAno}!= null ? ($F{frequenciaPrimeiroAno}!= null ? $F{frequenciaPrimeiroAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -219,7 +219,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaSegundoAno} != null ? $F{frequenciaSegundoAno} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoSegundoAno}!= null ? ($F{frequenciaSegundoAno}!= null ? $F{frequenciaSegundoAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -257,7 +257,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaTerceiroAno} != null ? $F{frequenciaTerceiroAno} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoTerceiroAno}!= null ? ($F{frequenciaTerceiroAno}!= null ? $F{frequenciaTerceiroAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -295,7 +295,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaQuartoAno} != null ? $F{frequenciaQuartoAno}: "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoQuartoAno}!= null ? ($F{frequenciaQuartoAno}!= null ? $F{frequenciaQuartoAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -333,7 +333,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaQuintoAno} != null ? $F{frequenciaQuintoAno} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoQuintoAno}!= null ? ($F{frequenciaQuintoAno}!= null ? $F{frequenciaQuintoAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -371,7 +371,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaSextoAno} != null ? $F{frequenciaSextoAno} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoSextoAno}!= null ? ($F{frequenciaSextoAno}!= null ? $F{frequenciaSextoAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -409,7 +409,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaSetimoAno} != null ?$F{frequenciaSetimoAno}: "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoSetimoAno}!= null ? ($F{frequenciaSetimoAno}!= null ? $F{frequenciaSetimoAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -428,7 +428,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoOitavoAno} != null ? $F{notaConceitoOitavoAno} :"-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoOitavoAno} != null ? $F{notaConceitoOitavoAno} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -447,7 +447,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaOitavoAno} != null ? $F{frequenciaOitavoAno}: "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoOitavoAno}!= null ? ($F{frequenciaOitavoAno}!= null ? $F{frequenciaOitavoAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -485,7 +485,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaNonoAno}!= null ? $F{frequenciaNonoAno} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoNonoAno}!= null ? ($F{frequenciaNonoAno}!= null ? $F{frequenciaNonoAno} : "-") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
