@@ -26,7 +26,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         public async Task<string> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
+            var html = await htmlHelper.RenderRazorViewToString("relatorios/" + request.NomeTemplate, request.Model);
             html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
             html = html.Replace("logo.png", SmeConstants.LogoSme);
             
