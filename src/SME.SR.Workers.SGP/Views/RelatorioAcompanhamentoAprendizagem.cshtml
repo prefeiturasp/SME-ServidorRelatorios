@@ -6,6 +6,7 @@
     int contadorMaximoLinhasPorPagina = 52;
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
+    int contadorMaximoCaracteresPorLinha = 250;
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
@@ -508,7 +509,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
     string CalcularDescricaoPercurso(string estudante, string descricaoRetante)
     {
-        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRetante.Length, 180);
+        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRetante.Length, 160);
 
         if (numeroLinhasDescricaoRestante > 40)
         {
@@ -528,11 +529,71 @@ PROFESSORES: {Model.Cabecalho.Professores}
         var descricaoDivida = descricao.Substring(0, 10000);
         var descricaoRetante = descricao.Substring(10001);
 
-        QuebrarLinhas(43, estudante);
+        QuebrarLinhas(47, estudante);
         MontarRegistroPercurso(estudante, descricaoDivida);
         CalcularDescricaoPercurso(estudante, descricaoRetante);
 
         return "";
+    }
+    string MontarRegistroPercursoCabecalho()
+    {
+        var classeRegistroPercurso = "sem-border-top";
+
+        return $@"<table class='tabela-alunos sem-border-top'>
+<thead>
+<tr>
+<td width='100%' class='centralizar negrito {classeRegistroPercurso}'>REGISTRO DO PERCURSO DA TURMA</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='alinhar-esquerda espaco-esquerda-15 espaco-esquerda-15'>";
+    }
+    string MontarRegistroPercursoRodape()
+    {
+        return @"             </td>
+</tr>
+</tbody>
+</table>";
+    }
+    void MontarRegistroPercursoNovo(string registroPercursoTurma, string estudante)
+    {
+        var titulo = "REGISTRO DO PERCURSO DA TURMA";
+        @Html.Raw(MontarRegistroPercursoCabecalho());
+        contadorQuebrarPagina++;
+        var iContadorCaracteres = 0;
+
+        @while (iContadorCaracteres != registroPercursoTurma.Length)
+        {
+            if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
+            {
+                contadorQuebrarPagina = 0;
+                @Html.Raw(MontarRegistroPercursoRodape());
+                @Html.Raw("</tbody></table>");
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                @Html.Raw(MontarCabecalho());
+
+                if (!String.IsNullOrEmpty(estudante))
+                {
+                    @Html.Raw(MontarTitulo(estudante));
+                }
+
+                @Html.Raw(MontarRegistroPercursoCabecalho());
+
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = registroPercursoTurma.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? registroPercursoTurma.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = registroPercursoTurma.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+                <span>@Html.Raw(textParaExibir)</span>
+                contadorQuebrarPagina++;
+            }
+
+        }
+
+        @Html.Raw(MontarRegistroPercursoRodape());
+
     }
 
 }
@@ -721,7 +782,13 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 var registroPercursoTurma = aluno.RegistroPercursoTurma;
                 if (!String.IsNullOrEmpty(registroPercursoTurma))
                 {
-                    int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
+                    if (!String.IsNullOrEmpty(registroPercursoTurma))
+                    {
+                        MontarRegistroPercursoNovo(registroPercursoTurma, aluno.Nome);
+                    }
+
+
+                    @*int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
 
                     if (numeroLinhasRegistroPercursoTurma > 50)
                     {
@@ -741,7 +808,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
                         MontarRegistroPercurso(aluno.Nome, registroPercursoTurma);
                         contadorQuebrarPagina++;
-                    }
+                    }*@
                 }
 
                 @if (aluno.PercursoTurmaImagens.Any())
