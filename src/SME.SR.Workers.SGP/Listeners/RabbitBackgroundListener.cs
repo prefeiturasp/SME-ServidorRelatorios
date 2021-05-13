@@ -48,6 +48,7 @@ namespace SME.SR.Workers.SGP.Services
             _channel.ExchangeDeclare(RotasRabbit.ExchangeSgp, ExchangeType.Topic);
 
             _channel.QueueDeclare(RotasRabbit.FilaWorkerRelatorios, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosSolicitados, false, false, false, null);
             _channel.QueueDeclare(RotasRabbit.RotaRelatorioComErro, false, false, false, null);
             _channel.QueueDeclare(RotasRabbit.RotaRelatorioCorrelacaoCopiar, false, false, false, null);
             _channel.QueueDeclare(RotasRabbit.RotaRelatorioCorrelacaoInserir, false, false, false, null);
@@ -161,6 +162,7 @@ namespace SME.SR.Workers.SGP.Services
             WorkerAttribute worker = GetWorkerAttribute(typeof(WorkerSGPController));
 
             _channel.BasicConsume(worker.WorkerQueue, false, consumer);
+            _channel.BasicConsume(RotasRabbit.RotaRelatoriosSolicitados, false, consumer);
             _channel.BasicConsume(RotasRabbit.RotaRelatorioComErro, false, consumer);
             _channel.BasicConsume(RotasRabbit.RotaRelatorioCorrelacaoCopiar, false, consumer);
             _channel.BasicConsume(RotasRabbit.RotaRelatorioCorrelacaoInserir, false, consumer);

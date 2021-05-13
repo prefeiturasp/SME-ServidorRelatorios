@@ -9,6 +9,7 @@
 
         public static string FilaWorkerRelatorios => "sme.sr.workers.sgp";
 
+        public static string RotaRelatoriosSolicitados => "relatorios.solicitados";
         public static string RotaRelatoriosProntosSgp => "relatorios.prontos";
         public static string RotaRelatoriosProcessando => "relatorios.processando";
         public static string RotaRelatorioComErro => "relatorios.erro";
