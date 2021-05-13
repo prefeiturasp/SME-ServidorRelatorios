@@ -7,7 +7,7 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQuery : IRequest<RelatorioAcompanhamentoAprendizagemDto>
     {
-        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> acompanhamentosAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro)
+        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> acompanhamentosAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas)
         {
             Turma = turma;
             AlunosEol = alunosEol;
@@ -17,6 +17,7 @@ namespace SME.SR.Application
             RegistrosIndividuais = registrosIndividuais;
             Ocorrencias = ocorrencias;
             Filtro = filtro;
+            QuantidadeAulasDadas = quantidadeAulasDadas;
         }
 
         public Turma Turma { get; set; }
@@ -27,6 +28,7 @@ namespace SME.SR.Application
         public IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> RegistrosIndividuais { get; set; }
         public IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias { get; set; }
         public FiltroRelatorioAcompanhamentoAprendizagemDto Filtro { get; set; }
+        public IEnumerable<QuantidadeAulasDadasBimestreDto> QuantidadeAulasDadas { get; set; }
 
     }
 }

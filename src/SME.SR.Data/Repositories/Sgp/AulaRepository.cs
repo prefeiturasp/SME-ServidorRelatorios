@@ -410,5 +410,30 @@ namespace SME.SR.Data
                 return (await conexao.QueryAsync<AulaVinculosDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
             }
         }
+
+        public async Task<IEnumerable<QuantidadeAulasDadasBimestreDto>> ObterAulasDadasPorTurmaEBimestre(string turmaCodigo, long tipoCalendarioId, int[] bimestres)
+        {
+            var query = @"select sum(a.quantidade) as quantidade, P.bimestre 
+                          from aula a 
+                         inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id
+	                                        and a.data_aula between p.periodo_inicio and p.periodo_fim
+                         inner join registro_frequencia rf on rf.aula_id = a.id
+                          where a.tipo_calendario_id = @tipoCalendarioId
+                            and a.turma_id = @turmaCodigo
+                            and p.bimestre = any(@bimestres)
+                         group by p.bimestre";
+
+            var parametros = new
+            {
+                turmaCodigo,                
+                tipoCalendarioId,
+                bimestres
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<QuantidadeAulasDadasBimestreDto>(query, parametros);
+            }
+        }
     }
 }

@@ -21,6 +21,8 @@ namespace SME.SR.Data
         {
             get => ModalidadeCodigo == Modalidade.EJA ?
                 ModalidadeTipoCalendario.EJA :
+                ModalidadeCodigo == Modalidade.Infantil ? 
+                ModalidadeTipoCalendario.Infantil :
                 ModalidadeTipoCalendario.FundamentalMedio;
         }
 
