@@ -3,10 +3,11 @@
 @{
     int paginaAtual = 0;
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 52;
+    int contadorMaximoLinhasPorPagina = 53;
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
-    int contadorMaximoCaracteresPorLinha = 250;
+    int contadorMaximoCaracteresPorLinhaPercurso = 240;
+    int contadorMaximoCaracteresPorLinhaRegistroIndividual = 185;
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
@@ -209,28 +210,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
         return "";
     }
-
-    string MontarRegistroPercurso(string estudante, string registroPercursoTurma)
-    {
-        var classeRegistroPercurso = !quebrou ? "" : "sem-border-top";
-        <table class='tabela-alunos sem-border-top'>
-            <thead>
-                <tr>
-                    <td width='100%' class='centralizar negrito {classeRegistroPercurso}'>REGISTRO DO PERCURSO DA TURMA</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="alinhar-esquerda espaco-esquerda-15 espaco-esquerda-15">
-                        @Html.Raw(registroPercursoTurma)
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        return "";
-    }
-
+    
     string MontarFrequencia(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
     {
         MontarTitulo("FREQUÊNCIA");
@@ -275,54 +255,57 @@ PROFESSORES: {Model.Cabecalho.Professores}
         var classeRegistroIndividual = !quebrou ? "sem-border-top" : "";
 
         <tr>
-            <td width="20%" class="fundo-cinza sem-border-bottom negrito {classeRegistroPercurso}">DATA DO REGISTRO</td>
+            <td width="20%" class="fundo-cinza sem-border-bottom negrito {@classeRegistroIndividual}">DATA DO REGISTRO</td>
             <td class="fundo-cinza sem-border-bottom negrito">REGISTRO</td>
         </tr>
         return "";
     }
-
-    string CalcularDescricaoRegistroIndividual(string estudante, string data, string descricaoRestante)
+    
+    void MontarRegistroIndividualNovo(string descricaoRegistroIndividual, string estudante, string dataRegistroIndividual)
     {
-        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRestante.Length, 180);
+       var iContadorCaracteres = 0;
+       if (!(contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina))
+       {
+            @Html.Raw($@"<tr><td width='15%' class='centralizar'>{dataRegistroIndividual}</td>")
+            @Html.Raw("<td width='85%' class='alinhar-esquerda espaco-esquerda-15'>")
+       }
 
-        if (numeroLinhasDescricaoRestante > 30)
+        @while (iContadorCaracteres != descricaoRegistroIndividual.Length)
         {
-            DivideDescricaoRegistroIndividual(estudante, data, descricaoRestante);
+            if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
+            {
+                contadorQuebrarPagina = 0;
+                @Html.Raw("</td></tr></tbody></table>")
+                @Html.Raw("</tbody></table>");
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                @Html.Raw(MontarCabecalho());
+
+                if (!String.IsNullOrEmpty(estudante))
+                {
+                    @Html.Raw(MontarTitulo(estudante));
+                    @Html.Raw("<table class='tabela-alunos'><tbody>")
+                    @Html.Raw(MontarCabecalhoRegistroIndividual())
+                    contadorQuebrarPagina++;
+                    @Html.Raw($@"<tr><td width='15%' class='centralizar'>{dataRegistroIndividual}</td>")
+                    @Html.Raw("<td width='85%' class='alinhar-esquerda espaco-esquerda-15'>")
+                }
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = descricaoRegistroIndividual.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaRegistroIndividual ? descricaoRegistroIndividual.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaRegistroIndividual;
+                var textParaExibir = descricaoRegistroIndividual.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+
+                @Html.Raw(textParaExibir)
+
+                contadorQuebrarPagina++;
+            }
         }
-        else
-        {
-            QuebrarLinhas(numeroLinhasDescricaoRestante, estudante);
-            @Html.Raw(MontarCabecalhoRegistroIndividual())
-            MontarDadosRegistroIndividual(data, descricaoRestante);
-        }
 
-        return "";
+        @Html.Raw("</td></tr>")
     }
 
-    string DivideDescricaoRegistroIndividual(string estudante, string data, string descricao)
-    {
-        var descricaoDivida = descricao.Substring(0, 7800);
-        var descricaoRetante = descricao.Substring(7801);
-
-        QuebrarLinhas(32, estudante);
-        @Html.Raw(MontarCabecalhoRegistroIndividual())
-        MontarDadosRegistroIndividual(data, descricaoDivida);
-        CalcularDescricaoRegistroIndividual(estudante, data, descricaoRetante);
-
-        return "";
-    }
-
-    string MontarDadosRegistroIndividual(string data, string descricaoRegistroIndividual)
-    {
-        <tr>
-            <td width="15%" class="centralizar ">@data</td>
-            <td width="85%" class="alinhar-esquerda espaco-esquerda-15">@descricaoRegistroIndividual</td>
-        </tr>
-
-        return "";
-    }
-
-    string MontarRegistroIndividual(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+    void MontarRegistroIndividual(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
     {
         var titulo = "REGISTRO INDIVIDUAL";
         int contarRegistroIndividual = 0;
@@ -330,39 +313,22 @@ PROFESSORES: {Model.Cabecalho.Professores}
         @foreach (var registroIndividual in aluno.RegistrosIndividuais)
         {
             var descricaoRegistroIndividual = registroIndividual.Descricao;
-            int numeroLinhasRegistroIndividual = CalcularLinhas(descricaoRegistroIndividual.Length, 180);
+            var dataRegistroIndividual = registroIndividual.Data;
 
-            if (numeroLinhasRegistroIndividual > 30)
+            if (contarRegistroIndividual == 0 && contadorQuebrarPagina < contadorMaximoLinhasPorPagina)
             {
-                DivideDescricaoRegistroIndividual(aluno.Nome, registroIndividual.Data, descricaoRegistroIndividual);
+                @Html.Raw(MontarTitulo(titulo))
+                @Html.Raw("<table class='tabela-alunos'><tbody>")
+                @Html.Raw(MontarCabecalhoRegistroIndividual())
+                contadorQuebrarPagina++;
             }
-            else
-            {
-                QuebrarLinhas(numeroLinhasRegistroIndividual, aluno.Nome, titulo);
 
-                if (contarRegistroIndividual == 0 && !quebrou)
-                {
-                    @Html.Raw(MontarTitulo(titulo))
-                    @Html.Raw("<table class='tabela-alunos'><tbody>")
-                    @Html.Raw(MontarCabecalhoRegistroIndividual())
-                    contadorQuebrarPagina++;
-                }
-                if (quebrou)
-                {
-                    @Html.Raw(MontarCabecalhoRegistroIndividual())
-                }
+            MontarRegistroIndividualNovo(descricaoRegistroIndividual, aluno.Nome, dataRegistroIndividual);
 
-                SomaLinhasContador(numeroLinhasRegistroIndividual);
-
-                @Html.Raw(MontarDadosRegistroIndividual(registroIndividual.Data, descricaoRegistroIndividual))
-            }
             contarRegistroIndividual++;
         }
 
         @Html.Raw("</tbody></table>")
-
-
-        return "";
     }
 
     string MontarObservacoes(string observacao)
@@ -414,8 +380,10 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
                     QuebrarLinhas(numeroLinhasOcorrencia + 2, aluno.Nome, tituloOcorrencias);
 
-                    SomaLinhasContador(numeroLinhasOcorrencia);
-
+                    if (!quebrou)
+                    {
+                        SomaLinhasContador(numeroLinhasOcorrencia);
+                    }
 
                     <tr>
                         <td rowspan="2" width="15%">@ocorrencia.Data</td>
@@ -507,48 +475,19 @@ PROFESSORES: {Model.Cabecalho.Professores}
         return "";
     }
 
-    string CalcularDescricaoPercurso(string estudante, string descricaoRetante)
-    {
-        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRetante.Length, 160);
-
-        if (numeroLinhasDescricaoRestante > 40)
-        {
-            DivideDescricaoPercurso(estudante, descricaoRetante);
-        }
-        else
-        {
-            QuebrarLinhas(numeroLinhasDescricaoRestante, estudante);
-            MontarRegistroPercurso(estudante, descricaoRetante);
-        }
-
-        return "";
-    }
-
-    string DivideDescricaoPercurso(string estudante, string descricao)
-    {
-        var descricaoDivida = descricao.Substring(0, 10000);
-        var descricaoRetante = descricao.Substring(10001);
-
-        QuebrarLinhas(47, estudante);
-        MontarRegistroPercurso(estudante, descricaoDivida);
-        CalcularDescricaoPercurso(estudante, descricaoRetante);
-
-        return "";
-    }
     string MontarRegistroPercursoCabecalho()
-    {
-        var classeRegistroPercurso = "sem-border-top";
-
+    {        
         return $@"<table class='tabela-alunos sem-border-top'>
 <thead>
 <tr>
-<td width='100%' class='centralizar negrito {classeRegistroPercurso}'>REGISTRO DO PERCURSO DA TURMA</td>
+<td width='100%' class='centralizar negrito'>REGISTRO DO PERCURSO DA TURMA</td>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class='alinhar-esquerda espaco-esquerda-15 espaco-esquerda-15'>";
     }
+
     string MontarRegistroPercursoRodape()
     {
         return @"             </td>
@@ -556,9 +495,9 @@ PROFESSORES: {Model.Cabecalho.Professores}
 </tbody>
 </table>";
     }
+
     void MontarRegistroPercursoNovo(string registroPercursoTurma, string estudante)
     {
-        var titulo = "REGISTRO DO PERCURSO DA TURMA";
         @Html.Raw(MontarRegistroPercursoCabecalho());
         contadorQuebrarPagina++;
         var iContadorCaracteres = 0;
@@ -579,11 +518,10 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 }
 
                 @Html.Raw(MontarRegistroPercursoCabecalho());
-
             }
             else
             {
-                var qntCaracteresParaBuscar = registroPercursoTurma.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? registroPercursoTurma.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
+                var qntCaracteresParaBuscar = registroPercursoTurma.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaPercurso ? registroPercursoTurma.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaPercurso;
                 var textParaExibir = registroPercursoTurma.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
                 iContadorCaracteres += textParaExibir.Length;
                 <span>@Html.Raw(textParaExibir)</span>
@@ -782,33 +720,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 var registroPercursoTurma = aluno.RegistroPercursoTurma;
                 if (!String.IsNullOrEmpty(registroPercursoTurma))
                 {
-                    if (!String.IsNullOrEmpty(registroPercursoTurma))
-                    {
-                        MontarRegistroPercursoNovo(registroPercursoTurma, aluno.Nome);
-                    }
-
-
-                    @*int numeroLinhasRegistroPercursoTurma = CalcularLinhas(registroPercursoTurma.Length);
-
-                    if (numeroLinhasRegistroPercursoTurma > 50)
-                    {
-                        DivideDescricaoPercurso(aluno.Nome, registroPercursoTurma);
-                    }
-                    else
-                    {
-                        QuebrarLinhas(numeroLinhasRegistroPercursoTurma, aluno.Nome);
-
-                        @if (!aluno.Fotos.Any() && !quebrou)
-                        {
-                            @Html.Raw(EspacoEmBranco())
-                            contadorQuebrarPagina++;
-                        }
-
-                        SomaLinhasContador(numeroLinhasRegistroPercursoTurma);
-
-                        MontarRegistroPercurso(aluno.Nome, registroPercursoTurma);
-                        contadorQuebrarPagina++;
-                    }*@
+                    MontarRegistroPercursoNovo(registroPercursoTurma, aluno.Nome);
                 }
 
                 @if (aluno.PercursoTurmaImagens.Any())
@@ -865,7 +777,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
                 if (aluno.RegistrosIndividuais.Count() > 0)
                 {
-                    @Html.Raw(MontarRegistroIndividual(aluno))
+                    MontarRegistroIndividual(aluno);
                 }
 
                 var descricaoObservacoes = aluno.Observacoes;
