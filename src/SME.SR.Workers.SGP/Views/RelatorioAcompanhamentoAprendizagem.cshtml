@@ -264,16 +264,15 @@ PROFESSORES: {Model.Cabecalho.Professores}
     void MontarRegistroIndividualNovo(string descricaoRegistroIndividual, string estudante, string dataRegistroIndividual)
     {
        var iContadorCaracteres = 0;
-       bool maisUmaLinha = contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina;
-
-        if (!maisUmaLinha) { 
+       if (!(contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina))
+       {
             @Html.Raw($@"<tr><td width='15%' class='centralizar'>{dataRegistroIndividual}</td>")
             @Html.Raw("<td width='85%' class='alinhar-esquerda espaco-esquerda-15'>")
-        }
+       }
 
         @while (iContadorCaracteres != descricaoRegistroIndividual.Length)
         {
-            if (!maisUmaLinha)
+            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
             {
                 contadorQuebrarPagina = 0;
                 @Html.Raw("</td></tr></tbody></table>")
