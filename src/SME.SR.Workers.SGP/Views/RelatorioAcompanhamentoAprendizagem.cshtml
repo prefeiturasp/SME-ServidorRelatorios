@@ -3,7 +3,7 @@
 @{
     int paginaAtual = 0;
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 52;
+    int contadorMaximoLinhasPorPagina = 53;
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
     int contadorMaximoCaracteresPorLinhaPercurso = 240;
@@ -264,7 +264,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
     void MontarRegistroIndividualNovo(string descricaoRegistroIndividual, string estudante, string dataRegistroIndividual)
     {
        var iContadorCaracteres = 0;
-       if (!(contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina))
+       if (!(contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina))
        {
             @Html.Raw($@"<tr><td width='15%' class='centralizar'>{dataRegistroIndividual}</td>")
             @Html.Raw("<td width='85%' class='alinhar-esquerda espaco-esquerda-15'>")
@@ -272,7 +272,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
         @while (iContadorCaracteres != descricaoRegistroIndividual.Length)
         {
-            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
+            if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
             {
                 contadorQuebrarPagina = 0;
                 @Html.Raw("</td></tr></tbody></table>")
@@ -297,7 +297,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 iContadorCaracteres += textParaExibir.Length;
 
                 @Html.Raw(textParaExibir)
-                @Html.Raw(contadorQuebrarPagina)
 
                 contadorQuebrarPagina++;
             }
@@ -381,8 +380,10 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
                     QuebrarLinhas(numeroLinhasOcorrencia + 2, aluno.Nome, tituloOcorrencias);
 
-                    SomaLinhasContador(numeroLinhasOcorrencia);
-
+                    if (!quebrou)
+                    {
+                        SomaLinhasContador(numeroLinhasOcorrencia);
+                    }
 
                     <tr>
                         <td rowspan="2" width="15%">@ocorrencia.Data</td>
