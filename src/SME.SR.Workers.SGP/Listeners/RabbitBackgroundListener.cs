@@ -163,11 +163,6 @@ namespace SME.SR.Workers.SGP.Services
 
             _channel.BasicConsume(worker.WorkerQueue, false, consumer);
             _channel.BasicConsume(RotasRabbit.RotaRelatoriosSolicitados, false, consumer);
-            _channel.BasicConsume(RotasRabbit.RotaRelatorioComErro, false, consumer);
-            _channel.BasicConsume(RotasRabbit.RotaRelatorioCorrelacaoCopiar, false, consumer);
-            _channel.BasicConsume(RotasRabbit.RotaRelatorioCorrelacaoInserir, false, consumer);
-            _channel.BasicConsume(RotasRabbit.RotaRelatoriosProcessando, false, consumer);
-            _channel.BasicConsume(RotasRabbit.RotaRelatoriosProntosSgp, false, consumer);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
