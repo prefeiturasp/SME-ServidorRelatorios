@@ -18,7 +18,7 @@ namespace SME.SR.Infra
             if (string.IsNullOrEmpty(Registro))
                 return string.Empty;
 
-            var registroFormatado = UtilRegex.RemoverTagsHtmlMidia(Registro);
+            var registroFormatado = UtilRegex.RemoverTagsHtmlMultiMidia(Registro);
             return UtilRegex.RemoverTagsHtml(registroFormatado);
         }
     }

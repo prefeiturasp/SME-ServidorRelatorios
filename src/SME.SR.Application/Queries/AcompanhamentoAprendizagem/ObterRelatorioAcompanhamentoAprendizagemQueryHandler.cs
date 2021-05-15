@@ -23,10 +23,12 @@ namespace SME.SR.Application
             var filtro = request.Filtro;
             var quantidadeAulasDadas = request.QuantidadeAulasDadas;
 
+            var bimestres = ObterBimestresPorSemestre(filtro.Semestre);
+
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas),
+                Alunos = MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
             };
 
             return Task.FromResult(relatorio);
@@ -51,7 +53,7 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas)
+        private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
@@ -89,7 +91,7 @@ namespace SME.SR.Application
                     }
                 }
 
-                alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas);
+                alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres);
                 alunoRelatorio.RegistrosIndividuais = MontarRegistrosIndividuais(alunoRelatorio.CodigoEol, registrosIndividuais);
                 alunoRelatorio.Ocorrencias = MontarOcorrencias(alunoRelatorio.CodigoEol, ocorrencias);
 
@@ -97,24 +99,26 @@ namespace SME.SR.Application
             }
             return alunosRelatorio;
         }
-        private List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas)
+        private List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
         {
             var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
 
-
-            foreach(var qtdAulas in quantidadeAulasDadas.OrderBy(b => b.Bimestre))
+            foreach(var bimestre in bimestres.OrderBy(b => b))
             {
-                var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == qtdAulas.Bimestre);
+                var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == bimestre);
+                var quantidadeAulas = quantidadeAulasDadas == null ? 
+                    0 : 
+                    quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre).Quantidade;
 
                 var freqenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {
-                    Bimestre = $"{qtdAulas.Bimestre}º",
-                    Aulas = frequenciaAluno == null ? qtdAulas.Quantidade : frequenciaAluno.TotalAulas,
+                    Bimestre = $"{bimestre}º",
+                    Aulas = frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas,                    
                     Ausencias = frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias,
                     Frequencia = frequenciaAluno == null ? "100%" : $"{frequenciaAluno.PercentualFrequencia}%",
                 };
                 freqenciasRelatorio.Add(freqenciaRelatorio);
-            }            
+            }                      
             return freqenciasRelatorio;
         }
 
@@ -166,6 +170,12 @@ namespace SME.SR.Application
                 ocorrenciasRelatorio.Add(ocorrenciaRelatorio);
             }
             return ocorrenciasRelatorio;
+        }
+        private static int[] ObterBimestresPorSemestre(int semestre)
+        {
+            if (semestre == 1)
+                return new int[] { 1, 2 };
+            else return new int[] { 3, 4 };
         }
     }
 }
