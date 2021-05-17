@@ -7470,7 +7470,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioAtasComColunaFinal", relatoriosTurmas[2]);
         }
 
-
         [HttpGet("registro-individual")]
         public async Task<IActionResult> RegistroIndividual([FromServices] IRelatorioRegistroIndividualUseCase useCase)
         {
@@ -7482,6 +7481,49 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem, CodigoCorrelacao = Guid.NewGuid() });
 
             return default;
+        }
+
+        [HttpGet("acompanhamento-aprendizagem")]
+        public async Task<IActionResult> AcompanhamentoAprendizagem([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+            try
+            {
+                var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioAcompanhamentoAprendizagemDto() { Semestre = 1, TurmaId = 615813 }, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+                await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
+                //  var model = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(615822, "6731135", 1));
+                return View("RelatorioAcompanhamentoAprendizagem", null);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpGet("acompanhamento-aprendizagem-teste")]
+        public async Task<IActionResult> AcompanhamentoAprendizagemTeste([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+            try
+            {
+                var dto = new AcompanhamentoAprendizagemAlunoRetornoDto();
+                dto.ApanhadoGeral = @"<ul style='list-style-type: disc;'><li><span style='font-size: 48px;'>
+    <strong style=''><span style='background-color: rgb(0, 0, 255);'>teste<img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
+</span></strong></span></li></ul><p>De acordo com a imagem abaixo:</p><p><img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
+<br></p><p><br></p><table style='width: 100%;'><br></table>";
+
+                //var percursoFormatado = dto.PercusoTurmaFormatado();
+                //return View("RelatorioAcompanhamentoAprendizagemTeste", percursoFormatado);
+
+                return default;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

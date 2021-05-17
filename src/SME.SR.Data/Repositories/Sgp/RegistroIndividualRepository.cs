@@ -45,5 +45,26 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<RegistroIndividualRetornoDto>(query.ToString(), parametros);
             }
         }
+
+        public async Task<IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto>> ObterRegistroIndividualPorTurmaEAluno(long turmaId, long? alunoCodigo)
+        {
+            var query = new StringBuilder(@"select ri.aluno_codigo as alunoCodigo, 
+                                                   ri.turma_id as turmaId, 
+                                                   ri.data_registro as dataRegistro, 
+                                                   ri.registro 
+                                              from registro_individual ri 
+                                             where ri.turma_id = @turmaId                                               
+                                               and not excluido ");
+
+            if (alunoCodigo != null && alunoCodigo > 0)
+                query.AppendLine("and ri.aluno_codigo = @alunoCodigo");
+
+            var parametros = new { turmaId, alunoCodigo };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<AcompanhamentoAprendizagemRegistroIndividualDto>(query.ToString(), parametros);
+            }
+        }
     }
 }
