@@ -162,6 +162,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRegistroIndividualRepository), typeof(RegistroIndividualRepository));
             services.TryAddScoped(typeof(IOcorrenciaRepository), typeof(OcorrenciaRepository));
             services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
+            services.TryAddScoped(typeof(IArquivoRepository), typeof(ArquivoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)

@@ -25,9 +25,10 @@ namespace SME.SR.Data
                                                    at2.apanhado_geral as ApanhadoGeral,
                                                    aas.observacoes as Observacoes,
                                                    at2.semestre,
+                                                   arq.tipo as tipo,
                                                    arq.codigo,
                                                    arq.nome as NomeOriginal,
-                                                   arq.tipo_conteudo as TipoArquivo                                                   
+                                                   arq.tipo_conteudo as TipoConteudo                                                   
                                               from turma t                                              
                                               inner join acompanhamento_turma at2 on at2.turma_id = t.id 
                                               inner join acompanhamento_aluno aa on aa.turma_id = t.id 
@@ -49,7 +50,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                await conexao.QueryAsync<AcompanhamentoAprendizagemAlunoRetornoDto, AcompanhamentoAprendizagemAlunoFotoDto, AcompanhamentoAprendizagemAlunoRetornoDto>(query.ToString(),
+                await conexao.QueryAsync<AcompanhamentoAprendizagemAlunoRetornoDto, ArquivoDto, AcompanhamentoAprendizagemAlunoRetornoDto>(query.ToString(),
                  (acompanhamentoAprendizagemAlunoRetornoDto, acompanhamentoAprendizagemAlunoFotoDto) =>
                  {
                      AcompanhamentoAprendizagemAlunoRetornoDto acompanhamentoAprendizagem = new AcompanhamentoAprendizagemAlunoRetornoDto();

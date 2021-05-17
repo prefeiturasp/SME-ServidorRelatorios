@@ -12,7 +12,7 @@ namespace SME.SR.Infra
     {
         public AcompanhamentoAprendizagemAlunoRetornoDto()
         {
-            Fotos = new List<AcompanhamentoAprendizagemAlunoFotoDto>();
+            Fotos = new List<ArquivoDto>();
             PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
         }
 
@@ -26,10 +26,10 @@ namespace SME.SR.Infra
         public string DreAbreviacao { get; set; }
         public string TurmaNome { get; set; }
         public int Semestre { get; set; }
-        public List<AcompanhamentoAprendizagemAlunoFotoDto> Fotos { get; set; }
+        public List<ArquivoDto> Fotos { get; set; }
         public List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> PercursoTurmaImagens { get; set; }
 
-        public void Add(AcompanhamentoAprendizagemAlunoFotoDto acompanhamentoAprendizagemAlunoFotoDto)
+        public void Add(ArquivoDto acompanhamentoAprendizagemAlunoFotoDto)
         {
             if (!Fotos.Any(a => a.Codigo == acompanhamentoAprendizagemAlunoFotoDto.Codigo))
                 Fotos.Add(acompanhamentoAprendizagemAlunoFotoDto);
@@ -71,7 +71,7 @@ namespace SME.SR.Infra
                     {
                         NomeImagem = $"imagem {numeroImagem}",
                         Imagem = m.Value
-                    }); ;
+                    });
                 }                
                 ApanhadoGeral = textoSemImagem;
             }

@@ -12,14 +12,13 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQueryHandler : IRequestHandler<ObterRelatorioAcompanhamentoAprendizagemQuery, RelatorioAcompanhamentoAprendizagemDto>
     {
-        private readonly VariaveisAmbiente variaveisAmbiente;
-
-        public ObterRelatorioAcompanhamentoAprendizagemQueryHandler(VariaveisAmbiente variaveisAmbiente)
+        private readonly IMediator mediator;
+        public ObterRelatorioAcompanhamentoAprendizagemQueryHandler(IMediator mediator)
         {
-            this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public Task<RelatorioAcompanhamentoAprendizagemDto> Handle(ObterRelatorioAcompanhamentoAprendizagemQuery request, CancellationToken cancellationToken)
+        public async Task<RelatorioAcompanhamentoAprendizagemDto> Handle(ObterRelatorioAcompanhamentoAprendizagemQuery request, CancellationToken cancellationToken)
         {
             var turma = request.Turma;
             var alunosEol = request.AlunosEol;
@@ -36,10 +35,10 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
+                Alunos = await MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
             };
 
-            return Task.FromResult(relatorio);
+            return relatorio;
         }
 
         private RelatorioAcompanhamentoAprendizagemCabecalhoDto MontarCabecalho(Turma turma, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, FiltroRelatorioAcompanhamentoAprendizagemDto filtro)
@@ -61,7 +60,7 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
+        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
@@ -83,13 +82,37 @@ namespace SME.SR.Application
                 alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoTurmaFormatado() ?? "") : "";
                 alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
                 if (acompanhamentoAluno != null)
-                    alunoRelatorio.PercursoTurmaImagens = acompanhamentoAluno.PercursoTurmaImagens;
+                {
+                    if (acompanhamentoAluno.PercursoTurmaImagens.Count > 0)
+                    {
+                        alunoRelatorio.PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
+                        foreach (var imagem in acompanhamentoAluno.PercursoTurmaImagens)
+                        {
+                            var arr = imagem.Imagem.Split("/");
+                            var codigo = arr[arr.Length - 1];
+                            codigo = codigo.Split(".")[0];
+                            var arquivo = await mediator.Send(new ObterArquivoPorCodigoQuery(Guid.Parse(codigo)));
+
+                            var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(arquivo));
+                            if (!String.IsNullOrEmpty(fotoBase64))
+                            {
+                                alunoRelatorio.PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+                                {
+                                    NomeImagem = imagem.NomeImagem,
+                                    Imagem = fotoBase64
+                                });
+                            }
+
+                        }
+                    }
+                }
+
 
                 if (acompanhamentoAluno != null)
                 {
                     foreach (var foto in acompanhamentoAluno.Fotos)
                     {
-                        var fotoBase64 = ArquivoBase64(foto);
+                        var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(foto));
                         if (!String.IsNullOrEmpty(fotoBase64))
                         {
                             alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
@@ -129,21 +152,6 @@ namespace SME.SR.Application
                 freqenciasRelatorio.Add(freqenciaRelatorio);
             }
             return freqenciasRelatorio;
-        }
-        private string ArquivoBase64(AcompanhamentoAprendizagemAlunoFotoDto foto)
-        {
-            var diretorio =  Path.Combine(variaveisAmbiente.PastaArquivosSGP, @"Arquivos/FotoAluno");
-
-            if (!Directory.Exists(diretorio))
-                Directory.CreateDirectory(diretorio);
-
-            var nomeArquivo = $"{foto.Codigo}.{foto.Extensao}";
-            var caminhoArquivo = Path.Combine(diretorio, nomeArquivo);
-            if (!File.Exists(caminhoArquivo))
-                return "";
-
-            var arquivo = File.ReadAllBytes(caminhoArquivo);
-            return $"data:{foto.TipoArquivo};base64,{Convert.ToBase64String(arquivo)}";
         }
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> MontarRegistrosIndividuais(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais)
