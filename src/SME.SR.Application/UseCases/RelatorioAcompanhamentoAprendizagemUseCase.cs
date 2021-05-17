@@ -48,7 +48,9 @@ namespace SME.SR.Application
 
             var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas));
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, gerarPaginacao: false));
+            //await mediator.Send(new GerarRelatorioHtmlPDFRegistroIndividualCommand(relatorioDto, filtro.CodigoCorrelacao));
+
+            await mediator.Send(new GerarRelatorioHtmlPDFAcompAprendizagemCommand(relatorioDto, filtro.CodigoCorrelacao));
         }
 
         private static int[] ObterBimestresPorSemestre(int semestre)
