@@ -13,6 +13,12 @@ namespace SME.SR.Application
     public class ObterRelatorioAcompanhamentoAprendizagemQueryHandler : IRequestHandler<ObterRelatorioAcompanhamentoAprendizagemQuery, RelatorioAcompanhamentoAprendizagemDto>
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
+
+        public ObterRelatorioAcompanhamentoAprendizagemQueryHandler(VariaveisAmbiente variaveisAmbiente)
+        {
+            this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
+        }
+
         public Task<RelatorioAcompanhamentoAprendizagemDto> Handle(ObterRelatorioAcompanhamentoAprendizagemQuery request, CancellationToken cancellationToken)
         {
             var turma = request.Turma;
