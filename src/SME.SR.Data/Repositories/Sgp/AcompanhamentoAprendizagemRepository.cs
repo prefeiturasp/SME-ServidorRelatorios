@@ -25,7 +25,7 @@ namespace SME.SR.Data
                                                    at2.apanhado_geral as ApanhadoGeral,
                                                    aas.observacoes as Observacoes,
                                                    at2.semestre,
-                                                   arq.tipo as tipo,
+                                                   arq.tipo as Tipo,
                                                    arq.codigo,
                                                    arq.nome as NomeOriginal,
                                                    arq.tipo_conteudo as TipoConteudo                                                   
