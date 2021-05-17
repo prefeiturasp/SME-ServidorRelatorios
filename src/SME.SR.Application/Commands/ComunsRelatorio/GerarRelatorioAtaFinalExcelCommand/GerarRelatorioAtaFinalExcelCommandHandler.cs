@@ -70,14 +70,14 @@ namespace SME.SR.Application
                         workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
 
                         var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
-                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
                 }
 
                 foreach (var codigoCorrelacao in lstCodigosCorrelacao)
-                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, codigoCorrelacao.Key));
+                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.RotaRelatoriosProntosSgp, null, codigoCorrelacao.Key));
 
                 return await Task.FromResult(Unit.Value);
             }

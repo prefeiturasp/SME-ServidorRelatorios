@@ -22,7 +22,6 @@ namespace SME.SR.Application
         {
             byte[] body = FormataBodyWorker(request.AdicionarFilaDto);
 
-            rabbitChannel.QueueBind(request.AdicionarFilaDto.NomeFila, request.AdicionarFilaDto.Exchange, request.AdicionarFilaDto.Rota);
             rabbitChannel.BasicPublish(request.AdicionarFilaDto.Exchange, request.AdicionarFilaDto.Rota, null, body);
 
             return Task.FromResult(true);
