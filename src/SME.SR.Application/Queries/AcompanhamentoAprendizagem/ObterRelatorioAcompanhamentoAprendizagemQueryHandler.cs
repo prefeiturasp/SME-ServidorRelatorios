@@ -109,7 +109,7 @@ namespace SME.SR.Application
             foreach (var bimestre in bimestres.OrderBy(b => b))
             {
                 var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == bimestre);
-                var quantidadeAulas = quantidadeAulasDadas == null ?
+                var quantidadeAulas = quantidadeAulasDadas.Count() == 0 ?
                     0 :
                     quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre).Quantidade;
 
