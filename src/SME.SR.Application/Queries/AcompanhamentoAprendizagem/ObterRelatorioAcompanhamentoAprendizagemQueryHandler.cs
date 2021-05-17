@@ -132,7 +132,7 @@ namespace SME.SR.Application
         }
         private string ArquivoBase64(AcompanhamentoAprendizagemAlunoFotoDto foto)
         {
-            var diretorio =  Path.Combine(variaveisAmbiente.PastaArquivosSGP, @"Arquivos/Editor");
+            var diretorio =  Path.Combine(variaveisAmbiente.PastaArquivosSGP, @"Arquivos/FotoAluno");
 
             if (!Directory.Exists(diretorio))
                 Directory.CreateDirectory(diretorio);
