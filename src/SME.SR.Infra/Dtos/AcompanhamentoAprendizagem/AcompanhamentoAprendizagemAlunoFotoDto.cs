@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing.Imaging;
 using System.IO;
 
 namespace SME.SR.Infra
@@ -13,9 +12,7 @@ namespace SME.SR.Infra
 
         public string ArquivoBase64()
         {
-            //TODO: Pegar a pasta do servidor onde ficarão as imagens
-            //var diretorio = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Arquivos/Editor");
-            var diretorio = @"C:\Development\AMcom\Projects\SME-NovoSGP\src\SME.SGP.Api\bin\Debug\netcoreapp2.2\Arquivos\FotoAluno";
+            var diretorio = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Arquivos/Editor");
 
             if (!Directory.Exists(diretorio))
                 Directory.CreateDirectory(diretorio);

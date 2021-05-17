@@ -46,9 +46,7 @@ namespace SME.SR.Application
 
             var Ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo));            
 
-            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas));
-
-            //await mediator.Send(new GerarRelatorioHtmlPDFRegistroIndividualCommand(relatorioDto, filtro.CodigoCorrelacao));
+            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas));            
 
             await mediator.Send(new GerarRelatorioHtmlPDFAcompAprendizagemCommand(relatorioDto, filtro.CodigoCorrelacao));
         }
