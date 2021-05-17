@@ -3,6 +3,7 @@ using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQueryHandler : IRequestHandler<ObterRelatorioAcompanhamentoAprendizagemQuery, RelatorioAcompanhamentoAprendizagemDto>
     {
+        private readonly VariaveisAmbiente variaveisAmbiente;
         public Task<RelatorioAcompanhamentoAprendizagemDto> Handle(ObterRelatorioAcompanhamentoAprendizagemQuery request, CancellationToken cancellationToken)
         {
             var turma = request.Turma;
@@ -74,18 +76,19 @@ namespace SME.SR.Application
                 alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
                 alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoTurmaFormatado() ?? "") : "";
                 alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
-                if(acompanhamentoAluno != null)
+                if (acompanhamentoAluno != null)
                     alunoRelatorio.PercursoTurmaImagens = acompanhamentoAluno.PercursoTurmaImagens;
 
                 if (acompanhamentoAluno != null)
                 {
                     foreach (var foto in acompanhamentoAluno.Fotos)
                     {
-                        if (!String.IsNullOrEmpty(foto.ArquivoBase64()))
+                        var fotoBase64 = ArquivoBase64(foto);
+                        if (!String.IsNullOrEmpty(fotoBase64))
                         {
                             alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
                             {
-                                Caminho = foto.ArquivoBase64()
+                                Caminho = fotoBase64
                             });
                         }
                     }
@@ -103,23 +106,38 @@ namespace SME.SR.Application
         {
             var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
 
-            foreach(var bimestre in bimestres.OrderBy(b => b))
+            foreach (var bimestre in bimestres.OrderBy(b => b))
             {
                 var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == bimestre);
-                var quantidadeAulas = quantidadeAulasDadas == null ? 
-                    0 : 
+                var quantidadeAulas = quantidadeAulasDadas == null ?
+                    0 :
                     quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre).Quantidade;
 
                 var freqenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {
                     Bimestre = $"{bimestre}º",
-                    Aulas = frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas,                    
+                    Aulas = frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas,
                     Ausencias = frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias,
                     Frequencia = frequenciaAluno == null ? "100%" : $"{frequenciaAluno.PercentualFrequencia}%",
                 };
                 freqenciasRelatorio.Add(freqenciaRelatorio);
-            }                      
+            }
             return freqenciasRelatorio;
+        }
+        private string ArquivoBase64(AcompanhamentoAprendizagemAlunoFotoDto foto)
+        {
+            var diretorio =  Path.Combine(variaveisAmbiente.PastaArquivosSGP, @"Arquivos/Editor");
+
+            if (!Directory.Exists(diretorio))
+                Directory.CreateDirectory(diretorio);
+
+            var nomeArquivo = $"{foto.Codigo}.{foto.Extensao}";
+            var caminhoArquivo = Path.Combine(diretorio, nomeArquivo);
+            if (!File.Exists(caminhoArquivo))
+                return "";
+
+            var arquivo = File.ReadAllBytes(caminhoArquivo);
+            return $"data:{foto.TipoArquivo};base64,{Convert.ToBase64String(arquivo)}";
         }
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> MontarRegistrosIndividuais(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais)
