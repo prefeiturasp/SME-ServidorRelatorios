@@ -35,7 +35,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
+                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
             };
 
             return relatorio;
@@ -60,7 +60,7 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
+        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
@@ -81,14 +81,14 @@ namespace SME.SR.Application
                 alunoRelatorio.Situacao = alunoEol.SituacaoRelatorio;
                 alunoRelatorio.Responsavel = alunoEol.ResponsavelFormatado();
                 alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
-                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
+                alunoRelatorio.RegistroPercursoTurma = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
                 alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
                 if (acompanhamentoAluno != null)
                 {
-                    if (acompanhamentoAluno.PercursoTurmaImagens.Count > 0)
+                    if (acompanhamento.PercursoTurmaImagens.Count > 0)
                     {
                         alunoRelatorio.PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
-                        foreach (var imagem in acompanhamentoAluno.PercursoTurmaImagens)
+                        foreach (var imagem in acompanhamento.PercursoTurmaImagens)
                         {
                             var arr = imagem.Imagem.Split("/");
                             var codigo = arr[arr.Length - 1];

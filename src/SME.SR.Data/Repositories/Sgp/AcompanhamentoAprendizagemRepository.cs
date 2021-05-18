@@ -27,8 +27,10 @@ namespace SME.SR.Data
                                                    tb1.aluno_codigo as AlunoCodigo,                   
                                                    tb1.observacoes as Observacoes,                   
                                                    tb1.codigo as id,
+                                                   tb1.codigo,
                                                    tb1.nome as NomeOriginal,
-                                                   tb1.tipo_conteudo as TipoArquivo
+                                                   tb1.tipo_conteudo as TipoArquivo,
+                                                   tb1.tipo
                                               from acompanhamento_turma at2
                                               left join (select aa.id,
       					                                        aa.turma_id,
@@ -37,7 +39,7 @@ namespace SME.SR.Data
 			       		                                        aas.observacoes,       		
 			       		                                        arq.codigo,
 			       		                                        arq.nome,
-			       		                                        arq.tipo_conteudo 
+			       		                                        arq.tipo_conteudo, arq.tipo
 			                                               from acompanhamento_aluno aa
 			                                              inner join acompanhamento_aluno_semestre aas on aas.acompanhamento_aluno_id = aa.id
 			   	                                           left join acompanhamento_aluno_foto aaf on aaf.acompanhamento_aluno_semestre_id = aas.id 
@@ -60,8 +62,8 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                await conexao.QueryAsync<AcompanhamentoAprendizagemTurmaDto, AcompanhamentoAprendizagemAlunoDto, AcompanhamentoAprendizagemAlunoFotoDto, AcompanhamentoAprendizagemTurmaDto>(query.ToString(),
-                 (acompanhamentoAprendizagemTurmaDto, acompanhamentoAprendizagemAlunoDto, acompanhamentoAprendizagemAlunoFotoDto) =>
+                await conexao.QueryAsync<AcompanhamentoAprendizagemTurmaDto, AcompanhamentoAprendizagemAlunoDto, ArquivoDto, AcompanhamentoAprendizagemTurmaDto>(query.ToString(),
+                 (acompanhamentoAprendizagemTurmaDto, acompanhamentoAprendizagemAlunoDto, arquivoDto) =>
                  {
                      AcompanhamentoAprendizagemTurmaDto acompanhamentoAprendizagem = new AcompanhamentoAprendizagemTurmaDto();
 
@@ -73,8 +75,8 @@ namespace SME.SR.Data
                      if (acompanhamentoAprendizagemAlunoDto != null)
                          acompanhamentoAprendizagem.Add(acompanhamentoAprendizagemAlunoDto);
 
-                     if (acompanhamentoAprendizagemAlunoFotoDto != null)
-                         acompanhamentoAprendizagem.AddFotoAluno(acompanhamentoAprendizagemAlunoDto.AlunoCodigo, acompanhamentoAprendizagemAlunoFotoDto);
+                     if (arquivoDto != null)
+                         acompanhamentoAprendizagem.AddFotoAluno(acompanhamentoAprendizagemAlunoDto.AlunoCodigo, arquivoDto);
 
                      return acompanhamentoAprendizagem;
                  }, param: parametros);

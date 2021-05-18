@@ -26,7 +26,7 @@ namespace SME.SR.Infra
             if (!alunos.Any(a => a.Id == acompanhamentoAprendizagemAluno.Id))
                 alunos.Add(acompanhamentoAprendizagemAluno);
         }
-        public void AddFotoAluno(string AlunoCodigo, AcompanhamentoAprendizagemAlunoFotoDto foto)
+        public void AddFotoAluno(string AlunoCodigo, ArquivoDto foto)
         {
             var aluno = alunos.FirstOrDefault(a => a.AlunoCodigo == AlunoCodigo);
 

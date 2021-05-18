@@ -63,15 +63,6 @@ namespace SME.SR.Application
             if (semestre == 1)
                 return new int[] { 1, 2 };
             else return new int[] { 3, 4 };
-        }
-
-        private void ObterDataInicioFim(IEnumerable<PeriodoEscolar> periodoEscolares, int[] bimestres)
-        {
-            foreach(var bimestre in bimestres.OrderBy(b => b))
-            {
-                var dataInicio = periodoEscolares.FirstOrDefault(p => p.Bimestre == bimestres.First()).PeriodoInicio;
-                var dataFim = periodoEscolares.FirstOrDefault(p => p.Bimestre == bimestres.Last()).PeriodoFim;
-            }
-        }
+        }        
     }
 }

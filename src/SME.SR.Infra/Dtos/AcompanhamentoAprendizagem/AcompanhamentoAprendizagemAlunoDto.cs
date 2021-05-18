@@ -8,20 +8,19 @@ namespace SME.SR.Infra
     {
         public AcompanhamentoAprendizagemAlunoDto()
         {
-            Fotos = new List<AcompanhamentoAprendizagemAlunoFotoDto>();
+            Fotos = new List<ArquivoDto>();
         }
 
         public long Id { get; set; }
         public string AlunoCodigo { get; set; }
         public string ApanhadoGeral { get; set; }
         public string Observacoes { get; set; }
-        public List<AcompanhamentoAprendizagemAlunoFotoDto> Fotos { get; set; }
+        public List<ArquivoDto> Fotos { get; set; }
 
-        public void Add(AcompanhamentoAprendizagemAlunoFotoDto acompanhamentoAprendizagemAlunoFotoDto)
+        public void Add(ArquivoDto acompanhamentoAprendizagemAlunoFotoDto)
         {
-            if (!Fotos.Any(a => a.Id == acompanhamentoAprendizagemAlunoFotoDto.Id))
+            if (!Fotos.Any(a => a.Codigo == acompanhamentoAprendizagemAlunoFotoDto.Codigo))
                 Fotos.Add(acompanhamentoAprendizagemAlunoFotoDto);
-
         }
 
         public string ObservacoesFormatado()

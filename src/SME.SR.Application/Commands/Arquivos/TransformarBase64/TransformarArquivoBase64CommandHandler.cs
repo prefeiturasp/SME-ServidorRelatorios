@@ -30,7 +30,7 @@ namespace SME.SR.Application
                 return Task.FromResult("");
 
             var arquivo = File.ReadAllBytes(caminhoArquivo);
-            return Task.FromResult($"data:{request.Arquivo.TipoConteudo};base64,{Convert.ToBase64String(arquivo)}");
+            return Task.FromResult($"data:{request.Arquivo.TipoArquivo};base64,{Convert.ToBase64String(arquivo)}");
         }
 
     }
