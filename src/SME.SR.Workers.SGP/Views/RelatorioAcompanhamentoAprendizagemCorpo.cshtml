@@ -540,19 +540,19 @@
         int contarImpressao = 0;
         while (contarImpressao < pararImpressao)
         {
-            QuebrarLinhas(9, Model.Nome);
+            QuebrarLinhas(11, Model.Nome);
+            bool imprimirTitulo = true;
 
             if (!quebrou)
             {
                 contadorQuebrarPagina = contadorQuebrarPagina + 11;
+                imprimirTitulo = false;
             }
 
-            bool imprimirTitulo = true;
             if (maximoFotos > 3 && restoLinhas != 0 && contarImpressao != 0)
             {
                 minimoImpressaoFotos = 3 * numeroLinhas;
                 maximoImpressaoFotos = 6 + (3 * (numeroLinhas - 1));
-                imprimirTitulo = false;
             }
 
             MontarImagensAnexas(Model, minimoImpressaoFotos, maximoImpressaoFotos, imprimirTitulo);
