@@ -494,6 +494,7 @@
                 var textParaExibir = registroPercursoTurma.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
                 iContadorCaracteres += textParaExibir.Length;
                 <span>@Html.Raw(textParaExibir)</span>
+                quebrou = false;
                 contadorQuebrarPagina++;
             }
 
