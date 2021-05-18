@@ -62,8 +62,8 @@ namespace SME.SR.Infra
                     {
                         NomeImagem = $"imagem {numeroImagem}",
                         Imagem = m.Value
-                    }); ;
-                }
+                    });
+                }                
                 ApanhadoGeral = textoSemImagem;
             }
 
