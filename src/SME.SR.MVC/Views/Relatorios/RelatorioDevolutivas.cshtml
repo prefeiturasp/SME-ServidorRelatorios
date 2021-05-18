@@ -85,7 +85,7 @@
                 <td width="48%">Registrado por</td>
             </tr>
         </thead>
-        
+
         contadorQuebrarPagina = contadorQuebrarPagina + 3;
 
         return "";
@@ -210,6 +210,13 @@
             .centralizar {
                 text-align: center;
             }
+
+            .td-descricao {
+                padding: 3px;
+                max-width: 788px;
+                height: auto;
+                word-wrap: break-word
+            }
         </style>
         <div>
             @Html.Raw(MontarCabecalho())
@@ -240,133 +247,133 @@
 
                         @Html.Raw(MontarCabecalhoDevolutivas(bimestreIndex, turma.NomeTurma, bimestre.NomeBimestre));
 
-                <tbody>
+                        <tbody>
 
-                    @{
-                        int valoresIndex = 0;
-                        int contadorLinhasExtras = 0;
-                        int contadorEspaçosExtras = 0;
-                        int contadorLinhasDescricao = 0;
-                    }
-
-                    @foreach (var valores in bimestre.Devolutivas)
-                    {
-                        var numeroLinhasDiasIntervalo = valores.DiasIntervalo.Length / 40;
-                        var numeroLinhasRegistradoPor = valores.ResgistradoPor.Length / 70;
-                        var numeroLinhasDescricao = valores.Descricao.Length / 125;
-                        var numeroLinhas = numeroLinhasDiasIntervalo > numeroLinhasRegistradoPor ? numeroLinhasDiasIntervalo : numeroLinhasRegistradoPor;
-
-
-                        <tr>
-                            <td>@valores.IntervaloDatas</td>
-                            <td>@valores.DiasIntervalo</td>
-                            <td>@valores.DataRegistro</td>
-                            <td>@valores.ResgistradoPor</td>
-                        </tr>
-
-                        if (numeroLinhas > 1)
-                        {
-                            contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
-                            contadorLinhasExtras = 0;
-                            contadorEspaçosExtras = 0;
-                        }
-                        else
-                        {
-                            if (contadorLinhasExtras > 1)
-                            {
-                                contadorQuebrarPagina = contadorQuebrarPagina + 2;
-                                contadorLinhasExtras = 0;
-                            }
-                            else
-                            {
-                                contadorQuebrarPagina++;
-                                contadorLinhasExtras++;
+                            @{
+                                int valoresIndex = 0;
+                                int contadorLinhasExtras = 0;
+                                int contadorEspaçosExtras = 0;
+                                int contadorLinhasDescricao = 0;
                             }
 
-                            if (contadorEspaçosExtras > 8)
+                            @foreach (var valores in bimestre.Devolutivas)
                             {
-                                contadorQuebrarPagina++;
-                                contadorEspaçosExtras = 0;
+                                var numeroLinhasDiasIntervalo = valores.DiasIntervalo.Length / 40;
+                                var numeroLinhasRegistradoPor = valores.ResgistradoPor.Length / 70;
+                                var numeroLinhasDescricao = valores.Descricao.Length / 125;
+                                var numeroLinhas = numeroLinhasDiasIntervalo > numeroLinhasRegistradoPor ? numeroLinhasDiasIntervalo : numeroLinhasRegistradoPor;
+
+
+                                <tr>
+                                    <td>@valores.IntervaloDatas</td>
+                                    <td>@valores.DiasIntervalo</td>
+                                    <td>@valores.DataRegistro</td>
+                                    <td>@valores.ResgistradoPor</td>
+                                </tr>
+
+                                if (numeroLinhas > 1)
+                                {
+                                    contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+                                    contadorLinhasExtras = 0;
+                                    contadorEspaçosExtras = 0;
+                                }
+                                else
+                                {
+                                    if (contadorLinhasExtras > 1)
+                                    {
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+                                        contadorLinhasExtras = 0;
+                                    }
+                                    else
+                                    {
+                                        contadorQuebrarPagina++;
+                                        contadorLinhasExtras++;
+                                    }
+
+                                    if (contadorEspaçosExtras > 8)
+                                    {
+                                        contadorQuebrarPagina++;
+                                        contadorEspaçosExtras = 0;
+                                    }
+
+                                    if (numeroLinhasDescricao == 1 && contadorLinhasDescricao <= 1)
+                                    {
+                                        contadorLinhasDescricao++;
+                                    }
+                                    else if (contadorLinhasDescricao > 1)
+                                    {
+                                        contadorLinhasDescricao = 0;
+                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                                    }
+                                }
+
+                                int numeroLinhasAtual = 1;
+                                if (contadorLinhasDescricao > 1 && contadorLinhasExtras > 1)
+                                {
+                                    numeroLinhasAtual = 3;
+                                }
+
+                                @if (exibeConteudoDevolutivas)
+                                {
+                                    <tr>
+                                        <td colspan="4" class="alinhar-esquerda td-descricao">@valores.Descricao</td>
+                                    </tr>
+
+                                    if (numeroLinhasDescricao > 1)
+                                    {
+                                        contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
+                                    }
+                                    else
+                                    {
+                                        contadorQuebrarPagina++;
+                                    }
+
+                                    if (valoresIndex < bimestre.Devolutivas.Count() - 1 && !(contadorQuebrarPagina + numeroLinhasAtual >= contadorMaximoLinhasPorPagina))
+                                    {
+                                        @Html.Raw(EspacoEmBranco(exibeConteudoDevolutivas));
+                                        contadorEspaçosExtras++;
+                                    }
+
+                                }
+
+
+                                var quebraValores = VerificaQuebra(numeroLinhasAtual);
+
+                                if (quebraValores && valoresIndex < bimestre.Devolutivas.Count() - 1)
+                                {
+                                    @Html.Raw("</tbody></table>");
+                                    @Html.Raw("<div style='page-break-before:always'></div>");
+                                    @Html.Raw(MontarCabecalho())
+                                    @Html.Raw("<table class='tabela-cabecalho'>");
+                                    @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestre));
+                                    @Html.Raw("<tbody>");
+                                    bimestreIndex = -1;
+                                }
+
+                                valoresIndex++;
                             }
 
-                            if (numeroLinhasDescricao == 1 && contadorLinhasDescricao <= 1)
+                            @if (turmasIndex < Model.Turmas.Count() - 1)
                             {
-                                contadorLinhasDescricao++;
-                            }
-                            else if (contadorLinhasDescricao > 1)
-                            {
-                                contadorLinhasDescricao = 0;
-                                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                var quebraFinal = VerificaQuebra(5);
 
-                            }
-                        }
-
-                        int numeroLinhasAtual = 1;
-                        if (contadorLinhasDescricao > 1 && contadorLinhasExtras > 1)
-                        {
-                            numeroLinhasAtual = 3;
-                        }
-
-                        @if (exibeConteudoDevolutivas)
-                        {
-                            <tr>
-                                <td colspan="4" class="alinhar-esquerda" style="padding: 3px;">@valores.Descricao</td>
-                            </tr>
-
-                            if (numeroLinhasDescricao > 1)
-                            {
-                                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
-                            }
-                            else
-                            {
-                                contadorQuebrarPagina++;
+                                if (quebraFinal)
+                                {
+                                    @Html.Raw("</tbody></table>");
+                                    @Html.Raw("<div style='page-break-before:always'></div>");
+                                    @Html.Raw(MontarCabecalho())
+                                    @Html.Raw("<table class='tabela-cabecalho'>");
+                                    bimestreIndex = -1;
+                                }
+                                else
+                                {
+                                    @Html.Raw(EspacoEmBranco(false));
+                                    contadorQuebrarPagina++;
+                                }
                             }
 
-                            if (valoresIndex < bimestre.Devolutivas.Count() - 1 && !(contadorQuebrarPagina + numeroLinhasAtual >= contadorMaximoLinhasPorPagina))
-                            {
-                                @Html.Raw(EspacoEmBranco(exibeConteudoDevolutivas));
-                                contadorEspaçosExtras++;
-                            }
-
-                        }
-
-
-                        var quebraValores = VerificaQuebra(numeroLinhasAtual);
-
-                        if (quebraValores && valoresIndex < bimestre.Devolutivas.Count() - 1)
-                        {
-                            @Html.Raw("</tbody></table>");
-                            @Html.Raw("<div style='page-break-before:always'></div>");
-                            @Html.Raw(MontarCabecalho())
-                            @Html.Raw("<table class='tabela-cabecalho'>");
-                            @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestre));
-                            @Html.Raw("<tbody>");
-                            bimestreIndex = -1;
-                        }
-
-                        valoresIndex++;
-                    }
-
-                    @if (turmasIndex < Model.Turmas.Count() - 1)
-                    {
-                        var quebraFinal = VerificaQuebra(5);
-
-                        if (quebraFinal)
-                        {
-                            @Html.Raw("</tbody></table>");
-                            @Html.Raw("<div style='page-break-before:always'></div>");
-                            @Html.Raw(MontarCabecalho())
-                            @Html.Raw("<table class='tabela-cabecalho'>");
-                            bimestreIndex = -1;
-                        }
-                        else
-                        {
-                            @Html.Raw(EspacoEmBranco(false));
-                            contadorQuebrarPagina++;
-                        }
-                    }
-
-                </tbody>
+                        </tbody>
                         bimestreIndex++;
                     }
 

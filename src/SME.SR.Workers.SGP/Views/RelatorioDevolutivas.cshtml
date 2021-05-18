@@ -210,6 +210,13 @@
             .centralizar {
                 text-align: center;
             }
+
+            .td-descricao {
+                padding: 3px;
+                max-width: 788px;
+                height: auto;
+                word-wrap: break-word
+            }
         </style>
         <div>
             @Html.Raw(MontarCabecalho())
@@ -310,7 +317,7 @@
                                 @if (exibeConteudoDevolutivas)
                                 {
                                     <tr>
-                                        <td colspan="4" class="alinhar-esquerda" style="padding: 3px;">@valores.Descricao</td>
+                                        <td colspan="4" class="alinhar-esquerda td-descricao">@valores.Descricao</td>
                                     </tr>
 
                                     if (numeroLinhasDescricao > 1)
