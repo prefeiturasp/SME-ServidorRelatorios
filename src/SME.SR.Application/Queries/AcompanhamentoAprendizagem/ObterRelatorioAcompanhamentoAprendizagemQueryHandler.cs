@@ -83,7 +83,7 @@ namespace SME.SR.Application
                 alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
                 alunoRelatorio.RegistroPercursoTurma = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
                 alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
-                if (acompanhamentoAluno != null)
+                if (acompanhamento != null)
                 {
                     if (acompanhamento.PercursoTurmaImagens.Count > 0)
                     {
