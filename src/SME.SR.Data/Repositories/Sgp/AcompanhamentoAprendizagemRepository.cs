@@ -25,9 +25,9 @@ namespace SME.SR.Data
                                                    at2.apanhado_geral as ApanhadoGeral,
                                                    aas.observacoes as Observacoes,
                                                    at2.semestre,
-                                                   arq.tipo as Tipo,
                                                    arq.codigo,
                                                    arq.nome as NomeOriginal,
+                                                   arq.tipo,
                                                    arq.tipo_conteudo as TipoConteudo                                                   
                                               from turma t                                              
                                               inner join acompanhamento_turma at2 on at2.turma_id = t.id 
