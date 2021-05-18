@@ -5,7 +5,7 @@ namespace SME.SR.Application
 {
     public class GerarRelatorioHtmlParaPdfCommand : IRequest<string>
     {
-        public GerarRelatorioHtmlParaPdfCommand(string nomeTemplate, object model, Guid codigoCorrelacao, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true, string tituloRelatorioRodape = "")
+        public GerarRelatorioHtmlParaPdfCommand(string nomeTemplate, object model, Guid codigoCorrelacao, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true, string tituloRelatorioRodape = "", bool gerarPaginacao = true)
         {
             if (!string.IsNullOrWhiteSpace(nomeTemplate))
                 NomeTemplate = nomeTemplate.Replace(".cshtml", "");
@@ -15,6 +15,7 @@ namespace SME.SR.Application
             MensagemTitulo = mensagemTitulo;
             EnvioPorRabbit = envioPorRabbit;
             TituloRelatorioRodape = tituloRelatorioRodape;
+            GerarPaginacao = gerarPaginacao;
         }
 
         public Guid CodigoCorrelacao { get; set; }
@@ -25,5 +26,6 @@ namespace SME.SR.Application
         public string MensagemUsuario { get; set; }
         public string MensagemTitulo { get; set; }
         public bool EnvioPorRabbit { get; set; }
+        public bool GerarPaginacao { get; set; }
     }
 }

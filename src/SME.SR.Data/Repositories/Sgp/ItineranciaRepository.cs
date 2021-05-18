@@ -57,8 +57,7 @@ namespace SME.SR.Data.Interfaces
 	                        , ue.id, ue.ue_id as Codigo, ue.nome, ue.tipo_escola as TipoEscola
 	                        , dre.id, dre.dre_id as Codigo, dre.abreviacao, dre.nome 
                           from itinerancia i 
-                         inner join itinerancia_ue iu on iu.itinerancia_id = i.id
-                         inner join ue on ue.id = iu.ue_id 
+                         inner join ue on ue.id = i.ue_id 
                          inner join dre on dre.id = ue.dre_id
                          where i.id = ANY(@ids)
                         ";
