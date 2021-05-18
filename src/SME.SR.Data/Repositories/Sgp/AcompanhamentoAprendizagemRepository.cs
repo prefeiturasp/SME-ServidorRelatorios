@@ -18,56 +18,71 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto>> ObterAcompanhamentoAprendizagemPorTurmaESemestre(long turmaId, string alunoCodigo, int semestre)
+        public async Task<IEnumerable<AcompanhamentoAprendizagemTurmaDto>> ObterAcompanhamentoAprendizagemPorTurmaESemestre(long turmaId, string alunoCodigo, int semestre)
         {
-            var query = new StringBuilder(@" select aa.id,                                                   
-                                                   aa.aluno_codigo as AlunoCodigo,
-                                                   at2.apanhado_geral as ApanhadoGeral,
-                                                   aas.observacoes as Observacoes,
-                                                   at2.semestre,
-                                                   arq.codigo,
-                                                   arq.nome as NomeOriginal,
-                                                   arq.tipo,
-                                                   arq.tipo_conteudo as TipoConteudo                                                   
-                                              from turma t                                              
-                                              inner join acompanhamento_turma at2 on at2.turma_id = t.id 
-                                              inner join acompanhamento_aluno aa on aa.turma_id = t.id 
-                                              inner join acompanhamento_aluno_semestre aas on aas.acompanhamento_aluno_id = aa.id 
-                                               left join acompanhamento_aluno_foto aaf on aaf.acompanhamento_aluno_semestre_id = aas.id 
-                                               left join arquivo arq on arq.id = aaf.arquivo_id   
-                                              where t.id = @turmaId                                                 
-                                                and aaf.miniatura_id is not null ");
+            var query = new StringBuilder(@"select at2.id,
+   	        	                                   at2.apanhado_geral as ApanhadoGeral,
+   	        	                                   at2.semestre,
+   	                                               tb1.id,                                                   
+                                                   tb1.aluno_codigo as AlunoCodigo,                   
+                                                   tb1.observacoes as Observacoes,                   
+                                                   tb1.codigo as id,
+                                                   tb1.codigo,
+                                                   tb1.nome as NomeOriginal,
+                                                   tb1.tipo_conteudo as TipoArquivo,
+                                                   tb1.tipo
+                                              from acompanhamento_turma at2
+                                              left join (select aa.id,
+      					                                        aa.turma_id,
+      					                                        aas.semestre,
+			       		                                        aa.aluno_codigo,       		
+			       		                                        aas.observacoes,       		
+			       		                                        arq.codigo,
+			       		                                        arq.nome,
+			       		                                        arq.tipo_conteudo, arq.tipo
+			                                               from acompanhamento_aluno aa
+			                                              inner join acompanhamento_aluno_semestre aas on aas.acompanhamento_aluno_id = aa.id
+			   	                                           left join acompanhamento_aluno_foto aaf on aaf.acompanhamento_aluno_semestre_id = aas.id 
+			   	                                           left join arquivo arq on arq.id = aaf.arquivo_id
+			   	                                          where aa.turma_id = @turmaId ");
 
             if (!string.IsNullOrEmpty(alunoCodigo))
                 query.AppendLine("and aa.aluno_codigo = @alunoCodigo ");
+
+            query.AppendLine(@"and aaf.miniatura_id is not null) as tb1 on tb1.turma_id = at2.turma_id and tb1.semestre = at2.semestre
+                               where at2.turma_id = @turmaId ");
 
             if (semestre > 0)
                 query.AppendLine("and at2.semestre = @semestre");
 
             var parametros = new { turmaId, alunoCodigo, semestre };
 
-            var lookup = new Dictionary<string, AcompanhamentoAprendizagemAlunoRetornoDto>();
+            var lookup = new Dictionary<long, AcompanhamentoAprendizagemTurmaDto>();
+
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                await conexao.QueryAsync<AcompanhamentoAprendizagemAlunoRetornoDto, ArquivoDto, AcompanhamentoAprendizagemAlunoRetornoDto>(query.ToString(),
-                 (acompanhamentoAprendizagemAlunoRetornoDto, acompanhamentoAprendizagemAlunoFotoDto) =>
+                await conexao.QueryAsync<AcompanhamentoAprendizagemTurmaDto, AcompanhamentoAprendizagemAlunoDto, ArquivoDto, AcompanhamentoAprendizagemTurmaDto>(query.ToString(),
+                 (acompanhamentoAprendizagemTurmaDto, acompanhamentoAprendizagemAlunoDto, arquivoDto) =>
                  {
-                     AcompanhamentoAprendizagemAlunoRetornoDto acompanhamentoAprendizagem = new AcompanhamentoAprendizagemAlunoRetornoDto();
+                     AcompanhamentoAprendizagemTurmaDto acompanhamentoAprendizagem = new AcompanhamentoAprendizagemTurmaDto();
 
-
-                     if (!lookup.TryGetValue(acompanhamentoAprendizagemAlunoRetornoDto.AlunoCodigo, out acompanhamentoAprendizagem))
+                     if (!lookup.TryGetValue(acompanhamentoAprendizagemTurmaDto.Id, out acompanhamentoAprendizagem))
                      {
-                         acompanhamentoAprendizagem = acompanhamentoAprendizagemAlunoRetornoDto;
-                         lookup.Add(acompanhamentoAprendizagem.AlunoCodigo, acompanhamentoAprendizagemAlunoRetornoDto);
+                         acompanhamentoAprendizagem = acompanhamentoAprendizagemTurmaDto;
+                         lookup.Add(acompanhamentoAprendizagem.Id, acompanhamentoAprendizagemTurmaDto);
                      }
-                     if (acompanhamentoAprendizagemAlunoFotoDto != null)
-                         acompanhamentoAprendizagem.Add(acompanhamentoAprendizagemAlunoFotoDto);
+                     if (acompanhamentoAprendizagemAlunoDto != null)
+                         acompanhamentoAprendizagem.Add(acompanhamentoAprendizagemAlunoDto);
+
+                     if (arquivoDto != null)
+                         acompanhamentoAprendizagem.AddFotoAluno(acompanhamentoAprendizagemAlunoDto.AlunoCodigo, arquivoDto);
 
                      return acompanhamentoAprendizagem;
-                 }, param: parametros, splitOn: "codigo");
+                 }, param: parametros);
 
             }
+
             return lookup.Values;
         }
     }

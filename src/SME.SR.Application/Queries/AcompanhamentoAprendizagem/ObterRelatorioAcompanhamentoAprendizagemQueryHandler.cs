@@ -23,7 +23,7 @@ namespace SME.SR.Application
             var turma = request.Turma;
             var alunosEol = request.AlunosEol;
             var professores = request.Professores;
-            var acompanhmentosAlunos = request.AcompanhamentosAlunos;
+            var acompanhamentoTurma = request.AcompanhamentoTurma;
             var frequenciaAlunos = request.FrequenciaAlunos;
             var registrosIndividuais = request.RegistrosIndividuais;
             var ocorrencias = request.Ocorrencias;
@@ -35,7 +35,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = await MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
+                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
             };
 
             return relatorio;
@@ -60,13 +60,15 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
+        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             foreach (var alunoEol in alunosEol)
-            {
-                var acompanhamentoAluno = alunosAcompanhamento.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
+            {                
+                var acompanhamentoAluno = acompanhamentoTurma.First().Alunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
+
+                var acompanhamento = acompanhamentoTurma.First();
 
                 if (alunoEol == null)
                     throw new NegocioException("AlunoEol não encontrado");
@@ -79,14 +81,14 @@ namespace SME.SR.Application
                 alunoRelatorio.Situacao = alunoEol.SituacaoRelatorio;
                 alunoRelatorio.Responsavel = alunoEol.ResponsavelFormatado();
                 alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
-                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoTurmaFormatado() ?? "") : "";
+                alunoRelatorio.RegistroPercursoTurma = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
                 alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
                 if (acompanhamentoAluno != null)
                 {
-                    if (acompanhamentoAluno.PercursoTurmaImagens.Count > 0)
+                    if (acompanhamento.PercursoTurmaImagens.Count > 0)
                     {
                         alunoRelatorio.PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
-                        foreach (var imagem in acompanhamentoAluno.PercursoTurmaImagens)
+                        foreach (var imagem in acompanhamento.PercursoTurmaImagens)
                         {
                             var arr = imagem.Imagem.Split("/");
                             var codigo = arr[arr.Length - 1];
@@ -138,9 +140,13 @@ namespace SME.SR.Application
             foreach (var bimestre in bimestres.OrderBy(b => b))
             {
                 var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == bimestre);
+                var aulasDadas = quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre);
+
                 var quantidadeAulas = quantidadeAulasDadas.Count() == 0 ?
                     0 :
-                    quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre).Quantidade;
+                    aulasDadas != null ?
+                    aulasDadas.Quantidade :
+                    0;
 
                 var freqenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {

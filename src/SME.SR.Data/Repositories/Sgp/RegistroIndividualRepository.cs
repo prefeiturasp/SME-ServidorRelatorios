@@ -46,20 +46,27 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto>> ObterRegistroIndividualPorTurmaEAluno(long turmaId, long? alunoCodigo)
+        public async Task<IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto>> ObterRegistroIndividualPorTurmaEAluno(long turmaId, long? alunoCodigo, DateTime dataInicio, DateTime dataFim)
         {
             var query = new StringBuilder(@"select ri.aluno_codigo as alunoCodigo, 
                                                    ri.turma_id as turmaId, 
                                                    ri.data_registro as dataRegistro, 
                                                    ri.registro 
                                               from registro_individual ri 
-                                             where ri.turma_id = @turmaId                                               
+                                             where ri.turma_id = @turmaId
+                                               and ri.data_registro::date between @dataInicio and @dataFim
                                                and not excluido ");
 
             if (alunoCodigo != null && alunoCodigo > 0)
                 query.AppendLine("and ri.aluno_codigo = @alunoCodigo");
 
-            var parametros = new { turmaId, alunoCodigo };
+            var parametros = new 
+            { 
+                turmaId, 
+                alunoCodigo, 
+                dataInicio, 
+                dataFim 
+            };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {

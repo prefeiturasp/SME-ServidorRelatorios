@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,13 +40,18 @@ namespace SME.SR.Application
 
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(turma.AnoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre));
 
+            var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
+
+            var dataInicio = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.First()).PeriodoInicio;
+            var dataFim = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.Last()).PeriodoFim;
+
             var quantidadeAulasDadas = await mediator.Send(new ObterQuantiaddeAulasDadasPorTurmaEBimestreQuery(turma.Codigo, tipoCalendarioId, bimestres));
             
             var frequenciaAlunos = await mediator.Send(new ObterFrequenciaGeralAlunosPorTurmaEBimestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), bimestres));
             
-            var registrosIndividuais = await mediator.Send(new ObterRegistroIndividualPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo));
+            var registrosIndividuais = await mediator.Send(new ObterRegistroIndividualPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, dataInicio, dataFim));
 
-            var Ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo));            
+            var Ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, dataInicio, dataFim));            
 
             var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas));            
 
@@ -56,6 +63,6 @@ namespace SME.SR.Application
             if (semestre == 1)
                 return new int[] { 1, 2 };
             else return new int[] { 3, 4 };
-        }
+        }        
     }
 }

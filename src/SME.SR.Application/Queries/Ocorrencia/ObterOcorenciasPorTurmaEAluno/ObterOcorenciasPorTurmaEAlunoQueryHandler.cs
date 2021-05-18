@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto>> Handle(ObterOcorenciasPorTurmaEAlunoQuery request, CancellationToken cancellationToken)
         {
-            var ocorrencias = await ocorrenciaRepository.ObterOcorenciasPorTurmaEAluno(request.TurmaId, request.AlunoCodigo);
+            var ocorrencias = await ocorrenciaRepository.ObterOcorenciasPorTurmaEAluno(request.TurmaId, request.AlunoCodigo, request.DataInicio, request.DataFim);
 
             return ocorrencias;
         }
