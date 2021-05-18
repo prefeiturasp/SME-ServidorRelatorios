@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto>> Handle(ObterRegistroIndividualPorTurmaEAlunoQuery request, CancellationToken cancellationToken)
         {
-            var registroIndividual = await registroIndividualRepository.ObterRegistroIndividualPorTurmaEAluno(request.TurmaId, request.AlunoCodigo);
+            var registroIndividual = await registroIndividualRepository.ObterRegistroIndividualPorTurmaEAluno(request.TurmaId, request.AlunoCodigo, request.DataInicio, request.DataFim);
 
             return registroIndividual;
         }

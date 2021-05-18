@@ -24,7 +24,7 @@ namespace SME.SR.Application
             var turma = request.Turma;
             var alunosEol = request.AlunosEol;
             var professores = request.Professores;
-            var acompanhmentosAlunos = request.AcompanhamentosAlunos;
+            var acompanhamentoTurma = request.AcompanhamentoTurma;
             var frequenciaAlunos = request.FrequenciaAlunos;
             var registrosIndividuais = request.RegistrosIndividuais;
             var ocorrencias = request.Ocorrencias;
@@ -36,7 +36,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = MontarAlunos(acompanhmentosAlunos, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
+                Alunos = MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
             };
 
             return Task.FromResult(relatorio);
@@ -61,13 +61,15 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoRetornoDto> alunosAcompanhamento, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
+        private List<RelatorioAcompanhamentoAprendizagemAlunoDto> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             foreach (var alunoEol in alunosEol)
-            {
-                var acompanhamentoAluno = alunosAcompanhamento.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
+            {                
+                var acompanhamentoAluno = acompanhamentoTurma.First().Alunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
+
+                var acompanhamento = acompanhamentoTurma.First();
 
                 if (alunoEol == null)
                     throw new NegocioException("AlunoEol não encontrado");
@@ -80,10 +82,10 @@ namespace SME.SR.Application
                 alunoRelatorio.Situacao = alunoEol.SituacaoRelatorio;
                 alunoRelatorio.Responsavel = alunoEol.ResponsavelFormatado();
                 alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
-                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoTurmaFormatado() ?? "") : "";
+                alunoRelatorio.RegistroPercursoTurma = acompanhamentoAluno != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
                 alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
                 if (acompanhamentoAluno != null)
-                    alunoRelatorio.PercursoTurmaImagens = acompanhamentoAluno.PercursoTurmaImagens;
+                    alunoRelatorio.PercursoTurmaImagens = acompanhamento.PercursoTurmaImagens;
 
                 if (acompanhamentoAluno != null)
                 {
@@ -115,9 +117,13 @@ namespace SME.SR.Application
             foreach (var bimestre in bimestres.OrderBy(b => b))
             {
                 var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == bimestre);
+                var aulasDadas = quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre);
+
                 var quantidadeAulas = quantidadeAulasDadas.Count() == 0 ?
                     0 :
-                    quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre).Quantidade;
+                    aulasDadas != null ?
+                    aulasDadas.Quantidade :
+                    0;
 
                 var freqenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {
@@ -137,7 +143,7 @@ namespace SME.SR.Application
             if (!Directory.Exists(diretorio))
                 Directory.CreateDirectory(diretorio);
 
-            var nomeArquivo = $"{foto.Codigo}.{foto.Extensao}";
+            var nomeArquivo = $"{foto.Id}.{foto.Extensao}";
             var caminhoArquivo = Path.Combine(diretorio, nomeArquivo);
             if (!File.Exists(caminhoArquivo))
                 return "";

@@ -5,6 +5,7 @@ namespace SME.SR.Infra
 {
     public class AcompanhamentoAprendizagemAlunoFotoDto
     {
+        public Guid Id { get; set; }
         public string TipoArquivo { get; set; }
         public Guid Codigo { get; set; }
         public string NomeOriginal { get; set; }
