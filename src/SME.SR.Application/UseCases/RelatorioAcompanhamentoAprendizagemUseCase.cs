@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
-using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,18 +40,31 @@ namespace SME.SR.Application
 
             var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
 
-            var dataInicio = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.First()).PeriodoInicio;
-            var dataFim = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.Last()).PeriodoFim;
+            int ano = DateTime.Now.Year;
+            var dataInicio = new DateTime();
+            var dataFim = new DateTime();
+
+            if (parametros.Semestre == 1)
+            {
+                dataInicio = new DateTime(ano, 1, 1);
+                dataFim = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.Last()).PeriodoFim;
+            }
+
+            if (parametros.Semestre == 2)
+            {
+                dataInicio = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.First()).PeriodoInicio;
+                dataFim = new DateTime(ano, 12, 31);
+            }
 
             var quantidadeAulasDadas = await mediator.Send(new ObterQuantiaddeAulasDadasPorTurmaEBimestreQuery(turma.Codigo, tipoCalendarioId, bimestres));
-            
+
             var frequenciaAlunos = await mediator.Send(new ObterFrequenciaGeralAlunosPorTurmaEBimestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), bimestres));
-            
+
             var registrosIndividuais = await mediator.Send(new ObterRegistroIndividualPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, dataInicio, dataFim));
 
-            var Ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, dataInicio, dataFim));            
+            var Ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, dataInicio, dataFim));
 
-            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas));            
+            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas));
 
             await mediator.Send(new GerarRelatorioHtmlPDFAcompAprendizagemCommand(relatorioDto, filtro.CodigoCorrelacao));
         }
@@ -63,6 +74,6 @@ namespace SME.SR.Application
             if (semestre == 1)
                 return new int[] { 1, 2 };
             else return new int[] { 3, 4 };
-        }        
+        }
     }
 }
