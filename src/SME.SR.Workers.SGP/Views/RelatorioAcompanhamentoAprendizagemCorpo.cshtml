@@ -479,7 +479,7 @@
                 contadorQuebrarPagina = 0;
                 @Html.Raw(MontarRegistroPercursoRodape());
                 @Html.Raw("</tbody></table>");
-                @Html.Raw("<div style='page-break-before:always'></div>");
+                @Html.Raw("<div style='page-break-before:always'></div>");                
 
                 if (!String.IsNullOrEmpty(estudante))
                 {
@@ -493,8 +493,7 @@
                 var qntCaracteresParaBuscar = registroPercursoTurma.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaPercurso ? registroPercursoTurma.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaPercurso;
                 var textParaExibir = registroPercursoTurma.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
                 iContadorCaracteres += textParaExibir.Length;
-                <span>@Html.Raw(textParaExibir)</span>
-                quebrou = false;
+                <span>@Html.Raw(textParaExibir)</span>                
                 contadorQuebrarPagina++;
             }
 
@@ -547,8 +546,10 @@
             if (!quebrou)
             {
                 contadorQuebrarPagina = contadorQuebrarPagina + 11;
-                imprimirTitulo = false;
+                if (contarImpressao != 0)
+                    imprimirTitulo = false;
             }
+
 
             if (maximoFotos > 3 && restoLinhas != 0 && contarImpressao != 0)
             {
