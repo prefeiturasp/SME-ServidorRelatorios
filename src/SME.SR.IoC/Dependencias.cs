@@ -19,6 +19,7 @@ using SME.SR.JRSClient.Interfaces;
 using SME.SR.JRSClient.Services;
 using SME.SR.Workers.SGP;
 using System;
+using System.IO;
 using System.Net;
 
 namespace SME.SR.IoC
@@ -76,6 +77,11 @@ namespace SME.SR.IoC
                 });
 
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
+
+            var context = new CustomAssemblyLoadContext();
+            var nomeBliblioteca = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows) ? "libwkhtmltox.dll" : "libwkhtmltox.so";
+            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), nomeBliblioteca));
+
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddScoped<IHtmlHelper, HtmlHelper>();
 
@@ -168,6 +174,7 @@ namespace SME.SR.IoC
         private static void RegistrarServicos(IServiceCollection services)
         {
             services.TryAddScoped<IServicoFila, FilaRabbit>();
+            services.TryAddScoped<IReportConverter, PdfGenerator>();
         }
 
         private static void RegistrarUseCase(IServiceCollection services)

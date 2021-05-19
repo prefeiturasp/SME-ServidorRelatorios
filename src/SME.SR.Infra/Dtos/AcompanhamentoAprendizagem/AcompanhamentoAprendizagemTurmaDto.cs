@@ -49,7 +49,7 @@ namespace SME.SR.Infra
             foreach (var imagem in imagens)
             {
                 var numeroImagem = i++;
-                var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $" imagem {numeroImagem} ");
+                var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $"#imagem{numeroImagem}");
 
                 string pattern = @"(https|http):.*(jpg|jpeg|gif|png|bmp)";
                 string input = imagem.ToString();
@@ -67,13 +67,13 @@ namespace SME.SR.Infra
                 ApanhadoGeral = textoSemImagem;
             }
 
-            var registroFormatado = UtilRegex.RemoverTagsHtmlMidia(ApanhadoGeral);
+            var registroFormatado = UtilRegex.RemoverTagsHtmlMultiMidia(ApanhadoGeral);
             var registrosemTag = UtilRegex.RemoverTagsHtml(registroFormatado);
 
             foreach (var img in imagens)
             {
                 var numeroImagem = j++;
-                var textoSemImagem = registrosemTag.Replace($"imagem {numeroImagem}", $"<b>imagem {numeroImagem}</b>");
+                var textoSemImagem = registrosemTag.Replace($"#imagem{numeroImagem}", $"<b>imagem {numeroImagem}</b>");
 
                 registrosemTag = textoSemImagem;
             }

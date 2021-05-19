@@ -46,14 +46,15 @@ namespace SME.SR.Application
             var professoresCabecalho = "";
 
             if (professores != null && professores.Any())
-                professoresCabecalho = String.Join(", ", professores.Select(p => p.NomeProfessor).ToArray());
+                professoresCabecalho = professores.FirstOrDefault().NomeProfessor.Contains("Não há professor titular") ?
+                    "Não há professor titular" : String.Join(", ", professores.Select(p => p.NomeProfessor).ToArray());
 
             var cabecalho = new RelatorioAcompanhamentoAprendizagemCabecalhoDto
             {
                 Dre = turma.Dre.Abreviacao,
                 Ue = turma.Ue.NomeComTipoEscola,
                 Turma = turma.NomeRelatorio,
-                Semestre = filtro.SemestreFormatado(),
+                Semestre = filtro.SemestreFormatado(turma.AnoLetivo),
                 Professores = professoresCabecalho,
             };
 
@@ -64,50 +65,60 @@ namespace SME.SR.Application
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
-            foreach (var alunoEol in alunosEol)
-            {                
-                var acompanhamentoAluno = acompanhamentoTurma.First().Alunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
+            var acompanhamento = acompanhamentoTurma.Count() > 0 ? acompanhamentoTurma?.First() : null;
+            var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
 
-                var acompanhamento = acompanhamentoTurma.First();
+            List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> percursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>(); 
+
+            if (acompanhamento != null)
+            {
+                if (acompanhamento.PercursoTurmaImagens.Count > 0)
+                {
+                    foreach (var imagem in acompanhamento.PercursoTurmaImagens)
+                    {
+                        var arr = imagem.Imagem.Split("/");
+                        var codigo = arr[arr.Length - 1];
+                        codigo = codigo.Split(".")[0];
+                        var arquivo = await mediator.Send(new ObterArquivoPorCodigoQuery(Guid.Parse(codigo)));
+
+                        var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(arquivo));
+                        if (!String.IsNullOrEmpty(fotoBase64))
+                        {
+                            percursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+                            {
+                                NomeImagem = imagem.NomeImagem,
+                                Imagem = fotoBase64
+                            });
+                        }
+
+                    }
+                }
+            }
+
+
+            foreach (var alunoEol in alunosEol)
+            {
+                AcompanhamentoAprendizagemAlunoDto acompanhamentoAluno = null;
+
+                if (acompanhamento != null)
+                    acompanhamentoAluno = acompanhamento.Alunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
 
                 if (alunoEol == null)
                     throw new NegocioException("AlunoEol não encontrado");
 
-                var alunoRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoDto();
-                alunoRelatorio.NomeEol = alunoEol.NomeAluno;
-                alunoRelatorio.Nome = alunoEol.NomeRelatorio;
-                alunoRelatorio.DataNascimento = alunoEol.DataNascimentoFormatado();
-                alunoRelatorio.CodigoEol = alunoEol.AlunoCodigo.ToString();
-                alunoRelatorio.Situacao = alunoEol.SituacaoRelatorio;
-                alunoRelatorio.Responsavel = alunoEol.ResponsavelFormatado();
-                alunoRelatorio.Telefone = alunoEol.ResponsavelCelularFormatado();
-                alunoRelatorio.RegistroPercursoTurma = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
-                alunoRelatorio.Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "";
-                if (acompanhamentoAluno != null)
+                var alunoRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoDto
                 {
-                    if (acompanhamento.PercursoTurmaImagens.Count > 0)
-                    {
-                        alunoRelatorio.PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
-                        foreach (var imagem in acompanhamento.PercursoTurmaImagens)
-                        {
-                            var arr = imagem.Imagem.Split("/");
-                            var codigo = arr[arr.Length - 1];
-                            codigo = codigo.Split(".")[0];
-                            var arquivo = await mediator.Send(new ObterArquivoPorCodigoQuery(Guid.Parse(codigo)));
-
-                            var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(arquivo));
-                            if (!String.IsNullOrEmpty(fotoBase64))
-                            {
-                                alunoRelatorio.PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
-                                {
-                                    NomeImagem = imagem.NomeImagem,
-                                    Imagem = fotoBase64
-                                });
-                            }
-
-                        }
-                    }
-                }
+                    NomeEol = alunoEol.NomeAluno,
+                    Nome = alunoEol.NomeRelatorio,
+                    DataNascimento = alunoEol.DataNascimentoFormatado(),
+                    CodigoEol = alunoEol.AlunoCodigo.ToString(),
+                    Situacao = alunoEol.SituacaoRelatorio,
+                    Responsavel = alunoEol.ResponsavelFormatado(),
+                    Telefone = alunoEol.ResponsavelCelularFormatado(),
+                    RegistroPercursoTurma = percursoFormatado,
+                    Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "",
+                    PercursoTurmaImagens = percursoTurmaImagens
+                };
 
 
                 if (acompanhamentoAluno != null)

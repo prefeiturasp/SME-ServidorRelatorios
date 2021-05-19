@@ -15,7 +15,7 @@ namespace SME.SR.HtmlPdf
 
         public PdfGenerator(IConverter converter)
         {
-            this.converter = converter;
+            this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
         }
 
         public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true)
@@ -112,8 +112,10 @@ namespace SME.SR.HtmlPdf
             }
 
             converter.Convert(doc);
+            doc = null;
+            GC.Collect();
         }
-        private static HtmlToPdfDocument StartBasicDocPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string tituloRelatorioRodape = "")
+        private HtmlToPdfDocument StartBasicDocPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string tituloRelatorioRodape = "")
         {
             var doc = new HtmlToPdfDocument()
             {
@@ -140,9 +142,10 @@ namespace SME.SR.HtmlPdf
                 });
             }
 
+            
             return doc;
         }
-        private static HtmlToPdfDocument StartBasicDoc(List<string> paginas)
+        private HtmlToPdfDocument StartBasicDoc(List<string> paginas)
         {
             var doc = new HtmlToPdfDocument()
             {

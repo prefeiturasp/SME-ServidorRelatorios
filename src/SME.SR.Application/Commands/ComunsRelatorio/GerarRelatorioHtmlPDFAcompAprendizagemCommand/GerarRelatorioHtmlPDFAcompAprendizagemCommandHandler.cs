@@ -14,17 +14,17 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 {
     public class GerarRelatorioHtmlPDFAcompAprendizagemCommandHandler : IRequestHandler<GerarRelatorioHtmlPDFAcompAprendizagemCommand, string>
     {
-        private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
         private readonly IHtmlHelper htmlHelper;
+        private readonly IReportConverter reportConverter;
 
         public GerarRelatorioHtmlPDFAcompAprendizagemCommandHandler(IConverter converter,
                                                               IServicoFila servicoFila,
-                                                              IHtmlHelper htmlHelper)
+                                                              IHtmlHelper htmlHelper, IReportConverter reportConverter)
         {
-            this.converter = converter;
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
             this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
+            this.reportConverter = reportConverter ?? throw new ArgumentNullException(nameof(reportConverter));
         }
 
         public async Task<string> Handle(GerarRelatorioHtmlPDFAcompAprendizagemCommand request, CancellationToken cancellationToken)
@@ -67,15 +67,16 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
 
-            PdfGenerator pdfGenerator = new PdfGenerator(converter);
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
-
+            //PdfGenerator pdfGenerator = new PdfGenerator(converter);
+            reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
+            
             if (request.EnvioPorRabbit)
             {
                 servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
                 return string.Empty;
             }
-            else return request.CodigoCorrelacao.ToString();
+
+            return request.CodigoCorrelacao.ToString();
 
         }
     }

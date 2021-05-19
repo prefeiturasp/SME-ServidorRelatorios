@@ -17,7 +17,7 @@ namespace SME.SR.Application
 
         }
 
-        public Task<string> Handle(TransformarArquivoBase64Command request, CancellationToken cancellationToken)
+        public async Task<string> Handle(TransformarArquivoBase64Command request, CancellationToken cancellationToken)
         {
             var diretorio = Path.Combine(variaveisAmbiente.PastaArquivosSGP,  $@"Arquivos/{request.Arquivo.Tipo}");
 
@@ -27,10 +27,9 @@ namespace SME.SR.Application
             var nomeArquivo = $"{request.Arquivo.Codigo}.{request.Arquivo.Extensao}";
             var caminhoArquivo = Path.Combine(diretorio, nomeArquivo);
             if (!File.Exists(caminhoArquivo))
-                return Task.FromResult("");
+                return "";
 
-            var arquivo = File.ReadAllBytes(caminhoArquivo);
-            return Task.FromResult($"data:{request.Arquivo.TipoArquivo};base64,{Convert.ToBase64String(arquivo)}");
+            return $"data:{request.Arquivo.TipoArquivo};base64,{Convert.ToBase64String(File.ReadAllBytes(caminhoArquivo))}";
         }
 
     }

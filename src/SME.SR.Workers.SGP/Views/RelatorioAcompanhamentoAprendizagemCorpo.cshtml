@@ -2,11 +2,12 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 43;
+    int contadorMaximoLinhasPorPagina = 42;
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
-    int contadorMaximoCaracteresPorLinhaPercurso = 240;
+    int contadorMaximoCaracteresPorLinhaPercurso = 230;
     int contadorMaximoCaracteresPorLinhaRegistroIndividual = 185;
+    int contadorMaximoCaracteresPorLinhaOcorrencias = 160;
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
@@ -274,7 +275,7 @@
             var descricaoRegistroIndividual = registroIndividual.Descricao;
             var dataRegistroIndividual = registroIndividual.Data;
 
-            if (contarRegistroIndividual == 0 && contadorQuebrarPagina < contadorMaximoLinhasPorPagina)
+            if (contarRegistroIndividual == 0 && contadorQuebrarPagina + 3 < contadorMaximoLinhasPorPagina)
             {
                 @Html.Raw(MontarTitulo(titulo))
                 @Html.Raw("<table class='tabela-alunos'><tbody>")
@@ -325,6 +326,54 @@
         return "";
     }
 
+    string MontarOcorrenciasNovo(string descricaoOcorrencia, string estudante, string titulo, string data, string tipo, string subTitulo)
+    {
+        var iContadorCaracteres = 0;       
+        @while (iContadorCaracteres != descricaoOcorrencia.Length)
+        {
+            if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
+            {
+                contadorQuebrarPagina = 0;
+                @Html.Raw("</td></tr></tbody></table>")
+                @Html.Raw("</tbody></table>");
+                @Html.Raw("<div style='page-break-before:always'></div>");
+
+                if (!String.IsNullOrEmpty(estudante))
+                {
+                    @Html.Raw(MontarTitulo(estudante));
+                    @Html.Raw(MontarTitulo(titulo))
+                    @Html.Raw("<table class='tabela-alunos'><tbody>")
+                    @Html.Raw(MontarCabecalhoOcorrencias(data, tipo, subTitulo))
+                    @Html.Raw("<tr><td class='alinhar-esquerda espaco-esquerda-15'>")
+                    contadorQuebrarPagina++;
+                }
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = descricaoOcorrencia.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaOcorrencias ? descricaoOcorrencia.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaOcorrencias;
+                var textParaExibir = descricaoOcorrencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+
+                @Html.Raw(textParaExibir)
+
+                contadorQuebrarPagina++;
+            }
+        }
+
+        return "";
+    }
+
+    string MontarCabecalhoOcorrencias(string data, string tipo, string subTitulo)
+    {
+        <tr>
+            <td rowspan="2" width="15%">@data</td>
+            <td rowspan="2" width="15%">@tipo</td>
+            <td class="alinhar-esquerda espaco-esquerda-15">@subTitulo</td>
+        </tr>
+
+        return "";
+    }
+
     string MontarOcorrencias(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
     {
         var tituloOcorrencias = "OCORRÊNCIAS";
@@ -343,29 +392,16 @@
                     var descricaoOcorrencia = ocorrencia.Descricao;
                     int numeroLinhasOcorrencia = CalcularLinhas(descricaoOcorrencia.Length);
 
-                    QuebrarLinhas(numeroLinhasOcorrencia + 2, aluno.Nome, tituloOcorrencias);
-
-                    if (!quebrou)
-                    {
-                        SomaLinhasContador(numeroLinhasOcorrencia);
-                    }
-                    else
-                    {
-                        @Html.Raw(MontarSubTituloOcorrencias())
-                        contadorQuebrarPagina++;
-                    }
-
-                    <tr>
-                        <td rowspan="2" width="15%">@ocorrencia.Data</td>
-                        <td rowspan="2" width="15%">@ocorrencia.Tipo</td>
-                        <td class="alinhar-esquerda espaco-esquerda-15">@ocorrencia.Titulo</td>
-                    </tr>
+                    MontarCabecalhoOcorrencias(ocorrencia.Data, ocorrencia.Tipo, ocorrencia.Titulo);
 
                     contadorQuebrarPagina++;
 
                     <tr>
-                        <td class="alinhar-esquerda espaco-esquerda-15">@descricaoOcorrencia</td>
+                        <td class="alinhar-esquerda espaco-esquerda-15">
+                            @Html.Raw(MontarOcorrenciasNovo(descricaoOcorrencia, aluno.Nome, tituloOcorrencias, ocorrencia.Data, ocorrencia.Tipo, ocorrencia.Titulo))
+                        </td>
                     </tr>
+
                 }
             </tbody>
         </table>
@@ -474,7 +510,7 @@
 
         @while (iContadorCaracteres != registroPercursoTurma.Length)
         {
-            if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
+            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
             {
                 contadorQuebrarPagina = 0;
                 @Html.Raw(MontarRegistroPercursoRodape());
@@ -513,7 +549,11 @@
 
         MontarFotos(Model);
 
-        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        contadorQuebrarPagina = contadorQuebrarPagina + 10;
+    }
+    else
+    {
+        contadorMaximoCaracteresPorLinhaPercurso = 210;
     }
 
     var registroPercursoTurma = Model.RegistroPercursoTurma;
@@ -540,19 +580,21 @@
         int contarImpressao = 0;
         while (contarImpressao < pararImpressao)
         {
-            QuebrarLinhas(9, Model.Nome);
+            QuebrarLinhas(11, Model.Nome);
+            bool imprimirTitulo = true;
 
             if (!quebrou)
             {
-                contadorQuebrarPagina = contadorQuebrarPagina + 9;
+                contadorQuebrarPagina = contadorQuebrarPagina + 11;
+                if (contarImpressao != 0)
+                    imprimirTitulo = false;
             }
 
-            bool imprimirTitulo = true;
+
             if (maximoFotos > 3 && restoLinhas != 0 && contarImpressao != 0)
             {
                 minimoImpressaoFotos = 3 * numeroLinhas;
                 maximoImpressaoFotos = 6 + (3 * (numeroLinhas - 1));
-                imprimirTitulo = false;
             }
 
             MontarImagensAnexas(Model, minimoImpressaoFotos, maximoImpressaoFotos, imprimirTitulo);
