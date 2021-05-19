@@ -79,7 +79,7 @@ namespace SME.SR.IoC
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
 
             var context = new CustomAssemblyLoadContext();
-            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
+            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.so"));
 
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddScoped<IHtmlHelper, HtmlHelper>();
