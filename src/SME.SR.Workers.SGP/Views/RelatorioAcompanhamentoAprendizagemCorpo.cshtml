@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 43;
+    int contadorMaximoLinhasPorPagina = 42;
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
     int contadorMaximoCaracteresPorLinhaPercurso = 236;
@@ -274,7 +274,7 @@
             var descricaoRegistroIndividual = registroIndividual.Descricao;
             var dataRegistroIndividual = registroIndividual.Data;
 
-            if (contarRegistroIndividual == 0 && contadorQuebrarPagina < contadorMaximoLinhasPorPagina)
+            if (contarRegistroIndividual == 0 && contadorQuebrarPagina + 3 < contadorMaximoLinhasPorPagina)
             {
                 @Html.Raw(MontarTitulo(titulo))
                 @Html.Raw("<table class='tabela-alunos'><tbody>")
