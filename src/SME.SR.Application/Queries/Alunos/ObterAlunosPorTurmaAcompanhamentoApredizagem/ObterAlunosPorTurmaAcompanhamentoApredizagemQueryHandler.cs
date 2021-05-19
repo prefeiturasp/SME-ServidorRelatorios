@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<AlunoRetornoDto>> Handle(ObterAlunosPorTurmaAcompanhamentoApredizagemQuery request, CancellationToken cancellationToken)
         {
-            var alunos = await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(request.TurmaCodigo), request.AlunoCodigo);
+            var alunos = await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(request.TurmaCodigo), request.AlunoCodigo, request.AnoLetivo);
 
             return alunos;
         }
