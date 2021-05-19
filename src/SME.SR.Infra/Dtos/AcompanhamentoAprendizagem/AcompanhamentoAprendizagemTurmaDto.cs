@@ -67,7 +67,7 @@ namespace SME.SR.Infra
                 ApanhadoGeral = textoSemImagem;
             }
 
-            var registroFormatado = UtilRegex.RemoverTagsHtmlMidia(ApanhadoGeral);
+            var registroFormatado = UtilRegex.RemoverTagsHtmlMultiMidia(ApanhadoGeral);
             var registrosemTag = UtilRegex.RemoverTagsHtml(registroFormatado);
 
             foreach (var img in imagens)
