@@ -37,10 +37,12 @@ namespace SME.SR.Infra
 
         public string ResponsavelCelularFormatado()
         {
-            if (string.IsNullOrEmpty(ResponsavelDDD))
+            if (string.IsNullOrEmpty(ResponsavelDDD) || string.IsNullOrEmpty(ResponsavelCelular))
                 return string.Empty;
-            
-            return $"({ResponsavelDDD.Trim()}) {ResponsavelCelular.Substring(0,5).Trim()}-{ResponsavelCelular.Substring(5, 4).Trim()} (Atualizado - {DataAtualizacaoContato:dd/MM/yyyy})";
+            if(ResponsavelCelular.Length < 9)
+                return $"({ResponsavelDDD.Trim()}) {ResponsavelCelular.Trim()} (Atualizado - {DataAtualizacaoContato:dd/MM/yyyy})";
+
+            return $"({ResponsavelDDD.Trim()}) {ResponsavelCelular.Substring(0, 5).Trim()}-{ResponsavelCelular.Substring(5, 4).Trim()} (Atualizado - {DataAtualizacaoContato:dd/MM/yyyy})";
         }
 
         public string DataNascimentoFormatado()
