@@ -142,6 +142,7 @@ namespace SME.SR.HtmlPdf
                 });
             }
 
+            
             return doc;
         }
         private static HtmlToPdfDocument StartBasicDoc(List<string> paginas)
