@@ -474,7 +474,7 @@
 
         @while (iContadorCaracteres != registroPercursoTurma.Length)
         {
-            if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
+            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
             {
                 contadorQuebrarPagina = 0;
                 @Html.Raw(MontarRegistroPercursoRodape());
