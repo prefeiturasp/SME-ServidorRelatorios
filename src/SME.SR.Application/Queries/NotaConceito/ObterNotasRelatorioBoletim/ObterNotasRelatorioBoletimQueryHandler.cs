@@ -23,7 +23,7 @@ namespace SME.SR.Application
             var notas = await notasConceitoRepository.ObterNotasTurmasAlunos(request.CodigosTurma, request.CodigosAlunos);
 
             if (notas == null || !notas.Any())
-                throw new NegocioException("Não foi possível obter as notas dos alunos");
+                throw new NegocioException("O relatório com o filtro solicitado não possui informações.");
 
             return notas.GroupBy(nf => nf.CodigoTurma);
         }
