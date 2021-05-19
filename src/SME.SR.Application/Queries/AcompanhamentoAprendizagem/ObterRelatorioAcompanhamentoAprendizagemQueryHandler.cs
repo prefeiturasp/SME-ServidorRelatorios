@@ -46,14 +46,15 @@ namespace SME.SR.Application
             var professoresCabecalho = "";
 
             if (professores != null && professores.Any())
-                professoresCabecalho = String.Join(", ", professores.Select(p => p.NomeProfessor).ToArray());
+                professoresCabecalho = professores.FirstOrDefault().NomeProfessor.Contains("Não há professor titular") ?
+                    "Não há professor titular" : String.Join(", ", professores.Select(p => p.NomeProfessor).ToArray());
 
             var cabecalho = new RelatorioAcompanhamentoAprendizagemCabecalhoDto
             {
                 Dre = turma.Dre.Abreviacao,
                 Ue = turma.Ue.NomeComTipoEscola,
                 Turma = turma.NomeRelatorio,
-                Semestre = filtro.SemestreFormatado(),
+                Semestre = filtro.SemestreFormatado(turma.AnoLetivo),
                 Professores = professoresCabecalho,
             };
 
@@ -65,10 +66,15 @@ namespace SME.SR.Application
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             foreach (var alunoEol in alunosEol)
-            {                
-                var acompanhamentoAluno = acompanhamentoTurma.First().Alunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
+            {
+                AcompanhamentoAprendizagemAlunoDto acompanhamentoAluno = null;
 
-                var acompanhamento = acompanhamentoTurma.First();
+                var acompanhamento = acompanhamentoTurma.Count() > 0 ?
+                    acompanhamentoTurma?.First() :
+                    null;
+
+                if (acompanhamento != null)
+                    acompanhamentoAluno = acompanhamento.Alunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
 
                 if (alunoEol == null)
                     throw new NegocioException("AlunoEol não encontrado");
