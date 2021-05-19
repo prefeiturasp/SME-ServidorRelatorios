@@ -66,4 +66,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>    
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="libwkhtmltox.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   </Project>

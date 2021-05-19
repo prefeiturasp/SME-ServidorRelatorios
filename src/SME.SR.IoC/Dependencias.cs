@@ -19,6 +19,7 @@ using SME.SR.JRSClient.Interfaces;
 using SME.SR.JRSClient.Services;
 using SME.SR.Workers.SGP;
 using System;
+using System.IO;
 using System.Net;
 
 namespace SME.SR.IoC
@@ -76,6 +77,10 @@ namespace SME.SR.IoC
                 });
 
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
+
+            var context = new CustomAssemblyLoadContext();
+            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
+
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddScoped<IHtmlHelper, HtmlHelper>();
 
