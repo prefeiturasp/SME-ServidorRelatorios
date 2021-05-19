@@ -69,13 +69,17 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
             pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
-
+            
             if (request.EnvioPorRabbit)
             {
                 servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
                 return string.Empty;
             }
-            else return request.CodigoCorrelacao.ToString();
+
+            pdfGenerator = null;
+            GC.Collect();
+
+            return request.CodigoCorrelacao.ToString();
 
         }
     }

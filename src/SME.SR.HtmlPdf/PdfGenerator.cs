@@ -112,6 +112,8 @@ namespace SME.SR.HtmlPdf
             }
 
             converter.Convert(doc);
+            doc = null;
+            GC.Collect();
         }
         private static HtmlToPdfDocument StartBasicDocPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string tituloRelatorioRodape = "")
         {
