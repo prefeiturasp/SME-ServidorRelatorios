@@ -173,6 +173,7 @@ namespace SME.SR.IoC
         private static void RegistrarServicos(IServiceCollection services)
         {
             services.TryAddScoped<IServicoFila, FilaRabbit>();
+            services.TryAddScoped<IReportConverter, PdfGenerator>();
         }
 
         private static void RegistrarUseCase(IServiceCollection services)

@@ -15,7 +15,7 @@ namespace SME.SR.HtmlPdf
 
         public PdfGenerator(IConverter converter)
         {
-            this.converter = converter;
+            this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
         }
 
         public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true)
