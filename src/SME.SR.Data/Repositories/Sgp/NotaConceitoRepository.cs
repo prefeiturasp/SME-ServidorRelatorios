@@ -39,8 +39,8 @@ namespace SME.SR.Data
                           left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvc on ccn.conceito_id = cvc.id
-                         where t.turma_id IN(@codigosTurma)
-                           and fa.aluno_codigo IN(@codigosAluno)
+                         where t.turma_id = ANY(@codigosTurma)
+                           and fa.aluno_codigo = ANY(@codigosAluno)
                         union all 
                         select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
                                ccn.componente_curricular_codigo CodigoComponenteCurricular,
@@ -61,8 +61,8 @@ namespace SME.SR.Data
                           left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
-                         where t.turma_id IN(@codigosTurma)
-                           and cca.aluno_codigo IN(@codigosAluno)
+                         where t.turma_id = ANY(@codigosTurma)
+                           and cca.aluno_codigo = ANY(@codigosAluno)
                         ) x ";
 
             var parametros = new
