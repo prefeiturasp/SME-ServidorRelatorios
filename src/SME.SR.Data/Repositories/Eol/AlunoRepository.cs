@@ -509,7 +509,7 @@ namespace SME.SR.Data
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE aluno.cd_aluno in @codigosAluno
+						WHERE aluno.cd_aluno in (#codigosAlunos)
 						UNION 
 						SELECT  aluno.cd_aluno CodigoAluno,
 						aluno.nm_aluno NomeAluno,
@@ -558,19 +558,19 @@ namespace SME.SR.Data
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE aluno.cd_aluno in @codigosAluno
+						WHERE aluno.cd_aluno in (#codigosAlunos)
 						and mte.dt_situacao_aluno =                    
 							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							where
-								matr2.cd_aluno in @codigosAluno
+								matr2.cd_aluno in (#codigosAlunos)
 							and matr2.cd_aluno = matr.cd_aluno
 						)
 						AND NOT EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND matr3.cd_aluno in @codigosAluno) 
+							AND matr3.cd_aluno in (#codigosAlunos)) 
 					SELECT
 					CodigoAluno,
 					NomeAluno,
@@ -612,10 +612,8 @@ namespace SME.SR.Data
 					PossuiDeficiencia,
                     NumeroAlunoChamada";
 
-            var parametros = new { CodigosAluno = codigosAlunos };
-
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros, commandTimeout: 60);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), commandTimeout: 60);
         }
 
         public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
@@ -1067,9 +1065,9 @@ namespace SME.SR.Data
 
         }
 
-		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigosEAnoLetivo(long[] codigosAlunos, long anoLetivo)
-		{
-			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
+        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigosEAnoLetivo(long[] codigosAlunos, long anoLetivo)
+        {
+            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
 					CREATE TABLE #tmpAlunosPorCodigo 
 					(
@@ -1244,17 +1242,17 @@ namespace SME.SR.Data
 					PossuiDeficiencia,
                     NumeroAlunoChamada";
 
-			var parametros = new { CodigosAluno = codigosAlunos, anoLetivo };
+            var parametros = new { CodigosAluno = codigosAlunos, anoLetivo };
 
-			using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-			return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
 
-		}
+        }
 
-		public async Task<IEnumerable<AlunoResponsavelAdesaoAEDto>> ObterAlunosResponsaveisPorTurmasCodigoParaRelatorioAdesao(long[] turmasCodigo, int anoLetivo)
-		{
+        public async Task<IEnumerable<AlunoResponsavelAdesaoAEDto>> ObterAlunosResponsaveisPorTurmasCodigoParaRelatorioAdesao(long[] turmasCodigo, int anoLetivo)
+        {
 
-			var query = @"select 
+            var query = @"select 
 						distinct
 						te.cd_turma_escola TurmaCodigo,
 						a.cd_aluno AlunoCodigo,
@@ -1278,12 +1276,12 @@ namespace SME.SR.Data
 						ra.dt_fim IS NULL and te.cd_turma_escola in @turmasCodigo
 						and m.an_letivo = @anoLetivo";
 
-			var parametros = new { turmasCodigo, anoLetivo };
+            var parametros = new { turmasCodigo, anoLetivo };
 
-			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-			{
-				return await conexao.QueryAsync<AlunoResponsavelAdesaoAEDto>(query, parametros);
-			}
-		}
-	}
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<AlunoResponsavelAdesaoAEDto>(query, parametros);
+            }
+        }
+    }
 }
