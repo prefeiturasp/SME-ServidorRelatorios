@@ -115,7 +115,7 @@ namespace SME.SR.HtmlPdf
             doc = null;
             GC.Collect();
         }
-        private static HtmlToPdfDocument StartBasicDocPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string tituloRelatorioRodape = "")
+        private HtmlToPdfDocument StartBasicDocPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string tituloRelatorioRodape = "")
         {
             var doc = new HtmlToPdfDocument()
             {
@@ -145,7 +145,7 @@ namespace SME.SR.HtmlPdf
             
             return doc;
         }
-        private static HtmlToPdfDocument StartBasicDoc(List<string> paginas)
+        private HtmlToPdfDocument StartBasicDoc(List<string> paginas)
         {
             var doc = new HtmlToPdfDocument()
             {
