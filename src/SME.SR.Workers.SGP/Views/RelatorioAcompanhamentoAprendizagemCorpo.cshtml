@@ -328,7 +328,7 @@
 
     string MontarOcorrenciasNovo(string descricaoOcorrencia, string estudante, string titulo, string data, string tipo, string subTitulo)
     {
-        var iContadorCaracteres = 0;       
+        var iContadorCaracteres = 0;
         @while (iContadorCaracteres != descricaoOcorrencia.Length)
         {
             if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
@@ -342,7 +342,9 @@
                 {
                     @Html.Raw(MontarTitulo(estudante));
                     @Html.Raw(MontarTitulo(titulo))
-                    @Html.Raw("<table class='tabela-alunos'><tbody>")
+                    @Html.Raw("<table class='tabela-alunos'>")
+                    @Html.Raw(MontarSubTituloOcorrencias())
+                    @Html.Raw("<tbody>")
                     @Html.Raw(MontarCabecalhoOcorrencias(data, tipo, subTitulo))
                     @Html.Raw("<tr><td class='alinhar-esquerda espaco-esquerda-15'>")
                     contadorQuebrarPagina++;
