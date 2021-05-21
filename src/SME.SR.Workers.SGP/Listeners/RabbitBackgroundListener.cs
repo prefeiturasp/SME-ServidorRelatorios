@@ -29,31 +29,39 @@ namespace SME.SR.Workers.SGP.Services
         private readonly IModel _channel;
 
         public RabbitBackgroundListener(ILoggerFactory loggerFactory,
-                                        IServiceScopeFactory scopeFactory,
-                                        IModel channel,
-                                        IConnection connection,
+                                        IServiceScopeFactory scopeFactory,                                        
                                         IConfiguration configuration)
         {
             _logger = loggerFactory.CreateLogger<RabbitBackgroundListener>();
             _scopeFactory = scopeFactory;
-            _connection = connection;
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _channel = channel;
+
+            var factory = new ConnectionFactory
+            {
+                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
+                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
+                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
+            };
+
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();                
+            
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));            
             InitRabbit();
         }
 
         private void InitRabbit()
         {
-            _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Topic);
-            _channel.ExchangeDeclare(RotasRabbit.ExchangeSgp, ExchangeType.Topic);
+            _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Topic);            
 
-            _channel.QueueDeclare(RotasRabbit.FilaWorkerRelatorios, false, false, false, null);
             _channel.QueueDeclare(RotasRabbit.RotaRelatoriosSolicitados, false, false, false, null);
+            _channel.QueueBind(RotasRabbit.RotaRelatoriosSolicitados, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatoriosSolicitados, null);
+
             _channel.QueueDeclare(RotasRabbit.RotaRelatorioComErro, false, false, false, null);
-            _channel.QueueDeclare(RotasRabbit.RotaRelatorioCorrelacaoCopiar, false, false, false, null);
-            _channel.QueueDeclare(RotasRabbit.RotaRelatorioCorrelacaoInserir, false, false, false, null);
+            _channel.QueueBind(RotasRabbit.RotaRelatorioComErro, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatorioComErro, null);
+         
             _channel.QueueDeclare(RotasRabbit.RotaRelatoriosProcessando, false, false, false, null);
-            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosProntosSgp, false, false, false, null);
+            _channel.QueueBind(RotasRabbit.RotaRelatoriosProcessando, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando, null);
 
             _channel.BasicQos(0, 1, false);
         }
@@ -158,11 +166,9 @@ namespace SME.SR.Workers.SGP.Services
             consumer.Registered += OnConsumerRegistered;
             consumer.Unregistered += OnConsumerUnregistered;
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
-
-            WorkerAttribute worker = GetWorkerAttribute(typeof(WorkerSGPController));
-
-            _channel.BasicConsume(worker.WorkerQueue, false, consumer);
+          
             _channel.BasicConsume(RotasRabbit.RotaRelatoriosSolicitados, false, consumer);
+            _channel.BasicConsume(RotasRabbit.RotaRelatoriosProcessando, false, consumer);            
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
