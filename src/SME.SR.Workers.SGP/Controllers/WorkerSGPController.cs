@@ -5,7 +5,6 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
