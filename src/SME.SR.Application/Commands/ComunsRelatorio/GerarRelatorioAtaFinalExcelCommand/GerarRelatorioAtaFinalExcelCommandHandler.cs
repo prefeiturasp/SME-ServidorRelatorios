@@ -46,6 +46,10 @@ namespace SME.SR.Application
 
                 for (int i = 0; i < dadosAgrupadosTurma.Count(); i++)
                 {
+                    var codigoCorrelacao = Guid.NewGuid();
+                    var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
+                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+
                     using (var workbook = new XLWorkbook())
                     {
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
@@ -60,24 +64,19 @@ namespace SME.SR.Application
 
                         MergearTabela(worksheet, tabelaDados);
 
-                        AdicionarEstilo(worksheet, tabelaDados);
-
-                        var codigoCorrelacao = Guid.NewGuid();
+                        AdicionarEstilo(worksheet, tabelaDados);                        
 
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
-                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
-
-                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
-                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");                        
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
                 }
 
                 foreach (var codigoCorrelacao in lstCodigosCorrelacao)
-                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.RotaRelatoriosProntosSgp, null, codigoCorrelacao.Key));
+                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, codigoCorrelacao.Key));
 
                 return await Task.FromResult(Unit.Value);
             }
