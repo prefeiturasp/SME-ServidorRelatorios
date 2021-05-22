@@ -34,11 +34,13 @@ namespace SME.SR.Infra
                 VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
             };
 
+            var exchange = publicaFilaDto.Exchange ?? RotasRabbit.ExchangeListenerWorkerRelatorios;
+
             using (var conexaoRabbit = factory.CreateConnection())
             {
                 using (IModel _channel = conexaoRabbit.CreateModel())
                 {
-                    _channel.BasicPublish(RotasRabbit.ExchangeListenerWorkerRelatorios, publicaFilaDto.Rota, null, body);
+                    _channel.BasicPublish(exchange, publicaFilaDto.Rota, null, body);
                 }
             }
         }
