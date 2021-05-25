@@ -68,16 +68,14 @@ namespace SME.SR.Application
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
-                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");                        
+                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");                                                
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
                 }
 
                 foreach (var codigoCorrelacao in lstCodigosCorrelacao)
-                {
-                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, codigoCorrelacao.Key, request.UsuarioRf)));                    
-                }                   
+                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, codigoCorrelacao.Key, request.UsuarioRf)));
 
                 return await Task.FromResult(Unit.Value);
             }
