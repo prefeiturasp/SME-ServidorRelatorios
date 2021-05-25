@@ -8,7 +8,6 @@ namespace SME.SR.Infra
         {
             Dados = dados;
 
-            NomeFila = nomeFila;
             Rota = rota;
             if (!string.IsNullOrWhiteSpace(exchange))
                 Exchange = exchange;

@@ -27,8 +27,6 @@ namespace SME.SR.Infra
 
                 var exchange = publicaFilaDto.Exchange ?? RotasRabbit.ExchangeListenerWorkerRelatorios;
 
-                rabbitChannel.QueueBind(publicaFilaDto.NomeFila, exchange, publicaFilaDto.Rota);
-
                 rabbitChannel.BasicPublish(exchange, publicaFilaDto.Rota, null, body);
             }
         }
