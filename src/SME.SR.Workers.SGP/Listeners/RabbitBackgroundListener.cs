@@ -45,7 +45,16 @@ namespace SME.SR.Workers.SGP.Services
         private void InitRabbit()
         {
             _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Topic);
+            _channel.ExchangeDeclare(RotasRabbit.ExchangeSgp, ExchangeType.Topic);
+
             _channel.QueueDeclare(RotasRabbit.FilaWorkerRelatorios, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosSolicitados, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatorioComErro, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatorioCorrelacaoCopiar, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatorioCorrelacaoInserir, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosProcessando, false, false, false, null);
+            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosProntosSgp, false, false, false, null);
+
             
             _channel.QueueBind(RotasRabbit.FilaWorkerRelatorios, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatoriosSolicitados);
 
@@ -109,7 +118,6 @@ namespace SME.SR.Workers.SGP.Services
             var mensagem = JsonConvert.SerializeObject(mensagemRabbit);
             var body = Encoding.UTF8.GetBytes(mensagem);
 
-            _channel.QueueBind(RotasRabbit.FilaSgp, RotasRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro);
             _channel.BasicPublish(RotasRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro, null, body);
         }
 
@@ -157,7 +165,9 @@ namespace SME.SR.Workers.SGP.Services
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             WorkerAttribute worker = GetWorkerAttribute(typeof(WorkerSGPController));
+
             _channel.BasicConsume(worker.WorkerQueue, false, consumer);
+            _channel.BasicConsume(RotasRabbit.RotaRelatoriosSolicitados, false, consumer);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
