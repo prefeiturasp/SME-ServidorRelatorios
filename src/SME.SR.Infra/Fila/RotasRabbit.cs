@@ -5,6 +5,7 @@
     public static class RotasRabbit
     {
         public static string ExchangeListenerWorkerRelatorios => "sme.sr.workers.relatorios";
+        public static string ExchangeListenerWorkerRelatoriosDeadletter => "sme.sr.workers.relatorios.deadletter";
         public static string ExchangeSgp => "sme.sgp.workers";
 
         public static string FilaWorkerRelatorios => "sme.sr.workers.sgp";
