@@ -63,6 +63,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/boletimescolardetalhado")]
+        [Action("relatorios/boletimescolardetalhado", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
+        public async Task<bool> RelatorioBoletimEscolarDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoUseCase relatorioBoletimEscolarDetalhadoUseCase)
+        {
+            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorios/conselhoclasseatafinal")]
         [Action("relatorios/conselhoclasseatafinal", typeof(IRelatorioConselhoClasseAtaFinalUseCase))]
         public async Task<bool> RelatorioConselhoClasseAtaFinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaFinalUseCase relatorioConselhoClasseAtaFinalUseCase)

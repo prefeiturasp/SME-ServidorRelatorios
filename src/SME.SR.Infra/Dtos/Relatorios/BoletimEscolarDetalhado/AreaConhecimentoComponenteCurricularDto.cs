@@ -8,6 +8,9 @@ namespace SME.SR.Infra
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [JsonProperty("grupoMatrizId")]
+        public int GrupoMatrizId { get; set; }
+
         [JsonProperty("nome")]
         public string Nome { get; set; }
 

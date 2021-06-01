@@ -2,11 +2,11 @@
 {
    public class RelatorioBoletimEscolarDetalhadoDto
     {
-        public RelatorioBoletimEscolarDetalhadoDto(BoletimEscolarDto relatorioBoletimEscolarDetalhado)
+        public RelatorioBoletimEscolarDetalhadoDto(BoletimEscolarDetalhadoDto relatorioBoletimEscolarDetalhado)
         {
             this.RelatorioBoletimEscolarDetalhado = relatorioBoletimEscolarDetalhado;
         }
 
-        public BoletimEscolarDto RelatorioBoletimEscolarDetalhado { get; set; }
+        public BoletimEscolarDetalhadoDto RelatorioBoletimEscolarDetalhado { get; set; }
     }
 }

@@ -19,12 +19,9 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresFinais(int anoLetivo, string dreCodigo, string ueCodigo, Modalidade? modalidade, int? semestre,
-                                                                                                            long cicloId, string[] anos, long parecerConclusivoId)
+                                                                                                  long cicloId, string[] turmasCodigo, string[] anos, long parecerConclusivoId)
         {
-            try
-            {
-
-                var query = new StringBuilder(@"select t.turma_id as TurmaId, 
+            var query = new StringBuilder(@"select t.turma_id as TurmaId, 
 	                                               cca.aluno_codigo AlunoCodigo, 
 	                                               ccp.nome ParecerConclusivo, 
 	                                               d.abreviacao as DreNome, 
@@ -57,56 +54,55 @@ namespace SME.SR.Data
     	                                            inner join tipo_escola te
                                                         on te.id = u.tipo_escola where t.tipo_turma = @tipoTurmaRegular ");
 
-                if (semestre.HasValue)
-                    query.AppendLine(" and t.semestre = @semestre ");
+            if (semestre.HasValue)
+                query.AppendLine(" and t.semestre = @semestre ");
 
-                if (cicloId > 0)
-                    query.AppendLine(" and tc.id = @cicloId ");
+            if (cicloId > 0)
+                query.AppendLine(" and tc.id = @cicloId ");
 
-                if (anoLetivo > 0)
-                    query.AppendLine(" and t.ano_letivo = @anoLetivo ");
+            if (anoLetivo > 0)
+                query.AppendLine(" and t.ano_letivo = @anoLetivo ");
 
-                if (anos != null && anos.Length > 0)
-                    query.AppendLine(" and t.ano = ANY(@anos) ");
+            if (anos != null && anos.Length > 0)
+                query.AppendLine(" and t.ano = ANY(@anos) ");
 
-                if (parecerConclusivoId > 0)
-                    query.AppendLine(" and ccp.id = @parecerConclusivoId ");
-                else if(parecerConclusivoId < 0)
-                    query.AppendLine(" and ccp.id is null ");
+            if (turmasCodigo != null && turmasCodigo.Length > 0)
+                query.AppendLine(" and t.turma_id = ANY(@turmasCodigo) ");
 
-                if (modalidade.HasValue)
-                    query.AppendLine(" and t.modalidade_codigo = @modalidadeId ");
+            if (parecerConclusivoId > 0)
+                query.AppendLine(" and ccp.id = @parecerConclusivoId ");
 
-                if (!string.IsNullOrEmpty(dreCodigo))
-                    query.AppendLine(" and d.dre_id = @dreCodigo ");
+            else if (parecerConclusivoId < 0)
+                query.AppendLine(" and ccp.id is null ");
 
-                if (!string.IsNullOrEmpty(ueCodigo))
-                    query.AppendLine(" and u.ue_id = @ueCodigo ");
+            if (modalidade.HasValue)
+                query.AppendLine(" and t.modalidade_codigo = @modalidadeId ");
 
-                query.AppendLine("order by d.id, u.id, t.id");
+            if (!string.IsNullOrEmpty(dreCodigo))
+                query.AppendLine(" and d.dre_id = @dreCodigo ");
 
-                var parametros = new
-                {
-                    tipoTurmaRegular = TipoTurma.Regular,
-                    anoLetivo,
-                    dreCodigo,
-                    ueCodigo,
-                    modalidadeId = modalidade.HasValue ? (int)modalidade : 0,
-                    semestre = semestre ?? 0,
-                    cicloId,
-                    parecerConclusivoId,
-                    anos = anos?.ToList(),
-                };
+            if (!string.IsNullOrEmpty(ueCodigo))
+                query.AppendLine(" and u.ue_id = @ueCodigo ");
 
-                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            query.AppendLine("order by d.id, u.id, t.id");
 
-                return await conexao.QueryAsync<RelatorioParecerConclusivoRetornoDto>(query.ToString(), parametros);
-            }
-            catch (Exception ex)
+            var parametros = new
             {
+                tipoTurmaRegular = TipoTurma.Regular,
+                anoLetivo,
+                dreCodigo,
+                ueCodigo,
+                modalidadeId = modalidade.HasValue ? (int)modalidade : 0,
+                semestre = semestre ?? 0,
+                cicloId,
+                parecerConclusivoId,
+                anos = anos?.ToList(),
+                turmasCodigo
+            };
 
-                throw ex;
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryAsync<RelatorioParecerConclusivoRetornoDto>(query.ToString(), parametros);
         }
     }
 }
