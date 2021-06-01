@@ -74,7 +74,7 @@ namespace SME.SR.Application
                 var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                 boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto, aluno.FirstOrDefault().NomeRelatorio, $"{percentualFrequenciaGlobal}%");
-                boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo.ParecerConclusivo ?? "Sem Parecer Conclusivo";
+                boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo ?? "Sem Parecer Conclusivo";
                 boletinsAlunos.Add(boletimEscolarAlunoDto);
             }
 
@@ -93,7 +93,7 @@ namespace SME.SR.Application
                 Aluno = nome,
                 FrequenciaGlobal = frequenciaGlobal,
                 Ciclo = ciclo.Descricao,
-                Foto = foto.FotoBase64
+                Foto = foto?.FotoBase64
             };
         }
 
