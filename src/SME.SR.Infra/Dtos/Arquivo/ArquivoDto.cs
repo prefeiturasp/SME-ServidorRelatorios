@@ -5,7 +5,7 @@ namespace SME.SR.Infra
 {
     public class ArquivoDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public string TipoArquivo { get; set; }
         public Guid Codigo { get; set; }
         public string NomeOriginal { get; set; }

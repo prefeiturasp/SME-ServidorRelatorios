@@ -58,7 +58,7 @@ namespace SME.SR.Application
                 var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
                 foreach (var turmaAluno in aluno)
                 {
-                    MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()), boletimEscolarAlunoDto);
+                    await MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()), boletimEscolarAlunoDto);
                 }
 
                 var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
@@ -74,7 +74,7 @@ namespace SME.SR.Application
                 var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                 boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto, aluno.FirstOrDefault().NomeRelatorio, $"{percentualFrequenciaGlobal}%");
-                boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo.ParecerConclusivo ?? "Sem Parecer Conclusivo";
+                boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo ?? "Sem Parecer Conclusivo";
                 boletinsAlunos.Add(boletimEscolarAlunoDto);
             }
 
@@ -93,13 +93,15 @@ namespace SME.SR.Application
                 Aluno = nome,
                 FrequenciaGlobal = frequenciaGlobal,
                 Ciclo = ciclo.Descricao,
-                Foto = foto.FotoBase64
+                Foto = foto?.FotoBase64
             };
         }
 
-        private void MapearGruposEComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, BoletimEscolarDetalhadoAlunoDto boletim)
+        private async Task MapearGruposEComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, BoletimEscolarDetalhadoAlunoDto boletim)
         {
-            var gruposAreas = componentesCurricularesPorTurma.GroupBy(cc => new { GrupoMatrizId = cc.GrupoMatriz?.Id, AreaConhecimentoId = cc.AreaDoConhecimento?.Id }).ToList();
+            var componentesOrdenados = await mediator.Send(new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurricularesPorTurma));
+
+            var gruposAreas = componentesOrdenados.GroupBy(cc => new { GrupoMatrizId = cc.GrupoMatriz?.Id, AreaConhecimentoId = cc.AreaDoConhecimento?.Id }).ToList();
 
             var areasRetorno = new List<AreaConhecimentoComponenteCurricularDto>();
 

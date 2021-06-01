@@ -20,7 +20,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunoFotoArquivoDto>> ObterFotosDoAlunoPorCodigos(string[] codigosAluno)
         {
-            var query = new StringBuilder(@"SELECT af.aluno_codigo, a.id, a.nome NomeOriginal, a.codigo, a.tipo, a.tipo_conteudo as TipoArquivo
+            var query = new StringBuilder(@"SELECT af.aluno_codigo CodigoAluno, a.id, a.nome NomeOriginal, a.codigo, a.tipo, a.tipo_conteudo as TipoArquivo
                                             FROM aluno_foto af 
                                             INNER JOIN arquivo a on af.arquivo_id = a.id 
                                             WHERE af.aluno_codigo = ANY(@codigosAluno) ");
@@ -42,7 +42,7 @@ namespace SME.SR.Data
 
             }
 
-            return lstFotosAluno.AsEnumerable();
+            return lstFotosAluno;
         }
     }
 }
