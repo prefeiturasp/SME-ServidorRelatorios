@@ -7503,6 +7503,53 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             }
         }
 
+        [HttpGet("boletim-escolar-detalhado")]
+        public async Task<IActionResult> RelatorioBoletimEscolarDetalhado([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+
+            var boletimEscolarDetalhadoDto = new BoletimEscolarDetalhadoDto();
+
+            var aluno01 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Emerson Ferreira e Silva",
+                    CodigoEol = "1234567",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                }
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno01);
+
+            var aluno02 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Maria Ferreira e Silva",
+                    CodigoEol = "1234568",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                }
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
+
+
+            var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+
+            return View("RelatorioBoletimEscolarDetalhado", model);
+
+        }
+
 
         [HttpGet("acompanhamento-aprendizagem-teste")]
         public async Task<IActionResult> AcompanhamentoAprendizagemTeste([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
