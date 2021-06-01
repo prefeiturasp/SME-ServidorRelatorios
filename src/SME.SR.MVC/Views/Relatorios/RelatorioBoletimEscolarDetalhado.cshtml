@@ -1,4 +1,5 @@
-﻿@model SME.SR.Infra.RelatorioFechamentoPendenciasDto
+﻿@model SME.SR.Infra.RelatorioBoletimEscolarDetalhadoDto
+@using SME.SR.Infra;
 
 @{
 
@@ -13,70 +14,199 @@
             contadorQuebrarPagina = 0;
             contadorPagina = contadorPagina + 1;
 
-            var str = MontarCabecalho();
-            return $@"<div style='page-break-before:always' />" + str;
+            //var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always' />" ;
 
         }
         return string.Empty;
 
     }
 
-    string MontarCabecalho()
+    string MontarCabecalho(BoletimEscolarDetalhadoCabecalhoDto cabecalho)
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 8;
-        var str =
-           $@"<div>
-<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
-</div>
-<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-faltas-frequencia'>RELATÓRIO DE PENDÊNCIAS</div>
-<div class='fonte-14 header-pagina'>
-<table class='tblTopo'>
-<tbody>
-<tr>
-<td  width='40%' >DRE: {Model.DreNome}</td>
-<td width='40%' >UE: {Model.UeNome}</td>
-<td  width='20%' >ANO LETIVO: {Model.Ano}</td>
-</tr>
-</tbody>
-</table>
+        var str = $@"<table class='cabecalho-principal'>
+        <tr>
+            <td width='10%'>
+                <img class='img-logo-sgp'
+                     src='https://via.placeholder.com/120x70'
+                     alt='Logo SGP' />
+            </td>
+            <td width='80%' style='padding-right: 10px'>
+                <div class='cabecalho-titulo-01'>BOLETIM ESCOLAR - 2021</div>
+                <div class='cabecalho-titulo-02'>
+                    SECRETARIA MUNICIPAL DE EDUCAÇÃO
+                </div>
+                <div class='cabecalho-titulo-02'>
+                    { cabecalho.NomeDre }
+                </div>
+                <div class='cabecalho-titulo-02'>{ cabecalho.NomeUe }</div>
+            </td>
+            <td width='10%'>
+                <img src='{ cabecalho.Foto }' alt='Aluno' />
+            </td>
+        </tr>
+    </table>
 
-<table>
-<tbody>
-<tr>
-<td class='campo-bimestre'>MODALIDADE: {Model.Modalidade}</td>
-<td class='campo-bimestre'>SEMESTRE: {Model.Semestre}</td>
-<td class='campo-bimestre'>TURMA: {Model.TurmaNome}</td>
-
-</tr>
-</tbody>
-</table>
-
-<table>
-<tbody>
-<tr>
-<td class='campo-componente-curricular'>
-COMPONENTE CURRICULAR: {Model.ComponenteCurricular}
-</td>
-<td class='campo-bimestre'>BIMESTRE: {Model.Bimestre}</td>
-</tr>
-</tbody>
-</table>
-<table>
-<tbody>
-<tr>
-<td class='campo-usuario'>PROFESSOR: {Model.Usuario}</td>
-<td class='campo-rf-data'>RF: {Model.RF}</td>
-<td class='campo-rf-data'>DATA: {Model.Data}</td>
-</tr>
-</tbody>
-</table>
-</div>
-";
+    <table class='cabecalho-relatorio margin-top'>
+        <tr>
+            <td width='50%'>Estudante: { cabecalho.Aluno }</td>
+            <td width='50%'>Ciclo: { cabecalho.Ciclo }</td>
+        </tr>
+    </table>
+    <table class='cabecalho-relatorio'>
+        <tr class='cabecalho-relatorio-sem-top'>
+            <td class='cabecalho-relatorio-sem-top'>Código EOL: { cabecalho.CodigoEol }</td>
+            <td class='cabecalho-relatorio-sem-top'>Turma: { cabecalho.NomeTurma}</td>
+            <td class='cabecalho-relatorio-sem-top'>Frequência Global: { cabecalho.FrequenciaGlobal }</td>
+        </tr>
+    </table>";
 
         return str;
     }
 
+    string ComponentesCurriculares()
+    {
+        var str = @"<table class='tabela margin-top'>
+        <tr class='titulo'>
+            <td rowspan='2' width='100%'>Componentes curriculares</td>
+            <td colspan='2' class='centro'>1° Bim.</td>
+            <td colspan='2' class='centro'>2° Bim.</td>
+            <td colspan='2' class='centro'>3° Bim.</td>
+            <td colspan='2' class='centro'>4° Bim.</td>
+            <td colspan='2' class='centro'>5° Bim.</td>
+        </tr>
+        <tr class='titulo'>
+            <td class='centro'>Nota</td>
+            <td class='centro'>%</td>
+            <td class='centro'>Nota</td>
+            <td class='centro'>%</td>
+            <td class='centro'>Nota</td>
+            <td class='centro'>%</td>
+            <td class='centro'>Nota</td>
+            <td class='centro'>%</td>
+            <td class='centro'>Nota</td>
+            <td class='centro'>%</td>
+        </tr>
+        <tr class='corpo'>
+            <td>Arte</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+        </tr>
+        <tr class='corpo'>
+            <td>Cultura dos Países de Língua Espanhola</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+        </tr>
+        <tr class='corpo'>
+            <td>LEM - Língua Inglesa - Formação para Estudos e Aprofundamento</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+            <td class='centro'>8</td>
+            <td class='centro'>98%</td>
+        </tr>
+    </table>";
+        return str;
+    }
+
+    string ParecerConclusivo()
+    {
+        var str = @"<table class='tabela margin-top'>
+        <tr class='titulo'>
+            <td>Parecer Conclusivo: Retido</td>
+        </tr>
+    </table>";
+
+        return str;
+    }
+
+    string RecomendacoesEstudante()
+    {
+        var str = @"<table class='tabela margin-top'>
+        <tr class='titulo'>
+            <td>Recomendações ao estudante</td>
+        </tr>
+        <tr>
+            <td>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.
+            </td>
+        </tr>
+    </table>";
+
+        return str;
+    }
+
+    string RecomendacoesFamilia()
+    {
+        var str = @"<table class='tabela margin-top'>
+        <tr class='titulo'>
+            <td>Recomendações a família</td>
+        </tr>
+        <tr>
+            <td>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.
+            </td>
+        </tr>
+    </table>";
+
+        return str;
+    }
+
+    string Anotacoes()
+    {
+        var str = @"<table class='tabela-final margin-top'>
+        <tr>
+            <td width='100%' style='border-bottom: 1px solid #42474a;'>
+                &nbsp
+            </td>
+        </tr>
+        <tr>
+            <td width='100%' style='border-bottom: 1px solid #42474a;'>
+                &nbsp
+            </td>
+        </tr>
+    </table>";
+
+        return str;
+    }
 
 }
 
@@ -181,158 +311,20 @@ COMPONENTE CURRICULAR: {Model.ComponenteCurricular}
                 padding-left: 10px;
             }
     </style>
-    <table class="cabecalho-principal">
-        <tr>
-            <td width="10%">
-                <img class="img-logo-sgp"
-                     src="https://via.placeholder.com/120x70"
-                     alt="Logo SGP" />
-            </td>
-            <td width="80%" style="padding-right: 10px">
-                <div class="cabecalho-titulo-01">BOLETIM ESCOLAR - 2021</div>
-                <div class="cabecalho-titulo-02">
-                    SECRETARIA MUNICIPAL DE EDUCAÇÃO
-                </div>
-                <div class="cabecalho-titulo-02">
-                    DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO
-                </div>
-                <div class="cabecalho-titulo-02">CEU EMEF PARAISOPOLIS</div>
-            </td>
-            <td width="10%">
-                <img src="https://via.placeholder.com/80" alt="Logo SGP" />
-            </td>
-        </tr>
-    </table>
 
-    <table class="cabecalho-relatorio margin-top">
-        <tr>
-            <td width="50%">Estudante: Emerson Ferreira e Silva</td>
-            <td width="50%">Ciclo: Médio</td>
-        </tr>
-    </table>
-    <table class="cabecalho-relatorio">
-        <tr class="cabecalho-relatorio-sem-top">
-            <td class="cabecalho-relatorio-sem-top">Código EOL: 1234567</td>
-            <td class="cabecalho-relatorio-sem-top">Turma: EM-3A</td>
-            <td class="cabecalho-relatorio-sem-top">Frequência Global: 88%</td>
-        </tr>
-    </table>
+    @foreach (var boletim in Model.BoletimEscolarDetalhado.Boletins)
+    {
+        @Html.Raw(MontarCabecalho(boletim.Cabecalho));
+        @Html.Raw(ComponentesCurriculares());
+        @Html.Raw(ParecerConclusivo());
+        @Html.Raw(RecomendacoesEstudante());
+        @Html.Raw(RecomendacoesFamilia());
+        @Html.Raw(Anotacoes());
+        @Html.Raw("<div style='page-break-before:always' />");
+    }
 
-    <table class="tabela margin-top">
-        <tr class="titulo">
-            <td rowspan="2" width="100%">Componentes curriculares</td>
-            <td colspan="2" class="centro">1° Bim.</td>
-            <td colspan="2" class="centro">2° Bim.</td>
-            <td colspan="2" class="centro">3° Bim.</td>
-            <td colspan="2" class="centro">4° Bim.</td>
-            <td colspan="2" class="centro">5° Bim.</td>
-        </tr>
-        <tr class="titulo">
-            <td class="centro">Nota</td>
-            <td class="centro">%</td>
-            <td class="centro">Nota</td>
-            <td class="centro">%</td>
-            <td class="centro">Nota</td>
-            <td class="centro">%</td>
-            <td class="centro">Nota</td>
-            <td class="centro">%</td>
-            <td class="centro">Nota</td>
-            <td class="centro">%</td>
-        </tr>
-        <tr class="corpo">
-            <td>Arte</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-        </tr>
-        <tr class="corpo">
-            <td>Cultura dos Países de Língua Espanhola</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-        </tr>
-        <tr class="corpo">
-            <td>LEM - Língua Inglesa - Formação para Estudos e Aprofundamento</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-            <td class="centro">8</td>
-            <td class="centro">98%</td>
-        </tr>
-    </table>
 
-    <table class="tabela margin-top">
-        <tr class="titulo">
-            <td>Parecer Conclusivo: Retido</td>
-        </tr>
-    </table>
-    <table class="tabela margin-top">
-        <tr class="titulo">
-            <td>Recomendações ao estudante</td>
-        </tr>
-        <tr>
-            <td>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
-                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
-                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
-                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
-                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
-                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
-                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
-                Duis at tellus at urna condimentum mattis.
-            </td>
-        </tr>
-    </table>
-    <table class="tabela margin-top">
-        <tr class="titulo">
-            <td>Recomendações a família</td>
-        </tr>
-        <tr>
-            <td>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
-                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
-                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
-                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
-                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
-                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
-                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
-                Duis at tellus at urna condimentum mattis.
-            </td>
-        </tr>
-    </table>
 
-    <table class="tabela-final margin-top">
-        <tr>
-            <td width="100%" style="border-bottom: 1px solid #42474a;">
-                &nbsp
-            </td>
-        </tr>
-        <tr>
-            <td width="100%" style="border-bottom: 1px solid #42474a;">
-                &nbsp
-            </td>
-        </tr>
-    </table>
+
 </body>
 </html>
