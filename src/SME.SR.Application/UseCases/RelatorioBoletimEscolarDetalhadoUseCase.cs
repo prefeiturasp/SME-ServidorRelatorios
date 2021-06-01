@@ -20,18 +20,16 @@ namespace SME.SR.Application
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarDetalhadoQuery>();
             var relatorio = await mediator.Send(relatorioQuery);
 
-            var jsonString = JsonConvert.SerializeObject(relatorio, UtilJson.ObterConfigConverterNulosEmVazio());
-
             switch (relatorioQuery.Modalidade)
             {
                 case Modalidade.EJA:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarDetalhadoEja/BoletimEscolarEja", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("BoletimEscolarEja", relatorio, request.CodigoCorrelacao));
                     break;
                 case Modalidade.Medio:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarDetalhadoMedio/BoletimEscolarMedio", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("BoletimEscolarMedio", relatorio, request.CodigoCorrelacao));
                     break;
                 default:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarDetalhado/BoletimEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("BoletimEscolar", relatorio, request.CodigoCorrelacao));
                     break;
             }
         }
