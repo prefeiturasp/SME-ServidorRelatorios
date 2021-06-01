@@ -7,14 +7,14 @@ namespace SME.SR.Infra
    public class BoletimEscolarDetalhadoDto
     {
         [JsonProperty("boletins")]
-        public List<BoletimEscolarAlunoDto> Boletins { get; set; }
+        public List<BoletimEscolarDetalhadoAlunoDto> Boletins { get; set; }
 
         public BoletimEscolarDetalhadoDto()
         {
-            Boletins = new List<BoletimEscolarAlunoDto>();
+            Boletins = new List<BoletimEscolarDetalhadoAlunoDto>();
         }
 
-        public BoletimEscolarDetalhadoDto(List<BoletimEscolarAlunoDto> boletins)
+        public BoletimEscolarDetalhadoDto(List<BoletimEscolarDetalhadoAlunoDto> boletins)
         {
             if (boletins != null && boletins.Any())
                 this.Boletins = boletins;
