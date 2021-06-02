@@ -46,10 +46,16 @@ namespace SME.SR.Application
             var pareceresConclusivos = await ObterPareceresConclusivos(dre.Codigo, ue.Codigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
+            var recomendacoes = await ObterRecomendacoesAlunosTurma(codigosAlunos, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
 
-            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal);
+            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal);
 
             return new RelatorioBoletimEscolarDetalhadoDto(boletins);
+        }
+
+        private async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesAlunosTurma(string[] codigosAlunos, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre)
+        {
+            return await mediator.Send(new ObterRecomendacoesPorAlunosTurmasQuery(codigosAlunos, codigosTurma, anoLetivo, modalidade, semestre));
         }
 
         private async Task<IEnumerable<AlunoFotoArquivoDto>> ObterFotosAlunos(string[] codigosAluno)
@@ -168,6 +174,7 @@ namespace SME.SR.Application
                                                              IEnumerable<IGrouping<string, Aluno>> alunosPorTurma,
                                                              IEnumerable<AlunoFotoArquivoDto> alunosFoto, IEnumerable<IGrouping<string, NotasAlunoBimestre>> notasAlunos,
                                                              IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos,
+                                                             IEnumerable<RecomendacaoConselhoClasseAluno> recomendacoes, 
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos,
                                                              IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias,
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal)

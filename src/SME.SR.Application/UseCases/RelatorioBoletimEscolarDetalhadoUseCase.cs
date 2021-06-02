@@ -20,18 +20,8 @@ namespace SME.SR.Application
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarDetalhadoQuery>();
             var relatorio = await mediator.Send(relatorioQuery);
 
-            switch (relatorioQuery.Modalidade)
-            {
-                case Modalidade.EJA:
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("BoletimEscolarEja", relatorio, request.CodigoCorrelacao));
-                    break;
-                case Modalidade.Medio:
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("BoletimEscolarMedio", relatorio, request.CodigoCorrelacao));
-                    break;
-                default:
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("BoletimEscolar", relatorio, request.CodigoCorrelacao));
-                    break;
-            }
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarDetalhado", relatorio, request.CodigoCorrelacao));
         }
     }
 }
+
