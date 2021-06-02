@@ -71,7 +71,7 @@ namespace SME.SR.Application
                 var frequeciaGlobal = frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
                 var percentualFrequenciaGlobal = frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
                 var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
-                var recomendacao = recomendacoes.FirstOrDefault(r => r.TurmaCodigo == turma.Codigo && r.AlunoCodigo == aluno.Key);
+                var recomendacao = recomendacoes?.FirstOrDefault(r => r.TurmaCodigo == turma.Codigo && r.AlunoCodigo == aluno.Key);
                 var ciclo = ciclos.FirstOrDefault(c => c.Modalidade == turma.ModalidadeCodigo && c.Ano == Convert.ToInt32(turma.Ano));
                 var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
@@ -167,8 +167,13 @@ namespace SME.SR.Application
                 }
                 if (boletim.ComponenteCurricularRegencia != null)
                     boletim.ComponenteCurricularRegencia.ComponentesCurriculares = boletim.ComponenteCurricularRegencia.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
-                area.ComponentesCurriculares = area.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
+
+                if (area.ComponentesCurriculares != null && area.ComponentesCurriculares.Any())
+                    area.ComponentesCurriculares = area.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
             }
+
+            if (boletim.AreasConhecimento != null && boletim.AreasConhecimento.Any())
+                boletim.AreasConhecimento = boletim.AreasConhecimento.Where(b => b.ComponentesCurriculares != null && b.ComponentesCurriculares.Any()).ToList();
         }
 
         private void SetarNotasFrequencia(BoletimEscolarDetalhadoAlunoDto boletimEscolar, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres)
