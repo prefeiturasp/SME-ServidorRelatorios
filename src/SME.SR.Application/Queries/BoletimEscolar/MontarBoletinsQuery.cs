@@ -19,6 +19,8 @@ namespace SME.SR.Application
 
         public IEnumerable<MediaFrequencia> MediasFrequencia { get; set; }
 
+        public IEnumerable<RelatorioParecerConclusivoRetornoDto> PareceresConclusivos { get; set; }
+
         public IDictionary<string, string> TiposNota { get; set; }
 
         public IEnumerable<IGrouping<string, Aluno>> AlunosPorTuma { get; set; }
@@ -26,6 +28,7 @@ namespace SME.SR.Application
         public IEnumerable<IGrouping<string, NotasAlunoBimestre>> Notas { get; set; }
 
         public IEnumerable<IGrouping<string, FrequenciaAluno>> Frequencias { get; set; }
+
         public IEnumerable<IGrouping<string, FrequenciaAluno>> FrequenciasGlobal { get; set; }
     }
 }

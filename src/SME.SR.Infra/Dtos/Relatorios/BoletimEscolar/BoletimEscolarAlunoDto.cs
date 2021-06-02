@@ -16,6 +16,9 @@ namespace SME.SR.Infra
         [JsonProperty("cabecalho")]
         public BoletimEscolarCabecalhoDto Cabecalho { get; set; }
 
+        [JsonProperty("parecerConclusivo")]
+        public string ParecerConclusivo { get; set; }
+
         [JsonProperty("grupos")]
         public List<GrupoMatrizComponenteCurricularDto> Grupos { get; set; }
 
