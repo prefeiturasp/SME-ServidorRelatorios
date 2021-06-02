@@ -72,10 +72,10 @@ namespace SME.SR.Data
                 query.AppendLine(" and t.turma_id = ANY(@codigosTurma) ");
 
             if (anoLetivo > 0)
-                query.AppendLine(" and t.ano_letivo = anoLetivo ");
+                query.AppendLine(" and t.ano_letivo = @anoLetivo ");
 
             if (modalidade.HasValue)
-                query.AppendLine(" and t.modalidade = @modalidade ");
+                query.AppendLine(" and t.modalidade_codigo = @modalidade ");
 
             DateTime dataReferencia = DateTime.MinValue;
             if (modalidade == Modalidade.EJA)
@@ -87,9 +87,15 @@ namespace SME.SR.Data
                 dataReferencia = new DateTime(anoLetivo, semestre == 1 ? 6 : 7, 1);
             }
 
-            var parametros = new { codigosAluno, codigosTurma, anoLetivo, modalidade = (int)modalidade, 
-                                    modalidadeTipoCalendario = modalidade.HasValue ?  modalidade.Value.ObterModalidadeTipoCalendario() : default,  
-                                    dataReferencia  };
+            var parametros = new
+            {
+                codigosAluno,
+                codigosTurma,
+                anoLetivo,
+                modalidade = (int)modalidade,
+                modalidadeTipoCalendario = modalidade.HasValue ? (int)modalidade.Value.ObterModalidadeTipoCalendario() : (int)default,
+                dataReferencia
+            };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
