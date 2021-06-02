@@ -25,6 +25,8 @@ namespace SME.SR.Application
 
         public IEnumerable<AlunoFotoArquivoDto> AlunosFoto { get; set; }
 
+       public IEnumerable<RecomendacaoConselhoClasseAluno> RecomendacoesAlunos { get; set; }
+
         public IDictionary<string, string> TiposNota { get; set; }
 
         public IEnumerable<IGrouping<string, Aluno>> AlunosPorTuma { get; set; }

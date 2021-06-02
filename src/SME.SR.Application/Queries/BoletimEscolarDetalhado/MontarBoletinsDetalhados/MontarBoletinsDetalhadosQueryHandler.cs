@@ -39,6 +39,7 @@ namespace SME.SR.Application
             var tiposNota = request.TiposNota;
             var pareceresConclusivos = request.PareceresConclusivos;
             var mediasFrequencia = request.MediasFrequencia;
+            var recomendacoes = request.RecomendacoesAlunos;
 
             var boletinsAlunos = new List<BoletimEscolarDetalhadoAlunoDto>();
 
@@ -70,11 +71,14 @@ namespace SME.SR.Application
                 var frequeciaGlobal = frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
                 var percentualFrequenciaGlobal = frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
                 var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
+                var recomendacao = recomendacoes.FirstOrDefault(r => r.TurmaCodigo == turma.Codigo && r.AlunoCodigo == aluno.Key);
                 var ciclo = ciclos.FirstOrDefault(c => c.Modalidade == turma.ModalidadeCodigo && c.Ano == Convert.ToInt32(turma.Ano));
                 var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                 boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto, aluno.FirstOrDefault().NomeRelatorio, $"{percentualFrequenciaGlobal}%");
                 boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo ?? "Sem Parecer Conclusivo";
+                boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
+                boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
                 boletinsAlunos.Add(boletimEscolarAlunoDto);
             }
 
