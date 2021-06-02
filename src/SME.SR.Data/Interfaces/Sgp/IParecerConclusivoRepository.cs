@@ -7,6 +7,6 @@ namespace SME.SR.Data
     public interface IParecerConclusivoRepository
     {
         Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresFinais(int anoLetivo, string dreCodigo, string ueCodigo, Modalidade? modalidade, int? semestre,
-                                                                                                              long cicloId, string[] anos, long parecerConclusivoId);
+                                                                                     long cicloId, string[] turmasCodigo, string[] anos, long parecerConclusivoId);
     }
 }

@@ -13,7 +13,7 @@ namespace SME.SR.Application
         public ObterCicloAprendizagemTurmaQueryHandler(ITurmaRepository turmaRepository)
         {
             this.turmaRepository = turmaRepository ?? throw new ArgumentNullException(nameof(turmaRepository));
-        }
+        } 
 
         public async Task<string> Handle(ObterCicloAprendizagemTurmaQuery request, CancellationToken cancellationToken)
             => await turmaRepository.ObterCicloAprendizagem(request.TurmaCodigo);
