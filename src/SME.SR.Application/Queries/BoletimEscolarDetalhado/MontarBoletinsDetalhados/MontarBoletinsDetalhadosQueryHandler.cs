@@ -75,8 +75,8 @@ namespace SME.SR.Application
                 var ciclo = ciclos.FirstOrDefault(c => c.Modalidade == turma.ModalidadeCodigo && c.Ano == Convert.ToInt32(turma.Ano));
                 var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
-                boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto, aluno.FirstOrDefault().NomeRelatorio, $"{percentualFrequenciaGlobal}%");
-                boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo ?? "Sem Parecer Conclusivo";
+                boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto, aluno.FirstOrDefault().NomeSemNumRelatorio, $"{percentualFrequenciaGlobal}%");
+                boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo ?? "";
                 boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
                 boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
                 boletinsAlunos.Add(boletimEscolarAlunoDto);
@@ -90,8 +90,8 @@ namespace SME.SR.Application
             return new BoletimEscolarDetalhadoCabecalhoDto()
             {
                 Data = DateTime.Now.ToString("dd/MM/yyyy"),
-                NomeDre = dre.Abreviacao,
-                NomeUe = ue.NomeRelatorio,
+                NomeDre = dre.Nome,
+                NomeUe = ue.TituloTipoEscolaNome,
                 NomeTurma = turma.NomeRelatorio,
                 CodigoEol = alunoCodigo,
                 Aluno = nome,
@@ -251,7 +251,8 @@ namespace SME.SR.Application
 
         private string ObterNotaBimestre(IEnumerable<NotasAlunoBimestre> notasComponente, int bimestre)
         {
-            return notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar != null && nf.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+            var nota = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar != null && nf.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+            return !string.IsNullOrEmpty(nota) ? nota : "-";
         }
 
         private bool VerificaPossuiConselho(IEnumerable<int> conselhoClassBimestres, int bimestre)

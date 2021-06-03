@@ -20,7 +20,7 @@ namespace SME.SR.Application
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarDetalhadoQuery>();
             var relatorio = await mediator.Send(relatorioQuery);
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarDetalhado", relatorio, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarDetalhado", relatorio, request.CodigoCorrelacao,"","",true, DateTime.Now.ToString("dd/MM/yyyy")));
         }
     }
 }
