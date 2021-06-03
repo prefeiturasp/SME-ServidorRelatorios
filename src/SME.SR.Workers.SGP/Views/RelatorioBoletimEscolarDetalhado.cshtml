@@ -69,7 +69,7 @@
         return str;
     }
 
-    string ComponentesCurriculares(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento)
+    string ComponentesCurriculares(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento, ComponenteCurricularRegenciaDto componenteCurricularRegencia)
     {
         var str = @"<table class='tabela margin-top'>
         <tr class='titulo'>
@@ -92,6 +92,26 @@
             <td class='centro'>Nota</td>
             <td class='centro'>%</td>
         </tr>";
+
+        if(componenteCurricularRegencia != null)
+        {
+            foreach(var componente in componenteCurricularRegencia.ComponentesCurriculares)
+            {
+                str += $@"<tr class='corpo'>
+                    <td>{componente.Nome}</td>
+                    <td class='centro'>{componente.NotaBimestre1}</td>
+                    <td class='centro'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
+                    <td class='centro'>{componente.NotaBimestre2}</td>
+                    <td class='centro'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>
+                    <td class='centro'>{componente.NotaBimestre3}</td>
+                    <td class='centro'>{componenteCurricularRegencia.FrequenciaBimestre3}</td>
+                    <td class='centro'>{componente.NotaBimestre4}</td>
+                    <td class='centro'>{componenteCurricularRegencia.FrequenciaBimestre4}</td>
+                    <td class='centro'>{componente.NotaFinal}</td>
+                    <td class='centro'>{componenteCurricularRegencia.FrequenciaFinal}</td>
+                    </tr>";
+            }
+        }
 
         foreach (var areaConhecimento in areasConhecimento)
         {
@@ -294,7 +314,7 @@
                 @Html.Raw(MontarCabecalho(boletim.Cabecalho));
 
                 
-                    @Html.Raw(ComponentesCurriculares(boletim.AreasConhecimento));
+                    @Html.Raw(ComponentesCurriculares(boletim.AreasConhecimento, boletim.ComponenteCurricularRegencia));
                 
 
 
