@@ -262,8 +262,9 @@ namespace SME.SR.Application
 
         private string ObterFrequenciaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<FrequenciaAluno> frequenciasComponente, int bimestre)
         {
-            return !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
+            var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
                 frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? FREQUENCIA_100;
+            return !string.IsNullOrEmpty(frequencia) ? frequencia + "%" : frequencia;
 
         }
 

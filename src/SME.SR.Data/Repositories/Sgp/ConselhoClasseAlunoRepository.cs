@@ -53,7 +53,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesPorAlunosTurmas(string[] codigosAluno, string[] codigosTurma, int anoLetivo, Modalidade? modalidade, int semestre)
         {
-            var query = new StringBuilder(@"select t.turma_id TurmaCodigo, cca.aluno_codigo AlunoCodigo,
+            var query = new StringBuilder(@"select distinct t.turma_id TurmaCodigo, cca.aluno_codigo AlunoCodigo,
                                  cca.recomendacoes_aluno RecomendacoesAluno, 
                                  cca.recomendacoes_familia RecomendacoesFamilia,
                                  cca.anotacoes_pedagogicas AnotacoesPedagogicas
