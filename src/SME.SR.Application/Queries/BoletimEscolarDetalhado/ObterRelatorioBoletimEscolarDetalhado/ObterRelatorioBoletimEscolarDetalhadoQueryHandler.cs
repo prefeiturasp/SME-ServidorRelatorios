@@ -193,7 +193,8 @@ namespace SME.SR.Application
                 TiposNota = tiposNota,
                 MediasFrequencia = mediasFrequencias,
                 PareceresConclusivos = pareceresConclusivos,
-                FrequenciasGlobal = frequenciaGlobal
+                FrequenciasGlobal = frequenciaGlobal,
+                RecomendacoesAlunos = recomendacoes
             });
         }
 
