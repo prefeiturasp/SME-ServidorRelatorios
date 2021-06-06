@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ContainerNotas" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b27560f6-1485-439e-ac7c-da0133250341">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<subDataset name="DatasetBoletimGrupos" uuid="6b3dcf4f-a94f-4cad-933e-57848f4e7ce1">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
+		<queryString language="json">
+			<![CDATA[grupos]]>
+		</queryString>
+		<field name="nomeGrupo" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+		<field name="descricao" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="descricao"/>
+			<fieldDescription><![CDATA[descricao]]></fieldDescription>
+		</field>
+		<field name="componentesCurriculares" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="componentesCurriculares"/>
+			<fieldDescription><![CDATA[componentesCurriculares]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString language="JSON">
+		<![CDATA[RelatorioBoletimEscolar.boletins.parecerConclusivo]]>
+	</queryString>
+	<field name="parecerConclusivo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="parecerConclusivo"/>
+		<fieldDescription><![CDATA[parecerConclusivo]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="8" width="285" height="8" isRemoveLineWhenBlank="true" backcolor="#F5F6F8" uuid="6909a9a5-026f-4220-8237-a30cf4e33a09">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{parecerConclusivo} != null]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="4">
+					<pen lineWidth="0.25" lineColor="#DADADA"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="4" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Parecer conclusivo: "+$F{parecerConclusivo}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="285" height="8" isRemoveLineWhenBlank="true" uuid="2b362f6d-1b5f-4fa6-a072-8c1c31835f37">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.CONTENTS.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="DatasetBoletimGrupos" uuid="682fa5a3-5f8e-4d51-af20-e2738a83b37f">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("grupos")]]></dataSourceExpression>
+					</datasetRun>
+					<jr:listContents height="8" width="285">
+						<subreport>
+							<reportElement positionType="Float" x="0" y="0" width="285" height="8" isRemoveLineWhenBlank="true" uuid="d5cc72c5-69e8-46e4-98fa-6b35d6d9e98a"/>
+							<subreportParameter name="REPORT_DATA_SOURCE">
+								<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></subreportParameterExpression>
+							</subreportParameter>
+							<subreportExpression><![CDATA["ComponentesRegencia.jasper"]]></subreportExpression>
+						</subreport>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>
