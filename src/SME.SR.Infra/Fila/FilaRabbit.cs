@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
 using System.Text;
@@ -7,27 +8,40 @@ namespace SME.SR.Infra
 {
     public class FilaRabbit : IServicoFila
     {
-        private readonly IModel rabbitChannel;
+        private readonly IConfiguration configuration;
 
-        public FilaRabbit(IModel rabbitChannel)
+        public FilaRabbit(IConfiguration configuration)
         {
-            this.rabbitChannel = rabbitChannel ?? throw new ArgumentNullException(nameof(rabbitChannel));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public void PublicaFila(PublicaFilaDto publicaFilaDto)
         {
-            if (!string.IsNullOrWhiteSpace(publicaFilaDto.Rota))
+
+            var request = new MensagemRabbit(publicaFilaDto.Rota.Replace(".", "/"), publicaFilaDto.Dados, publicaFilaDto.CodigoCorrelacao);
+
+            var mensagem = JsonConvert.SerializeObject(request, new JsonSerializerSettings
             {
-                var request = new MensagemRabbit(publicaFilaDto.Rota.Replace(".","/"), publicaFilaDto.Dados, publicaFilaDto.CodigoCorrelacao);
+                NullValueHandling = NullValueHandling.Ignore
+            });
+            var body = Encoding.UTF8.GetBytes(mensagem);
 
-                var mensagem = JsonConvert.SerializeObject(request);
-                var body = Encoding.UTF8.GetBytes(mensagem);
+            var factory = new ConnectionFactory
+            {
+                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
+                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
+                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
+            };
 
-                //TODO PENSAR NA EXCHANGE
+            var exchange = publicaFilaDto.Exchange ?? RotasRabbit.ExchangeListenerWorkerRelatorios;
 
-                var exchange = publicaFilaDto.Exchange ?? RotasRabbit.ExchangeListenerWorkerRelatorios;
-
-                rabbitChannel.BasicPublish(exchange, publicaFilaDto.Rota, null, body);
+            using (var conexaoRabbit = factory.CreateConnection())
+            {
+                using (IModel _channel = conexaoRabbit.CreateModel())
+                {
+                    _channel.BasicPublish(exchange, publicaFilaDto.Rota, null, body);
+                }
             }
         }
     }

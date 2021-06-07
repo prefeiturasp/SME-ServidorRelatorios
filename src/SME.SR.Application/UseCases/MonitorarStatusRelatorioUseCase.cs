@@ -37,7 +37,7 @@ namespace SME.SR.Application
                 //TODO: Aplicar Polly ??
                 if (await mediator.Send(new SalvarRelatorioJasperLocalCommand(dadosRelatorio.JSessionId, dadosRelatorio.RequisicaoId, dadosRelatorio.ExportacaoId, dadosRelatorio.CodigoCorrelacao)))
                 {
-                    servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, filtroRelatorioDto.CodigoCorrelacao));
+                    servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, filtroRelatorioDto.CodigoCorrelacao));
                     SentrySdk.CaptureMessage("8 - MonitorarStatusRelatorioUseCase - Publicado na fila PRONTO OK!");
                 }
                 else PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
