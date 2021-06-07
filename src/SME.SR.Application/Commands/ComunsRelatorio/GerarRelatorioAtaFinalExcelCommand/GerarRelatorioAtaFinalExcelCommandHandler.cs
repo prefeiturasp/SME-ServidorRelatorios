@@ -45,11 +45,12 @@ namespace SME.SR.Application
 
                 for (int i = 0; i < dadosAgrupadosTurma.Count(); i++)
                 {
+                    var codigoCorrelacao = Guid.NewGuid();
+                    var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
+
                     using (var workbook = new XLWorkbook())
                     {
-                        var codigoCorrelacao = Guid.NewGuid();
-                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
-                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
 
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
 
@@ -63,19 +64,19 @@ namespace SME.SR.Application
 
                         MergearTabela(worksheet, tabelaDados);
 
-                        AdicionarEstilo(worksheet, tabelaDados);
+                        AdicionarEstilo(worksheet, tabelaDados);                        
 
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
-                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");                                                
+                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");                        
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
                 }
 
                 foreach (var codigoCorrelacao in lstCodigosCorrelacao)
-                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, codigoCorrelacao.Key, request.UsuarioRf)));
+                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, codigoCorrelacao.Key, request.UsuarioRf)));
 
                 return await Task.FromResult(Unit.Value);
             }
