@@ -8,6 +8,13 @@ namespace SME.SR.Infra
 {
     public class ComponenteCurricularDto
     {
+        public ComponenteCurricularDto()
+        {
+            NotaBimestre1 = "-";
+            NotaBimestre2 = "-";
+            NotaBimestre3 = "-";
+            NotaBimestre4 = "-";
+        }
         [JsonIgnore]
         public string Codigo { get; set; }
 

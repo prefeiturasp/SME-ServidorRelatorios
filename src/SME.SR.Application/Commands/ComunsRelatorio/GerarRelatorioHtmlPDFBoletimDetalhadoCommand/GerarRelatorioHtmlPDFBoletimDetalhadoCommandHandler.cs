@@ -44,23 +44,30 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
                 htmlCabecalho = htmlCabecalho.Replace("logo.png", SmeConstants.LogoSme);
 
-                var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, boletim);
-
-                var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
-                var iNumPagina = 1;
-                if (paginasDoAluno.Length > 0)
+                try
                 {
-                    foreach (var paginaDoAluno in paginasDoAluno)
+                    var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, boletim);
+
+                    var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
+                    var iNumPagina = 1;
+                    if (paginasDoAluno.Length > 0)
                     {
-                        var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", paginaDoAluno);
+                        foreach (var paginaDoAluno in paginasDoAluno)
+                        {
+                            var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", paginaDoAluno);
+                            paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
+                            iNumPagina++;
+                        }
+                    }
+                    else
+                    {
+                        var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", htmlCorpo);
                         paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
-                        iNumPagina++;
                     }
                 }
-                else
+                catch(Exception ex)
                 {
-                    var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", htmlCorpo);
-                    paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
+                    var a = 0;
                 }
             }
 

@@ -29,10 +29,11 @@
 
     }
 
-    string ComponentesCurricularesCabecalho()
+    string ComponentesCurricularesCabecalho(bool conceito)
     {
         contadorQuebrarPagina += 2;
-        return @"<table class='tabela margin-top'>
+        var notaConceito = conceito ? "Conc." : "Nota";
+        return $@"<table class='tabela margin-top'>
 <tr class='titulo'>
 <td rowspan='2' class='componente sem-borda-bottom'>Componentes curriculares</td>
 <td colspan='2' class='centro-bimestre-eja'>1° Bim.</td>
@@ -40,11 +41,11 @@
 <td colspan='2' class='centro-bimestre'>Final</td>
 </tr>
 <tr class='titulo'>
-<td class='centro-titulo-eja sem-borda-bottom'>Nota</td>
+<td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
 <td class='centro-titulo-eja sem-borda-bottom'>%</td>
-<td class='centro-titulo-eja sem-borda-bottom'>Nota</td>
+<td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
 <td class='centro-titulo-eja sem-borda-bottom'>%</td>
-<td class='centro-titulo sem-borda-bottom'>Nota</td>
+<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
 <td class='centro-titulo sem-borda-bottom'>%</td>
 </tr></table>";
     }
@@ -54,9 +55,11 @@
         bool exibeLegendaConceito = false;
         bool exibeLegendaSintese = false;
 
+        var notaConceito = componenteCurricularRegencia != null ? componenteCurricularRegencia.ComponentesCurriculares.Where(a => (a.NotaBimestre1.Contains("P") || a.NotaBimestre1.Contains("S"))).Any() : false;
+
         var str = "";
 
-        str += ComponentesCurricularesCabecalho();
+        str += ComponentesCurricularesCabecalho(notaConceito);
 
         if (componenteCurricularRegencia != null)
         {
@@ -129,7 +132,7 @@
             if (quebra != String.Empty)
             {
                 str += quebra;
-                str += ComponentesCurricularesCabecalho();
+                str += ComponentesCurricularesCabecalho(notaConceito);
                 quebrou = true;
             }
         }
@@ -153,42 +156,48 @@
         return !string.IsNullOrEmpty(parecer) ? str : null;
     }
 
-    string RecomendacoesEstudante(string recomendacoes)
+    string Recomendacoes(string recomendacoes, string titulo)
     {
-        var str = $@"<table class='tabela margin-top'>
-<tr class='titulo'>
-<td>Recomendações ao estudante</td>
-</tr>
-<tr>
-<td>
-{recomendacoes}
-</td>
-</tr>
-</table>";
+        if (string.IsNullOrEmpty(recomendacoes))
+            return null;
 
-        contadorQuebrarPagina += !string.IsNullOrEmpty(recomendacoes) ?
-            (recomendacoes.Length >= 44 ? (recomendacoes.Length / 44) + 1 : 1) : 0;
+        var tamanhoRecomendacoes = (recomendacoes.Length >= 44 ? (recomendacoes.Length / 44) + 1 : 1);
 
-        return !string.IsNullOrEmpty(recomendacoes) ? str : null;
-    }
+        var cabecalho = $@"<table class='tabela margin-top'>
+    <tr class='titulo'>
+    <td>{titulo}</td>
+    </tr>
+    <tr>
+    <td style='font-size: 14px'>";
+        contadorQuebrarPagina += 1;
 
-    string RecomendacoesFamilia(string recomendacoes)
-    {
-        var str = $@"<table class='tabela margin-top'>
-<tr class='titulo'>
-<td>Recomendações a família</td>
-</tr>
-<tr>
-<td>
-{recomendacoes}
-</td>
-</tr>
-</table>";
+        var rodape = "</td></tr></table>";
 
-        contadorQuebrarPagina += !string.IsNullOrEmpty(recomendacoes) ?
-            (recomendacoes.Length >= 44 ? (recomendacoes.Length / 44) + 1 : 1) : 0;
+        var str = cabecalho;
+        var tamanhoParaLer = 0;
+        for (var i = 0; i < tamanhoRecomendacoes; i++)
+        {
 
-        return !string.IsNullOrEmpty(recomendacoes) ? str : null;
+            if ((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + 43 >= recomendacoes.Length))
+                str += recomendacoes.Substring(tamanhoParaLer);
+            else
+                str += recomendacoes.Substring(tamanhoParaLer, 43);
+            tamanhoParaLer += 44;
+            contadorQuebrarPagina += 0.5;
+            if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+                str += rodape;
+
+            var quebra = VerificaQuebra();
+            if (quebra != String.Empty)
+            {
+                str += quebra + cabecalho;
+                contadorQuebrarPagina += 1;
+
+            }
+        }
+
+        return str + rodape;
+
     }
 
     string Anotacoes()
@@ -219,6 +228,7 @@
     @Html.Raw(ParecerConclusivo(Model.ParecerConclusivo));
 }
 
-@Html.Raw(RecomendacoesEstudante(Model.RecomendacoesEstudante))
-@Html.Raw(RecomendacoesFamilia(Model.RecomendacoesFamilia))
+
+@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
+@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
 @Html.Raw(Anotacoes())
