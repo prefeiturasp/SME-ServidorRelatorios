@@ -21,5 +21,10 @@ RUN dotnet publish "SME.SR.Workers.SGP.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN apt-get update && apt-get install wget libgdiplus -y
+RUN apt-get update && apt-get install wget libgdiplus -y unzip
+RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
+    && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono \ 
+    && cp -r RobotoMono-main/fonts/ttf/* /usr/share/fonts/truetype/robotomono \
+    && rm -rf roboto.zip &&  rm -rf RobotoMono-main
+    
 ENTRYPOINT ["dotnet", "SME.SR.Workers.SGP.dll"]
