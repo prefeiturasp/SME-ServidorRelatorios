@@ -7500,7 +7500,147 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             catch (Exception ex)
             {
                 throw ex;
+                throw ex;
             }
+        }
+
+        [HttpGet("boletim-escolar-detalhado")]
+        public async Task<IActionResult> RelatorioBoletimEscolarDetalhado([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+
+            var boletimEscolarDetalhadoDto = new BoletimEscolarDetalhadoDto();
+
+            var aluno01 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Emerson Ferreira e Silva",
+                    CodigoEol = "1234567",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                },
+                ParecerConclusivo = "Retido",
+                RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+
+                RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno01);
+
+            var aluno02 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Maria Ferreira e Silva",
+                    CodigoEol = "1234568",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                },
+                AreasConhecimento = new List<AreaConhecimentoComponenteCurricularDto>()
+                {
+                    new AreaConhecimentoComponenteCurricularDto()
+                    {
+                        Id = 1,
+                        GrupoMatrizId = 1,
+                        Nome = "Teste 1",
+                        Descricao = "Descricao 1",
+                        ComponentesCurriculares = new List<ComponenteCurricularDto>()
+                        {
+                            new ComponenteCurricularDto()
+                            {
+                                Nome = "Arte",
+                                Nota = true,
+                                NotaBimestre1 = "1",
+                                NotaBimestre2 = "2",
+                                NotaBimestre3 = "3",
+                                NotaBimestre4 = "3",
+                                NotaFinal = "3",
+                                FrequenciaBimestre1 = "98%",
+                                FrequenciaBimestre2 = "98%",
+                                FrequenciaBimestre3 = "98%",
+                                FrequenciaBimestre4 = "98%",
+                                FrequenciaFinal = "98%"
+                            },
+                            new ComponenteCurricularDto()
+                            {
+                                Nome = "Biologia",
+                                Nota = true,
+                                NotaBimestre1 = "1",
+                                NotaBimestre2 = "2",
+                                NotaBimestre3 = "3",
+                                NotaBimestre4 = "3",
+                                NotaFinal = "3",
+                                FrequenciaBimestre1 = "98%",
+                                FrequenciaBimestre2 = "98%",
+                                FrequenciaBimestre3 = "98%",
+                                FrequenciaBimestre4 = "98%",
+                                FrequenciaFinal = "98%"
+                            }
+                        }
+                    },
+                    new AreaConhecimentoComponenteCurricularDto()
+                    {
+                        Id = 2,
+                        GrupoMatrizId = 2,
+                        Nome = "Teste 2",
+                        Descricao = "Descricao 2",
+                        ComponentesCurriculares = new List<ComponenteCurricularDto>()
+                    },
+                },
+
+                ParecerConclusivo = "",
+                RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+
+                RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
+
+
+            var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+
+            return View("RelatorioBoletimEscolarDetalhado", model);
+
         }
 
 

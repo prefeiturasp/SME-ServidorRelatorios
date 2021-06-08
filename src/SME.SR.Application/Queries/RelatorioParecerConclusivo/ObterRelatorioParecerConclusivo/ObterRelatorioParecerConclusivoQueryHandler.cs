@@ -30,7 +30,7 @@ namespace SME.SR.Application
 
             var parecesParaTratar = await parecerConclusivoRepository.ObterPareceresFinais(request.filtroRelatorioParecerConclusivoDto.AnoLetivo,
                 request.filtroRelatorioParecerConclusivoDto.DreCodigo, request.filtroRelatorioParecerConclusivoDto.UeCodigo, request.filtroRelatorioParecerConclusivoDto.Modalidade,
-                request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.Ciclo, request.filtroRelatorioParecerConclusivoDto.Anos,
+                request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.Ciclo, null, request.filtroRelatorioParecerConclusivoDto.Anos,
                 request.filtroRelatorioParecerConclusivoDto.ParecerConclusivoId);
 
             await MontaCabecalho(request, retorno, parecesParaTratar);
