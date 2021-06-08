@@ -62,7 +62,7 @@
         bool exibeLegendaSintese = false;
 
         var str = "";
-        var notaConceito = componenteCurricularRegencia.ComponentesCurriculares.Where(a => (a.NotaBimestre1.Contains("P") || a.NotaBimestre1.Contains("S"))).Any();
+        var notaConceito = componenteCurricularRegencia != null ? componenteCurricularRegencia.ComponentesCurriculares.Where(a => (a.NotaBimestre1.Contains("P") || a.NotaBimestre1.Contains("S"))).Any() : false;
 
         if (!notaConceito)
             notaConceito = areasConhecimento.Where(a => (a.ComponentesCurriculares.Any(b => b.NotaBimestre1.Contains("P") || b.NotaBimestre1.Contains("S")))).Any();
