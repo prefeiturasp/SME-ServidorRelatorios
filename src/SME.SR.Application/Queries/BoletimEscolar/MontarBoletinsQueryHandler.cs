@@ -159,7 +159,9 @@ namespace SME.SR.Application
                 }
                 if (grupo.ComponenteCurricularRegencia != null)
                     grupo.ComponenteCurricularRegencia.ComponentesCurriculares = grupo.ComponenteCurricularRegencia.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
-                grupo.ComponentesCurriculares = grupo.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
+
+                if (grupo.ComponentesCurriculares != null && grupo.ComponentesCurriculares.Any())
+                    grupo.ComponentesCurriculares = grupo.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
             }
         }
 
