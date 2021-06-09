@@ -75,66 +75,25 @@
     <None Update="assets\css\bootstrap.min.css.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\fonts\RobotoMono-Bold.ttf">
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm32WWg.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\fonts\RobotoMono-BoldItalic.ttf">
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm36WWoKC.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\fonts\RobotoMono-Italic.ttf">
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3CWWoKC.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\fonts\RobotoMono-Light.ttf">
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3KWWoKC.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\fonts\RobotoMono-LightItalic.ttf">
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3mWWoKC.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\fonts\RobotoMono-Medium.ttf">
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3OWWoKC.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\fonts\RobotoMono-MediumItalic.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="assets\fonts\RobotoMono-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="assets\fonts\RobotoMono-Thin.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="assets\fonts\RobotoMono-ThinItalic.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-Bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-BoldItalic.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-Italic.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-Light.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-LightItalic.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-Medium.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-MediumItalic.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-Thin.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="fonts\RobotoMono-ThinItalic.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    
     <None Update="libwkhtmltox.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
