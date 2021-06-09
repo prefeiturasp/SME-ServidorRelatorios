@@ -69,171 +69,6 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
         return str;
     }
 
-    string ComponentesCurriculares(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento, ComponenteCurricularRegenciaDto componenteCurricularRegencia)
-    {
-        bool exibeLegendaConceito = false;
-        bool exibeLegendaSintese = false;
-
-        var str = @"<table class='tabela margin-top'>
-<tr class='titulo'>
-<td rowspan='2' class='sem-borda-bottom'>Componentes curriculares</td>
-<td colspan='2' class='centro-bimestre'>1° Bim.</td>
-<td colspan='2' class='centro-bimestre'>2° Bim.</td>
-<td colspan='2' class='centro-bimestre'>3° Bim.</td>
-<td colspan='2' class='centro-bimestre'>4° Bim.</td>
-<td colspan='2' class='centro-bimestre'>Final</td>
-</tr>
-<tr class='titulo'>
-<td class='centro-titulo sem-borda-bottom'>Nota</td>
-<td class='centro-titulo sem-borda-bottom'>%</td>
-<td class='centro-titulo sem-borda-bottom'>Nota</td>
-<td class='centro-titulo sem-borda-bottom'>%</td>
-<td class='centro-titulo sem-borda-bottom'>Nota</td>
-<td class='centro-titulo sem-borda-bottom'>%</td>
-<td class='centro-titulo sem-borda-bottom'>Nota</td>
-<td class='centro-titulo sem-borda-bottom'>%</td>
-<td class='centro-titulo sem-borda-bottom'>Nota</td>
-<td class='centro-titulo sem-borda-bottom'>%</td>
-</tr>";
-        str += "</table>";
-
-        if (componenteCurricularRegencia != null)
-        {
-            str += "<table class='tabela'>";
-            foreach (var componente in componenteCurricularRegencia.ComponentesCurriculares)
-            {
-                if (!componente.Nota)
-                    exibeLegendaSintese = true;
-
-                if (!string.IsNullOrEmpty(componente.NotaBimestre1) && (componente.NotaBimestre1.Contains("P") || componente.NotaBimestre1.Contains("S")))
-                    exibeLegendaConceito = true;
-
-                str += $@"<tr class='corpo'>
-<td class='valor-titulo'>{componente.Nome}</td>
-<td class='centro-valor'>{componente.NotaBimestre1}</td>
-<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
-<td class='centro-valor'>{componente.NotaBimestre2}</td>
-<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>
-<td class='centro-valor'>{componente.NotaBimestre3}</td>
-<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre3}</td>
-<td class='centro-valor'>{componente.NotaBimestre4}</td>
-<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre4}</td>
-<td class='centro-valor'>{componente.NotaFinal}</td>
-<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaFinal}</td>
-</tr>";
-            }
-            str += "</table>";
-        }
-
-        for (var i = 0; i < areasConhecimento.Count; i++)
-        {
-            if (i == 0 && componenteCurricularRegencia != null)
-            {
-                str += "<table class='tabela margin-top'>";
-            }
-            else if (i > 0)
-            {
-                str += "<table class='tabela margin-top'>";
-            }
-            else
-            {
-                str += "<table class='tabela'>";
-            }
-            foreach (var componenteCurricular in areasConhecimento[i].ComponentesCurriculares)
-            {
-                if (!componenteCurricular.Nota)
-                    exibeLegendaSintese = true;
-
-                if (!string.IsNullOrEmpty(componenteCurricular.NotaBimestre1) && (componenteCurricular.NotaBimestre1.Contains("P") || componenteCurricular.NotaBimestre1.Contains("S")))
-                    exibeLegendaConceito = true;
-
-                str += $@"<tr class='corpo'>
-<td class='valor-titulo'>{componenteCurricular.Nome}</td>
-<td class='centro-valor'>{componenteCurricular.NotaBimestre1}</td>
-<td class='centro-valor'>{componenteCurricular.FrequenciaBimestre1}</td>
-<td class='centro-valor'>{componenteCurricular.NotaBimestre2}</td>
-<td class='centro-valor'>{componenteCurricular.FrequenciaBimestre2}</td>
-<td class='centro-valor'>{componenteCurricular.NotaBimestre3}</td>
-<td class='centro-valor'>{componenteCurricular.FrequenciaBimestre3}</td>
-<td class='centro-valor'>{componenteCurricular.NotaBimestre4}</td>
-<td class='centro-valor'>{componenteCurricular.FrequenciaBimestre4}</td>
-<td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
-<td class='centro-valor'>{componenteCurricular.FrequenciaFinal}</td>
-</tr>";
-            }
-            str += "</table>";
-
-        }
-
-        if (exibeLegendaSintese || exibeLegendaConceito)
-        {
-            str += "<p>Legenda: F:Faltante - NF:Não Faltante - P:Plenamente Satisfatório - S:Satisfatório - NS:Não Satisfatório</p>";
-        }
-
-        return str;
-    }
-
-    string ParecerConclusivo(string parecer)
-    {
-        var str = $@"<table class='tabela margin-top'>
-<tr class='titulo'>
-<td>Parecer Conclusivo: {parecer}</td>
-</tr>
-</table>";
-
-        return !string.IsNullOrEmpty(parecer) ? str : null;
-    }
-
-    string RecomendacoesEstudante(string recomendacoes)
-    {
-        var str = $@"<table class='tabela margin-top'>
-<tr class='titulo'>
-<td>Recomendações ao estudante</td>
-</tr>
-<tr>
-<td>
-{recomendacoes}
-</td>
-</tr>
-</table>";
-
-        return !string.IsNullOrEmpty(recomendacoes) ? str : null;
-    }
-
-    string RecomendacoesFamilia(string recomendacoes)
-    {
-        var str = $@"<table class='tabela margin-top'>
-<tr class='titulo'>
-<td>Recomendações a família</td>
-</tr>
-<tr>
-<td>
-{recomendacoes}
-</td>
-</tr>
-</table>";
-
-        return !string.IsNullOrEmpty(recomendacoes) ? str : null;
-    }
-
-    string Anotacoes()
-    {
-        var str = @"<table class='tabela-final margin-top'>
-<tr>
-<td width='100%' style='border-bottom: 1px solid #42474a;'>
-&nbsp
-</td>
-</tr>
-<tr>
-<td width='100%' style='border-bottom: 1px solid #42474a;'>
-&nbsp
-</td>
-</tr>
-</table>";
-
-        return str;
-    }
-
 }
 
 <!DOCTYPE html>
@@ -251,7 +86,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 
         .body-relatorio {
             margin: 0.5cm auto;
-            font-family: "Roboto Mono", monospace;
+            font-family: "Roboto Mono" !important;
             width: 21cm;
             min-height: 29.7cm;
             background: white;
@@ -271,20 +106,20 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
                 text-align: right;
                 font-size: 12px;
                 font-weight: bold;
-                font-family: "Roboto Mono", monospace;
+                font-family: "Roboto Mono" !important;
             }
 
             .cabecalho-principal .cabecalho-titulo-02 {
                 text-align: right;
                 font-size: 14px;
-                font-family: "Roboto Mono", monospace;
+                font-family: "Roboto Mono" !important;
             }
 
         .cabecalho-relatorio {
             display: table;
             width: 100%;
             font-size: 12px;
-            font-family: "Roboto Mono", monospace;
+            font-family: "Roboto Mono" !important;
             border-color: #42474a;
             empty-cells: show;
             border: none;
@@ -307,7 +142,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
         .tabela {
             width: 100%;
             font-size: 12px;
-            font-family: "Roboto Mono", monospace;
+            font-family: "Roboto Mono" !important;
             border-color: #42474a;
             empty-cells: show;
             border: none;
@@ -331,7 +166,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
                     background-color: #f3f3f3;
                     font-size: 12px;
                     text-align: center;
-                    font-family: "Roboto Mono", monospace;
+                    font-family: "Roboto Mono" !important;
                     width: 90px;
                 }
 
@@ -339,7 +174,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
                     background-color: #f3f3f3;
                     font-size: 12px;
                     text-align: center;
-                    font-family: "Roboto Mono", monospace;
+                    font-family: "Roboto Mono" !important;
                     width: 180px;
                 }
 
@@ -347,7 +182,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
                     background-color: #f3f3f3;
                     font-size: 11px;
                     text-align: center;
-                    font-family: "Roboto Mono", monospace;
+                    font-family: "Roboto Mono" !important;
                     padding-left: 3px;
                     padding-right: 3px;
                     width: 45px;
@@ -357,7 +192,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
                     background-color: #f3f3f3;
                     text-align: center;
                     font-size: 11px;
-                    font-family: "Roboto Mono", monospace;
+                    font-family: "Roboto Mono" !important;
                     padding-left: 3px;
                     padding-right: 3px;
                     width: 90px;
@@ -370,7 +205,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
             .tabela .corpo .centro-valor {
                 text-align: center;
                 padding-left: 3px;
-                font-family: "Roboto Mono", monospace;
+                font-family: "Roboto Mono" !important;
                 padding-right: 3px;
                 width: 45px;
                 font-size: 10px;
@@ -378,7 +213,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 
             .tabela .corpo .centro-valor-eja {
                 text-align: center;
-                font-family: "Roboto Mono", monospace;
+                font-family: "Roboto Mono" !important;
                 padding-left: 3px;
                 padding-right: 3px;
                 width: 90px;
@@ -393,7 +228,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
         .tabela-final {
             width: 100%;
             font-size: 14px;
-            font-family: "Roboto Mono", monospace;
+            font-family: "Roboto Mono" !important;
             border-bottom: 1px solid #42474a;
         }
 
