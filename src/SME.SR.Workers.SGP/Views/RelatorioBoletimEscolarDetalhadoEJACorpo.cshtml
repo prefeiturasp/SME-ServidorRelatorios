@@ -50,14 +50,38 @@
 </tr></table>";
     }
 
+    bool ChecarNotaConceitoRegencia(List<ComponenteCurricularRegenciaNotaDto> componentes)
+    {
+        return componentes.Where(a =>
+            (a.NotaBimestre1 != null && (a.NotaBimestre1.Contains("P") || a.NotaBimestre1.Contains("S"))) ||
+            (a.NotaBimestre2 != null && (a.NotaBimestre2.Contains("P") || a.NotaBimestre2.Contains("S"))) ||
+            (a.NotaBimestre3 != null && (a.NotaBimestre3.Contains("P") || a.NotaBimestre3.Contains("S"))) ||
+            (a.NotaBimestre4 != null && (a.NotaBimestre4.Contains("P") || a.NotaBimestre4.Contains("S")))
+            ).Any();
+    }
+
+    bool ChecarNotaConceito(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento)
+    {
+        return areasConhecimento.Where(a =>
+            a.ComponentesCurriculares.Any(b =>
+                (b.NotaBimestre1 != null && (b.NotaBimestre1.Contains("P") || b.NotaBimestre1.Contains("S"))) ||
+                (b.NotaBimestre2 != null && (b.NotaBimestre2.Contains("P") || b.NotaBimestre2.Contains("S"))) ||
+                (b.NotaBimestre3 != null && (b.NotaBimestre3.Contains("P") || b.NotaBimestre3.Contains("S"))) ||
+                (b.NotaBimestre4 != null && (b.NotaBimestre4.Contains("P") || b.NotaBimestre4.Contains("S"))))
+            ).Any();
+    }
+
+
     string ComponentesCurriculares(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento, ComponenteCurricularRegenciaDto componenteCurricularRegencia)
     {
         bool exibeLegendaConceito = false;
         bool exibeLegendaSintese = false;
 
-        var notaConceito = componenteCurricularRegencia != null ? componenteCurricularRegencia.ComponentesCurriculares.Where(a => (a.NotaBimestre1.Contains("P") || a.NotaBimestre1.Contains("S"))).Any() : false;
-
         var str = "";
+        var notaConceito = componenteCurricularRegencia != null ? ChecarNotaConceitoRegencia(componenteCurricularRegencia.ComponentesCurriculares) : false;
+
+        if (!notaConceito)
+            notaConceito = ChecarNotaConceito(areasConhecimento);
 
         str += ComponentesCurricularesCabecalho(notaConceito);
 
@@ -69,7 +93,7 @@
                 if (!componente.Nota)
                     exibeLegendaSintese = true;
 
-                if (!string.IsNullOrEmpty(componente.NotaBimestre1) && (componente.NotaBimestre1.Contains("P") || componente.NotaBimestre1.Contains("S")))
+                if (notaConceito)
                     exibeLegendaConceito = true;
 
                 var notaFinal = string.IsNullOrEmpty(componenteCurricularRegencia.FrequenciaFinal) ? "" : $"{componenteCurricularRegencia.FrequenciaFinal}%";
