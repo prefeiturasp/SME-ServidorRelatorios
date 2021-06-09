@@ -109,18 +109,18 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
                     exibeLegendaConceito = true;
 
                 str += $@"<tr class='corpo'>
-    <td class='valor-titulo'>{componente.Nome}</td>
-    <td class='centro-valor'>{componente.NotaBimestre1}</td>
-    <td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
-    <td class='centro-valor'>{componente.NotaBimestre2}</td>
-    <td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>
-    <td class='centro-valor'>{componente.NotaBimestre3}</td>
-    <td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre3}</td>
-    <td class='centro-valor'>{componente.NotaBimestre4}</td>
-    <td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre4}</td>
-    <td class='centro-valor'>{componente.NotaFinal}</td>
-    <td class='centro-valor'>{componenteCurricularRegencia.FrequenciaFinal}</td>
-    </tr>";
+<td class='valor-titulo'>{componente.Nome}</td>
+<td class='centro-valor'>{componente.NotaBimestre1}</td>
+<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
+<td class='centro-valor'>{componente.NotaBimestre2}</td>
+<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>
+<td class='centro-valor'>{componente.NotaBimestre3}</td>
+<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre3}</td>
+<td class='centro-valor'>{componente.NotaBimestre4}</td>
+<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaBimestre4}</td>
+<td class='centro-valor'>{componente.NotaFinal}</td>
+<td class='centro-valor'>{componenteCurricularRegencia.FrequenciaFinal}</td>
+</tr>";
             }
             str += "</table>";
         }
@@ -148,24 +148,24 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
                     exibeLegendaConceito = true;
 
                 str += $@"<tr class='corpo'>
-    <td class='valor-titulo'>{componenteCurricular.Nome}</td>
-    <td class='centro-valor'>{componenteCurricular.NotaBimestre1}</td>
-    <td class='centro-valor'>{componenteCurricular.FrequenciaBimestre1}</td>
-    <td class='centro-valor'>{componenteCurricular.NotaBimestre2}</td>
-    <td class='centro-valor'>{componenteCurricular.FrequenciaBimestre2}</td>
-    <td class='centro-valor'>{componenteCurricular.NotaBimestre3}</td>
-    <td class='centro-valor'>{componenteCurricular.FrequenciaBimestre3}</td>
-    <td class='centro-valor'>{componenteCurricular.NotaBimestre4}</td>
-    <td class='centro-valor'>{componenteCurricular.FrequenciaBimestre4}</td>
-    <td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
-    <td class='centro-valor'>{componenteCurricular.FrequenciaFinal}</td>
-    </tr>";
+<td class='valor-titulo'>{componenteCurricular.Nome}</td>
+<td class='centro-valor'>{componenteCurricular.NotaBimestre1}</td>
+<td class='centro-valor'>{componenteCurricular.FrequenciaBimestre1}</td>
+<td class='centro-valor'>{componenteCurricular.NotaBimestre2}</td>
+<td class='centro-valor'>{componenteCurricular.FrequenciaBimestre2}</td>
+<td class='centro-valor'>{componenteCurricular.NotaBimestre3}</td>
+<td class='centro-valor'>{componenteCurricular.FrequenciaBimestre3}</td>
+<td class='centro-valor'>{componenteCurricular.NotaBimestre4}</td>
+<td class='centro-valor'>{componenteCurricular.FrequenciaBimestre4}</td>
+<td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
+<td class='centro-valor'>{componenteCurricular.FrequenciaFinal}</td>
+</tr>";
             }
             str += "</table>";
 
         }
 
-        if(exibeLegendaSintese || exibeLegendaConceito)
+        if (exibeLegendaSintese || exibeLegendaConceito)
         {
             str += "<p>Legenda: F:Faltante - NF:Não Faltante - P:Plenamente Satisfatório - S:Satisfatório - NS:Não Satisfatório</p>";
         }
@@ -192,7 +192,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 </tr>
 <tr>
 <td>
-    {recomendacoes}
+{recomendacoes}
 </td>
 </tr>
 </table>";
@@ -208,7 +208,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 </tr>
 <tr>
 <td>
-    {recomendacoes}
+{recomendacoes}
 </td>
 </tr>
 </table>";
@@ -221,12 +221,12 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
         var str = @"<table class='tabela-final margin-top'>
 <tr>
 <td width='100%' style='border-bottom: 1px solid #42474a;'>
-    &nbsp
+&nbsp
 </td>
 </tr>
 <tr>
 <td width='100%' style='border-bottom: 1px solid #42474a;'>
-    &nbsp
+&nbsp
 </td>
 </tr>
 </table>";
@@ -242,7 +242,13 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RELATÓRIO BOLETIM ESCOLAR DETALHADO</title>
+    <link rel="stylesheet" href="#PASTACSS/bootstrap.min.css">
+    <link rel="stylesheet" href="#PASTACSS/fonts.css">
+</head>
+<body class="body-relatorio">
     <style>
+        /* cyrillic-ext */
+
         .body-relatorio {
             margin: 0.5cm auto;
             font-family: "Roboto Mono", monospace;
@@ -279,7 +285,10 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
             width: 100%;
             font-size: 16px;
             font-family: "Roboto Mono", monospace;
-            border: 1px solid #42474a;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
         }
 
             .cabecalho-relatorio tr td {
@@ -299,7 +308,10 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
             width: 100%;
             font-size: 14px;
             font-family: "Roboto Mono", monospace;
-            border: 1px solid #42474a;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
         }
 
             .tabela tr td {
@@ -386,12 +398,10 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
                 padding-left: 10px;
             }
     </style>
-</head>
-<body class="body-relatorio">
-    
 
-    @Html.Raw(MontarCabecalho())
-    #CONTEUDO_ALUNO
-
+    <div>
+        @Html.Raw(MontarCabecalho())
+        #CONTEUDO_ALUNO
+    </div>
 </body>
 </html>
