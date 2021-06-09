@@ -139,7 +139,7 @@ namespace SME.SR.Application
             foreach (DataRow linha in linhasAlunosTransferidosComNumeroChamada)
             {
                 int indice = tabelaDados.Rows.IndexOf(linha);
-                worksheet.Range(indice, 1, indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+                worksheet.Range(LINHA_GRUPOS + indice, 1, LINHA_GRUPOS + indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
             }
 
             var linhaInicialInativos = tabelaDados.AsEnumerable()
