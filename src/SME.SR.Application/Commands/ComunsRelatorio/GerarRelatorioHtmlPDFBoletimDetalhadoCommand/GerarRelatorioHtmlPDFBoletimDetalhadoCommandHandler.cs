@@ -37,9 +37,9 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             var nomeTemplateCabecalho = "RelatorioBoletimEscolarDetalhadoCabecalho";
             var nomeTemplateCorpo = request.Modalidade == Modalidade.EJA ? "RelatorioBoletimEscolarDetalhadoEJACorpo" : "RelatorioBoletimEscolarDetalhadoCorpo";
 
-            var boletins = model.BoletimEscolarDetalhado.Boletins.OrderBy(a => a.Cabecalho.Aluno);
+            var boletins = model.BoletimEscolarDetalhado.Boletins.OrderBy(a => a.Cabecalho.NomeTurma);
 
-            foreach(var boletim in boletins)
+            foreach (var boletim in boletins)
             {
                 var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, boletim.Cabecalho);
                 htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
@@ -47,38 +47,32 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 htmlCabecalho = htmlCabecalho.Replace("#PASTACSS", Path.Combine(caminhoBase, "assets/css"));
                 htmlCabecalho = htmlCabecalho.Replace("#PASTAFONTES", Path.Combine(caminhoBase, "assets/fonts"));
 
-                try
-                {
-                    var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, boletim);
 
-                    var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
-                    var iNumPagina = 1;
-                    if (paginasDoAluno.Length > 0)
+                var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, boletim);
+
+                var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
+                var iNumPagina = 1;
+                if (paginasDoAluno.Length > 0)
+                {
+                    foreach (var paginaDoAluno in paginasDoAluno)
                     {
-                        foreach (var paginaDoAluno in paginasDoAluno)
-                        {
-                            var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", paginaDoAluno);
-                            paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
-                            iNumPagina++;
-                        }
-                    }
-                    else
-                    {
-                        var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", htmlCorpo);
+                        var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", paginaDoAluno);
                         paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
+                        iNumPagina++;
                     }
                 }
-                catch(Exception ex)
+                else
                 {
-                    var a = 0;
+                    var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", htmlCorpo);
+                    paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
                 }
             }
 
-            
+
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
 
             reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString(), DateTime.Now.ToString("dd/MM/yyyy"));
-            
+
             if (request.EnvioPorRabbit)
             {
                 servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, request.CodigoCorrelacao));
