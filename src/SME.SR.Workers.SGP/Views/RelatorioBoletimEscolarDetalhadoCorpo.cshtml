@@ -162,7 +162,7 @@
 <td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
 <td class='centro-valor'>{notaFinal}</td>
 </tr>";
-                contadorQuebrarPagina += componenteCurricular.Nome.Length >= 42 ? 2 : 1;
+                contadorQuebrarPagina += componenteCurricular.Nome.Length >= 42 ? 2 : 0.5;
             }
             str += "</table>";
             var quebra = VerificaQuebra();
@@ -199,14 +199,14 @@
         if (string.IsNullOrEmpty(recomendacoes))
             return null;
 
-        var tamanhoRecomendacoes = (recomendacoes.Length >= 44 ? (recomendacoes.Length / 44) + 1 : 1);
+        var tamanhoRecomendacoes = (recomendacoes.Length >= 90 ? (recomendacoes.Length / 90) + 1 : 1);
 
         var cabecalho = $@"<table class='tabela margin-top'>
     <tr class='titulo'>
     <td>{titulo}</td>
     </tr>
     <tr>
-    <td style='font-size: 14px'>";
+    <td style='font-size: 12px'>";
         contadorQuebrarPagina += 1;
 
         var rodape = "</td></tr></table>";
@@ -216,12 +216,12 @@
         for (var i = 0; i < tamanhoRecomendacoes; i++)
         {
 
-            if((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + 43 >= recomendacoes.Length))
+            if((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + 89 >= recomendacoes.Length))
                 str += recomendacoes.Substring(tamanhoParaLer);
             else
-                str += recomendacoes.Substring(tamanhoParaLer, 43);
-            tamanhoParaLer += 44;
-            contadorQuebrarPagina += 0.5;
+                str += recomendacoes.Substring(tamanhoParaLer, 89);
+            tamanhoParaLer += 90;
+            contadorQuebrarPagina += 0.7;
             if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                 str += rodape;
 

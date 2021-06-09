@@ -1,0 +1,32 @@
+﻿version: "3"
+services:
+
+  sme_sr_sgpworker:
+    env_file:
+      - sme_servidor_relatorios_worker.env
+    container_name: sme_sr_sgp_worker_container
+    restart: on-failure
+    build: 
+      context: .
+      dockerfile: ./src/SME.SR.Workers.SGP/Dockerfile
+    ports:
+      - "5011:5001"
+      - "5010:5000"    
+    networks:
+      - sme-network
+    volumes:
+      - ./relatorios:/app/relatorios:Z
+
+##########################################################
+### Volumes, rede e infra estrutura ######################
+##########################################################
+volumes:
+  jasperreports_data:
+    driver: local
+  mariadb_data:
+    driver: local
+
+networks:
+  sme-network:
+    driver: bridge
+    name: sme_external_network
