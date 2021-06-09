@@ -30,6 +30,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         public async Task<string> Handle(GerarRelatorioHtmlPDFBoletimDetalhadoCommand request, CancellationToken cancellationToken)
         {
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
+            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
 
             var model = (RelatorioBoletimEscolarDetalhadoDto)request.Model;
 
@@ -43,6 +44,8 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, boletim.Cabecalho);
                 htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
                 htmlCabecalho = htmlCabecalho.Replace("logo.png", SmeConstants.LogoSme);
+                htmlCabecalho = htmlCabecalho.Replace("#PASTACSS", Path.Combine(caminhoBase, "assets/css"));
+                htmlCabecalho = htmlCabecalho.Replace("#PASTAFONTES", Path.Combine(caminhoBase, "assets/fonts"));
 
                 try
                 {
@@ -71,7 +74,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 }
             }
 
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+            
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
 
             reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString(), DateTime.Now.ToString("dd/MM/yyyy"));
