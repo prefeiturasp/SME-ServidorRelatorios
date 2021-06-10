@@ -78,7 +78,7 @@ namespace SME.SR.Application
                     var ciclo = ciclos.FirstOrDefault(c => c.Modalidade == turma.ModalidadeCodigo && c.Ano == Convert.ToInt32(turma.Ano));
                     var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
-                    boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto, aluno.FirstOrDefault().NomeRelatorio, $"{percentualFrequenciaGlobal}%");
+                    boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto, aluno.FirstOrDefault().NomeRelatorio, $"{percentualFrequenciaGlobal}%", request.AnoLetivo);
                     boletimEscolarAlunoDto.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0) ? (parecerConclusivo?.ParecerConclusivo ?? "") : null;
                     boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
                     boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
@@ -89,7 +89,7 @@ namespace SME.SR.Application
             return await Task.FromResult(new BoletimEscolarDetalhadoDto(boletinsAlunos));
         }
 
-        private BoletimEscolarDetalhadoCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, TipoCiclo ciclo, Turma turma, string alunoCodigo, AlunoFotoArquivoDto foto, string nome, string frequenciaGlobal)
+        private BoletimEscolarDetalhadoCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, TipoCiclo ciclo, Turma turma, string alunoCodigo, AlunoFotoArquivoDto foto, string nome, string frequenciaGlobal, int anoLetivo)
         {
             return new BoletimEscolarDetalhadoCabecalhoDto()
             {
@@ -101,7 +101,8 @@ namespace SME.SR.Application
                 Aluno = nome,
                 FrequenciaGlobal = frequenciaGlobal,
                 Ciclo = ciclo.Descricao,
-                Foto = foto?.FotoBase64
+                Foto = foto?.FotoBase64,
+                AnoLetivo = anoLetivo
             };
         }
 

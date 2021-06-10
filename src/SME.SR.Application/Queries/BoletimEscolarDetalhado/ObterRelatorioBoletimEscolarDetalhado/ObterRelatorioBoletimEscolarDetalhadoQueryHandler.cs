@@ -125,7 +125,7 @@ namespace SME.SR.Application
                     AnoLetivo = anoLetivo,
                     Semestre = semestre,
                     Usuario = usuario,
-                    ConsideraHistorico = consideraHistorico
+                    ConsideraHistorico = consideraHistorico                     
                 });
             }
             catch (NegocioException)
@@ -184,7 +184,8 @@ namespace SME.SR.Application
                                                              IEnumerable<RecomendacaoConselhoClasseAluno> recomendacoes,
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos,
                                                              IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias,
-                                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal)
+                                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal, 
+                                                             int anoLetivo)
         {
             return await mediator.Send(new MontarBoletinsDetalhadosQuery()
             {
@@ -202,7 +203,8 @@ namespace SME.SR.Application
                 MediasFrequencia = mediasFrequencias,
                 PareceresConclusivos = pareceresConclusivos,
                 FrequenciasGlobal = frequenciaGlobal,
-                RecomendacoesAlunos = recomendacoes
+                RecomendacoesAlunos = recomendacoes,
+                AnoLetivo = anoLetivo
             });
         }
 

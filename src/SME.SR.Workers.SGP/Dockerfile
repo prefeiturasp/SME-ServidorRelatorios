@@ -21,7 +21,8 @@ RUN dotnet publish "SME.SR.Workers.SGP.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN apt-get update && apt-get install -y wget libgdiplus unzip fontconfig 
+RUN apt-get update && apt-get install -y wget libgdiplus 
+# unzip fontconfig 
 # RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
 #     && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono
 # RUN find RobotoMono-main/fonts/ttf/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/robotomono/ \; || return 1 \
