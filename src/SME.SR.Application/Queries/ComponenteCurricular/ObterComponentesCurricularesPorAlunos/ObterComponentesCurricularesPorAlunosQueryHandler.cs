@@ -24,12 +24,13 @@ namespace SME.SR.Application
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesPorAlunosQuery request, CancellationToken cancellationToken)
         {
             var componentesDasTurmas = await componenteCurricularRepository.ObterComponentesPorAlunos(request.AlunosCodigos, request.AnoLetivo, request.Semestre);
-            var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
-
-            var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesId));
 
             if (componentesDasTurmas != null && componentesDasTurmas.Any())
             {
+                var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
+
+                var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesId));
+
                 var componentes = await componenteCurricularRepository.ListarComponentes();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
                 var areasConhecimento = await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(componentesId));
@@ -81,9 +82,7 @@ namespace SME.SR.Application
                 }
 
                 return componentesMapeados.GroupBy(cm => cm.CodigoAluno);
-            }
-
-            throw new NegocioException("Não foi possível localizar as disciplinas das tumas");
+            } throw new NegocioException("Não foi possível localizar os componentes curriculares da turma.");
         }
     }
 }
