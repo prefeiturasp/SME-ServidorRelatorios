@@ -274,9 +274,11 @@ namespace SME.SR.Application
 
         private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, int ultimoBimestrePeriodoFechamento, IEnumerable<NotasAlunoBimestre> notasComponente, int bimestre)
         {
-            var nota = (!VerificaPossuiConselho(conselhoClassBimestres, bimestre)) ? "" :
+            var possuiConselho = VerificaPossuiConselho(conselhoClassBimestres, bimestre);
+
+            var nota = !possuiConselho ? "" :
                     notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar != null && nf.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
-            return !string.IsNullOrEmpty(nota) ? nota : (bimestre > ultimoBimestrePeriodoFechamento) ? "" : "-";
+            return !string.IsNullOrEmpty(nota) ? nota : (bimestre > ultimoBimestrePeriodoFechamento && !possuiConselho) ? "" : "-";
         }
 
         private string ObterNotaBimestreFinal(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestre> notasComponente)
