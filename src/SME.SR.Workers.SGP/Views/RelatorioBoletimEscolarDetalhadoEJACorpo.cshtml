@@ -96,16 +96,32 @@
                 if (notaConceito)
                     exibeLegendaConceito = true;
 
-                var notaFinal = string.IsNullOrEmpty(componenteCurricularRegencia.FrequenciaFinal) ? "" : $"{componenteCurricularRegencia.FrequenciaFinal}%";
-                str += $@"<tr class='corpo'>
+                var frequenciaFinal = string.IsNullOrEmpty(componenteCurricularRegencia.FrequenciaFinal) ? "" : (componenteCurricularRegencia.FrequenciaFinal != "-" ? $"{componenteCurricularRegencia.FrequenciaFinal}%" : componenteCurricularRegencia.FrequenciaFinal);
+
+                if (componente == componenteCurricularRegencia.ComponentesCurriculares.First())
+                {
+                    str += $@"<tr class='corpo'>
 <td class='valor-titulo'>{componente.Nome}</td>
 <td class='centro-valor-eja'>{componente.NotaBimestre1}</td>
-<td class='centro-valor-eja'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
+<td class='centro-valor-eja' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
 <td class='centro-valor-eja'>{componente.NotaBimestre2}</td>
-<td class='centro-valor-eja'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>
+<td class='centro-valor-eja' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>
 <td class='centro-valor'>{componente.NotaFinal}</td>
-<td class='centro-valor'>{notaFinal}</td>
+<td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{frequenciaFinal}</td>
 </tr>";
+                }
+                else
+                {
+                    str += $@"<tr class='corpo'>
+<td class='valor-titulo'>{componente.Nome}</td>
+<td class='centro-valor-eja'>{componente.NotaBimestre1}</td>
+<td class='centro-valor-eja'>{componente.NotaBimestre2}</td>
+<td class='centro-valor'>{componente.NotaFinal}</td>
+</tr>";
+                }
+
+
+
                 contadorQuebrarPagina += componente.Nome.Length >= 42 ? 2 : 1;
             }
             str += "</table>";
@@ -140,17 +156,18 @@
                     if (!string.IsNullOrEmpty(componenteCurricular.NotaBimestre1) && (componenteCurricular.NotaBimestre1.Contains("P") || componenteCurricular.NotaBimestre1.Contains("S")))
                         exibeLegendaConceito = true;
 
-                    var notaFinal = string.IsNullOrEmpty(componenteCurricular.FrequenciaFinal) ? "" : $"{componenteCurricular.FrequenciaFinal}%";
+                    var frequenciaFinal = string.IsNullOrEmpty(componenteCurricular.FrequenciaFinal) ? "" : $"{componenteCurricular.FrequenciaFinal}%";
 
                     str += $@"<tr class='corpo'>
-<td class='valor-titulo'>{componenteCurricular.Nome}</td>
-<td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
-<td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
-<td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
-<td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>
-<td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
-<td class='centro-valor'>{notaFinal}</td>
-</tr>";
+                    <td class='valor-titulo'>{componenteCurricular.Nome}</td>
+                    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
+                    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
+                    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
+                    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>
+                    <td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
+                    <td class='centro-valor'>{frequenciaFinal}</td>
+                    </tr>";
+
                     contadorQuebrarPagina += componenteCurricular.Nome.Length >= 42 ? 2 : 0.5;
                 }
                 str += "</table>";
