@@ -236,7 +236,6 @@ namespace SME.SR.Application
 
                         if (componenteCurricular.Frequencia)
                         {
-
                             componenteCurricular.FrequenciaBimestre1 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasComponente, 1);
                             componenteCurricular.FrequenciaBimestre2 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasComponente, 2);
                             componenteCurricular.FrequenciaBimestre3 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasComponente, 3);
@@ -246,6 +245,13 @@ namespace SME.SR.Application
 
                             if (!componenteCurricular.Nota)
                                 componenteCurricular.NotaFinal = ObterSintese(frequenciasComponente, mediasFrequencia, false, false);
+                        }
+                        else
+                        {
+                            componenteCurricular.FrequenciaBimestre1 = "-";
+                            componenteCurricular.FrequenciaBimestre2 = "-";
+                            componenteCurricular.FrequenciaBimestre3 = "-";
+                            componenteCurricular.FrequenciaBimestre4 = "-";
                         }
                     }
                 }
