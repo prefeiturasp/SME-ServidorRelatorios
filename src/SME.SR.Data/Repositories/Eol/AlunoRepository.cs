@@ -168,19 +168,12 @@ namespace SME.SR.Data
                     left join serie_ensino se ON
 	                    grade.cd_serie_ensino = se.cd_serie_ensino
                     where
-						matrTurma.dt_situacao_aluno =                    
-							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
-							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-							where
-							mte2.cd_turma_escola = matrTurma.cd_turma_escola
-							and matr2.cd_aluno = matricula.cd_aluno
-							and (matr2.st_matricula in (1, 6, 10, 13, 5) or (matr2.st_matricula not in (1, 6, 10, 13, 5) and matr2.dt_status_matricula > @dataFim))
-						)
-	                    and turesc.an_letivo = @anoLetivo
+	                    turesc.an_letivo = @anoLetivo
 	                    and turesc.cd_tipo_turma = 1
 						and se.sg_resumida_serie = @anoTurma
 	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) 
-						and matricula.dt_status_matricula > @dataFim)  ) ");
+						and matricula.dt_status_matricula > @dataFim)  )
+                        and matrTurma.dt_situacao_aluno = matricula.dt_status_matricula ");
 
                 if (!string.IsNullOrEmpty(ueCodigo))
                     query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
@@ -1073,9 +1066,9 @@ namespace SME.SR.Data
 
         }
 
-		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigosEAnoLetivo(long[] codigosAlunos, long anoLetivo)
-		{
-			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
+        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigosEAnoLetivo(long[] codigosAlunos, long anoLetivo)
+        {
+            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
 					CREATE TABLE #tmpAlunosPorCodigo 
 					(
@@ -1250,17 +1243,17 @@ namespace SME.SR.Data
 					PossuiDeficiencia,
                     NumeroAlunoChamada";
 
-			var parametros = new { CodigosAluno = codigosAlunos, anoLetivo };
+            var parametros = new { CodigosAluno = codigosAlunos, anoLetivo };
 
-			using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-			return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, parametros);
 
-		}
+        }
 
-		public async Task<IEnumerable<AlunoResponsavelAdesaoAEDto>> ObterAlunosResponsaveisPorTurmasCodigoParaRelatorioAdesao(long[] turmasCodigo, int anoLetivo)
-		{
+        public async Task<IEnumerable<AlunoResponsavelAdesaoAEDto>> ObterAlunosResponsaveisPorTurmasCodigoParaRelatorioAdesao(long[] turmasCodigo, int anoLetivo)
+        {
 
-			var query = @"select 
+            var query = @"select 
 						distinct
 						te.cd_turma_escola TurmaCodigo,
 						a.cd_aluno AlunoCodigo,
@@ -1284,13 +1277,13 @@ namespace SME.SR.Data
 						ra.dt_fim IS NULL and te.cd_turma_escola in @turmasCodigo
 						and m.an_letivo = @anoLetivo";
 
-			var parametros = new { turmasCodigo, anoLetivo };
+            var parametros = new { turmasCodigo, anoLetivo };
 
-			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-			{
-				return await conexao.QueryAsync<AlunoResponsavelAdesaoAEDto>(query, parametros);
-			}
-		}
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<AlunoResponsavelAdesaoAEDto>(query, parametros);
+            }
+        }
 
         public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
         {
