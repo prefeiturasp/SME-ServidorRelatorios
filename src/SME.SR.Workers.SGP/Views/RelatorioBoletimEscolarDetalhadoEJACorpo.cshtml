@@ -29,25 +29,26 @@
 
     }
 
-    string ComponentesCurricularesCabecalho(bool conceito)
+    string ComponentesCurricularesCabecalho(bool conceito, bool possuiNotaFinal)
     {
         contadorQuebrarPagina += 2;
         var notaConceito = conceito ? "Conc." : "Nota";
-        return $@"<table class='tabela margin-top'>
+        var str = $@"<table class='tabela margin-top'>
 <tr class='titulo'>
 <td rowspan='2' class='componente sem-borda-bottom'>Componentes curriculares</td>
 <td colspan='2' class='centro-bimestre-eja'>1° Bim.</td>
-<td colspan='2' class='centro-bimestre-eja'>2° Bim.</td>
-<td colspan='2' class='centro-bimestre'>Final</td>
-</tr>
-<tr class='titulo'>
+<td colspan='2' class='centro-bimestre-eja'>2° Bim.</td>";
+        str += possuiNotaFinal ? "<td colspan='2' class='centro-bimestre'>Final</td>" : "";
+        str += $@"</tr>
+    <tr class='titulo'>
 <td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
 <td class='centro-titulo-eja sem-borda-bottom'>%</td>
 <td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
-<td class='centro-titulo-eja sem-borda-bottom'>%</td>
-<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
-<td class='centro-titulo sem-borda-bottom'>%</td>
-</tr></table>";
+<td class='centro-titulo-eja sem-borda-bottom'>%</td>";
+        str += possuiNotaFinal ? $@"<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
+                <td class='centro-titulo sem-borda-bottom'>%</td>" : "";
+        str += "</tr></table>";
+        return  str;
     }
 
     bool ChecarNotaConceitoRegencia(List<ComponenteCurricularRegenciaNotaDto> componentes)
@@ -83,7 +84,8 @@
         if (!notaConceito)
             notaConceito = ChecarNotaConceito(areasConhecimento);
 
-        str += ComponentesCurricularesCabecalho(notaConceito);
+        var possuiNotaFinal = (Model.PossuiNotaFinalRegencia || Model.PossuiNotaFinal);
+        str += ComponentesCurricularesCabecalho(notaConceito, possuiNotaFinal);
 
         if (componenteCurricularRegencia != null)
         {
@@ -105,19 +107,19 @@
 <td class='centro-valor-eja'>{componente.NotaBimestre1}</td>
 <td class='centro-valor-eja' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
 <td class='centro-valor-eja'>{componente.NotaBimestre2}</td>
-<td class='centro-valor-eja' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>
-<td class='centro-valor'>{componente.NotaFinal}</td>
-<td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{frequenciaFinal}</td>
-</tr>";
+<td class='centro-valor-eja' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>";
+                    str += possuiNotaFinal ? $@"<td class='centro-valor'>{componente.NotaFinal}</td>
+<td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{frequenciaFinal}</td>" : "";
+                    str += "</tr>";
                 }
                 else
                 {
                     str += $@"<tr class='corpo'>
 <td class='valor-titulo'>{componente.Nome}</td>
 <td class='centro-valor-eja'>{componente.NotaBimestre1}</td>
-<td class='centro-valor-eja'>{componente.NotaBimestre2}</td>
-<td class='centro-valor'>{componente.NotaFinal}</td>
-</tr>";
+<td class='centro-valor-eja'>{componente.NotaBimestre2}</td>";
+                    str += possuiNotaFinal ? $"<td class='centro-valor'>{componente.NotaFinal}</td>" : "";
+                    str += "</tr>";
                 }
 
 
@@ -163,10 +165,9 @@
                     <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
                     <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
                     <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
-                    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>
-                    <td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
-                    <td class='centro-valor'>{frequenciaFinal}</td>
-                    </tr>";
+                    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>";
+                    str += possuiNotaFinal ? $@"<td class='centro-valor'>{componenteCurricular.NotaFinal}</td><td class='centro-valor'>{frequenciaFinal}</td>" : "";
+                    str += "</tr>";
 
                     contadorQuebrarPagina += componenteCurricular.Nome.Length >= 42 ? 2 : 0.5;
                 }
@@ -175,7 +176,7 @@
                 if (quebra != String.Empty)
                 {
                     str += quebra;
-                    str += ComponentesCurricularesCabecalho(notaConceito);
+                    str += ComponentesCurricularesCabecalho(notaConceito, possuiNotaFinal);
                     quebrou = true;
                 }
             }
