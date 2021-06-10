@@ -16,6 +16,9 @@ namespace SME.SR.Data
         public string NomeRelatorio =>
             $"{Codigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
 
+        public string TituloTipoEscolaNome =>
+            $"{TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
+
         public string NomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {Nome}"; } }
 
         public string NomeComTipoEscolaEDre { get { return $"{TipoEscola.ShortName()} - {Nome} ({Dre.Abreviacao})"; } }

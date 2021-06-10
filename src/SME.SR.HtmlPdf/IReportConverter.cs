@@ -7,6 +7,6 @@ namespace SME.SR.HtmlPdf
     {
         byte[] ConvertToPdf(List<string> paginas);
         void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true);
-        void ConvertToPdfPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string caminhoBase, string nomeArquivo);
+        void ConvertToPdfPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string caminhoBase, string nomeArquivo, string tituloRelatorioRodape = "");
     }
 }

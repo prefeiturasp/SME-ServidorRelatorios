@@ -616,9 +616,9 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), commandTimeout: 60);
         }
 
-        public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
-        {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+		public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
+		{
+			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -740,19 +740,20 @@ namespace SME.SR.Data
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
 					NumeroAlunoChamada,
-					PossuiDeficiencia";
+					PossuiDeficiencia
+					ORDER BY CodigoSituacaoMatricula";
 
-            var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
+			var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<Aluno>(query, parametros);
-            }
-        }
+			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+			{
+				return await conexao.QueryAsync<Aluno>(query, parametros);
+			}
+		}
 
-        public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(string[] codigosTurma)
-        {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+		public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(string[] codigosTurma)
+		{
+			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -875,17 +876,18 @@ namespace SME.SR.Data
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
 					NumeroAlunoChamada,
-					PossuiDeficiencia";
+					PossuiDeficiencia
+					ORDER BY CodigoSituacaoMatricula";
 
-            var parametros = new { CodigosTurma = codigosTurma };
+			var parametros = new { CodigosTurma = codigosTurma };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<Aluno>(query, parametros);
-            }
-        }
+			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+			{
+				return await conexao.QueryAsync<Aluno>(query, parametros);
+			}
+		}
 
-        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
+		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
         {
             var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo

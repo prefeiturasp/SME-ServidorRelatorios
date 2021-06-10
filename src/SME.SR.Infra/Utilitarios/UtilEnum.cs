@@ -26,7 +26,20 @@ namespace SME.SR.Infra.Utilitarios
         {
             return Enum.IsDefined(enumValue.GetType(), enumValue) ? enumValue.GetAttribute<DisplayAttribute>().Name : enumValue.ToString();
         }
-            
+
+        public static ModalidadeTipoCalendario ObterModalidadeTipoCalendario(this Modalidade modalidade)
+        {
+            switch (modalidade)
+            {
+                case Modalidade.Infantil:
+                    return ModalidadeTipoCalendario.Infantil;
+                case Modalidade.EJA:
+                    return ModalidadeTipoCalendario.EJA;
+                default:
+                    return ModalidadeTipoCalendario.FundamentalMedio;
+            }
+        }
+
 
         public static string ShortName(this Enum enumValue)
             => enumValue.GetAttribute<DisplayAttribute>().ShortName;

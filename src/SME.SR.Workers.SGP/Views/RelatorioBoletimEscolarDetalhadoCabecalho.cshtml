@@ -1,0 +1,271 @@
+﻿@model SME.SR.Infra.BoletimEscolarDetalhadoCabecalhoDto
+@using SME.SR.Infra;
+
+@{
+
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 48;
+    int contadorPagina = 0;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            //var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always' />";
+
+        }
+        return string.Empty;
+
+    }
+
+    string MontarCabecalho(int anoLetivo)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        var str = $@"<table class='cabecalho-principal'>
+<tr>
+<td width='10%'>
+<img class='img-logo-sgp'
+src='logoMono.png'
+alt='Logo SGP' />
+</td>
+<td width='80%' style='padding-right: 10px'>
+<div class='cabecalho-titulo-01'>BOLETIM ESCOLAR - {anoLetivo}</div>
+<div class='cabecalho-titulo-02'>
+SECRETARIA MUNICIPAL DE EDUCAÇÃO
+</div>
+<div class='cabecalho-titulo-02'>
+{ Model.NomeDre }
+</div>
+<div class='cabecalho-titulo-02'>{ Model.NomeUe }</div>
+</td>";
+        if (!string.IsNullOrEmpty(Model.Foto))
+        {
+            str += $@"<td width='10%'>
+<img src='{ Model.Foto }' alt='Aluno' />
+</td>";
+        }
+
+
+        str += $@"</tr>
+</table>
+<table class='cabecalho-relatorio margin-top'>
+<tr>
+<td width='50%'>Estudante: { Model.Aluno }</td>
+<td width='50%'>Ciclo: { Model.Ciclo }</td>
+</tr>
+</table>
+<table class='cabecalho-relatorio'>
+<tr class='cabecalho-relatorio-sem-top'>
+<td class='cabecalho-relatorio-sem-top'>Código EOL: { Model.CodigoEol }</td>
+<td class='cabecalho-relatorio-sem-top'>Turma: { Model.NomeTurma}</td>
+<td class='cabecalho-relatorio-sem-top'>Frequência Global: { Model.FrequenciaGlobal }</td>
+</tr>
+</table>";
+
+        return str;
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO BOLETIM ESCOLAR DETALHADO</title>
+    <link rel="stylesheet" href="#PASTACSS/bootstrap.min.css">
+    <link rel="stylesheet" href="#PASTACSS/fonts.css">
+</head>
+<body class="body-relatorio">
+    <style>
+        /* cyrillic-ext */
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: "Roboto Mono" !important;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        /* CABEÇALHO */
+        .cabecalho-principal {
+        }
+
+            .cabecalho-principal .cabecalho-titulo-01 {
+                text-align: right;
+                font-size: 12px;
+                font-weight: bold;
+                font-family: "Roboto Mono" !important;
+            }
+
+            .cabecalho-principal .cabecalho-titulo-02 {
+                text-align: right;
+                font-size: 14px;
+                font-family: "Roboto Mono" !important;
+            }
+
+        .cabecalho-relatorio {
+            display: table;
+            width: 100%;
+            font-size: 12px;
+            font-family: "Roboto Mono" !important;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+            .cabecalho-relatorio tr td {
+                border: 1px solid #42474a;
+                padding-left: 10px;
+            }
+
+            .cabecalho-relatorio .cabecalho-relatorio-sem-top {
+                border-top: 1px solid #fff;
+            }
+
+        .margin-top {
+            margin-top: 10px;
+        }
+
+        .tabela-recomendacoes {
+            width: 100%;
+            font-size: 12px;
+            text-align: justify;
+            text-justify: auto;
+            font-family: "Roboto Mono" !important;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+            .tabela-recomendacoes tr td {
+                border: 1px solid #42474a;
+                padding-left: 10px;
+                padding-right: 10px;
+                font-size: 12px;
+                text-align: justify;
+                text-justify: auto;
+            }
+
+            .tabela-recomendacoes .titulo {
+                background-color: #f3f3f3;
+            }
+
+        .tabela {
+            width: 100%;
+            font-size: 12px;
+            font-family: "Roboto Mono" !important;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+            .tabela tr td {
+                border: 1px solid #42474a;
+                padding-left: 10px;
+            }
+
+            .tabela .titulo {
+                background-color: #f3f3f3;
+            }
+
+                .tabela .titulo .componente {
+                    width: 350px;
+                }
+
+                .tabela .titulo .centro-bimestre {
+                    background-color: #f3f3f3;
+                    font-size: 12px;
+                    text-align: center;
+                    font-family: "Roboto Mono" !important;
+                    width: 90px;
+                }
+
+                .tabela .titulo .centro-bimestre-eja {
+                    background-color: #f3f3f3;
+                    font-size: 12px;
+                    text-align: center;
+                    font-family: "Roboto Mono" !important;
+                    width: 180px;
+                }
+
+                .tabela .titulo .centro-titulo {
+                    background-color: #f3f3f3;
+                    font-size: 11px;
+                    text-align: center;
+                    font-family: "Roboto Mono" !important;
+                    padding-left: 3px;
+                    padding-right: 3px;
+                    width: 45px;
+                }
+
+                .tabela .titulo .centro-titulo-eja {
+                    background-color: #f3f3f3;
+                    text-align: center;
+                    font-size: 11px;
+                    font-family: "Roboto Mono" !important;
+                    padding-left: 3px;
+                    padding-right: 3px;
+                    width: 90px;
+                }
+
+                .tabela .titulo .sem-borda-bottom {
+                    border-bottom: 1px solid #fff;
+                }
+
+            .tabela .corpo .centro-valor {
+                text-align: center;
+                padding-left: 3px;
+                font-family: "Roboto Mono" !important;
+                padding-right: 3px;
+                width: 45px;
+                font-size: 10px;
+            }
+
+            .tabela .corpo .centro-valor-eja {
+                text-align: center;
+                font-family: "Roboto Mono" !important;
+                padding-left: 3px;
+                padding-right: 3px;
+                width: 90px;
+                font-size: 10px;
+            }
+
+            .tabela .corpo .valor-titulo {
+                width: 350px;
+                font-size: 12px;
+            }
+
+        .tabela-final {
+            width: 100%;
+            font-size: 14px;
+            font-family: "Roboto Mono" !important;
+            border-bottom: 1px solid #42474a;
+        }
+
+            .tabela-final tr td {
+                border-bottom: 1px solid #42474a;
+                padding-left: 10px;
+            }
+    </style>
+
+    <div>
+        @Html.Raw(MontarCabecalho(Model.AnoLetivo))
+        #CONTEUDO_ALUNO
+    </div>
+</body>
+</html>
