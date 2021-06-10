@@ -14,8 +14,8 @@ namespace SME.SR.Infra
         [JsonProperty("componenteCurricularRegencia")]
         public ComponenteCurricularRegenciaDto ComponenteCurricularRegencia { get; set; }
 
-        [JsonProperty("areasConhecimento")]
-        public List<AreaConhecimentoComponenteCurricularDto> AreasConhecimento { get; set; }
+        [JsonProperty("grupos")]
+        public List<GrupoMatrizComponenteCurricularDto> Grupos { get; set; }
 
         [JsonProperty("parecerConclusivo")]
         public string ParecerConclusivo { get; set; }
@@ -29,7 +29,7 @@ namespace SME.SR.Infra
         public BoletimEscolarDetalhadoAlunoDto()
         {
             Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto();
-            AreasConhecimento = new List<AreaConhecimentoComponenteCurricularDto>();
+            Grupos = new List<GrupoMatrizComponenteCurricularDto>();
         }
     }
 }

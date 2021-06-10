@@ -108,29 +108,31 @@ namespace SME.SR.Application
         {
             var componentesOrdenados = await mediator.Send(new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurricularesPorTurma));
 
-            var gruposAreas = componentesOrdenados.GroupBy(cc => new { GrupoMatrizId = cc.GrupoMatriz?.Id, AreaConhecimentoId = cc.AreaDoConhecimento?.Id }).ToList();
+            var gruposMatrizes = componentesCurricularesPorTurma.GroupBy(cc => cc.GrupoMatriz).ToList();
 
-            var areasRetorno = new List<AreaConhecimentoComponenteCurricularDto>();
+            var grupos = boletim.Grupos;
 
-            foreach (var grupoArea in gruposAreas)
+            var gruposRetorno = new List<GrupoMatrizComponenteCurricularDto>();
+
+            foreach (var grupoMatriz in gruposMatrizes)
             {
-                AreaConhecimentoComponenteCurricularDto area = null;
+                GrupoMatrizComponenteCurricularDto grupo = null;
 
-                if (boletim.AreasConhecimento.Any(g => g.Id == grupoArea.Key.AreaConhecimentoId && g.GrupoMatrizId == grupoArea.Key.GrupoMatrizId))
-                    area = boletim.AreasConhecimento.FirstOrDefault(g => g.Id == grupoArea.Key.AreaConhecimentoId && g.GrupoMatrizId == grupoArea.Key.GrupoMatrizId);
+                if (grupos.Any(g => g.Id == (int)grupoMatriz.Key.Id))
+                    grupo = grupos.FirstOrDefault(g => g.Id == (int)grupoMatriz.Key.Id);
                 else
                 {
-                    area = new AreaConhecimentoComponenteCurricularDto()
+                    grupo = new GrupoMatrizComponenteCurricularDto()
                     {
-                        Id = (int)grupoArea.Key.AreaConhecimentoId,
-                        GrupoMatrizId = (int)grupoArea.Key.GrupoMatrizId,
-                        Nome = $"GRUPO {areasRetorno.Count() + 1}",
+                        Id = (int)grupoMatriz.Key.Id,
+                        Nome = $"GRUPO {gruposRetorno.Count() + 1}",
+                        Descricao = grupoMatriz.Key.Nome
                     };
 
-                    boletim.AreasConhecimento.Add(area);
+                    grupos.Add(grupo);
                 }
 
-                foreach (var componente in grupoArea.OrderBy(a => a.Disciplina))
+                foreach (var componente in grupoMatriz.OrderBy(a => a.Disciplina))
                 {
                     if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
                     {
@@ -154,11 +156,11 @@ namespace SME.SR.Application
                     }
                     else if (!componente.Regencia)
                     {
-                        if (area.ComponentesCurriculares == null)
-                            area.ComponentesCurriculares = new List<ComponenteCurricularDto>();
+                        if (grupo.ComponentesCurriculares == null)
+                            grupo.ComponentesCurriculares = new List<ComponenteCurricularDto>();
 
-                        if (!area.ComponentesCurriculares.Any(g => g.Codigo == componente.CodDisciplina.ToString()))
-                            area.ComponentesCurriculares.Add(
+                        if (!grupo.ComponentesCurriculares.Any(g => g.Codigo == componente.CodDisciplina.ToString()))
+                            grupo.ComponentesCurriculares.Add(
                                 new ComponenteCurricularDto()
                                 {
                                     Codigo = componente.CodDisciplina.ToString(),
@@ -171,12 +173,9 @@ namespace SME.SR.Application
                 if (boletim.ComponenteCurricularRegencia != null)
                     boletim.ComponenteCurricularRegencia.ComponentesCurriculares = boletim.ComponenteCurricularRegencia.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
 
-                if (area.ComponentesCurriculares != null && area.ComponentesCurriculares.Any())
-                    area.ComponentesCurriculares = area.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
+                if (grupo.ComponentesCurriculares != null && grupo.ComponentesCurriculares.Any())
+                    grupo.ComponentesCurriculares = grupo.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
             }
-
-            if (boletim.AreasConhecimento != null && boletim.AreasConhecimento.Any())
-                boletim.AreasConhecimento = boletim.AreasConhecimento.Where(b => b.ComponentesCurriculares != null && b.ComponentesCurriculares.Any()).ToList();
         }
 
         private void SetarNotasFrequencia(BoletimEscolarDetalhadoAlunoDto boletimEscolar, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres)
@@ -211,11 +210,11 @@ namespace SME.SR.Application
                 }
             }
 
-            foreach (var areaConhecimento in boletimEscolar.AreasConhecimento)
+            foreach (var grupoMatriz in boletimEscolar.Grupos)
             {
-                if (areaConhecimento.ComponentesCurriculares != null && areaConhecimento.ComponentesCurriculares.Any())
+                if (grupoMatriz.ComponentesCurriculares != null && grupoMatriz.ComponentesCurriculares.Any())
                 {
-                    foreach (var componenteCurricular in areaConhecimento.ComponentesCurriculares)
+                    foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                     {
                         var frequenciasComponente = frequencia?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
 
