@@ -50,7 +50,7 @@ namespace SME.SR.Application
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
             var recomendacoes = await ObterRecomendacoesAlunosTurma(codigosAlunos, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
 
-            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal);
+            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, request.AnoLetivo);
 
             return new RelatorioBoletimEscolarDetalhadoDto(boletins);
         }
