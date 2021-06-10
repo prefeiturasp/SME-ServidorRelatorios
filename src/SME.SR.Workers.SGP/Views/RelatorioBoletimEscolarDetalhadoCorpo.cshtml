@@ -199,7 +199,7 @@
         if (string.IsNullOrEmpty(recomendacoes))
             return null;
 
-        var tamanhoRecomendacoes = (recomendacoes.Length >= 110 ? (recomendacoes.Length / 110) + 1 : 1);
+        var tamanhoRecomendacoes = (recomendacoes.Length >= 122 ? (recomendacoes.Length / 122) + 1 : 1);
 
         var cabecalho = $@"<table class='tabela-recomendacoes margin-top'>
     <tr class='titulo'>
@@ -216,11 +216,11 @@
         for (var i = 0; i < tamanhoRecomendacoes; i++)
         {
 
-            if((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + 108 >= recomendacoes.Length))
-                str += recomendacoes.Substring(tamanhoParaLer);
+            if((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + 122 >= recomendacoes.Length))
+                str += recomendacoes.Substring(tamanhoParaLer) + "<br/>";
             else
-                str += recomendacoes.Substring(tamanhoParaLer, 108);
-            tamanhoParaLer += 108;
+                str += recomendacoes.Substring(tamanhoParaLer, 122) + "<br/>";
+            tamanhoParaLer += 122;
             contadorQuebrarPagina += 0.7;
             if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                 str += rodape;
