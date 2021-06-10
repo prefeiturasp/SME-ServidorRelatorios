@@ -40,6 +40,8 @@ namespace SME.SR.Application
 
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
 
+            var ultimoBimestrePeriodoFechamento = await ObterUltimoBimestrePeriodoFechamento(ue.Id, dre.Id, request.AnoLetivo);
+
             var alunosFoto = await ObterFotosAlunos(alunosPorTurma.Select(a => a.Key)?.ToArray());
 
             var notas = await ObterNotasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
@@ -48,9 +50,14 @@ namespace SME.SR.Application
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
             var recomendacoes = await ObterRecomendacoesAlunosTurma(codigosAlunos, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
 
-            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal);
+            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal);
 
             return new RelatorioBoletimEscolarDetalhadoDto(boletins);
+        }
+
+        private async Task<int> ObterUltimoBimestrePeriodoFechamento(long ueId, long dreId, int anoLetivo)
+        {
+            return await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dreId, ueId, anoLetivo));
         }
 
         private async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesAlunosTurma(string[] codigosAlunos, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre)
@@ -170,11 +177,11 @@ namespace SME.SR.Application
         }
 
         private async Task<BoletimEscolarDetalhadoDto> MontarBoletins(Dre dre, Ue ue, IEnumerable<TipoCiclo> ciclos, IEnumerable<Turma> turmas,
-                                                             IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares,
+                                                             int ultimoBimestrePeriodoFechamento, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares,
                                                              IEnumerable<IGrouping<string, Aluno>> alunosPorTurma,
                                                              IEnumerable<AlunoFotoArquivoDto> alunosFoto, IEnumerable<IGrouping<string, NotasAlunoBimestre>> notasAlunos,
                                                              IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos,
-                                                             IEnumerable<RecomendacaoConselhoClasseAluno> recomendacoes, 
+                                                             IEnumerable<RecomendacaoConselhoClasseAluno> recomendacoes,
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos,
                                                              IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias,
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal)
@@ -183,6 +190,7 @@ namespace SME.SR.Application
             {
                 Dre = dre,
                 Ue = ue,
+                UltimoBimestrePeriodoFechamento = ultimoBimestrePeriodoFechamento,
                 TiposCiclo = ciclos,
                 ComponentesCurriculares = componentesCurriculares,
                 Turmas = turmas,

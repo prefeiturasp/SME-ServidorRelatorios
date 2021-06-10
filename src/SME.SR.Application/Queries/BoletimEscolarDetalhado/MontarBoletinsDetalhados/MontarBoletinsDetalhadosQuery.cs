@@ -13,6 +13,8 @@ namespace SME.SR.Application
 
         public Ue Ue { get; set; }
 
+        public int UltimoBimestrePeriodoFechamento { get; set; }
+
         public IEnumerable<TipoCiclo> TiposCiclo { get; set; }
 
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurriculares { get; set; }
@@ -25,7 +27,7 @@ namespace SME.SR.Application
 
         public IEnumerable<AlunoFotoArquivoDto> AlunosFoto { get; set; }
 
-       public IEnumerable<RecomendacaoConselhoClasseAluno> RecomendacoesAlunos { get; set; }
+        public IEnumerable<RecomendacaoConselhoClasseAluno> RecomendacoesAlunos { get; set; }
 
         public IDictionary<string, string> TiposNota { get; set; }
 
