@@ -616,14 +616,13 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), commandTimeout: 60);
         }
 
-        public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
-        {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+		public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
+		{
+			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
 						CodigoTurma int,
-						CodigoMatricula int,
 						CodigoAluno int,
 						NomeAluno VARCHAR(70),
 						DataNascimento DATETIME,
@@ -636,7 +635,6 @@ namespace SME.SR.Data
 					)
 					INSERT INTO #tmpAlunosFrequencia
 					SELECT mte.cd_turma_escola CodigoTurma,
-					   matr.cd_matricula CodigoMatricula,
 					   aluno.cd_aluno CodigoAluno,
 					   aluno.nm_aluno NomeAluno,
 					   aluno.dt_nascimento_aluno DataNascimento,
@@ -665,15 +663,14 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-                      FROM v_aluno_cotic aluno
-						    INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						    INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-						    LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-                            LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
-						WHERE mte.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno
+                      FROM matricula_turma_escola mte1 
+                     INNER JOIN v_matricula_cotic matr ON matr.cd_matricula = mte1.cd_matricula 
+                     INNER JOIN v_aluno_cotic aluno ON aluno.cd_aluno = matr.cd_aluno 
+                     inner join matricula_turma_escola mte on mte.cd_matricula = mte1.cd_matricula 
+                      LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte1.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno
 					UNION 
 						SELECT  mte.cd_turma_escola CodigoTurma,
-						matr.cd_matricula CodigoMatricula,
 						aluno.cd_aluno CodigoAluno,
 						aluno.nm_aluno NomeAluno,
 						aluno.dt_nascimento_aluno DataNascimento,
@@ -702,16 +699,13 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-                    FROM v_aluno_cotic aluno
-						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-                        INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola
-						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-                        LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
-					WHERE mte.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno 
-						and matr.an_letivo = te.an_letivo
-                        and NOT (mte.nr_chamada_aluno IS NULL AND mte.dt_situacao_aluno < te.dt_inicio_turma)
-						and mte.dt_situacao_aluno =                    
+                    FROM v_historico_matricula_cotic matr
+                    INNER JOIN v_aluno_cotic aluno ON aluno.cd_aluno = matr.cd_aluno
+                    INNER JOIN historico_matricula_turma_escola mte1 ON matr.cd_matricula = mte1.cd_matricula
+                    INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+                     LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						WHERE mte1.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno
+						and mte1.dt_situacao_aluno =                    
 							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							where
@@ -721,54 +715,49 @@ namespace SME.SR.Data
 						AND NOT EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola in @codigosTurma
+						WHERE mte1.cd_matricula = mte3.cd_matricula
+							AND mte1.cd_turma_escola in @codigosTurma
 							AND matr3.cd_aluno in @codigosAluno) 
 
 					SELECT
-					alunos.CodigoTurma,
-					alunos.CodigoAluno,
-					alunos.NomeAluno,
-					alunos.NomeSocialAluno,
-					alunos.DataNascimento,
-					alunos.CodigoSituacaoMatricula,
-					alunos.SituacaoMatricula,
-					MAX(alunos.DataSituacao) DataSituacao ,
-					alunos.NumeroAlunoChamada,
-					alunos.PossuiDeficiencia,
-					MAX(alunos.CodigoMatricula) CodigoMatricula
-					FROM #tmpAlunosFrequencia alunos
-					INNER JOIN (SELECT CodigoAluno,MAX(CodigoMatricula) CodigoMatricula 
-									FROM #tmpAlunosFrequencia 
-									GROUP BY CodigoAluno) A 
-									ON alunos.CodigoMatricula = A.CodigoMatricula
+					CodigoTurma,
+					CodigoAluno,
+					NomeAluno,
+					NomeSocialAluno,
+					DataNascimento,
+					CodigoSituacaoMatricula,
+					SituacaoMatricula,
+					MAX(DataSituacao) DataSituacao ,
+					NumeroAlunoChamada,
+					PossuiDeficiencia
+					FROM #tmpAlunosFrequencia
 					GROUP BY
-					alunos.CodigoTurma,
-					alunos.CodigoAluno,
-					alunos.NomeAluno,
-					alunos.NomeSocialAluno,
-					alunos.DataNascimento,
-					alunos.CodigoSituacaoMatricula,
-					alunos.SituacaoMatricula,
-					alunos.NumeroAlunoChamada,
-					alunos.PossuiDeficiencia";
+					CodigoTurma,
+					CodigoAluno,
+					NomeAluno,
+					NomeSocialAluno,
+					DataNascimento,
+					CodigoSituacaoMatricula,
+					SituacaoMatricula,
+					NumeroAlunoChamada,
+					PossuiDeficiencia
+					ORDER BY CodigoSituacaoMatricula";
 
-            var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
+			var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<Aluno>(query, parametros);
-            }
-        }
+			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+			{
+				return await conexao.QueryAsync<Aluno>(query, parametros);
+			}
+		}
 
-        public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(string[] codigosTurma)
-        {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+		public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(string[] codigosTurma)
+		{
+			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
 						CodigoTurma int,
-						CodigoMatricula int,
 						CodigoAluno int,
 						NomeAluno VARCHAR(70),
 						DataNascimento DATETIME,
@@ -781,7 +770,6 @@ namespace SME.SR.Data
 					)
 					INSERT INTO #tmpAlunosFrequencia
 					SELECT mte.cd_turma_escola CodigoTurma,
-					   matr.cd_matricula CodigoMatricula,
                        aluno.cd_aluno CodigoAluno,
                        aluno.nm_aluno NomeAluno,
                        aluno.dt_nascimento_aluno DataNascimento,
@@ -810,15 +798,14 @@ namespace SME.SR.Data
 		                    WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 		                    ELSE 1
 	                    END PossuiDeficiencia
-                       FROM v_aluno_cotic aluno
-						    INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						    INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-						    LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-                            LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
-						WHERE mte.cd_turma_escola in @CodigosTurma
+                      FROM matricula_turma_escola mte1 
+                     INNER JOIN v_matricula_cotic matr ON matr.cd_matricula = mte1.cd_matricula 
+                     INNER JOIN v_aluno_cotic aluno ON aluno.cd_aluno = matr.cd_aluno 
+                     inner join matricula_turma_escola mte on mte.cd_matricula = mte1.cd_matricula 
+                      LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+                      WHERE mte1.cd_turma_escola in @CodigosTurma
                    UNION 
                      SELECT mte.cd_turma_escola CodigoTurma,
-						matr.cd_matricula CodigoMatricula,
 	                    aluno.cd_aluno CodigoAluno,
 	                    aluno.nm_aluno NomeAluno,
 	                    aluno.dt_nascimento_aluno DataNascimento,
@@ -847,65 +834,60 @@ namespace SME.SR.Data
 		                    WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 		                    ELSE 1
 	                    END PossuiDeficiencia
-                    FROM v_aluno_cotic aluno
-						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-                        INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola
-						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-                        LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
-						WHERE mte.cd_turma_escola in @CodigosTurma
-                        and matr.an_letivo = te.an_letivo
-                        and NOT (mte.nr_chamada_aluno IS NULL AND mte.dt_situacao_aluno < te.dt_inicio_turma)
-						and mte.dt_situacao_aluno =                    
-							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
-							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-							where
-							mte2.cd_turma_escola in @CodigosTurma
-							and matr2.cd_aluno = matr.cd_aluno
-						)
-						AND NOT EXISTS(
-							SELECT 1 FROM v_matricula_cotic matr3
-						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola in @CodigosTurma)
+                    FROM v_historico_matricula_cotic matr
+                    INNER JOIN v_aluno_cotic aluno ON aluno.cd_aluno = matr.cd_aluno
+                    INNER JOIN historico_matricula_turma_escola mte1 ON matr.cd_matricula = mte1.cd_matricula
+                    INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+                     LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+                    WHERE mte1.cd_turma_escola in @CodigosTurma
+	                    and mte1.dt_situacao_aluno =                    
+	                    (
+	                     select max(mte2.dt_situacao_aluno) 
+	                       from v_historico_matricula_cotic  matr2
+	                      INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+	                    where
+		                    mte2.cd_turma_escola in @CodigosTurma
+	                    and matr2.cd_aluno = matr.cd_aluno
+	                    )
+	                    AND NOT EXISTS(
+		                    SELECT 1 FROM v_matricula_cotic matr3
+	                    INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
+	                    WHERE mte1.cd_matricula = mte3.cd_matricula
+		                    AND mte1.cd_turma_escola in @CodigosTurma) 
 
 					SELECT
-					alunos.CodigoTurma,
-					alunos.CodigoAluno,
-					alunos.NomeAluno,
-					alunos.NomeSocialAluno,
-					alunos.DataNascimento,
-					alunos.CodigoSituacaoMatricula,
-					alunos.SituacaoMatricula,
-					MAX(alunos.DataSituacao) DataSituacao ,
-					alunos.NumeroAlunoChamada,
-					alunos.PossuiDeficiencia,
-					MAX(alunos.CodigoMatricula) CodigoMatricula
-					FROM #tmpAlunosFrequencia alunos
-					INNER JOIN (SELECT CodigoAluno,MAX(CodigoMatricula) CodigoMatricula 
-									FROM #tmpAlunosFrequencia 
-									GROUP BY CodigoAluno) A 
-									ON alunos.CodigoMatricula = A.CodigoMatricula
+					CodigoTurma,
+					CodigoAluno,
+					NomeAluno,
+					NomeSocialAluno,
+					DataNascimento,
+					CodigoSituacaoMatricula,
+					SituacaoMatricula,
+					MAX(DataSituacao) DataSituacao ,
+					NumeroAlunoChamada,
+					PossuiDeficiencia
+					FROM #tmpAlunosFrequencia
 					GROUP BY
-					alunos.CodigoTurma,
-					alunos.CodigoAluno,
-					alunos.NomeAluno,
-					alunos.NomeSocialAluno,
-					alunos.DataNascimento,
-					alunos.CodigoSituacaoMatricula,
-					alunos.SituacaoMatricula,
-					alunos.NumeroAlunoChamada,
-					alunos.PossuiDeficiencia";
+					CodigoTurma,
+					CodigoAluno,
+					NomeAluno,
+					NomeSocialAluno,
+					DataNascimento,
+					CodigoSituacaoMatricula,
+					SituacaoMatricula,
+					NumeroAlunoChamada,
+					PossuiDeficiencia
+					ORDER BY CodigoSituacaoMatricula";
 
-            var parametros = new { CodigosTurma = codigosTurma };
+			var parametros = new { CodigosTurma = codigosTurma };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<Aluno>(query, parametros);
-            }
-        }
+			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+			{
+				return await conexao.QueryAsync<Aluno>(query, parametros);
+			}
+		}
 
-        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
+		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
         {
             var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
