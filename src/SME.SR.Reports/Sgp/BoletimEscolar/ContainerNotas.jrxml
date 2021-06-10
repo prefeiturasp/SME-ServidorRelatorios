@@ -27,6 +27,7 @@
 			<textField>
 				<reportElement positionType="Float" mode="Opaque" x="0" y="30" width="285" height="8" isRemoveLineWhenBlank="true" backcolor="#F5F6F8" uuid="6909a9a5-026f-4220-8237-a30cf4e33a09">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$F{parecerConclusivo} != null && !$F{parecerConclusivo}.isEmpty()]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="4">
 					<pen lineWidth="0.25" lineColor="#000000"/>

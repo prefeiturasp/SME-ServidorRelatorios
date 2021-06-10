@@ -209,9 +209,10 @@ namespace SME.SR.Application
                         componenteCurricular.NotaBimestre3 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 3);
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 4);
 
-                        componenteCurricular.NotaFinal = notaFrequenciaComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito?.NotaConceito;
+                        componenteCurricular.NotaFinal = ObterNotaBimestreFinal(conselhoClasseBimestres, notaFrequenciaComponente);
                         if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
                             boletimEscolar.PossuiNotaFinalRegencia = true;
+                        
                     }
                 }
             }
@@ -234,9 +235,10 @@ namespace SME.SR.Application
                             componenteCurricular.NotaBimestre3 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notasComponente, 3);
                             componenteCurricular.NotaBimestre4 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notasComponente, 4);
 
-                            componenteCurricular.NotaFinal = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito?.NotaConceito;
+                            componenteCurricular.NotaFinal = ObterNotaBimestreFinal(conselhoClasseBimestres, notasComponente);
                             if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
                                 boletimEscolar.PossuiNotaFinal = true;
+                            
                         }
                         else
                         {
@@ -276,6 +278,15 @@ namespace SME.SR.Application
                 return "";
 
             var nota = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar != null && nf.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+            return !string.IsNullOrEmpty(nota) ? nota : "-";
+        }
+
+        private string ObterNotaBimestreFinal(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestre> notasComponente)
+        {
+            if (!VerificaPossuiConselho(conselhoClassBimestres, 0))
+                return "";
+
+            var nota = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito?.NotaConceito; 
             return !string.IsNullOrEmpty(nota) ? nota : "-";
         }
 
