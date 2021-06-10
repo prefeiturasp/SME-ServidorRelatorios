@@ -132,49 +132,53 @@
         for (var i = 0; i < areasConhecimento.Count; i++)
         {
 
-            if (i == 0 && componenteCurricularRegencia != null)
+            if (areasConhecimento[i].ComponentesCurriculares != null)
             {
-                contadorQuebrarPagina += 0.5;
-                str += "<table class='tabela margin-top'>";
-            }
-            else if (i > 0 && quebrou == false)
-            {
-                contadorQuebrarPagina += 0.5;
-                str += "<table class='tabela margin-top'>";
-            }
-            else
-            {
-                quebrou = false;
-                str += "<table class='tabela'>";
-            }
-            foreach (var componenteCurricular in areasConhecimento[i].ComponentesCurriculares)
-            {
-                if (!componenteCurricular.Nota)
-                    exibeLegendaSintese = true;
+                if (i == 0 && componenteCurricularRegencia != null)
+                {
+                    contadorQuebrarPagina += 0.5;
+                    str += "<table class='tabela margin-top'>";
+                }
+                else if (i > 0 && quebrou == false)
+                {
+                    contadorQuebrarPagina += 0.5;
+                    str += "<table class='tabela margin-top'>";
+                }
+                else
+                {
+                    quebrou = false;
+                    str += "<table class='tabela'>";
+                }
+                foreach (var componenteCurricular in areasConhecimento[i].ComponentesCurriculares)
+                {
+                    if (!componenteCurricular.Nota)
+                        exibeLegendaSintese = true;
 
-                if (!string.IsNullOrEmpty(componenteCurricular.NotaBimestre1) && (componenteCurricular.NotaBimestre1.Contains("P") || componenteCurricular.NotaBimestre1.Contains("S")))
-                    exibeLegendaConceito = true;
+                    if (!string.IsNullOrEmpty(componenteCurricular.NotaBimestre1) && (componenteCurricular.NotaBimestre1.Contains("P") || componenteCurricular.NotaBimestre1.Contains("S")))
+                        exibeLegendaConceito = true;
 
-                var frequenciaFinal = string.IsNullOrEmpty(componenteCurricular.FrequenciaFinal) ? "" : (componenteCurricular.FrequenciaFinal != "-" ? $"{componenteCurricular.FrequenciaFinal}%" : componenteCurricular.FrequenciaFinal);
+                    var frequenciaFinal = string.IsNullOrEmpty(componenteCurricular.FrequenciaFinal) ? "" : $"{componenteCurricular.FrequenciaFinal}%";
 
-                str += $@"<tr class='corpo'>
-<td class='valor-titulo'>{componenteCurricular.Nome}</td>
-<td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
-<td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
-<td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
-<td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>
-<td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
-<td class='centro-valor'>{frequenciaFinal}</td>
-</tr>";
-                contadorQuebrarPagina += componenteCurricular.Nome.Length >= 42 ? 2 : 0.5;
-            }
-            str += "</table>";
-            var quebra = VerificaQuebra();
-            if (quebra != String.Empty)
-            {
-                str += quebra;
-                str += ComponentesCurricularesCabecalho(notaConceito);
-                quebrou = true;
+                    str += $@"<tr class='corpo'>
+                    <td class='valor-titulo'>{componenteCurricular.Nome}</td>
+                    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
+                    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
+                    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
+                    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>
+                    <td class='centro-valor'>{componenteCurricular.NotaFinal}</td>
+                    <td class='centro-valor'>{frequenciaFinal}</td>
+                    </tr>";
+
+                    contadorQuebrarPagina += componenteCurricular.Nome.Length >= 42 ? 2 : 0.5;
+                }
+                str += "</table>";
+                var quebra = VerificaQuebra();
+                if (quebra != String.Empty)
+                {
+                    str += quebra;
+                    str += ComponentesCurricularesCabecalho(notaConceito);
+                    quebrou = true;
+                }
             }
         }
 

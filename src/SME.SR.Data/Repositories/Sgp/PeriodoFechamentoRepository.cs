@@ -29,6 +29,7 @@ namespace SME.SR.Data.Repositories.Sgp
                            and pf.dre_id = @dreId 
                            and tc.ano_letivo  = @anoLetivo
                            and now()::date >= pfb.inicio_fechamento::date
+                           order by pfb.inicio_fechamento desc 
                            limit 1 ";
 
             var parametros = new
