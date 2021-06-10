@@ -11,6 +11,7 @@ namespace SME.SR.Data
         {
             ComponentePlanejamentoRegencia = false;
         }
+        public string CodigoAluno { get; set; }
         public string CodigoTurma { get; set; }
         public string AnoTurma { get; set; }
         public long Codigo { get; set; }
@@ -20,13 +21,27 @@ namespace SME.SR.Data
         public string TipoEscola { get; set; }
         public int TurnoTurma { get; set; }
         public bool ComponentePlanejamentoRegencia { get; set; }
+        public long? CodComponentePai { get; set; }
+        public long GrupoMatrizId { get; set; }
+        public bool Compartilhada { get; set; }
+        public bool LancaNota { get; set; }
+        public bool Frequencia { get; set; }
+        public bool BaseNacional { get; set; }
 
         public long? CodigoComponentePai(IEnumerable<ComponenteCurricularApiEol> componentesApiEol) => componentesApiEol?
                                             .FirstOrDefault(w => w.IdComponenteCurricular == Codigo)?.IdComponenteCurricularPai;
 
+        public long? CodigoComponentePai(IEnumerable<ComponenteCurricular> componentesApiEol) => componentesApiEol?
+                                          .FirstOrDefault(w => w.Codigo == Codigo)?.CodComponentePai;
+
         public bool EhCompartilhada(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
         {
             return componentesApiEol != null && componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.EhCompartilhada);
+        }
+
+        public bool EhCompartilhada(IEnumerable<ComponenteCurricular> componentesApiEol)
+        {
+            return componentesApiEol != null && componentesApiEol.Any(w => w.Codigo == Codigo && w.Compartilhada);
         }
 
         public bool PodeLancarNota(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
@@ -35,10 +50,22 @@ namespace SME.SR.Data
                        componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.PermiteLancamentoDeNota));
         }
 
+        public bool PodeLancarNota(IEnumerable<ComponenteCurricular> componentesApiEol)
+        {
+            return componentesApiEol != null && (!componentesApiEol.Any(w => w.Codigo == Codigo) ||
+                       componentesApiEol.Any(w => w.Codigo == Codigo && w.LancaNota));
+        }
+
         public bool ControlaFrequencia(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
         {
             return componentesApiEol != null && (!componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo) ||
                        componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.PermiteRegistroFrequencia));
+        }
+
+        public bool ControlaFrequencia(IEnumerable<ComponenteCurricular> componentesApiEol)
+        {
+            return componentesApiEol != null && (!componentesApiEol.Any(w => w.Codigo == Codigo) ||
+                       componentesApiEol.Any(w => w.Codigo == Codigo && w.Frequencia));
         }
 
         public bool EhRegencia(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
@@ -46,19 +73,29 @@ namespace SME.SR.Data
             return componentesApiEol != null && componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.EhRegencia);
         }
 
+        public bool EhRegencia(IEnumerable<ComponenteCurricular> componentesApiEol)
+        {
+            return componentesApiEol != null && componentesApiEol.Any(w => w.Codigo == Codigo && w.ComponentePlanejamentoRegencia);
+        }
+
         public bool EhBaseNacional(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
         {
             return componentesApiEol != null && componentesApiEol.Any(x => x.IdComponenteCurricular == Codigo && x.EhBaseNacional);
         }
 
-        public ComponenteCurricularGrupoMatriz ObterGrupoMatriz(IEnumerable<ComponenteCurricularApiEol> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
+        public bool EhBaseNacional(IEnumerable<ComponenteCurricular> componentesApiEol)
         {
-            var componente = componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == Codigo);
+            return componentesApiEol != null && componentesApiEol.Any(x => x.Codigo == Codigo && x.BaseNacional);
+        }
 
-            if (componente == null)
-                return null;
+        public ComponenteCurricularGrupoMatriz ObterGrupoMatriz(IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
+        {
+            return gruposMatriz?.FirstOrDefault(x => GrupoMatrizId == x.Id);
+        }
 
-            return gruposMatriz?.FirstOrDefault(x => componente.IdGrupoMatriz == x.Id);
+        public AreaDoConhecimento ObterAreaDoConhecimento(IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
+        {
+            return areasDoConhecimentos.FirstOrDefault(x => x.CodigoComponenteCurricular == Codigo);
         }
 
         public ComponenteCurricularGrupoMatriz ObterGrupoMatrizSgp(IEnumerable<DisciplinaDto> disciplina, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)

@@ -15,6 +15,7 @@ namespace SME.SR.Infra
             UsuarioLogadoRF = codigoRfUsuario;
         }
 
+        public string NomeFila { get; set; }
         public object Dados { get; set; }
         public string Rota { get; }
         public string Exchange { get; set; }

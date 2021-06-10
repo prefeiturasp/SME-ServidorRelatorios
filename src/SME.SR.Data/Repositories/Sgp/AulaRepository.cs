@@ -5,6 +5,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -20,27 +21,40 @@ namespace SME.SR.Data
 
         public async Task<int> ObterAulasDadas(string codigoTurma, string componenteCurricularCodigo, long tipoCalendarioId, int bimestre)
         {
-            var query = @"select sum(a.quantidade) 
-                          from aula a 
-                         inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id
- 						                    and a.data_aula between p.periodo_inicio and p.periodo_fim
-                         inner join registro_frequencia rf on rf.aula_id = a.id
-                          where a.tipo_calendario_id = @tipoCalendarioId
-                            and a.turma_id = @codigoTurma 
-                            and a.disciplina_id = @disciplinaId 
-                            and p.bimestre = @bimestre ";
-
-            var parametros = new
-            {
-                CodigoTurma = codigoTurma,
-                DisciplinaId = componenteCurricularCodigo,
-                TipoCalendarioId = tipoCalendarioId,
-                Bimestre = bimestre
-            };
+            var query = new StringBuilder(@"select
+	                        Coalesce(SUM(a.quantidade) filter (
+	                        where a.tipo_aula = 1
+	                        and rf.id is not null), 0) as AulasQuantidade
+                        from
+	                        periodo_escolar p
+                        inner join tipo_calendario tp on
+	                        p.tipo_calendario_id = tp.id
+                        left join aula_prevista ap on
+	                        ap.tipo_calendario_id = p.tipo_calendario_id
+                        left join aula_prevista_bimestre apb on
+	                        ap.id = apb.aula_prevista_id
+	                        and p.bimestre = apb.bimestre
+                        left join aula a on
+	                        a.turma_id = ap.turma_id
+	                        and a.disciplina_id = ap.disciplina_id
+	                        and a.tipo_calendario_id = p.tipo_calendario_id
+	                        and a.data_aula between p.periodo_inicio and p.periodo_fim
+	                        and (a.id is null
+	                        or not a.excluido)
+                        left join registro_frequencia rf on
+	                        a.id = rf.aula_id
+                        where
+	                        tp.situacao
+	                        and not tp.excluido
+	                        and ap.tipo_calendario_id = @tipoCalendarioId
+	                        and ap.turma_id = @codigoTurma
+	                        and ap.disciplina_id = @componenteCurricularCodigo
+                            and p.bimestre = @bimestre");
+          
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<int?>(query, parametros) ?? 0;
+                return await conexao.QuerySingleOrDefaultAsync<int>(query.ToString(), new { tipoCalendarioId, codigoTurma, componenteCurricularCodigo, bimestre });
             }
         }
 
@@ -408,6 +422,31 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return (await conexao.QueryAsync<AulaVinculosDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
+            }
+        }
+
+        public async Task<IEnumerable<QuantidadeAulasDadasBimestreDto>> ObterAulasDadasPorTurmaEBimestre(string turmaCodigo, long tipoCalendarioId, int[] bimestres)
+        {
+            var query = @"select sum(a.quantidade) as quantidade, P.bimestre 
+                          from aula a 
+                         inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id
+	                                        and a.data_aula between p.periodo_inicio and p.periodo_fim
+                         inner join registro_frequencia rf on rf.aula_id = a.id
+                          where a.tipo_calendario_id = @tipoCalendarioId
+                            and a.turma_id = @turmaCodigo
+                            and p.bimestre = any(@bimestres)
+                         group by p.bimestre";
+
+            var parametros = new
+            {
+                turmaCodigo,                
+                tipoCalendarioId,
+                bimestres
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<QuantidadeAulasDadasBimestreDto>(query, parametros);
             }
         }
     }

@@ -24,5 +24,11 @@ namespace SME.SR.Infra
 
         [JsonProperty("data")]
         public string Data { get; set; }
+        
+        [JsonProperty("frequenciaGlobal")]
+        public string FrequenciaGlobal { get; set; }
+
+        [JsonProperty("anoLetivo")]
+        public string AnoLetivo { get; set; }
     }
 }

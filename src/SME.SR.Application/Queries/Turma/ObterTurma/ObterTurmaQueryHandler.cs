@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<Turma> Handle(ObterTurmaQuery request, CancellationToken cancellationToken)
         {
-            var turma = await turmaSgpRepository.ObterPorCodigo(request.CodigoTurma);
+            var turma = await turmaSgpRepository.ObterComDreUePorCodigo(request.CodigoTurma);
             if (turma == null)
             {
                 throw new NegocioException("Não foi possível localizar a turma.");

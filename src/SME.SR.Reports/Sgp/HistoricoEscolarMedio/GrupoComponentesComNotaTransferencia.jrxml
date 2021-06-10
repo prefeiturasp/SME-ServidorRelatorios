@@ -38,48 +38,34 @@
 	<detail>
 		<band height="15" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField textAdjust="ScaleFont">
-				<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="35" height="15" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="9171e360-030b-46c3-bb5b-31c12471c650">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<printWhenExpression><![CDATA[$F{nomeGrupo}!=null]]></printWhenExpression>
-				</reportElement>
-				<box>
-					<pen lineWidth="0.75"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="4" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nomeGrupo}.toUpperCase()]]></textFieldExpression>
-			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="35" y="0" width="525" height="15" isRemoveLineWhenBlank="true" uuid="f5a63079-cc0c-43a0-8a20-ae53f8cd6c3d">
+				<reportElement positionType="Float" x="0" y="0" width="270" height="15" isRemoveLineWhenBlank="true" uuid="a0025c26-c0e1-4148-a085-df74f37b58da">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
-					<datasetRun subDataset="DatasetGrupos" uuid="1bc04ce8-19f9-4378-b91d-2b7fc31fa913">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("gruposComponentesCurriculares.areasDeConhecimento")]]></dataSourceExpression>
+					<datasetRun subDataset="DatasetGrupos" uuid="91383727-a482-46d4-9caa-f01969abe828">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("gruposComponentesCurriculares")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:listContents height="15" width="525">
-						<textField textAdjust="StretchHeight">
-							<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="80" height="15" uuid="24bcf828-356a-4053-9217-ca3350bdaff9">
-								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<jr:listContents height="15" width="270">
+						<textField>
+							<reportElement stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="35" height="15" backcolor="#F3F3F3" uuid="a8e6589e-c4e8-4cb6-9745-8395b471fbf8">
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							</reportElement>
-							<box leftPadding="5">
-								<pen lineWidth="0.75"/>
+							<box>
+								<pen lineWidth="0.5"/>
 							</box>
-							<textElement verticalAlignment="Middle">
-								<font size="6" isBold="true"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font size="4" isBold="true"/>
 							</textElement>
-							<textFieldExpression><![CDATA[$F{nome} != null? $F{nome} : ""]]></textFieldExpression>
+							<textFieldExpression><![CDATA[$F{nome}.toUpperCase()]]></textFieldExpression>
 						</textField>
 						<subreport>
-							<reportElement x="80" y="0" width="330" height="15" uuid="366e145e-d1ea-4523-8506-22fa93080826"/>
+							<reportElement x="35" y="0" width="235" height="15" uuid="69d1f23a-3505-4de9-b785-6ceffae98ed8"/>
 							<subreportParameter name="REPORT_DATA_SOURCE">
-								<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
+								<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("areasDeConhecimento")]]></subreportParameterExpression>
 							</subreportParameter>
-							<subreportExpression><![CDATA["ComponentesCurricularesTransferencia.jasper"]]></subreportExpression>
+							<subreportExpression><![CDATA["AreasConhecimentoTransferencia.jasper"]]></subreportExpression>
 						</subreport>
 					</jr:listContents>
 				</jr:list>

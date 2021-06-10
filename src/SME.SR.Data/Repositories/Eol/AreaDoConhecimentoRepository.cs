@@ -19,25 +19,16 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AreaDoConhecimento>> ObterAreasDoConhecimentoPorComponentesCurriculares(long[] codigosComponentesCurriculares)
         {
-            try
+            var query = @"select cac.id, cac.nome, cc.descricao_sgp as NomeComponenteCurricular, cc.id CodigoComponenteCurricular from componente_curricular cc
+                          left join componente_curricular_area_conhecimento cac on cac.id = cc.area_conhecimento_id
+                          where cc.id = ANY(@CodigosComponentesCurriculares)  ";
+
+            var parametros = new { CodigosComponentesCurriculares = codigosComponentesCurriculares };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                var query = @"select cac.id, cac.nome, cc.idcomponentecurricular CodigoComponenteCurricular from componentecurricular cc
-                          left join componentecurricularareadoconhecimento cac on cac.id = cc.idareadoconhecimento
-                          where cc.idcomponentecurricular = ANY(@CodigosComponentesCurriculares)  ";
-
-                var parametros = new { CodigosComponentesCurriculares = codigosComponentesCurriculares };
-
-                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
-                {
-                    return await conexao.QueryAsync<AreaDoConhecimento>(query, parametros);
-                }
+                return await conexao.QueryAsync<AreaDoConhecimento>(query, parametros);
             }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-
         }
     }
 }

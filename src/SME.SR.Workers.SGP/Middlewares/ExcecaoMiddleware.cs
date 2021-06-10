@@ -24,8 +24,8 @@ namespace SME.SR.Workers.SGP.Middlewares
             }
             catch (Exception ex)
             {
-                await RetornarErro(context, "Ocorreu um erro interno.", (int)HttpStatusCode.InternalServerError);
                 SentrySdk.CaptureException(ex);
+                await RetornarErro(context, "Ocorreu um erro interno.", (int)HttpStatusCode.InternalServerError);
             }
         }
         private static Task RetornarErro(HttpContext context, string mensagem, int statusCode)

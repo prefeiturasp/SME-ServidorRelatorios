@@ -6,12 +6,15 @@ namespace SME.SR.Application
 {
     public class ObterFrequenciasGeralAlunosNaTurmaQuery : IRequest<IEnumerable<FrequenciaAluno>>
     {
-        public ObterFrequenciasGeralAlunosNaTurmaQuery(string codigoTurma)
+        public ObterFrequenciasGeralAlunosNaTurmaQuery(int anoTurma, long tipoCalendarioId)
         {
-            this.CodigoTurma = codigoTurma;
+            AnoTurma = anoTurma;
+            TipoCalendarioId = tipoCalendarioId;
         }
 
-        public string CodigoTurma { get; set; }
+        public int AnoTurma { get; set; }
+
+        public long TipoCalendarioId { get; set; }
 
 
     }

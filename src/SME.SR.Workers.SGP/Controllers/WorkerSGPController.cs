@@ -217,5 +217,37 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/devolutivas")]
+        [Action("relatorios/devolutivas", typeof(IRelatorioDevolutivasUseCase))]
+        public async Task<bool> Devolutivas([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioDevolutivasUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/itinerancias")]
+        [Action("relatorios/itinerancias", typeof(IRelatorioItineranciasUseCase))]
+        public async Task<bool> Itinerancias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioItineranciasUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/registro-individual")]
+        [Action("relatorios/registro-individual", typeof(IRelatorioRegistroIndividualUseCase))]
+        public async Task<bool> RegistroIndividual([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioRegistroIndividualUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/acompanhamento-aprendizagem")]
+        [Action("relatorios/acompanhamento-aprendizagem", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
+        public async Task<bool> AcompanhamentoAprendizagem([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoAprendizagemUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
     }
 }

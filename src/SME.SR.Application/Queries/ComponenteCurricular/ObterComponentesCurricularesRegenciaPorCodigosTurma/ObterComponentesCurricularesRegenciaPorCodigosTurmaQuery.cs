@@ -16,7 +16,7 @@ namespace SME.SR.Application
 
         public Modalidade Modalidade { get; set; }
 
-        public IEnumerable<ComponenteCurricularApiEol> ComponentesCurricularesApiEol { get; set; }
+        public IEnumerable<ComponenteCurricular> ComponentesCurriculares { get; set; }
 
         public IEnumerable<ComponenteCurricularGrupoMatriz> GruposMatriz { get; set; }
 
