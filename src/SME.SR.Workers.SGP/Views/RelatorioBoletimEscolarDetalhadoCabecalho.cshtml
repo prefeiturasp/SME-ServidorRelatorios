@@ -22,7 +22,7 @@
 
     }
 
-    string MontarCabecalho()
+    string MontarCabecalho(int anoLetivo)
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 8;
         var str = $@"<table class='cabecalho-principal'>
@@ -33,7 +33,7 @@ src='logoMono.png'
 alt='Logo SGP' />
 </td>
 <td width='80%' style='padding-right: 10px'>
-<div class='cabecalho-titulo-01'>BOLETIM ESCOLAR - 2021</div>
+<div class='cabecalho-titulo-01'>BOLETIM ESCOLAR - {anoLetivo}</div>
 <div class='cabecalho-titulo-02'>
 SECRETARIA MUNICIPAL DE EDUCAÇÃO
 </div>
@@ -259,7 +259,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
     </style>
 
     <div>
-        @Html.Raw(MontarCabecalho())
+        @Html.Raw(MontarCabecalho(Model.AnoLetivo))
         #CONTEUDO_ALUNO
     </div>
 </body>

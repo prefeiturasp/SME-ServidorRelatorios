@@ -1,12 +1,10 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SME.SR.Infra
 {
-   public class BoletimEscolarDetalhadoDto
+    public class BoletimEscolarDetalhadoDto
     {
-        [JsonProperty("boletins")]
         public List<BoletimEscolarDetalhadoAlunoDto> Boletins { get; set; }
 
         public BoletimEscolarDetalhadoDto()

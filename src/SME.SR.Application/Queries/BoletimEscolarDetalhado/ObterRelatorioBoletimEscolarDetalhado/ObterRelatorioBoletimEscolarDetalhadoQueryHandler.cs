@@ -48,7 +48,7 @@ namespace SME.SR.Application
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
             var recomendacoes = await ObterRecomendacoesAlunosTurma(codigosAlunos, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
 
-            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal);
+            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, request.AnoLetivo);
 
             return new RelatorioBoletimEscolarDetalhadoDto(boletins);
         }
@@ -118,7 +118,7 @@ namespace SME.SR.Application
                     AnoLetivo = anoLetivo,
                     Semestre = semestre,
                     Usuario = usuario,
-                    ConsideraHistorico = consideraHistorico
+                    ConsideraHistorico = consideraHistorico                     
                 });
             }
             catch (NegocioException)
@@ -177,7 +177,8 @@ namespace SME.SR.Application
                                                              IEnumerable<RecomendacaoConselhoClasseAluno> recomendacoes, 
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos,
                                                              IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias,
-                                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal)
+                                                             IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal, 
+                                                             int anoLetivo)
         {
             return await mediator.Send(new MontarBoletinsDetalhadosQuery()
             {
@@ -194,7 +195,8 @@ namespace SME.SR.Application
                 MediasFrequencia = mediasFrequencias,
                 PareceresConclusivos = pareceresConclusivos,
                 FrequenciasGlobal = frequenciaGlobal,
-                RecomendacoesAlunos = recomendacoes
+                RecomendacoesAlunos = recomendacoes,
+                AnoLetivo = anoLetivo
             });
         }
 
