@@ -6,6 +6,8 @@ namespace SME.SR.Infra
     {
         public string TipoNota { get; set; } = "Nota";
         public BoletimEscolarDetalhadoCabecalhoDto Cabecalho { get; set; }
+        public bool PossuiNotaFinalRegencia { get; set; }
+        public bool PossuiNotaFinal { get; set; }
 
         public ComponenteCurricularRegenciaDto ComponenteCurricularRegencia { get; set; }
 

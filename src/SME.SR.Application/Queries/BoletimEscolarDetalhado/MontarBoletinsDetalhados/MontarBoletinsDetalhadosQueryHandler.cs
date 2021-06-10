@@ -182,6 +182,8 @@ namespace SME.SR.Application
 
         private void SetarNotasFrequencia(BoletimEscolarDetalhadoAlunoDto boletimEscolar, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres, int ultimoBimestrePeriodoFechamento)
         {
+            boletimEscolar.PossuiNotaFinal = false;
+            boletimEscolar.PossuiNotaFinalRegencia = false;
             if (boletimEscolar.ComponenteCurricularRegencia != null)
             {
                 if (boletimEscolar.ComponenteCurricularRegencia.Frequencia)
@@ -208,10 +210,14 @@ namespace SME.SR.Application
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 4);
 
                         componenteCurricular.NotaFinal = ObterNotaBimestreFinal(conselhoClasseBimestres, notaFrequenciaComponente);
+                        if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
+                            boletimEscolar.PossuiNotaFinalRegencia = true;
+                        
                     }
                 }
             }
 
+            boletimEscolar.PossuiNotaFinal = boletimEscolar.PossuiNotaFinalRegencia;
             foreach (var grupoMatriz in boletimEscolar.Grupos)
             {
                 if (grupoMatriz.ComponentesCurriculares != null && grupoMatriz.ComponentesCurriculares.Any())
@@ -230,9 +236,15 @@ namespace SME.SR.Application
                             componenteCurricular.NotaBimestre4 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notasComponente, 4);
 
                             componenteCurricular.NotaFinal = ObterNotaBimestreFinal(conselhoClasseBimestres, notasComponente);
+                            if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
+                                boletimEscolar.PossuiNotaFinal = true;
+                            
                         }
                         else
+                        {
                             componenteCurricular.NotaFinal = ObterSintese(frequenciasComponente, mediasFrequencia, false, false);
+                        }
+                            
 
 
                         if (componenteCurricular.Frequencia)
