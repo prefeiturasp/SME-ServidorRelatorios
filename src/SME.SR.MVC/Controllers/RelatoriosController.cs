@@ -7561,58 +7561,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Foto = "https://via.placeholder.com/80",
                     Ciclo = "Médio"
                 },
-                AreasConhecimento = new List<AreaConhecimentoComponenteCurricularDto>()
-                {
-                    new AreaConhecimentoComponenteCurricularDto()
-                    {
-                        Id = 1,
-                        GrupoMatrizId = 1,
-                        Nome = "Teste 1",
-                        Descricao = "Descricao 1",
-                        ComponentesCurriculares = new List<ComponenteCurricularDto>()
-                        {
-                            new ComponenteCurricularDto()
-                            {
-                                Nome = "Arte",
-                                Nota = true,
-                                NotaBimestre1 = "1",
-                                NotaBimestre2 = "2",
-                                NotaBimestre3 = "3",
-                                NotaBimestre4 = "3",
-                                NotaFinal = "3",
-                                FrequenciaBimestre1 = "98%",
-                                FrequenciaBimestre2 = "98%",
-                                FrequenciaBimestre3 = "98%",
-                                FrequenciaBimestre4 = "98%",
-                                FrequenciaFinal = "98%"
-                            },
-                            new ComponenteCurricularDto()
-                            {
-                                Nome = "Biologia",
-                                Nota = true,
-                                NotaBimestre1 = "1",
-                                NotaBimestre2 = "2",
-                                NotaBimestre3 = "3",
-                                NotaBimestre4 = "3",
-                                NotaFinal = "3",
-                                FrequenciaBimestre1 = "98%",
-                                FrequenciaBimestre2 = "98%",
-                                FrequenciaBimestre3 = "98%",
-                                FrequenciaBimestre4 = "98%",
-                                FrequenciaFinal = "98%"
-                            }
-                        }
-                    },
-                    new AreaConhecimentoComponenteCurricularDto()
-                    {
-                        Id = 2,
-                        GrupoMatrizId = 2,
-                        Nome = "Teste 2",
-                        Descricao = "Descricao 2",
-                        ComponentesCurriculares = new List<ComponenteCurricularDto>()
-                    },
-                },
-
+                
                 ParecerConclusivo = "",
                 RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Non

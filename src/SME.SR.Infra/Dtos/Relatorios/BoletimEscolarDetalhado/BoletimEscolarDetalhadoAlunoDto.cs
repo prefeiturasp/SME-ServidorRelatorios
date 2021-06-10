@@ -9,7 +9,7 @@ namespace SME.SR.Infra
 
         public ComponenteCurricularRegenciaDto ComponenteCurricularRegencia { get; set; }
 
-        public List<AreaConhecimentoComponenteCurricularDto> AreasConhecimento { get; set; }
+        public List<GrupoMatrizComponenteCurricularDto> Grupos { get; set; }
 
         public string ParecerConclusivo { get; set; }
 
@@ -20,7 +20,7 @@ namespace SME.SR.Infra
         public BoletimEscolarDetalhadoAlunoDto()
         {
             Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto();
-            AreasConhecimento = new List<AreaConhecimentoComponenteCurricularDto>();
+            Grupos = new List<GrupoMatrizComponenteCurricularDto>();
         }
     }
 }

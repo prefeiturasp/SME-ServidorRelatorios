@@ -60,9 +60,9 @@
             ).Any();
     }
 
-    bool ChecarNotaConceito(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento)
+    bool ChecarNotaConceito(List<GrupoMatrizComponenteCurricularDto> grupos)
     {
-        return areasConhecimento.Where(a =>
+        return grupos.Where(a =>
             a.ComponentesCurriculares.Any(b =>
                 (b.NotaBimestre1 != null && (b.NotaBimestre1.Contains("P") || b.NotaBimestre1.Contains("S"))) ||
                 (b.NotaBimestre2 != null && (b.NotaBimestre2.Contains("P") || b.NotaBimestre2.Contains("S"))) ||
@@ -72,7 +72,7 @@
     }
 
 
-    string ComponentesCurriculares(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento, ComponenteCurricularRegenciaDto componenteCurricularRegencia)
+    string ComponentesCurriculares(List<GrupoMatrizComponenteCurricularDto> areasConhecimento, ComponenteCurricularRegenciaDto componenteCurricularRegencia)
     {
         bool exibeLegendaConceito = false;
         bool exibeLegendaSintese = false;
@@ -246,7 +246,7 @@
 }
 
 
-@Html.Raw(ComponentesCurriculares(Model.AreasConhecimento, Model.ComponenteCurricularRegencia))
+@Html.Raw(ComponentesCurriculares(Model.Grupos, Model.ComponenteCurricularRegencia))
 
 @if (Model.ParecerConclusivo != String.Empty)
 {
