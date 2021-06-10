@@ -66,9 +66,9 @@
             ).Any();
     }
 
-    bool ChecarNotaConceito(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento)
+    bool ChecarNotaConceito(List<GrupoMatrizComponenteCurricularDto> grupos)
     {
-        return areasConhecimento.Where(a =>
+        return grupos.Where(a =>
             a.ComponentesCurriculares.Any(b =>
                 (b.NotaBimestre1 != null && (b.NotaBimestre1.Contains("P") || b.NotaBimestre1.Contains("S"))) ||
                 (b.NotaBimestre2 != null && (b.NotaBimestre2.Contains("P") || b.NotaBimestre2.Contains("S"))) ||
@@ -77,7 +77,7 @@
             ).Any();
     }
 
-    string ComponentesCurriculares(List<AreaConhecimentoComponenteCurricularDto> areasConhecimento, ComponenteCurricularRegenciaDto componenteCurricularRegencia)
+    string ComponentesCurriculares(List<GrupoMatrizComponenteCurricularDto> grupos, ComponenteCurricularRegenciaDto componenteCurricularRegencia)
     {
         bool exibeLegendaConceito = false;
         bool exibeLegendaSintese = false;
@@ -86,7 +86,7 @@
         var notaConceito = componenteCurricularRegencia != null ? ChecarNotaConceitoRegencia(componenteCurricularRegencia.ComponentesCurriculares) : false;
 
         if (!notaConceito)
-            notaConceito = ChecarNotaConceito(areasConhecimento);
+            notaConceito = ChecarNotaConceito(grupos);
 
         str += ComponentesCurricularesCabecalho(notaConceito);
 
@@ -121,7 +121,7 @@
         }
 
         var quebrou = false;
-        for (var i = 0; i < areasConhecimento.Count; i++)
+        for (var i = 0; i < grupos.Count; i++)
         {
 
             if (i == 0 && componenteCurricularRegencia != null)
@@ -139,7 +139,7 @@
                 quebrou = false;
                 str += "<table class='tabela'>";
             }
-            foreach (var componenteCurricular in areasConhecimento[i].ComponentesCurriculares)
+            foreach (var componenteCurricular in grupos[i].ComponentesCurriculares)
             {
                 if (!componenteCurricular.Nota)
                     exibeLegendaSintese = true;
@@ -169,7 +169,7 @@
             if (quebra != String.Empty)
             {
                 str += quebra;
-                if (i != areasConhecimento.Count - 1)
+                if (i != grupos.Count - 1)
                     str += ComponentesCurricularesCabecalho(notaConceito);
                 quebrou = true;
             }
@@ -259,7 +259,7 @@
 }
 
 
-@Html.Raw(ComponentesCurriculares(Model.AreasConhecimento, Model.ComponenteCurricularRegencia))
+@Html.Raw(ComponentesCurriculares(Model.Grupos, Model.ComponenteCurricularRegencia))
 
 @if (Model.ParecerConclusivo != String.Empty)
 {
