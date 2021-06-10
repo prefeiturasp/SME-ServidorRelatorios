@@ -22,9 +22,9 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
-
+            var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
             var mensagensErro = new StringBuilder();
-            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtros, request.UsuarioLogadoRF, request.PerfilUsuario));
+            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtros, usuario));
 
             if (!relatoriosTurmas.Any())
                 throw new NegocioException("Não há dados para o relatório de Ata Final de Resultados.");

@@ -13,6 +13,16 @@ namespace SME.SR.Infra
         public List<AreaDeConhecimentoEJADto> AreasDeConhecimento { get; set; }
 
         [JsonIgnore]
+        public GruposComponentesCurricularesEJADto ObterAreasComNotaValida
+        {
+            get
+            {
+                AreasDeConhecimento = AreasDeConhecimento.Where(ac => ac.ComponentesCurriculares.Any())?.ToList();
+                return this;
+            }
+        }
+
+        [JsonIgnore]
         public bool PossuiNotaValida
         {
             get
@@ -31,6 +41,15 @@ namespace SME.SR.Infra
                                               !string.IsNullOrEmpty(c.NotaConceitoSegundaEtapaCiclo2) ||
                                               !string.IsNullOrEmpty(c.NotaConceitoSegundaEtapaCiclo3) ||
                                               !string.IsNullOrEmpty(c.NotaConceitoSegundaEtapaCiclo4))))
+                        return true;
+                    else if (componentes.Any(c => !c.Nota && (!string.IsNullOrEmpty(c.FrequenciaPrimeiraEtapaCiclo1) ||
+                                              !string.IsNullOrEmpty(c.FrequenciaPrimeiraEtapaCiclo2) ||
+                                              !string.IsNullOrEmpty(c.FrequenciaPrimeiraEtapaCiclo3) ||
+                                              !string.IsNullOrEmpty(c.FrequenciaPrimeiraEtapaCiclo4) ||
+                                              !string.IsNullOrEmpty(c.FrequenciaSegundaEtapaCiclo1) ||
+                                              !string.IsNullOrEmpty(c.FrequenciaSegundaEtapaCiclo2) ||
+                                              !string.IsNullOrEmpty(c.FrequenciaSegundaEtapaCiclo3) ||
+                                              !string.IsNullOrEmpty(c.FrequenciaSegundaEtapaCiclo4))))
                         return true;
                 }
 

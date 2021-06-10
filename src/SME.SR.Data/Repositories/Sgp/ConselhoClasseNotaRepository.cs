@@ -147,7 +147,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterNotasFinaisRelatorioNotasConceitosFinais(string[] dresCodigos, string[] uesCodigos, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos)
         {
 
-            var query = new StringBuilder(@"select distinct * from (
+            var query = new StringBuilder(@$"select distinct * from (
                 select fa.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
                 	, fn.disciplina_id as ComponenteCurricularCodigo
@@ -157,7 +157,11 @@ namespace SME.SR.Data
                     , CASE
 							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
 							ELSE 1
-					 END EhNotaConceitoFechamento
+					  END EhNotaConceitoFechamento
+                    , cca.id ConselhoClasseAlunoId
+                    , CASE WHEN EXISTS(SELECT 1 FROM conselho_classe_aluno_turma_complementar where conselho_classe_aluno_id = cca.id) THEN 1 
+                           ELSE 0 
+                      END PossuiTurmaAssociada
                     , sv.id as SinteseId
                     , sv.valor as Sintese
                     , d.nome as dreNome
@@ -178,14 +182,14 @@ namespace SME.SR.Data
                  inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
                  inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
                  left join conceito_valores cvf on fn.conceito_id = cvf.id
-                 inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
+                 left join conselho_classe cc on cc.fechamento_turma_id = ft.id
                   left join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id
 		                                        and cca.aluno_codigo = fa.aluno_codigo 
                   left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvc on ccn.conceito_id = cvc.id
                   left join sintese_valores sv on sv.id = fn.sintese_id
-                 where pe.bimestre = ANY(@bimestres) ");
+                 where {(bimestres.Contains(0) ? "(pe.bimestre is null or" : "(")} pe.bimestre = ANY(@bimestres)) ");
 
             if (dresCodigos != null && dresCodigos.Length > 0)
                 query.AppendLine(@" and d.dre_id = ANY(@dresCodigos) ");
@@ -208,7 +212,7 @@ namespace SME.SR.Data
             if (componentesCurricularesCodigos != null && componentesCurricularesCodigos.Length > 0)
                 query.AppendLine(@" and fn.disciplina_id = ANY(@componentesCurricularesCodigos) ");
 
-            query.AppendLine(@"union all 
+            query.AppendLine(@$"union all 
                 select cca.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
                 	, ccn.componente_curricular_codigo as ComponenteCurricularCodigo
@@ -219,6 +223,10 @@ namespace SME.SR.Data
 							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
 							ELSE 1
 					 END EhNotaConceitoFechamento
+                    , cca.id ComponenteCurricularAlunoId
+                    , CASE WHEN EXISTS(SELECT 1 FROM conselho_classe_aluno_turma_complementar where conselho_classe_aluno_id = cca.id) THEN 1 
+                           ELSE 0 
+                      END PossuiTurmaAssociada
                     , null as SinteseId
                     , null as Sintese
                     , d.nome as dreNome
@@ -245,7 +253,7 @@ namespace SME.SR.Data
                   left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvf on fn.conceito_id = cvf.id
-                 where pe.bimestre = ANY(@bimestres) ");
+                 where {(bimestres.Contains(0) ? "(pe.bimestre is null or " : "(")} pe.bimestre = ANY(@bimestres)) ");
 
             if (dresCodigos != null && dresCodigos.Length > 0)
                 query.AppendLine(@" and d.dre_id = ANY(@dresCodigos) ");

@@ -19,7 +19,6 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IServicoFila servicoFila;
-
         private const int LINHA_CABECALHO_DRE = 6;
         private const int LINHA_CABECALHO_CICLO = 7;
 
@@ -52,6 +51,8 @@ namespace SME.SR.Application
 
                     using (var workbook = new XLWorkbook())
                     {
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
 
                         var objetoExportacao = dadosAgrupadosTurma.ElementAt(i);

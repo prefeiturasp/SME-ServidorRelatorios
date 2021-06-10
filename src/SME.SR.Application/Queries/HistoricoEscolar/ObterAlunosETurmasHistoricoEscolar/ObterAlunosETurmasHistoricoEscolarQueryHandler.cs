@@ -38,7 +38,6 @@ namespace SME.SR.Application
                 if (!turmasDosAlunos.Any())
                     return retorno;
 
-
                 foreach (var item in informacoesDosAlunos)
                 {
                     var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
@@ -51,7 +50,9 @@ namespace SME.SR.Application
                             Ano = turmaDoAluno.Ano.ToString(),
                             Codigo = turmaDoAluno.TurmaCodigo,
                             ModalidadeCodigo = turmaDoAluno.Modalidade,
-                            EtapaEJA = turmaDoAluno.EtapaEJA
+                            EtapaEJA = turmaDoAluno.EtapaEJA,
+                            TipoTurma = turmaDoAluno.TipoTurma,
+                            RegularCodigo = turmaDoAluno.TurmaRegularCodigo
                         });
                     }
 
@@ -69,7 +70,6 @@ namespace SME.SR.Application
                         return retorno;
 
                     var alunosPromovidosCodigos = await mediator.Send(new ObterAlunosPorTurmaParecerConclusivoQuery(request.CodigoTurma, pareceresConclusivosIds.ToArray()));
-
                     if (!alunosPromovidosCodigos.Any())
                         return retorno;
 
@@ -94,7 +94,9 @@ namespace SME.SR.Application
                                 Ano = turmaDoAluno.Ano.ToString(),
                                 Codigo = turmaDoAluno.TurmaCodigo,
                                 ModalidadeCodigo = turmaDoAluno.Modalidade,
-                                EtapaEJA = turmaDoAluno.EtapaEJA
+                                EtapaEJA = turmaDoAluno.EtapaEJA,
+                                TipoTurma = turmaDoAluno.TipoTurma,
+                                RegularCodigo = turmaDoAluno.TurmaRegularCodigo
                             });
                         }
 
