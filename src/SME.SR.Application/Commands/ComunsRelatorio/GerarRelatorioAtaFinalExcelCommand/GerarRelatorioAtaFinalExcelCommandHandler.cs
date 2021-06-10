@@ -18,8 +18,7 @@ namespace SME.SR.Application
     public class GerarRelatorioAtaFinalExcelCommandHandler : IRequestHandler<GerarRelatorioAtaFinalExcelCommand, Unit>
     {
         private readonly IMediator mediator;
-        
-
+        private readonly IServicoFila servicoFila;
         private const int LINHA_CABECALHO_DRE = 6;
         private const int LINHA_CABECALHO_CICLO = 7;
 
@@ -28,7 +27,8 @@ namespace SME.SR.Application
 
         public GerarRelatorioAtaFinalExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));            
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
 
         public async Task<Unit> Handle(GerarRelatorioAtaFinalExcelCommand request, CancellationToken cancellationToken)
@@ -47,10 +47,11 @@ namespace SME.SR.Application
                 {
                     var codigoCorrelacao = Guid.NewGuid();
                     var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
+                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
 
                     using (var workbook = new XLWorkbook())
                     {
-                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
 
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
 
@@ -76,7 +77,7 @@ namespace SME.SR.Application
                 }
 
                 foreach (var codigoCorrelacao in lstCodigosCorrelacao)
-                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, codigoCorrelacao.Key, request.UsuarioRf)));
+                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, codigoCorrelacao.Key));
 
                 return await Task.FromResult(Unit.Value);
             }
