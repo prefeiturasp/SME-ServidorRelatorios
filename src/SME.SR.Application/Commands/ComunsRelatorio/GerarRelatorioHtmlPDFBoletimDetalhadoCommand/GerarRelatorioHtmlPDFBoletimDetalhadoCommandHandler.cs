@@ -45,7 +45,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
                 htmlCabecalho = htmlCabecalho.Replace("logo.png", SmeConstants.LogoSme);
                 htmlCabecalho = htmlCabecalho.Replace("#PASTACSS", Path.Combine(caminhoBase, "assets/css"));
-                htmlCabecalho = htmlCabecalho.Replace("#PASTAFONTES", Path.Combine(caminhoBase, "assets/fonts"));
+                htmlCabecalho = htmlCabecalho.Replace("#PASTAFONTS", Path.Combine(caminhoBase, "assets/fonts"));
 
 
                 var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, boletim);
