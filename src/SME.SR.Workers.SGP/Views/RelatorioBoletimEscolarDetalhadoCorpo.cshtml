@@ -14,9 +14,9 @@
 
     int contadorPagina = 1;
 
-    string VerificaQuebra()
+    string VerificaQuebra(int linhas = 0)
     {
-        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
         {
             contadorQuebrarPagina = 6;
             contadorPagina = contadorPagina + 1;
@@ -92,6 +92,8 @@
         var possuiNotaFinal = (Model.PossuiNotaFinalRegencia || Model.PossuiNotaFinal);
         str += ComponentesCurricularesCabecalho(notaConceito, possuiNotaFinal);
 
+        int numeroCaracteresComponentesCurriculares = possuiNotaFinal ? 48 : 54;
+
         if (componenteCurricularRegencia != null)
         {
             str += "<table class='tabela'>";
@@ -134,7 +136,7 @@
 
 
 
-                contadorQuebrarPagina += componente.Nome.Length >= 54 ? 2 : 1;
+                contadorQuebrarPagina += componente.Nome.Length >= numeroCaracteresComponentesCurriculares ? 2 : 1;
             }
             str += "</table>";
         }
@@ -180,7 +182,7 @@
 <td class='centro-valor'>{componenteCurricular.FrequenciaBimestre4}</td>";
                 str += possuiNotaFinal ? $@"<td class='centro-valor'>{componenteCurricular.NotaFinal}</td><td class='centro-valor'>{frequenciaFinal}</td>" : "";
                 str +="</tr>";
-                contadorQuebrarPagina += componenteCurricular.Nome.Length >= 54 ? 2 : 0.5;
+                contadorQuebrarPagina += componenteCurricular.Nome.Length >= numeroCaracteresComponentesCurriculares ? 2 : 0.5;
             }
             str += "</table>";
             var quebra = VerificaQuebra();
@@ -248,7 +250,6 @@
             {
                 str += quebra + cabecalho;
                 contadorQuebrarPagina += 0.5;
-
             }
         }
 
@@ -258,7 +259,15 @@
 
     string Anotacoes()
     {
-        var str = @"<table class='tabela-final margin-top'>
+        var quebra = VerificaQuebra(2);
+        var str = "";
+
+        if (quebra != String.Empty)
+        {
+            str += quebra;
+        }
+
+        str += @"<table class='tabela-final margin-top'>
 <tr>
 <td width='100%' style='border-bottom: 1px solid #42474a;'>
 &nbsp
@@ -284,6 +293,6 @@
     @Html.Raw(ParecerConclusivo(Model.ParecerConclusivo));
 }
 
-@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante", 110))
-@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família", 110))
+@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante", 116))
+@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família", 116))
 @Html.Raw(Anotacoes())
