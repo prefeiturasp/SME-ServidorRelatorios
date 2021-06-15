@@ -40,15 +40,15 @@
 <td colspan='2' class='centro-bimestre-eja'>2° Bim.</td>";
         str += possuiNotaFinal ? "<td colspan='2' class='centro-bimestre'>Final</td>" : "";
         str += $@"</tr>
-    <tr class='titulo'>
+<tr class='titulo'>
 <td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
 <td class='centro-titulo-eja sem-borda-bottom'>%</td>
 <td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
 <td class='centro-titulo-eja sem-borda-bottom'>%</td>";
         str += possuiNotaFinal ? $@"<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
-                <td class='centro-titulo sem-borda-bottom'>%</td>" : "";
+        <td class='centro-titulo sem-borda-bottom'>%</td>" : "";
         str += "</tr></table>";
-        return  str;
+        return str;
     }
 
     bool ChecarNotaConceitoRegencia(List<ComponenteCurricularRegenciaNotaDto> componentes)
@@ -161,11 +161,11 @@
                     var frequenciaFinal = string.IsNullOrEmpty(componenteCurricular.FrequenciaFinal) ? "" : $"{componenteCurricular.FrequenciaFinal}%";
 
                     str += $@"<tr class='corpo'>
-                    <td class='valor-titulo'>{componenteCurricular.Nome}</td>
-                    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
-                    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
-                    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
-                    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>";
+            <td class='valor-titulo'>{componenteCurricular.Nome}</td>
+            <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
+            <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
+            <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
+            <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>";
                     str += possuiNotaFinal ? $@"<td class='centro-valor'>{componenteCurricular.NotaFinal}</td><td class='centro-valor'>{frequenciaFinal}</td>" : "";
                     str += "</tr>";
 
@@ -201,19 +201,19 @@
         return !string.IsNullOrEmpty(parecer) ? str : null;
     }
 
-    string Recomendacoes(string recomendacoes, string titulo)
+    string Recomendacoes(string recomendacoes, string titulo, int numeroCaracteres)
     {
         if (string.IsNullOrEmpty(recomendacoes))
             return null;
 
-        var tamanhoRecomendacoes = (recomendacoes.Length >= 120 ? (recomendacoes.Length / 120) + 1 : 1);
+        var tamanhoRecomendacoes = (recomendacoes.Length >= numeroCaracteres ? (recomendacoes.Length / numeroCaracteres) + 1 : 1);
 
         var cabecalho = $@"<table class='tabela-recomendacoes margin-top'>
     <tr class='titulo'>
-    <td>{titulo}</td>
+    <td style='text-align:center;'>{titulo}</td>
     </tr>
     <tr>
-    <td style='font-size: 12px; text-align: justify; text-justify: inter-word;'>";
+    <td class='fulljustify'>";
         contadorQuebrarPagina += 1;
 
         var rodape = "</td></tr></table>";
@@ -223,21 +223,20 @@
         for (var i = 0; i < tamanhoRecomendacoes; i++)
         {
 
-            if ((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + 120 >= recomendacoes.Length))
+            if ((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + numeroCaracteres >= recomendacoes.Length))
                 str += recomendacoes.Substring(tamanhoParaLer) + "<br/>";
             else
-                str += recomendacoes.Substring(tamanhoParaLer, 120) + "<br/>";
-            tamanhoParaLer += 120;
-            contadorQuebrarPagina += 0.7;
+                str += recomendacoes.Substring(tamanhoParaLer, numeroCaracteres) + "<br/>";
+            tamanhoParaLer += numeroCaracteres;
+            contadorQuebrarPagina += 0.8;
             if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                 str += rodape;
 
             var quebra = VerificaQuebra();
-            if (quebra != String.Empty)
+            if (quebra != String.Empty && i < tamanhoRecomendacoes - 1)
             {
                 str += quebra + cabecalho;
-                contadorQuebrarPagina += 1;
-
+                contadorQuebrarPagina += 0.8;
             }
         }
 
@@ -275,6 +274,6 @@
 }
 
 
-@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
-@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
+@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante", 115))
+@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família", 115))
 @Html.Raw(Anotacoes())
