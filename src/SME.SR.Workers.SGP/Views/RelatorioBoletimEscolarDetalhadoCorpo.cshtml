@@ -226,7 +226,7 @@
     <td style='text-align:center;'>{titulo}</td>
     </tr>
     <tr>
-    <td style='font-size: 12px; text-align: justify; text-justify: inter-word;'>";
+    <td class='fulljustify'>";
         contadorQuebrarPagina += 1;
 
         var rodape = "</td></tr></table>";
@@ -241,7 +241,7 @@
             else
                 str += recomendacoes.Substring(tamanhoParaLer, numeroCaracteres) + "<br/>";
             tamanhoParaLer += numeroCaracteres;
-            contadorQuebrarPagina += 1;
+            contadorQuebrarPagina += 0.8;
             if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                 str += rodape;
 
@@ -249,7 +249,7 @@
             if (quebra != String.Empty && i < tamanhoRecomendacoes - 1)
             {
                 str += quebra + cabecalho;
-                contadorQuebrarPagina += 0.5;
+                contadorQuebrarPagina += 0.8;
             }
         }
 
@@ -293,6 +293,6 @@
     @Html.Raw(ParecerConclusivo(Model.ParecerConclusivo));
 }
 
-@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante", 116))
-@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família", 116))
+@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante", 115))
+@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família", 115))
 @Html.Raw(Anotacoes())
