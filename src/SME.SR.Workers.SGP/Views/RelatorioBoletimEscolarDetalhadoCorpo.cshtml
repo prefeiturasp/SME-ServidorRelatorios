@@ -2,7 +2,7 @@
 @using SME.SR.Infra;
 
 @{
-    double contadorQuebrarPagina = 6;
+    double contadorQuebrarPagina = 8;
     int contadorMaximoLinhasPorPagina = 49;
     bool quebrou = false;
 
@@ -18,7 +18,7 @@
     {
         if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
         {
-            contadorQuebrarPagina = 6;
+            contadorQuebrarPagina = 8;
             contadorPagina = contadorPagina + 1;
 
             //var str = MontarCabecalho();
@@ -34,25 +34,25 @@
         contadorQuebrarPagina += 2;
         var notaConceito = conceito ? "Conc." : "Nota";
         string str = $@"<table class='tabela margin-top'>
-                <tr class='titulo'>
-                <td rowspan='2' class='componente sem-borda-bottom'>Componentes curriculares</td>
-                <td colspan='2' class='centro-bimestre'>1° Bim.</td>
-                <td colspan='2' class='centro-bimestre'>2° Bim.</td>
-                <td colspan='2' class='centro-bimestre'>3° Bim.</td>
-                <td colspan='2' class='centro-bimestre'>4° Bim.</td>";
+<tr class='titulo'>
+<td rowspan='2' class='componente sem-borda-bottom'>Componentes curriculares</td>
+<td colspan='2' class='centro-bimestre'>1° Bim.</td>
+<td colspan='2' class='centro-bimestre'>2° Bim.</td>
+<td colspan='2' class='centro-bimestre'>3° Bim.</td>
+<td colspan='2' class='centro-bimestre'>4° Bim.</td>";
         str += possuiNotaFinal ? "<td colspan='2' class='centro-bimestre'>Final</td>" : "";
         str += $@"</tr>
-                <tr class='titulo'>
-                <td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
-                <td class='centro-titulo sem-borda-bottom'>%</td>
-                <td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
-                <td class='centro-titulo sem-borda-bottom'>%</td>
-                <td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
-                <td class='centro-titulo sem-borda-bottom'>%</td>
-                <td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
-                <td class='centro-titulo sem-borda-bottom'>%</td>";
+<tr class='titulo'>
+<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
+<td class='centro-titulo sem-borda-bottom'>%</td>
+<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
+<td class='centro-titulo sem-borda-bottom'>%</td>
+<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
+<td class='centro-titulo sem-borda-bottom'>%</td>
+<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
+<td class='centro-titulo sem-borda-bottom'>%</td>";
         str += possuiNotaFinal ? $@"<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
-                <td class='centro-titulo sem-borda-bottom'>%</td>" : "";
+<td class='centro-titulo sem-borda-bottom'>%</td>" : "";
         str += "</tr></table>";
         return str;
     }
@@ -93,6 +93,8 @@
         str += ComponentesCurricularesCabecalho(notaConceito, possuiNotaFinal);
 
         int numeroCaracteresComponentesCurriculares = possuiNotaFinal ? 48 : 54;
+        double contadorLinhaDupla = possuiNotaFinal ? 1.4 : 1.8;
+        double contadorLinhaSimples = 0.7;
 
         if (componenteCurricularRegencia != null)
         {
@@ -136,7 +138,7 @@
 
 
 
-                contadorQuebrarPagina += componente.Nome.Length >= numeroCaracteresComponentesCurriculares ? 2 : 1;
+                contadorQuebrarPagina += componente.Nome.Length >= numeroCaracteresComponentesCurriculares ? contadorLinhaDupla : contadorLinhaSimples;
             }
             str += "</table>";
         }
@@ -147,12 +149,12 @@
 
             if (i == 0 && componenteCurricularRegencia != null)
             {
-                contadorQuebrarPagina += 0.5;
+                contadorQuebrarPagina += contadorLinhaSimples;
                 str += "<table class='tabela margin-top'>";
             }
             else if (i > 0 && quebrou == false)
             {
-                contadorQuebrarPagina += 0.5;
+                contadorQuebrarPagina += contadorLinhaSimples;
                 str += "<table class='tabela margin-top'>";
             }
             else
@@ -181,8 +183,8 @@
 <td class='centro-valor'>{componenteCurricular.NotaBimestre4}</td>
 <td class='centro-valor'>{componenteCurricular.FrequenciaBimestre4}</td>";
                 str += possuiNotaFinal ? $@"<td class='centro-valor'>{componenteCurricular.NotaFinal}</td><td class='centro-valor'>{frequenciaFinal}</td>" : "";
-                str +="</tr>";
-                contadorQuebrarPagina += componenteCurricular.Nome.Length >= numeroCaracteresComponentesCurriculares ? 2 : 0.5;
+                str += "</tr>";
+                contadorQuebrarPagina += componenteCurricular.Nome.Length >= numeroCaracteresComponentesCurriculares ? contadorLinhaDupla : contadorLinhaSimples;
             }
             str += "</table>";
             var quebra = VerificaQuebra();
@@ -214,47 +216,59 @@
         return !string.IsNullOrEmpty(parecer) ? str : null;
     }
 
-    string Recomendacoes(string recomendacoes, string titulo, int numeroCaracteres)
+    string MontarNovaRecomendacoesCabecalho(string titulo)
+    {
+        return $@"<table class='tabela-recomendacoes margin-top'>
+<tr class='titulo'>
+<td style='text-align:center;'>{titulo}</td>
+</tr>
+<tr>
+<td>";
+    }
+
+    int contadorMaximoCaracteresPorLinhaOcorrencias = 120;
+    string NovaRecomendacoes(string recomendacoes, string titulo)
     {
         if (string.IsNullOrEmpty(recomendacoes))
-            return null;
-
-        var tamanhoRecomendacoes = (recomendacoes.Length >= numeroCaracteres ? (recomendacoes.Length / numeroCaracteres) + 1 : 1);
-
-        var cabecalho = $@"<table class='tabela-recomendacoes margin-top'>
-    <tr class='titulo'>
-    <td style='text-align:center;'>{titulo}</td>
-    </tr>
-    <tr>
-    <td class='fulljustify'>";
-        contadorQuebrarPagina += 1;
-
-        var rodape = "</td></tr></table>";
-
-        var str = cabecalho;
-        var tamanhoParaLer = 0;
-        for (var i = 0; i < tamanhoRecomendacoes; i++)
         {
+            return null;
+        }
 
-            if((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + numeroCaracteres >= recomendacoes.Length))
-                str += recomendacoes.Substring(tamanhoParaLer)  + "<br/>";
-            else
-                str += recomendacoes.Substring(tamanhoParaLer, numeroCaracteres) + "<br/>";
-            tamanhoParaLer += numeroCaracteres;
-            contadorQuebrarPagina += 0.8;
-            if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
-                str += rodape;
+        var quebra = VerificaQuebra(2);
+        if (quebra != String.Empty)
+        {
+            @Html.Raw("<div style='page-break-before:always'></div>");
+        }
 
-            var quebra = VerificaQuebra();
-            if (quebra != String.Empty && i < tamanhoRecomendacoes - 1)
+        @Html.Raw(MontarNovaRecomendacoesCabecalho(titulo));
+
+        contadorQuebrarPagina++;
+        var iContadorCaracteres = 0;
+        double numeroLimiteCaracteres = 0.7;
+        @while (iContadorCaracteres != recomendacoes.Length)
+        {
+            if (contadorQuebrarPagina + numeroLimiteCaracteres >= contadorMaximoLinhasPorPagina)
             {
-                str += quebra + cabecalho;
-                contadorQuebrarPagina += 0.8;
+                contadorQuebrarPagina = 7;
+                @Html.Raw("</td></tr></table>")
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                @Html.Raw(MontarNovaRecomendacoesCabecalho(titulo));
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = recomendacoes.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaOcorrencias ? recomendacoes.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaOcorrencias;
+                var textParaExibir = recomendacoes.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+
+                @Html.Raw(textParaExibir)
+
+                contadorQuebrarPagina += numeroLimiteCaracteres;
             }
         }
 
-        return str + rodape;
+        @Html.Raw("</td></tr>")
 
+        return "";
     }
 
     string Anotacoes()
@@ -293,6 +307,6 @@
     @Html.Raw(ParecerConclusivo(Model.ParecerConclusivo));
 }
 
-@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante", 115))
-@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família", 115))
+@Html.Raw(NovaRecomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
+@Html.Raw(NovaRecomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
 @Html.Raw(Anotacoes())
