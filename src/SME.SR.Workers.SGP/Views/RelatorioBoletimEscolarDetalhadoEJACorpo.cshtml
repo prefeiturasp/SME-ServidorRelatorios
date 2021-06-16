@@ -2,8 +2,8 @@
 @using SME.SR.Infra;
 
 @{
-    double contadorQuebrarPagina = 6;
-    int contadorMaximoLinhasPorPagina = 48;
+    double contadorQuebrarPagina = 8;
+    int contadorMaximoLinhasPorPagina = 49;
     bool quebrou = false;
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
@@ -14,11 +14,11 @@
 
     int contadorPagina = 1;
 
-    string VerificaQuebra()
+    string VerificaQuebra(int linhas = 0)
     {
-        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
         {
-            contadorQuebrarPagina = 6;
+            contadorQuebrarPagina = 8;
             contadorPagina = contadorPagina + 1;
 
             //var str = MontarCabecalho();
@@ -46,7 +46,7 @@
 <td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
 <td class='centro-titulo-eja sem-borda-bottom'>%</td>";
         str += possuiNotaFinal ? $@"<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
-        <td class='centro-titulo sem-borda-bottom'>%</td>" : "";
+<td class='centro-titulo sem-borda-bottom'>%</td>" : "";
         str += "</tr></table>";
         return str;
     }
@@ -87,6 +87,9 @@
         var possuiNotaFinal = (Model.PossuiNotaFinalRegencia || Model.PossuiNotaFinal);
         str += ComponentesCurricularesCabecalho(notaConceito, possuiNotaFinal);
 
+        int numeroCaracteresComponentesCurriculares = possuiNotaFinal ? 48 : 54;
+        double contadorLinhaDupla = possuiNotaFinal ? 1.4 : 1.8;
+        double contadorLinhaSimples = 0.7;
         if (componenteCurricularRegencia != null)
         {
             str += "<table class='tabela'>";
@@ -124,7 +127,7 @@
 
 
 
-                contadorQuebrarPagina += componente.Nome.Length >= 42 ? 2 : 1;
+                contadorQuebrarPagina += componente.Nome.Length >= numeroCaracteresComponentesCurriculares ? contadorLinhaDupla : contadorLinhaSimples;
             }
             str += "</table>";
         }
@@ -161,15 +164,15 @@
                     var frequenciaFinal = string.IsNullOrEmpty(componenteCurricular.FrequenciaFinal) ? "" : $"{componenteCurricular.FrequenciaFinal}%";
 
                     str += $@"<tr class='corpo'>
-            <td class='valor-titulo'>{componenteCurricular.Nome}</td>
-            <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
-            <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
-            <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
-            <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>";
+    <td class='valor-titulo'>{componenteCurricular.Nome}</td>
+    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
+    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
+    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
+    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>";
                     str += possuiNotaFinal ? $@"<td class='centro-valor'>{componenteCurricular.NotaFinal}</td><td class='centro-valor'>{frequenciaFinal}</td>" : "";
                     str += "</tr>";
 
-                    contadorQuebrarPagina += componenteCurricular.Nome.Length >= 42 ? 2 : 0.5;
+                    contadorQuebrarPagina += componenteCurricular.Nome.Length >= numeroCaracteresComponentesCurriculares ? contadorLinhaDupla : contadorLinhaSimples; ;
                 }
                 str += "</table>";
                 var quebra = VerificaQuebra();
@@ -201,53 +204,73 @@
         return !string.IsNullOrEmpty(parecer) ? str : null;
     }
 
-    string Recomendacoes(string recomendacoes, string titulo, int numeroCaracteres)
+    string MontarNovaRecomendacoesCabecalho(string titulo)
+    {
+        return $@"<table class='tabela-recomendacoes margin-top'>
+<tr class='titulo'>
+<td style='text-align:center;'>{titulo}</td>
+</tr>
+<tr>
+<td>";
+    }
+
+    int contadorMaximoCaracteresPorLinhaOcorrencias = 120;
+    string NovaRecomendacoes(string recomendacoes, string titulo)
     {
         if (string.IsNullOrEmpty(recomendacoes))
-            return null;
-
-        var tamanhoRecomendacoes = (recomendacoes.Length >= numeroCaracteres ? (recomendacoes.Length / numeroCaracteres) + 1 : 1);
-
-        var cabecalho = $@"<table class='tabela-recomendacoes margin-top'>
-    <tr class='titulo'>
-    <td style='text-align:center;'>{titulo}</td>
-    </tr>
-    <tr>
-    <td class='fulljustify'>";
-        contadorQuebrarPagina += 1;
-
-        var rodape = "</td></tr></table>";
-
-        var str = cabecalho;
-        var tamanhoParaLer = 0;
-        for (var i = 0; i < tamanhoRecomendacoes; i++)
         {
+            return null;
+        }
 
-            if ((tamanhoParaLer >= recomendacoes.Length) || (tamanhoParaLer + numeroCaracteres >= recomendacoes.Length))
-                str += recomendacoes.Substring(tamanhoParaLer) + "<br/>";
-            else
-                str += recomendacoes.Substring(tamanhoParaLer, numeroCaracteres) + "<br/>";
-            tamanhoParaLer += numeroCaracteres;
-            contadorQuebrarPagina += 0.8;
-            if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
-                str += rodape;
+        var quebra = VerificaQuebra(2);
+        if (quebra != String.Empty)
+        {
+            @Html.Raw("<div style='page-break-before:always'></div>");
+        }
 
-            var quebra = VerificaQuebra();
-            if (quebra != String.Empty && i < tamanhoRecomendacoes - 1)
+        @Html.Raw(MontarNovaRecomendacoesCabecalho(titulo));
+
+        contadorQuebrarPagina++;
+        var iContadorCaracteres = 0;
+        double numeroLimiteCaracteres = 0.7;
+        @while (iContadorCaracteres != recomendacoes.Length)
+        {
+            if (contadorQuebrarPagina + numeroLimiteCaracteres >= contadorMaximoLinhasPorPagina)
             {
-                str += quebra + cabecalho;
-                contadorQuebrarPagina += 0.8;
+                contadorQuebrarPagina = 7;
+                @Html.Raw("</td></tr></table>")
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                @Html.Raw(MontarNovaRecomendacoesCabecalho(titulo));
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = recomendacoes.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaOcorrencias ? recomendacoes.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaOcorrencias;
+                var textParaExibir = recomendacoes.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+
+                @Html.Raw(textParaExibir)
+
+                contadorQuebrarPagina += numeroLimiteCaracteres;
             }
         }
 
-        return str + rodape;
+        @Html.Raw("</td></tr>")
 
+        return "";
     }
 
 
     string Anotacoes()
     {
-        var str = @"<table class='tabela-final margin-top'>
+        var quebra = VerificaQuebra(2);
+        var str = "";
+
+        if (quebra != String.Empty)
+        {
+            str += quebra;
+        }
+
+        str = @"<table class='tabela-final margin-top'>
 <tr>
 <td width='100%' style='border-bottom: 1px solid #42474a;'>
 &nbsp
@@ -274,6 +297,6 @@
 }
 
 
-@Html.Raw(Recomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante", 115))
-@Html.Raw(Recomendacoes(Model.RecomendacoesFamilia, "Recomendações a família", 115))
+@Html.Raw(NovaRecomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
+@Html.Raw(NovaRecomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
 @Html.Raw(Anotacoes())
