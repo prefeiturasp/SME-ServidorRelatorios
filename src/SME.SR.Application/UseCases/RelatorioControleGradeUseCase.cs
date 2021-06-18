@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Sentry;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -36,6 +37,7 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
+                SentrySdk.CaptureException(ex);
                 throw ex;
             }
         }
