@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SME.SR.Infra\SME.SR.Infra.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="libwkhtmltox.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

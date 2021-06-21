@@ -9,12 +9,11 @@
         public static string ExchangeSgp => "sme.sgp.workers";
 
         public static string FilaWorkerRelatorios => "sme.sr.workers.sgp";
-
         public static string RotaRelatoriosSolicitados => "relatorios.solicitados";
         public static string RotaRelatoriosProntosSgp => "relatorios.prontos";
         public static string RotaRelatoriosProcessando => "relatorios.processando";
         public static string RotaRelatorioComErro => "relatorios.erro";
         public static string RotaRelatorioCorrelacaoCopiar => "relatorios.correlacao.copiar";
-        public static string RotaRelatorioCorrelacaoInserir => "relatorios.correlacao.inserir";
+        public static string RotaRelatorioCorrelacaoInserir => "relatorios.correlacao.inserir";       
     }
 }

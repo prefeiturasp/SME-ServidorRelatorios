@@ -19,6 +19,7 @@ using SME.SR.JRSClient.Interfaces;
 using SME.SR.JRSClient.Services;
 using SME.SR.Workers.SGP;
 using System;
+using System.IO;
 using System.Net;
 
 namespace SME.SR.IoC
@@ -76,6 +77,11 @@ namespace SME.SR.IoC
                 });
 
             services.AddJasperClient(urlJasper, usuarioJasper, senhaJasper);
+
+            var context = new CustomAssemblyLoadContext();
+            var nomeBliblioteca = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows) ? "libwkhtmltox.dll" : "libwkhtmltox.so";
+            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), nomeBliblioteca));
+
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddScoped<IHtmlHelper, HtmlHelper>();
 
@@ -94,10 +100,12 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(ICicloRepository), typeof(CicloRepository));
             services.TryAddScoped(typeof(IComponenteCurricularRepository), typeof(ComponenteCurricularRepository));
+            services.TryAddScoped(typeof(IComponenteCurricularGrupoAreaOrdenacaoRepository), typeof(ComponenteCurricularGrupoAreaOrdenacaoRepository));
             services.TryAddScoped(typeof(IConselhoClasseRepository), typeof(ConselhoClasseRepository));
             services.TryAddScoped(typeof(IConselhoClasseAlunoRepository), typeof(ConselhoClasseAlunoRepository));
             services.TryAddScoped(typeof(IConselhoClasseNotaRepository), typeof(ConselhoClasseNotaRepository));
             services.TryAddScoped(typeof(IConselhoClasseRecomendacaoRepository), typeof(ConselhoClasseRecomendacaoRepository));
+            services.TryAddScoped(typeof(IConselhoClasseAlunoTurmaComplementarRepository), typeof(ConselhoClasseAlunoTurmaComplementarRepository));
             services.TryAddScoped(typeof(IEolRepository), typeof(EolRepository));
             services.TryAddScoped(typeof(IFechamentoAlunoRepository), typeof(FechamentoAlunoRepository));
             services.TryAddScoped(typeof(IFechamentoNotaRepository), typeof(FechamentoNotaRepository));
@@ -154,11 +162,19 @@ namespace SME.SR.IoC
             
             services.TryAddScoped(typeof(IComunicadosRepository), typeof(ComunicadosRepository));
             
+            services.TryAddScoped(typeof(IDevolutivaRepository), typeof(DevolutivaRepository));
+            services.TryAddScoped(typeof(IItineranciaRepository), typeof(ItineranciaRepository));
+            services.TryAddScoped(typeof(IAcompanhamentoAprendizagemRepository), typeof(AcompanhamentoAprendizagemRepository));
+            services.TryAddScoped(typeof(IRegistroIndividualRepository), typeof(RegistroIndividualRepository));
+            services.TryAddScoped(typeof(IOcorrenciaRepository), typeof(OcorrenciaRepository));
+            services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
+            services.TryAddScoped(typeof(IArquivoRepository), typeof(ArquivoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
         {
             services.TryAddScoped<IServicoFila, FilaRabbit>();
+            services.TryAddScoped<IReportConverter, PdfGenerator>();
         }
 
         private static void RegistrarUseCase(IServiceCollection services)
@@ -196,6 +212,10 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioLeituraComunicadosUseCase, RelatorioLeituraComunicadosUseCase>();
             services.TryAddScoped<IRelatorioAdesaoAppUseCase, RelatorioAdesaoAppUseCase>();
             services.TryAddScoped<IRelatorioPlanejamentoDiarioUseCase, RelatorioPlanejamentoDiarioUseCase>();
+            services.TryAddScoped<IRelatorioDevolutivasUseCase, RelatorioDevolutivasUseCase>();
+            services.TryAddScoped<IRelatorioItineranciasUseCase, RelatorioItineranciasUseCase>();
+            services.TryAddScoped<IRelatorioRegistroIndividualUseCase, RelatorioRegistroIndividualUseCase>();
+            services.TryAddScoped<IRelatorioAcompanhamentoAprendizagemUseCase, RelatorioAcompanhamentoAprendizagemUseCase>();
 
         }
     }

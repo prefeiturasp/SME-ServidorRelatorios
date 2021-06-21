@@ -19,6 +19,7 @@ namespace SME.SR.Infra
 
         [JsonProperty("legenda")]
         public LegendaDto Legenda { get; set; }
+
         public Modalidade Modalidade { get; set; }
 
         [JsonProperty("responsaveisUe")]

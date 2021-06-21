@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SME.SR.Infra
+﻿namespace SME.SR.Infra
 {
     public class AlunosTurmasCodigosDto
     {
         public long AlunoCodigo { get; set; }
         public string TurmaCodigo { get; set; }
+        public string TurmaRegularCodigo { get; set; }
         public Modalidade Modalidade { get; set; }
         public int Ano { get; set; }
         public int EtapaEJA { get; set; }
         public string Ciclo { get; set; }
         public string ParecerConclusivo { get; set; }
-        public string DescricaoAno => Modalidade == Modalidade.EJA ?  $"{Ciclo} - {(EtapaEJA == 1 ? "I" : "II")}" : $"{Ano}º ano"; 
+        public TipoTurma TipoTurma { get; set; }
+        public string DescricaoAno => Modalidade == Modalidade.EJA ? $"{Ciclo} - {(EtapaEJA == 1 ? "I" : "II")}" : $"{Ano}º ano";
     }
 }

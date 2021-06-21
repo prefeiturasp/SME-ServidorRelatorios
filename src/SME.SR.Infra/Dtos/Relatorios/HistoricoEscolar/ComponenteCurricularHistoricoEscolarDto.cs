@@ -88,6 +88,16 @@ namespace SME.SR.Infra
                     !string.IsNullOrEmpty(NotaConceitoOitavoAno) ||
                     !string.IsNullOrEmpty(NotaConceitoNonoAno)))
                     return true;
+                else if (!Nota && (!string.IsNullOrEmpty(FrequenciaPrimeiroAno) ||
+                    !string.IsNullOrEmpty(FrequenciaSegundoAno) ||
+                    !string.IsNullOrEmpty(FrequenciaTerceiroAno) ||
+                    !string.IsNullOrEmpty(FrequenciaQuartoAno) ||
+                    !string.IsNullOrEmpty(FrequenciaQuintoAno) ||
+                    !string.IsNullOrEmpty(FrequenciaSextoAno) ||
+                    !string.IsNullOrEmpty(FrequenciaSetimoAno) ||
+                    !string.IsNullOrEmpty(FrequenciaOitavoAno) ||
+                    !string.IsNullOrEmpty(FrequenciaNonoAno)))
+                    return true;
 
                 return false;
             }

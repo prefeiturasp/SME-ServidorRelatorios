@@ -14,4 +14,3 @@ fi
 cp web.xml bitnami/tomcat/data/jasperserver/WEB-INF/
 
 exec tini -- "$@"
-

@@ -36,18 +36,6 @@ namespace SME.SR.Application
                 }
             }
 
-            if(listaNotasEConceitosFinais.Any())
-            {
-                listaNotasEConceitosFinais = listaNotasEConceitosFinais.OrderBy(n => n.DreNome)
-                                                                       .ThenBy(n => n.UnidadeEscolarNome)
-                                                                       .ThenBy(n => n.Bimestre)
-                                                                       .ThenBy(n => n.Ano)
-                                                                       .ThenBy(n => n.Turma)
-                                                                       .ThenBy(n => n.ComponenteCurricular)
-                                                                       .ThenBy(n => n.EstudanteNome)
-                                                                       .ToList();
-            }
-
             return await Task.FromResult(listaNotasEConceitosFinais);
         }
 
@@ -66,7 +54,7 @@ namespace SME.SR.Application
             relatorioDto.ComponenteCurricular = componenteCurricular;
             relatorioDto.EstudanteCodigo = alunoCodigo.ToString();
             relatorioDto.EstudanteNome = alunoNome;
-            relatorioDto.NotaConceito = notaConceito.Replace("*","");
+            relatorioDto.NotaConceito = notaConceito;
 
             return relatorioDto;
         }
