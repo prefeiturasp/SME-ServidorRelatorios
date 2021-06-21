@@ -584,7 +584,7 @@ namespace SME.SR.Application
         public async Task<string> ObterSinteseAluno(double? percentualFrequencia, ComponenteCurricularPorTurma componente)
         {
             return percentualFrequencia >= await ObterFrequenciaMediaPorComponenteCurricular(componente.Regencia, componente.LancaNota) ?
-                         "Frequente" : "Não Frequente";
+                         "F" : "NF";
         }
 
         private async Task<double> ObterFrequenciaMediaPorComponenteCurricular(bool ehRegencia, bool lancaNota)
