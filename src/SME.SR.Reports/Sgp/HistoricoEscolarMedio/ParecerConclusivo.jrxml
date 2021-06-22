@@ -33,7 +33,7 @@
 		<band height="15" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement positionType="Float" mode="Transparent" x="0" y="0" width="195" height="15" backcolor="#FFFFFF" uuid="aa63cbae-cc1e-4fc8-a05d-4a047827f982">
+				<reportElement mode="Transparent" x="0" y="0" width="345" height="15" backcolor="#FFFFFF" uuid="aa63cbae-cc1e-4fc8-a05d-4a047827f982">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -45,7 +45,7 @@
 				<text><![CDATA[PARECER CONCLUSIVO]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="195" y="0" width="120" height="15" uuid="cdd71f29-187c-442f-8257-50e4a7df17d9">
+				<reportElement x="345" y="0" width="70" height="15" uuid="cdd71f29-187c-442f-8257-50e4a7df17d9">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -57,7 +57,7 @@
 				<textFieldExpression><![CDATA[$F{primeiroAno} != null ? $F{primeiroAno} : "-"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="315" y="0" width="120" height="15" uuid="1fbea5bd-b9a3-46e9-b13d-ada514944722">
+				<reportElement x="415" y="0" width="70" height="15" uuid="1fbea5bd-b9a3-46e9-b13d-ada514944722">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -69,7 +69,7 @@
 				<textFieldExpression><![CDATA[$F{segundoAno} != null ? $F{segundoAno} : "-"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="435" y="0" width="120" height="15" uuid="30ef7e8a-aac2-403c-9849-bcd4fcfece54">
+				<reportElement x="485" y="0" width="70" height="15" uuid="30ef7e8a-aac2-403c-9849-bcd4fcfece54">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>

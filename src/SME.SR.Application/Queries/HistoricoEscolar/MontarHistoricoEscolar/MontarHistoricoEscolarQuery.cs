@@ -9,8 +9,9 @@ namespace SME.SR.Application
 {
     public class MontarHistoricoEscolarQuery : IRequest<IEnumerable<HistoricoEscolarDTO>>
     {
-        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento, 
-                                            IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas, 
+        public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento,
+                                            IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas,
+                                            IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> grupoAreaOrdenacao,
                                             IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas,
                                             IEnumerable<MediaFrequencia> mediasFrequencia,
                                             IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
@@ -19,13 +20,14 @@ namespace SME.SR.Application
                                             IEnumerable<TransferenciaDto> transferencias,
                                             string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda,
                                             DadosDataDto dadosData, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario,
-                                            IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes, 
+                                            IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes,
                                             bool preencherDataImpressao, bool imprimirDadosResponsaveis)
         {
             Dre = dre;
             Ue = ue;
             AreasConhecimento = areasConhecimento;
             ComponentesCurricularesTurmas = componentesCurricularesTurmas;
+            GrupoAreaOrdenacao = grupoAreaOrdenacao;
             AlunosTurmas = alunosTurmas;
             TurmasCodigo = turmasCodigo;
             Cabecalho = cabecalho;
@@ -50,6 +52,7 @@ namespace SME.SR.Application
         public IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> HistoricoUes { get; set; }
         public IEnumerable<MediaFrequencia> MediasFrequencia { get; set; }
         public IEnumerable<AreaDoConhecimento> AreasConhecimento { get; set; }
+        public IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> GrupoAreaOrdenacao { get; set; }
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }
         public IEnumerable<TipoNotaCicloAno> TiposNota { get; set; }

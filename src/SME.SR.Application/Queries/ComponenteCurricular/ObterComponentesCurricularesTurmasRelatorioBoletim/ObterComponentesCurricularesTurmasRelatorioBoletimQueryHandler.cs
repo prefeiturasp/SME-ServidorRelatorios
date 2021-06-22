@@ -30,21 +30,21 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
             if (componentesDasTurmas != null && componentesDasTurmas.Any())
             {
-                var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
+                var componentes = await componenteCurricularRepository.ListarComponentes();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
                 var componentesMapeados = componentesDasTurmas?.Select(c => new ComponenteCurricularPorTurma
                 {
                     CodigoTurma = c.CodigoTurma,
                     CodDisciplina = c.Codigo,
-                    CodDisciplinaPai = c.CodigoComponentePai(componentesApiEol),
-                    BaseNacional = c.EhBaseNacional(componentesApiEol),
-                    Compartilhada = c.EhCompartilhada(componentesApiEol),
-                    Disciplina = c.DescricaoFormatada,
+                    CodDisciplinaPai = c.CodigoComponentePai(componentes),
+                    BaseNacional = c.EhBaseNacional(componentes),
+                    Compartilhada = c.EhCompartilhada(componentes),
+                    Disciplina = disciplinasDaTurma.FirstOrDefault(d => d.Id == c.Codigo).Nome,
                     GrupoMatriz = c.ObterGrupoMatrizSgp(disciplinasDaTurma, gruposMatriz),
-                    LancaNota = c.PodeLancarNota(componentesApiEol),
-                    Frequencia = c.ControlaFrequencia(componentesApiEol),
-                    Regencia = c.EhRegencia(componentesApiEol),
+                    LancaNota = c.PodeLancarNota(componentes),
+                    Frequencia = c.ControlaFrequencia(componentes),
+                    Regencia = c.EhRegencia(componentes),
                     TerritorioSaber = c.TerritorioSaber,
                     TipoEscola = c.TipoEscola,
                 });
@@ -59,7 +59,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                         CdComponentesCurriculares = componentesRegentes.Select(r => r.CodDisciplina).Distinct().ToArray(),
                         CodigoUe = request.CodigoUe,
                         Modalidade = request.Modalidade,
-                        ComponentesCurricularesApiEol = componentesApiEol,
+                        ComponentesCurriculares = componentes,
                         GruposMatriz = gruposMatriz,
                         Usuario = request.Usuario
                     });

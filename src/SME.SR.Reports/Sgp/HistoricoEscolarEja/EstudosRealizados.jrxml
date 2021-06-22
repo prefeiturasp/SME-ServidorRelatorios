@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EstudoRealizados" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="79ce0d69-2491-417c-8e95-e355e80b4597">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -83,7 +83,9 @@
 				<text><![CDATA[ESTUDOS REALIZADOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="32" width="70" height="15" uuid="d07fc4d4-611a-4282-b206-9b33939cd886"/>
+				<reportElement x="0" y="32" width="85" height="15" uuid="d07fc4d4-611a-4282-b206-9b33939cd886">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -93,7 +95,10 @@
 				<text><![CDATA[Etapa]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="70" y="32" width="295" height="15" uuid="90cc6239-82fe-46c1-b970-7c95dc1daaaf"/>
+				<reportElement x="85" y="32" width="280" height="15" uuid="90cc6239-82fe-46c1-b970-7c95dc1daaaf">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
 				<box>
 					<pen lineWidth="0.75"/>
 				</box>
@@ -139,26 +144,28 @@
 					<datasetRun subDataset="DatasetEstudosRelalizados" uuid="f38dbc13-0a08-4bf7-958c-baf392669350">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("estudosRealizados")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="70" uuid="3707ea8f-bd8e-4c23-8975-06fc65dcdf05">
+					<jr:column width="85" uuid="3707ea8f-bd8e-4c23-8975-06fc65dcdf05">
 						<jr:detailCell style="Table_TD" height="15">
-							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="70" height="15" uuid="337bda3c-6b38-4bad-b56c-c260c1b2add6">
+								<reportElement x="0" y="0" width="85" height="15" uuid="337bda3c-6b38-4bad-b56c-c260c1b2add6">
 									<printWhenExpression><![CDATA[$F{ano} != null]]></printWhenExpression>
 								</reportElement>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ano}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="295" uuid="dd40cc2c-58c5-4408-926b-c666134fc623">
+					<jr:column width="280" uuid="dd40cc2c-58c5-4408-926b-c666134fc623">
 						<jr:detailCell style="Table_TD" height="15">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="295" height="15" uuid="b4d44205-7db3-4e49-9374-735b40d25133">
+								<reportElement x="0" y="0" width="280" height="15" uuid="b4d44205-7db3-4e49-9374-735b40d25133">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 									<printWhenExpression><![CDATA[$F{ueNome} != null]]></printWhenExpression>
 								</reportElement>
 								<box leftPadding="10"/>

@@ -29,7 +29,9 @@ namespace SME.SR.Application
                     if (relatorioDto == null)
                         throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
 
-                    await mediator.Send(new GerarExcelGenericoCommand(relatorioDto.ToList<object>(), "RelatorioNotasEConceitosFinais", request.CodigoCorrelacao));
+                    var possuiNotaFechamento = relatorioDto.Any(r => r.NotaConceito.Contains("*"));
+
+                    await mediator.Send(new GerarExcelGenericoCommand(relatorioDto.ToList<object>(), "RelatorioNotasEConceitosFinais", request.CodigoCorrelacao, possuiNotaFechamento, "* Estudante sem conselho de classe registrado"));
 
                     break;
                 case TipoFormatoRelatorio.Pdf:

@@ -13,18 +13,19 @@ namespace SME.SR.Application
 
         public Ue Ue { get; set; }
 
+        public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurriculares { get; set; }
+
         public IEnumerable<Turma> Turmas { get; set; }
 
         public IEnumerable<MediaFrequencia> MediasFrequencia { get; set; }
 
         public IDictionary<string, string> TiposNota { get; set; }
 
-        public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesPorTurma { get; set; }
-
         public IEnumerable<IGrouping<string, Aluno>> AlunosPorTuma { get; set; }
 
         public IEnumerable<IGrouping<string, NotasAlunoBimestre>> Notas { get; set; }
 
         public IEnumerable<IGrouping<string, FrequenciaAluno>> Frequencias { get; set; }
+        public IEnumerable<IGrouping<string, FrequenciaAluno>> FrequenciasGlobal { get; set; }
     }
 }

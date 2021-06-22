@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponenteCurricular" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="197cb285-d519-45df-a3b1-9c913b9a06d4">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio_files/ComponenteCurricular.jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio"/>
+	<subDataset name="DatasetBoletim" uuid="79626e05-df6d-4d15-a078-39d29f1a0462">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
+		<queryString language="json">
+			<![CDATA[]]>
+		</queryString>
+		<field name="nome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+		<field name="notaBimestre1" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre1"/>
+			<fieldDescription><![CDATA[notaBimestre1]]></fieldDescription>
+		</field>
+		<field name="frequenciaBimestre1" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre1"/>
+			<fieldDescription><![CDATA[frequenciaBimestre1]]></fieldDescription>
+		</field>
+		<field name="notaBimestre2" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre2"/>
+			<fieldDescription><![CDATA[notaBimestre2]]></fieldDescription>
+		</field>
+		<field name="frequenciaBimestre2" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre2"/>
+			<fieldDescription><![CDATA[frequenciaBimestre2]]></fieldDescription>
+		</field>
+		<field name="notaBimestre3" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre3"/>
+			<fieldDescription><![CDATA[notaBimestre3]]></fieldDescription>
+		</field>
+		<field name="frequenciaBimestre3" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre3"/>
+			<fieldDescription><![CDATA[frequenciaBimestre3]]></fieldDescription>
+		</field>
+		<field name="notaBimestre4" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre4"/>
+			<fieldDescription><![CDATA[notaBimestre4]]></fieldDescription>
+		</field>
+		<field name="frequenciaBimestre4" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaBimestre4"/>
+			<fieldDescription><![CDATA[frequenciaBimestre4]]></fieldDescription>
+		</field>
+		<field name="notaFinal" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaFinal"/>
+			<fieldDescription><![CDATA[notaFinal]]></fieldDescription>
+		</field>
+		<field name="frequenciaFinal" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaFinal"/>
+			<fieldDescription><![CDATA[frequenciaFinal]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="8" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<componentElement>
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="285" height="8" isRemoveLineWhenBlank="true" forecolor="#DADADA" uuid="1650bede-f586-4d7b-ab59-328b6a4c914b">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="DatasetBoletim" uuid="c67c21b4-27c5-4821-9bdb-b20ecac4a9eb">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="126" uuid="93ca2197-afe2-48e9-acb2-04acf039ffdc">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<textField textAdjust="StretchHeight">
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="126" height="8" forecolor="#42474A" uuid="d94f2f07-5fcc-4024-a489-8ff18f4ed87c">
+									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+									<property name="property.name" value="value"/>
+									<property name="net.sf.jasperreports.export.xls.column.width" value="60"/>
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box>
+									<pen lineWidth="0.25" lineColor="#42474A"/>
+								</box>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font size="3.5"/>
+									<paragraph lineSpacingSize="1.0" leftIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="16" uuid="00d0fb07-7b44-46e3-8060-5d0d054cdec5">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="b11eae28-4a6a-4a51-b018-40d1df5cec92">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box>
+									<pen lineWidth="0.25" lineColor="#42474A"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{notaBimestre1} != "") ?  $F{notaBimestre1} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="15" uuid="cf98edc1-b113-4d86-8022-03e9f228cc2b">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="cb5f758a-f239-48bf-a84b-013734e2f642"/>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{frequenciaBimestre1} != "") ?  $F{frequenciaBimestre1} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="16" uuid="752dcca9-5d42-411b-b598-5acfdeb95e07">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="c237b336-8e31-45b7-81bf-4dc68d0d2c2b">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{notaBimestre2} != "") ?  $F{notaBimestre2} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="15" uuid="03f6f29c-0b21-4fd6-9ee7-b72d405abf89">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="656c64d3-2606-41c5-a324-e854d3ddbf43"/>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{frequenciaBimestre2} != "") ?  $F{frequenciaBimestre2} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="16" uuid="710b464d-c97f-43d6-99c9-ebcdd7729ef7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="27d27f46-7236-4ffc-9477-c1d68d9b1cb2"/>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{notaBimestre3} != "") ?  $F{notaBimestre3} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="15" uuid="e6d1f086-a90b-4e84-b3b9-8ddf6da39ede">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="7b38795f-c68c-460a-b797-d3c53b519c0f">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{frequenciaBimestre3} != "") ?  $F{frequenciaBimestre3} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="16" uuid="4b958fd1-4dbd-4521-9ee2-12815cbbf1b5">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="62724e23-5269-4398-aed7-0754f85a4a69">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								</reportElement>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{notaBimestre4} != "") ?  $F{notaBimestre4} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="15" uuid="1e98f308-fe95-43b5-bd2c-2cac28a0b34f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="fa4fae4c-dcc1-44ea-a34d-22bf1c436037"/>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{frequenciaBimestre4} != "") ?  $F{frequenciaBimestre4} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="16" uuid="59126ffb-50c4-4e92-b835-80ec99e5f9ba">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="03a9ac50-3145-492e-bee7-d634e3004578"/>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{notaFinal} != "") ? $F{notaFinal} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="15" uuid="a9e3fdbb-1590-4c52-bf03-4414e720c381">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
+						<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+						<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
+						<jr:detailCell height="8">
+							<textField>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="71699d13-edd4-4680-90fa-91949056db80">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
+								<box>
+									<pen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{frequenciaFinal} != "") ?  $F{frequenciaFinal} : "--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

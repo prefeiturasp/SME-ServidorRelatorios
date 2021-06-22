@@ -33,7 +33,7 @@ namespace SME.SR.Application
                     BaseNacional = c.EhBaseNacional(componentesApiEol),
                     Compartilhada = c.EhCompartilhada(componentesApiEol),
                     Disciplina = c.DescricaoFormatada,
-                    GrupoMatriz = c.ObterGrupoMatriz(componentesApiEol, gruposMatriz),
+                    GrupoMatriz = c.ObterGrupoMatriz(gruposMatriz),
                     LancaNota = c.PodeLancarNota(componentesApiEol),
                     Regencia = c.EhRegencia(componentesApiEol),
                     TerritorioSaber = c.TerritorioSaber,

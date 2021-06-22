@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GrupoComponentesComNota" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d7d71385-e29b-468d-8e0a-47625cb7c10c">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<subDataset name="DatasetGrupos" uuid="cda6c651-07e9-48ad-adcd-4d3d1916a606">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[]]>
+		</queryString>
+		<field name="nome" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nome"/>
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+		<field name="areasDeConhecimento" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="areasDeConhecimento"/>
+			<fieldDescription><![CDATA[areasDeConhecimento]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString language="jsonql">
+		<![CDATA[relatorioHistoricoEscolar]]>
+	</queryString>
+	<field name="nomeGrupo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="relatorioHistoricoEscolar.gruposComponentesCurriculares.nome"/>
+		<fieldDescription><![CDATA[gruposComponentesCurriculares.nome]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="38" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField textAdjust="ScaleFont">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="35" height="15" isRemoveLineWhenBlank="true" backcolor="#F3F3F3" uuid="9171e360-030b-46c3-bb5b-31c12471c650">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$F{nomeGrupo}!=null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="4" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeGrupo}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement positionType="Float" x="35" y="0" width="525" height="15" isRemoveLineWhenBlank="true" uuid="f5a63079-cc0c-43a0-8a20-ae53f8cd6c3d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="DatasetGrupos" uuid="1bc04ce8-19f9-4378-b91d-2b7fc31fa913">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("gruposComponentesCurriculares.areasDeConhecimento")]]></dataSourceExpression>
+					</datasetRun>
+					<jr:listContents height="15" width="525">
+						<textField textAdjust="StretchHeight">
+							<reportElement positionType="Float" stretchType="ElementGroupHeight" x="0" y="0" width="80" height="15" uuid="24bcf828-356a-4053-9217-ca3350bdaff9">
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<box leftPadding="5">
+								<pen lineWidth="0.75"/>
+							</box>
+							<textElement verticalAlignment="Middle">
+								<font size="6" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{nome} != null? $F{nome} : ""]]></textFieldExpression>
+						</textField>
+						<subreport>
+							<reportElement x="80" y="0" width="330" height="15" uuid="366e145e-d1ea-4523-8506-22fa93080826"/>
+							<subreportParameter name="REPORT_DATA_SOURCE">
+								<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
+							</subreportParameter>
+							<subreportExpression><![CDATA["ComponentesCurriculares.jasper"]]></subreportExpression>
+						</subreport>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

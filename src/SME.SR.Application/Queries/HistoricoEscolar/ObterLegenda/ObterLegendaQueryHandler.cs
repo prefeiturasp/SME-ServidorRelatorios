@@ -20,7 +20,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<ConceitoDto>> 
             Handle(ObterLegendaQuery request, CancellationToken cancellationToken)
         {
-            return await _conceitoValoresRepository.ObterDadosLegendaHistoricoEscolar();
+            return await _conceitoValoresRepository.ObterDadosLegendaHistoricoEscolar(request.TipoLegenda);
         }
     }
 }
