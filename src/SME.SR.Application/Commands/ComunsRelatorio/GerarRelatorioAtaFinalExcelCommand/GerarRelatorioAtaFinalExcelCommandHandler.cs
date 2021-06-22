@@ -65,12 +65,12 @@ namespace SME.SR.Application
 
                         MergearTabela(worksheet, tabelaDados);
 
-                        AdicionarEstilo(worksheet, tabelaDados);                        
+                        AdicionarEstilo(worksheet, tabelaDados);
 
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
-                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");                        
+                        workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
@@ -136,9 +136,15 @@ namespace SME.SR.Application
 
             worksheet.Range(LINHA_COMPONENTES + 1, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontSize(5);
 
-            var linhaInicialInativos = tabelaDados.AsEnumerable()
-              .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
+            var linhasAlunosTransferidosComNumeroChamada = tabelaDados.Select("NumeroChamada <> '0' AND NomeAluno like '%(Transferido)%'");
+            foreach (DataRow linha in linhasAlunosTransferidosComNumeroChamada)
+            {
+                int indice = tabelaDados.Rows.IndexOf(linha);
+                worksheet.Range(LINHA_GRUPOS + indice, 1, LINHA_GRUPOS + indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            }
 
+            var linhaInicialInativos = tabelaDados.AsEnumerable()
+                        .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
             var indiceLinhaInativos = tabelaDados.Rows.IndexOf(linhaInicialInativos);
 
             worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
