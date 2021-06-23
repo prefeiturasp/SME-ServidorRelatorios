@@ -4,6 +4,7 @@
     {
         CompensacaoAusenciaPercentualRegenciaClasse = 10,
         CompensacaoAusenciaPercentualFund2 = 11,
-        MunicipioAtendimento = 25
+        MunicipioAtendimento = 25,
+        QuantidadeImagensPercursoTurma = 72
     }
 }
