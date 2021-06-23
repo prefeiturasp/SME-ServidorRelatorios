@@ -38,7 +38,9 @@ namespace SME.SR.Infra
         {
             if (string.IsNullOrEmpty(ApanhadoGeral))
                 return string.Empty;
-            var registroFormatado = UtilRegex.RemoverTagsHtmlVideo(ApanhadoGeral);
+
+            var registroFormatado = UtilRegex.RemoverTagsHtml(ApanhadoGeral);
+            registroFormatado = UtilRegex.RemoverTagsHtmlVideo(registroFormatado);
             var numeroImagem = 0;
 
             var imagens = Regex.Matches(ApanhadoGeral, "<img.+?>");
@@ -49,25 +51,27 @@ namespace SME.SR.Infra
                 numeroImagem++;
                 if (numeroImagem <= quantidadeImagens)
                 {
-                    string input = imagem.ToString();
-                    Match match = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
-
-                    if (match.Success)
-                    {
-                        PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
-                        {
-                            NomeImagem = $"imagem {numeroImagem}",
-                            Imagem = match.Value
-                        });
-                    }
                     registroFormatado = registroFormatado.Replace(imagem.ToString(), $"|imagem {numeroImagem}|");
                 }
                 else
                 {
                     registroFormatado = registroFormatado.Replace(imagem.ToString(), $"");
-                }                               
+                }
+
+                string pattern = @"(https|http):.*(jpg|jpeg|gif|png|bmp)";
+                string input = imagem.ToString();
+                Match match = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
+
+                if (match.Success)
+                {
+                    PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+                    {
+                        NomeImagem = $"imagem {numeroImagem}",
+                        Imagem = match.Value
+                    });
+                }                
             }
-            return UtilRegex.RemoverTagsHtml(registroFormatado);
+            return registroFormatado;
         }
     }
 }
