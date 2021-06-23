@@ -34,7 +34,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, ocorrencias, quantidadeAulasDadas, bimestres, periodoId, turma),
+                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, ocorrencias, quantidadeAulasDadas, bimestres, turma.AnoLetivo, periodoId, turma),
             };
 
             return relatorio;
@@ -60,12 +60,13 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, long periodoId, Turma turma)
+        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, int ano, long periodoId, Turma turma)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             var acompanhamento = acompanhamentoTurma.Count() > 0 ? acompanhamentoTurma?.First() : null;
-            var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
+            var quantidadeImagensParam = await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(ano, TipoParametroSistema.QuantidadeImagensPercursoTurma));
+            var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado(int.Parse(quantidadeImagensParam)) ?? "") : "";
 
             List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> percursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
 
