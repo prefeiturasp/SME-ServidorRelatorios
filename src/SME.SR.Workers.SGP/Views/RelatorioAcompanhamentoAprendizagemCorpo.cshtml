@@ -265,32 +265,6 @@
         @Html.Raw("</td></tr>")
     }
 
-    void MontarRegistroIndividual(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
-    {
-        var titulo = "REGISTRO INDIVIDUAL";
-        int contarRegistroIndividual = 0;
-
-        @foreach (var registroIndividual in aluno.RegistrosIndividuais)
-        {
-            var descricaoRegistroIndividual = registroIndividual.Descricao;
-            var dataRegistroIndividual = registroIndividual.Data;
-
-            if (contarRegistroIndividual == 0 && contadorQuebrarPagina + 3 < contadorMaximoLinhasPorPagina)
-            {
-                @Html.Raw(MontarTitulo(titulo))
-                @Html.Raw("<table class='tabela-alunos'><tbody>")
-                @Html.Raw(MontarCabecalhoRegistroIndividual())
-                contadorQuebrarPagina++;
-            }
-
-            MontarRegistroIndividualNovo(descricaoRegistroIndividual, aluno.Nome, dataRegistroIndividual, titulo);
-
-            contarRegistroIndividual++;
-        }
-
-        @Html.Raw("</tbody></table>")
-    }
-
     string MontarObservacoes(string observacao)
     {
         <table class='tabela-alunos sem-border-top'>
@@ -488,7 +462,7 @@
         return $@"<table class='tabela-alunos sem-border-top'>
 <thead>
 <tr>
-<td width='100%' class='centralizar negrito'>REGISTRO DO PERCURSO DA TURMA</td>
+<td width='100%' class='centralizar negrito'>PERCURSO COLETIVO DA TURMA</td>
 </tr>
 </thead>
 <tbody>
@@ -616,11 +590,6 @@
         }
 
         MontarFrequencia(Model);
-    }
-
-    if (Model.RegistrosIndividuais.Count() > 0)
-    {
-        MontarRegistroIndividual(Model);
     }
 
     var descricaoObservacoes = Model.Observacoes;
