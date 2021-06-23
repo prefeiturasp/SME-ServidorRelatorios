@@ -256,9 +256,6 @@
 
         @Html.Raw(MontarRodapeTabela());
 
-        return "";
-    }
-
     string MontarObservacoes(string observacao)
     {
         <table class='tabela-alunos sem-border-top'>
@@ -501,24 +498,6 @@
         }
 
         MontarFrequencia(Model);
-    }
-
-    if (!string.IsNullOrEmpty(Model.PercursoIndividual)) { 
-        MontarPercursoIndividual(Model.PercursoIndividual, Model.Nome);
-    }
-
-    if (Model.Fotos.Any())
-    {
-        @Html.Raw(EspacoEmBranco())
-        contadorQuebrarPagina++;
-
-        MontarFotos(Model);
-
-        contadorQuebrarPagina = contadorQuebrarPagina + 10;
-    }
-    else
-    {
-        contadorMaximoCaracteresPorLinhaPercurso = 210;
     }
 
     var descricaoObservacoes = Model.Observacoes;
