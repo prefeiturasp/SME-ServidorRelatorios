@@ -87,6 +87,7 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
+                SentrySdk.CaptureMessage($"6.6 - Erro na geração: {ex.Message}, [{ex.StackTrace}]");
                 SentrySdk.CaptureException(ex);
                 throw ex;
             }
