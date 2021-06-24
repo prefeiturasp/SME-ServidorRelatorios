@@ -1348,6 +1348,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
+        [HttpGet("sondagem-numeros")]
         public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
@@ -7509,16 +7510,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         {
             try
             {
-                var dto = new AcompanhamentoAprendizagemAlunoDto();
-                dto.ApanhadoGeral = @"<ul style='list-style-type: disc;'><li><span style='font-size: 48px;'>
-    <strong style=''><span style='background-color: rgb(0, 0, 255);'>teste<img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
-</span></strong></span></li></ul><p>De acordo com a imagem abaixo:</p><p><img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
-<br></p><p><br></p><table style='width: 100%;'><br></table>";
-
-                //var percursoFormatado = dto.PercusoTurmaFormatado();
-                //return View("RelatorioAcompanhamentoAprendizagemTeste", percursoFormatado);
-
-                return default;
+                var dto = new RelatorioAcompanhamentoAprendizagemDto();
+                return View("RelatorioAcompanhamentoAprendizagemTeste", dto);
             }
             catch (Exception ex)
             {
