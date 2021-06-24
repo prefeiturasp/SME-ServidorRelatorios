@@ -68,11 +68,12 @@ namespace SME.SR.Application
                         Usuario = request.Usuario
                     });
 
+
                     if (componentesRegenciaPorTurma != null && componentesRegenciaPorTurma.Any())
                     {
                         componentesMapeados = componentesMapeados.Select(c =>
                         {
-                            if (c.Regencia)
+                            if (c.Regencia && componentesRegenciaPorTurma.Any(r => r.Key == c.CodigoTurma))
                                 c.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(r => r.Key == c.CodigoTurma).ToList();
 
                             return c;
