@@ -55,7 +55,7 @@
                                         vmc.cd_aluno                    as CodigoAluno
                     from turma_escola te
 
-	                inner join matricula_turma_escola mte on mte.cd_turma_escola = te.cd_turma_escola 
+	                inner join historico_matricula_turma_escola mte on mte.cd_turma_escola = te.cd_turma_escola 
 	                inner join v_historico_matricula_cotic vmc on vmc.cd_matricula = mte.cd_matricula 
 
                              inner join escola esc ON te.cd_escola = esc.cd_escola
