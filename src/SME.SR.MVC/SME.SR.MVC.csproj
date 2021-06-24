@@ -25,6 +25,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Relatorios\RelatorioAcompanhamentoAprendizagemCabecalho.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Relatorios\RelatorioAcompanhamentoAprendizagemCorpo.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="Views\Relatorios\RelatorioAtasComColunaFinal.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
