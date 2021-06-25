@@ -46,13 +46,13 @@ namespace SME.SR.Data
 			                                               from acompanhamento_aluno aa
 			                                              inner join acompanhamento_aluno_semestre aas on aas.acompanhamento_aluno_id = aa.id
 			   	                                           left join acompanhamento_aluno_foto aaf on aaf.acompanhamento_aluno_semestre_id = aas.id 
-			   	                                           left join arquivo arq on arq.id = aaf.arquivo_id
+			   	                                           left join arquivo arq on arq.id = aaf.arquivo_id AND aaf.miniatura_id IS NOT NULL
 			   	                                          where aa.turma_id = @turmaId ");
 
             if (!string.IsNullOrEmpty(alunoCodigo))
                 query.AppendLine("and aa.aluno_codigo = @alunoCodigo ");
 
-            query.AppendLine(@"and aaf.miniatura_id is not null) as tb1 on tb1.turma_id = at2.turma_id and tb1.semestre = at2.semestre
+            query.AppendLine(@") as tb1 on tb1.turma_id = at2.turma_id and tb1.semestre = at2.semestre
                                where at2.turma_id = @turmaId ");
 
             if (semestre > 0)
