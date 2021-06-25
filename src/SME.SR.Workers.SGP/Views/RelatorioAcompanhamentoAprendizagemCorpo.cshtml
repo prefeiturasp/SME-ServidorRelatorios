@@ -6,7 +6,6 @@
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
     int contadorMaximoCaracteresPorLinhaPercurso = 230;
-    int contadorMaximoCaracteresPorLinhaRegistroIndividual = 185;
     int contadorMaximoCaracteresPorLinhaOcorrencias = 160;
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
@@ -258,61 +257,6 @@
         @Html.Raw(MontarRodapeTabela());
 
         return "";
-    }
-
-    string MontarCabecalhoRegistroIndividual()
-    {
-        var classeRegistroIndividual = !quebrou ? "sem-border-top" : "";
-
-        <tr>
-            <td width="20%" class="fundo-cinza sem-border-bottom negrito {@classeRegistroIndividual}">DATA DO REGISTRO</td>
-            <td class="fundo-cinza sem-border-bottom negrito">REGISTRO</td>
-        </tr>
-        return "";
-    }
-
-    void MontarRegistroIndividualNovo(string descricaoRegistroIndividual, string estudante, string dataRegistroIndividual, string titulo)
-    {
-        var iContadorCaracteres = 0;
-        if (!(contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina))
-        {
-            @Html.Raw($@"<tr><td width='15%' class='centralizar'>{dataRegistroIndividual}</td>")
-            @Html.Raw("<td width='85%' class='alinhar-esquerda espaco-esquerda-15'>")
-        }
-
-        @while (iContadorCaracteres != descricaoRegistroIndividual.Length)
-        {
-            if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
-            {
-                contadorQuebrarPagina = 0;
-                @Html.Raw("</td></tr></tbody></table>")
-                @Html.Raw("</tbody></table>");
-                @Html.Raw("<div style='page-break-before:always'></div>");
-
-                if (!String.IsNullOrEmpty(estudante))
-                {
-                    @Html.Raw(MontarTitulo(estudante));
-                    @Html.Raw(MontarTitulo(titulo))
-                    @Html.Raw("<table class='tabela-alunos'><tbody>")
-                    @Html.Raw(MontarCabecalhoRegistroIndividual())
-                    contadorQuebrarPagina++;
-                    @Html.Raw($@"<tr><td width='15%' class='centralizar'>{dataRegistroIndividual}</td>")
-                    @Html.Raw("<td width='85%' class='alinhar-esquerda espaco-esquerda-15'>")
-                }
-            }
-            else
-            {
-                var qntCaracteresParaBuscar = descricaoRegistroIndividual.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaRegistroIndividual ? descricaoRegistroIndividual.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaRegistroIndividual;
-                var textParaExibir = descricaoRegistroIndividual.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
-                iContadorCaracteres += textParaExibir.Length;
-
-                @Html.Raw(textParaExibir)
-
-                contadorQuebrarPagina++;
-            }
-        }
-
-        @Html.Raw("</td></tr>")
     }
 
     string MontarObservacoes(string observacao)
