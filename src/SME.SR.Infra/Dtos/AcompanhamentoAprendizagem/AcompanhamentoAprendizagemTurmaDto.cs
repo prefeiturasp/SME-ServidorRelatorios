@@ -38,9 +38,13 @@ namespace SME.SR.Infra
         {
             if (string.IsNullOrEmpty(ApanhadoGeral))
                 return string.Empty;
+<<<<<<< HEAD
+            var registroFormatado = UtilRegex.RemoverTagsHtmlVideo(ApanhadoGeral);
+=======
 
             var registroFormatado = UtilRegex.RemoverTagsHtml(ApanhadoGeral);
             registroFormatado = UtilRegex.RemoverTagsHtmlVideo(registroFormatado);
+>>>>>>> 919f53fc... 42072 - Tratar imagens Percurso turma
             var numeroImagem = 0;
 
             var imagens = Regex.Matches(ApanhadoGeral, "<img.+?>");
@@ -51,11 +55,30 @@ namespace SME.SR.Infra
                 numeroImagem++;
                 if (numeroImagem <= quantidadeImagens)
                 {
+<<<<<<< HEAD
+                    string input = imagem.ToString();
+                    Match match = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
+
+                    if (match.Success)
+                    {
+                        PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+                        {
+                            NomeImagem = $"imagem {numeroImagem}",
+                            Imagem = match.Value
+                        });
+                    }
+=======
+>>>>>>> 919f53fc... 42072 - Tratar imagens Percurso turma
                     registroFormatado = registroFormatado.Replace(imagem.ToString(), $"|imagem {numeroImagem}|");
                 }
                 else
                 {
                     registroFormatado = registroFormatado.Replace(imagem.ToString(), $"");
+<<<<<<< HEAD
+                }                               
+            }
+            return UtilRegex.RemoverTagsHtml(registroFormatado);
+=======
                 }
 
                 string pattern = @"(https|http):.*(jpg|jpeg|gif|png|bmp)";
@@ -72,6 +95,7 @@ namespace SME.SR.Infra
                 }                
             }
             return registroFormatado;
+>>>>>>> 919f53fc... 42072 - Tratar imagens Percurso turma
         }
     }
 }
