@@ -4,10 +4,6 @@ namespace SME.SR.Infra
 {
     public class ConselhoClasseConsolidadoTurmaAlunoDto
     {
-        public ConselhoClasseConsolidadoTurmaAlunoDto()
-        {
-            DataAtualizacao = DateTime.Now;
-        }
         public DateTime DataAtualizacao { get; set; }
 
         public SituacaoConselhoClasse Status { get; set; }
