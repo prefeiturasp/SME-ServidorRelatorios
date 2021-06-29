@@ -38,12 +38,21 @@ namespace SME.SR.Application
                               new RelatorioAcompanhamentoFechamentoComponenteDto()
                               {
                                    Componente = "Educação Física",
-                                   Status = "Processado com Pendência"
+                                   Status = "Processado com Pendência",
+                                   Pendencias = new List<string>()
+                                   { 
+                                       "Aulas sem frequência registrada",
+                                       "Aulas sem plano de aula registrado"
+                                   }
                               },
                               new RelatorioAcompanhamentoFechamentoComponenteDto()
                               {
                                    Componente = "Geografia",
-                                   Status = "Processado"
+                                   Status = "Processado",
+                                   Pendencias = new List<string>()
+                                   {
+                                       "Avaliação sem notas/conceitos lançados"
+                                   }
                               }
                           },
                           ConselhosClasse = new List<RelatorioAcompanhamentoFechamentoConselhoDto>()
