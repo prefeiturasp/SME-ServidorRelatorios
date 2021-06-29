@@ -6,6 +6,6 @@ namespace SME.SR.Data
 {
     public interface IConselhoClasseConsolidadoRepository
     {
-        Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasBimestreAsync(long[] turmasId, int bimestre, int situacaoConselhoClasse);
+        Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasBimestreAsync(string[] turmasCodigo, int[] bimestres, int? situacaoConselhoClasse);
     }
 }
