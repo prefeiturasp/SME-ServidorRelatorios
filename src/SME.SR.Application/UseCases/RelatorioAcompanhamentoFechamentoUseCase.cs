@@ -11,7 +11,6 @@ namespace SME.SR.Application
         {
             return await Task.FromResult(new RelatorioAcompanhamentoFechamentoPorUeDto()
             {
-                Bimestre = "1º",
                 Data = DateTime.Now.ToString("dd/MM/yyyy"),
                 DreNome = "DIRETORIA REGIONAL DE EDUCAÇÃO BUTANTA",
                 RF = "1234567",
@@ -22,57 +21,145 @@ namespace SME.SR.Application
                 {
                     new RelatorioAcompanhamentoFechamentoTurmaDto()
                     {
-                         TurmaDescricao = "EF - 6A",
-                          FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>()
+                          TurmaDescricao = "EF - 6A",
+                          Bimestres = new List<RelatorioAcompanhamentoFechamentoBimestreDto>()
                           {
-                              new RelatorioAcompanhamentoFechamentoComponenteDto()
+                              new RelatorioAcompanhamentoFechamentoBimestreDto()
                               {
-                                   Componente = "Arte",
-                                   Status = "Não Iniciado"
-                              },
-                              new RelatorioAcompanhamentoFechamentoComponenteDto()
-                              {
-                                   Componente = "Ciência",
-                                   Status = "Em Andamento"
-                              },
-                              new RelatorioAcompanhamentoFechamentoComponenteDto()
-                              {
-                                   Componente = "Educação Física",
-                                   Status = "Processado com Pendência",
-                                   Pendencias = new List<string>()
-                                   { 
-                                       "Aulas sem frequência registrada",
-                                       "Aulas sem plano de aula registrado"
-                                   }
-                              },
-                              new RelatorioAcompanhamentoFechamentoComponenteDto()
-                              {
-                                   Componente = "Geografia",
-                                   Status = "Processado",
-                                   Pendencias = new List<string>()
+                                   Bimestre = 1,
+                                   FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>()
                                    {
-                                       "Avaliação sem notas/conceitos lançados"
-                                   }
+                                      new RelatorioAcompanhamentoFechamentoComponenteDto()
+                                      {
+                                           Componente = "Arte",
+                                           Status = "Não Iniciado"
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoComponenteDto()
+                                      {
+                                           Componente = "Ciência",
+                                           Status = "Em Andamento"
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoComponenteDto()
+                                      {
+                                           Componente = "Educação Física",
+                                           Status = "Processado com Pendência",
+                                           Pendencias = new List<string>()
+                                           {
+                                               "Aulas sem frequência registrada",
+                                               "Aulas sem plano de aula registrado"
+                                           }
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoComponenteDto()
+                                      {
+                                           Componente = "Geografia",
+                                           Status = "Processado",
+                                           Pendencias = new List<string>()
+                                           {
+                                               "Avaliação sem notas/conceitos lançados"
+                                           }
+                                      }
+                                  },
+                                  ConselhosClasse = new List<RelatorioAcompanhamentoFechamentoConselhoDto>()
+                                  {
+                                      new RelatorioAcompanhamentoFechamentoConselhoDto()
+                                      {
+                                           Status = "Não iniciado",
+                                           Quantidade = 2
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoConselhoDto()
+                                      {
+                                            Status = "Em andamento",
+                                            Quantidade = 5
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoConselhoDto()
+                                      {
+                                           Status = "Concluído",
+                                           Quantidade = 10
+                                      }
+                                  }
+                              },
+                              new RelatorioAcompanhamentoFechamentoBimestreDto()
+                              {
+                                   Bimestre = 2,
+                                   FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>()
+                                   {
+                                      new RelatorioAcompanhamentoFechamentoComponenteDto()
+                                      {
+                                           Componente = "Ciência",
+                                           Status = "Em Andamento"
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoComponenteDto()
+                                      {
+                                           Componente = "Educação Física",
+                                           Status = "Processado com Pendência",
+                                           Pendencias = new List<string>()
+                                           {
+                                               "Aulas sem frequência registrada",
+                                               "Aulas sem plano de aula registrado"
+                                           }
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoComponenteDto()
+                                      {
+                                           Componente = "Geografia",
+                                           Status = "Processado",
+                                           Pendencias = new List<string>()
+                                           {
+                                               "Avaliação sem notas/conceitos lançados"
+                                           }
+                                      }
+                                  },
+                                  ConselhosClasse = new List<RelatorioAcompanhamentoFechamentoConselhoDto>()
+                                  {
+                                      new RelatorioAcompanhamentoFechamentoConselhoDto()
+                                      {
+                                           Status = "Não iniciado",
+                                           Quantidade = 2
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoConselhoDto()
+                                      {
+                                           Status = "Concluído",
+                                           Quantidade = 10
+                                      }
+                                  }
                               }
                           },
-                          ConselhosClasse = new List<RelatorioAcompanhamentoFechamentoConselhoDto>()
+                    },
+                    new RelatorioAcompanhamentoFechamentoTurmaDto()
+                    {
+                          TurmaDescricao = "EF - 7A",
+                          Bimestres = new List<RelatorioAcompanhamentoFechamentoBimestreDto>()
                           {
-                              new RelatorioAcompanhamentoFechamentoConselhoDto()
+                              new RelatorioAcompanhamentoFechamentoBimestreDto()
                               {
-                                   Status = "Não iniciado",
-                                   Quantidade = 2
-                              },
-                              new RelatorioAcompanhamentoFechamentoConselhoDto()
-                              {
-                                    Status = "Em andamento",
-                                    Quantidade = 5
-                              },
-                              new RelatorioAcompanhamentoFechamentoConselhoDto()
-                              {
-                                   Status = "Concluído",
-                                   Quantidade = 10
+                                   Bimestre = 1,
+                                   FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>()
+                                   {
+                                      new RelatorioAcompanhamentoFechamentoComponenteDto()
+                                      {
+                                           Componente = "Arte",
+                                           Status = "Não Iniciado"
+                                      },
+                                  },
+                                  ConselhosClasse = new List<RelatorioAcompanhamentoFechamentoConselhoDto>()
+                                  {
+                                      new RelatorioAcompanhamentoFechamentoConselhoDto()
+                                      {
+                                           Status = "Não iniciado",
+                                           Quantidade = 2
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoConselhoDto()
+                                      {
+                                            Status = "Em andamento",
+                                            Quantidade = 5
+                                      },
+                                      new RelatorioAcompanhamentoFechamentoConselhoDto()
+                                      {
+                                           Status = "Concluído",
+                                           Quantidade = 10
+                                      }
+                                  }
                               }
-                          }
+                          },
                     }
                 }
             });
