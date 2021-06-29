@@ -174,6 +174,7 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IConselhoClasseConsolidadoRepository), typeof(ConselhoClasseConsolidadoRepository));
             services.TryAddScoped(typeof(IFechamentoConsolidadoRepository), typeof(FechamentoConsolidadoRepository));
+            services.TryAddScoped(typeof(IPendenciaFechamentoRepository), typeof(PendenciaFechamentoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)

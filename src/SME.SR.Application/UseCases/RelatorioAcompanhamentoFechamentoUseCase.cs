@@ -1,81 +1,23 @@
-﻿using SME.SR.Infra;
+﻿using MediatR;
+using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
     public class RelatorioAcompanhamentoFechamentoUseCase : IRelatorioAcompanhamentoFechamentoUseCase
     {
-        public async Task<RelatorioAcompanhamentoFechamentoPorUeDto> Executar(FiltroRelatorioDto filtro)
+        private readonly IMediator mediator;
+
+        public RelatorioAcompanhamentoFechamentoUseCase(IMediator mediator)
         {
-            return await Task.FromResult(new RelatorioAcompanhamentoFechamentoPorUeDto()
-            {
-                Bimestre = "1º",
-                Data = DateTime.Now.ToString("dd/MM/yyyy"),
-                DreNome = "DIRETORIA REGIONAL DE EDUCAÇÃO BUTANTA",
-                RF = "1234567",
-                Turma = "TODAS",
-                UeNome = "CEU EMEF BUTANTA",
-                Usuario = "JULIA FERREIRA DE OLIVEIRA",
-                Turmas = new List<RelatorioAcompanhamentoFechamentoTurmaDto>()
-                {
-                    new RelatorioAcompanhamentoFechamentoTurmaDto()
-                    {
-                         TurmaDescricao = "EF - 6A",
-                          FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>()
-                          {
-                              new RelatorioAcompanhamentoFechamentoComponenteDto()
-                              {
-                                   Componente = "Arte",
-                                   Status = "Não Iniciado"
-                              },
-                              new RelatorioAcompanhamentoFechamentoComponenteDto()
-                              {
-                                   Componente = "Ciência",
-                                   Status = "Em Andamento"
-                              },
-                              new RelatorioAcompanhamentoFechamentoComponenteDto()
-                              {
-                                   Componente = "Educação Física",
-                                   Status = "Processado com Pendência",
-                                   Pendencias = new List<string>()
-                                   { 
-                                       "Aulas sem frequência registrada",
-                                       "Aulas sem plano de aula registrado"
-                                   }
-                              },
-                              new RelatorioAcompanhamentoFechamentoComponenteDto()
-                              {
-                                   Componente = "Geografia",
-                                   Status = "Processado",
-                                   Pendencias = new List<string>()
-                                   {
-                                       "Avaliação sem notas/conceitos lançados"
-                                   }
-                              }
-                          },
-                          ConselhosClasse = new List<RelatorioAcompanhamentoFechamentoConselhoDto>()
-                          {
-                              new RelatorioAcompanhamentoFechamentoConselhoDto()
-                              {
-                                   Status = "Não iniciado",
-                                   Quantidade = 2
-                              },
-                              new RelatorioAcompanhamentoFechamentoConselhoDto()
-                              {
-                                    Status = "Em andamento",
-                                    Quantidade = 5
-                              },
-                              new RelatorioAcompanhamentoFechamentoConselhoDto()
-                              {
-                                   Status = "Concluído",
-                                   Quantidade = 10
-                              }
-                          }
-                    }
-                }
-            });
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
+
+        public async Task Executar(FiltroRelatorioDto request)
+        {
+            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoQuery>();
+            var relatorio = await mediator.Send(relatorioQuery);
         }
     }
 }
