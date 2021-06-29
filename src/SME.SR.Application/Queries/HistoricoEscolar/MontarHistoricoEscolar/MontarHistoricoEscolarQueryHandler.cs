@@ -296,15 +296,13 @@ namespace SME.SR.Application
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
-                
+                componentes = new List<ComponenteCurricularHistoricoEscolarDto>();
 
-                List<ComponenteCurricularHistoricoEscolarDto> componentesRegencia = new List<ComponenteCurricularHistoricoEscolarDto>();
-                var componentesRegenciaFiltro = componentesCurricularesDaTurma.Where(x => x.Regencia);
-                foreach(var componenteCurricular in componentesRegenciaFiltro)
+                foreach (var componenteCurricular in componentesCurricularesDaTurma)
                 {
                     if (componenteCurricular.Regencia)
                     {
-                        MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(), turmas.Where(t => t.Codigo == componenteCurricular.CodigoTurma) , componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)), notas, frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()), mediasFrequencia, componentes);
+                        MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(), turmas.Where(t => t.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)), notas, frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()), mediasFrequencia, componentes);
                     }
                     else
                     {
