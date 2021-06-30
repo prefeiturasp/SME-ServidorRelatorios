@@ -4,8 +4,9 @@ namespace SME.SR.Infra
 {
     public class RelatorioAcompanhamentoFechamentoBimestreDto
     {
-        public RelatorioAcompanhamentoFechamentoBimestreDto()
+        public RelatorioAcompanhamentoFechamentoBimestreDto(string bimestre)
         {
+            Bimestre = bimestre;
             FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>();
             ConselhosClasse = new List<RelatorioAcompanhamentoFechamentoConselhoDto>();
         }

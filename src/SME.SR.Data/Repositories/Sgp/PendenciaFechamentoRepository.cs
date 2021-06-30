@@ -22,7 +22,10 @@ namespace SME.SR.Data
         {
             var query = new StringBuilder(@"select p.id as PendenciaId, 
                                  p.titulo as descricao, 
-                                 P.tipo as tipoPendencia  
+                                 P.tipo as tipoPendencia,
+                                 pe.bimestre,
+                                 t.turma_id as TurmaCodigo,
+                                 td.disciplina_id as ComponenteCurricularId
                             from pendencia_fechamento pf
                            inner join fechamento_turma_disciplina ftd on ftd.id = pf.fechamento_turma_disciplina_id
                            inner join fechamento_turma ft on ft.id = ftd.fechamento_turma_id
