@@ -10,7 +10,7 @@ namespace SME.SR.Infra
             ConselhosClasse = new List<RelatorioAcompanhamentoFechamentoConselhoDto>();
         }
 
-        public int Bimestre { get; set; }
+        public string Bimestre { get; set; }
 
         public List<RelatorioAcompanhamentoFechamentoComponenteDto> FechamentosComponente { get; set; }
 
