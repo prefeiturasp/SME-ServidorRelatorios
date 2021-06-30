@@ -21,7 +21,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasBimestreAsync(string[] turmasCodigo, int[] bimestres, int? situacaoConselhoClasse)
         {
             var query = new StringBuilder(@" select c.id, c.dt_atualizacao DataAtualizacao, c.status, c.aluno_codigo AlunoCodigo, 
-                                                    c.parecer_conclusivo_id ParecerConclusivoId, c.turma_id TurmaId, c.bimestre
+                                                    c.parecer_conclusivo_id ParecerConclusivoId, t.turma_id TurmaCodigo, c.bimestre
                             from consolidado_conselho_classe_aluno_turma c
                             inner join turma t on c.turma_id = t.id
                           where not c.excluido 

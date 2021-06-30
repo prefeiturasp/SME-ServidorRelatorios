@@ -17,7 +17,9 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoQuery>();
-            var relatorio = await mediator.Send(relatorioQuery);
+            var relatorioDto = await mediator.Send(relatorioQuery);
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoFechamento", relatorioDto, request.CodigoCorrelacao));
         }
     }
 }

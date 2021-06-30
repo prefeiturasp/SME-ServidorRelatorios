@@ -38,7 +38,6 @@ namespace SME.SR.Application
 
             var componentesCurricularesId = consolidadoFechamento?.Select(c => c.ComponenteCurricularCodigo)?.Distinct()?.ToArray();
 
-            var componentesFechamento = consolidadoFechamento.Select(f => f.ComponenteCurricularCodigo);
             var componentesCurriculares = await ObterComponentesCurricularesPorCodigo(componentesCurricularesId);
 
             var pendencias = Enumerable.Empty<PendenciaParaFechamentoConsolidadoDto>();
@@ -97,12 +96,12 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidado(string[] turmasId, int[] bimestres, SituacaoConselhoClasse? situacaoConselhoClasse)
         {
-            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasBimestreQuery(turmasId, bimestres, (int)situacaoConselhoClasse));
+            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasBimestreQuery(turmasId, bimestres, (int?)situacaoConselhoClasse));
         }
 
         private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidado(string[] turmasId, int[] bimestres, SituacaoFechamento? situacaoFechamento)
         {
-            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasBimestreQuery(turmasId, bimestres, (int)situacaoFechamento));
+            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasBimestreQuery(turmasId, bimestres, (int?)situacaoFechamento));
         }
     }
 }

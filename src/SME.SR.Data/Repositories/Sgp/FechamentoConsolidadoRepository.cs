@@ -21,7 +21,7 @@ namespace SME.SR.Data.Repositories.Sgp
         public async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentoConsolidadoPorTurmasBimestre(string[] turmasCodigo, int[] bimestres, int? situacaoFechamento)
         {
             var query = new StringBuilder(@" select f.id, f.dt_atualizacao DataAtualizacao, f.status, f.componente_curricular_id ComponenteCurricularCodigo,
-                                                    f.professor_nome ProfessorNome, f.professor_rf f.ProfessorRf, f.turma_id TurmaId, f.bimestre
+                                                    f.professor_nome ProfessorNome, f.professor_rf ProfessorRf, t.turma_id TurmaCodigo, f.bimestre
                                                 from consolidado_fechamento_componente_turma f
                                                 inner join turma t on f.turma_id = t.id
                                                where not f.excluido 
