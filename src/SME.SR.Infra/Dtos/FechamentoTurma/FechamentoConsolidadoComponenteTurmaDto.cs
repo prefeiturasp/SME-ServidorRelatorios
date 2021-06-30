@@ -14,7 +14,7 @@ namespace SME.SR.Infra
 
         public string ProfessorNome { get; set; }
 
-        public long TurmaId { get; set; }
+        public string TurmaCodigo { get; set; }
 
         public int Bimestre { get; set; }
     }

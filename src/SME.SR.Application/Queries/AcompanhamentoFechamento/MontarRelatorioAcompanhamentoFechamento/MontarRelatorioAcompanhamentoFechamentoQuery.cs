@@ -7,7 +7,7 @@ namespace SME.SR.Application
 {
     public class MontarRelatorioAcompanhamentoFechamentoQuery : IRequest<RelatorioAcompanhamentoFechamentoPorUeDto>
     {
-        public MontarRelatorioAcompanhamentoFechamentoQuery(Dre dre, Ue ue, string turmaCodigo, IEnumerable<Turma> turmas, int[] bimestres, IEnumerable<FechamentoConsolidadoComponenteTurmaDto> consolidadoFechamento, IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto> consolidadoConselhosClasse, IEnumerable<PendenciaParaFechamentoConsolidadoDto> pendencias, Usuario usuario)
+        public MontarRelatorioAcompanhamentoFechamentoQuery(Dre dre, Ue ue, string turmaCodigo, IEnumerable<Turma> turmas, IEnumerable<DisciplinaDto> componentesCurriculares, int[] bimestres, IEnumerable<FechamentoConsolidadoComponenteTurmaDto> consolidadoFechamento, IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto> consolidadoConselhosClasse, bool listarPendencias, IEnumerable<PendenciaParaFechamentoConsolidadoDto> pendencias, Usuario usuario)
         {
             Dre = dre;
             Ue = ue;
@@ -16,18 +16,22 @@ namespace SME.SR.Application
             Bimestres = bimestres;
             ConsolidadoFechamento = consolidadoFechamento;
             ConsolidadoConselhosClasse = consolidadoConselhosClasse;
+            ComponentesCurriculares = componentesCurriculares;
             Pendencias = pendencias;
+            ListarPendencias = listarPendencias;
             Usuario = usuario;
         }
 
-        public Dre Dre { get; }
-        public Ue Ue { get; }
-        public IEnumerable<Turma> Turmas { get; }
-        public int[] Bimestres { get; }
-        public IEnumerable<FechamentoConsolidadoComponenteTurmaDto> ConsolidadoFechamento { get; }
-        public IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto> ConsolidadoConselhosClasse { get; }
-        public IEnumerable<PendenciaParaFechamentoConsolidadoDto> Pendencias { get; }
-        public string TurmaCodigo { get; }
-        public Usuario Usuario { get; }
+        public Dre Dre { get; set; }
+        public Ue Ue { get; set; }
+        public IEnumerable<Turma> Turmas { get; set; }
+        public int[] Bimestres { get; set; }
+        public IEnumerable<FechamentoConsolidadoComponenteTurmaDto> ConsolidadoFechamento { get; set; }
+        public IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto> ConsolidadoConselhosClasse { get; set; }
+        public IEnumerable<DisciplinaDto> ComponentesCurriculares { get; set; }
+        public IEnumerable<PendenciaParaFechamentoConsolidadoDto> Pendencias { get; set; }
+        public bool ListarPendencias { get; set; }
+        public string TurmaCodigo { get; set; }
+        public Usuario Usuario { get; set; }
     }
 }
