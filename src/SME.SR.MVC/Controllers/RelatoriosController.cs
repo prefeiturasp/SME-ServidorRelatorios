@@ -7614,6 +7614,26 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 throw ex;
             }
         }
+
+        [HttpGet("acompanhamento-fechamento")]
+        public async Task<IActionResult> AcompanhamentoFechamento([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
+        {
+            try
+            {
+                var mensagem = JsonConvert.SerializeObject(new RelatorioAcompanhamentoFechamentoPorUeDto() { }, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+               var model = await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
+                return View("RelatorioAcompanhamentoFechamento", model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                throw ex;
+            }
+        }
     }
 }
 
