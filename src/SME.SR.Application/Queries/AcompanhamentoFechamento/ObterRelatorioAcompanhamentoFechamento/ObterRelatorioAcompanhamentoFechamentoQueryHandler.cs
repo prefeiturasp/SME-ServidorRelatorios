@@ -20,8 +20,15 @@ namespace SME.SR.Application
 
         public async Task<RelatorioAcompanhamentoFechamentoPorUeDto> Handle(ObterRelatorioAcompanhamentoFechamentoQuery request, CancellationToken cancellationToken)
         {
-            var dre = await ObterDrePorCodigo(request.DreCodigo);
-            var ue = await ObterUePorCodigo(request.UeCodigo);
+            Dre dre = null;
+            Ue ue = null;
+
+            if(!string.IsNullOrEmpty(request.DreCodigo))
+                dre = await ObterDrePorCodigo(request.DreCodigo);
+
+            if (!string.IsNullOrEmpty(request.UeCodigo))
+                ue = await ObterUePorCodigo(request.UeCodigo);
+
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
             int[] bimestres = request.Bimestres?.ToArray();
@@ -39,7 +46,7 @@ namespace SME.SR.Application
                     pendencias = await ObterPendenciasFechamentosConsolidado(codigosTurma, bimestres, componentesCurricularesId);
             }
 
-            return new RelatorioAcompanhamentoFechamentoPorUeDto();
+            return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmaCodigo, turmas, bimestres, consolidadoFechamento, consolidadoConselhosClasse, pendencias, request.Usuario));
         }
 
         private async Task<IEnumerable<PendenciaParaFechamentoConsolidadoDto>> ObterPendenciasFechamentosConsolidado(string[] codigosTurma, int[] bimestres, long[] componentesCurricularesId)
