@@ -33,7 +33,7 @@ namespace SME.SR.Application
                           {
                               new RelatorioAcompanhamentoFechamentoBimestreDto()
                               {
-                                   Bimestre = 1,
+                                   Bimestre = "1º Bimestre",
                                    FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>()
                                    {
                                       new RelatorioAcompanhamentoFechamentoComponenteDto()
@@ -87,7 +87,7 @@ namespace SME.SR.Application
                               },
                               new RelatorioAcompanhamentoFechamentoBimestreDto()
                               {
-                                   Bimestre = 2,
+                                   Bimestre = "2º Bimestre",
                                    FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>()
                                    {
                                       new RelatorioAcompanhamentoFechamentoComponenteDto()
@@ -138,7 +138,7 @@ namespace SME.SR.Application
                           {
                               new RelatorioAcompanhamentoFechamentoBimestreDto()
                               {
-                                   Bimestre = 1,
+                                   Bimestre = "1º Bimestre",
                                    FechamentosComponente = new List<RelatorioAcompanhamentoFechamentoComponenteDto>()
                                    {
                                       new RelatorioAcompanhamentoFechamentoComponenteDto()
