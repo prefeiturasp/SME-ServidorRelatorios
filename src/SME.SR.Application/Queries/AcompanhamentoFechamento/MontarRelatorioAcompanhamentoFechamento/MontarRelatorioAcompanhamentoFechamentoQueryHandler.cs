@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaCodigo, request.Turmas, request.Bimestres, request.Usuario);
 
-            if (request.Bimestres == null)
+            if (request.Bimestres == null || !request.Bimestres.Any())
             {
                 var bimestresFechamento = request.ConsolidadoFechamento.Select(f => f.Bimestre);
                 var bimestresConselho = request.ConsolidadoConselhosClasse.Select(f => f.Bimestre);
@@ -27,19 +27,27 @@ namespace SME.SR.Application
                 bimestres.AddRange(bimestresFechamento);
                 bimestres.AddRange(bimestresConselho);
 
-                request.Bimestres = bimestres.Distinct().OrderBy(b => b).ToArray();
+                bimestres = bimestres.Distinct().OrderBy(b => b).ToList();
+
+                if (bimestres.Contains(0)) 
+                {
+                    bimestres.RemoveAt(0);
+                    bimestres.Add(0);
+                }
+
+                request.Bimestres = bimestres.ToArray();
             }
 
             foreach (var turma in request.Turmas)
             {
-                var turmaNome = !string.IsNullOrEmpty(request.TurmaCodigo) ? turma.NomeRelatorio : "";
+                var turmaNome = string.IsNullOrEmpty(request.TurmaCodigo) ? turma.NomeRelatorio : "";
 
                 var turmaRelatorio = new RelatorioAcompanhamentoFechamentoTurmaDto(turmaNome);
 
                 foreach (var bimestre in request.Bimestres)
                 {
                     var nomeBimestre = request.Bimestres != null && request.Bimestres.Any() &&
-                                       request.Bimestres.Count() == 1 ? "" : $"{bimestre}º BIMESTRE";
+                                       request.Bimestres.Count() == 1 ? "" : (bimestre > 0 ? $"{bimestre}º BIMESTRE" : "FINAL");
 
                     var bimestreRelatorio = new RelatorioAcompanhamentoFechamentoBimestreDto(nomeBimestre);
 

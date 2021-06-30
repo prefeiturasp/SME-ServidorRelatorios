@@ -25,7 +25,7 @@ namespace SME.SR.Data
                                  P.tipo as tipoPendencia,
                                  pe.bimestre,
                                  t.turma_id as TurmaCodigo,
-                                 td.disciplina_id as ComponenteCurricularId
+                                 ftd.disciplina_id as ComponenteCurricularId
                             from pendencia_fechamento pf
                            inner join fechamento_turma_disciplina ftd on ftd.id = pf.fechamento_turma_disciplina_id
                            inner join fechamento_turma ft on ft.id = ftd.fechamento_turma_id

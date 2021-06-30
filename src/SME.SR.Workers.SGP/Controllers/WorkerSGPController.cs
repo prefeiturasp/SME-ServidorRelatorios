@@ -253,7 +253,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/acompanhamento-fechamento")]
-        [Action("relatorios/acompanhamento-fechamento", typeof(IRelatorioBoletimEscolarUseCase))]
+        [Action("relatorios/acompanhamento-fechamento", typeof(IRelatorioAcompanhamentoFechamentoUseCase))]
         public async Task<bool> AcompanhamentoFechamento([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoFechamentoUseCase relatorioUseCase)
         {
             await relatorioUseCase.Executar(request);
