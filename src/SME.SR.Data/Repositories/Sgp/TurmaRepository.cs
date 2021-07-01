@@ -97,7 +97,7 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo },  commandTimeout: 120);
+                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo }, commandTimeout: 120);
             }
         }
 
@@ -1094,6 +1094,22 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryAsync<Turma>(query, new { turmaCodigos }, commandTimeout: 120);
             }
+        }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorCodigos(string[] codigos)
+        {
+            var query = @"select t.id as Codigo
+                            , t.turma_id
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where t.turma_id = ANY(@codigos)";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<Turma>(query, new { codigos });
         }
     }
 }

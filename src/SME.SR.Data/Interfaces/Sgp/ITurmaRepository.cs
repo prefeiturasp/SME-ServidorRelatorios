@@ -15,6 +15,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<Turma>> ObterTurmasPorAno(int anoLetivo, string[] anosEscolares);
 
         Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids);
+        Task<IEnumerable<Turma>> ObterTurmasPorCodigos(string[] codigos);
 
         Task<string> ObterCicloAprendizagem(string turmaCodigo);
         Task<IEnumerable<AlunoSituacaoDto>> ObterDadosAlunosSituacao(string turmaCodigo);

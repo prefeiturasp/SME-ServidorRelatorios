@@ -17,7 +17,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoFechamentoPorUeDto();
             var lstComponentesCurriculares = request.ComponentesCurriculares.ToList();
 
-            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaCodigo, request.Turmas, request.Bimestres, request.Usuario);
+            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmasCodigo, request.Turmas, request.Bimestres, request.Usuario);
 
             if (request.Bimestres == null || !request.Bimestres.Any())
             {
@@ -30,7 +30,7 @@ namespace SME.SR.Application
 
                 bimestres = bimestres.Distinct().OrderBy(b => b).ToList();
 
-                if (bimestres.Contains(0)) 
+                if (bimestres.Contains(0))
                 {
                     bimestres.RemoveAt(0);
                     bimestres.Add(0);
@@ -41,7 +41,8 @@ namespace SME.SR.Application
 
             foreach (var turma in request.Turmas)
             {
-                var turmaNome = string.IsNullOrEmpty(request.TurmaCodigo) ? turma.NomeRelatorio : "";
+                var turmaNome = request.TurmasCodigo != null && request.TurmasCodigo.Any() &&
+                                request.TurmasCodigo.Count() == 1 ? "" : turma.NomeRelatorio;
 
                 var turmaRelatorio = new RelatorioAcompanhamentoFechamentoTurmaDto(turmaNome);
 
@@ -62,7 +63,7 @@ namespace SME.SR.Application
                         var pendencias = new List<string>();
 
                         if (request.ListarPendencias)
-                        { 
+                        {
                             var lstPendencias = request.Pendencias.Where(p => p.TurmaCodigo == turma.Codigo &&
                                                                               p.Bimestre == bimestre &&
                                                                               p.ComponenteCurricularId == fechamento.ComponenteCurricularCodigo);
@@ -86,13 +87,18 @@ namespace SME.SR.Application
             return await Task.FromResult(relatorio);
         }
 
-        private void MontarCabecalho(RelatorioAcompanhamentoFechamentoPorUeDto relatorio, Dre dre, Ue ue, string turmaCodigo, IEnumerable<Turma> turmas, int[] bimestres, Usuario usuario)
+        private void MontarCabecalho(RelatorioAcompanhamentoFechamentoPorUeDto relatorio, Dre dre, Ue ue, string[] turmasCodigo, IEnumerable<Turma> turmas, int[] bimestres, Usuario usuario)
         {
-            Turma turma = null;
+            string turma = "TODAS";
             string bimestre = "TODOS";
 
-            if (!string.IsNullOrEmpty(turmaCodigo))
-                turma = turmas.FirstOrDefault();
+            if (turmasCodigo != null && turmasCodigo.Any())
+            {
+                if (turmasCodigo.Count() == 1)
+                    turma = turmas.FirstOrDefault().NomeRelatorio;
+                else
+                    turma = string.Join(",", turmas.Select(t => t.NomeRelatorio));
+            }
 
             if (bimestres != null && bimestres.Any())
                 bimestre = string.Join("º,", bimestres);
@@ -101,7 +107,7 @@ namespace SME.SR.Application
             relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
             relatorio.DreNome = dre != null ? dre.Nome : "TODAS";
             relatorio.UeNome = ue != null ? ue.Nome : "TODAS";
-            relatorio.Turma = turma != null ? turma.NomeRelatorio : "TODAS";
+            relatorio.Turma = turma;
             relatorio.Usuario = usuario.Nome;
             relatorio.RF = usuario.CodigoRf;
         }
