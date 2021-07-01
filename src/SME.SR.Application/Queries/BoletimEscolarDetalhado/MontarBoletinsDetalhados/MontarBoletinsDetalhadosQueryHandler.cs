@@ -204,10 +204,10 @@ namespace SME.SR.Application
                     {
                         var notaFrequenciaComponente = notas?.Where(nf => nf.CodigoComponenteCurricular == componenteCurricular.Codigo);
 
-                        componenteCurricular.NotaBimestre1 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 1);
-                        componenteCurricular.NotaBimestre2 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 2);
-                        componenteCurricular.NotaBimestre3 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 3);
-                        componenteCurricular.NotaBimestre4 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 4);
+                        componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 1);
+                        componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 2);
+                        componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 3);
+                        componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 4);
 
                         componenteCurricular.NotaFinal = ObterNotaBimestreFinal(conselhoClasseBimestres, notaFrequenciaComponente);
                         if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
@@ -230,10 +230,10 @@ namespace SME.SR.Application
                         {
                             var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == componenteCurricular.Codigo) ?? null;
 
-                            componenteCurricular.NotaBimestre1 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notasComponente, 1);
-                            componenteCurricular.NotaBimestre2 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notasComponente, 2);
-                            componenteCurricular.NotaBimestre3 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notasComponente, 3);
-                            componenteCurricular.NotaBimestre4 = ObterNotaBimestre(ultimoBimestrePeriodoFechamento, notasComponente, 4);
+                            componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, ultimoBimestrePeriodoFechamento, notasComponente, 1);
+                            componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, ultimoBimestrePeriodoFechamento, notasComponente, 2);
+                            componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, ultimoBimestrePeriodoFechamento, notasComponente, 3);
+                            componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, ultimoBimestrePeriodoFechamento, notasComponente, 4);
 
                             componenteCurricular.NotaFinal = ObterNotaBimestreFinal(conselhoClasseBimestres, notasComponente);
                             if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
@@ -272,13 +272,13 @@ namespace SME.SR.Application
             }
         }
 
-        private string ObterNotaBimestre(int ultimoBimestrePeriodoFechamento, IEnumerable<NotasAlunoBimestre> notasComponente, int bimestre)
+        private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, int ultimoBimestrePeriodoFechamento, IEnumerable<NotasAlunoBimestre> notasComponente, int bimestre)
         {
-            if (bimestre > ultimoBimestrePeriodoFechamento)
-                return "";
+            var possuiConselho = VerificaPossuiConselho(conselhoClassBimestres, bimestre);
 
-            var nota = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar != null && nf.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
-            return !string.IsNullOrEmpty(nota) ? nota : "-";
+            var nota = !possuiConselho ? "" :
+                    notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar != null && nf.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+            return !string.IsNullOrEmpty(nota) ? nota : (bimestre > ultimoBimestrePeriodoFechamento && !possuiConselho) ? "" : "-";
         }
 
         private string ObterNotaBimestreFinal(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestre> notasComponente)
