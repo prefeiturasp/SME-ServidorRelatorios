@@ -112,10 +112,10 @@ namespace SME.SR.Application
 
                     strBimestres = strBimestres.OrderBy(b => b).ToList();
 
-                    bimestre = string.Join("º,", strBimestres);
+                    bimestre = string.Join(",", strBimestres);
                 }
                 else
-                    bimestre = string.Join("º,", bimestres);
+                    bimestre = string.Join("º,", bimestres.OrderBy(b => b));
             }
 
             relatorio.Bimestre = bimestre;
