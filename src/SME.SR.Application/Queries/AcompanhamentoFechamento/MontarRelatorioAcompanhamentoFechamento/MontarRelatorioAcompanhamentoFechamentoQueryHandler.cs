@@ -122,8 +122,8 @@ namespace SME.SR.Application
 
             relatorio.Bimestre = bimestre;
             relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            relatorio.DreNome = dre != null ? dre.Nome : "TODAS";
-            relatorio.UeNome = ue != null ? ue.Nome : "TODAS";
+            relatorio.DreNome = dre != null ? dre.Abreviacao : "TODAS";
+            relatorio.UeNome = ue != null ? ue.NomeRelatorio : "TODAS";
             relatorio.Turma = turma;
             relatorio.Usuario = usuario.Nome;
             relatorio.RF = usuario.CodigoRf;
