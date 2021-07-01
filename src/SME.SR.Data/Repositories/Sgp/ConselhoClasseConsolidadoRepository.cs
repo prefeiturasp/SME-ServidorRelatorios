@@ -27,14 +27,19 @@ namespace SME.SR.Data
                           where not c.excluido 
                             and t.turma_id = ANY(@turmasCodigo) ");
 
-            if (bimestres != null && bimestres.Any())
+            var possuiFiltroBimestre = bimestres != null && bimestres.Any();
+
+            if (possuiFiltroBimestre)
                 query.AppendLine(@"and c.bimestre = ANY(@bimestres)");
 
             if (situacaoConselhoClasse.HasValue)
-                query.AppendLine(@"and EXISTS(select 1 from consolidado_conselho_classe_aluno_turma c2
+            {
+                var condicaoBimestre = possuiFiltroBimestre ? @"and c2.bimestre = ANY(@bimestres) " : "";
+                query.AppendLine(@$"and EXISTS(select 1 from consolidado_conselho_classe_aluno_turma c2
                                                inner join turma t2 on c2.turma_id = t2.id
                                               where not c2.excluido and t2.turma_id = ANY(@turmasCodigo)
-                                                and c2.bimestre = ANY(@bimestres) and c2.status = @situacaoConselhoClasse)");
+                                                {condicaoBimestre} and c2.status = @situacaoConselhoClasse)");
+            }
 
             var parametros = new { turmasCodigo, bimestres, situacaoConselhoClasse };
 

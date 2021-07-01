@@ -27,14 +27,19 @@ namespace SME.SR.Data.Repositories.Sgp
                                                where not f.excluido 
                                                  and t.turma_id = ANY(@turmasCodigo) ");
 
-            if (bimestres != null && bimestres.Any())
+            var possuiFiltroBimestre = bimestres != null && bimestres.Any();
+
+            if (possuiFiltroBimestre)
                 query.AppendLine(@"and f.bimestre = ANY(@bimestres)");
 
             if (situacaoFechamento.HasValue)
-                query.AppendLine(@"and EXISTS(select 1 from consolidado_fechamento_componente_turma f2
+            {
+                var condicaoBimestre = possuiFiltroBimestre ? @"and f2.bimestre = ANY(@bimestres) " : "";
+                query.AppendLine(@$"and EXISTS(select 1 from consolidado_fechamento_componente_turma f2
                                               inner join turma t2 on f2.turma_id = t2.id
-                                              where t2.turma_id = ANY(@turmasCodigo) and f2.bimestre = ANY(@bimestres) 
+                                              where t2.turma_id = ANY(@turmasCodigo) {condicaoBimestre} 
                                                 and f2.status = @situacaoFechamento)");
+            }
 
             var parametros = new { turmasCodigo, bimestres, situacaoFechamento };
 
