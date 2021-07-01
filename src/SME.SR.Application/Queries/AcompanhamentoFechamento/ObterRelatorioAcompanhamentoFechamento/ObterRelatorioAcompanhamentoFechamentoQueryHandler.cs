@@ -40,6 +40,8 @@ namespace SME.SR.Application
 
             var componentesCurriculares = await ObterComponentesCurricularesPorCodigo(componentesCurricularesId);
 
+            var componentesOrdenados = await OrdenarComponentes(componentesCurriculares);
+
             var pendencias = Enumerable.Empty<PendenciaParaFechamentoConsolidadoDto>();
 
             if (request.ListarPendencias && componentesCurricularesId != null && componentesCurricularesId.Any())
@@ -47,12 +49,17 @@ namespace SME.SR.Application
                 pendencias = await ObterPendenciasFechamentosConsolidado(codigosTurma, bimestres, componentesCurricularesId);
             }
 
-            return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmaCodigo, turmas, componentesCurriculares, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
+            return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmaCodigo, turmas, componentesOrdenados, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
         }
 
-        private async Task<IEnumerable<DisciplinaDto>> ObterComponentesCurricularesPorCodigo(long[] componentesCurricularesId)
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> OrdenarComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares)
         {
-            return await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesCurricularesId));
+            return await mediator.Send(new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurriculares));
+        }
+
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorCodigo(long[] componentesCurricularesId)
+        {
+            return await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesId));
         }
 
         private async Task<IEnumerable<PendenciaParaFechamentoConsolidadoDto>> ObterPendenciasFechamentosConsolidado(string[] codigosTurma, int[] bimestres, long[] componentesCurricularesId)

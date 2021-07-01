@@ -15,6 +15,7 @@ namespace SME.SR.Application
         public async Task<RelatorioAcompanhamentoFechamentoPorUeDto> Handle(MontarRelatorioAcompanhamentoFechamentoQuery request, CancellationToken cancellationToken)
         {
             var relatorio = new RelatorioAcompanhamentoFechamentoPorUeDto();
+            var lstComponentesCurriculares = request.ComponentesCurriculares.ToList();
 
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaCodigo, request.Turmas, request.Bimestres, request.Usuario);
 
@@ -56,15 +57,15 @@ namespace SME.SR.Application
 
                     foreach (var fechamento in fechamentos)
                     {
-                        var componenteNome = request.ComponentesCurriculares.FirstOrDefault(cc => cc.CodigoComponenteCurricular == fechamento.ComponenteCurricularCodigo).Nome;
+                        var componenteNome = lstComponentesCurriculares.FirstOrDefault(cc => cc.CodDisciplina == fechamento.ComponenteCurricularCodigo).Disciplina;
                         var descricaoStatus = fechamento.Status.Name();
                         var pendencias = new List<string>();
 
                         if (request.ListarPendencias)
                         { 
                             var lstPendencias = request.Pendencias.Where(p => p.TurmaCodigo == turma.Codigo &&
-                                                                       p.Bimestre == bimestre &&
-                                                                       p.ComponenteCurricularId == fechamento.ComponenteCurricularCodigo);
+                                                                              p.Bimestre == bimestre &&
+                                                                              p.ComponenteCurricularId == fechamento.ComponenteCurricularCodigo);
 
                             pendencias = lstPendencias.Select(p => p.TipoPendencia.Name()).ToList();
                         }
@@ -73,6 +74,7 @@ namespace SME.SR.Application
                             new RelatorioAcompanhamentoFechamentoComponenteDto(componenteNome, descricaoStatus, pendencias));
                     }
 
+                    bimestreRelatorio.FechamentosComponente = bimestreRelatorio.FechamentosComponente.OrderBy(f => lstComponentesCurriculares.FindIndex(c => c.Disciplina == f.Componente)).ToList();
                     bimestreRelatorio.ConselhosClasse = MapearRetornoStatusAgrupado(conselhos.GroupBy(c => c.Status));
 
                     turmaRelatorio.Bimestres.Add(bimestreRelatorio);
