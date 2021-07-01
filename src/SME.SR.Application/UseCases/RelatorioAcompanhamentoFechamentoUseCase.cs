@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace SME.SR.Application
         {
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoQuery>();
             var relatorioDto = await mediator.Send(relatorioQuery);
+
+            var json = JsonConvert.SerializeObject(relatorioDto);
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoFechamento", relatorioDto, request.CodigoCorrelacao));
         }

@@ -29,7 +29,7 @@ namespace SME.SR.Application
             if (!string.IsNullOrEmpty(request.UeCodigo))
                 ue = await ObterUePorCodigo(request.UeCodigo);
 
-            var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year);
+            var turmas = await ObterTurmasRelatorio(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
             int[] bimestres = request.Bimestres?.ToArray();
 
@@ -49,7 +49,7 @@ namespace SME.SR.Application
                 pendencias = await ObterPendenciasFechamentosConsolidado(codigosTurma, bimestres, componentesCurricularesId);
             }
 
-            return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmaCodigo, turmas, componentesOrdenados, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
+            return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmasCodigo?.ToArray(), turmas, componentesOrdenados, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
         }
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> OrdenarComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares)
@@ -80,13 +80,13 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string turmaCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
+        private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
         {
             try
             {
-                return await mediator.Send(new ObterTurmasRelatorioBoletimQuery()
+                return await mediator.Send(new ObterTurmasRelatorioAcompanhamentoFechamentoQuery()
                 {
-                    CodigoTurma = turmaCodigo,
+                    CodigosTurma = turmasCodigo,
                     CodigoUe = ueCodigo,
                     Modalidade = modalidade,
                     AnoLetivo = anoLetivo,
