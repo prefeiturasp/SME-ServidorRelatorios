@@ -114,6 +114,8 @@ namespace SME.SR.Application
 
                     bimestre = string.Join(",", strBimestres);
                 }
+                else if (bimestres.Count() == 1)
+                    bimestre = $"{bimestres.FirstOrDefault()}º";
                 else
                     bimestre = string.Join("º,", bimestres.OrderBy(b => b));
             }
