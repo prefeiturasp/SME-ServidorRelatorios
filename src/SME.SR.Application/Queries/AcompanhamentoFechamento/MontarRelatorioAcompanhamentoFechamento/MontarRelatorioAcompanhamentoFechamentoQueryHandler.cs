@@ -49,8 +49,8 @@ namespace SME.SR.Application
 
                     var bimestreRelatorio = new RelatorioAcompanhamentoFechamentoBimestreDto(nomeBimestre);
 
-                    var fechamentos = request.ConsolidadoFechamento.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre);
-                    var conselhos = request.ConsolidadoConselhosClasse.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre);
+                    var fechamentos = request.ConsolidadoFechamento.Where(f => f.TurmaCodigo == turma.turma_id && f.Bimestre == bimestre);
+                    var conselhos = request.ConsolidadoConselhosClasse.Where(f => f.TurmaCodigo == turma.turma_id && f.Bimestre == bimestre);
 
                     foreach (var fechamento in fechamentos)
                     {
