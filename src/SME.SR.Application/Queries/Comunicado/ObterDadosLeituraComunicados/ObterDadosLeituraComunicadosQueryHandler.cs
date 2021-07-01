@@ -5,7 +5,6 @@ using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -70,7 +69,7 @@ namespace SME.SR.Application
                                     foreach (var estudanteComunicadoDireto in estudantesComunicadoDireto)
                                     {
                                         var estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == estudanteComunicadoDireto.ToString());
-                                        if(estudante != null)
+                                        if (estudante != null)
                                             comunicadosDireto.Add(estudante);
                                     }
                                     estudantes = comunicadosDireto;
@@ -82,11 +81,11 @@ namespace SME.SR.Application
 
                                 foreach (var responsavel in responsaveis)
                                 {
-                                    if(estudantes.Any())
+                                    if (estudantes.Any())
                                     {
                                         LeituraComunicadoEstudanteDto estudante = new LeituraComunicadoEstudanteDto();
 
-                                        if(estudante.Estudante != "")
+                                        if (estudante.Estudante != "")
                                         {
                                             estudante.NumeroChamada = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NumeroAlunoChamada;
                                             estudante.CodigoEstudante = responsavel.AlunoId;
@@ -100,7 +99,7 @@ namespace SME.SR.Application
                                             estudante.Situacao = situacao == null && instalado == null ? "Não instalado" : (situacao == "True" ? "Visualizado" : "Não Visualizado");
 
                                             comunicadoTurma.LeituraComunicadoEstudantes.Add(estudante);
-                                        }                                        
+                                        }
                                     }
                                 }
                             }
@@ -115,18 +114,12 @@ namespace SME.SR.Application
                                 comunicadoTurma.NaoVisualizado = comunicadoTurmaApp.NaoVisualizado;
                                 comunicadoTurma.Visualizado = comunicadoTurmaApp.Visualizado;
                             }
-
                             comunicado.LeituraComunicadoTurma.Add(comunicadoTurma);
                         }
                     }
                 }
             }
-
-            // Carrega comunicados Turma -> comunicados.Select(a => a.id)
-
             return comunicados.OrderByDescending(c => c.DataEnvio);
         }
-
-       
     }
 }

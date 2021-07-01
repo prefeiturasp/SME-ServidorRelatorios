@@ -21,53 +21,48 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<LeituraComunicadoDto>> ObterComunicadosPorFiltro(FiltroRelatorioLeituraComunicadosDto filtro)
         {
-            var query = @"select comunicado.id as ComunicadoId, comunicado.titulo as Comunicado, comunicado.data_envio as DataEnvio, comunicado.data_expiracao as DataExpiracao
-                          from comunicado ";
+            var query = @"select c.id as ComunicadoId, 
+                                 c.titulo as Comunicado, 
+                                 c.data_envio as DataEnvio, 
+                                 c.data_expiracao as DataExpiracao
+                            from comunicado c ";
 
-            if (filtro.Grupos != null && filtro.Grupos.Any())
-            {
-                query += $@" INNER JOIN comunidado_grupo cg ON comunicado.id = cg.comunicado_id ";
-            }
+            if (filtro.Modalidades != null && filtro.Modalidades.Any())            
+                query += $@" inner join comunicado_modalidade cm on c.id = cm.comunicado_id ";            
 
-            if (!string.IsNullOrEmpty(filtro.Turma))
-            {
-                query += $@" INNER JOIN comunicado_turma ct ON comunicado.id = ct.comunicado_id ";
-            }
+            if (!string.IsNullOrEmpty(filtro.Turma))            
+                query += $@" inner join comunicado_turma ct ON c.id = ct.comunicado_id ";            
 
-            query += " where comunicado.ano_letivo = @AnoLetivo ";
+            query += " where c.ano_letivo = @AnoLetivo ";
 
-            if (filtro.Grupos != null && filtro.Grupos.Any())
-            {
-                query += $@" AND cg.grupo_comunicado_id = ANY(@Grupos) ";
-            }
+            if (filtro.Modalidades != null && filtro.Modalidades.Any())            
+                query += $@" and cm.modalidade = ANY(@Modalidades) ";            
 
             if (!string.IsNullOrEmpty(filtro.NotificacaoId))
-                query += " and comunicado.id = @NotificacaoId ";
+                query += " and c.id = @NotificacaoId ";
 
             if (!string.IsNullOrEmpty(filtro.CodigoDre) && filtro.CodigoDre != "-99")
-                query += " and codigo_dre = @CodigoDre ";
+                query += " and c.codigo_dre = @CodigoDre ";
 
             if (filtro.CodigoDre == "-99")
-                query += " and codigo_dre is null ";
+                query += " and c.codigo_dre is null ";
 
             if (!string.IsNullOrEmpty(filtro.CodigoUe) && filtro.CodigoUe != "-99")
-                query += " and codigo_ue = @CodigoUe ";
+                query += " and c.codigo_ue = @CodigoUe ";
 
             if(filtro.CodigoUe == "-99")
                 query += " and codigo_ue is null ";
 
             if (filtro.Semestre > 0)
-                query += " and semestre = @Semestre ";
+                query += " and c.semestre = @Semestre ";
 
             if (!filtro.ListarComunicadosExpirados)
-                query += " and data_expiracao >= @DataExpiracao ";
+                query += " and c.data_expiracao >= @DataExpiracao ";
 
-            query += " and date(data_envio) between @DataInicio and @DataFim and not comunicado.excluido ";
+            query += " and date(c.data_envio) between @DataInicio and @DataFim and not c.excluido ";
 
-            if (!string.IsNullOrEmpty(filtro.Turma))
-            {
-                query += " and ct.turma_codigo = @Turma ";
-            }
+            if (!string.IsNullOrEmpty(filtro.Turma))            
+                query += " and ct.turma_codigo = @Turma ";            
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<LeituraComunicadoDto>(query.ToString(), new
@@ -77,7 +72,7 @@ namespace SME.SR.Data
                 filtro.CodigoDre,
                 filtro.CodigoUe,
                 filtro.Semestre,
-                filtro.Grupos,
+                filtro.Modalidades,
                 filtro.Turma,
                 DataInicio = filtro.DataInicio.GetValueOrDefault().Date,
                 DataFim = filtro.DataFim.GetValueOrDefault().Date,
@@ -157,31 +152,21 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<LeituraComunicadoEstudanteDto>> ObterComunicadoTurmasEstudanteAppPorComunicadosIds(long[] comunicados)
         {
-            //    var query = @"select 
-            //	usuario_id as UsuarioId,
-            //	usuario_cpf as UsuarioCpf, 
-            //	codigo_eol_aluno::varchar as CodigoEstudante, 
-            //	notificacao_id as ComunicadoId,
-            //	mensagemvisualizada as Situacao 
-            //from usuario_notificacao_leitura unl
-            //inner join notificacao n on unl.notificacao_id = n.id  
-            //where unl.notificacao_id = ANY(@comunicados);";
-
             var query = @"select distinct 
-        	u.id as UsuarioId, 
-        	u.cpf as UsuarioCpf,
-        	codigo_eol_aluno::varchar as CodigoEstudante, 
-        	notificacao_id as ComunicadoId,
-        	case when ud.codigo_dispositivo is not null then 1 else 0 end as Instalado,
-        	mensagemvisualizada as Situacao 
-        from usuario u 
-        inner join usuario_notificacao_leitura unl on u.id = unl.usuario_id 
-        inner join notificacao n on unl.notificacao_id = n.id  
-        left join usuario_dispositivo ud on u.id = ud.usuario_id 
-        where not u.excluido and n.id = ANY(@comunicados);";
+        	                     u.id as UsuarioId, 
+        	                     u.cpf as UsuarioCpf,
+        	                     codigo_eol_aluno::varchar as CodigoEstudante, 
+        	                     notificacao_id as ComunicadoId,
+        	                     case when ud.codigo_dispositivo is not null then 1 else 0 end as Instalado,
+        	                     mensagemvisualizada as Situacao 
+                            from usuario u 
+                           inner join usuario_notificacao_leitura unl on u.id = unl.usuario_id 
+                           inner join notificacao n on unl.notificacao_id = n.id  
+                            left join usuario_dispositivo ud on u.id = ud.usuario_id 
+                           where not u.excluido and n.id = ANY(@comunicados);";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringAE);
-            return await conexao.QueryAsync<LeituraComunicadoEstudanteDto>(query.ToString(), new { comunicados = comunicados });
+            return await conexao.QueryAsync<LeituraComunicadoEstudanteDto>(query.ToString(), new { comunicados });
         }
 
         public async Task<IEnumerable<LeituraComunicadoDto>> ObterComunicadoDadosSMEPorComunicadosIds(IEnumerable<long> comunicados)
@@ -195,18 +180,18 @@ namespace SME.SR.Data
                 left join (select distinct dre_codigo, dre_nome from dashboard_adesao) da on da.dre_codigo = cn.dre_codigo
                 left join 
                 (
-	                select unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.grupo,',')) modalidade, nt.codigo_eol_turma, count(distinct usuario_cpf) leram
+	                select unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.modalidades,',')) modalidade, nt.codigo_eol_turma, count(distinct usuario_cpf) leram
 	                from usuario_notificacao_leitura unl 
 	                left join notificacao n on n.id = unl.notificacao_id
 	                left join notificacao_turma nt on nt.notificacao_id = unl.notificacao_id 
-	                group by unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.grupo,',')), nt.codigo_eol_turma 
+	                group by unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.modalidades,',')), nt.codigo_eol_turma 
                 ) ul on ul.notificacao_id = cn.notificacao_id and ul.dre_codigoeol::varchar = cn.dre_codigo and ul.ue_codigoeol = cn.ue_codigo and ul.modalidade = cn.modalidade_codigo::text and ul.codigo_eol_turma = cn.turma_codigo 
                 where
 	                cn.notificacao_id = ANY(@comunicados) and
 	                cn.dre_codigo = '' and cn.ue_codigo = '';";
-
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringAE);
-            return await conexao.QueryAsync<LeituraComunicadoDto>(query.ToString(), new { comunicados = comunicados.ToArray() });
+            
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringAE);
+                return await conexao.QueryAsync<LeituraComunicadoDto>(query.ToString(), new { comunicados = comunicados.ToArray() });                      
         }
 
         public async Task<string[]> ObterUsuariosApp()
