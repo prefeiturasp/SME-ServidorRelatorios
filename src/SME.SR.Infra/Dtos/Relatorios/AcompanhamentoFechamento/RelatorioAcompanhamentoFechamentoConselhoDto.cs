@@ -2,7 +2,8 @@
 {
     public class RelatorioAcompanhamentoFechamentoConselhoDto
     {
-        public string Status { get; set; }
+        public int Status { get; set; }
+        public string Descricao { get; set; }
         public int Quantidade { get; set; }
     }
 }

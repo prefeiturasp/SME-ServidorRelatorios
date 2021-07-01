@@ -3,6 +3,7 @@ using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,23 +18,30 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasBimestreAsync(long[] turmasId, int bimestre, int situacaoConselhoClasse)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasBimestreAsync(string[] turmasCodigo, int[] bimestres, int? situacaoConselhoClasse)
         {
-            var query = new StringBuilder(@" select id, dt_atualizacao DataAtualizacao, status, aluno_codigo AlunoCodigo, 
-                                                    parecer_conclusivo_id ParecerConclusivoId, turma_id TurmaId, bimestre
-                            from consolidado_conselho_classe_aluno_turma 
-                          where not excluido 
-                            and turma_id = ANY(@turmasId) ");
+            var query = new StringBuilder(@" select c.id, c.dt_atualizacao DataAtualizacao, c.status, c.aluno_codigo AlunoCodigo, 
+                                                    c.parecer_conclusivo_id ParecerConclusivoId, t.turma_id TurmaCodigo, c.bimestre
+                            from consolidado_conselho_classe_aluno_turma c
+                            inner join turma t on c.turma_id = t.id
+                          where not c.excluido 
+                            and t.turma_id = ANY(@turmasCodigo) ");
 
-            if (bimestre != -99)
-                query.AppendLine(@"and bimestre = @bimestre");
+            var possuiFiltroBimestre = bimestres != null && bimestres.Any();
 
-            if (situacaoConselhoClasse != -99)
-                query.AppendLine(@"and EXISTS(select 1 from consolidado_conselho_classe_aluno_turma
-                                              where not excluido and turma_id = @turmaId 
-                                                and bimestre = @bimestre and status = @situacaoConselhoClasse)");
+            if (possuiFiltroBimestre)
+                query.AppendLine(@"and c.bimestre = ANY(@bimestres)");
 
-            var parametros = new { turmasId, bimestre, situacaoConselhoClasse };
+            if (situacaoConselhoClasse.HasValue)
+            {
+                var condicaoBimestre = possuiFiltroBimestre ? @"and c2.bimestre = ANY(@bimestres) " : "";
+                query.AppendLine(@$"and EXISTS(select 1 from consolidado_conselho_classe_aluno_turma c2
+                                               inner join turma t2 on c2.turma_id = t2.id
+                                              where not c2.excluido and t2.turma_id = ANY(@turmasCodigo)
+                                                {condicaoBimestre} and c2.status = @situacaoConselhoClasse)");
+            }
+
+            var parametros = new { turmasCodigo, bimestres, situacaoConselhoClasse };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);

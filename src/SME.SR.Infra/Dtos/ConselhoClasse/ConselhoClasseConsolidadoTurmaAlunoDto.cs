@@ -12,7 +12,7 @@ namespace SME.SR.Infra
 
         public long? ParecerConclusivoId { get; set; }
 
-        public long TurmaId { get; set; }
+        public string TurmaCodigo { get; set; }
 
         public int Bimestre { get; set; }
     }
