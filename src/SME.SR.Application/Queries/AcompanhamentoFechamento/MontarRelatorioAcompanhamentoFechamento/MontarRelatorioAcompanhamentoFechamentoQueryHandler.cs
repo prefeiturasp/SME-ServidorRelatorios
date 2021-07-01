@@ -28,16 +28,12 @@ namespace SME.SR.Application
                 bimestres.AddRange(bimestresFechamento);
                 bimestres.AddRange(bimestresConselho);
 
-                bimestres = bimestres.Distinct().OrderBy(b => b).ToList();
-
-                if (bimestres.Contains(0))
-                {
-                    bimestres.RemoveAt(0);
-                    bimestres.Add(0);
-                }
+                bimestres = bimestres.Distinct().OrderBy(b => b == 0).ThenBy(b => b).ToList();
 
                 request.Bimestres = bimestres.ToArray();
             }
+            else
+                request.Bimestres = request.Bimestres.OrderBy(b => b == 0).ThenBy(b => b).ToArray();
 
             foreach (var turma in request.Turmas)
             {
@@ -101,7 +97,26 @@ namespace SME.SR.Application
             }
 
             if (bimestres != null && bimestres.Any())
-                bimestre = string.Join("º,", bimestres);
+            {
+                if (bimestres.Contains(0))
+                {
+                    var strBimestres = bimestres.Select(x => x.ToString()).ToList();
+
+                    for (int i = 0; i < strBimestres.Count(); i++)
+                    {
+                        if (strBimestres[i].Equals("0"))
+                            strBimestres[i] = "FINAL";
+                        else
+                            strBimestres[i] = $"{strBimestres[i]}º";
+                    }
+
+                    strBimestres = strBimestres.OrderBy(b => b).ToList();
+
+                    bimestre = string.Join("º,", strBimestres);
+                }
+                else
+                    bimestre = string.Join("º,", bimestres);
+            }
 
             relatorio.Bimestre = bimestre;
             relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
