@@ -7278,8 +7278,75 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public IActionResult RelatorioDevolutivas()
         {
             var turmas = new List<TurmasDevolutivasDto>();
+            var devolutiva = new List<DevolutivaRelatorioDto>();
             var devolutivas1 = new List<DevolutivaRelatorioDto>();
             var devolutivas2 = new List<DevolutivaRelatorioDto>();
+
+            var DiasIntervalos = new List<String>();
+            for (var j = 0; j < 19; j++)
+            {
+                DiasIntervalos.Add(DateTime.Now.AddDays(j - 1).ToString("dd/MM"));
+            }
+
+            for (var t = 0; t < 2; t++)
+            {
+                var DiasIntervalos0 = new List<String>();
+                for (var j = 0; j < 5; j++)
+                {
+                    DiasIntervalos.Add(DateTime.Now.AddDays(j - 1).ToString("dd/MM"));
+                }
+
+                DevolutivaRelatorioDto valoresDevolutivas = new DevolutivaRelatorioDto()
+                {
+                    IntervaloDatas = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+                    DiasIntervalo = String.Join(", ", DiasIntervalos0.ToArray()),
+                    DataRegistro = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy"),
+                    ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
+                    Descricao = @"Olá, seguem orientações para apontamento de ausência e frequências das crianças. Para o ano de 2021, os alunos podem ter dois tipos de
+frequência: Alunos de atendimento presencial: suas presenças e/ou faltas devem ser registradas no NOVOSGP de acordo com o seu
+comparecimento nas aulas presenciais. Alunos de atendimento remoto: suas presenças e/ou faltas devem ser registradas no NOVOSGP em
+duas etapas: 1o passo – No NOVOSGP registra-se falta, pois o aluno não está tento atividades presenciais na escola. 2o passo - Quando o
+aluno entregar as atividades remotas, sejam elas efetuadas no Google Classroom e/ou em atividades impressas, deve-se registrar no NOVO
+SGP a justificativa de ausência (em campo próprio a ser definido), como de acordo com a quantidade de aulas que a atividade proposta
+representa. Para ler o documento completo SGP: Perguntas e respostas, acesse o mural digital da unidade. https://padlet.
+com/cemeicapaoped/r8mm0p0mhh06tdjc"
+                };
+                devolutiva.Add(valoresDevolutivas);
+
+                var DiasIntervalosFirst = new List<String>();
+                for (var j = 0; j < 19; j++)
+                {
+                    DiasIntervalosFirst.Add(DateTime.Now.AddDays(j - 1).ToString("dd/MM"));
+                }
+
+                DevolutivaRelatorioDto valoresDevolutivasFirst = new DevolutivaRelatorioDto()
+                {
+                    IntervaloDatas = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+                    DiasIntervalo = String.Join(", ", DiasIntervalosFirst.ToArray()),
+                    DataRegistro = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy"),
+                    ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
+                    Descricao = @"Estamos iniciando um ano com tantas incertezas e agora temos mais este espaço para descobrir e deixar nossas marcas. É difícil definir
+como se fazum diário de bordo, vocês sabem que não gosto de dar modelos. Abeleza do registro está nas diversas possibilidades de escrita.
+Oque quero propor para este ano, é que vocês possam ousar. Precisamos enxergar os registros para além da burocracia. E como é possível
+fazer isso, Mari? Agente não tem tempo. . . Ainternet é ruim, o computador quebrou. . . São tantos obstáculos, ufa! Calma. Obásico é isso:
+Observação - Reflexão - Ação Não adianta sair preenchendo campos, se você não se programar para voltar planejamentos, repensar as
+vivências e colocá-las em prática de novo. Um exercício muito bom é pensar: Como posso fazer as propostas da semana passada, mas de
+uma forma diferente? As crianças precisam desenhar sempre sentadas em suas cadeiras? Oformato do papel precisa ser sempre um A4
+retangular? E se eu entregar um sulfite cortado em círculo. . . Qual a reação das crianças? Oespaço que planejei está comunicando o que
+para as crianças? E se na hora da história eu borrifar uma essência perfumada na sala pra marcar a 'Hora da história'?! E minhas rodas de
+conversa ? Eu tenho feito rodas ou as crianças permanecem na cadeira e a roda só acontece no 'semanário' ? Eu escrevi na minha carta de
+intenções que vou ouvir as crianças. . .Mas em que momento tenho feito isso ? E o que eu vou fazer com o que ouvi das crianças ? Essas são
+algumas possibilidades para auxiliá - los nesse momento.Também sugeri o quadro de habilidades da BNCC,
+                que não quero que enxerguem
+como um currículo,
+                é apenas uma base.Uma ideia para imprimir marcas de intencionalidade ao planejamento.Vou deixar este quadro para
+consulta.http://basenacionalcomum. mec. gov. br/abase/#infantil/os-objetivos-de-aprendizagem-e-desenvolvimento-para-a-educacao-infantil
+Trago para cá também, uma interpretação marcante da Fernanda Montenegro, recitando Antonio Cícero.Pois é comum eu ouvir: Vou escrever
+tudo isso e no final fica tudo guardado(Guardado. . .Sei rsrsrs). Sim. . .vamos escrever para guardar.https://www. youtube. com/watch?v=G1ZpEjMqfLs"
+                };
+
+                devolutiva.Add(valoresDevolutivasFirst);
+            }
 
             for (var i = 0; i < 3; i++)
             {
@@ -7318,6 +7385,19 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 };
                 devolutivas2.Add(valoresDevolutivas2);
             }
+
+            turmas.Add(new TurmasDevolutivasDto() {
+                NomeTurma =  "1 A",
+                Bimestres = new List<BimestresDevolutivasDto>()
+                    {
+                        new BimestresDevolutivasDto()
+                        {
+                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            Devolutivas = devolutiva
+                        },
+
+                    }
+            });
 
             for (var i = 0; i < 1; i++)
             {
