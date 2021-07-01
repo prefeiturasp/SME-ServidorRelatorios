@@ -1098,8 +1098,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<Turma>> ObterTurmasPorCodigos(string[] codigos)
         {
-            var query = @"select t.id as Codigo
-                            , t.turma_id
+            var query = @"select t.turma_id as Codigo
                             , t.nome
                             , t.modalidade_codigo  ModalidadeCodigo
                             , t.semestre
