@@ -117,7 +117,7 @@ namespace SME.SR.Application
                 else if (bimestres.Count() == 1)
                     bimestre = $"{bimestres.FirstOrDefault()}º";
                 else
-                    bimestre = string.Join("º,", bimestres.OrderBy(b => b));
+                    bimestre = string.Join(", ", bimestres.Select(b => $"{b}º").OrderBy(b => b));
             }
 
             relatorio.Bimestre = bimestre;
