@@ -23,6 +23,12 @@ namespace SME.SR.Application
             Dre dre = null;
             Ue ue = null;
 
+            if (request.SituacaoConselhoClasse != null && (int)request.SituacaoConselhoClasse == -99)
+                request.SituacaoConselhoClasse = null;
+
+            if (request.SituacaoFechamento != null && (int)request.SituacaoFechamento == -99)
+                request.SituacaoFechamento = null;
+
             if (!string.IsNullOrEmpty(request.DreCodigo))
                 dre = await ObterDrePorCodigo(request.DreCodigo);
 
