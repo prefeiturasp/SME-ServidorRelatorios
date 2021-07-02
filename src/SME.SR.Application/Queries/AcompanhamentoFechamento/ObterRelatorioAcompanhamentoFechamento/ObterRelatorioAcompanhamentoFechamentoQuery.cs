@@ -41,7 +41,7 @@ namespace SME.SR.Application
         public bool ListarPendencias { get; set; }
         public Usuario Usuario { get; set; }
 
-        public string TodosParaNull(string filtro)
+        private string TodosParaNull(string filtro)
         {
 
             if (filtro == "-99")
@@ -50,7 +50,7 @@ namespace SME.SR.Application
         }
 
 
-        public List<int> TodosParaNullBimestres(List<int> filtro)
+        private List<int> TodosParaNullBimestres(List<int> filtro)
         {
 
             if (filtro != null && (filtro.Contains(-99)))
@@ -58,7 +58,7 @@ namespace SME.SR.Application
             return filtro;
         }
 
-        public List<string> TodosParaNullTurmas(List<string> filtro)
+        private List<string> TodosParaNullTurmas(List<string> filtro)
         {
             if (filtro != null && (filtro.Contains("-99")))
                 return null;
