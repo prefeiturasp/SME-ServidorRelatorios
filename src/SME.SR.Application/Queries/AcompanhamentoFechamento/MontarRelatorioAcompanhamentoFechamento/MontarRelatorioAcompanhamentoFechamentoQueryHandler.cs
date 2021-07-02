@@ -115,13 +115,13 @@ namespace SME.SR.Application
                     bimestre = string.Join(",", strBimestres);
                 }
                 else
-                    bimestre = string.Join("º,", bimestres.OrderBy(b => b));
+                    bimestre = string.Join(", ", bimestres.Select(b => $"{b}º").OrderBy(b => b));
             }
 
             relatorio.Bimestre = bimestre;
             relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            relatorio.DreNome = dre != null ? dre.Nome : "TODAS";
-            relatorio.UeNome = ue != null ? ue.Nome : "TODAS";
+            relatorio.DreNome = dre != null ? dre.Abreviacao : "TODAS";
+            relatorio.UeNome = ue != null ? ue.NomeRelatorio : "TODAS";
             relatorio.Turma = turma;
             relatorio.Usuario = usuario.Nome;
             relatorio.RF = usuario.CodigoRf;
