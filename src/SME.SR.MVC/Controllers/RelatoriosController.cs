@@ -7625,8 +7625,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     NullValueHandling = NullValueHandling.Ignore
                 });
 
-               var model = await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
-                return View("RelatorioAcompanhamentoFechamento", model);
+                //var model = await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
+                // return View("RelatorioAcompanhamentoFechamento", model);
+                return default;
             }
             catch (Exception ex)
             {

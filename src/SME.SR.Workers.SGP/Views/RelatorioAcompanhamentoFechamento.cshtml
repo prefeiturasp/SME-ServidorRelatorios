@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 47;
+    int contadorMaximoLinhasPorPagina = 54;
     bool quebrou = false;
 
     string informacoesQuebra()
@@ -74,10 +74,10 @@
 
     }
 
-    string MontarTituloPrincipal(string turmaDescricao)
+    string MontarTitulo(string descricao)
     {
         <tr>
-            <td colspan="2" class="fundo-cinza">@turmaDescricao @contadorQuebrarPagina</td>
+            <td colspan="2" class="fundo-cinza">@descricao @contadorQuebrarPagina</td>
         </tr>
 
         return "";
@@ -89,18 +89,15 @@
             <td class="fundo-cinza">COMPONENTES</td>
             <td class="fundo-cinza">
                 FECHAMENTO <br />
-                <span style="font-size:12px">SITUAÇÃO POR COMPONENTE CURRICULAR @contadorQuebrarPagina</span>
+                <span style="font-size:10px">SITUAÇÃO POR COMPONENTE CURRICULAR @contadorQuebrarPagina</span>
             </td>
         </tr>
 
         return "";
     }
 
-    void MontarComponentesFechamento(SME.SR.Infra.RelatorioAcompanhamentoFechamentoBimestreDto bimestres, string turmaDescricao, int contadorBimestres)
+    void MontarComponentesFechamento(SME.SR.Infra.RelatorioAcompanhamentoFechamentoBimestreDto bimestres, string turmaDescricao, int contadorBimestres, int contadorTurmas, bool temBimestre, bool temTurmaDescricao, string bimestreValor)
     {
-        var bimestre = bimestres.Bimestre;
-        bool temBimestre = !String.IsNullOrEmpty(bimestre);
-        bool temTurmaDescricao = !String.IsNullOrEmpty(turmaDescricao);
         int numeroLinhas = 3;
 
         if (temTurmaDescricao)
@@ -115,6 +112,14 @@
 
         var quebraInicial = VerificaQuebra(numeroLinhas);
 
+        if (contadorBimestres != 0 && !quebraInicial && temBimestre)
+        {
+            @Html.Raw(EspacoEmBranco());
+
+            contadorQuebrarPagina++;
+            numeroLinhas++;
+        }
+
         if (quebraInicial)
         {
             informacoesQuebra();
@@ -127,14 +132,14 @@
 
                 @if (contadorBimestres == 0 && temTurmaDescricao || quebrou && temTurmaDescricao)
                 {
-                    @Html.Raw(MontarTituloPrincipal(@turmaDescricao))
+                    @Html.Raw(MontarTitulo(@turmaDescricao))
 
                     contadorQuebrarPagina++;
                 }
 
                 @if (temBimestre)
                 {
-                    @Html.Raw(MontarTituloPrincipal(bimestre))
+                    @Html.Raw(MontarTitulo(bimestreValor))
 
                     contadorQuebrarPagina++;
                 }
@@ -162,12 +167,12 @@
 
                         if (temTurmaDescricao)
                         {
-                            @Html.Raw(MontarTituloPrincipal(@turmaDescricao))
+                            @Html.Raw(MontarTitulo(@turmaDescricao))
                         }
 
                         if (temBimestre)
                         {
-                            @Html.Raw(MontarTituloPrincipal(bimestre))
+                            @Html.Raw(MontarTitulo(bimestreValor))
                         }
 
                         @Html.Raw(MontarTituloComponentesFechamento())
@@ -203,12 +208,12 @@
 
                             if (temTurmaDescricao)
                             {
-                                @Html.Raw(MontarTituloPrincipal(@turmaDescricao))
+                                @Html.Raw(MontarTitulo(@turmaDescricao))
                             }
 
                             if (temBimestre)
                             {
-                                @Html.Raw(MontarTituloPrincipal(bimestre))
+                                @Html.Raw(MontarTitulo(bimestreValor))
                             }
 
                             @Html.Raw(MontarTituloComponentesFechamento())
@@ -225,7 +230,7 @@
         </table>
     }
 
-    void MontarConselhoClasse(SME.SR.Infra.RelatorioAcompanhamentoFechamentoBimestreDto turmas, string turmaDescricao, int contadorBimestres)
+    void MontarConselhoClasse(SME.SR.Infra.RelatorioAcompanhamentoFechamentoBimestreDto turmas, string turmaDescricao, int contadorBimestres, bool temBimestre, bool temTurmaDescricao, string bimestreValor)
     {
         var classe = quebrou ? "" : "sem-border-top";
 
@@ -235,7 +240,18 @@
             informacoesQuebra();
             MontarCabecalho();
             @Html.Raw("<table class='tabela-cabecalho'>");
-            @Html.Raw(MontarTituloPrincipal(@turmaDescricao))
+
+            if (temTurmaDescricao)
+            {
+                @Html.Raw(MontarTitulo(@turmaDescricao))
+            }
+
+            @if (temBimestre)
+            {
+                @Html.Raw(MontarTitulo(bimestreValor))
+
+                contadorQuebrarPagina++;
+            }
         }
 
         <table class="tabela-cabecalho">
@@ -243,7 +259,7 @@
                 <tr>
                     <td colspan="3" class="fundo-cinza @classe">
                         CONSELHO DE CLASSE <br />
-                        <span style="font-size:12px">SITUAÇÃO POR TURMA @contadorQuebrarPagina</span>
+                        <span style="font-size: 10px">SITUAÇÃO POR TURMA @contadorQuebrarPagina</span>
                     </td>
                 </tr>
 
@@ -252,7 +268,7 @@
                 <tr>
                     @foreach (var conselhosClasse in turmas.ConselhosClasse)
                     {
-                        <td >@conselhosClasse.Status @contadorQuebrarPagina</td>
+                        <td>@conselhosClasse.Descricao @contadorQuebrarPagina</td>
                     }
                 </tr>
 
@@ -411,16 +427,14 @@
                 int contadorBimestres = 0;
                 foreach (var bimestres in turmas.Bimestres)
                 {
-                    MontarComponentesFechamento(bimestres, turmas.TurmaDescricao, contadorBimestres);
+                    var turmaDescricao = turmas.TurmaDescricao;
+                    var bimestreValor = bimestres.Bimestre;
+                    bool temBimestre = !String.IsNullOrEmpty(bimestreValor);
+                    bool temTurmaDescricao = !String.IsNullOrEmpty(turmaDescricao);
 
-                    MontarConselhoClasse(bimestres, turmas.TurmaDescricao, contadorBimestres);
+                    MontarComponentesFechamento(bimestres, turmaDescricao, contadorBimestres, contadorTurmas, temBimestre, temTurmaDescricao, bimestreValor);
 
-                    if (contadorTurmas < Model.Turmas.Count - 1 && contadorQuebrarPagina + 3 < contadorMaximoLinhasPorPagina && !String.IsNullOrEmpty(bimestres.Bimestre))
-                    {
-                        @Html.Raw(EspacoEmBranco());
-
-                        contadorQuebrarPagina++;
-                    }
+                    MontarConselhoClasse(bimestres, turmaDescricao, contadorBimestres, temBimestre, temTurmaDescricao, bimestreValor);
 
                     contadorBimestres++;
                 }
