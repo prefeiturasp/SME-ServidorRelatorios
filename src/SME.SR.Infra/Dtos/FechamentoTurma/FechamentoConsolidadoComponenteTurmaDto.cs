@@ -8,6 +8,8 @@ namespace SME.SR.Infra
 
         public SituacaoFechamento Status { get; set; }
 
+        public SituacaoFechamento StatusRelatorio { get => ObterSituacaoFechamento(); }
+
         public long ComponenteCurricularCodigo { get; set; }
 
         public string ProfessorRf { get; set; }
@@ -17,5 +19,13 @@ namespace SME.SR.Infra
         public string TurmaCodigo { get; set; }
 
         public int Bimestre { get; set; }
+
+        private SituacaoFechamento ObterSituacaoFechamento()
+        {
+            if (StatusRelatorio != Infra.SituacaoFechamento.EmProcessamento)
+                return Status;
+
+            return Infra.SituacaoFechamento.NaoIniciado;
+        }
     }
 }

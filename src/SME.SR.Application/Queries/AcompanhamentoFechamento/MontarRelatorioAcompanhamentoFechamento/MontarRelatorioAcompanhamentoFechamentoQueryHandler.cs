@@ -55,7 +55,7 @@ namespace SME.SR.Application
                     foreach (var fechamento in fechamentos)
                     {
                         var componenteNome = lstComponentesCurriculares.FirstOrDefault(cc => cc.CodDisciplina == fechamento.ComponenteCurricularCodigo).Disciplina;
-                        var descricaoStatus = fechamento.Status.Name();
+                        var descricaoStatus = fechamento.StatusRelatorio.Name();
                         var pendencias = new List<string>();
 
                         if (request.ListarPendencias)
