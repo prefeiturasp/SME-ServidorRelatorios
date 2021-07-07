@@ -46,7 +46,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
         {
-            return await mediator.Send(new ObterTurmasPorAbrangenciaFiltroQuery()
+            return await mediator.Send(new ObterTurmasPorAbrangenciaTiposFiltrosQuery()
             {
                 CodigoUe = ueCodigo,
                 AnoLetivo = anoLetivo,
@@ -54,9 +54,7 @@ namespace SME.SR.Application
                 Semestre = semestre,
                 Login = usuario.Login,
                 Perfil = usuario.PerfilAtual,
-                ConsideraHistorico = consideraHistorico,
-                PossuiFechamento = true,
-                SomenteEscolarizadas = true
+                ConsideraHistorico = consideraHistorico
             });
         }
     }
