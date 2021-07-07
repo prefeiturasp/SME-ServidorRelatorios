@@ -1111,12 +1111,57 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<Turma>(query, new { codigos });
         }
 
-        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorCodigosSituacaoConsolidado(string[] codigos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres)
+        {
+            var query = new StringBuilder();
+            query.Append(@"select t.turma_id as Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where t.turma_id = ANY(@codigos)");
+            var querySituacao = new StringBuilder();
+            if (situacaoFechamento.HasValue)
+            {
+                querySituacao.AppendLine(@"and t.id in (select turma_id from consolidado_fechamento_componente_turma 
+                                   where not excluido and turma_id = t.id and status = @situacaoFechamento  ");
+
+                if (bimestres != null && bimestres.Any())
+                    querySituacao.AppendLine("and bimestre = ANY(@bimestres)");
+
+                querySituacao.AppendLine(")");
+            }
+
+            if (situacaoConselhoClasse.HasValue)
+            {
+                querySituacao.AppendLine(@"and t.id in (select turma_id from consolidado_conselho_classe_aluno_turma 
+                                   where not excluido and turma_id = t.id and status = @situacaoConselhoClasse  ");
+
+
+                if (bimestres != null && bimestres.Any())
+                    querySituacao.AppendLine("and bimestre = ANY(@bimestres)");
+
+                querySituacao.AppendLine(")");
+            }
+
+            query.AppendLine(querySituacao.ToString());
+
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<Turma>(query.ToString(), new { codigos, situacaoFechamento, situacaoConselhoClasse, bimestres });
+
+        }
+
+
+        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
         {
             StringBuilder query = new StringBuilder();
             query.Append(@"select ano, anoLetivo, codigo, 
 								codigoModalidade modalidadeCodigo, nome, semestre 
-							from f_abrangencia_turmas_tipos(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo, @tipos)
+							from f_abrangencia_turmas_tipos(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo, @tipos) t
                             where 1=1    ");
 
 
@@ -1135,6 +1180,33 @@ namespace SME.SR.Data
                                  inner join dre on dre.id = ue.dre_id
                                  where dre.dre_id = @codigoDre)");
 
+
+            var querySituacao = new StringBuilder();
+            if (situacaoFechamento.HasValue)
+            {
+                querySituacao.AppendLine(@"and t.turma_id in (select turma_id from consolidado_fechamento_componente_turma 
+                                   where not excluido and turma_id =  t.turma_id and status = @situacaoFechamento  ");
+
+                if (bimestres != null && bimestres.Any())
+                    querySituacao.AppendLine("and bimestre = ANY(@bimestres)");
+
+                querySituacao.AppendLine(")");
+            }
+
+            if (situacaoConselhoClasse.HasValue)
+            {
+                querySituacao.AppendLine(@"and  t.turma_id in (select turma_id from consolidado_conselho_classe_aluno_turma 
+                                   where not excluido and turma_id =  t.turma_id and status = @situacaoConselhoClasse  ");
+
+
+                if (bimestres != null && bimestres.Any())
+                    querySituacao.AppendLine("and bimestre = ANY(@bimestres)");
+
+                querySituacao.AppendLine(")");
+            }
+
+            query.Append(querySituacao);
+
             var parametros = new
             {
                 CodigoDre = codigoDre,
@@ -1145,11 +1217,17 @@ namespace SME.SR.Data
                 Semestre = semestre,
                 Login = login,
                 Perfil = perfil,
-                ConsideraHistorico = consideraHistorico
+                ConsideraHistorico = consideraHistorico,
+                SituacaoFechamento = situacaoFechamento,
+                SituacaoConselhoClasse = situacaoConselhoClasse,
+                Bimestres = bimestres
             };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<Turma>(query.ToString(), parametros);
+
         }
+
     }
 }
+

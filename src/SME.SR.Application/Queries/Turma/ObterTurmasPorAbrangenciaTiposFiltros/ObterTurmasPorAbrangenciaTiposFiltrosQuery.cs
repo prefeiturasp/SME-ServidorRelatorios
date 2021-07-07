@@ -27,5 +27,11 @@ namespace SME.SR.Application
 
         public bool? SomenteEscolarizadas { get; set; }
         public int[] Tipos { get; set; }
+
+        public SituacaoFechamento? SituacaoFechamento { get; set; }
+
+        public SituacaoConselhoClasse? SituacaoConselhoClasse  { get; set; }
+
+        public int[] Bimestres { get; set; }
     }
 }
