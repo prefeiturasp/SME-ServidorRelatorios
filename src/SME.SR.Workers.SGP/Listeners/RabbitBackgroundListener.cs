@@ -113,7 +113,9 @@ namespace SME.SR.Workers.SGP.Services
                             }
                         }
 
-                        _logger.LogInformation($"[ INFO ] Method not found to action: {request.Action}");
+                        string info = $"[ INFO ] Method not found to action: {request.Action}";
+                        _logger.LogInformation(info);
+                        throw new NegocioException(info);
                     }
 
                 }
