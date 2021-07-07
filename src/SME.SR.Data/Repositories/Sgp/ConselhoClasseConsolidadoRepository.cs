@@ -18,7 +18,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasBimestreAsync(string[] turmasCodigo, int[] bimestres, int? situacaoConselhoClasse)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasAsync(string[] turmasCodigo)
         {
             var query = new StringBuilder(@" select c.id, c.dt_atualizacao DataAtualizacao, c.status, c.aluno_codigo AlunoCodigo, 
                                                     c.parecer_conclusivo_id ParecerConclusivoId, t.turma_id TurmaCodigo, c.bimestre
@@ -27,21 +27,8 @@ namespace SME.SR.Data
                           where not c.excluido 
                             and t.turma_id = ANY(@turmasCodigo) ");
 
-            var possuiFiltroBimestre = bimestres != null && bimestres.Any();
 
-            if (possuiFiltroBimestre)
-                query.AppendLine(@"and c.bimestre = ANY(@bimestres)");
-
-            if (situacaoConselhoClasse.HasValue)
-            {
-                var condicaoBimestre = possuiFiltroBimestre ? @"and c2.bimestre = ANY(@bimestres) " : "";
-                query.AppendLine(@$"and EXISTS(select 1 from consolidado_conselho_classe_aluno_turma c2
-                                               inner join turma t2 on c2.turma_id = t2.id
-                                              where not c2.excluido and t2.turma_id = ANY(@turmasCodigo)
-                                                {condicaoBimestre} and c2.status = @situacaoConselhoClasse)");
-            }
-
-            var parametros = new { turmasCodigo, bimestres, situacaoConselhoClasse };
+            var parametros = new { turmasCodigo};
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);

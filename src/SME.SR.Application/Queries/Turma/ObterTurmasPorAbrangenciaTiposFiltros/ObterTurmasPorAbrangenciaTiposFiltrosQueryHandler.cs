@@ -25,12 +25,18 @@ namespace SME.SR.Application
                                             request.Perfil,
                                             request.Modalidade,
                                             request.Tipos,
+                                            request.SituacaoFechamento,
+                                            request.SituacaoConselhoClasse,
+                                            request.Bimestres,
                                             request.Semestre,
                                             request.ConsideraHistorico,
                                             request.AnoLetivo,
                                             request.PossuiFechamento,
                                             request.SomenteEscolarizadas,
                                             request.CodigoDre);
+
+
+    
         }
     }
 }

@@ -19,5 +19,10 @@ namespace SME.SR.Application
 
         public Usuario Usuario { get; set; }
         public bool ConsideraHistorico { get; set; }
+
+        public SituacaoFechamento? SituacaoFechamento { get; set; }
+        public SituacaoConselhoClasse? SituacaoConselhoClasse { get; set; }
+
+        public int[] Bimestres { get; set; }
     }
 }

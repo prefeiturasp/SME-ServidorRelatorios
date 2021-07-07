@@ -93,7 +93,7 @@
     <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3OWWoKC.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    
+
     <None Update="libwkhtmltox.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
