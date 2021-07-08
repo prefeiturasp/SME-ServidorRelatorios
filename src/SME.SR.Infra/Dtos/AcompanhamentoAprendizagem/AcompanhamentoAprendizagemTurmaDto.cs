@@ -36,48 +36,40 @@ namespace SME.SR.Infra
             if (!aluno.Fotos.Any(a => a.Id == foto.Id))
                 aluno.Add(foto);
         }
-        public string PercursoTurmaFormatado()
+        public string PercursoTurmaFormatado(int quantidadeImagens)
         {
             if (string.IsNullOrEmpty(ApanhadoGeral))
                 return string.Empty;
-
-            var i = 1;
-            var j = 1;
+            var registroFormatado = UtilRegex.RemoverTagsHtmlVideo(ApanhadoGeral);
+            var numeroImagem = 0;
 
             var imagens = Regex.Matches(ApanhadoGeral, "<img.+?>");
+            string pattern = @"(https|http):.*(jpg|jpeg|gif|png|bmp)";
 
             foreach (var imagem in imagens)
             {
-                var numeroImagem = i++;
-                var textoSemImagem = ApanhadoGeral.Replace(imagem.ToString(), $"#imagem{numeroImagem}");
-
-                string pattern = @"(https|http):.*(jpg|jpeg|gif|png|bmp)";
-                string input = imagem.ToString();
-                Match m = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
-
-                if (m.Success)
+                numeroImagem++;
+                if (numeroImagem <= quantidadeImagens)
                 {
+                    string input = imagem.ToString();
+                    Match match = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
 
-                    PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+                    if (match.Success)
                     {
-                        NomeImagem = $"imagem {numeroImagem}",
-                        Imagem = m.Value
-                    });
-                }                
-                ApanhadoGeral = textoSemImagem;
+                        PercursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
+                        {
+                            NomeImagem = $"imagem {numeroImagem}",
+                            Imagem = match.Value
+                        });
+                    }
+                    registroFormatado = registroFormatado.Replace(imagem.ToString(), $"|imagem {numeroImagem}|");
+                }
+                else
+                {
+                    registroFormatado = registroFormatado.Replace(imagem.ToString(), $"");
+                }                               
             }
-
-            var registroFormatado = UtilRegex.RemoverTagsHtmlMultiMidia(ApanhadoGeral);
-            var registrosemTag = UtilRegex.RemoverTagsHtml(registroFormatado);
-
-            foreach (var img in imagens)
-            {
-                var numeroImagem = j++;
-                var textoSemImagem = registrosemTag.Replace($"#imagem{numeroImagem}", $"<b>imagem {numeroImagem}</b>");
-
-                registrosemTag = textoSemImagem;
-            }
-            return registrosemTag;
+            return UtilRegex.RemoverTagsHtml(registroFormatado);
         }
     }
 }

@@ -3,7 +3,6 @@ using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +24,6 @@ namespace SME.SR.Application
             var professores = request.Professores;
             var acompanhamentoTurma = request.AcompanhamentoTurma;
             var frequenciaAlunos = request.FrequenciaAlunos;
-            var registrosIndividuais = request.RegistrosIndividuais;
             var ocorrencias = request.Ocorrencias;
             var filtro = request.Filtro;
             var quantidadeAulasDadas = request.QuantidadeAulasDadas;
@@ -35,7 +33,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
+                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, ocorrencias, quantidadeAulasDadas, bimestres, turma.AnoLetivo),
             };
 
             return relatorio;
@@ -61,12 +59,13 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
+        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, int ano)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             var acompanhamento = acompanhamentoTurma.Count() > 0 ? acompanhamentoTurma?.First() : null;
-            var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
+            var quantidadeImagensParam = await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(ano, TipoParametroSistema.QuantidadeImagensPercursoTurma));
+            var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado(int.Parse(quantidadeImagensParam)) ?? "") : "";
 
             List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> percursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>(); 
 
@@ -117,6 +116,7 @@ namespace SME.SR.Application
                     Telefone = alunoEol.ResponsavelCelularFormatado(),
                     RegistroPercursoTurma = percursoFormatado,
                     Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "",
+                    PercursoIndividual = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoIndividualFormatado() ?? "") : "",
                     PercursoTurmaImagens = percursoTurmaImagens
                 };
 
@@ -137,7 +137,6 @@ namespace SME.SR.Application
                 }
 
                 alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres);
-                alunoRelatorio.RegistrosIndividuais = MontarRegistrosIndividuais(alunoRelatorio.CodigoEol, registrosIndividuais);
                 alunoRelatorio.Ocorrencias = MontarOcorrencias(alunoRelatorio.CodigoEol, ocorrencias);
 
                 alunosRelatorio.Add(alunoRelatorio);
