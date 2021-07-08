@@ -17,6 +17,10 @@ pipeline {
   
     stages {
 
+        stage('CheckOut') {            
+            steps { checkout scm }            
+        }
+
         stage('Build') {
           when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'release'; branch 'release-r2'; } } 
           steps {
