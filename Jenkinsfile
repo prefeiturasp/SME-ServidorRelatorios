@@ -3,6 +3,7 @@ pipeline {
       branchname =  env.BRANCH_NAME.toLowerCase()
       kubeconfig = getKubeconf(env.branchname)
       registryCredential = 'jenkins_registry'
+      deployment1 = "${env.branchname == 'release-r2' ? 'sme-sr-workers-r2' : 'sme-sr-workers' }"
     }
   
     agent {
@@ -42,11 +43,11 @@ pipeline {
                     if ( env.branchname == 'main' ||  env.branchname == 'master' || env.branchname == 'homolog' || env.branchname == 'release' || env.branchname == 'release-r2' ) {
                         sendTelegram("🤩 [Deploy ${env.branchname}] Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nMe aprove! \nLog: \n${env.BUILD_URL}")
                         timeout(time: 24, unit: "HOURS") {
-                            input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: 'marlon_goncalves, bruno_alevato, robson_silva, rafael_losi'
+                            input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: 'marlon_goncalves, bruno_alevato, robson_silva, luiz_araujo, rafael_losi'
                         }
                         withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
                             sh('cp $config '+"$home"+'/.kube/config')
-                            sh 'kubectl rollout restart deployment/sme-sr-workers -n sme-relatorios'
+                            sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
                             sh('rm -f '+"$home"+'/.kube/config')
                         }
                     }
