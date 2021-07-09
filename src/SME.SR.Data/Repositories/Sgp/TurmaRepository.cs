@@ -97,7 +97,7 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo },  commandTimeout: 120);
+                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo }, commandTimeout: 120);
             }
         }
 
@@ -1095,5 +1095,139 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<Turma>(query, new { turmaCodigos }, commandTimeout: 120);
             }
         }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorCodigos(string[] codigos)
+        {
+            var query = @"select t.turma_id as Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where t.turma_id = ANY(@codigos)";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<Turma>(query, new { codigos });
+        }
+
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorCodigosSituacaoConsolidado(string[] codigos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres)
+        {
+            var query = new StringBuilder();
+            query.Append(@"select t.turma_id as Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where t.turma_id = ANY(@codigos)");
+            var querySituacao = new StringBuilder();
+            if (situacaoFechamento.HasValue)
+            {
+                querySituacao.AppendLine(@"and t.id in (select turma_id from consolidado_fechamento_componente_turma 
+                                   where not excluido and turma_id = t.id and status = @situacaoFechamento  ");
+
+                if (bimestres != null && bimestres.Any())
+                    querySituacao.AppendLine("and bimestre = ANY(@bimestres)");
+
+                querySituacao.AppendLine(")");
+            }
+
+            if (situacaoConselhoClasse.HasValue)
+            {
+                querySituacao.AppendLine(@"and t.id in (select turma_id from consolidado_conselho_classe_aluno_turma 
+                                   where not excluido and turma_id = t.id and status = @situacaoConselhoClasse  ");
+
+
+                if (bimestres != null && bimestres.Any())
+                    querySituacao.AppendLine("and bimestre = ANY(@bimestres)");
+
+                querySituacao.AppendLine(")");
+            }
+
+            query.AppendLine(querySituacao.ToString());
+
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<Turma>(query.ToString(), new { codigos, situacaoFechamento, situacaoConselhoClasse, bimestres });
+
+        }
+
+
+        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(@"select ano, anoLetivo, codigo, 
+								codigoModalidade modalidadeCodigo, nome, semestre 
+							from f_abrangencia_turmas_tipos(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo, @tipos) t
+                            where 1=1    ");
+
+
+            if (possuiFechamento.HasValue)
+                query.Append(@" and codigo in (select t.turma_id from fechamento_turma ft
+                                 inner join turma t on ft.turma_id = t.id
+                                 where not ft.excluido)");
+
+            if (somenteEscolarizada.HasValue && somenteEscolarizada.Value)
+                query.Append(" and ano != '0'");
+
+
+            if (!string.IsNullOrEmpty(codigoDre))
+                query.Append(@" and codigo in (select t.turma_id from turma t
+                                 inner join ue on ue.id = t.ue_id
+                                 inner join dre on dre.id = ue.dre_id
+                                 where dre.dre_id = @codigoDre)");
+
+
+            var querySituacao = new StringBuilder();
+            if (situacaoFechamento.HasValue)
+            {
+                querySituacao.AppendLine(@"and t.turma_id in (select turma_id from consolidado_fechamento_componente_turma 
+                                   where not excluido and turma_id =  t.turma_id and status = @situacaoFechamento  ");
+
+                if (bimestres != null && bimestres.Any())
+                    querySituacao.AppendLine("and bimestre = ANY(@bimestres)");
+
+                querySituacao.AppendLine(")");
+            }
+
+            if (situacaoConselhoClasse.HasValue)
+            {
+                querySituacao.AppendLine(@"and  t.turma_id in (select turma_id from consolidado_conselho_classe_aluno_turma 
+                                   where not excluido and turma_id =  t.turma_id and status = @situacaoConselhoClasse  ");
+
+
+                if (bimestres != null && bimestres.Any())
+                    querySituacao.AppendLine("and bimestre = ANY(@bimestres)");
+
+                querySituacao.AppendLine(")");
+            }
+
+            query.Append(querySituacao);
+
+            var parametros = new
+            {
+                CodigoDre = codigoDre,
+                CodigoUe = codigoUe,
+                Modalidade = (int)modalidade,
+                Tipos = tipos,
+                AnoLetivo = anoLetivo,
+                Semestre = semestre,
+                Login = login,
+                Perfil = perfil,
+                ConsideraHistorico = consideraHistorico,
+                SituacaoFechamento = situacaoFechamento,
+                SituacaoConselhoClasse = situacaoConselhoClasse,
+                Bimestres = bimestres
+            };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<Turma>(query.ToString(), parametros);
+
+        }
+
     }
 }
+
