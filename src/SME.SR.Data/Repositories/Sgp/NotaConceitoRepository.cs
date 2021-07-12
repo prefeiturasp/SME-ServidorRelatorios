@@ -255,6 +255,14 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaHistoricoEscolasAsync(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
+            const string queryTempFa = @"DROP TABLE IF exists temp_fechamento_aluno;
+
+                        CREATE TEMPORARY TABLE temp_fechamento_aluno AS
+                        select id, fechamento_turma_disciplina_id, aluno_codigo 
+                        from fechamento_aluno fa where fa.aluno_codigo = ANY(@codigosAluno)
+                        and excluido = false;";
+
+
             const string queryNotasRegular = @"
                         select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
                                fn.disciplina_id CodigoComponenteCurricular,
@@ -265,9 +273,9 @@ namespace SME.SR.Data
                                coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
                          left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
-                         inner join turma t on t.id = ft.turma_id 
+                         inner join turma t on t.id = ft.turma_id and t.ano_letivo <= @anoLetivo
                          inner join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
-                         inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
+                         inner join temp_fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
                          inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
                          left join conceito_valores cvf on fn.conceito_id = cvf.id
                          left join conselho_classe cc on cc.fechamento_turma_id = ft.id
@@ -275,8 +283,7 @@ namespace SME.SR.Data
                          left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
                          left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and ccn.componente_curricular_codigo = fn.disciplina_id 
                          left join conceito_valores cvc on ccn.conceito_id = cvc.id
-                         where fa.aluno_codigo = ANY(@codigosAluno)
-                           and t.ano_letivo <= @anoLetivo ";
+                            where ft.excluido = false";
 
             const string queryNotasComplementar = @"
                         select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
@@ -288,20 +295,19 @@ namespace SME.SR.Data
                                coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
                           from fechamento_turma ft
                           left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
-                         inner join turma t on t.id = ft.turma_id 
+                         inner join turma t on t.id = ft.turma_id and t.ano_letivo <= @anoLetivo 
                          inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
-                         inner join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id
+                         inner join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id and cca.aluno_codigo = ANY(@codigosAluno)
                          inner join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
                          left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
                           left join conceito_valores cvc on ccn.conceito_id = cvc.id
                           left join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
-                          left join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
+                          left join temp_fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
 		                                                and cca.aluno_codigo = fa.aluno_codigo 
                           left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
-                         where cca.aluno_codigo = ANY(@codigosAluno)
-                           and t.ano_letivo <= @anoLetivo ";
+                            where ft.excluido = false";
 
             var queryRegular = new StringBuilder(queryNotasRegular);
             var queryComplementar = new StringBuilder(queryNotasComplementar);
@@ -318,11 +324,151 @@ namespace SME.SR.Data
                 queryComplementar.AppendLine(" and t.semestre = @semestre ");
             }
 
-            var query = $@"select distinct * from (
+            var query = $@" {queryTempFa}
+                            select distinct * from (
                             {queryRegular}
                             union all 
                             {queryComplementar}
-                           ) x";
+                           ) x;";
+
+            var parametros = new
+            {
+                codigosAluno,
+                anoLetivo,
+                modalidade,
+                semestre
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
+                                                NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
+                    , (notasFrequenciaAlunoBimestre, periodoEscolar, notaConceito) =>
+                    {
+                        notasFrequenciaAlunoBimestre.PeriodoEscolar = periodoEscolar;
+                        notasFrequenciaAlunoBimestre.NotaConceito = notaConceito;
+
+                        return notasFrequenciaAlunoBimestre;
+                    }
+                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
+            }
+        }
+
+
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasRegularesTurmasAlunosParaHistoricoEscolasAsync(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
+        {
+            const string queryTempFa = @"DROP TABLE IF exists temp_fechamento_aluno;
+                        CREATE TEMPORARY TABLE temp_fechamento_aluno AS
+                        select id, fechamento_turma_disciplina_id, aluno_codigo 
+                        from fechamento_aluno fa where fa.aluno_codigo = ANY(@codigosAluno)
+                        and excluido = false;";
+
+            const string queryNotasRegular = @"
+                        select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
+                               fn.disciplina_id CodigoComponenteCurricular,
+                               coalesce(ccp.aprovado, false) as Aprovado,
+                               coalesce(pe.bimestre,0) as bimestre, pe.periodo_inicio PeriodoInicio,
+                               pe.periodo_fim PeriodoFim, fn.id NotaId,
+                               coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
+                               coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
+                          from fechamento_turma ft
+                         left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
+                         inner join turma t on t.id = ft.turma_id and t.ano_letivo <= @anoLetivo
+                         inner join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
+                         inner join temp_fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
+                         inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
+                         left join conceito_valores cvf on fn.conceito_id = cvf.id
+                         left join conselho_classe cc on cc.fechamento_turma_id = ft.id
+                         left join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id and cca.aluno_codigo = fa.aluno_codigo and cca.aluno_codigo = ANY(@codigosAluno)
+                         left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
+                         left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and ccn.componente_curricular_codigo = fn.disciplina_id 
+                         left join conceito_valores cvc on ccn.conceito_id = cvc.id
+                            where ft.excluido = false";            
+
+            var queryRegular = new StringBuilder(queryNotasRegular);            
+
+            if (modalidade > 0)
+            {
+                queryRegular.AppendLine(" and t.modalidade_codigo = @modalidade ");
+            }
+
+            if (semestre > 0)
+            {
+                queryRegular.AppendLine(" and t.semestre = @semestre ");
+            }
+
+            var query = $@" {queryTempFa}
+                            {queryRegular};";
+
+            var parametros = new
+            {
+                codigosAluno,
+                anoLetivo,
+                modalidade,
+                semestre
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
+                                                NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
+                    , (notasFrequenciaAlunoBimestre, periodoEscolar, notaConceito) =>
+                    {
+                        notasFrequenciaAlunoBimestre.PeriodoEscolar = periodoEscolar;
+                        notasFrequenciaAlunoBimestre.NotaConceito = notaConceito;
+
+                        return notasFrequenciaAlunoBimestre;
+                    }
+                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
+            }
+        }
+
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasComplementaresTurmasAlunosParaHistoricoEscolasAsync(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
+        {
+            const string queryTempFa = @"DROP TABLE IF exists temp_fechamento_aluno;
+                        CREATE TEMPORARY TABLE temp_fechamento_aluno AS
+                        select id, fechamento_turma_disciplina_id, aluno_codigo 
+                        from fechamento_aluno fa where fa.aluno_codigo = ANY(@codigosAluno)
+                        and excluido = false;";            
+
+            const string queryNotasComplementar = @"
+                        select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
+                               ccn.componente_curricular_codigo CodigoComponenteCurricular,
+                               coalesce(ccp.aprovado, false) as Aprovado,
+                               coalesce(pe.bimestre,0) as bimestre, pe.periodo_inicio PeriodoInicio,
+                               pe.periodo_fim PeriodoFim, ccn.id NotaId,
+                               coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
+                               coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
+                          from fechamento_turma ft
+                          left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
+                         inner join turma t on t.id = ft.turma_id and t.ano_letivo <= @anoLetivo 
+                         inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
+                         inner join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id and cca.aluno_codigo = ANY(@codigosAluno)
+                         inner join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
+                         left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
+                          left join conceito_valores cvc on ccn.conceito_id = cvc.id
+                          left join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
+                          left join temp_fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
+		                                                and cca.aluno_codigo = fa.aluno_codigo 
+                          left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
+		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
+                          left join conceito_valores cvf on fn.conceito_id = cvf.id
+                            where ft.excluido = false";
+            
+            var queryComplementar = new StringBuilder(queryNotasComplementar);
+
+            if (modalidade > 0)
+            {
+                queryComplementar.AppendLine(" and t.modalidade_codigo = @modalidade ");
+            }
+
+            if (semestre > 0)
+            {
+                queryComplementar.AppendLine(" and t.semestre = @semestre ");
+            }
+
+            var query = $@" {queryTempFa}
+                            {queryComplementar};";
 
             var parametros = new
             {
