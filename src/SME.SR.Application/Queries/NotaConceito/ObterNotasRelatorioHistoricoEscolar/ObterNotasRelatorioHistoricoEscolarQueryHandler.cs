@@ -19,8 +19,10 @@ namespace SME.SR.Application
         }
 
         public async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> Handle(ObterNotasRelatorioHistoricoEscolarQuery request, CancellationToken cancellationToken)
-        {
-            var notas = await notasConceitoRepository.ObterNotasTurmasAlunosParaHistoricoEscolasAsync(request.CodigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+        {            
+            IEnumerable<NotasAlunoBimestre> notasRegulares = await notasConceitoRepository.ObterNotasRegularesTurmasAlunosParaHistoricoEscolasAsync(request.CodigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+            IEnumerable<NotasAlunoBimestre> notasComplementares = await notasConceitoRepository.ObterNotasComplementaresTurmasAlunosParaHistoricoEscolasAsync(request.CodigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var notas = (notasRegulares ?? Enumerable.Empty<NotasAlunoBimestre>()).Concat(notasComplementares ?? Enumerable.Empty<NotasAlunoBimestre>());
 
             if (notas == null || !notas.Any())
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
