@@ -214,6 +214,7 @@ namespace SME.SR.Data
                                 , fa.total_aulas as TotalAulas
                                 , fa.total_ausencias as TotalAusencias
                                 , fa.total_compensacoes as TotalCompensacoes
+                                {(tipoCalendarioId > 0 ? ", pe.bimestre Bimestre" : string.Empty)}
                             from frequencia_aluno fa
                             inner join turma t on fa.turma_id = t.turma_id ");
 

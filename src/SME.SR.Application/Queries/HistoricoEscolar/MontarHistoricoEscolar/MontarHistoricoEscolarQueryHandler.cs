@@ -302,7 +302,7 @@ namespace SME.SR.Application
                 {
                     if (componenteCurricular.Regencia)
                     {
-                        MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(), turmas.Where(t => t.Codigo == componenteCurricular.CodigoTurma) , componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)), notas, frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()), mediasFrequencia, componentes);
+                        MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(), turmas.Where(t => t.Codigo == componenteCurricular.CodigoTurma), componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)), notas, frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()), mediasFrequencia, componentes);
                     }
                     else
                     {
