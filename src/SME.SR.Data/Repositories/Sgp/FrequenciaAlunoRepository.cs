@@ -106,11 +106,11 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
-            var query = @$"select fa.codigo_aluno CodigoAluno, t.ano_letivo as AnoTurma, t.modalidade_codigo as ModalidadeTurma,
-                            fa.tipo, fa.disciplina_id DisciplinaId, fa.periodo_inicio PeriodoInicio, 
-                            fa.periodo_fim PeriodoFim, fa.bimestre, sum(fa.total_aulas) TotalAulas, 
-                            sum(fa.total_ausencias) TotalAusencias, sum(fa.total_compensacoes) TotalCompensacoes, 
-                            fa.periodo_escolar_id PeriodoEscolarId
+            var query = @$"select fa.codigo_aluno CodigoAluno, t.turma_id as TurmaId, t.ano_letivo as AnoTurma, 
+                            t.modalidade_codigo as ModalidadeTurma, fa.tipo, fa.disciplina_id DisciplinaId, 
+                            fa.periodo_inicio PeriodoInicio, fa.periodo_fim PeriodoFim, fa.bimestre, 
+                            sum(fa.total_aulas) TotalAulas, sum(fa.total_ausencias) TotalAusencias, 
+                            sum(fa.total_compensacoes) TotalCompensacoes, fa.periodo_escolar_id PeriodoEscolarId
                              from frequencia_aluno fa 
                             inner join turma t on t.turma_id = fa.turma_id
                             where fa.codigo_aluno = ANY(@codigosAluno)
