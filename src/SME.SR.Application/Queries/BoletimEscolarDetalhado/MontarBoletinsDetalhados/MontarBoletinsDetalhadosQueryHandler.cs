@@ -13,7 +13,6 @@ namespace SME.SR.Application
 {
     public class MontarBoletinsDetalhadosQueryHandler : IRequestHandler<MontarBoletinsDetalhadosQuery, BoletimEscolarDetalhadoDto>
     {
-        private const string FREQUENCIA_100 = "100";
         private readonly IMediator mediator;
         private readonly ITipoCalendarioRepository tipoCalendarioRepository;
 
@@ -298,17 +297,16 @@ namespace SME.SR.Application
         private string ObterFrequenciaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<FrequenciaAluno> frequenciasComponente, int bimestre)
         {
             var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
-                frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? FREQUENCIA_100;
+                frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? string.Empty;
             return !string.IsNullOrEmpty(frequencia) ? frequencia + "%" : frequencia;
 
         }
 
         private string ObterFrequenciaFinalAluno(IEnumerable<FrequenciaAluno> frequencias, IEnumerable<int> conselhoClassBimestres)
         {
-            if (!conselhoClassBimestres.Any(a => a == 0))
+            if (!conselhoClassBimestres.Any(a => a == 0) ||
+                frequencias == null || !frequencias.Any())
                 return "";
-            else if (frequencias == null || !frequencias.Any())
-                return FREQUENCIA_100;
             else if (frequencias.FirstOrDefault(nf => nf.PeriodoEscolarId == null) != null)
                 return frequencias.FirstOrDefault(nf => nf.PeriodoEscolarId == null).PercentualFrequencia.ToString();
             else

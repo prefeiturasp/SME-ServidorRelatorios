@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +12,6 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
-        private const string FREQUENCIA_100 = "100";
-
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
 
@@ -504,7 +501,7 @@ namespace SME.SR.Application
                                                 ++coluna);
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
-                                             possuiComponente ? ((turma.AnoLetivo.Equals(2020) ? frequenciaAluno?.PercentualFrequenciaFinal.ToString() : frequenciaAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100) : "-",
+                                             possuiComponente ? ((turma.AnoLetivo.Equals(2020) ? frequenciaAluno?.PercentualFrequenciaFinal.ToString() : frequenciaAluno?.PercentualFrequencia.ToString()) ?? string.Empty) : "-",
                                                 ++coluna);
                     }
                     else
@@ -538,7 +535,7 @@ namespace SME.SR.Application
 
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? "0", 1);
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", 2);
-                linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? frequenciaGlobalAluno?.PercentualFrequenciaFinal.ToString() : frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100, 3);
+                linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? frequenciaGlobalAluno?.PercentualFrequenciaFinal.ToString() : frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? string.Empty, 3);
 
                 var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
                 var textoParecer = parecerConclusivo?.ParecerConclusivo;
@@ -550,7 +547,7 @@ namespace SME.SR.Application
             {
                 linhaDto.AdicionaCelula(99, 99, "0", 1);
                 linhaDto.AdicionaCelula(99, 99, "0", 2);
-                linhaDto.AdicionaCelula(99, 99, FREQUENCIA_100, 3);
+                linhaDto.AdicionaCelula(99, 99, string.Empty, 3);
                 linhaDto.AdicionaCelula(99, 99, "Sem parecer", 4);
             }
         }
