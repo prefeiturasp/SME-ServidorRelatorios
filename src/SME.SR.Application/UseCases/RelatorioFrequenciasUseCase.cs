@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioFaltasFrequenciasUseCase : IRelatorioFaltasFrequenciasUseCase
+    public class RelatorioFrequenciasUseCase : IRelatorioFrequenciasUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioFaltasFrequenciasUseCase(IMediator mediator)
+        public RelatorioFrequenciasUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFaltasFrequenciasDto>();           
+            var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFrequenciasDto>();           
 
             var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(relatorioFiltros));
 

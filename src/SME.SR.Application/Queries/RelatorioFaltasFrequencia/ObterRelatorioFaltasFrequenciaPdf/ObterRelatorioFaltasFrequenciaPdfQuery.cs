@@ -5,11 +5,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 {
     public class ObterRelatorioFaltasFrequenciaPdfQuery : IRequest<RelatorioFaltasFrequenciaDto>
     {
-        public ObterRelatorioFaltasFrequenciaPdfQuery(FiltroRelatorioFaltasFrequenciasDto filtro)
+        public ObterRelatorioFaltasFrequenciaPdfQuery(FiltroRelatorioFrequenciasDto filtro)
         {
             Filtro = filtro;
         }
 
-        public FiltroRelatorioFaltasFrequenciasDto Filtro { get; set; }
+        public FiltroRelatorioFrequenciasDto Filtro { get; set; }
     }
 }

@@ -194,7 +194,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioBoletimEscolarDetalhadoUseCase, RelatorioBoletimEscolarDetalhadoUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
             services.TryAddScoped<IDownloadRelatorioUseCase, DownloadRelatorioUseCase>();
-            services.TryAddScoped<IRelatorioFaltasFrequenciasUseCase, RelatorioFaltasFrequenciasUseCase>();
+            services.TryAddScoped<IRelatorioFrequenciasUseCase, RelatorioFrequenciasUseCase>();
             services.TryAddScoped<IRelatorioHistoricoEscolarUseCase, RelatorioHistoricoEscolarUseCase>();
             services.TryAddScoped<IRelatorioFechamentoPendenciasUseCase, RelatorioFechamentoPendenciasUseCase>();
             services.TryAddScoped<IRelatorioRecuperacaoParalelaUseCase, RelatorioRecuperacaoParalelaUseCase>();

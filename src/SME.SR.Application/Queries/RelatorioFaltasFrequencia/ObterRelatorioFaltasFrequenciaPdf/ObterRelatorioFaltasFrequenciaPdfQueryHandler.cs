@@ -187,7 +187,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             return await Task.FromResult(model);
         }
 
-        private List<RelatorioFaltaFrequenciaDreDto> FiltrarFaltasFrequencia(List<RelatorioFaltaFrequenciaDreDto> dres, FiltroRelatorioFaltasFrequenciasDto filtro)
+        private List<RelatorioFaltaFrequenciaDreDto> FiltrarFaltasFrequencia(List<RelatorioFaltaFrequenciaDreDto> dres, FiltroRelatorioFrequenciasDto filtro)
         {
             Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao = new Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>>();
             operacao.Add(CondicoesRelatorioFaltasFrequencia.Igual, (valor, valorFiltro) => valor == valorFiltro);
@@ -225,7 +225,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             return dres;
         }
 
-        private static void DefinirCabecalho(ObterRelatorioFaltasFrequenciaPdfQuery request, RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro, IEnumerable<RelatorioFaltaFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
+        private static void DefinirCabecalho(ObterRelatorioFaltasFrequenciaPdfQuery request, RelatorioFaltasFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<RelatorioFaltaFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
         {
             var selecionouTodasDres = string.IsNullOrWhiteSpace(filtro.CodigoDre) || filtro.CodigoDre == "-99";
             var selecionouTodasUes = string.IsNullOrWhiteSpace(filtro.CodigoUe) || filtro.CodigoUe == "-99";
@@ -261,7 +261,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Modalidade = $"{filtro.Modalidade.Name()} {semestreEja}";
         }
 
-        private static void DefinirNomeComponente(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)
+        private static void DefinirNomeComponente(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)
         {
             var selecionouTodosComponentes = filtro.ComponentesCurriculares.Any(c => c == "-99");
             var primeiroComponente = filtro.ComponentesCurriculares.FirstOrDefault();
@@ -275,7 +275,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 string.Empty;
         }
 
-        private static void DefinirNomeBimestre(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFaltasFrequenciasDto filtro)
+        private static void DefinirNomeBimestre(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro)
         {
             var selecionouTodosBimestres = filtro.Bimestres.Any(c => c == -99);
             var selecionouBimestreFinal = filtro.Bimestres.Any(c => c == 0);
@@ -292,7 +292,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 filtro.Bimestres.FirstOrDefault().ToString();
         }
 
-        private static void OrdenarAlunos(FiltroRelatorioFaltasFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFaltaFrequenciaComponenteDto componente)
+        private static void OrdenarAlunos(FiltroRelatorioFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFaltaFrequenciaComponenteDto componente)
         {
             if (filtro.Condicao != CondicoesRelatorioFaltasFrequencia.TodosEstudantes)
             {
