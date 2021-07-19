@@ -1,10 +1,7 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,17 +31,13 @@ namespace SME.SR.Application
 
                     switch (relatorioFiltros.TipoRelatorio)
                     {
-                        case TipoRelatorioFaltasFrequencia.Ambos:
-                            var relatorioAmbos = relatorioDto.OfType<RelatorioFaltasFrequenciasExcelDto>();
-                            await mediator.Send(new GerarExcelGenericoCommand(relatorioAmbos.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
+                        case TipoRelatorioFaltasFrequencia.Ano:
+                            var relatorioAno = relatorioDto.OfType<RelatorioFaltasFrequenciasExcelDto>();
+                            await mediator.Send(new GerarExcelGenericoCommand(relatorioAno.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
                             break;
-                        case TipoRelatorioFaltasFrequencia.Faltas:
-                            var relatorioFaltas = relatorioDto.OfType<RelatorioFaltasExcelDto>();
-                            await mediator.Send(new GerarExcelGenericoCommand(relatorioFaltas.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
-                            break;
-                        case TipoRelatorioFaltasFrequencia.Frequencia:
-                            var relatorioFrequencias = relatorioDto.OfType<RelatorioFrequenciasExcelDto>();
-                            await mediator.Send(new GerarExcelGenericoCommand(relatorioFrequencias.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
+                        case TipoRelatorioFaltasFrequencia.Turma:
+                            var relatorioTurma = relatorioDto.OfType<RelatorioFaltasExcelDto>();
+                            await mediator.Send(new GerarExcelGenericoCommand(relatorioTurma.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
                             break;
                         default:
                             throw new NegocioException($"Não foi possível exportar este relátorio para o tipo {relatorioFiltros.TipoRelatorio}");
