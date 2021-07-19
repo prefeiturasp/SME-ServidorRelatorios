@@ -278,5 +278,23 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }
         }
+
+        public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricular(string codigoTurma, string componenteCurricularId, long periodoEscolarId)
+        {
+            var query = @"select distinct(1)
+                            from registro_frequencia_aluno rfa
+                           inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id 
+                           inner join aula a on a.id = rf.aula_id 
+                           inner join tipo_calendario tc on tc.id = a.tipo_calendario_id
+                           inner join periodo_escolar pe on pe.tipo_calendario_id = tc.id
+                           where pe.id = @periodoEscolarId
+                             and a.turma_id = @codigoTurma
+                             and a.disciplina_id = @componenteCurricularId
+                             and a.data_aula between pe.periodo_inicio and pe.periodo_fim ";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId });
+        }
     }
 }

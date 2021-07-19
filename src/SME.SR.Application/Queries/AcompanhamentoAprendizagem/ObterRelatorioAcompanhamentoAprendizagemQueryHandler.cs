@@ -29,13 +29,14 @@ namespace SME.SR.Application
             var ocorrencias = request.Ocorrencias;
             var filtro = request.Filtro;
             var quantidadeAulasDadas = request.QuantidadeAulasDadas;
+            var turmaPossuiFrequenciaRegistrada = request.TurmaPossuiFrequenciaRegistrada;
 
-            var bimestres = ObterBimestresPorSemestre(filtro.Semestre);
+        var bimestres = ObterBimestresPorSemestre(filtro.Semestre);
 
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres),
+                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres, turmaPossuiFrequenciaRegistrada),
             };
 
             return relatorio;
@@ -61,7 +62,7 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
+        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, bool turmaPossuiFrequenciaRegistrada)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
@@ -136,7 +137,7 @@ namespace SME.SR.Application
                     }
                 }
 
-                alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres);
+                alunoRelatorio.Frequencias = MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres, turmaPossuiFrequenciaRegistrada);
                 alunoRelatorio.RegistrosIndividuais = MontarRegistrosIndividuais(alunoRelatorio.CodigoEol, registrosIndividuais);
                 alunoRelatorio.Ocorrencias = MontarOcorrencias(alunoRelatorio.CodigoEol, ocorrencias);
 
@@ -144,7 +145,7 @@ namespace SME.SR.Application
             }
             return alunosRelatorio;
         }
-        private List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres)
+        private List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, bool turmaPossuiFrequenciaRegistrada)
         {
             var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
 
@@ -164,7 +165,12 @@ namespace SME.SR.Application
                     Bimestre = $"{bimestre}º",
                     Aulas = frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas,
                     Ausencias = frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias,
-                    Frequencia = frequenciaAluno == null ? "100%" : $"{frequenciaAluno.PercentualFrequencia}%",
+                    Frequencia = frequenciaAluno != null
+                    ?
+                    $"{frequenciaAluno.PercentualFrequencia}%"
+                    :
+                    turmaPossuiFrequenciaRegistrada ? "100%"
+                    :"",
                 };
                 freqenciasRelatorio.Add(freqenciaRelatorio);
             }
