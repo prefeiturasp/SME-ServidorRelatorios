@@ -2,7 +2,6 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -252,8 +251,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Usuario = request.Filtro.NomeUsuario;
             model.RF = request.Filtro.CodigoRf;
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            model.ExibeFaltas = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos;
-            model.ExibeFrequencia = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Frequencia || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos;
+            model.ExibeFaltas = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Turma || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
+            model.ExibeFrequencia = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
 
             var semestreEja = "";
             if (filtro.Modalidade == Modalidade.EJA)
@@ -299,10 +298,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             {
                 componente.Alunos = (from a in componente.Alunos
                                      where
-                                     ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos) ?
-                                        operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.ValorCondicao)
+                                     ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano) ?
+                                        operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.QuantidadeAusencia)
                                      :
-                                        operacao[filtro.Condicao](a.Frequencia, filtro.ValorCondicao))
+                                        operacao[filtro.Condicao](a.Frequencia, filtro.QuantidadeAusencia))
                                      select a)
                                      .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
                                      .ThenBy(c => c.NomeTurma)

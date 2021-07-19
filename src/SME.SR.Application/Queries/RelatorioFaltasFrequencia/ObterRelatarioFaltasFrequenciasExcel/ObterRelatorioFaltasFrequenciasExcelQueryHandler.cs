@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Infra;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -92,13 +91,13 @@ namespace SME.SR.Application
         {
             RelatorioFaltasFrequenciasBaseExcelDto relatorioBase;
 
-            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos)
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
             { 
                 var relatorioAmbos = new RelatorioFaltasFrequenciasExcelDto();
                 ObterRelatorioFaltasFrequenciaBase(ref relatorioAmbos, dreNome, ueNome, bimestre, ano, turma, componenteCurricular, alunoCodigo.ToString(), alunoNome);
                 relatorioBase = relatorioAmbos;
             }
-            else if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas)
+            else if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Turma)
             { 
                var relatorioFaltas = new RelatorioFaltasExcelDto();
                 ObterRelatorioFaltasFrequenciaBase(ref relatorioFaltas, dreNome, ueNome, bimestre, ano, turma, componenteCurricular, alunoCodigo.ToString(), alunoNome);
@@ -111,10 +110,10 @@ namespace SME.SR.Application
                 relatorioBase = relatorioFrequencia;
             }
 
-            if (tipoRelatorio != TipoRelatorioFaltasFrequencia.Faltas)
+            if (tipoRelatorio != TipoRelatorioFaltasFrequencia.Turma)
                 SetarFrequencia(ref relatorioBase, tipoRelatorio, frequencia);
 
-            if (tipoRelatorio != TipoRelatorioFaltasFrequencia.Frequencia)
+            if (tipoRelatorio != TipoRelatorioFaltasFrequencia.Ano)
                 SetarFaltas(ref relatorioBase, tipoRelatorio, totalAulas, totalAusencias);
 
             return relatorioBase;
@@ -123,7 +122,7 @@ namespace SME.SR.Application
 
         private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, double frequenciaPercentual)
         {
-            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos)
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
                 ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = frequenciaPercentual;
             else
                 ((RelatorioFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = frequenciaPercentual;
@@ -131,7 +130,7 @@ namespace SME.SR.Application
 
         private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, int totalAulas, int totalFaltas)
         {
-            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos)
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
             {
                 ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FaltasQuantidade = totalFaltas;
                 ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).AulasQuantidade = totalAulas;
