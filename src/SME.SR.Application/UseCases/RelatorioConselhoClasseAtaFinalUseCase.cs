@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
-using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,46 +19,39 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
+
+            var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
+            var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
+            var mensagensErro = new StringBuilder();
+            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtros, usuario));
+
+            if (!relatoriosTurmas.Any())
+                throw new NegocioException("Não há dados para o relatório de Ata Final de Resultados.");
+
+            switch (filtros.TipoFormatoRelatorio)
             {
-                var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
-                var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
-                var mensagensErro = new StringBuilder();
-                var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtros, usuario));
+                case TipoFormatoRelatorio.Xlsx:
+                    var relatorioDto = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalExcelQuery() { ObjetoExportacao = relatoriosTurmas });
+                    if (relatorioDto == null)
+                        throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
 
-                if (!relatoriosTurmas.Any())
-                    throw new NegocioException("Não há dados para o relatório de Ata Final de Resultados.");
-
-                switch (filtros.TipoFormatoRelatorio)
-                {
-                    case TipoFormatoRelatorio.Xlsx:
-                        var relatorioDto = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalExcelQuery() { ObjetoExportacao = relatoriosTurmas });
-                        if (relatorioDto == null)
-                            throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
-
-                        await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
-                        break;
-                    case TipoFormatoRelatorio.Pdf:
-                        await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
-                        break;
-                    case TipoFormatoRelatorio.Rtf:
-                    case TipoFormatoRelatorio.Html:
-                    case TipoFormatoRelatorio.Xls:
-                    case TipoFormatoRelatorio.Csv:
-                    case TipoFormatoRelatorio.Xml:
-                    case TipoFormatoRelatorio.Docx:
-                    case TipoFormatoRelatorio.Odt:
-                    case TipoFormatoRelatorio.Ods:
-                    case TipoFormatoRelatorio.Jrprint:
-                    default:
-                        throw new NegocioException($"Não foi possível exportar este relátorio para o formato {filtros.TipoFormatoRelatorio}");
-                }
+                    await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
+                    break;
+                case TipoFormatoRelatorio.Pdf:
+                    await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
+                    break;
+                case TipoFormatoRelatorio.Rtf:
+                case TipoFormatoRelatorio.Html:
+                case TipoFormatoRelatorio.Xls:
+                case TipoFormatoRelatorio.Csv:
+                case TipoFormatoRelatorio.Xml:
+                case TipoFormatoRelatorio.Docx:
+                case TipoFormatoRelatorio.Odt:
+                case TipoFormatoRelatorio.Ods:
+                case TipoFormatoRelatorio.Jrprint:
+                default:
+                    throw new NegocioException($"Não foi possível exportar este relátorio para o formato {filtros.TipoFormatoRelatorio}");
             }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }            
         }
     }
 }
