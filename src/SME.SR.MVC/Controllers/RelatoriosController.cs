@@ -51,7 +51,7 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("faltas-frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
-            var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(new FiltroRelatorioFrequenciasDto()));
+            var model = await mediator.Send(new ObterRelatorioFrequenciaPdfQuery(new FiltroRelatorioFrequenciasDto()));
             //mock
             model.ExibeFaltas = true;
             model.ExibeFrequencia = false;

@@ -20,7 +20,7 @@ namespace SME.SR.Application
         {
             var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFrequenciasDto>();           
 
-            var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(relatorioFiltros));
+            var dadosRelatorio = await mediator.Send(new ObterRelatorioFrequenciaPdfQuery(relatorioFiltros));
 
             switch (relatorioFiltros.TipoFormatoRelatorio)
             {
