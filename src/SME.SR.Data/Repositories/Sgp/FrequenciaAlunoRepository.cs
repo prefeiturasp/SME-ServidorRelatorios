@@ -296,5 +296,20 @@ namespace SME.SR.Data
 
             return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId });
         }
+
+        public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAno(string codigoTurma, string componenteCurricularId, int anoLetivo)
+        {
+            var query = @"select distinct(1)
+                            from registro_frequencia_aluno rfa
+                           inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id 
+                           inner join aula a on a.id = rf.aula_id
+                           where a.turma_id = @codigoTurma
+                             and a.disciplina_id = @componenteCurricularId
+                             and extract(year from a.data_aula) = @anoLetivo ";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, anoLetivo });
+        }
     }
 }
