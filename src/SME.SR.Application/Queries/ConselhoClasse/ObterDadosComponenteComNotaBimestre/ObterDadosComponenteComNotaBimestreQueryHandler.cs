@@ -130,11 +130,23 @@ namespace SME.SR.Application
 
         private async Task<ComponenteComNotaBimestre> ObterNotasFrequenciaComponenteComNotaBimestre(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
-            var percentualFrequencia = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
+            var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), periodoEscolar.Id));
+
+            var percentualFrequencia2020 = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
+
+            var percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
+                ?
+                100
+                :
+                frequenciaAluno.TotalAulas > 0
+                ?
+                frequenciaAluno?.PercentualFrequencia
+                :                
+                null;
 
             if (frequenciaAluno != null && periodoEscolar != null && turma.AnoLetivo.Equals(2020))
             {
-                frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia);
+                frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia2020);
                 percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
             }
 
