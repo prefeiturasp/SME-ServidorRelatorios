@@ -18,5 +18,9 @@ namespace SME.SR.Data
 
         [JsonProperty("EhEja")]
         public bool EhEja { get; set; }
+
+        [JsonProperty("PermiteRegistroFrequencia")]
+        public bool PermiteRegistroFrequencia { get; set; }
+
     }
 }
