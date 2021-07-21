@@ -159,7 +159,7 @@
 					<pen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{Frequencia} != null ? $F{Frequencia} : ""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{Frequencia} != null ? $F{Frequencia} : "")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

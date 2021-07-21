@@ -62,6 +62,10 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="frequencia"/>
 			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
 		</field>
+		<field name="PermiteRegistroFrequencia" class="java.lang.Boolean">
+			<property name="net.sf.jasperreports.json.field.expression" value="permiteRegistroFrequencia"/>
+			<fieldDescription><![CDATA[PermiteRegistroFrequencia]]></fieldDescription>
+		</field>
 		<field name="TipoNota" class="java.lang.String">
 			<fieldDescription><![CDATA[TipoNota]]></fieldDescription>
 		</field>
@@ -197,7 +201,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<paragraph leftIndent="0"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{Aulas}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{Aulas} != null ? $F{Aulas} : "--"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -236,7 +240,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<paragraph leftIndent="0"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{Frequencia} != null ? $F{Frequencia} : ""]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{PermiteRegistroFrequencia} ? ($F{Frequencia} != null ? $F{Frequencia} : "") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

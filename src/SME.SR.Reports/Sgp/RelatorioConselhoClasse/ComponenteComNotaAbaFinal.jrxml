@@ -68,6 +68,10 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="Frequencia"/>
 			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
 		</field>
+		<field name="PermiteRegistroFrequencia" class="java.lang.Boolean">
+			<property name="net.sf.jasperreports.json.field.expression" value="permiteRegistroFrequencia"/>
+			<fieldDescription><![CDATA[PermiteRegistroFrequencia]]></fieldDescription>
+		</field>
 	</subDataset>
 	<subDataset name="DatasetRegencia" uuid="0acfadb3-fa95-4191-a669-845c01ac6554">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
@@ -127,7 +131,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{Nome}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Nome} != null ? $F{Nome} : ""]]></textFieldExpression>
 			</textField>
 			<componentElement>
 				<reportElement positionType="Float" x="0" y="53" width="555" height="30" isRemoveLineWhenBlank="true" uuid="dbcc4fab-41ad-4ff4-b2a1-a1b149afd4f4">
@@ -203,7 +207,7 @@
 							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="57" height="30" uuid="4d5f3172-0543-4f59-a563-3ed75c50fa95"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{Frequencia} != null ? $F{Frequencia} : ""]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{PermiteRegistroFrequencia} ? ($F{Frequencia} != null ? $F{Frequencia} : "") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
