@@ -37,7 +37,9 @@ namespace SME.SR.Application
                     LancaNota = c.PodeLancarNota(componentesApiEol),
                     Regencia = c.EhRegencia(componentesApiEol),
                     TerritorioSaber = c.TerritorioSaber,
-                    TipoEscola = c.TipoEscola
+                    TipoEscola = c.TipoEscola,
+                    Frequencia = componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == c.Codigo).PermiteRegistroFrequencia
+
                 });
             }
 

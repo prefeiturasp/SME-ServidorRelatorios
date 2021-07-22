@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
-using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +19,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+
             var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
             var mensagensErro = new StringBuilder();

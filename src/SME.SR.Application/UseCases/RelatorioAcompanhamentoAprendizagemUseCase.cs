@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,11 +46,13 @@ namespace SME.SR.Application
 
             var frequenciaAlunos = await mediator.Send(new ObterFrequenciaGeralAlunosPorTurmaEBimestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), bimestres));
 
+            var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, parametros.ComponenteCurricularId.ToString(), periodoInicioFim.Id));
+
             var registrosIndividuais = await mediator.Send(new ObterRegistroIndividualPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, periodoInicioFim.DataInicio, periodoInicioFim.DataFim));
 
             var Ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, periodoInicioFim.DataInicio, periodoInicioFim.DataFim));
 
-            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas));
+            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas, turmaPossuiFrequenciaRegistrada));
 
             await mediator.Send(new GerarRelatorioHtmlPDFAcompAprendizagemCommand(relatorioDto, filtro.CodigoCorrelacao));
         }
@@ -60,17 +64,21 @@ namespace SME.SR.Application
 
             if (semestre == 1)
             {
+                var periodoEscolar = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.Last());
                 return new PeriodoEscolarDto()
                 {
+                    Id = periodoEscolar.Id,
                     DataInicio = new DateTime(ano, 1, 1),
-                    DataFim = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.Last()).PeriodoFim
+                    DataFim = periodoEscolar.PeriodoFim
                 };
             }
             else
             {
+                var periodoEscolar = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.First());
                 return new PeriodoEscolarDto()
                 {
-                    DataInicio = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.First()).PeriodoInicio,
+                    Id = periodoEscolar.Id,
+                    DataInicio = periodoEscolar.PeriodoInicio,
                     DataFim = new DateTime(ano, 12, 31)
                 };
             }
