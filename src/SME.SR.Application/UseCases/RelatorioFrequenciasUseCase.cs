@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFrequenciasDto>();           
+            var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFrequenciaDto>();           
 
             var dadosRelatorio = await mediator.Send(new ObterRelatorioFrequenciaPdfQuery(relatorioFiltros));
 
