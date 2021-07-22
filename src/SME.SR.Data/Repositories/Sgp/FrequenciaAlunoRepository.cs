@@ -119,7 +119,7 @@ namespace SME.SR.Data
                               and t.modalidade_codigo = @modalidade
                               and t.semestre = @semestre
                             group by fa.codigo_aluno, fa.tipo, fa.disciplina_id, fa.periodo_inicio, 
-                            fa.periodo_fim, fa.bimestre, fa.periodo_escolar_id, t.ano_letivo, t.modalidade_codigo";
+                            fa.periodo_fim, fa.bimestre, fa.periodo_escolar_id, t.ano_letivo, t.modalidade_codigo, t.turma_id";
 
             var parametros = new { codigosAluno, anoLetivo, modalidade, semestre };
 
