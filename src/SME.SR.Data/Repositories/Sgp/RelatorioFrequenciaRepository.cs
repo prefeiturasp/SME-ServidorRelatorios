@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Data
 {
-    public class RelatorioFaltasFrequenciaRepository : IRelatorioFaltasFrequenciaRepository
+    public class RelatorioFrequenciaRepository : IRelatorioFrequenciaRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        public RelatorioFaltasFrequenciaRepository(VariaveisAmbiente variaveisAmbiente)
+        public RelatorioFrequenciaRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RelatorioFaltaFrequenciaDreDto>> ObterFaltasFrequenciaPorAno(int anoLetivo,
+        public async Task<IEnumerable<RelatorioFrequenciaDreDto>> ObterFrequenciaPorAno(int anoLetivo,
                                                                                                    string dreId,
                                                                                                    string ueId,
                                                                                                    Modalidade modalidade,
@@ -79,11 +79,11 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                var dres = new List<RelatorioFaltaFrequenciaDreDto>();
+                var dres = new List<RelatorioFrequenciaDreDto>();
 
                 var arrayComponentes = componentesCurriculares = componentesCurriculares.Any() ? componentesCurriculares.ToArray() : new string[0] { };
 
-                await conexao.QueryAsync(query.ToString(), (Func<RelatorioFaltaFrequenciaDreDto, RelatorioFaltaFrequenciaUeDto, RelatorioFaltaFrequenciaAnoDto, RelatorioFaltaFrequenciaBimestreDto, RelatorioFaltaFrequenciaComponenteDto, RelatorioFaltaFrequenciaAlunoDto, RelatorioFaltaFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
+                await conexao.QueryAsync(query.ToString(), (Func<RelatorioFrequenciaDreDto, RelatorioFaltaFrequenciaUeDto, RelatorioFaltaFrequenciaAnoDto, RelatorioFaltaFrequenciaBimestreDto, RelatorioFaltaFrequenciaComponenteDto, RelatorioFaltaFrequenciaAlunoDto, RelatorioFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
                 {
                     dre = ObterDre(dre, dres);
                     ue = ObterUe(dre, ue);
@@ -139,7 +139,7 @@ namespace SME.SR.Data
             return ano;
         }
 
-        private static RelatorioFaltaFrequenciaUeDto ObterUe(RelatorioFaltaFrequenciaDreDto dre, RelatorioFaltaFrequenciaUeDto ue)
+        private static RelatorioFaltaFrequenciaUeDto ObterUe(RelatorioFrequenciaDreDto dre, RelatorioFaltaFrequenciaUeDto ue)
         {
             var ueSelecionada = dre.Ues.FirstOrDefault(c => c.CodigoUe == ue.CodigoUe);
             if (ueSelecionada != null)
@@ -154,7 +154,7 @@ namespace SME.SR.Data
             return ue;
         }
 
-        private static RelatorioFaltaFrequenciaDreDto ObterDre(RelatorioFaltaFrequenciaDreDto dre, List<RelatorioFaltaFrequenciaDreDto> dres)
+        private static RelatorioFrequenciaDreDto ObterDre(RelatorioFrequenciaDreDto dre, List<RelatorioFrequenciaDreDto> dres)
         {
             var dreSelecionada = dres.FirstOrDefault(c => c.CodigoDre == dre.CodigoDre);
             if (dreSelecionada != null)

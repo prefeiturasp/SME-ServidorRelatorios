@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Data
 {
-    public interface IRelatorioFaltasFrequenciaRepository
+    public interface IRelatorioFrequenciaRepository
     {
-        Task<IEnumerable<RelatorioFaltaFrequenciaDreDto>> ObterFaltasFrequenciaPorAno(int anoLetivo,
+        Task<IEnumerable<RelatorioFrequenciaDreDto>> ObterFrequenciaPorAno(int anoLetivo,
                                                                                       string dreId,
                                                                                       string ueId,
                                                                                       Modalidade modalidade,
