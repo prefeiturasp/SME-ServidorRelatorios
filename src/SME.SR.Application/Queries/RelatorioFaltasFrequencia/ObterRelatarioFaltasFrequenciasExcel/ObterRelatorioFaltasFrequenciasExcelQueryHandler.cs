@@ -118,43 +118,22 @@ namespace SME.SR.Application
 
         private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFaltaFrequenciaAlunoDto aluno)
         {
-            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
-            {
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = aluno.Frequencia;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
-            }
-            else
-            {
-                ((RelatorioFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = aluno.Frequencia;
-                ((RelatorioFrequenciasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
-                ((RelatorioFrequenciasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
-                ((RelatorioFrequenciasExcelDto)relatorioDto).TotalAusencias = aluno.TotalAusencias;
-                ((RelatorioFrequenciasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
-            }
+
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = aluno.Frequencia;
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
         }
 
         private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFaltaFrequenciaAlunoDto aluno)
         {
-            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
-            {
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).AulasQuantidade = aluno.TotalAulas;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
-            }
-            else
-            {
-                ((RelatorioFaltasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
-                ((RelatorioFaltasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
-                ((RelatorioFaltasExcelDto)relatorioDto).AulasQuantidade = aluno.TotalAulas;
-                ((RelatorioFaltasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
-                ((RelatorioFaltasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
-            }
+
+            ((RelatorioFaltasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
+            ((RelatorioFaltasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
+            ((RelatorioFaltasExcelDto)relatorioDto).AulasQuantidade = aluno.TotalAulas;
+            ((RelatorioFaltasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
+            ((RelatorioFaltasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
         }
     }
 }
