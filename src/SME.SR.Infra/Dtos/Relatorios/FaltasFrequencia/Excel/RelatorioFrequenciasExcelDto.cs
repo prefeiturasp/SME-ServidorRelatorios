@@ -34,7 +34,7 @@ namespace SME.SR.Infra
         [Display(Description = "Qtd Faltas")]
         public int TotalAusencias { get; set; }
 
-        [Display(Description = "Qtd Compensações")]
+        [Display(Description = "Compensações")]
         public int TotalCompensacoes { get; set; }
 
         [Display(Description = "% Frequência")]
