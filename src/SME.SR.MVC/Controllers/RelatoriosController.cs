@@ -65,6 +65,93 @@ namespace SME.SR.MVC.Controllers
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
+            model.Dres = new List<RelatorioFrequenciaDreDto>()
+            {
+                new RelatorioFrequenciaDreDto()
+                {
+                    CodigoDre = "1",
+                    NomeDre = "DRE 1",
+                    Ues = new List<RelatorioFaltaFrequenciaUeDto>()
+                    {
+                        new RelatorioFaltaFrequenciaUeDto()
+                        {
+                            CodigoUe ="1",
+                            NomeUe = "UE 1",
+                            TipoUe = TipoEscola.CEMEI,
+                            Anos = new List<RelatorioFaltaFrequenciaAnoDto>()
+                            {
+                                new RelatorioFaltaFrequenciaAnoDto()
+                                {
+                                    NomeAno = "2021",
+                                    Bimestres = new List<RelatorioFaltaFrequenciaBimestreDto>()
+                                    {
+                                        new RelatorioFaltaFrequenciaBimestreDto()
+                                        {
+                                            NomeBimestre = "Bimestre 01",
+                                            Numero = "1",
+                                            Componentes = new List<RelatorioFaltaFrequenciaComponenteDto>()
+                                            {
+                                                new RelatorioFaltaFrequenciaComponenteDto()
+                                                {
+                                                    NomeComponente = "Componente 1",
+                                                    CodigoComponente = "001",
+                                                    Alunos = new List<RelatorioFaltaFrequenciaAlunoDto>()
+                                                    {
+                                                        new RelatorioFaltaFrequenciaAlunoDto()
+                                                        {
+                                                            NumeroChamada = "001",
+                                                            CodigoAluno = 001,
+                                                            NomeAluno = "Marcos Almeida Machado",
+                                                            NomeTurma = "Turma 001",
+                                                            CodigoTurma = "001",
+                                                            TotalAusencias = 1,
+                                                            TotalCompensacoes = 1,
+                                                            TotalAulas = 20,
+                                                        },
+                                                        new RelatorioFaltaFrequenciaAlunoDto()
+                                                        {
+                                                            NumeroChamada = "002",
+                                                            CodigoAluno = 002,
+                                                            NomeAluno = "Antonio Castro Santana",
+                                                            NomeTurma = "Turma 001",
+                                                            CodigoTurma = "001",
+                                                            TotalAusencias = 3,
+                                                            TotalCompensacoes = 2,
+                                                            TotalAulas = 20,
+                                                        },
+                                                        new RelatorioFaltaFrequenciaAlunoDto()
+                                                        {
+                                                            NumeroChamada = "003",
+                                                            CodigoAluno = 003,
+                                                            NomeAluno = "Juliana Fernandes Moreira",
+                                                            NomeTurma = "Turma 001",
+                                                            CodigoTurma = "001",
+                                                            TotalAusencias = 0,
+                                                            TotalCompensacoes = 0,
+                                                            TotalAulas = 20,
+                                                        },
+                                                        new RelatorioFaltaFrequenciaAlunoDto()
+                                                        {
+                                                            NumeroChamada = "004",
+                                                            CodigoAluno = 004,
+                                                            NomeAluno = "Fernanda Melo Martins",
+                                                            NomeTurma = "Turma 001",
+                                                            CodigoTurma = "001",
+                                                            TotalAusencias = 7,
+                                                            TotalCompensacoes = 5,
+                                                            TotalAulas = 20,
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            };
             return View(model);
         }
 
@@ -7561,7 +7648,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Foto = "https://via.placeholder.com/80",
                     Ciclo = "Médio"
                 },
-                
+
                 ParecerConclusivo = "",
                 RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
