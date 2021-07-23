@@ -1,7 +1,9 @@
-﻿namespace SME.SR.Infra
+﻿using System.Threading.Tasks;
+
+namespace SME.SR.Infra
 {
     public interface IServicoFila
     {
-        void PublicaFila(PublicaFilaDto publicaFilaDto);
+        Task PublicaFila(PublicaFilaDto publicaFilaDto);
     }
 }

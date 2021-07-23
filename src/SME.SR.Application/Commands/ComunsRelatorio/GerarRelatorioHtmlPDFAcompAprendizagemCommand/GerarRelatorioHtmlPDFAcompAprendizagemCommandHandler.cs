@@ -73,7 +73,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
                 if (request.EnvioPorRabbit)
                 {
-                    servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, request.CodigoCorrelacao));
+                    await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, request.CodigoCorrelacao));
                     return string.Empty;
                 }
 
@@ -81,7 +81,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             }
             catch (Exception e)
             {
-                SentrySdk.CaptureMessage($"Erro na geração do relatório de acompnhamento de aprendizagem - {e.Message}");
+                SentrySdk.CaptureMessage($"Erro na geração do relatório de acompanhamento de aprendizagem - {e.Message}");
                 throw e;
             }
 
