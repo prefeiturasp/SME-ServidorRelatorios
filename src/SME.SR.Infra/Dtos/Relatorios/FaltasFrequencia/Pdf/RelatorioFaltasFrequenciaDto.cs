@@ -14,6 +14,7 @@ namespace SME.SR.Infra
         public string Ue{ get; set; }
         public string Ano{ get; set; }
         public string Bimestre{ get; set; }
+        public string Turma{ get; set; }
         public string ComponenteCurricular{ get; set; }
         public string Usuario{ get; set; }
         public string RF{ get; set; }
@@ -21,5 +22,10 @@ namespace SME.SR.Infra
         public string Modalidade { get; set; }
         public string UltimoAluno { get; set; }
         public List<RelatorioFrequenciaDreDto> Dres { get; set; }
+        public string TurmaAno { 
+            get {
+                return $"{Turma}-{Ano}";
+            }
+        }
     }
 }
