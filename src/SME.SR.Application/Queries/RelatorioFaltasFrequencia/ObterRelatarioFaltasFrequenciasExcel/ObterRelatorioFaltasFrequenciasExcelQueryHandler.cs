@@ -116,7 +116,8 @@ namespace SME.SR.Application
         }
 
 
-        private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFaltaFrequenciaAlunoDto aluno)
+        private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto,
+            TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFaltaFrequenciaAlunoDto aluno)
         {
             if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
             {
@@ -136,7 +137,8 @@ namespace SME.SR.Application
             }
         }
 
-        private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFaltaFrequenciaAlunoDto aluno)
+        private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto,
+            TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFaltaFrequenciaAlunoDto aluno)
         {
             if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
             {

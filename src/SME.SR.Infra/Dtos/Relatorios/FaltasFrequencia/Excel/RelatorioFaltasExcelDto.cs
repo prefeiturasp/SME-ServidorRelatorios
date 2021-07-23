@@ -2,7 +2,7 @@
 
 namespace SME.SR.Infra
 {
-    public  class RelatorioFaltasExcelDto : RelatorioFaltasFrequenciasBaseExcelDto
+    public class RelatorioFaltasExcelDto : RelatorioFaltasFrequenciasBaseExcelDto
     {
         [Display(Description = "Nome DRE")]
         public string DreNome { get; set; }
