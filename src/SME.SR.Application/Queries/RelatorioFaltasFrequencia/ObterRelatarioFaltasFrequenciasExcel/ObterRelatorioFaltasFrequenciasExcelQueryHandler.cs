@@ -106,10 +106,10 @@ namespace SME.SR.Application
                 relatorioBase = relatorioFrequencia;
             }
 
-            if (tipoRelatorio != TipoRelatorioFaltasFrequencia.Turma)
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
                 SetarFrequencia(ref relatorioBase, tipoRelatorio, aluno);
 
-            if (tipoRelatorio != TipoRelatorioFaltasFrequencia.Ano)
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Turma)
                 SetarFaltas(ref relatorioBase, tipoRelatorio, aluno);
 
             return relatorioBase;
