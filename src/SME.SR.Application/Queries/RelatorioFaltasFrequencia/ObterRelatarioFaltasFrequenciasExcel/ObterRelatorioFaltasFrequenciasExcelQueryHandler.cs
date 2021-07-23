@@ -25,7 +25,7 @@ namespace SME.SR.Application
                                 foreach (var aluno in componente.Alunos)
                                 {
                                     listaFaltaFrequencia.Add(ObterRelatorioFaltasFrequencia(request.TipoRelatorio, dre.NomeDre, ue.NomeUe, bimestre.NomeBimestre,
-                                                                                            ano.NomeAno,componente.NomeComponente,aluno));
+                                                                                            ano.NomeAno, componente.NomeComponente, aluno));
                                 }
                             }
                         }
@@ -83,19 +83,19 @@ namespace SME.SR.Application
 
         private RelatorioFaltasFrequenciasBaseExcelDto ObterRelatorioFaltasFrequencia(TipoRelatorioFaltasFrequencia tipoRelatorio,
                                                                                       string dreNome, string ueNome, string bimestre,
-                                                                                      string ano,string componenteCurricular,RelatorioFaltaFrequenciaAlunoDto aluno)
+                                                                                      string ano, string componenteCurricular, RelatorioFaltaFrequenciaAlunoDto aluno)
         {
             RelatorioFaltasFrequenciasBaseExcelDto relatorioBase;
 
             if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
-            { 
+            {
                 var relatorioAmbos = new RelatorioFaltasFrequenciasExcelDto();
                 ObterRelatorioFaltasFrequenciaBase(ref relatorioAmbos, dreNome, ueNome, bimestre, ano, aluno.NomeTurma, componenteCurricular, aluno.CodigoAluno.ToString(), aluno.NomeAluno);
                 relatorioBase = relatorioAmbos;
             }
             else if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Turma)
-            { 
-               var relatorioFaltas = new RelatorioFaltasExcelDto();
+            {
+                var relatorioFaltas = new RelatorioFaltasExcelDto();
                 ObterRelatorioFaltasFrequenciaBase(ref relatorioFaltas, dreNome, ueNome, bimestre, ano, aluno.NomeTurma, componenteCurricular, aluno.CodigoAluno.ToString(), aluno.NomeAluno);
                 relatorioBase = relatorioFaltas;
             }
