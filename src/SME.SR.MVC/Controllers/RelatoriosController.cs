@@ -48,20 +48,21 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioGraficoBarrasTeste", grafico);
         }
-        [HttpGet("faltas-frequencia")]
+        [HttpGet("frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
             var model = await mediator.Send(new ObterRelatorioFrequenciaPdfQuery(new FiltroRelatorioFrequenciasDto()));
             //mock
             model.ExibeFaltas = true;
             model.ExibeFrequencia = false;
-            model.Dre = "DRE 01";
-            model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
-            model.Ano = "001";
+            model.Dre = "Todos";
+            model.Ue = "Todos";
+            model.Ano = "1ºAno";
             model.Bimestre = "1º";
             model.ComponenteCurricular = "Matemática";
             model.Usuario = "ADMIN";
             model.Modalidade = "Fundamental";
+            model.Turma = "Todos";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
@@ -82,18 +83,18 @@ namespace SME.SR.MVC.Controllers
                             {
                                 new RelatorioFaltaFrequenciaAnoDto()
                                 {
-                                    NomeAno = "2021",
+                                    NomeAno = "EF-1A-1ºAno",
                                     Bimestres = new List<RelatorioFaltaFrequenciaBimestreDto>()
                                     {
                                         new RelatorioFaltaFrequenciaBimestreDto()
                                         {
-                                            NomeBimestre = "Bimestre 01",
+                                            NomeBimestre = "1º BIMESTRE",
                                             Numero = "1",
                                             Componentes = new List<RelatorioFaltaFrequenciaComponenteDto>()
                                             {
                                                 new RelatorioFaltaFrequenciaComponenteDto()
                                                 {
-                                                    NomeComponente = "Componente 1",
+                                                    NomeComponente = "Arte",
                                                     CodigoComponente = "001",
                                                     Alunos = new List<RelatorioFaltaFrequenciaAlunoDto>()
                                                     {
@@ -105,7 +106,9 @@ namespace SME.SR.MVC.Controllers
                                                             NomeTurma = "Turma 001",
                                                             CodigoTurma = "001",
                                                             TotalAusencias = 1,
+                                                            TotalRemoto = 10,
                                                             TotalCompensacoes = 1,
+                                                            TotalPresenca = 19,
                                                             TotalAulas = 20,
                                                         },
                                                         new RelatorioFaltaFrequenciaAlunoDto()
@@ -116,7 +119,9 @@ namespace SME.SR.MVC.Controllers
                                                             NomeTurma = "Turma 001",
                                                             CodigoTurma = "001",
                                                             TotalAusencias = 3,
+                                                            TotalRemoto = 10,
                                                             TotalCompensacoes = 2,
+                                                            TotalPresenca = 17,
                                                             TotalAulas = 20,
                                                         },
                                                         new RelatorioFaltaFrequenciaAlunoDto()
@@ -127,7 +132,9 @@ namespace SME.SR.MVC.Controllers
                                                             NomeTurma = "Turma 001",
                                                             CodigoTurma = "001",
                                                             TotalAusencias = 0,
+                                                            TotalRemoto = 56,
                                                             TotalCompensacoes = 0,
+                                                            TotalPresenca = 20,
                                                             TotalAulas = 20,
                                                         },
                                                         new RelatorioFaltaFrequenciaAlunoDto()
@@ -138,7 +145,9 @@ namespace SME.SR.MVC.Controllers
                                                             NomeTurma = "Turma 001",
                                                             CodigoTurma = "001",
                                                             TotalAusencias = 7,
+                                                            TotalRemoto = 12,
                                                             TotalCompensacoes = 5,
+                                                            TotalPresenca = 13,
                                                             TotalAulas = 20,
                                                         }
                                                     }
