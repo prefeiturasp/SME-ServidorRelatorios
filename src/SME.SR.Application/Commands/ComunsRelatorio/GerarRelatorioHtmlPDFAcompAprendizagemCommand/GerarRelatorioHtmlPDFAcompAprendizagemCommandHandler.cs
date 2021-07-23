@@ -81,7 +81,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             }
             catch (Exception e)
             {
-                SentrySdk.CaptureException(e);
+                SentrySdk.CaptureMessage($"Erro na geração do relatório de acompnhamento de aprendizagem - {e.Message}");
                 throw e;
             }
 
