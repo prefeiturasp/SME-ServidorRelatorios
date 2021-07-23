@@ -1348,6 +1348,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
+        [HttpGet("sondagem-numeros")]
         public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
@@ -7503,22 +7504,102 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             }
         }
 
+        [HttpGet("boletim-escolar-detalhado")]
+        public async Task<IActionResult> RelatorioBoletimEscolarDetalhado([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+
+            var boletimEscolarDetalhadoDto = new BoletimEscolarDetalhadoDto();
+
+            var aluno01 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Emerson Ferreira e Silva",
+                    CodigoEol = "1234567",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                },
+                ParecerConclusivo = "Retido",
+                RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+
+                RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno01);
+
+            var aluno02 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Maria Ferreira e Silva",
+                    CodigoEol = "1234568",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                },
+
+                ParecerConclusivo = "",
+                RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+
+                RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
+
+
+            var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+
+            return View("RelatorioBoletimEscolarDetalhado", model);
+
+        }
+
 
         [HttpGet("acompanhamento-aprendizagem-teste")]
         public async Task<IActionResult> AcompanhamentoAprendizagemTeste([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
         {
             try
             {
-                var dto = new AcompanhamentoAprendizagemAlunoDto();
-                dto.ApanhadoGeral = @"<ul style='list-style-type: disc;'><li><span style='font-size: 48px;'>
-    <strong style=''><span style='background-color: rgb(0, 0, 255);'>teste<img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
-</span></strong></span></li></ul><p>De acordo com a imagem abaixo:</p><p><img src='https://media.gazetadopovo.com.br/viver-bem/2017/03/criancadocumento-600x401-ce1bce00.jpg' style='width: 360; height: 200'>
-<br></p><p><br></p><table style='width: 100%;'><br></table>";
-
-                //var percursoFormatado = dto.PercusoTurmaFormatado();
-                //return View("RelatorioAcompanhamentoAprendizagemTeste", percursoFormatado);
-
-                return default;
+                var dto = new RelatorioAcompanhamentoAprendizagemDto();
+                return View("RelatorioAcompanhamentoAprendizagemTeste", dto);
             }
             catch (Exception ex)
             {
