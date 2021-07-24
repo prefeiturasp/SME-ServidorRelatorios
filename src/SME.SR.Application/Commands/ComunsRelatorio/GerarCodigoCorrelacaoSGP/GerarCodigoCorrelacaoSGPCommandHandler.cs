@@ -13,14 +13,14 @@ namespace SME.SR.Application
         {
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
-        public async Task<Guid> Handle(GerarCodigoCorrelacaoSGPCommand request, CancellationToken cancellationToken)
+        public Task<Guid> Handle(GerarCodigoCorrelacaoSGPCommand request, CancellationToken cancellationToken)
         {
 
             var novaCorrelacao = Guid.NewGuid();
 
-            await servicoFila.PublicaFila(new PublicaFilaDto(novaCorrelacao, RotasRabbit.RotaRelatorioCorrelacaoCopiar, RotasRabbit.ExchangeSgp, request.CodigoCorrelacaoParaCopiar));
+            servicoFila.PublicaFila(new PublicaFilaDto(novaCorrelacao, RotasRabbit.RotaRelatorioCorrelacaoCopiar, RotasRabbit.ExchangeSgp, request.CodigoCorrelacaoParaCopiar));
 
-            return novaCorrelacao;
+            return Task.FromResult(novaCorrelacao);
 
         }
     }
