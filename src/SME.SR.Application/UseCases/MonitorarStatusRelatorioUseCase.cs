@@ -37,22 +37,22 @@ namespace SME.SR.Application
                 //TODO: Aplicar Polly ??
                 if (await mediator.Send(new SalvarRelatorioJasperLocalCommand(dadosRelatorio.JSessionId, dadosRelatorio.RequisicaoId, dadosRelatorio.ExportacaoId, dadosRelatorio.CodigoCorrelacao)))
                 {
-                    await servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, filtroRelatorioDto.CodigoCorrelacao));
+                    servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, filtroRelatorioDto.CodigoCorrelacao));
                     SentrySdk.CaptureMessage("8 - MonitorarStatusRelatorioUseCase - Publicado na fila PRONTO OK!");
                 }
-                else await PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
+                else PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
 
             }
             else
             {
-                await PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
+                PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
             }
         }
 
-        private async Task PublicarNovamenteNaFila(FiltroRelatorioDto filtroRelatorioDto, DadosRelatorioDto dadosRelatorio)
+        private void PublicarNovamenteNaFila(FiltroRelatorioDto filtroRelatorioDto, DadosRelatorioDto dadosRelatorio)
         {
             SentrySdk.AddBreadcrumb($"Indo publicar na fila Processando..", "8 - MonitorarStatusRelatorioUseCase");
-            UtilTimer.SetTimeout(5000, () => Task.FromResult(servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.RotaRelatoriosProcessando, RotasRabbit.ExchangeListenerWorkerRelatorios, filtroRelatorioDto.CodigoCorrelacao))));
+            UtilTimer.SetTimeout(5000, () => servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbit.RotaRelatoriosProcessando, RotasRabbit.ExchangeListenerWorkerRelatorios, filtroRelatorioDto.CodigoCorrelacao)));
             SentrySdk.CaptureMessage("8 - MonitorarStatusRelatorioUseCase - Publicado na fila Processando -> Não está pronto ou Erro!");
         }
     }

@@ -12,15 +12,13 @@ namespace SME.SR.Infra
     public class FilaRabbit : IServicoFila
     {
         private readonly IConfiguration configuration;
-        private readonly IAsyncPolicy policy;
 
-        public FilaRabbit(IConfiguration configuration, IReadOnlyPolicyRegistry<string> registry)
+        public FilaRabbit(IConfiguration configuration)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            this.policy = registry.Get<IAsyncPolicy>(PoliticaPolly.PublicaFila);
         }
 
-        public async Task PublicaFila(PublicaFilaDto publicaFilaDto)
+        public void PublicaFila(PublicaFilaDto publicaFilaDto)
         {
 
             var request = new MensagemRabbit(publicaFilaDto.Rota.Replace(".", "/"), publicaFilaDto.Dados, publicaFilaDto.CodigoCorrelacao);
@@ -38,11 +36,6 @@ namespace SME.SR.Infra
                 Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
                 VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
             };
-            await policy.ExecuteAsync(() => PublicaMensagem(publicaFilaDto, body, factory));
-        }
-
-        private async Task PublicaMensagem(PublicaFilaDto publicaFilaDto, byte[] body, ConnectionFactory factory)
-        {
             var exchange = publicaFilaDto.Exchange ?? RotasRabbit.ExchangeListenerWorkerRelatorios;
 
             using (var conexaoRabbit = factory.CreateConnection())
