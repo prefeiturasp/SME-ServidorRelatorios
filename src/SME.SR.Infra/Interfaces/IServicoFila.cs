@@ -4,6 +4,6 @@ namespace SME.SR.Infra
 {
     public interface IServicoFila
     {
-        void PublicaFila(PublicaFilaDto publicaFilaDto);
+        Task PublicaFila(PublicaFilaDto publicaFilaDto);
     }
 }
