@@ -20,12 +20,12 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<RelatorioFrequenciaDreDto>> ObterFrequenciaPorAno(int anoLetivo,
-                                                                                                   string dreId,
-                                                                                                   string ueId,
-                                                                                                   Modalidade modalidade,
-                                                                                                   IEnumerable<string> anosEscolares,
-                                                                                                   IEnumerable<string> componentesCurriculares,
-                                                                                                   IEnumerable<int> bimestres)
+                                                                                        string dreId,
+                                                                                        string ueId,
+                                                                                        Modalidade modalidade,
+                                                                                        IEnumerable<string> anosEscolares,
+                                                                                        IEnumerable<string> componentesCurriculares,
+                                                                                        IEnumerable<int> bimestres)
         {
             var query = new StringBuilder(@"
                 select
@@ -83,7 +83,7 @@ namespace SME.SR.Data
 
                 var arrayComponentes = componentesCurriculares = componentesCurriculares.Any() ? componentesCurriculares.ToArray() : new string[0] { };
 
-                await conexao.QueryAsync(query.ToString(), (Func<RelatorioFrequenciaDreDto, RelatorioFaltaFrequenciaUeDto, RelatorioFaltaFrequenciaAnoDto, RelatorioFaltaFrequenciaBimestreDto, RelatorioFaltaFrequenciaComponenteDto, RelatorioFaltaFrequenciaAlunoDto, RelatorioFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
+                await conexao.QueryAsync(query.ToString(), (Func<RelatorioFrequenciaDreDto, RelatorioFrequenciaUeDto, RelatorioFrequenciaTurmaAnoDto, RelatorioFrequenciaBimestreDto, RelatorioFrequenciaComponenteDto, RelatorioFrequenciaAlunoDto, RelatorioFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
                 {
                     dre = ObterDre(dre, dres);
                     ue = ObterUe(dre, ue);
@@ -109,7 +109,7 @@ namespace SME.SR.Data
             };
         }
 
-        private static RelatorioFaltaFrequenciaComponenteDto ObterComponente(RelatorioFaltaFrequenciaBimestreDto bimestre, RelatorioFaltaFrequenciaComponenteDto componente)
+        private static RelatorioFrequenciaComponenteDto ObterComponente(RelatorioFrequenciaBimestreDto bimestre, RelatorioFrequenciaComponenteDto componente)
         {
             var componenteSelecionado = bimestre.Componentes.FirstOrDefault(c => c.CodigoComponente == componente.CodigoComponente);
             if (componenteSelecionado != null)
@@ -119,7 +119,7 @@ namespace SME.SR.Data
             return componente;
         }
 
-        private static RelatorioFaltaFrequenciaBimestreDto ObterBimestre(RelatorioFaltaFrequenciaAnoDto ano, RelatorioFaltaFrequenciaBimestreDto bimestre)
+        private static RelatorioFrequenciaBimestreDto ObterBimestre(RelatorioFrequenciaTurmaAnoDto ano, RelatorioFrequenciaBimestreDto bimestre)
         {
             var bimestreSelecionado = ano.Bimestres.FirstOrDefault(c => c.NomeBimestre == bimestre.NomeBimestre);
             if (bimestreSelecionado != null)
@@ -129,17 +129,17 @@ namespace SME.SR.Data
             return bimestre;
         }
 
-        private static RelatorioFaltaFrequenciaAnoDto ObterAno(RelatorioFaltaFrequenciaUeDto ue, RelatorioFaltaFrequenciaAnoDto ano)
+        private static RelatorioFrequenciaTurmaAnoDto ObterAno(RelatorioFrequenciaUeDto ue, RelatorioFrequenciaTurmaAnoDto ano)
         {
-            var anoSelecionado = ue.Anos.FirstOrDefault(c => c.NomeAno == ano.NomeAno);
+            var anoSelecionado = ue.TurmasAnos.FirstOrDefault(c => c.Nome == ano.Nome);
             if (anoSelecionado != null)
                 ano = anoSelecionado;
             else
-                ue.Anos.Add(ano);
+                ue.TurmasAnos.Add(ano);
             return ano;
         }
 
-        private static RelatorioFaltaFrequenciaUeDto ObterUe(RelatorioFrequenciaDreDto dre, RelatorioFaltaFrequenciaUeDto ue)
+        private static RelatorioFrequenciaUeDto ObterUe(RelatorioFrequenciaDreDto dre, RelatorioFrequenciaUeDto ue)
         {
             var ueSelecionada = dre.Ues.FirstOrDefault(c => c.CodigoUe == ue.CodigoUe);
             if (ueSelecionada != null)

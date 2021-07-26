@@ -16,7 +16,7 @@ namespace SME.SR.Application
             {
                 foreach (var ue in dre.Ues)
                 {
-                    foreach (var ano in ue.Anos)
+                    foreach (var ano in ue.TurmasAnos)
                     {
                         foreach (var bimestre in ano.Bimestres)
                         {
@@ -25,7 +25,7 @@ namespace SME.SR.Application
                                 foreach (var aluno in componente.Alunos)
                                 {
                                     listaFaltaFrequencia.Add(ObterRelatorioFaltasFrequencia(request.TipoRelatorio, dre.NomeDre, ue.NomeUe, bimestre.NomeBimestre,
-                                                                                            ano.NomeAno, aluno.NomeTurma, componente.NomeComponente,
+                                                                                            ano.Nome, aluno.NomeTurma, componente.NomeComponente,
                                                                                             aluno.CodigoAluno, aluno.NomeAluno, aluno.TotalAulas, aluno.TotalAusencias,
                                                                                             aluno.Frequencia));
                                 }
