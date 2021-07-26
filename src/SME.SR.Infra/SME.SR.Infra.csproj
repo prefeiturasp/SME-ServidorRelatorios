@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Dtos\Comunicado\" />
+    <Folder Include="Dtos\Relatorios\Frequencia\Excel\" />
   </ItemGroup>
 
 </Project>

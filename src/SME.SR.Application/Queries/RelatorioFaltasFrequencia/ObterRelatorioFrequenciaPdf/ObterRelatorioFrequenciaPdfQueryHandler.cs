@@ -49,7 +49,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             var componentes = await mediator.Send(new ObterListaComponentesCurricularesQuery());
 
             var codigosTurmas = dres.SelectMany(d => d.Ues)
-                .SelectMany(u => u.Anos)
+                .SelectMany(u => u.TurmasAnos)
                 .SelectMany(u => u.Bimestres)
                 .SelectMany(u => u.Componentes)
                 .SelectMany(u => u.Alunos)
@@ -69,9 +69,9 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             {
                 foreach (var ue in dre.Ues)
                 {
-                    foreach (var ano in ue.Anos)
+                    foreach (var ano in ue.TurmasAnos)
                     {
-                        ano.NomeAno = ano.NomeAno.Equals("0º ano") ? "Turma de Programa" : ano.NomeAno;
+                        ano.Nome = ano.Nome.Equals("0º ano") ? "Turma de Programa" : ano.Nome;
                         foreach (var bimestre in ano.Bimestres)
                         {
                             bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre";
@@ -101,7 +101,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
                                 {
-                                    var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFaltaFrequenciaAlunoDto
+                                    var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFrequenciaAlunoDto
                                     {
                                         CodigoAluno = c.CodigoAluno,
                                         NomeTurma = turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo)?.Nome,
@@ -120,7 +120,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                         if (deveAdicionarFinal)
                         {
-                            var final = new RelatorioFaltaFrequenciaBimestreDto
+                            var final = new RelatorioFrequenciaBimestreDto
                             {
                                 NomeBimestre = "Final",
                             };
@@ -136,7 +136,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     var componenteAtual = final.Componentes.FirstOrDefault(c => c.CodigoComponente == componente.CodigoComponente);
                                     if (componenteAtual == null)
                                     {
-                                        componenteAtual = new RelatorioFaltaFrequenciaComponenteDto();
+                                        componenteAtual = new RelatorioFrequenciaComponenteDto();
                                         componenteAtual.NomeComponente = componente.NomeComponente;
                                         componenteAtual.CodigoComponente = componente.CodigoComponente;
                                         final.Componentes.Add(componenteAtual);
@@ -149,7 +149,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         var alunoAtual = componenteAtual.Alunos.FirstOrDefault(c => c.CodigoAluno == codigoAluno);
                                         if (alunoAtual == null)
                                         {
-                                            alunoAtual = new RelatorioFaltaFrequenciaAlunoDto();
+                                            alunoAtual = new RelatorioFrequenciaAlunoDto();
                                             alunoAtual.CodigoAluno = aluno.CodigoAluno;
                                             alunoAtual.NomeAluno = aluno.NomeAluno;
                                             alunoAtual.NomeTurma = aluno.NomeTurma;
@@ -202,7 +202,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         dre.Ues = dre.Ues.OrderBy(c => c.NomeUe).ToList();
                     foreach (var ue in dre.Ues)
                     {
-                        foreach (var ano in ue.Anos)
+                        foreach (var ano in ue.TurmasAnos)
                         {
                             foreach (var bimestre in ano.Bimestres)
                             {
@@ -215,9 +215,9 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                             }
                             ano.Bimestres.RemoveAll(c => !c.Componentes.Any());
                         }
-                        ue.Anos.RemoveAll(c => !c.Bimestres.Any());
+                        ue.TurmasAnos.RemoveAll(c => !c.Bimestres.Any());
                     }
-                    dre.Ues.RemoveAll(c => !c.Anos.Any());
+                    dre.Ues.RemoveAll(c => !c.TurmasAnos.Any());
                 }
                 dres.RemoveAll(c => !c.Ues.Any());
                 dres = dres.OrderBy(c => c.NomeDre).ToList();
@@ -292,7 +292,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 filtro.Bimestres.FirstOrDefault().ToString();
         }
 
-        private static void OrdenarAlunos(FiltroRelatorioFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFaltaFrequenciaComponenteDto componente)
+        private static void OrdenarAlunos(FiltroRelatorioFrequenciasDto filtro, Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao, RelatorioFrequenciaComponenteDto componente)
         {
             if (filtro.Condicao != CondicoesRelatorioFaltasFrequencia.TodosEstudantes)
             {
@@ -317,7 +317,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             }
         }
 
-        private async Task AjustarBimestresSemFaltas(int anoLetivo, int semestre, List<RelatorioFaltaFrequenciaComponenteDto> componentes, Modalidade modalidade, List<RelatorioFaltaFrequenciaBimestreDto> bimestres)
+        private async Task AjustarBimestresSemFaltas(int anoLetivo, int semestre, List<RelatorioFrequenciaComponenteDto> componentes, Modalidade modalidade, List<RelatorioFrequenciaBimestreDto> bimestres)
         {
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo,
                                                                                                         modalidade == Modalidade.EJA ? ModalidadeTipoCalendario.EJA : ModalidadeTipoCalendario.FundamentalMedio,
@@ -328,7 +328,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 var bimestreAtual = bimestres.FirstOrDefault(c => c.Numero == numeroBimestre.ToString());
                 if (bimestreAtual == null)
                 {
-                    bimestreAtual = new RelatorioFaltaFrequenciaBimestreDto
+                    bimestreAtual = new RelatorioFrequenciaBimestreDto
                     {
                         Numero = numeroBimestre.ToString(),
                         NomeBimestre = $"{numeroBimestre}° Bimestre"
@@ -336,12 +336,12 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                     foreach (var componente in componentes)
                     {
-                        var novoComponente = new RelatorioFaltaFrequenciaComponenteDto();
+                        var novoComponente = new RelatorioFrequenciaComponenteDto();
                         novoComponente.CodigoComponente = componente.CodigoComponente;
                         novoComponente.NomeComponente = componente.NomeComponente;
                         foreach (var aluno in componente.Alunos)
                         {
-                            var novoAluno = new RelatorioFaltaFrequenciaAlunoDto();
+                            var novoAluno = new RelatorioFrequenciaAlunoDto();
                             novoAluno.TotalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(aluno.CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
                             novoAluno.TotalAusencias = 0;
                             novoAluno.TotalCompensacoes = 0;

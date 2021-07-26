@@ -6,11 +6,11 @@ namespace SME.SR.Infra
     {
         public RelatorioFrequenciaDreDto()
         {
-            Ues = new List<RelatorioFaltaFrequenciaUeDto>();
+            Ues = new List<RelatorioFrequenciaUeDto>();
         }
         public string CodigoDre { get; set; }
         public string NomeDre { get; set; }
 
-        public List<RelatorioFaltaFrequenciaUeDto> Ues { get; set; }
+        public List<RelatorioFrequenciaUeDto> Ues { get; set; }
     }
 }
