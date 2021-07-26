@@ -25,9 +25,7 @@ namespace SME.SR.Application
                                 foreach (var aluno in componente.Alunos)
                                 {
                                     listaFaltaFrequencia.Add(ObterRelatorioFaltasFrequencia(request.TipoRelatorio, dre.NomeDre, ue.NomeUe, bimestre.NomeBimestre,
-                                                                                            ano.Nome, aluno.NomeTurma, componente.NomeComponente,
-                                                                                            aluno.CodigoAluno, aluno.NomeAluno, aluno.TotalAulas, aluno.TotalAusencias,
-                                                                                            aluno.Frequencia));
+                                                                                            ano.Nome, componente.NomeComponente, aluno));
                                 }
                             }
                         }
@@ -85,7 +83,7 @@ namespace SME.SR.Application
 
         private RelatorioFaltasFrequenciasBaseExcelDto ObterRelatorioFaltasFrequencia(TipoRelatorioFaltasFrequencia tipoRelatorio,
                                                                                       string dreNome, string ueNome, string bimestre,
-                                                                                      string ano, string componenteCurricular, RelatorioFaltaFrequenciaAlunoDto aluno)
+                                                                                      string ano, string componenteCurricular, RelatorioFrequenciaAlunoDto aluno)
         {
             RelatorioFaltasFrequenciasBaseExcelDto relatorioBase;
 
@@ -118,7 +116,7 @@ namespace SME.SR.Application
         }
 
 
-        private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFaltaFrequenciaAlunoDto aluno)
+        private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFrequenciaAlunoDto aluno)
         {
 
             ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = aluno.Frequencia;
@@ -128,7 +126,7 @@ namespace SME.SR.Application
             ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
         }
 
-        private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFaltaFrequenciaAlunoDto aluno)
+        private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFrequenciaAlunoDto aluno)
         {
 
             ((RelatorioFaltasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
