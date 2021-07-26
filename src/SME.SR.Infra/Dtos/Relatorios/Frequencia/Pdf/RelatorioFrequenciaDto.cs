@@ -1,0 +1,15 @@
+﻿using System.Collections.Generic;
+
+namespace SME.SR.Infra
+{
+    public class RelatorioFrequenciaDto
+    {
+        public RelatorioFrequenciaDto()
+        {
+            Dres = new List<RelatorioFrequenciaDreDto>();
+        }
+
+        public RelatorioFrequenciaCabecalhoDto Cabecalho { get; set; }
+        public List<RelatorioFrequenciaDreDto> Dres { get; set; }
+    }
+}
