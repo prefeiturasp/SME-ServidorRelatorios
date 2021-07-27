@@ -31,12 +31,15 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             var model = new RelatorioFrequenciaDto();
             var filtro = request.Filtro;
 
-            //if (filtro.TurmasPrograma)
-            //    filtro.AnosEscolares = filtro.AnosEscolares != null
-            //        ?
-            //        filtro.AnosEscolares.Concat(new[] { new string("0") })
-            //        :
-            //        filtro.AnosEscolares;            
+            if (filtro.AnosEscolares == null)
+                filtro.AnosEscolares = new[] { new string("-99") };
+
+            if (filtro.TurmasPrograma)
+                filtro.AnosEscolares.Concat(new[] { new string("0") });
+
+            if (filtro.CodigosTurma == null)
+                filtro.CodigosTurma = new List<string> { new string("-99") };
+
 
             var dres = await relatorioFaltasFrequenciaRepository.ObterFrequenciaPorAno(filtro.AnoLetivo,
                                                                                           filtro.CodigoDre,
@@ -77,6 +80,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                     foreach (var ano in ue.TurmasAnos)
                     {
                         ano.Nome = ano.Nome.Equals("0º ano") ? "Turma de Programa" : ano.Nome;
+                        ano.ehExibirTurma = request.Filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
                         foreach (var bimestre in ano.Bimestres)
                         {
                             bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre";
@@ -89,7 +93,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 for (int a = 0; a < componente.Alunos.Count; a++)
                                 {
-                                    var aluno = componente.Alunos[a];                                    
+                                    var aluno = componente.Alunos[a];
                                     var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorTurmasQuery(aluno.CodigoTurma));
                                     var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
                                     var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
@@ -191,7 +195,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         alunoAtual.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
                                     }
                                 }
-
                             }
                             ano.Bimestres.Add(final);
                         }
@@ -203,6 +206,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 }
                 model.UltimoAluno = $"{dre.NomeDre}{model.UltimoAluno}";
             }
+
 
             DefinirCabecalho(request, model, filtro, dres, componentes);
 
@@ -258,6 +262,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             var selecionouTodasUes = string.IsNullOrWhiteSpace(filtro.CodigoUe) || filtro.CodigoUe == "-99";
             var selecionoutodasTurmas = filtro.CodigosTurma != null ? filtro.CodigosTurma.Any(c => c == "-99") : false;
 
+
+
             model.Dres = dres.ToList();
             model.Dres.RemoveAll(c => !c.Ues.Any());
             model.Cabecalho.Dre = selecionouTodasDres ? "Todas" : dres.FirstOrDefault().NomeDre;
@@ -271,19 +277,25 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             var selecionouTodosAnos = filtro.AnosEscolares.Any(c => c == "-99");
             var ano = filtro.AnosEscolares.FirstOrDefault();
-            model.Cabecalho.Ano = selecionouTodosAnos && !(filtro.Modalidade == Modalidade.EJA) ?
+
+            if (request.Filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
+            {
+                model.Cabecalho.Ano = selecionouTodosAnos && !(filtro.Modalidade == Modalidade.EJA) ?
                 "Todos"
                 :
                     filtro.AnosEscolares.Count() > 1 ?
                     string.Empty
                 :
                     ano == "-99" ? "Todos" : ano;
+            }
+            else
+                model.Cabecalho.Ano = string.Empty;
 
             DefinirNomeBimestre(model, filtro);
             DefinirNomeComponente(model, filtro, componentes);
 
             model.Cabecalho.Usuario = request.Filtro.NomeUsuario;
-            model.Cabecalho.RF = request.Filtro.CodigoRf;            
+            model.Cabecalho.RF = request.Filtro.CodigoRf;
         }
 
         private static void DefinirNomeComponente(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)
@@ -302,7 +314,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         private static void DefinirNomeBimestre(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro)
         {
-            //var selecionouTodosBimestres = filtro.Bimestres.Any(c => c == -99);
             var selecionouTodosBimestres = filtro.Bimestres.Count() == 5;
             var selecionouBimestreFinal = filtro.Bimestres.Any(c => c == 0);
 

@@ -46,7 +46,8 @@ namespace SME.SR.Data
 	                fa.total_compensacoes as TotalCompensacoes,
 	                fa.total_aulas as TotalAulas,
                     t.nome as NomeTurma,
-                    t.turma_id as CodigoTurma
+                    t.turma_id as CodigoTurma,
+                    t.ano
                 from
 	                frequencia_aluno fa
                 inner join turma t on
@@ -77,36 +78,44 @@ namespace SME.SR.Data
 
             query.AppendLine("order by t.ano, fa.bimestre");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            try
             {
-                var dres = new List<RelatorioFrequenciaDreDto>();
-
-                var arrayComponentes = componentesCurriculares = componentesCurriculares.Any() ? componentesCurriculares.ToArray() : new string[0] { };
-
-                await conexao.QueryAsync(query.ToString(), (Func<RelatorioFrequenciaDreDto, RelatorioFrequenciaUeDto, RelatorioFrequenciaTurmaAnoDto, RelatorioFrequenciaBimestreDto, RelatorioFrequenciaComponenteDto, RelatorioFrequenciaAlunoDto, RelatorioFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
+                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
                 {
-                    dre = ObterDre(dre, dres);
-                    ue = ObterUe(dre, ue);
-                    ano = ObterAno(ue, ano);
-                    bimestre = ObterBimestre(ano, bimestre);
-                    componente = ObterComponente(bimestre, componente);
-                    componente.Alunos.Add(aluno);
+                    var dres = new List<RelatorioFrequenciaDreDto>();
 
-                    return dre;
-                }), splitOn: "CodigoDre, CodigoUe, Nome,NomeBimestre, CodigoComponente,CodigoAluno",
-                param: new
-                {
-                    anoLetivo,
-                    dreId,
-                    ueId,
-                    modalidade = (int)modalidade,
-                    anosEscolares = anosEscolares != null ? anosEscolares.ToArray() : null,
-                    componentesCurriculares = arrayComponentes,
-                    bimestres = bimestres.ToArray()
-                });
+                    var arrayComponentes = componentesCurriculares = componentesCurriculares.Any() ? componentesCurriculares.ToArray() : new string[0] { };
 
-                return dres;
-            };
+                    await conexao.QueryAsync(query.ToString(), (Func<RelatorioFrequenciaDreDto, RelatorioFrequenciaUeDto, RelatorioFrequenciaTurmaAnoDto, RelatorioFrequenciaBimestreDto, RelatorioFrequenciaComponenteDto, RelatorioFrequenciaAlunoDto, RelatorioFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
+                    {
+                        dre = ObterDre(dre, dres);
+                        ue = ObterUe(dre, ue);
+                        ano = ObterAno(ue, ano);
+                        bimestre = ObterBimestre(ano, bimestre);
+                        componente = ObterComponente(bimestre, componente);
+                        componente.Alunos.Add(aluno);
+
+                        return dre;
+                    }), splitOn: "CodigoDre, CodigoUe, Nome,NomeBimestre, CodigoComponente,CodigoAluno",
+                    param: new
+                    {
+                        anoLetivo,
+                        dreId,
+                        ueId,
+                        modalidade = (int)modalidade,
+                        anosEscolares = anosEscolares != null ? anosEscolares.ToArray() : null,
+                        componentesCurriculares = arrayComponentes,
+                        bimestres = bimestres.ToArray()
+                    });
+
+                    return dres;
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }            
         }
 
         private static RelatorioFrequenciaComponenteDto ObterComponente(RelatorioFrequenciaBimestreDto bimestre, RelatorioFrequenciaComponenteDto componente)
