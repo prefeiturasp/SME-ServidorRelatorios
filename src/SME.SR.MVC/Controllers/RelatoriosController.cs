@@ -48,7 +48,7 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioGraficoBarrasTeste", grafico);
         }
-        [HttpGet("frequencias")]
+        [HttpGet("frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
             var model = new RelatorioFrequenciaDto();
@@ -88,13 +88,13 @@ namespace SME.SR.MVC.Controllers
             }
 
             var componentes = new List<RelatorioFrequenciaComponenteDto>();
-            for(var i = 0; i < 2; i++)
-            {                
+            for (var i = 0; i < 2; i++)
+            {
                 var componente = new RelatorioFrequenciaComponenteDto()
                 {
                     NomeComponente = "Arte",
                     CodigoComponente = "001",
-                    Alunos = alunos,                
+                    Alunos = alunos,
                 };
                 var componente1 = new RelatorioFrequenciaComponenteDto()
                 {
@@ -196,8 +196,7 @@ namespace SME.SR.MVC.Controllers
                 Usuario = "JULIA FERREIRA DE OLIVEIRA ",
                 Turma = "TODOS",
                 RF = "1234567",
-            };
-
+            }; 
             return View("RelatorioFrequencias", model);
         }
 
