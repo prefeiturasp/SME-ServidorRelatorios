@@ -79,7 +79,8 @@ namespace SME.SR.Application
                     return true;
                 }
 
-                SentrySdk.CaptureMessage($"6.6 - Erro na geração  / {retorno.Status}");
+                if(retorno != null)
+                    SentrySdk.CaptureMessage($"6.6 - Erro na geração  / {retorno.Status}");
 
                 SentrySdk.CaptureMessage("6.6 - Erro na geração");
 

@@ -93,10 +93,12 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioHistoricoEscolarUseCase.Executar(request);
             return true;
         }
-        [HttpGet("relatorios/fechamentopendencias")]        
+
+        [HttpGet("relatorios/fechamentopendencias")]
+        [Action("relatorios/fechamentopendencias", typeof(IRelatorioFechamentoPendenciasUseCase))]
         public async Task<bool> RelatorioFechamentoPendencias([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioFechamentoPendenciasUseCase relatorioFechamentoPendenciasUseCase)
         {
-            await relatorioFechamentoPendenciasUseCase.Executar(request);            
+            await relatorioFechamentoPendenciasUseCase.Executar(request);
             return true;
         }
 

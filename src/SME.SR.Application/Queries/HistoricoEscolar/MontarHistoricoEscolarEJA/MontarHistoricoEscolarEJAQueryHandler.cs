@@ -337,7 +337,7 @@ namespace SME.SR.Application
 
                 if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
                 {
-                    frequenciaAluno = new FrequenciaAluno() { DisciplinaId = codigoComponente, TurmaId = turma.Codigo };
+                    return string.Empty;
                 }
                 else if (frequenciasAlunoParaTratar.Count() == 1)
                 {

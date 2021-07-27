@@ -106,11 +106,11 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
-            var query = @$"select fa.codigo_aluno CodigoAluno, t.ano_letivo as AnoTurma, t.modalidade_codigo as ModalidadeTurma,
-                            fa.tipo, fa.disciplina_id DisciplinaId, fa.periodo_inicio PeriodoInicio, 
-                            fa.periodo_fim PeriodoFim, fa.bimestre, sum(fa.total_aulas) TotalAulas, 
-                            sum(fa.total_ausencias) TotalAusencias, sum(fa.total_compensacoes) TotalCompensacoes, 
-                            fa.periodo_escolar_id PeriodoEscolarId
+            var query = @$"select fa.codigo_aluno CodigoAluno, t.turma_id as TurmaId, t.ano_letivo as AnoTurma, 
+                            t.modalidade_codigo as ModalidadeTurma, fa.tipo, fa.disciplina_id DisciplinaId, 
+                            fa.periodo_inicio PeriodoInicio, fa.periodo_fim PeriodoFim, fa.bimestre, 
+                            sum(fa.total_aulas) TotalAulas, sum(fa.total_ausencias) TotalAusencias, 
+                            sum(fa.total_compensacoes) TotalCompensacoes, fa.periodo_escolar_id PeriodoEscolarId
                              from frequencia_aluno fa 
                             inner join turma t on t.turma_id = fa.turma_id
                             where fa.codigo_aluno = ANY(@codigosAluno)
@@ -119,7 +119,7 @@ namespace SME.SR.Data
                               and t.modalidade_codigo = @modalidade
                               and t.semestre = @semestre
                             group by fa.codigo_aluno, fa.tipo, fa.disciplina_id, fa.periodo_inicio, 
-                            fa.periodo_fim, fa.bimestre, fa.periodo_escolar_id, t.ano_letivo, t.modalidade_codigo";
+                            fa.periodo_fim, fa.bimestre, fa.periodo_escolar_id, t.ano_letivo, t.modalidade_codigo, t.turma_id";
 
             var parametros = new { codigosAluno, anoLetivo, modalidade, semestre };
 
@@ -214,6 +214,7 @@ namespace SME.SR.Data
                                 , fa.total_aulas as TotalAulas
                                 , fa.total_ausencias as TotalAusencias
                                 , fa.total_compensacoes as TotalCompensacoes
+                                {(tipoCalendarioId > 0 ? ", pe.bimestre Bimestre" : string.Empty)}
                             from frequencia_aluno fa
                             inner join turma t on fa.turma_id = t.turma_id ");
 
@@ -277,6 +278,39 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }
+        }
+
+        public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricular(string codigoTurma, string componenteCurricularId, long periodoEscolarId)
+        {
+            var query = @"select distinct(1)
+                            from registro_frequencia_aluno rfa
+                           inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id 
+                           inner join aula a on a.id = rf.aula_id 
+                           inner join tipo_calendario tc on tc.id = a.tipo_calendario_id
+                           inner join periodo_escolar pe on pe.tipo_calendario_id = tc.id
+                           where pe.id = @periodoEscolarId
+                             and a.turma_id = @codigoTurma
+                             and a.disciplina_id = @componenteCurricularId
+                             and a.data_aula between pe.periodo_inicio and pe.periodo_fim ";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId });
+        }
+
+        public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAno(string codigoTurma, string componenteCurricularId, int anoLetivo)
+        {
+            var query = @"select distinct(1)
+                            from registro_frequencia_aluno rfa
+                           inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id 
+                           inner join aula a on a.id = rf.aula_id
+                           where a.turma_id = @codigoTurma
+                             and a.disciplina_id = @componenteCurricularId
+                             and extract(year from a.data_aula) = @anoLetivo ";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, anoLetivo });
         }
 
         public async Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorTurmas(string[] codigosturma)
