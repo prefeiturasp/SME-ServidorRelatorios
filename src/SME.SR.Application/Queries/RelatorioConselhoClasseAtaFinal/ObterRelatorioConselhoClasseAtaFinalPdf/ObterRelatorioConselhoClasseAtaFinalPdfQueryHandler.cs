@@ -12,6 +12,8 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
+        private const string FREQUENCIA_100 = "100";
+
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
 
@@ -547,15 +549,9 @@ namespace SME.SR.Application
 
             if (possuiConselhoFinalParaAnual || aluno.CodigoSituacaoMatricula != SituacaoMatriculaAluno.Ativo)
             {
-                var percentualFrequencia = (turma.AnoLetivo.Equals(2020) 
-                     ?
-                     frequenciaGlobalAluno?.PercentualFrequenciaFinal.ToString()
-                     :
-                     frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? string.Empty;
-
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? "0", 1);
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", 2);
-                linhaDto.AdicionaCelula(99, 99, percentualFrequencia, 3);
+                linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100, 3);
 
                 var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
                 var textoParecer = parecerConclusivo?.ParecerConclusivo;
