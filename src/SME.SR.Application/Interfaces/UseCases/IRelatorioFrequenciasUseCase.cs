@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public interface IRelatorioFaltasFrequenciasUseCase
+    public interface IRelatorioFrequenciasUseCase
     {
         Task Executar(FiltroRelatorioDto request);
     }

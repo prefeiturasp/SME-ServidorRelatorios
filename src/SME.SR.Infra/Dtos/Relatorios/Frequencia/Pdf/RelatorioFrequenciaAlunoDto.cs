@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
-    public class RelatorioFaltaFrequenciaAlunoDto
+    public class RelatorioFrequenciaAlunoDto
     {
         public string NumeroChamada { get; set; }
         public int CodigoAluno { get; set; }
@@ -16,6 +15,8 @@ namespace SME.SR.Infra
         public int TotalAulas { get; set; }
         public int TotalPresenca { get; set; }
         public int NumeroFaltasNaoCompensadas { get => TotalAusencias - TotalCompensacoes; }
+        public string Ano { get; set; }
+        public string FrequenciaFormatada { get; set; }
         public double Frequencia
         {
             get
@@ -30,4 +31,3 @@ namespace SME.SR.Infra
         }
     }
 }
-

@@ -48,24 +48,156 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioGraficoBarrasTeste", grafico);
         }
-        [HttpGet("faltas-frequencia")]
+        [HttpGet("frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
-            var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(new FiltroRelatorioFaltasFrequenciasDto()));
-            //mock
-            model.ExibeFaltas = true;
-            model.ExibeFrequencia = false;
-            model.Dre = "DRE 01";
-            model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
-            model.Ano = "001";
-            model.Bimestre = "1º";
-            model.ComponenteCurricular = "Matemática";
-            model.Usuario = "ADMIN";
-            model.Modalidade = "Fundamental";
-            model.RF = "123123123";
-            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            var model = new RelatorioFrequenciaDto();
 
-            return View(model);
+            var alunos = new List<RelatorioFrequenciaAlunoDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var aluno = new RelatorioFrequenciaAlunoDto()
+                {
+                    NumeroChamada = (i + 1).ToString(),
+                    CodigoAluno = 001,
+                    NomeAluno = "Marcos Almeida Machado" + i,
+                    NomeTurma = "Turma 001",
+                    CodigoTurma = "001",
+                    TotalAusencias = 1,
+                    TotalRemoto = 10,
+                    TotalCompensacoes = 1,
+                    TotalPresenca = 19,
+                    TotalAulas = 20,
+                };
+
+                var aluno1 = new RelatorioFrequenciaAlunoDto()
+                {
+                    NumeroChamada = (i + 2).ToString(),
+                    CodigoAluno = 002,
+                    NomeAluno = "Antonio Castro Santana",
+                    NomeTurma = "Turma 001",
+                    CodigoTurma = "001",
+                    TotalAusencias = 3,
+                    TotalRemoto = 10,
+                    TotalCompensacoes = 2,
+                    TotalPresenca = 17,
+                    TotalAulas = 20,
+                };
+                alunos.Add(aluno);
+                alunos.Add(aluno1);
+            }
+
+            var componentes = new List<RelatorioFrequenciaComponenteDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var componente = new RelatorioFrequenciaComponenteDto()
+                {
+                    NomeComponente = "Arte",
+                    CodigoComponente = "001",
+                    Alunos = alunos,
+                };
+                var componente1 = new RelatorioFrequenciaComponenteDto()
+                {
+                    NomeComponente = "Matematica",
+                    CodigoComponente = "002",
+                    Alunos = alunos,
+                };
+
+                componentes.Add(componente);
+                componentes.Add(componente1);
+            }
+
+            var bimestres = new List<RelatorioFrequenciaBimestreDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var bimestre = new RelatorioFrequenciaBimestreDto()
+                {
+                    NomeBimestre = "1º BIMESTRE",
+                    Numero = "1",
+                    Componentes = componentes,
+                };
+                var bimestre1 = new RelatorioFrequenciaBimestreDto()
+                {
+                    NomeBimestre = "2º BIMESTRE",
+                    Numero = "1",
+                    Componentes = componentes
+                };
+                bimestres.Add(bimestre);
+                bimestres.Add(bimestre1);
+            }
+
+            var turmaAnos = new List<RelatorioFrequenciaTurmaAnoDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var turmaAno = new RelatorioFrequenciaTurmaAnoDto()
+                {
+                    Nome = "EF-1A-1ºAno",
+                    Bimestres = bimestres,
+                    ehExibirTurma = false,
+                };
+                var turmaAno1 = new RelatorioFrequenciaTurmaAnoDto()
+                {
+                    Nome = "EF-2A-2ºAno",
+                    Bimestres = bimestres,
+                    ehExibirTurma = false,
+                };
+                turmaAnos.Add(turmaAno);
+                turmaAnos.Add(turmaAno1);
+            }
+
+            var ues = new List<RelatorioFrequenciaUeDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var ue = new RelatorioFrequenciaUeDto()
+                {
+                    CodigoUe = "1",
+                    NomeUe = "CEU EMEF BUTANTA",
+                    TipoUe = TipoEscola.CEMEI,
+                    TurmasAnos = turmaAnos
+                };
+                var ue1 = new RelatorioFrequenciaUeDto()
+                {
+                    CodigoUe = "1",
+                    NomeUe = "CEU EMEI BUTANTA",
+                    TipoUe = TipoEscola.CEMEI,
+                    TurmasAnos = turmaAnos
+                };
+                ues.Add(ue);
+                ues.Add(ue1);
+            }
+
+            var dres = new List<RelatorioFrequenciaDreDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var dre = new RelatorioFrequenciaDreDto()
+                {
+                    CodigoDre = "1",
+                    NomeDre = "DRE-BT",
+                    Ues = ues
+                };
+                var dre1 = new RelatorioFrequenciaDreDto()
+                {
+                    CodigoDre = "1",
+                    NomeDre = "DRE-JT",
+                    Ues = ues
+                };
+                dres.Add(dre);
+                dres.Add(dre1);
+            }
+
+            model.Dres = dres;
+            model.Cabecalho = new RelatorioFrequenciaCabecalhoDto()
+            {
+                Dre = "TODAS",
+                Ue = "TODAS",
+                Ano = "TODOS",
+                Bimestre = "TODOS",
+                ComponenteCurricular = "TODOS",
+                Usuario = "JULIA FERREIRA DE OLIVEIRA ",
+                Turma = "TODOS",
+                RF = "1234567",
+            }; 
+            return View("RelatorioFrequencias", model);
         }
 
         [HttpGet("fechamentos-pendencias")]
@@ -7561,7 +7693,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Foto = "https://via.placeholder.com/80",
                     Ciclo = "Médio"
                 },
-                
+
                 ParecerConclusivo = "",
                 RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Non

@@ -312,5 +312,27 @@ namespace SME.SR.Data
 
             return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, anoLetivo });
         }
+
+        public async Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorTurmas(string[] codigosturma)
+        {
+            var query = @"select t.turma_id as TurmaCodigo,
+                                 rfa.codigo_aluno as AlunoCodigo,
+	                             rfa.valor as TipoFrequencia,	   
+                                 sum(rfa.numero_aula) as Quantidade       
+                            from registro_frequencia_aluno rfa 
+                           inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id 
+                           inner join aula a on a.id = rf.aula_id 
+                           inner join turma t on t.turma_id = a.turma_id 
+                           inner join ue on ue.id = t.ue_id 
+                           inner join dre on dre.id = ue.dre_id 
+                           where not rfa.excluido 
+                             and t.turma_id = Any(@codigosturma)
+                           group by t.turma_id, rfa.codigo_aluno, rfa.valor";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAlunoRetornoDto>(query, new { codigosturma });
+            }
+        }
     }
 }
