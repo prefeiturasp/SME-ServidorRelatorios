@@ -3,7 +3,7 @@ using SME.SR.Infra;
 
 namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 {
-    public class ObterRelatorioFrequenciaPdfQuery : IRequest<RelatorioFaltasFrequenciaDto>
+    public class ObterRelatorioFrequenciaPdfQuery : IRequest<RelatorioFrequenciaDto>
     {
         public ObterRelatorioFrequenciaPdfQuery(FiltroRelatorioFrequenciasDto filtro)
         {

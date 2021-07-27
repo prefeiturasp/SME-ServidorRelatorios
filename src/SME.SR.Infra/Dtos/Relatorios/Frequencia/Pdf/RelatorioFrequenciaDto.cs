@@ -7,8 +7,10 @@ namespace SME.SR.Infra
         public RelatorioFrequenciaDto()
         {
             Dres = new List<RelatorioFrequenciaDreDto>();
+            Cabecalho = new RelatorioFrequenciaCabecalhoDto();
         }
 
+        public string UltimoAluno { get; set; }
         public RelatorioFrequenciaCabecalhoDto Cabecalho { get; set; }
         public List<RelatorioFrequenciaDreDto> Dres { get; set; }
     }

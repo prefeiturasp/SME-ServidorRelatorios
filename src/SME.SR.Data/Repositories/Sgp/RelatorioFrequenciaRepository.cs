@@ -37,7 +37,7 @@ namespace SME.SR.Data
                     case t.modalidade_codigo
     	                when 1 then coalesce(t.serie_ensino, t.ano)
     	                else concat(t.ano, 'º ano') 
-                    end as NomeAno,
+                    end as Nome,
                     fa.bimestre NomeBimestre, 
                     fa.bimestre Numero, 
                     fa.disciplina_id CodigoComponente,
@@ -93,14 +93,14 @@ namespace SME.SR.Data
                     componente.Alunos.Add(aluno);
 
                     return dre;
-                }), splitOn: "CodigoDre, CodigoUe, NomeAno,NomeBimestre, CodigoComponente,CodigoAluno",
+                }), splitOn: "CodigoDre, CodigoUe, Nome,NomeBimestre, CodigoComponente,CodigoAluno",
                 param: new
                 {
                     anoLetivo,
                     dreId,
                     ueId,
-                    modalidade,
-                    anosEscolares = anosEscolares.ToArray(),
+                    modalidade = (int)modalidade,
+                    anosEscolares = anosEscolares != null ? anosEscolares.ToArray() : null,
                     componentesCurriculares = arrayComponentes,
                     bimestres = bimestres.ToArray()
                 });

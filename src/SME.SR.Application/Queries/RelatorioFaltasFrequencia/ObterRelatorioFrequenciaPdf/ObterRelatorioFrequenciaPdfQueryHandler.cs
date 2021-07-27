@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 {
-    public class ObterRelatorioFrequenciaPdfQueryHandler : IRequestHandler<ObterRelatorioFrequenciaPdfQuery, RelatorioFaltasFrequenciaDto>
+    public class ObterRelatorioFrequenciaPdfQueryHandler : IRequestHandler<ObterRelatorioFrequenciaPdfQuery, RelatorioFrequenciaDto>
     {
         private readonly IRelatorioFrequenciaRepository relatorioFaltasFrequenciaRepository;
         private readonly IMediator mediator;
@@ -26,12 +26,17 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             this.turmaRepository = turmaRepository ?? throw new ArgumentNullException(nameof(turmaRepository));
         }
 
-        public async Task<RelatorioFaltasFrequenciaDto> Handle(ObterRelatorioFrequenciaPdfQuery request, CancellationToken cancellationToken)
+        public async Task<RelatorioFrequenciaDto> Handle(ObterRelatorioFrequenciaPdfQuery request, CancellationToken cancellationToken)
         {
-            var model = new RelatorioFaltasFrequenciaDto();
+            var model = new RelatorioFrequenciaDto();
             var filtro = request.Filtro;
-            if (filtro.TurmasPrograma)
-                filtro.AnosEscolares = filtro.AnosEscolares.Concat(new[] { new string("0") });            
+
+            //if (filtro.TurmasPrograma)
+            //    filtro.AnosEscolares = filtro.AnosEscolares != null
+            //        ?
+            //        filtro.AnosEscolares.Concat(new[] { new string("0") })
+            //        :
+            //        filtro.AnosEscolares;            
 
             var dres = await relatorioFaltasFrequenciaRepository.ObterFrequenciaPorAno(filtro.AnoLetivo,
                                                                                           filtro.CodigoDre,
@@ -84,12 +89,23 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 for (int a = 0; a < componente.Alunos.Count; a++)
                                 {
-                                    var aluno = componente.Alunos[a];
+                                    var aluno = componente.Alunos[a];                                    
+                                    var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorTurmasQuery(aluno.CodigoTurma));
                                     var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
+                                    var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
+
+                                    if (frequencias != null && frequencias.Any())
+                                        frequenciaAluno = frequencias.Where(f => f.AlunoCodigo == aluno.CodigoAluno.ToString()).ToList();
+
+                                    var totalPresenca = frequenciaAluno.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.C);
+                                    var totalRemoto = frequenciaAluno.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.R);
+
                                     if (alunoAtual != null)
                                     {
                                         aluno.NomeAluno = alunoAtual.NomeFinal;
                                         aluno.NumeroChamada = alunoAtual.NumeroChamada;
+                                        aluno.TotalPresenca = totalPresenca != null ? totalPresenca.Quantidade : 0;
+                                        aluno.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
                                     }
                                 }
 
@@ -145,6 +161,15 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     for (int a = 0; a < componente.Alunos.Count; a++)
                                     {
                                         var aluno = componente.Alunos[a];
+                                        var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
+                                        var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorTurmasQuery(aluno.CodigoTurma));
+
+                                        if (frequencias != null && frequencias.Any())
+                                            frequenciaAluno = frequencias.Where(f => f.AlunoCodigo == aluno.CodigoAluno.ToString()).ToList();
+
+                                        var totalPresenca = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.C);
+                                        var totalRemoto = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.R);
+
                                         var codigoAluno = aluno.CodigoAluno;
                                         var alunoAtual = componenteAtual.Alunos.FirstOrDefault(c => c.CodigoAluno == codigoAluno);
                                         if (alunoAtual == null)
@@ -162,6 +187,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         alunoAtual.NomeAluno = aluno.NomeAluno;
                                         alunoAtual.NomeTurma = aluno.NomeTurma;
                                         alunoAtual.NumeroChamada = aluno.NumeroChamada;
+                                        alunoAtual.TotalPresenca = totalPresenca != null ? totalPresenca.Quantidade : 0;
+                                        alunoAtual.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
                                     }
                                 }
 
@@ -225,19 +252,26 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             return dres;
         }
 
-        private static void DefinirCabecalho(ObterRelatorioFrequenciaPdfQuery request, RelatorioFaltasFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<RelatorioFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
+        private static void DefinirCabecalho(ObterRelatorioFrequenciaPdfQuery request, RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<RelatorioFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
         {
             var selecionouTodasDres = string.IsNullOrWhiteSpace(filtro.CodigoDre) || filtro.CodigoDre == "-99";
             var selecionouTodasUes = string.IsNullOrWhiteSpace(filtro.CodigoUe) || filtro.CodigoUe == "-99";
+            var selecionoutodasTurmas = filtro.CodigosTurma != null ? filtro.CodigosTurma.Any(c => c == "-99") : false;
 
             model.Dres = dres.ToList();
             model.Dres.RemoveAll(c => !c.Ues.Any());
-            model.Dre = selecionouTodasDres ? "Todas" : dres.FirstOrDefault().NomeDre;
-            model.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
+            model.Cabecalho.Dre = selecionouTodasDres ? "Todas" : dres.FirstOrDefault().NomeDre;
+            model.Cabecalho.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
+            model.Cabecalho.Turma = selecionoutodasTurmas ? "Todas" : dres.FirstOrDefault()
+                                                                        .Ues.FirstOrDefault()
+                                                                          .TurmasAnos.FirstOrDefault()
+                                                                             .Bimestres.FirstOrDefault()
+                                                                                .Componentes.FirstOrDefault()
+                                                                                   .Alunos.FirstOrDefault().NomeTurma;
 
             var selecionouTodosAnos = filtro.AnosEscolares.Any(c => c == "-99");
             var ano = filtro.AnosEscolares.FirstOrDefault();
-            model.Ano = selecionouTodosAnos && !(filtro.Modalidade == Modalidade.EJA) ?
+            model.Cabecalho.Ano = selecionouTodosAnos && !(filtro.Modalidade == Modalidade.EJA) ?
                 "Todos"
                 :
                     filtro.AnosEscolares.Count() > 1 ?
@@ -248,25 +282,16 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             DefinirNomeBimestre(model, filtro);
             DefinirNomeComponente(model, filtro, componentes);
 
-            model.Usuario = request.Filtro.NomeUsuario;
-            model.RF = request.Filtro.CodigoRf;
-            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            model.ExibeFaltas = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Turma || filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
-            model.ExibeFrequencia = filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
-
-            var semestreEja = "";
-            if (filtro.Modalidade == Modalidade.EJA)
-                semestreEja = $"{filtro.Semestre} Semestre";
-
-            model.Modalidade = $"{filtro.Modalidade.Name()} {semestreEja}";
+            model.Cabecalho.Usuario = request.Filtro.NomeUsuario;
+            model.Cabecalho.RF = request.Filtro.CodigoRf;            
         }
 
-        private static void DefinirNomeComponente(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)
+        private static void DefinirNomeComponente(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)
         {
             var selecionouTodosComponentes = filtro.ComponentesCurriculares.Any(c => c == "-99");
             var primeiroComponente = filtro.ComponentesCurriculares.FirstOrDefault();
 
-            model.ComponenteCurricular = selecionouTodosComponentes ?
+            model.Cabecalho.ComponenteCurricular = selecionouTodosComponentes ?
                 "Todos"
                 :
                 filtro.ComponentesCurriculares.Count() == 1 ?
@@ -275,12 +300,13 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 string.Empty;
         }
 
-        private static void DefinirNomeBimestre(RelatorioFaltasFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro)
+        private static void DefinirNomeBimestre(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro)
         {
-            var selecionouTodosBimestres = filtro.Bimestres.Any(c => c == -99);
+            //var selecionouTodosBimestres = filtro.Bimestres.Any(c => c == -99);
+            var selecionouTodosBimestres = filtro.Bimestres.Count() == 5;
             var selecionouBimestreFinal = filtro.Bimestres.Any(c => c == 0);
 
-            model.Bimestre = selecionouTodosBimestres ?
+            model.Cabecalho.Bimestre = selecionouTodosBimestres ?
                 "Todos"
                 :
                 filtro.Bimestres.Count() > 1 ?
