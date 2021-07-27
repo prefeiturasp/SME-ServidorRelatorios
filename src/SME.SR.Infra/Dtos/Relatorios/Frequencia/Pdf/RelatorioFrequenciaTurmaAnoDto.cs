@@ -10,6 +10,7 @@ namespace SME.SR.Infra
         }
 
         public string Nome { get; set; }
+        public bool ehExibirTurma { get; set; }
         public List<RelatorioFrequenciaBimestreDto> Bimestres { get; set; }
     }
 }
