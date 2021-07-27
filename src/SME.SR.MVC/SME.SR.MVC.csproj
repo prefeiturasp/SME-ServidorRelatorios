@@ -4,9 +4,6 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="Views\Relatorios\RelatorioFaltasFrequencias - Cópia.cshtml" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="8.0.1" />
