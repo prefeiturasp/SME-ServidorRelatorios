@@ -12,11 +12,7 @@ namespace SME.SR.Infra
 
         public string CodigoUe { get; set; }
         public string NomeUe { get; set; }
-        public TipoEscola TipoUe { get; set; }
-        public string NomeUeFormatado
-        {
-            get => $"{TipoUe.ShortName()} {NomeUe}";
-        }
+        public TipoEscola TipoUe { get; set; }        
         public List<RelatorioFrequenciaTurmaAnoDto> TurmasAnos { get; set; }
     }
 }
