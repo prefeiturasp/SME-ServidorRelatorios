@@ -131,7 +131,6 @@ namespace SME.SR.Application
 
             ((RelatorioFaltasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
             ((RelatorioFaltasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
-            ((RelatorioFaltasExcelDto)relatorioDto).AulasQuantidade = aluno.TotalAulas;
             ((RelatorioFaltasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
             ((RelatorioFaltasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
         }
