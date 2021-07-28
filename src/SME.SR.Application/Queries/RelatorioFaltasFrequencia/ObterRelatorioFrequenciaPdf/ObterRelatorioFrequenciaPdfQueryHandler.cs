@@ -318,7 +318,12 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         private static void DefinirNomeBimestre(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro)
         {
-            var selecionouTodosBimestres = filtro.Bimestres.Count() == 5;
+            var selecionouTodosBimestres = false;
+            if (filtro.Modalidade != Modalidade.EJA)
+                selecionouTodosBimestres = filtro.Bimestres.Count() == 5;
+            else
+                selecionouTodosBimestres = filtro.Bimestres.Count() == 3;
+
             var selecionouBimestreFinal = filtro.Bimestres.Any(c => c == 0);
 
             model.Cabecalho.Bimestre = selecionouTodosBimestres ?
