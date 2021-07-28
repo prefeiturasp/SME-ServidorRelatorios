@@ -2,17 +2,16 @@
 
 @{
     int paginaAtual = 0;
-    int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+    double contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 55;
 
     void MontarComponente(string componenteNome, bool removerBorderTop = false)
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 2;
-        var stiloBorderTop = removerBorderTop ? "border-top: none;" : "";
         <table class="tabela-cabecalho">
             <thead>
                 <tr>
-                    <th  style="@stiloBorderTop">@componenteNome</th>
+                    <th>@componenteNome</th>
                 </tr>
             </thead>
         </table>
@@ -34,7 +33,7 @@
             </tbody>
             </table>";
         }
-        
+
         str += $@"
         <table class='tabela-cabecalho'>
         <thead>
@@ -56,13 +55,21 @@
         <th style='width: 8%;'>FREQ. %</th></tr>
         </thead>
         <tbody>";
-        
+
         return Html.Raw(str);
     }
 
     void MontarLinhaAluno(SME.SR.Infra.RelatorioFrequenciaAlunoDto aluno, bool ehExibirTurma)
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        int numeroCaracteres = aluno.NomeAluno.Length;
+        int maximoCaracteres = 34;
+        if(numeroCaracteres > maximoCaracteres)
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + 1.5;
+        }
+        else {
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        }
 
         <tr>
             @if (ehExibirTurma) {
@@ -73,7 +80,7 @@
             <td>@aluno.TotalPresenca</td>
             <td>@aluno.TotalRemoto</td>
             <td>@aluno.TotalAusencias</td>
-            <td>@aluno.TotalCompensacoes</td>
+            <td>@aluno.TotalCompensacoes @contadorQuebrarPagina</td>
             <td>@aluno.Frequencia</td>
 
         </tr>
@@ -275,6 +282,8 @@
 
         @if (Model.Dres != null)
         {
+            MontarCabecalho(Model.Cabecalho);
+
             for (int d = 0; d < Model.Dres.Count; d++)
             {
                 var dre = Model.Dres[d];
@@ -294,20 +303,49 @@
                                     {
                                         var bimestre = ano.Bimestres[b];
                                         bool imprimeEspaco = false;
+                                        bool ehTodasDre = Model.Cabecalho.Dre.ToLower() == "todas";
+                                        bool ehTodosTurmaAno = Model.Cabecalho.Ano.ToLower() == "todos" || Model.Cabecalho.Turma.ToLower() == "todas";
+                                        bool ehTodosBimestre = Model.Cabecalho.Bimestre.ToLower() == "todos";
+                                        bool ehTodosComponentesCurriculares = Model.Cabecalho.ComponenteCurricular.ToLower() == "todos";
+                                        int numeroLinhas = 2;
 
-                                        MontarCabecalho(Model.Cabecalho);
+                                        if (ehTodasDre)
+                                        {
+                                            numeroLinhas++;
+                                        }
+                                        if (ehTodosTurmaAno)
+                                        {
+                                            numeroLinhas++;
+                                        }
+                                        if (ehTodosBimestre)
+                                        {
+                                            numeroLinhas++;
+                                        }
+                                        if (ehTodosComponentesCurriculares)
+                                        {
+                                            numeroLinhas++;
+                                        }
+
+                                        bool quebra = (contadorQuebrarPagina + numeroLinhas) > contadorMaximoLinhasPorPagina;
+
+                                        if (quebra)
+                                        {
+                                            @MontarQuebrarPagina();
+                                            contadorQuebrarPagina = 0;
+                                            MontarCabecalho(Model.Cabecalho);
+                                        }
 
                                         @if (bimestre.Componentes != null)
                                         {
                                             <table class="tabela-cabecalho">
                                                 <thead>
-                                                    @if (Model.Cabecalho.Dre.ToLower() == "todas")
+                                                    @if (ehTodasDre)
                                                     {
                                                         <tr>
                                                             <th>@dre.NomeDre</th>
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                                  
+
                                                         <tr>
                                                             <th>@ue.NomeUe</th>
                                                         </tr>
@@ -315,18 +353,18 @@
                                                         imprimeEspaco = true;
                                                     }
                                                     @{contadorQuebrarPagina = contadorQuebrarPagina + 1;}
-                                                    @if (!string.IsNullOrWhiteSpace(Model.Cabecalho.Ano) || Model.Cabecalho.Ano.ToLower() == "todos" || Model.Cabecalho.Turma.ToLower() == "todas")
+                                                    @if (!string.IsNullOrWhiteSpace(Model.Cabecalho.Ano) || ehTodosTurmaAno)
                                                     {
                                                         <tr>
-                                                            <th>@ano.Nome</th>
+                                                            <th>@ano.Nome @contadorQuebrarPagina</th>
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                         imprimeEspaco = true;
                                                     }
-                                                    @if (Model.Cabecalho.Bimestre.ToLower() == "todos")
+                                                    @if (ehTodosBimestre)
                                                     {
                                                         <tr>
-                                                            <th>@bimestre.NomeBimestre</th>
+                                                            <th>@bimestre.NomeBimestre @contadorQuebrarPagina</th>
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                         imprimeEspaco = true;
@@ -339,63 +377,57 @@
                                             {
                                                 var componente = ano.Bimestres[b].Componentes[c];
 
-                                                if ((contadorQuebrarPagina + 6) > contadorMaximoLinhasPorPagina)
+                                                int numeroLinhasAluno = c == 0 ? 2 : numeroLinhas;
+
+                                                if ((contadorQuebrarPagina + numeroLinhasAluno) > contadorMaximoLinhasPorPagina)
                                                 {
                                                     @MontarQuebrarPagina();
-                                                    MontarCabecalho(Model.Cabecalho);
                                                     contadorQuebrarPagina = 0;
+                                                    MontarCabecalho(Model.Cabecalho);
                                                     if (Model.Cabecalho.ComponenteCurricular.ToLower() == "todos")
                                                         MontarComponente(componente.NomeComponente);
                                                 }
                                                 else
                                                 {
-                                                    if (Model.Cabecalho.ComponenteCurricular.ToLower() == "todos")
+                                                    if (ehTodosComponentesCurriculares)
                                                         MontarComponente(componente.NomeComponente, !terminouListaAluno);
-                                                    }
+                                                }
 
-                                                    terminouListaAluno = false;
+                                                terminouListaAluno = false;
 
-                                                    @if (componente.Alunos != null)
+                                                @if (componente.Alunos != null)
+                                                {
+                                                    var stiloBorderTop = terminouListaAluno ? "border-top: none;" : "";
+                                                    @AbrirTabelaAluno(imprimeEspaco, ano.EhExibirTurma)
+                                                    for (int i = 0; i < componente.Alunos.Count; i++)
                                                     {
-                                                        var stiloBorderTop = terminouListaAluno ? "border-top: none;" : "";
-                                                        @AbrirTabelaAluno(imprimeEspaco, ano.EhExibirTurma)
-                                                        for (int i = 0; i < componente.Alunos.Count; i++)
-                                                        {
-                                                            var aluno = componente.Alunos[i];
-                                                            MontarLinhaAluno(aluno, ano.EhExibirTurma);
+                                                        var aluno = componente.Alunos[i];
+                                                        MontarLinhaAluno(aluno, ano.EhExibirTurma);
 
-                                                            var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
+                                                        var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
-                                                            terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Alunos.Count == i + 1;
+                                                        terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Alunos.Count == i + 1;
 
-                                                            @if (atigiuLimiteDadosPorPagina)
-                                                            {
-                                                                @FecharTabelaAluno()
-                                                                @MontarQuebrarPagina();
-                                                                contadorQuebrarPagina = 0;
-                                                                MontarCabecalho(Model.Cabecalho);
-                                                                if (!terminouListaAluno)
-                                                                {
-                                                                    MontarComponente(componente.NomeComponente);
-                                                                    @AbrirTabelaAluno(imprimeEspaco, ano.EhExibirTurma)
-                                                                }
-                                                            }
-                                                        }
-                                                        if (!terminouListaAluno)
+                                                        @if (atigiuLimiteDadosPorPagina)
                                                         {
                                                             @FecharTabelaAluno()
+                                                            @MontarQuebrarPagina();
+                                                            contadorQuebrarPagina = 0;
+                                                            MontarCabecalho(Model.Cabecalho);
+                                                            if (!terminouListaAluno)
+                                                            {
+                                                                MontarComponente(componente.NomeComponente);
+                                                                @AbrirTabelaAluno(imprimeEspaco, ano.EhExibirTurma)
+                                                            }
                                                         }
                                                     }
+                                                    if (!terminouListaAluno)
+                                                    {
+                                                        @FecharTabelaAluno()
+                                                    }
+                                                }
                                             }
-                                        }
-                                        if (((d + 1 != Model.Dres.Count) ||
-                                             (u + 1 != dre.Ues.Count) ||
-                                             (a + 1 != ue.TurmasAnos.Count) ||
-                                             (b + 1 != ano.Bimestres.Count)))
-                                        {
-                                            @MontarQuebrarPagina();
-                                            contadorQuebrarPagina = 0;
-                                        }
+                                        }                                        
                                     }
                                 }
                             }
