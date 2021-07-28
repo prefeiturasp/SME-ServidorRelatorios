@@ -29,18 +29,18 @@ namespace SME.SR.Data
             inner join periodo_escolar p on 
             a.tipo_calendario_id = p.tipo_calendario_id 
             where not a.excluido 
-            
-            and a.tipo_calendario_id = @tipoCalendarioId
             and a.data_aula >= p.periodo_inicio 
             and a.data_aula <= p.periodo_fim ");
 
+            if (tipoCalendarioId > 0)
+                query.AppendLine(" and a.tipo_calendario_id = @tipoCalendarioId ");
             if (bimestres.Length > 0)
                 query.AppendLine(" and p.bimestre = any(@bimestres) ");
             if (componentesCurricularesId.Length > 0)
                 query.AppendLine("and a.disciplina_id = any(@componentesCurricularesId) ");
 
             query.AppendLine("and a.turma_id = any(@turmasCodigo) group by a.disciplina_id, a.turma_id, p.bimestre");
-
+            
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<TurmaComponenteQtdAulasDto>(query.ToString(), new { turmasCodigo, componentesCurricularesId, tipoCalendarioId, bimestres });
