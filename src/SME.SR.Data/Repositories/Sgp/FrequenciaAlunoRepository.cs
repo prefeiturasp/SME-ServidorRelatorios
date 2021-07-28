@@ -289,9 +289,11 @@ namespace SME.SR.Data
                            inner join tipo_calendario tc on tc.id = a.tipo_calendario_id
                            inner join periodo_escolar pe on pe.tipo_calendario_id = tc.id
                            where pe.id = @periodoEscolarId
-                             and a.turma_id = @codigoTurma
-                             and a.disciplina_id = @componenteCurricularId
-                             and a.data_aula between pe.periodo_inicio and pe.periodo_fim ";
+                             and a.turma_id = @codigoTurma ";
+            if (!String.IsNullOrEmpty(componenteCurricularId) && componenteCurricularId != "0")
+                query += @" and a.disciplina_id = @componenteCurricularId ";
+
+            query += @" and a.data_aula between pe.periodo_inicio and pe.periodo_fim ";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
