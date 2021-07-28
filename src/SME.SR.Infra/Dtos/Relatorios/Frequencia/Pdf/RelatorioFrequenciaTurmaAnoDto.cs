@@ -18,9 +18,9 @@ namespace SME.SR.Infra
         { 
             get => EhExibirTurma
                 ?
-                Nome
+                Nome.ToUpper()
                 :
-                $"{ModalidadeCodigo.ShortName()}-{Nome}-{Ano}ºANO"; 
+                $"{ModalidadeCodigo.ShortName()}-{Nome}-{Ano} ºAno".ToUpper(); 
         }
 
         public bool EhExibirTurma { get; set; }

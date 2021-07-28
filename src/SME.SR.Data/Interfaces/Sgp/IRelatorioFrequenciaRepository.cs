@@ -13,6 +13,7 @@ namespace SME.SR.Data
                                                                                       IEnumerable<string> anosEscolares,
                                                                                       IEnumerable<string> componentesCurriculares,
                                                                                       IEnumerable<int> bimestres,
-                                                                                      TipoRelatorioFaltasFrequencia tipoRelatorio);
+                                                                                      TipoRelatorioFaltasFrequencia tipoRelatorio,
+                                                                                      List<string> codigosTurma);
     }
 }

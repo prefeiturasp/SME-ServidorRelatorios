@@ -26,7 +26,8 @@ namespace SME.SR.Data
                                                                                         IEnumerable<string> anosEscolares,
                                                                                         IEnumerable<string> componentesCurriculares,
                                                                                         IEnumerable<int> bimestres,
-                                                                                        TipoRelatorioFaltasFrequencia tipoRelatorio)
+                                                                                        TipoRelatorioFaltasFrequencia tipoRelatorio,
+                                                                                        List<string> codigosTurma)
         {
             var query = new StringBuilder(@"
                 select
@@ -70,23 +71,26 @@ namespace SME.SR.Data
 	                u.dre_id = d.id
                 where
 	                not fa.excluido and t.ano_letivo = @anoLetivo
-                    and t.modalidade_codigo = @modalidade");
+                    and t.modalidade_codigo = @modalidade ");
 
             if (!string.IsNullOrWhiteSpace(dreId) && dreId != "-99")
-                query.AppendLine("and d.dre_id = @dreId");
+                query.AppendLine("and d.dre_id = @dreId ");
 
             if (!string.IsNullOrWhiteSpace(ueId) && ueId != "-99")
-                query.AppendLine("and u.ue_id = @ueId");
+                query.AppendLine("and u.ue_id = @ueId ");
+
+            if (codigosTurma != null && codigosTurma.Any(c => c != "-99"))
+                query.AppendLine("and t.turma_id = any(@codigosTurma) ");
 
             if (anosEscolares != null && anosEscolares.Any(c => c != "-99"))
-                query.AppendLine("and t.ano = any(@anosEscolares)");
+                query.AppendLine("and t.ano = any(@anosEscolares) ");
 
             if (componentesCurriculares != null && componentesCurriculares.Any(c => c != "-99"))
-                query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
-            else query.AppendLine("and fa.disciplina_id is not null and fa.disciplina_id <> ''");
+                query.AppendLine("and disciplina_id = any(@componentesCurriculares) ");
+            else query.AppendLine("and fa.disciplina_id is not null and fa.disciplina_id <> '' ");
 
             if (bimestres != null && bimestres.Any(c => c != 0))
-                query.AppendLine("and bimestre = any(@bimestres)");
+                query.AppendLine("and bimestre = any(@bimestres) ");
 
             if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
                 query.AppendLine("order by t.ano, fa.bimestre");
@@ -118,7 +122,8 @@ namespace SME.SR.Data
                     modalidade,
                     anosEscolares = anosEscolares != null ? anosEscolares.ToArray() : null,
                     componentesCurriculares = arrayComponentes,
-                    bimestres = bimestres.ToArray()
+                    bimestres = bimestres.ToArray(),
+                    codigosTurma
                 });
 
                 return dres;
