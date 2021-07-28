@@ -47,7 +47,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                                                                           filtro.Modalidade,
                                                                                           filtro.AnosEscolares,
                                                                                           filtro.ComponentesCurriculares,
-                                                                                          filtro.Bimestres);
+                                                                                          filtro.Bimestres,
+                                                                                          filtro.TipoRelatorio);
 
             if (dres == null || !dres.Any())
             {
@@ -79,16 +80,17 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 {
                     foreach (var ano in ue.TurmasAnos)
                     {
-                        ano.Nome = ano.Nome.Equals("0º ano") ? "Turma de Programa" : ano.Nome;
-                        ano.ehExibirTurma = request.Filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
+                        ano.Nome = ano.Nome.Equals("0º ano") ? "TURMA DE PROGRAMA" : ano.NomeTurmaAno.ToUpper();
+                        ano.EhExibirTurma = request.Filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
+
                         foreach (var bimestre in ano.Bimestres)
                         {
-                            bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre";
+                            bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre".ToUpper();
                             foreach (var componente in bimestre.Componentes)
                             {
                                 var componenteAtual = componentes.FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
                                 if (componenteAtual != null)
-                                    componente.NomeComponente = componenteAtual.Descricao;
+                                    componente.NomeComponente = componenteAtual.Descricao.ToUpper();
 
 
                                 for (int a = 0; a < componente.Alunos.Count; a++)
@@ -124,7 +126,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFrequenciaAlunoDto
                                     {
                                         CodigoAluno = c.CodigoAluno,
-                                        NomeTurma = turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo)?.Nome,
+                                        NomeTurma = turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo) == null ? "" : turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo).Nome,
                                         NomeAluno = c.NomeFinal,
                                         NumeroChamada = c.NumeroChamada,
                                         TotalAusencias = 0,
@@ -142,7 +144,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         {
                             var final = new RelatorioFrequenciaBimestreDto
                             {
-                                NomeBimestre = "Final",
+                                NomeBimestre = "FINAL",
                             };
 
                             var componentesFinal = ano.Bimestres.SelectMany(c => c.Componentes).DistinctBy(c => c.CodigoComponente).ToList();
@@ -157,7 +159,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     if (componenteAtual == null)
                                     {
                                         componenteAtual = new RelatorioFrequenciaComponenteDto();
-                                        componenteAtual.NomeComponente = componente.NomeComponente;
+                                        componenteAtual.NomeComponente = componente.NomeComponente.ToUpper();
                                         componenteAtual.CodigoComponente = componente.CodigoComponente;
                                         final.Componentes.Add(componenteAtual);
                                     }
@@ -206,7 +208,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 }
                 model.UltimoAluno = $"{dre.NomeDre}{model.UltimoAluno}";
             }
-
 
             DefinirCabecalho(request, model, filtro, dres, componentes);
 
@@ -368,14 +369,14 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                     bimestreAtual = new RelatorioFrequenciaBimestreDto
                     {
                         Numero = numeroBimestre.ToString(),
-                        NomeBimestre = $"{numeroBimestre}° Bimestre"
+                        NomeBimestre = $"{numeroBimestre}° Bimestre".ToUpper()
                     };
 
                     foreach (var componente in componentes)
                     {
                         var novoComponente = new RelatorioFrequenciaComponenteDto();
                         novoComponente.CodigoComponente = componente.CodigoComponente;
-                        novoComponente.NomeComponente = componente.NomeComponente;
+                        novoComponente.NomeComponente = componente.NomeComponente.ToUpper();
                         foreach (var aluno in componente.Alunos)
                         {
                             var novoAluno = new RelatorioFrequenciaAlunoDto();

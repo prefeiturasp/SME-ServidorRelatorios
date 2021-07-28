@@ -12,6 +12,7 @@ namespace SME.SR.Data
                                                                                       Modalidade modalidade,
                                                                                       IEnumerable<string> anosEscolares,
                                                                                       IEnumerable<string> componentesCurriculares,
-                                                                                      IEnumerable<int> bimestres);
+                                                                                      IEnumerable<int> bimestres,
+                                                                                      TipoRelatorioFaltasFrequencia tipoRelatorio);
     }
 }
