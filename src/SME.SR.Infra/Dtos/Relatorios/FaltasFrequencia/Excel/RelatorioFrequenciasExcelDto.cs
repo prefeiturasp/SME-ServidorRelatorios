@@ -31,7 +31,7 @@ namespace SME.SR.Infra
         [Display(Description = "Remoto")]
         public int TotalRemoto { get; set; }
 
-        [Display(Description = "Qtd Faltas")]
+        [Display(Description = "Ausências")]
         public int TotalAusencias { get; set; }
 
         [Display(Description = "Compensações")]
