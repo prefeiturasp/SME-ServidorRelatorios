@@ -48,7 +48,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                                                                           filtro.AnosEscolares,
                                                                                           filtro.ComponentesCurriculares,
                                                                                           filtro.Bimestres,
-                                                                                          filtro.TipoRelatorio);
+                                                                                          filtro.TipoRelatorio,
+                                                                                          filtro.CodigosTurma);
 
             if (dres == null || !dres.Any())
             {
@@ -80,8 +81,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 {
                     foreach (var ano in ue.TurmasAnos)
                     {
-                        ano.Nome = ano.Nome.Equals("0º ano") ? "TURMA DE PROGRAMA" : ano.NomeTurmaAno.ToUpper();
                         ano.EhExibirTurma = request.Filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
+                        ano.Nome = ano.Nome.Equals("0º ano") ? "TURMA DE PROGRAMA" : ano.NomeTurmaAno.ToUpper();
 
                         foreach (var bimestre in ano.Bimestres)
                         {
@@ -108,10 +109,12 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                     if (alunoAtual != null)
                                     {
+                                        var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == alunoAtual.TurmaCodigo);
                                         aluno.NomeAluno = alunoAtual.NomeFinal;
                                         aluno.NumeroChamada = alunoAtual.NumeroChamada;
                                         aluno.TotalPresenca = totalPresenca != null ? totalPresenca.Quantidade : 0;
                                         aluno.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
+                                        aluno.NomeTurma = turmaFiltrada == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaFiltrada.Nome}";
                                     }
                                 }
 
@@ -123,10 +126,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
                                 {
+                                    var turmaAlunos = turmas.FirstOrDefault(a => a.Codigo == alunosSemFrequenciaNaTurma.FirstOrDefault().TurmaCodigo);
                                     var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFrequenciaAlunoDto
                                     {
                                         CodigoAluno = c.CodigoAluno,
-                                        NomeTurma = turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo) == null ? "" : turmas.FirstOrDefault(a => a.Codigo == c.TurmaCodigo).Nome,
+                                        NomeTurma = turmaAlunos == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaAlunos.Nome}",
                                         NomeAluno = c.NomeFinal,
                                         NumeroChamada = c.NumeroChamada,
                                         TotalAusencias = 0,
@@ -183,7 +187,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                             alunoAtual = new RelatorioFrequenciaAlunoDto();
                                             alunoAtual.CodigoAluno = aluno.CodigoAluno;
                                             alunoAtual.NomeAluno = aluno.NomeAluno;
-                                            alunoAtual.NomeTurma = aluno.NomeTurma;
                                             alunoAtual.NumeroChamada = aluno.NumeroChamada;
                                             componenteAtual.Alunos.Add(alunoAtual);
                                         }
@@ -339,7 +342,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                      ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano) ?
                                         operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.QuantidadeAusencia)
                                      :
-                                        operacao[filtro.Condicao](a.Frequencia, filtro.QuantidadeAusencia))
+                                        operacao[filtro.Condicao](a.TotalAusencias, filtro.QuantidadeAusencia))
                                      select a)
                                      .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
                                      .ThenBy(c => c.NomeTurma)
@@ -377,10 +380,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         var novoComponente = new RelatorioFrequenciaComponenteDto();
                         novoComponente.CodigoComponente = componente.CodigoComponente;
                         novoComponente.NomeComponente = componente.NomeComponente.ToUpper();
+                        var totalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(componente.Alunos.FirstOrDefault(c => c.CodigoTurma != null).CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
                         foreach (var aluno in componente.Alunos)
                         {
                             var novoAluno = new RelatorioFrequenciaAlunoDto();
-                            novoAluno.TotalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(aluno.CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
+                            novoAluno.TotalAulas = totalAulas;
                             novoAluno.TotalAusencias = 0;
                             novoAluno.TotalCompensacoes = 0;
                             novoAluno.NomeAluno = aluno.NomeAluno;
