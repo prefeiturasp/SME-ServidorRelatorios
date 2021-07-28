@@ -133,13 +133,13 @@ namespace SME.SR.MVC.Controllers
                 {
                     Nome = "EF-1A-1ºAno",
                     Bimestres = bimestres,
-                    ehExibirTurma = false,
+                    EhExibirTurma = false,
                 };
                 var turmaAno1 = new RelatorioFrequenciaTurmaAnoDto()
                 {
                     Nome = "EF-2A-2ºAno",
                     Bimestres = bimestres,
-                    ehExibirTurma = false,
+                    EhExibirTurma = false,
                 };
                 turmaAnos.Add(turmaAno);
                 turmaAnos.Add(turmaAno1);

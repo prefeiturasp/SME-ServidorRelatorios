@@ -107,7 +107,7 @@
                 <tbody>
                     <tr>
                         <td width='18%' class='sem-border-top espaco-esquerda-15'>TURMA: @cabecalho.Turma</td>
-                        <td width='18%' class='sem-border-top espaco-esquerda-15'>Bimestre: @cabecalho.Bimestre</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>BIMESTRE: @cabecalho.Bimestre</td>
                         <td width='64%' class='sem-border-top espaco-esquerda-15'>COMPONENTE CURRICULAR: @cabecalho.ComponenteCurricular</td>
                     </tr>
                 </tbody>
@@ -127,12 +127,7 @@
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
         paginaAtual++;
-        var str = $@"<footer class='rodape-rel-faltas-frequencia'>
-<div class='titulo-sgp-rodape'>
-SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
-</div>
-</footer>
-<div style='page-break-before:always' />";
+        var str = $@"<div style='page-break-before:always' />";
         return Html.Raw(str);
     }
     
@@ -363,11 +358,11 @@ SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
                                                     @if (componente.Alunos != null)
                                                     {
                                                         var stiloBorderTop = terminouListaAluno ? "border-top: none;" : "";
-                                                        @AbrirTabelaAluno(imprimeEspaco, ano.ehExibirTurma)
+                                                        @AbrirTabelaAluno(imprimeEspaco, ano.EhExibirTurma)
                                                         for (int i = 0; i < componente.Alunos.Count; i++)
                                                         {
                                                             var aluno = componente.Alunos[i];
-                                                            MontarLinhaAluno(aluno, ano.ehExibirTurma);
+                                                            MontarLinhaAluno(aluno, ano.EhExibirTurma);
 
                                                             var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
 
@@ -382,7 +377,7 @@ SGP - SISTEMA DE GESTÃO PEDAGÓGICA | FALTAS
                                                                 if (!terminouListaAluno)
                                                                 {
                                                                     MontarComponente(componente.NomeComponente);
-                                                                    @AbrirTabelaAluno(imprimeEspaco, ano.ehExibirTurma)
+                                                                    @AbrirTabelaAluno(imprimeEspaco, ano.EhExibirTurma)
                                                                 }
                                                             }
                                                         }
