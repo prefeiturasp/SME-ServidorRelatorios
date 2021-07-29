@@ -81,6 +81,9 @@ namespace SME.SR.Application
                 }
             }
 
+            if(!boletinsAlunos.Any())
+                throw new NegocioException("Não foram encontradas informações para geração do boletim");
+
             return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos));
         }
 
