@@ -38,6 +38,6 @@ namespace SME.SR.Infra
         public int TotalCompensacoes { get; set; }
 
         [Display(Description = "% Frequencia")]
-        public double FrequenciaPercentual { get; set; }
+        public string FrequenciaPercentual { get; set; }
     }
 }

@@ -106,6 +106,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                     var totalPresenca = frequenciaAluno.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.C);
                                     var totalRemoto = frequenciaAluno.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.R);
+                                    var totalAusente = frequenciaAluno.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.F);
 
                                     if (alunoAtual != null)
                                     {
@@ -114,6 +115,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         aluno.NumeroChamada = alunoAtual.NumeroChamada;
                                         aluno.TotalPresenca = totalPresenca != null ? totalPresenca.Quantidade : 0;
                                         aluno.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
+                                        aluno.TotalAusencias = totalAusente != null ? totalAusente.Quantidade : 0;
                                         aluno.NomeTurma = turmaFiltrada == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaFiltrada.Nome}";
                                     }
                                 }
