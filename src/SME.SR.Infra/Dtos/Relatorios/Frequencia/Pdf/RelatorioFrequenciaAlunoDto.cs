@@ -17,17 +17,17 @@ namespace SME.SR.Infra
         public int NumeroFaltasNaoCompensadas { get => TotalAusencias - TotalCompensacoes; }
         public string Ano { get; set; }
         public string FrequenciaFormatada { get; set; }
-        public double Frequencia
+        public string Frequencia
         {
             get
             {
                 if (TotalAulas == 0)
-                    return 0;
+                    return "";
 
-                var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
+                var porcentagem = ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
 
-                return Math.Round(porcentagem, 2);
+                return porcentagem == 0 ? "" : Math.Round(porcentagem, 2).ToString();
             }
-        }
+        }        
     }
 }
