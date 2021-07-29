@@ -28,19 +28,6 @@ namespace SME.SR.Infra
 
                 return porcentagem == 0 ? "" : Math.Round(porcentagem, 2).ToString();
             }
-        }
-
-        //public double Frequencia
-        //{
-        //    get
-        //    {
-        //        if (TotalAulas == 0)
-        //            return 0;
-
-        //        var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
-
-        //        return Math.Round(porcentagem, 2);
-        //    }
-        //}
+        }        
     }
 }
