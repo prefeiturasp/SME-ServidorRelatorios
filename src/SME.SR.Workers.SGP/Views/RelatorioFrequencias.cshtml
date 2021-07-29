@@ -80,7 +80,7 @@
             <td>@aluno.TotalPresenca</td>
             <td>@aluno.TotalRemoto</td>
             <td>@aluno.TotalAusencias</td>
-            <td>@aluno.TotalCompensacoes @contadorQuebrarPagina</td>
+            <td>@aluno.TotalCompensacoes</td>
             <td>@aluno.Frequencia</td>
 
         </tr>
@@ -356,7 +356,7 @@
                                                     @if (!string.IsNullOrWhiteSpace(Model.Cabecalho.Ano) || ehTodosTurmaAno)
                                                     {
                                                         <tr>
-                                                            <th>@ano.Nome @contadorQuebrarPagina</th>
+                                                            <th>@ano.Nome</th>
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                         imprimeEspaco = true;
@@ -364,7 +364,7 @@
                                                     @if (ehTodosBimestre)
                                                     {
                                                         <tr>
-                                                            <th>@bimestre.NomeBimestre @contadorQuebrarPagina</th>
+                                                            <th>@bimestre.NomeBimestre</th>
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                         imprimeEspaco = true;
