@@ -11,6 +11,10 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="usr_amcom"/>
+	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioBoletimEscolar/BoletimEscolar_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioBoletimEscolar/BoletimEscolar"/>
 	<subDataset name="DatasetBoletim" uuid="79626e05-df6d-4d15-a078-39d29f1a0462">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BoletimAdapter"/>
 		<queryString language="json">
@@ -143,7 +147,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaBimestre1} != "") ?  $F{notaBimestre1} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre1} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -165,7 +169,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{lancaFrequencia} ?  $F{frequenciaBimestre1} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre1} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -189,7 +193,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaBimestre2} != "") ?  $F{notaBimestre2} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre2} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -211,7 +215,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{lancaFrequencia}  ?  $F{frequenciaBimestre2} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre2} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -233,7 +237,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaBimestre3} != "") ?  $F{notaBimestre3} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre3} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -257,7 +261,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{lancaFrequencia} ?  $F{frequenciaBimestre3} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre3} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -281,7 +285,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaBimestre4} != "") ?  $F{notaBimestre4} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre4} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -303,7 +307,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{lancaFrequencia}  ?  $F{frequenciaBimestre4} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre4} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -325,7 +329,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaFinal} != "") ? $F{notaFinal} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaFinal} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -349,7 +353,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{lancaFrequencia}  ?  $F{frequenciaFinal} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaFinal} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
