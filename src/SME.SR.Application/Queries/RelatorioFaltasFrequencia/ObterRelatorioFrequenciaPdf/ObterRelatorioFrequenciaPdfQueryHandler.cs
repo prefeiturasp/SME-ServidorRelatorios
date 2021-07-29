@@ -274,12 +274,21 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Dres.RemoveAll(c => !c.Ues.Any());
             model.Cabecalho.Dre = selecionouTodasDres ? "Todas" : dres.FirstOrDefault().NomeDre;
             model.Cabecalho.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
-            model.Cabecalho.Turma = selecionoutodasTurmas ? "Todas" : dres.FirstOrDefault()
-                                                                        .Ues.FirstOrDefault()
-                                                                          .TurmasAnos.FirstOrDefault()
-                                                                             .Bimestres.FirstOrDefault()
-                                                                                .Componentes.FirstOrDefault()
-                                                                                   .Alunos.FirstOrDefault().NomeTurma;
+            model.Cabecalho.Turma = selecionoutodasTurmas
+                ?
+                "Todas" 
+                :
+                filtro.CodigosTurma.Count() > 1
+                ?
+                ""
+                :
+                dres.FirstOrDefault()
+                        .Ues.FirstOrDefault()
+                            .TurmasAnos.FirstOrDefault()
+                              .Bimestres.FirstOrDefault()
+                                .Componentes.FirstOrDefault()
+                                   .Alunos.FirstOrDefault().NomeTurma;
+
 
             var selecionouTodosAnos = filtro.AnosEscolares.Any(c => c == "-99");
             var ano = filtro.AnosEscolares.FirstOrDefault();

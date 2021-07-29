@@ -353,7 +353,7 @@
                                                         imprimeEspaco = true;
                                                     }
                                                     @{contadorQuebrarPagina = contadorQuebrarPagina + 1;}
-                                                    @if (!string.IsNullOrWhiteSpace(Model.Cabecalho.Ano) || ehTodosTurmaAno)
+                                                    @if (!string.IsNullOrWhiteSpace(Model.Cabecalho.Ano) || ehTodosTurmaAno || string.IsNullOrWhiteSpace(Model.Cabecalho.Turma))
                                                     {
                                                         <tr>
                                                             <th>@ano.Nome</th>
