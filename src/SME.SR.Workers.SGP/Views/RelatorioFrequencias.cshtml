@@ -61,7 +61,7 @@
 
     void MontarLinhaAluno(SME.SR.Infra.RelatorioFrequenciaAlunoDto aluno, bool ehExibirTurma)
     {
-        int numeroCaracteres = aluno == null ? 0 : aluno.NomeAluno.Length;
+        int numeroCaracteres = string.IsNullOrWhiteSpace(aluno.NomeAluno) ? 0 : aluno.NomeAluno.Length;
         int maximoCaracteres = 34;
         if(numeroCaracteres > maximoCaracteres)
         {
