@@ -318,7 +318,7 @@ namespace SME.SR.Application
             if (bimestre > periodoAtual && String.IsNullOrEmpty(frequencia))
                 frequencia = "-";
 
-            return frequencia != "-" ? frequencia + "%" : frequencia;
+            return frequencia != "-" || !String.IsNullOrEmpty(frequencia) ? frequencia + "%" : frequencia;
         }
 
         private string ObterFrequenciaFinalAluno(IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma, IEnumerable<int> conselhoClassBimestres)
