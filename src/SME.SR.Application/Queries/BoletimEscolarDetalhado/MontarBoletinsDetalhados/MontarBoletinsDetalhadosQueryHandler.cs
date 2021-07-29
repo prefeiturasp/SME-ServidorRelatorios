@@ -315,10 +315,13 @@ namespace SME.SR.Application
             var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) && !possuiFrequenciaTurma.Value ? "" :
                 frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? (possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
 
+            if (!String.IsNullOrEmpty(frequencia))
+                frequencia = frequencia += "%";
+
             if (bimestre > periodoAtual && String.IsNullOrEmpty(frequencia))
                 frequencia = "-";
 
-            return frequencia != "-" || !String.IsNullOrEmpty(frequencia) ? frequencia + "%" : frequencia;
+            return frequencia;
         }
 
         private string ObterFrequenciaFinalAluno(IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma, IEnumerable<int> conselhoClassBimestres)
