@@ -18,6 +18,6 @@ namespace SME.SR.Application
         public async Task<bool> Handle(ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery request, CancellationToken cancellationToken)
             => await frequenciaAlunoRepository.ExisteFrequenciaRegistradaPorTurmaComponenteCurricular(request.CodigoTurma,
                                                                                                       request.ComponenteCurricularId,
-                                                                                                      request.PeriodoEscolarId);
+                                                                                                      request.PeriodoEscolarId,request.Bimestres);
     }
 }

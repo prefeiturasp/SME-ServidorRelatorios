@@ -93,7 +93,7 @@ namespace SME.SR.Application
             if (componentesRegencia == null || !componentesRegencia.Any())
                 return null;            
 
-            var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), periodoEscolar.Id));
+            var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), periodoEscolar.Id,new int[] { }));
 
             
             double? percentualFrequencia = null;
@@ -148,7 +148,7 @@ namespace SME.SR.Application
 
         private async Task<ComponenteComNotaBimestre> ObterNotasFrequenciaComponenteComNotaBimestre(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
-            var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), periodoEscolar.Id));
+            var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), periodoEscolar.Id,new int[] { }));
             
             double? percentualFrequencia = null;
 
