@@ -280,7 +280,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricular(string codigoTurma, string componenteCurricularId, long periodoEscolarId)
+        public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricular(string codigoTurma, string componenteCurricularId, long periodoEscolarId, int[] bimestres)
         {
             var query = @"select distinct(1)
                             from registro_frequencia_aluno rfa
@@ -295,9 +295,12 @@ namespace SME.SR.Data
 
             query += @" and a.data_aula between pe.periodo_inicio and pe.periodo_fim ";
 
+            if (bimestres.Count() > 0)
+                query += @" and pe.bimestre = ANY(@bimestres) ";
+
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId });
+            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId,bimestres });
         }
 
         public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAno(string codigoTurma, string componenteCurricularId, int anoLetivo)

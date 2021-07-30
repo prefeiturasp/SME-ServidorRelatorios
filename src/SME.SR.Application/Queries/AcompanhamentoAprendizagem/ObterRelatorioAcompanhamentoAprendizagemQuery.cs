@@ -7,7 +7,7 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQuery : IRequest<RelatorioAcompanhamentoAprendizagemDto>
     {
-        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, bool turmaPossuiFrequenciaRegistrada)
+        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, long periodoId)
         {
             Turma = turma;
             AlunosEol = alunosEol;
@@ -18,7 +18,7 @@ namespace SME.SR.Application
             Ocorrencias = ocorrencias;
             Filtro = filtro;
             QuantidadeAulasDadas = quantidadeAulasDadas;
-            TurmaPossuiFrequenciaRegistrada = turmaPossuiFrequenciaRegistrada;
+            PeriodoId = periodoId;
         }
 
         public Turma Turma { get; set; }
@@ -30,7 +30,7 @@ namespace SME.SR.Application
         public IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias { get; set; }
         public FiltroRelatorioAcompanhamentoAprendizagemDto Filtro { get; set; }
         public IEnumerable<QuantidadeAulasDadasBimestreDto> QuantidadeAulasDadas { get; set; }
-        public bool TurmaPossuiFrequenciaRegistrada { get; set; }
+        public long PeriodoId { get; set; }
 
     }
 }
