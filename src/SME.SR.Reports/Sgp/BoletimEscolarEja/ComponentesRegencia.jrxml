@@ -141,6 +141,14 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaFinal"/>
 			<fieldDescription><![CDATA[frequenciaFinal]]></fieldDescription>
 		</field>
+		<field name="lancaNota" class="java.lang.Boolean">
+			<property name="net.sf.jasperreports.json.field.expression" value="lancaNota"/>
+			<fieldDescription><![CDATA[lancaNota]]></fieldDescription>
+		</field>
+		<field name="lancaFrequencia" class="java.lang.Boolean">
+			<property name="net.sf.jasperreports.json.field.expression" value="lancaFrequencia"/>
+			<fieldDescription><![CDATA[lancaFrequencia]]></fieldDescription>
+		</field>
 	</subDataset>
 	<queryString language="JSON">
 		<![CDATA[]]>
@@ -378,7 +386,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaBimestre1}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre1} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -391,7 +399,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaBimestre1}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre1} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -404,7 +412,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaBimestre2}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre2} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -417,7 +425,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaBimestre2}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre2} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -430,7 +438,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaFinal}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaFinal} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -446,7 +454,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{frequenciaFinal}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaFinal} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

@@ -23,7 +23,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
+           var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
 
             var legenda = await ObterLegenda();
 

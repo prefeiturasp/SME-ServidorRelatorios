@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponenteCurricularRegencia" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="19201772-5e32-442a-8e05-b82ed2d9b261">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -166,7 +166,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaBimestre1} != null && !$F{notaBimestre1}.isEmpty() ? $F{notaBimestre1} :"--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaBimestre1}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -183,7 +183,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="4"/>
 				</textElement>
-				<textFieldExpression><![CDATA[!$F{frequenciaBimestre1}.isEmpty() ? $F{frequenciaBimestre1} : "--"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{frequenciaBimestre1}]]></textFieldExpression>
 			</textField>
 			<componentElement>
 				<reportElement positionType="Float" mode="Opaque" x="130" y="0" width="21" height="8" isRemoveLineWhenBlank="true" forecolor="#42474A" uuid="1b44c011-fd41-41f2-96fb-4856f5f90d09">
@@ -211,7 +211,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaBimestre2} != null && !$F{notaBimestre2}.isEmpty() ? $F{notaBimestre2} :"--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaBimestre2}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -228,7 +228,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="4"/>
 				</textElement>
-				<textFieldExpression><![CDATA[!$F{frequenciaBimestre2}.isEmpty() ? $F{frequenciaBimestre2} : "--"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{frequenciaBimestre2}]]></textFieldExpression>
 			</textField>
 			<componentElement>
 				<reportElement positionType="Float" mode="Opaque" x="172" y="0" width="21" height="8" isRemoveLineWhenBlank="true" forecolor="#42474A" uuid="f5e81f6e-e834-48dc-bbea-48d8d619741d">
@@ -256,7 +256,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaBimestre3} != null && !$F{notaBimestre3}.isEmpty() ? $F{notaBimestre3} :"--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaBimestre3}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -273,7 +273,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="4"/>
 				</textElement>
-				<textFieldExpression><![CDATA[!$F{frequenciaBimestre3}.isEmpty() ? $F{frequenciaBimestre3} : "--"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{frequenciaBimestre3}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="232" y="0" width="18" height="8" isRemoveLineWhenBlank="true" forecolor="#42474A" uuid="226ad5b0-2757-407b-85bd-c7455a46f3e1">
@@ -286,7 +286,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="4"/>
 				</textElement>
-				<textFieldExpression><![CDATA[!$F{frequenciaBimestre4}.isEmpty() ? $F{frequenciaBimestre4} : "--"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{frequenciaBimestre4}]]></textFieldExpression>
 			</textField>
 			<componentElement>
 				<reportElement positionType="Float" mode="Opaque" x="213" y="0" width="19" height="8" isRemoveLineWhenBlank="true" forecolor="#42474A" uuid="92858d04-2424-419b-891e-0050a08d3c7c">
@@ -311,7 +311,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaBimestre4} != null && !$F{notaBimestre4}.isEmpty() ? $F{notaBimestre4} :"--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaBimestre4}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -328,7 +328,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="4"/>
 				</textElement>
-				<textFieldExpression><![CDATA[!$F{frequenciaFinal}.isEmpty() ? $F{frequenciaFinal} : "--"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[!$F{frequenciaFinal}.isEmpty() ? $F{frequenciaFinal} : "-"]]></textFieldExpression>
 			</textField>
 			<componentElement>
 				<reportElement positionType="Float" mode="Opaque" x="250" y="0" width="18" height="8" isRemoveLineWhenBlank="true" forecolor="#42474A" uuid="e2a2d71c-e82a-455a-94bc-6ba46d206a5f">
@@ -356,7 +356,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaFinal} != null && !$F{notaFinal}.isEmpty() ? $F{notaFinal} :"--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaFinal} != null && !$F{notaFinal}.isEmpty() ? $F{notaFinal} :"-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
