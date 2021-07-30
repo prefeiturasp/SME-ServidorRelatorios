@@ -343,7 +343,7 @@ namespace SME.SR.Application
 
             }
 
-            return componentes?.Where(c => c.PossuiNotaValida);
+            return componentes;
         }
 
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos)
