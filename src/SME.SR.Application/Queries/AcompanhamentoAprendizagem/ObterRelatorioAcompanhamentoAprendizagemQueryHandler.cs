@@ -147,7 +147,7 @@ namespace SME.SR.Application
         }
         private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, long periodoId, Turma turma)
         {
-            var freqenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
+            var frequenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
 
             foreach (var bimestre in bimestres.OrderBy(b => b))
             {
@@ -166,16 +166,11 @@ namespace SME.SR.Application
                     Bimestre = $"{bimestre}º",
                     Aulas = frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas,
                     Ausencias = frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias,
-                    Frequencia = frequenciaAluno != null
-                    ?
-                    $"{frequenciaAluno.PercentualFrequencia}%"
-                    :
-                    turmaPossuiFrequenciaRegistrada ? "100%"
-                    :"",
+                    Frequencia = frequenciaAluno != null ? $"{frequenciaAluno.PercentualFrequencia}%" : (turmaPossuiFrequenciaRegistrada || aulasDadas!=null) ? "100%" :"",
                 };
-                freqenciasRelatorio.Add(freqenciaRelatorio);
+                frequenciasRelatorio.Add(freqenciaRelatorio);
             }
-            return freqenciasRelatorio;
+            return frequenciasRelatorio;
         }
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> MontarRegistrosIndividuais(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais)
