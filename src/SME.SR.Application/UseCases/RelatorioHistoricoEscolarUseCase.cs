@@ -23,7 +23,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-           var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
+            var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
 
             var legenda = await ObterLegenda();
 
@@ -88,6 +88,8 @@ namespace SME.SR.Application
                 componentesCurriculares = ConverterTurmasAssociadasParaRegular(componentesCurriculares, turmasAssociadasCodigo, todasTurmasAssociadas);
             }
 
+            var registroFrequenciasAlunos = await mediator.Send(new ObterRegistrosFrequenciasAlunoQuery(alunosCodigo.ToArray(), turmasCodigo.ToArray(), new string[] { }, 0, new int[] { }));
+
             if (notas.Any(n => turmasAssociadasCodigo.Contains(n.Key)))
             {
                 notas = ConverterTurmasAssociadasParaRegular(notas, turmasAssociadasCodigo, todasTurmasAssociadas);
@@ -105,6 +107,8 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(filtros.DreCodigo);
 
             var ue = await ObterUePorCodigo(filtros.UeCodigo);
+
+            var bimestreAtual = await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dre.Id, ue.Id, filtros.AnoLetivo));
 
             var enderecoAtoUe = await ObterEnderecoAtoUe(filtros.UeCodigo);
 
@@ -134,7 +138,7 @@ namespace SME.SR.Application
 
             if (turmasTransferencia != null && turmasTransferencia.Any())
                 resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, ordenacaoGrupoArea, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
-                  frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray(), legenda));
+                  frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray(), legenda, registroFrequenciasAlunos, bimestreAtual));
 
             if ((turmasFundMedio != null && turmasFundMedio.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
