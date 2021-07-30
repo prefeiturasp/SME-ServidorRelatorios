@@ -343,7 +343,6 @@ namespace SME.SR.Application
 
             }
 
-            //return componentes?.Where(c => c.PossuiNotaValida);
             return componentes;
         }
 
