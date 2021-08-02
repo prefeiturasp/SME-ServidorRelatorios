@@ -72,7 +72,6 @@ namespace SME.SR.Workers.SGP.Services
                     {
                         { "x-dead-letter-exchange", ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter}
                     };
-
                 _channel.QueueDeclare(fila, true, false, false, args);
                 _channel.QueueBind(fila, ExchangeRabbit.ExchangeListenerWorkerRelatorios, fila, null);
 
