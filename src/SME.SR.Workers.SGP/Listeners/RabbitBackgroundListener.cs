@@ -7,6 +7,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Sentry;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
@@ -54,31 +55,32 @@ namespace SME.SR.Workers.SGP.Services
         private void InitRabbit()
         {
 
-            var args = new Dictionary<string, object>()
-                    {
-                        { "x-dead-letter-exchange", RotasRabbit.ExchangeListenerWorkerRelatoriosDeadletter}
-                    };
+            _channel.ExchangeDeclare(ExchangeRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Direct, true, false);
+            _channel.ExchangeDeclare(ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
 
-
-            _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Direct, true, false);
-            _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
-
-            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosSolicitados, true, false, false, args);
-            _channel.QueueBind(RotasRabbit.RotaRelatoriosSolicitados, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatoriosSolicitados, null);            
-
-            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosProcessando, true, false, false, args);
-            _channel.QueueBind(RotasRabbit.RotaRelatoriosProcessando, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando, null);
-
-            //DeadLetter
-            var nomeFilaDeadLetterSolicitados = $"{RotasRabbit.RotaRelatoriosSolicitados}.deadletter";
-            _channel.QueueDeclare(nomeFilaDeadLetterSolicitados, true, false, false, null);
-            _channel.QueueBind(nomeFilaDeadLetterSolicitados, RotasRabbit.ExchangeListenerWorkerRelatoriosDeadletter, RotasRabbit.RotaRelatoriosSolicitados, null);            
-
-            var nomeFilaDeadLetterProcessando = $"{RotasRabbit.RotaRelatoriosProcessando}.deadletter";
-            _channel.QueueDeclare(nomeFilaDeadLetterProcessando, true, false, false, null);
-            _channel.QueueBind(nomeFilaDeadLetterProcessando, RotasRabbit.ExchangeListenerWorkerRelatoriosDeadletter, RotasRabbit.RotaRelatoriosProcessando, null);
+            DeclararFilasPorRota(typeof(RotasRabbit));
 
             _channel.BasicQos(0, 1, false);
+        }
+
+
+        private void DeclararFilasPorRota(Type tipoRotas)
+        {
+            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
+            {
+                var args = new Dictionary<string, object>()
+                    {
+                        { "x-dead-letter-exchange", ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter}
+                    };
+
+                _channel.QueueDeclare(fila, true, false, false, args);
+                _channel.QueueBind(fila, ExchangeRabbit.ExchangeListenerWorkerRelatorios, fila, null);
+
+                var filaDeadLetter = $"{fila}.deadletter";
+                _channel.QueueDeclare(filaDeadLetter, true, false, false, null);
+                _channel.QueueBind(filaDeadLetter, ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter, filaDeadLetter, null);
+
+            }
         }
 
         private async Task HandleMessage(string content)
@@ -138,7 +140,7 @@ namespace SME.SR.Workers.SGP.Services
             var mensagem = JsonConvert.SerializeObject(mensagemRabbit);
             var body = Encoding.UTF8.GetBytes(mensagem);
 
-            _channel.BasicPublish(RotasRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro, null, body);
+            _channel.BasicPublish(ExchangeRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro, null, body);
         }
 
         private WorkerAttribute GetWorkerAttribute(Type type)
@@ -184,8 +186,7 @@ namespace SME.SR.Workers.SGP.Services
             consumer.Unregistered += OnConsumerUnregistered;
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
-            _channel.BasicConsume(RotasRabbit.RotaRelatoriosSolicitados, false, consumer);
-            _channel.BasicConsume(RotasRabbit.RotaRelatoriosProcessando, false, consumer);
+            RegistrarConsumer(consumer);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -193,6 +194,12 @@ namespace SME.SR.Workers.SGP.Services
             _channel.Close();
             _connection.Close();
             return Task.CompletedTask;
+        }
+
+        private void RegistrarConsumer(EventingBasicConsumer consumer)
+        {
+            foreach (var fila in typeof(RotasRabbit).ObterConstantesPublicas<string>())
+                _channel.BasicConsume(fila, false, consumer);
         }
     }
 }
