@@ -7,9 +7,10 @@
         //public static string FilaWorkerRelatorios => "sme.sr.workers.sgp";
         //public static string FilaSgp => "sme.sgp.clients";
         public const string RotaRelatoriosSolicitados = "relatorios.solicitados";
-        public const string RotaRelatoriosProntosSgp = "relatorios.prontos";
         public const string RotaRelatoriosProcessando = "relatorios.processando";
 
+
+        public const string RotaRelatoriosProntosSgp = "relatorios.prontos";
         public const string RotaRelatorioComErro = "relatorios.erro";
         public const string RotaRelatorioCorrelacaoCopiar = "relatorios.correlacao.copiar";
         public const string RotaRelatorioCorrelacaoInserir = "relatorios.correlacao.inserir";
