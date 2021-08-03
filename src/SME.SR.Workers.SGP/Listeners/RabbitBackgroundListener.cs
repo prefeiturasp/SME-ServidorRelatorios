@@ -12,6 +12,7 @@ using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -58,27 +59,30 @@ namespace SME.SR.Workers.SGP.Services
             _channel.ExchangeDeclare(ExchangeRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Direct, true, false);
             _channel.ExchangeDeclare(ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
 
-            DeclararFilasPorRota(typeof(RotasRabbit));
+            DeclararFilasPorRota(typeof(RotasRabbit), "solicitados", ExchangeRabbit.ExchangeListenerWorkerRelatorios, ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter);
+            DeclararFilasPorRota(typeof(RotasRabbit), "processando", ExchangeRabbit.ExchangeListenerWorkerRelatorios, ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter);
+            DeclararFilasPorRota(typeof(RotasRabbit), "prontos", ExchangeRabbit.ExchangeSgp, ExchangeRabbit.ExchangeSgpDeadLetter);
+            DeclararFilasPorRota(typeof(RotasRabbit), "erro", ExchangeRabbit.ExchangeSgp, ExchangeRabbit.ExchangeSgpDeadLetter);
+            DeclararFilasPorRota(typeof(RotasRabbit), "correlacao", ExchangeRabbit.ExchangeSgp, ExchangeRabbit.ExchangeSgpDeadLetter);
 
             _channel.BasicQos(0, 1, false);
         }
 
 
-        private void DeclararFilasPorRota(Type tipoRotas)
+        private void DeclararFilasPorRota(Type tipoRotas, string busca, string exchange, string exchangeDeadletter)
         {
-            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
+            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>().Where(a => a.Contains(busca)))
             {
                 var args = new Dictionary<string, object>()
                     {
-                        { "x-dead-letter-exchange", ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter}
+                        { "x-dead-letter-exchange", exchange}
                     };
                 _channel.QueueDeclare(fila, true, false, false, args);
-                _channel.QueueBind(fila, ExchangeRabbit.ExchangeListenerWorkerRelatorios, fila, null);
+                _channel.QueueBind(fila, exchange, fila, null);
 
                 var filaDeadLetter = $"{fila}.deadletter";
                 _channel.QueueDeclare(filaDeadLetter, true, false, false, null);
-                _channel.QueueBind(filaDeadLetter, ExchangeRabbit.ExchangeListenerWorkerRelatoriosDeadletter, filaDeadLetter, null);
-
+                _channel.QueueBind(filaDeadLetter, exchangeDeadletter, filaDeadLetter, null);
             }
         }
 
