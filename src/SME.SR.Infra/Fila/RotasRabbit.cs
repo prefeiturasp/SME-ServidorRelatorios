@@ -17,10 +17,14 @@
 
 
         public const string RotaRelatoriosSolicitadosBoletim = "relatorios.solicitados.boletim";
+        public const string RotaRelatoriosProcessandoBoletim = "relatorios.processando.boletim";
+
         public const string RotaRelatoriosSolicitadosBoletimDetalhado = "relatorios.solicitados.boletimdetalhado";
+
         public const string RotaRelatoriosSolicitadosPlanoDeAula = "relatorios.solicitados.planodeaula";
         public const string RotaRelatoriosSolicitadosRegistroIndividual = "relatorios.solicitados.registroindividual";
         public const string RotaRelatoriosSolicitadosConselhoDeClasse = "relatorios.solicitados.conselhodeclasse";
+        public const string RotaRelatoriosProcessandoConselhoDeClasse = "relatorios.processando.conselhodeclasse";
         public const string RotaRelatoriosSolicitadosRelatorioAcompanhamentoAprendizagem = "relatorios.solicitados.relatorioacompanhamentoaprendizagem";
         public const string RotaRelatoriosSolicitadosCalendarioEscolar = "relatorios.solicitados.calendárioescolar";
         public const string RotaRelatoriosSolicitadosRegistroItinerancia = "relatorios.solicitados.registroitinerancia";
@@ -44,5 +48,6 @@
         public const string RotaRelatoriosSolicitadosEscolaAquiAdesao = "relatorios.solicitados.escolaaquiadesao";
         public const string RotaRelatoriosSolicitadosAtaFinalResultados = "relatorios.solicitados.atafinalresultados";
         public const string RotaRelatoriosSolicitadosHistoricoEscolar = "relatorios.solicitados.historicoescolar";
+        public const string RotaRelatoriosProcessandoHistoricoEscolar = "relatorios.processando.historicoescolar";
     }
 }

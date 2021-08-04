@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Application
 {
@@ -48,7 +47,7 @@ namespace SME.SR.Application
                     urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal";
                 else urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasse";
 
-                await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoConselhoDeClasse));
             }
             catch (Exception ex)
             {
