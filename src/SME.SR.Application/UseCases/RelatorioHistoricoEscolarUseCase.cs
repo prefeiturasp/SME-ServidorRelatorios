@@ -23,6 +23,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            request.RotaErro = RotasRabbit.RotaRelatoriosComErroHistoricoEscolar;
             var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
 
             var legenda = await ObterLegenda();

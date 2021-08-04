@@ -25,7 +25,6 @@ namespace SME.SR.Application
         {
 
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
-
             SentrySdk.CaptureMessage("4.09 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
 
             var relatorio = await mediator.Send(relatorioQuery);
