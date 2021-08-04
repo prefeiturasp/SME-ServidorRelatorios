@@ -34,7 +34,7 @@ namespace SME.SR.Infra
                 VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
             };
 
-            var exchange = publicaFilaDto.Exchange ?? RotasRabbit.ExchangeListenerWorkerRelatorios;
+            var exchange = publicaFilaDto.Exchange ?? ExchangeRabbit.ExchangeListenerWorkerRelatorios;
 
             using (var conexaoRabbit = factory.CreateConnection())
             {
