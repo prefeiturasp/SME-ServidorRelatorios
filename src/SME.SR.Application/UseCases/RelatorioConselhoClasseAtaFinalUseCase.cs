@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-
+            request.RotaErro = RotasRabbit.RotaRelatoriosComErroAtaFinalResultados;
             var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
             var mensagensErro = new StringBuilder();

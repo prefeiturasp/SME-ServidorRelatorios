@@ -143,7 +143,7 @@ namespace SME.SR.Workers.SGP.Services
             var mensagem = JsonConvert.SerializeObject(mensagemRabbit);
             var body = Encoding.UTF8.GetBytes(mensagem);
 
-            _channel.BasicPublish(ExchangeRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro, null, body);
+            _channel.BasicPublish(ExchangeRabbit.ExchangeSgp, request.RotaErro, null, body);
         }
 
         private WorkerAttribute GetWorkerAttribute(Type type)

@@ -51,6 +51,7 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
+                request.RotaErro = RotasRabbit.RotaRelatoriosComErroConselhoDeClasse;
                 throw ex;
             }
         }

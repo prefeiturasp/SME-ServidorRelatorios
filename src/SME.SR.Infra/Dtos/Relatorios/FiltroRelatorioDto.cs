@@ -8,6 +8,7 @@ namespace SME.SR.Infra
         public FiltroRelatorioDto()
         {
             RotaProcessando = RotasRabbit.RotaRelatoriosProcessando;
+            RotaErro = RotasRabbit.RotaRelatorioComErro;
         }
         public string Action { get; set; }
         public object Mensagem { get; set; }
@@ -15,6 +16,7 @@ namespace SME.SR.Infra
         public string UsuarioLogadoRF { get; set; }
         public string PerfilUsuario { get; set; }
         public string RotaProcessando { get; set; }
+        public string RotaErro { get; set; }
         public T ObterObjetoFiltro<T>() where T: class
         {
             return JsonConvert.DeserializeObject<T>(Mensagem.ToString());
