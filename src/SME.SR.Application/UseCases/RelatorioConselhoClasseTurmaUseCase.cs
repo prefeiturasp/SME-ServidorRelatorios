@@ -23,6 +23,7 @@ namespace SME.SR.Application
         {
             try
             {
+                request.RotaErro = RotasRabbit.RotaRelatoriosComErroConselhoDeClasse;
                 var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseTurmaQuery>();
                 var relatorioAlunos = await mediator.Send(relatorioQuery);
 
