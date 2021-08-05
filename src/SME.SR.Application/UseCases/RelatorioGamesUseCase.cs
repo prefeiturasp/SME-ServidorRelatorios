@@ -18,6 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            request.RotaErro = RotasRabbit.RotaRelatoriosComErroConselhoDeClasse;
             var gamesQuery = request.ObterObjetoFiltro<GamesQuery>();
             var nomeDoGame = await mediator.Send(gamesQuery);
 
