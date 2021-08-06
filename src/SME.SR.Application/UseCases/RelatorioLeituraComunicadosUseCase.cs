@@ -18,22 +18,16 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             request.RotaErro = RotasRabbit.RotaRelatoriosComErroEscolaAquiLeitura;
-            try
-            {
-                var filtro = request.ObterObjetoFiltro<FiltroRelatorioLeituraComunicadosDto>();
-                var relatorioDto = new RelatorioLeituraComunicadosDto();
+            var filtro = request.ObterObjetoFiltro<FiltroRelatorioLeituraComunicadosDto>();
+            var relatorioDto = new RelatorioLeituraComunicadosDto();
 
-                filtro.Turma = filtro.Turma == "-99" ? "" : filtro.Turma;
+            filtro.Turma = filtro.Turma == "-99" ? "" : filtro.Turma;
 
-                await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
-                await ObterDadosRelatorio(relatorioDto, filtro);
+            await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
+            await ObterDadosRelatorio(relatorioDto, filtro);
 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEscolaAquiLeituraComunicados", relatorioDto, request.CodigoCorrelacao));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEscolaAquiLeituraComunicados", relatorioDto, request.CodigoCorrelacao));
+
         }
         private async Task ObterDadosRelatorio(RelatorioLeituraComunicadosDto relatorioDto, FiltroRelatorioLeituraComunicadosDto filtro)
         {

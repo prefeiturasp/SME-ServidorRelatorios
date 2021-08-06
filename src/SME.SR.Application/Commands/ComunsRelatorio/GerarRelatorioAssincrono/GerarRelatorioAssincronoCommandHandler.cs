@@ -68,7 +68,7 @@ namespace SME.SR.Application
                 if (exportacaoId != null)
                 {
                     var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
-                    var publicacaoFila = new PublicaFilaDto(dadosRelatorio, request.RotaProcessando, ExchangeRabbit.ExchangeListenerWorkerRelatorios, request.CodigoCorrelacao);
+                    var publicacaoFila = new PublicaFilaDto(dadosRelatorio, request.RotaProcessando, ExchangeRabbit.WorkerRelatorios, request.CodigoCorrelacao);
 
                     servicoFila.PublicaFila(publicacaoFila);
 
