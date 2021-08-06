@@ -131,8 +131,6 @@ namespace SME.SR.Workers.SGP.Services
                     SentrySdk.AddBreadcrumb($"Erros: {ex.Message}", null, null, null, BreadcrumbLevel.Error);
                     SentrySdk.CaptureException(ex);
                     RegistrarSentry(ea, mensagemRabbit, ex);
-                    //if (mensagemRabbit.NotificarErroUsuario)
-                    //    NotificarErroUsuario($"Ocorreu um erro interno, por favor tente novamente", mensagemRabbit.UsuarioLogadoRF, comandoRabbit.NomeProcesso);
                 }
             }
         }
