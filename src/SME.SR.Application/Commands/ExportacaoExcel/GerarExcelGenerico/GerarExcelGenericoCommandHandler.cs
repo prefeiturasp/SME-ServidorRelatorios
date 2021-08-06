@@ -53,7 +53,7 @@ namespace SME.SR.Application
                     workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
                 }
 
-                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.RotaRelatoriosProntosSgp, ExchangeRabbit.ExchangeSgp, request.CodigoCorrelacao));
+                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
 
                 return await Task.FromResult(Unit.Value);
             }
