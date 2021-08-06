@@ -4,7 +4,6 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
-using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Application
 {
@@ -19,16 +18,17 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            request.RotaErro = RotasRabbit.RotaRelatoriosComErroConselhoDeClasse;
             var gamesQuery = request.ObterObjetoFiltro<GamesQuery>();
             var nomeDoGame = await mediator.Send(gamesQuery);
-            
+
             var conselhoClasse = await mediator.Send(new RelatorioExemploQuery());
             var dadosRelatorio = JsonConvert.SerializeObject(conselhoClasse);
 
             await mediator.Send(new GerarRelatorioAssincronoCommand("/sme/sgp/RelatorioConselhoClasse/ConselhoClasse",
                                                                     dadosRelatorio,
                                                                     TipoFormatoRelatorio.Pdf,
-                                                                    request.CodigoCorrelacao));
+                                                                    request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoConselhoDeClasse));
         }
     }
 }

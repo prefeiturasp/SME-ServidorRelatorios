@@ -18,6 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            request.RotaErro = RotasRabbit.RotaRelatoriosComErroFrequencia;
             var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFrequenciasDto>();
 
             var dadosRelatorio = await mediator.Send(new ObterRelatorioFrequenciaPdfQuery(relatorioFiltros));

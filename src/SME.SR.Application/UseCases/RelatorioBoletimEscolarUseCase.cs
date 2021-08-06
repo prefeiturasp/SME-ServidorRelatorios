@@ -20,21 +20,28 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            request.RotaErro = RotasRabbit.RotaRelatoriosComErroBoletim;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
             var relatorio = await mediator.Send(relatorioQuery);
 
             var jsonString = JsonConvert.SerializeObject(relatorio, UtilJson.ObterConfigConverterNulosEmVazio());
-
-            switch(relatorioQuery.Modalidade)
+            
+            switch (relatorioQuery.Modalidade)
             {
                 case Modalidade.EJA:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja", 
+                        jsonString, TipoFormatoRelatorio.Pdf, 
+                        request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoBoletim));
                     break;
                 case Modalidade.Medio:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio", 
+                        jsonString, TipoFormatoRelatorio.Pdf, 
+                        request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoBoletim));
                     break;
                 default:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolar/BoletimEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolar/BoletimEscolar", 
+                        jsonString, TipoFormatoRelatorio.Pdf, 
+                        request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoBoletim));
                     break;
             }   
         }
