@@ -49,7 +49,30 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/processando", typeof(IMonitorarStatusRelatorioUseCase))]
         public async Task<bool> RelatoriosProcessando([FromQuery] FiltroRelatorioDto request, [FromServices] IMonitorarStatusRelatorioUseCase monitorarStatusRelatorioUseCase)
         {
-            SentrySdk.CaptureMessage("7 - relatorios/processando");
+            await monitorarStatusRelatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/processando/boletim")]
+        [Action("relatorios/processando/boletim", typeof(IMonitorarStatusRelatorioUseCase))]
+        public async Task<bool> RelatoriosProcessandoBoletim([FromQuery] FiltroRelatorioDto request, [FromServices] IMonitorarStatusRelatorioUseCase monitorarStatusRelatorioUseCase)
+        {
+            await monitorarStatusRelatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/processando/conselhodeclasse")]
+        [Action("relatorios/processando/conselhodeclasse", typeof(IMonitorarStatusRelatorioUseCase))]
+        public async Task<bool> RelatoriosProcessandoConselhoClasse([FromQuery] FiltroRelatorioDto request, [FromServices] IMonitorarStatusRelatorioUseCase monitorarStatusRelatorioUseCase)
+        {
+            await monitorarStatusRelatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/processando/historicoescolar")]
+        [Action("relatorios/processando/historicoescolar", typeof(IMonitorarStatusRelatorioUseCase))]
+        public async Task<bool> RelatoriosProcessandoHistoricoEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IMonitorarStatusRelatorioUseCase monitorarStatusRelatorioUseCase)
+        {
             await monitorarStatusRelatorioUseCase.Executar(request);
             return true;
         }
