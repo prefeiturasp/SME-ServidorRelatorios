@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Sentry;
+using Sentry.Protocol;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using SME.SR.Workers.SGP.Commons.Attributes;
@@ -86,8 +87,9 @@ namespace SME.SR.Workers.SGP.Services
             }
         }
 
-        private async Task HandleMessage(string content)
+        private async Task HandleMessage(BasicDeliverEventArgs ea)
         {
+            var content = Encoding.UTF8.GetString(ea.Body.Span);
             using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
             {
                 var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
@@ -114,6 +116,7 @@ namespace SME.SR.Workers.SGP.Services
                                 await method.InvokeAsync(controller, new object[] { request, useCase });
 
                                 _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
+                                _channel.BasicAck(ea.DeliveryTag, false);
                                 return;
                             }
                         }
@@ -122,17 +125,21 @@ namespace SME.SR.Workers.SGP.Services
                         _logger.LogInformation(info);
                         throw new NegocioException(info);
                     }
-
+                    _channel.BasicAck(ea.DeliveryTag, false);
                 }
                 catch (NegocioException ex)
                 {
+                    _channel.BasicAck(ea.DeliveryTag, false);
                     NotificarUsuarioRelatorioComErro(request, ex.Message);
+                    SentrySdk.AddBreadcrumb($"Erros: {ex.Message}", null, null, null, BreadcrumbLevel.Error);
                     SentrySdk.CaptureException(ex);
                 }
                 catch (Exception ex)
                 {
-                    NotificarUsuarioRelatorioComErro(request, "Erro não identificado, por favor tente novamente.");
+                    _channel.BasicReject(ea.DeliveryTag, false);
+                    SentrySdk.AddBreadcrumb($"Erros: {ex.Message}", null, null, null, BreadcrumbLevel.Error);
                     SentrySdk.CaptureException(ex);
+                    NotificarUsuarioRelatorioComErro(request, "Ocorreu um erro interno, por favor tente novamente");
                 }
             }
         }
@@ -179,9 +186,16 @@ namespace SME.SR.Workers.SGP.Services
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (ch, ea) =>
             {
-                var content = Encoding.UTF8.GetString(ea.Body.Span);
-                await HandleMessage(content);
-                _channel.BasicAck(ea.DeliveryTag, false);
+                try
+                {
+                    await HandleMessage(ea);
+                }
+                catch(Exception ex)
+                {
+                    SentrySdk.AddBreadcrumb($"Erro ao tratar mensagem {ea.DeliveryTag}", "erro", null, null, BreadcrumbLevel.Error);
+                    SentrySdk.CaptureException(ex);
+                    _channel.BasicReject(ea.DeliveryTag, false);
+                }                
             };
 
             consumer.Shutdown += OnConsumerShutdown;
