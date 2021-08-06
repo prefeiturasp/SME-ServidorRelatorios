@@ -17,6 +17,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            request.RotaErro = RotasRabbit.RotaRelatoriosComErroEscolaAquiLeitura;
             try
             {
                 var filtro = request.ObterObjetoFiltro<FiltroRelatorioLeituraComunicadosDto>();
