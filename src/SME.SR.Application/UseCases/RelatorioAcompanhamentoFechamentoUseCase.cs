@@ -17,7 +17,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            request.RotaErro = RotasRabbit.RotaRelatoriosComErroAcompanhamentoFechamento;
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAcompanhamentoFechamento;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoQuery>();
             var relatorioDto = await mediator.Send(relatorioQuery);
 

@@ -23,7 +23,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            request.RotaErro = RotasRabbit.RotaRelatoriosComErroConselhoDeClasse;
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroConselhoDeClasse;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
             SentrySdk.CaptureMessage("4.09 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
 
@@ -42,7 +42,7 @@ namespace SME.SR.Application
             SentrySdk.CaptureMessage("5.2 Serializei relatório.. - RelatorioConselhoClasseAlunoUseCase");
 
             SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
-            await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, relatorioSerializado, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoConselhoDeClasse));
+            await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, relatorioSerializado, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoConselhoDeClasse));
 
             SentrySdk.CaptureMessage("5 FINAL - RelatorioConselhoClasseAlunoUseCase");
         }

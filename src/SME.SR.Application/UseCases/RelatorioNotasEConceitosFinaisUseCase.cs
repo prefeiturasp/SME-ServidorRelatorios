@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            request.RotaErro = RotasRabbit.RotaRelatoriosComErroNotasConceitosFinais;
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroNotasConceitosFinais;
             var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
             var relatorioNotasEConceitosFinaisDto = await mediator.Send(new ObterRelatorioNotasEConceitosFinaisPdfQuery(filtros));
 

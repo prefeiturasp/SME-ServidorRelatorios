@@ -57,17 +57,13 @@ namespace SME.SR.Workers.SGP.Services
 
         private void DeclararFilas()
         {
-            DeclararFilasPorRota(typeof(RotasRabbit), "solicitados", ExchangeRabbit.WorkerRelatorios, ExchangeRabbit.WorkerRelatoriosDeadletter);
-            DeclararFilasPorRota(typeof(RotasRabbit), "processando", ExchangeRabbit.WorkerRelatorios, ExchangeRabbit.WorkerRelatoriosDeadletter);
-            DeclararFilasPorRota(typeof(RotasRabbit), "prontos", ExchangeRabbit.Sgp, ExchangeRabbit.SgpDeadLetter);
-            DeclararFilasPorRota(typeof(RotasRabbit), "erro", ExchangeRabbit.Sgp, ExchangeRabbit.SgpDeadLetter);
-            DeclararFilasPorRota(typeof(RotasRabbit), "correlacao", ExchangeRabbit.Sgp, ExchangeRabbit.SgpDeadLetter);
+            DeclararFilasPorRota(typeof(RotasRabbitSR), ExchangeRabbit.WorkerRelatorios, ExchangeRabbit.WorkerRelatoriosDeadletter);
         }
 
 
-        private void DeclararFilasPorRota(Type tipoRotas, string busca, string exchange, string exchangeDeadletter)
+        private void DeclararFilasPorRota(Type tipoRotas, string exchange, string exchangeDeadletter)
         {
-            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>().Where(a => a.Contains(busca)))
+            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
             {
                 var args = new Dictionary<string, object>()
                     {
@@ -214,7 +210,7 @@ namespace SME.SR.Workers.SGP.Services
 
         private void RegistrarConsumer(EventingBasicConsumer consumer)
         {
-            foreach (var fila in typeof(RotasRabbit).ObterConstantesPublicas<string>())
+            foreach (var fila in typeof(RotasRabbitSR).ObterConstantesPublicas<string>())
                 canalRabbit.BasicConsume(fila, false, consumer);
         }
     }

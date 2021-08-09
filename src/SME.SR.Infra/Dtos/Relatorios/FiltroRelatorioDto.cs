@@ -7,8 +7,8 @@ namespace SME.SR.Infra
     {
         public FiltroRelatorioDto()
         {
-            RotaProcessando = RotasRabbit.RotaRelatoriosProcessando;
-            RotaErro = RotasRabbit.RotaRelatorioComErro;
+            RotaProcessando = RotasRabbitSR.RotaRelatoriosProcessando;
+            RotaErro = RotasRabbitSGP.RotaRelatorioComErro;
         }
         public string Action { get; set; }
         public object Mensagem { get; set; }
