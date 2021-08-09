@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            request.RotaErro = RotasRabbit.RotaRelatoriosComErroConselhoDeClasse;
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroConselhoDeClasse;
             var gamesQuery = request.ObterObjetoFiltro<GamesQuery>();
             var nomeDoGame = await mediator.Send(gamesQuery);
 
@@ -28,7 +28,7 @@ namespace SME.SR.Application
             await mediator.Send(new GerarRelatorioAssincronoCommand("/sme/sgp/RelatorioConselhoClasse/ConselhoClasse",
                                                                     dadosRelatorio,
                                                                     TipoFormatoRelatorio.Pdf,
-                                                                    request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoConselhoDeClasse));
+                                                                    request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoConselhoDeClasse));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            request.RotaErro = RotasRabbit.RotaRelatoriosComErroParecerConclusivo;
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroParecerConclusivo;
             var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioParecerConclusivoDto>();
 
             var resultado = await mediator.Send(new ObterRelatorioParecerConclusivoQuery() { filtroRelatorioParecerConclusivoDto = relatorioFiltros, UsuarioRf = request.UsuarioLogadoRF });

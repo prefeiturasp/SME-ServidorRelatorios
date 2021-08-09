@@ -20,7 +20,7 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            request.RotaErro = RotasRabbit.RotaRelatoriosComErroBoletim;
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletim;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
             var relatorio = await mediator.Send(relatorioQuery);
 
@@ -31,17 +31,17 @@ namespace SME.SR.Workers.SGP
                 case Modalidade.EJA:
                     await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja", 
                         jsonString, TipoFormatoRelatorio.Pdf, 
-                        request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoBoletim));
+                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
                     break;
                 case Modalidade.Medio:
                     await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio", 
                         jsonString, TipoFormatoRelatorio.Pdf, 
-                        request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoBoletim));
+                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
                     break;
                 default:
                     await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolar/BoletimEscolar", 
                         jsonString, TipoFormatoRelatorio.Pdf, 
-                        request.CodigoCorrelacao, RotasRabbit.RotaRelatoriosProcessandoBoletim));
+                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
                     break;
             }   
         }
