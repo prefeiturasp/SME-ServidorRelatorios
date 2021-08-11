@@ -15,7 +15,7 @@ namespace SME.SR.Application.Commands.RetornarRelatorioPronto
         }
         public Task<bool> Handle(RetornarRelatorioProntoCommand request, CancellationToken cancellationToken)
         {
-            servicoFila.PublicaFila(new PublicaFilaDto(request, RotasRabbit.RotaRelatoriosProntosSgp));
+            servicoFila.PublicaFila(new PublicaFilaDto(request, RotasRabbitSGP.RotaRelatoriosProntosSgp));
             return Task.FromResult(true);
         }
     }

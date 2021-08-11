@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
             var novaCorrelacao = Guid.NewGuid();
 
-            servicoFila.PublicaFila(new PublicaFilaDto(novaCorrelacao, RotasRabbit.RotaRelatorioCorrelacaoCopiar, null, request.CodigoCorrelacaoParaCopiar));
+            servicoFila.PublicaFila(new PublicaFilaDto(novaCorrelacao, RotasRabbitSGP.RotaRelatorioCorrelacaoCopiar, ExchangeRabbit.Sgp, request.CodigoCorrelacaoParaCopiar));
 
             return Task.FromResult(novaCorrelacao);
 

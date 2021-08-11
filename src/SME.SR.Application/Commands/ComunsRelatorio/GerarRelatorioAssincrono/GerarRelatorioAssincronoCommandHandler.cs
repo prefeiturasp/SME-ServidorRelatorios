@@ -68,7 +68,7 @@ namespace SME.SR.Application
                 if (exportacaoId != null)
                 {
                     var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
-                    var publicacaoFila = new PublicaFilaDto(dadosRelatorio, RotasRabbit.RotaRelatoriosProcessando, RotasRabbit.ExchangeListenerWorkerRelatorios, request.CodigoCorrelacao);
+                    var publicacaoFila = new PublicaFilaDto(dadosRelatorio, request.RotaProcessando, ExchangeRabbit.WorkerRelatorios, request.CodigoCorrelacao);
 
                     servicoFila.PublicaFila(publicacaoFila);
 
@@ -79,7 +79,8 @@ namespace SME.SR.Application
                     return true;
                 }
 
-                SentrySdk.CaptureMessage($"6.6 - Erro na geração  / {retorno.Status}");
+                if(retorno != null)
+                    SentrySdk.CaptureMessage($"6.6 - Erro na geração  / {retorno.Status}");
 
                 SentrySdk.CaptureMessage("6.6 - Erro na geração");
 

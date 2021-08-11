@@ -18,15 +18,15 @@ namespace SME.SR.Infra
         [JsonIgnore]
         public string Codigo { get; set; }
 
-        [JsonIgnore]
+        [JsonProperty("lancaNota")]
         public bool Nota { get; set; }
 
-        [JsonIgnore]
+        [JsonProperty("lancaFrequencia")]
         public bool Frequencia { get; set; }
 
         [JsonProperty("nome")]
         public string Nome { get; set; }
-
+        
         [JsonProperty("notaBimestre1")]
         public string NotaBimestre1 { get; set; }
 

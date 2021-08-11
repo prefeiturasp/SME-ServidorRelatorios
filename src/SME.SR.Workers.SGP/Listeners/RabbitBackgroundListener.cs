@@ -1,16 +1,18 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Sentry;
+using Sentry.Protocol;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -21,20 +23,18 @@ namespace SME.SR.Workers.SGP.Services
     // TODO Turn this into a generic listener or common lib
     public class RabbitBackgroundListener : IHostedService
     {
-        private readonly ILogger _logger;
-
-        private readonly IServiceScopeFactory _scopeFactory;
-
-        private readonly IConnection _connection;
+        private readonly IServiceScopeFactory serviceScopeFactory;
+        private readonly string sentryDSN;
+        private readonly IConnection conexaoRabbit;
         private readonly IConfiguration configuration;
-        private readonly IModel _channel;
+        private readonly IModel canalRabbit;
 
-        public RabbitBackgroundListener(ILoggerFactory loggerFactory,
-                                        IServiceScopeFactory scopeFactory,
+        public RabbitBackgroundListener(IServiceScopeFactory serviceScopeFactory,
                                         IConfiguration configuration)
         {
-            _logger = loggerFactory.CreateLogger<RabbitBackgroundListener>();
-            _scopeFactory = scopeFactory;
+            this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory)); ;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.sentryDSN = configuration.GetValue<string>("Sentry:DSN");            
 
             var factory = new ConnectionFactory
             {
@@ -44,52 +44,49 @@ namespace SME.SR.Workers.SGP.Services
                 VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
             };
 
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+            conexaoRabbit = factory.CreateConnection();
+            canalRabbit = conexaoRabbit.CreateModel();
 
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            InitRabbit();
+            canalRabbit.BasicQos(0, 1, false);
+
+            canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatorios, ExchangeType.Direct, true, false);
+            canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
+
+            DeclararFilas();
         }
 
-        private void InitRabbit()
+        private void DeclararFilas()
         {
-
-            var args = new Dictionary<string, object>()
-                    {
-                        { "x-dead-letter-exchange", RotasRabbit.ExchangeListenerWorkerRelatoriosDeadletter}
-                    };
-
-
-            _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatorios, ExchangeType.Direct, true, false);
-            _channel.ExchangeDeclare(RotasRabbit.ExchangeListenerWorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
-
-            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosSolicitados, true, false, false, args);
-            _channel.QueueBind(RotasRabbit.RotaRelatoriosSolicitados, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatoriosSolicitados, null);            
-
-            _channel.QueueDeclare(RotasRabbit.RotaRelatoriosProcessando, true, false, false, args);
-            _channel.QueueBind(RotasRabbit.RotaRelatoriosProcessando, RotasRabbit.ExchangeListenerWorkerRelatorios, RotasRabbit.RotaRelatoriosProcessando, null);
-
-            //DeadLetter
-            var nomeFilaDeadLetterSolicitados = $"{RotasRabbit.RotaRelatoriosSolicitados}.deadletter";
-            _channel.QueueDeclare(nomeFilaDeadLetterSolicitados, true, false, false, null);
-            _channel.QueueBind(nomeFilaDeadLetterSolicitados, RotasRabbit.ExchangeListenerWorkerRelatoriosDeadletter, RotasRabbit.RotaRelatoriosSolicitados, null);            
-
-            var nomeFilaDeadLetterProcessando = $"{RotasRabbit.RotaRelatoriosProcessando}.deadletter";
-            _channel.QueueDeclare(nomeFilaDeadLetterProcessando, true, false, false, null);
-            _channel.QueueBind(nomeFilaDeadLetterProcessando, RotasRabbit.ExchangeListenerWorkerRelatoriosDeadletter, RotasRabbit.RotaRelatoriosProcessando, null);
-
-            _channel.BasicQos(0, 1, false);
+            DeclararFilasPorRota(typeof(RotasRabbitSR), ExchangeRabbit.WorkerRelatorios, ExchangeRabbit.WorkerRelatoriosDeadletter);
         }
 
-        private async Task HandleMessage(string content)
+
+        private void DeclararFilasPorRota(Type tipoRotas, string exchange, string exchangeDeadletter)
         {
-            using (SentrySdk.Init(configuration.GetSection("Sentry:DSN").Value))
+            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
             {
-                var request = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
+                var args = new Dictionary<string, object>()
+                    {
+                        { "x-dead-letter-exchange", exchangeDeadletter}
+                    };
+                canalRabbit.QueueDeclare(fila, true, false, false, args);
+                canalRabbit.QueueBind(fila, exchange, fila, null);
+
+                var filaDeadLetter = $"{fila}.deadletter";
+                canalRabbit.QueueDeclare(filaDeadLetter, true, false, false, null);
+                canalRabbit.QueueBind(filaDeadLetter, exchangeDeadletter, fila, null);
+            }
+        }
+
+        private async Task TratarMensagem(BasicDeliverEventArgs ea)
+        {
+            var content = Encoding.UTF8.GetString(ea.Body.Span);
+
+            using (SentrySdk.Init(sentryDSN))
+            {
+                var mensagemRabbit = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
                 try
                 {
-                    _logger.LogInformation($"[ INFO ] Messaged received: {content}");
-
                     if (!content.Equals("null"))
                     {
                         MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
@@ -97,39 +94,47 @@ namespace SME.SR.Workers.SGP.Services
                         foreach (MethodInfo method in methods)
                         {
                             ActionAttribute actionAttribute = GetActionAttribute(method);
-                            if (actionAttribute != null && actionAttribute.Name == request.Action)
+                            if (actionAttribute != null && actionAttribute.Name == mensagemRabbit.Action)
                             {
-                                _logger.LogInformation($"[ INFO ] Invoking action: {request.Action}");
-
-                                var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
+                                var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
 
                                 var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
                                 var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
 
-                                await method.InvokeAsync(controller, new object[] { request, useCase });
+                                await method.InvokeAsync(controller, new object[] { mensagemRabbit, useCase });
 
-                                _logger.LogInformation($"[ INFO ] Action terminated: {request.Action}");
+                                canalRabbit.BasicAck(ea.DeliveryTag, false);
                                 return;
                             }
                         }
-
-                        string info = $"[ INFO ] Method not found to action: {request.Action}";
-                        _logger.LogInformation(info);
+                        string info = $"[ INFO ] Method not found to action: {mensagemRabbit.Action}";
                         throw new NegocioException(info);
                     }
-
+                    else
+                        canalRabbit.BasicReject(ea.DeliveryTag, false);
                 }
-                catch (NegocioException ex)
+                catch (NegocioException nex)
                 {
-                    NotificarUsuarioRelatorioComErro(request, ex.Message);
-                    SentrySdk.CaptureException(ex);
+                    canalRabbit.BasicAck(ea.DeliveryTag, false);
+                    SentrySdk.AddBreadcrumb($"Erros: {nex.Message}", null, null, null, BreadcrumbLevel.Error);
+                    SentrySdk.CaptureException(nex);
+                    RegistrarSentry(ea, mensagemRabbit, nex);
+                    NotificarUsuarioRelatorioComErro(mensagemRabbit, nex.Message);
                 }
                 catch (Exception ex)
                 {
-                    NotificarUsuarioRelatorioComErro(request, "Erro não identificado, por favor tente novamente.");
+                    canalRabbit.BasicReject(ea.DeliveryTag, false);
+                    SentrySdk.AddBreadcrumb($"Erros: {ex.Message}", null, null, null, BreadcrumbLevel.Error);
                     SentrySdk.CaptureException(ex);
+                    RegistrarSentry(ea, mensagemRabbit, ex);
                 }
             }
+        }
+
+        private void RegistrarSentry(BasicDeliverEventArgs ea, FiltroRelatorioDto mensagemRabbit, Exception ex)
+        {
+            SentrySdk.CaptureMessage($"{mensagemRabbit.UsuarioLogadoRF} - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)} - ERRO - {ea.RoutingKey}", SentryLevel.Error);
+            SentrySdk.CaptureException(ex);
         }
 
         private void NotificarUsuarioRelatorioComErro(FiltroRelatorioDto request, string erro)
@@ -138,7 +143,7 @@ namespace SME.SR.Workers.SGP.Services
             var mensagem = JsonConvert.SerializeObject(mensagemRabbit);
             var body = Encoding.UTF8.GetBytes(mensagem);
 
-            _channel.BasicPublish(RotasRabbit.ExchangeSgp, RotasRabbit.RotaRelatorioComErro, null, body);
+            canalRabbit.BasicPublish(ExchangeRabbit.Sgp, request.RotaErro, null, body);
         }
 
         private WorkerAttribute GetWorkerAttribute(Type type)
@@ -168,15 +173,23 @@ namespace SME.SR.Workers.SGP.Services
         private void OnConsumerShutdown(object sender, ShutdownEventArgs e) { }
         private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e) { }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var consumer = new EventingBasicConsumer(_channel);
+            var consumer = new EventingBasicConsumer(canalRabbit);
+
             consumer.Received += async (ch, ea) =>
             {
-                var content = Encoding.UTF8.GetString(ea.Body.Span);
-                await HandleMessage(content);
-                _channel.BasicAck(ea.DeliveryTag, false);
+                try
+                {
+                    await TratarMensagem(ea);
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.AddBreadcrumb($"Erro ao tratar mensagem {ea.DeliveryTag}", "erro", null, null, BreadcrumbLevel.Error);
+                    SentrySdk.CaptureException(ex);
+                    canalRabbit.BasicReject(ea.DeliveryTag, false);
+                }
             };
 
             consumer.Shutdown += OnConsumerShutdown;
@@ -184,15 +197,21 @@ namespace SME.SR.Workers.SGP.Services
             consumer.Unregistered += OnConsumerUnregistered;
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
-            _channel.BasicConsume(RotasRabbit.RotaRelatoriosSolicitados, false, consumer);
-            _channel.BasicConsume(RotasRabbit.RotaRelatoriosProcessando, false, consumer);
+            RegistrarConsumer(consumer);
+            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _channel.Close();
-            _connection.Close();
+            canalRabbit.Close();
+            conexaoRabbit.Close();
             return Task.CompletedTask;
+        }
+
+        private void RegistrarConsumer(EventingBasicConsumer consumer)
+        {
+            foreach (var fila in typeof(RotasRabbitSR).ObterConstantesPublicas<string>())
+                canalRabbit.BasicConsume(fila, false, consumer);
         }
     }
 }

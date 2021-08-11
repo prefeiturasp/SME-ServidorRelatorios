@@ -1,29 +1,27 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioFaltasFrequenciasUseCase : IRelatorioFaltasFrequenciasUseCase
+    public class RelatorioFrequenciasUseCase : IRelatorioFrequenciasUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioFaltasFrequenciasUseCase(IMediator mediator)
+        public RelatorioFrequenciasUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFaltasFrequenciasDto>();           
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroFrequencia;
+            var relatorioFiltros = request.ObterObjetoFiltro<FiltroRelatorioFrequenciasDto>();
 
-            var dadosRelatorio = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(relatorioFiltros));
+            var dadosRelatorio = await mediator.Send(new ObterRelatorioFrequenciaPdfQuery(relatorioFiltros));
 
             switch (relatorioFiltros.TipoFormatoRelatorio)
             {
@@ -34,24 +32,20 @@ namespace SME.SR.Application
 
                     switch (relatorioFiltros.TipoRelatorio)
                     {
-                        case TipoRelatorioFaltasFrequencia.Ambos:
-                            var relatorioAmbos = relatorioDto.OfType<RelatorioFaltasFrequenciasExcelDto>();
-                            await mediator.Send(new GerarExcelGenericoCommand(relatorioAmbos.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
+                        case TipoRelatorioFaltasFrequencia.Ano:
+                            var relatorioAno = relatorioDto.OfType<RelatorioFaltasFrequenciasExcelDto>();
+                            await mediator.Send(new GerarExcelGenericoCommand(relatorioAno.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
                             break;
-                        case TipoRelatorioFaltasFrequencia.Faltas:
-                            var relatorioFaltas = relatorioDto.OfType<RelatorioFaltasExcelDto>();
-                            await mediator.Send(new GerarExcelGenericoCommand(relatorioFaltas.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
-                            break;
-                        case TipoRelatorioFaltasFrequencia.Frequencia:
-                            var relatorioFrequencias = relatorioDto.OfType<RelatorioFrequenciasExcelDto>();
-                            await mediator.Send(new GerarExcelGenericoCommand(relatorioFrequencias.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
+                        case TipoRelatorioFaltasFrequencia.Turma:
+                            var relatorioTurma = relatorioDto.OfType<RelatorioFaltasExcelDto>();
+                            await mediator.Send(new GerarExcelGenericoCommand(relatorioTurma.ToList<object>(), "Faltas Frequencias", request.CodigoCorrelacao));
                             break;
                         default:
                             throw new NegocioException($"Não foi possível exportar este relátorio para o tipo {relatorioFiltros.TipoRelatorio}");
                     }
                     break;
                 case TipoFormatoRelatorio.Pdf:
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFaltasFrequencias", dadosRelatorio, request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFrequencias", dadosRelatorio, request.CodigoCorrelacao));
                     break;
                 case TipoFormatoRelatorio.Rtf:
                 case TipoFormatoRelatorio.Html:
@@ -66,7 +60,5 @@ namespace SME.SR.Application
                     throw new NegocioException($"Não foi possível exportar este relátorio para o formato {relatorioFiltros.TipoFormatoRelatorio}");
             }
         }
-
-
     }
 }

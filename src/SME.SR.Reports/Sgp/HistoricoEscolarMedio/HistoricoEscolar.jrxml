@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Principal" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5" uuid="05587c97-f3c6-4cf2-9a1d-2b32c0508906">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 	<property name="ireport.jasperserver.url" value="http://dev-jasper.sme.prefeitura.sp.gov.br/jasperserver/"/>
-	<property name="ireport.jasperserver.user" value="ebufaino"/>
+	<property name="ireport.jasperserver.user" value="usr_amcom"/>
 	<property name="ireport.jasperserver.report.resource" value="/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar_files/main_jrxml"/>
 	<property name="ireport.jasperserver.reportUnit" value="/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
