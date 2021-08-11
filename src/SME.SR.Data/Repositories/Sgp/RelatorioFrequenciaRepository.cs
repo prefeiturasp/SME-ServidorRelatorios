@@ -10,22 +10,24 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Data
 {
-    public class RelatorioFaltasFrequenciaRepository : IRelatorioFaltasFrequenciaRepository
+    public class RelatorioFrequenciaRepository : IRelatorioFrequenciaRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        public RelatorioFaltasFrequenciaRepository(VariaveisAmbiente variaveisAmbiente)
+        public RelatorioFrequenciaRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RelatorioFaltaFrequenciaDreDto>> ObterFaltasFrequenciaPorAno(int anoLetivo,
-                                                                                                   string dreId,
-                                                                                                   string ueId,
-                                                                                                   Modalidade modalidade,
-                                                                                                   IEnumerable<string> anosEscolares,
-                                                                                                   IEnumerable<string> componentesCurriculares,
-                                                                                                   IEnumerable<int> bimestres)
+        public async Task<IEnumerable<RelatorioFrequenciaDreDto>> ObterFrequenciaPorAno(int anoLetivo,
+                                                                                        string dreId,
+                                                                                        string ueId,
+                                                                                        Modalidade modalidade,
+                                                                                        IEnumerable<string> anosEscolares,
+                                                                                        IEnumerable<string> componentesCurriculares,
+                                                                                        IEnumerable<int> bimestres,
+                                                                                        TipoRelatorioFaltasFrequencia tipoRelatorio,
+                                                                                        List<string> codigosTurma)
         {
             var query = new StringBuilder(@"
                 select
@@ -33,11 +35,22 @@ namespace SME.SR.Data
 	                d.dre_id as CodigoDre,
 	                u.ue_id as CodigoUe,
 	                u.tipo_escola as TipoUe,
-	                u.nome as NomeUe,
-                    case t.modalidade_codigo
-    	                when 1 then coalesce(t.serie_ensino, t.ano)
-    	                else concat(t.ano, 'º ano') 
-                    end as NomeAno,
+	                u.nome as NomeUe,");
+
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
+            {
+                query.AppendLine(@"case t.modalidade_codigo
+    	                             when 1 then coalesce(t.serie_ensino, t.ano)
+    	                             else concat(t.ano, 'º ano') 
+                                   end as Nome,");
+            }
+            else
+            {
+                query.AppendLine(@"t.nome,");
+            }
+
+            query.AppendLine(@"t.modalidade_codigo as ModalidadeCodigo,                    
+                    t.ano,
                     fa.bimestre NomeBimestre, 
                     fa.bimestre Numero, 
                     fa.disciplina_id CodigoComponente,
@@ -46,7 +59,8 @@ namespace SME.SR.Data
 	                fa.total_compensacoes as TotalCompensacoes,
 	                fa.total_aulas as TotalAulas,
                     t.nome as NomeTurma,
-                    t.turma_id as CodigoTurma
+                    t.turma_id as CodigoTurma,
+                    t.ano
                 from
 	                frequencia_aluno fa
                 inner join turma t on
@@ -60,30 +74,36 @@ namespace SME.SR.Data
                     and t.modalidade_codigo = @modalidade ");
 
             if (!string.IsNullOrWhiteSpace(dreId) && dreId != "-99")
-                query.AppendLine("and d.dre_id = @dreId");
+                query.AppendLine("and d.dre_id = @dreId ");
 
             if (!string.IsNullOrWhiteSpace(ueId) && ueId != "-99")
-                query.AppendLine("and u.ue_id = @ueId");
+                query.AppendLine("and u.ue_id = @ueId ");
+
+            if (codigosTurma != null && codigosTurma.Any(c => c != "-99"))
+                query.AppendLine("and t.turma_id = any(@codigosTurma) ");
 
             if (anosEscolares != null && anosEscolares.Any(c => c != "-99"))
-                query.AppendLine("and t.ano = any(@anosEscolares)");
+                query.AppendLine("and t.ano = any(@anosEscolares) ");
 
             if (componentesCurriculares != null && componentesCurriculares.Any(c => c != "-99"))
-                query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
-            else query.AppendLine("and fa.disciplina_id is not null and fa.disciplina_id <> ''");
+                query.AppendLine("and disciplina_id = any(@componentesCurriculares) ");
+            else query.AppendLine("and fa.disciplina_id is not null and fa.disciplina_id <> '' ");
 
             if (bimestres != null && bimestres.Any(c => c != 0))
-                query.AppendLine("and bimestre = any(@bimestres)");
+                query.AppendLine("and bimestre = any(@bimestres) ");
 
-            query.AppendLine("order by t.ano, fa.bimestre");
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
+                query.AppendLine("order by t.ano, fa.bimestre");
+            else
+                query.AppendLine("order by t.nome , fa.bimestre");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                var dres = new List<RelatorioFaltaFrequenciaDreDto>();
+                var dres = new List<RelatorioFrequenciaDreDto>();
 
                 var arrayComponentes = componentesCurriculares = componentesCurriculares.Any() ? componentesCurriculares.ToArray() : new string[0] { };
 
-                await conexao.QueryAsync(query.ToString(), (Func<RelatorioFaltaFrequenciaDreDto, RelatorioFaltaFrequenciaUeDto, RelatorioFaltaFrequenciaAnoDto, RelatorioFaltaFrequenciaBimestreDto, RelatorioFaltaFrequenciaComponenteDto, RelatorioFaltaFrequenciaAlunoDto, RelatorioFaltaFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
+                await conexao.QueryAsync(query.ToString(), (Func<RelatorioFrequenciaDreDto, RelatorioFrequenciaUeDto, RelatorioFrequenciaTurmaAnoDto, RelatorioFrequenciaBimestreDto, RelatorioFrequenciaComponenteDto, RelatorioFrequenciaAlunoDto, RelatorioFrequenciaDreDto>)((dre, ue, ano, bimestre, componente, aluno) =>
                 {
                     dre = ObterDre(dre, dres);
                     ue = ObterUe(dre, ue);
@@ -93,23 +113,24 @@ namespace SME.SR.Data
                     componente.Alunos.Add(aluno);
 
                     return dre;
-                }), splitOn: "CodigoDre, CodigoUe, NomeAno,NomeBimestre, CodigoComponente,CodigoAluno",
+                }), splitOn: "CodigoDre, CodigoUe, Nome,NomeBimestre, CodigoComponente,CodigoAluno",
                 param: new
                 {
                     anoLetivo,
                     dreId,
                     ueId,
                     modalidade,
-                    anosEscolares = anosEscolares.ToArray(),
+                    anosEscolares = anosEscolares != null ? anosEscolares.ToArray() : null,
                     componentesCurriculares = arrayComponentes,
-                    bimestres = bimestres.ToArray()
+                    bimestres = bimestres.ToArray(),
+                    codigosTurma
                 });
 
                 return dres;
             };
         }
 
-        private static RelatorioFaltaFrequenciaComponenteDto ObterComponente(RelatorioFaltaFrequenciaBimestreDto bimestre, RelatorioFaltaFrequenciaComponenteDto componente)
+        private static RelatorioFrequenciaComponenteDto ObterComponente(RelatorioFrequenciaBimestreDto bimestre, RelatorioFrequenciaComponenteDto componente)
         {
             var componenteSelecionado = bimestre.Componentes.FirstOrDefault(c => c.CodigoComponente == componente.CodigoComponente);
             if (componenteSelecionado != null)
@@ -119,7 +140,7 @@ namespace SME.SR.Data
             return componente;
         }
 
-        private static RelatorioFaltaFrequenciaBimestreDto ObterBimestre(RelatorioFaltaFrequenciaAnoDto ano, RelatorioFaltaFrequenciaBimestreDto bimestre)
+        private static RelatorioFrequenciaBimestreDto ObterBimestre(RelatorioFrequenciaTurmaAnoDto ano, RelatorioFrequenciaBimestreDto bimestre)
         {
             var bimestreSelecionado = ano.Bimestres.FirstOrDefault(c => c.NomeBimestre == bimestre.NomeBimestre);
             if (bimestreSelecionado != null)
@@ -129,17 +150,17 @@ namespace SME.SR.Data
             return bimestre;
         }
 
-        private static RelatorioFaltaFrequenciaAnoDto ObterAno(RelatorioFaltaFrequenciaUeDto ue, RelatorioFaltaFrequenciaAnoDto ano)
+        private static RelatorioFrequenciaTurmaAnoDto ObterAno(RelatorioFrequenciaUeDto ue, RelatorioFrequenciaTurmaAnoDto ano)
         {
-            var anoSelecionado = ue.Anos.FirstOrDefault(c => c.NomeAno == ano.NomeAno);
+            var anoSelecionado = ue.TurmasAnos.FirstOrDefault(c => c.Nome == ano.Nome);
             if (anoSelecionado != null)
                 ano = anoSelecionado;
             else
-                ue.Anos.Add(ano);
+                ue.TurmasAnos.Add(ano);
             return ano;
         }
 
-        private static RelatorioFaltaFrequenciaUeDto ObterUe(RelatorioFaltaFrequenciaDreDto dre, RelatorioFaltaFrequenciaUeDto ue)
+        private static RelatorioFrequenciaUeDto ObterUe(RelatorioFrequenciaDreDto dre, RelatorioFrequenciaUeDto ue)
         {
             var ueSelecionada = dre.Ues.FirstOrDefault(c => c.CodigoUe == ue.CodigoUe);
             if (ueSelecionada != null)
@@ -154,7 +175,7 @@ namespace SME.SR.Data
             return ue;
         }
 
-        private static RelatorioFaltaFrequenciaDreDto ObterDre(RelatorioFaltaFrequenciaDreDto dre, List<RelatorioFaltaFrequenciaDreDto> dres)
+        private static RelatorioFrequenciaDreDto ObterDre(RelatorioFrequenciaDreDto dre, List<RelatorioFrequenciaDreDto> dres)
         {
             var dreSelecionada = dres.FirstOrDefault(c => c.CodigoDre == dre.CodigoDre);
             if (dreSelecionada != null)

@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -48,7 +50,7 @@ namespace SME.SR.Application
 
             var Ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, periodoInicioFim.DataInicio, periodoInicioFim.DataFim));
 
-            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas));
+            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, registrosIndividuais, Ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id));
 
             await mediator.Send(new GerarRelatorioHtmlPDFAcompAprendizagemCommand(relatorioDto, filtro.CodigoCorrelacao));
         }
@@ -60,17 +62,21 @@ namespace SME.SR.Application
 
             if (semestre == 1)
             {
+                var periodoEscolar = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.Last());
                 return new PeriodoEscolarDto()
                 {
+                    Id = periodoEscolar.Id,
                     DataInicio = new DateTime(ano, 1, 1),
-                    DataFim = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.Last()).PeriodoFim
+                    DataFim = periodoEscolar.PeriodoFim
                 };
             }
             else
             {
+                var periodoEscolar = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.First());
                 return new PeriodoEscolarDto()
                 {
-                    DataInicio = periodosEscolares.FirstOrDefault(p => p.Bimestre == bimestres.First()).PeriodoInicio,
+                    Id = periodoEscolar.Id,
+                    DataInicio = periodoEscolar.PeriodoInicio,
                     DataFim = new DateTime(ano, 12, 31)
                 };
             }

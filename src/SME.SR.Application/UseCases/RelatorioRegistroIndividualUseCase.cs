@@ -19,6 +19,7 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto filtro)
         {
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioRegistroIndividualDto>();
+            filtro.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroRegistroIndividual;
 
             var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
             if (turma == null)

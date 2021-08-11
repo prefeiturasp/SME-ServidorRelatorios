@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -491,9 +490,31 @@ namespace SME.SR.Application
                                                 componente.CodDisciplina,
                                                  possuiComponente ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0") : "-",
                                                 ++coluna);
+
+                        var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, componente.CodDisciplina.ToString(), turma.AnoLetivo));
+
+                        var frequencia = "";
+
+                        if (possuiComponente)
+                        {
+                            if (turma.AnoLetivo.Equals(2020))
+                                frequencia = frequenciaAluno?.PercentualFrequenciaFinal.ToString();
+                            else
+                            {
+                                if (frequenciaAluno == null && turmaPossuiFrequenciaRegistrada)
+                                    frequencia = "100";
+                                else if (frequenciaAluno != null)
+                                    frequencia = frequenciaAluno?.PercentualFrequencia.ToString();
+                                else
+                                    frequencia = string.Empty;
+                            }
+                        }
+                        else
+                            frequencia = "-";
+
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
-                                             possuiComponente ? ((turma.AnoLetivo.Equals(2020) ? frequenciaAluno?.PercentualFrequenciaFinal.ToString() : frequenciaAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100) : "-",
+                                                frequencia,
                                                 ++coluna);
                     }
                     else
@@ -542,7 +563,7 @@ namespace SME.SR.Application
             {
                 linhaDto.AdicionaCelula(99, 99, "0", 1);
                 linhaDto.AdicionaCelula(99, 99, "0", 2);
-                linhaDto.AdicionaCelula(99, 99, FREQUENCIA_100, 3);
+                linhaDto.AdicionaCelula(99, 99, string.Empty, 3);
                 linhaDto.AdicionaCelula(99, 99, "Sem parecer", 4);
             }
         }
@@ -575,8 +596,11 @@ namespace SME.SR.Application
 
         public async Task<string> ObterSinteseAluno(double? percentualFrequencia, ComponenteCurricularPorTurma componente)
         {
-            return percentualFrequencia >= await ObterFrequenciaMediaPorComponenteCurricular(componente.Regencia, componente.LancaNota) ?
-                         "F" : "NF";
+            return percentualFrequencia >= await ObterFrequenciaMediaPorComponenteCurricular(componente.Regencia, componente.LancaNota) 
+                ?
+                "F"
+                :
+                "NF";
         }
 
         private async Task<double> ObterFrequenciaMediaPorComponenteCurricular(bool ehRegencia, bool lancaNota)

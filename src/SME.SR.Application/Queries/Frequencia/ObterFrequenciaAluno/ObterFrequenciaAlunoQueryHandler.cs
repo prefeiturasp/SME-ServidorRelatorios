@@ -3,6 +3,7 @@ using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,22 +15,26 @@ namespace SME.SR.Application
         private readonly IAulaRepository aulaRepository;
         private readonly IPeriodoEscolarRepository periodoEscolarRepository;
         private readonly ITipoCalendarioRepository tipoCalendarioRepository;
+        private readonly IRegistroFrequenciaRepository registroFrequenciaRepository;
 
         public ObterFrequenciaAlunoQueryHandler(IFrequenciaAlunoRepository frequenciaRepository,
                                                 IAulaRepository aulaRepository,
                                                 IPeriodoEscolarRepository periodoEscolarRepository,
-                                                ITipoCalendarioRepository tipoCalendarioRepository)
+                                                ITipoCalendarioRepository tipoCalendarioRepository,
+                                                IRegistroFrequenciaRepository registroFrequenciaRepository)
         {
             this.frequenciaRepository = frequenciaRepository ?? throw new ArgumentNullException(nameof(frequenciaRepository));
             this.aulaRepository = aulaRepository ?? throw new ArgumentNullException(nameof(aulaRepository));
             this.periodoEscolarRepository = periodoEscolarRepository ?? throw new ArgumentNullException(nameof(periodoEscolarRepository));
             this.tipoCalendarioRepository = tipoCalendarioRepository ?? throw new ArgumentNullException(nameof(tipoCalendarioRepository));
+            this.registroFrequenciaRepository = registroFrequenciaRepository ?? throw new ArgumentNullException(nameof(registroFrequenciaRepository));
+
         }
         public async Task<FrequenciaAluno> Handle(ObterFrequenciaAlunoQuery request, CancellationToken cancellationToken)
         {
             var tipoCalendarioId = await tipoCalendarioRepository.ObterPorAnoLetivoEModalidade(
-                                                    request.Turma.AnoLetivo, 
-                                                    request.Turma.ModalidadeTipoCalendario, 
+                                                    request.Turma.AnoLetivo,
+                                                    request.Turma.ModalidadeTipoCalendario,
                                                     request.Turma.Semestre);
 
             var frequenciaAluno = new FrequenciaAluno();
@@ -44,17 +49,27 @@ namespace SME.SR.Application
                 if (frequenciaAluno != null)
                     return frequenciaAluno;
 
+                var totalAulas = await registroFrequenciaRepository.ObterTotalAulasPorDisciplinaETurmaEBimestre(
+                        new string[] { request.Turma.Codigo },
+                        new string[] { request.ComponenteCurricularCodigo },
+                        tipoCalendarioId,
+                        new int[] { request.PeriodoEscolar.Bimestre });
+
                 return new FrequenciaAluno()
                 {
-                    TotalAulas = await aulaRepository.ObterAulasDadas(request.Turma.Codigo,
-                                                                    request.ComponenteCurricularCodigo,
-                                                                    tipoCalendarioId,
-                                                                    request.PeriodoEscolar.Bimestre)
+                    TotalAulas = totalAulas.FirstOrDefault() != null ? totalAulas.FirstOrDefault().AulasQuantidade : 0
                 };
             }
             else
             {
                 var periodosEscolaresTurma = await periodoEscolarRepository.ObterPeriodosEscolaresPorTipoCalendario(tipoCalendarioId);
+
+                var totalAulas = await registroFrequenciaRepository.ObterTotalAulasPorDisciplinaETurmaEBimestre(
+                       new string[] { request.Turma.Codigo },
+                       new string[] { request.ComponenteCurricularCodigo },
+                       tipoCalendarioId,
+                       periodosEscolaresTurma.Select(a => a.Bimestre).ToArray());
+
                 foreach (var periodoEscolarTurma in periodosEscolaresTurma)
                 {
                     var frequenciaAlunoPeriodo = await frequenciaRepository.ObterPorAlunoBimestreAsync(request.CodigoAluno,
@@ -73,11 +88,13 @@ namespace SME.SR.Application
                         frequenciaAluno.TotalCompensacoes += frequenciaAlunoPeriodo.TotalCompensacoes;
                     }
                     else
+                    {
                         // Se não tem ausencia não vai ter registro de frequencia então soma apenas aulas do bimestre
-                        frequenciaAluno.TotalAulas += await aulaRepository.ObterAulasDadas(request.Turma.Codigo,
-                                                                                            request.ComponenteCurricularCodigo,
-                                                                                            tipoCalendarioId,
-                                                                                            periodoEscolarTurma.Bimestre);
+                        var aula = totalAulas.FirstOrDefault(a => a.Bimestre == periodoEscolarTurma.Bimestre);
+                        frequenciaAluno.TotalAulas += aula != null ? aula.AulasQuantidade : 0;
+                        
+                    }
+                        
                 }
 
                 return frequenciaAluno;

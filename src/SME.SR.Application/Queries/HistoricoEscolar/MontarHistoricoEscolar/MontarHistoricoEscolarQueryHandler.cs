@@ -343,7 +343,7 @@ namespace SME.SR.Application
 
             }
 
-            return componentes?.Where(c => c.PossuiNotaValida);
+            return componentes;
         }
 
         private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos)
@@ -355,7 +355,7 @@ namespace SME.SR.Application
 
                 if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
                 {
-                    frequenciaAluno = new FrequenciaAluno() { DisciplinaId = codigoComponente, TurmaId = turma.Codigo };
+                    return string.Empty;
                 }
                 else if (frequenciasAlunoParaTratar.Count() == 1)
                 {
