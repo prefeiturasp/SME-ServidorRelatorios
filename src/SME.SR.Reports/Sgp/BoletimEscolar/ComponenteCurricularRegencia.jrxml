@@ -52,13 +52,23 @@
 			<fieldDescription><![CDATA[notaBimestre1]]></fieldDescription>
 		</field>
 	</subDataset>
+	<subDataset name="DatasetNota1" uuid="03cf25d4-feaa-4aa8-8977-9d6c68f57fd8">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<queryString language="json">
+			<![CDATA[]]>
+		</queryString>
+		<field name="notaBimestre1" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre1"/>
+			<fieldDescription><![CDATA[notaBimestre1]]></fieldDescription>
+		</field>
+	</subDataset>
 	<subDataset name="DatasetNota2" uuid="03cf25d4-feaa-4aa8-8977-9d6c68f57fd7">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
 		<queryString language="json">
 			<![CDATA[]]>
 		</queryString>
 		<field name="notaBimestre2" class="java.lang.String">
-			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre1"/>
+			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre2"/>
 			<fieldDescription><![CDATA[notaBimestre2]]></fieldDescription>
 		</field>
 	</subDataset>
@@ -68,7 +78,7 @@
 			<![CDATA[]]>
 		</queryString>
 		<field name="notaBimestre3" class="java.lang.String">
-			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre1"/>
+			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre3"/>
 			<fieldDescription><![CDATA[notaBimestre3]]></fieldDescription>
 		</field>
 	</subDataset>
@@ -78,7 +88,7 @@
 			<![CDATA[]]>
 		</queryString>
 		<field name="notaBimestre4" class="java.lang.String">
-			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre1"/>
+			<property name="net.sf.jasperreports.json.field.expression" value="notaBimestre4"/>
 			<fieldDescription><![CDATA[notaBimestre4]]></fieldDescription>
 		</field>
 	</subDataset>
@@ -122,18 +132,20 @@
 		<band height="8" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<componentElement>
-				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="109" height="8" isRemoveLineWhenBlank="true" forecolor="#42474A" uuid="f1a8b202-12c6-4850-87c2-802230222107">
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="88" height="8" isRemoveLineWhenBlank="true" forecolor="#42474A" uuid="f1a8b202-12c6-4850-87c2-802230222107">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DatasetRegencia" uuid="980ac5fc-351e-4c6b-8987-58cbd9b2f939">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="88" uuid="cc1dd198-67a0-4718-ae38-d13fd3b0ecf1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:detailCell style="Table_TD" height="8">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -149,24 +161,6 @@
 									<paragraph leftIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="21" uuid="0aeaaf99-39e8-426a-8298-cc3a353253a3">
-						<jr:detailCell style="Table_TD" height="8">
-							<property name="com.jaspersoft.studio.unit.height" value="px"/>
-							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<textField>
-								<reportElement mode="Opaque" x="0" y="0" width="21" height="8" forecolor="#42474A" uuid="9397a2e7-5b9e-44bc-82d3-369cb94c897d">
-									<printWhenExpression><![CDATA[$F{notaBimestre1} != null && !$F{notaBimestre1}.isEmpty()]]></printWhenExpression>
-								</reportElement>
-								<box>
-									<pen lineWidth="0.25" lineColor="#42474A"/>
-								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="4"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{notaBimestre1} != null && !$F{notaBimestre1}.isEmpty() ? $F{notaBimestre1} :"--"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -357,6 +351,38 @@
 									<font size="4"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{notaFinal} != null && !$F{notaFinal}.isEmpty() ? $F{notaFinal} :"--"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement positionType="Float" mode="Opaque" x="88" y="0" width="21" height="8" isRemoveLineWhenBlank="true" forecolor="#42474A" uuid="2c1b84b8-b53e-444d-914d-770eb699c593">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="DatasetNota1" uuid="60e0ad9d-4598-49e7-9ed2-7a83e9ed273b">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="21" uuid="aa6dd2a8-43f7-4cbc-8236-c748b9eb775c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:detailCell style="Table_TD" height="8">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<textField>
+								<reportElement mode="Opaque" x="0" y="0" width="21" height="8" forecolor="#42474A" uuid="af6c25b7-def7-4537-9a62-f5cd6ec135fd"/>
+								<box>
+									<pen lineWidth="0.25" lineColor="#42474A"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="4"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{notaBimestre1} != null && !$F{notaBimestre1}.isEmpty() ? $F{notaBimestre1} :"--"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
