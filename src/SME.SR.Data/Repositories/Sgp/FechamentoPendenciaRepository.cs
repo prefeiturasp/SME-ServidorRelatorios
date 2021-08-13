@@ -20,7 +20,7 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<RelatorioFechamentoPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
-                                                                                                    string[] turmasCodigo, long[] componentesCodigo, int bimestre)
+                                                                                                    string[] turmasCodigo, long[] componentesCodigo, int bimestre,bool pendenciaResolvida)
         {
             try
             {
@@ -65,6 +65,10 @@ namespace SME.SR.Data
                         and u.ue_id  = @ueCodigo
                         and t.modalidade_codigo = @modalidadeId  
                         and not p.excluido");
+                if (pendenciaResolvida)
+                    query.AppendLine(" and p.situacao =3 ");
+                else
+                    query.AppendLine(" and p.situacao in(1,2) ");
 
                 if(semestre.HasValue)
                     query.AppendLine(" and t.semestre = @semestre ");
