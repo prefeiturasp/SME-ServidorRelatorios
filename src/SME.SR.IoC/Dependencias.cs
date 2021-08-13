@@ -127,7 +127,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IObterEnderecoeAtosDaUeRepository), typeof(ObterEnderecoeAtosDaUeRepository));
             services.TryAddScoped(typeof(IRelatorioFrequenciaRepository), typeof(RelatorioFrequenciaRepository));
             services.TryAddScoped(typeof(IConceitoValoresRepository), typeof(ConceitoValoresRepository));
-            services.TryAddScoped(typeof(IFechamentoPendenciaRepository), typeof(FechamentoPendenciaRepository));
+            services.TryAddScoped(typeof(IPendenciaRepository), typeof(PendenciaRepository));
             services.TryAddScoped(typeof(IRelatorioRecuperacaoParalelaRepository), typeof(RelatorioRecuperacaoParalelaRepository));
             services.TryAddScoped(typeof(IParecerConclusivoRepository), typeof(ParecerConclusivoRepository));
             services.TryAddScoped(typeof(ICompensacaoAusenciaRepository), typeof(CompensacaoAusenciaRepository));

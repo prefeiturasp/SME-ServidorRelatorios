@@ -14,5 +14,6 @@
         public string UsuarioNome { get; set; }
         public string UsuarioRf { get; set; }
         public bool PendenciaResolvida { get; set; }
+        public string TipoPendencia { get; set; }
     }
 }
