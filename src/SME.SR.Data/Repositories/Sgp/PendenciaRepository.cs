@@ -28,22 +28,28 @@ namespace SME.SR.Data
             {
                 if (tipoPendenciaGrupo.Count() == 1)
                 {
-                    if (tipoPendenciaGrupo.Contains(2))
+                    int pendencia = tipoPendenciaGrupo[0];
+                    if (pendencia == (int)TipoPendenciaGrupo.Calendario)
                     {
                         var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                         query += string.Concat(calendario);
                     }
-                    if (tipoPendenciaGrupo.Contains(1))
+                    if (pendencia == (int)TipoPendenciaGrupo.Fechamento)
                     {
                         var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                         query += string.Concat(fechamento);
                     }
-                    if (tipoPendenciaGrupo.Contains(4))
+                    if (pendencia == (int)TipoPendenciaGrupo.AEE)
                     {
                         var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                         query += string.Concat(aee);
                     }
-                    else
+                    if (pendencia == (int)TipoPendenciaGrupo.DiarioClasse)
+                    {
+                        var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                        query += string.Concat(aee);
+                    }
+                    if(pendencia == (int)TipoPendenciaGrupo.Todos)
                     {
                         var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                         query += string.Concat(calendario);
@@ -53,6 +59,9 @@ namespace SME.SR.Data
                         query += string.Concat("\n union all \n");
                         var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                         query += string.Concat(aee);
+                        query += string.Concat("\n union all \n");
+                        var diarioClasse = ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                        query += string.Concat(diarioClasse);
                     }
                 }
                 else
@@ -63,20 +72,25 @@ namespace SME.SR.Data
                         {
                             var pendencia = tipoPendenciaGrupo[i];
                             int volta = 0;
-                            if (pendencia == 2)
+                            if (pendencia == (int)TipoPendenciaGrupo.Calendario)
                             {
                                 var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                                 query += string.Concat(calendario);
                             }
-                            if (pendencia == 1)
+                            if (pendencia == (int)TipoPendenciaGrupo.Fechamento)
                             {
                                 var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                                 query += string.Concat(fechamento);
                             }
-                            if (pendencia == 4)
+                            if (pendencia == (int)TipoPendenciaGrupo.AEE)
                             {
                                 var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                                 query += string.Concat(aee);
+                            }
+                            if (pendencia == (int)TipoPendenciaGrupo.DiarioClasse)
+                            {
+                                var diarioClasse = ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                                query += string.Concat(diarioClasse);
                             }
                             volta++;
                             if (volta < tipoPendenciaGrupo.Count())
@@ -115,7 +129,8 @@ namespace SME.SR.Data
 	                        p.criado_por as criador,
 	                        p.criado_rf as criadorRf,
 	                        p.alterado_por as aprovador,
-	                        p.alterado_rf as aprovadorRf
+	                        p.alterado_rf as aprovadorRf,
+                            '' as TipoPendencia
                         from pendencia_calendario_ue pcu 
                         inner join pendencia p 
 	                        on pcu.pendencia_id  = p.id
@@ -176,7 +191,8 @@ namespace SME.SR.Data
 	                        p.criado_por as criador,
 	                        p.criado_rf as criadorRf,
 	                        p.alterado_por as aprovador,
-	                        p.alterado_rf as aprovadorRf
+	                        p.alterado_rf as aprovadorRf,
+                            '' as TipoPendencia
                         from pendencia_fechamento pf
                         inner join pendencia p 
 	                        on pf.pendencia_id  = p.id
@@ -238,7 +254,8 @@ namespace SME.SR.Data
                             p.criado_por as criador,
                             p.criado_rf as criadorRf,
                             p.alterado_por as aprovador,
-                            p.alterado_rf as aprovadorRf
+                            p.alterado_rf as aprovadorRf,
+                            '' as TipoPendencia
                         from pendencia_plano_aee ppa
                         inner join pendencia p 
                             on p.id = ppa.pendencia_id
@@ -246,6 +263,68 @@ namespace SME.SR.Data
                             on pa.id = ppa.plano_aee_id 
                         inner join turma t 
                             on t.id = pa.turma_id 
+                        inner join ue u 
+                            on u.id  = t.ue_id       
+                        inner join tipo_escola te
+                            on te.id = u.tipo_escola   
+                        inner join dre d 
+                            on u.dre_id  = d.id          
+                        inner join aula a 
+                            on a.turma_id  = t.turma_id
+                        inner join fechamento_turma ft
+                            on t.id = ft.turma_id
+                        inner  join periodo_escolar pe 
+                            on ft.periodo_escolar_id  = pe.id 
+                        where t.ano_letivo = '{anoLetivo}'
+                        and d.dre_id  = '{dreCodigo}'
+                        and u.ue_id  = '{ueCodigo}'
+                        and t.modalidade_codigo = '{modalidadeId}'  
+                            and not p.excluido ");
+            if (pendenciaResolvida)
+                query.AppendLine(" and p.situacao =3 ");
+            else
+                query.AppendLine(" and p.situacao in(1,2) ");
+
+            if (semestre.HasValue)
+                query.AppendLine($" and t.semestre = {semestre} ");
+
+            if (turmasCodigo.Length > 0)
+                query.AppendLine($" and t.turma_id = any({turmasCodigo}) ");
+
+            if (componentesCodigo.Length > 0)
+                query.AppendLine($" and ftd.disciplina_id = any('{componentesCodigo}')");
+
+            if (bimestre > 0)
+                query.AppendLine($" and pe.bimestre  = {bimestre}");
+
+            return query.ToString();
+        }
+        private string ObterPendenciasDiarioClasse(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
+                                                                            string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida)
+        {
+            var query = new StringBuilder($@"select 
+                            p.titulo,
+                            p.descricao as Detalhe,
+                            p.situacao,
+                            d.abreviacao as DreNome,
+                            te.descricao || ' - ' || u.nome as UeNome,
+                            t.ano_letivo as AnoLetivo,
+                            t.modalidade_codigo as ModalidadeCodigo,
+                            t.semestre,
+                            t.nome as TurmaNome,
+                            t.turma_id as TurmaCodigo,
+                            a.disciplina_id::int as DisciplinaId,
+                            pe.bimestre,
+                            p.criado_por as criador,
+                            p.criado_rf as criadorRf,
+                            p.alterado_por as aprovador,
+                            p.alterado_rf as aprovadorRf,
+                            'TipoPendencia' as TipoPendencia
+                        from pendencia_registro_individual pri 
+                        inner join pendencia p 
+                            on p.id = pri.pendencia_id
+                        inner join turma t 
+                            on t.id = pri.turma_id 
                         inner join ue u 
                             on u.id  = t.ue_id       
                         inner join tipo_escola te
