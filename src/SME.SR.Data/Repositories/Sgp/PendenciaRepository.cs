@@ -3,7 +3,6 @@ using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,37 +20,69 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<RelatorioFechamentoPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
-                                                                                                    string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, string tipoPendencia)
+                                                                                                    string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, int[] tipoPendenciaGrupo)
         {
             string query = String.Empty;
-            tipoPendencia = "-99";
+
             try
             {
-                if (tipoPendencia == "calendario")
+                if (tipoPendenciaGrupo.Count() == 1)
                 {
-                    var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
-                    query += string.Concat(calendario);
-                }
-                else if (tipoPendencia == "fechamento" )
-                {
-                    var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
-                    query += string.Concat(fechamento);
-                }
-                else if (tipoPendencia =="aee")
-                {
-                    var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
-                    query += string.Concat(aee);
+                    if (tipoPendenciaGrupo.Contains(2))
+                    {
+                        var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                        query += string.Concat(calendario);
+                    }
+                    if (tipoPendenciaGrupo.Contains(1))
+                    {
+                        var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                        query += string.Concat(fechamento);
+                    }
+                    if (tipoPendenciaGrupo.Contains(4))
+                    {
+                        var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                        query += string.Concat(aee);
+                    }
+                    else
+                    {
+                        var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                        query += string.Concat(calendario);
+                        query += string.Concat("\n union all \n");
+                        var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                        query += string.Concat(fechamento);
+                        query += string.Concat("\n union all \n");
+                        var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                        query += string.Concat(aee);
+                    }
                 }
                 else
                 {
-                    var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
-                    query += string.Concat(calendario);
-                    query += string.Concat("\n union all \n");
-                    var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
-                    query += string.Concat(fechamento);
-                    query += string.Concat("\n union all \n");
-                    var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
-                    query += string.Concat(aee);
+                    if (tipoPendenciaGrupo.Count() > 1)
+                    {
+                        for (int i = 0; i < tipoPendenciaGrupo.Count(); i++)
+                        {
+                            var pendencia = tipoPendenciaGrupo[i];
+                            int volta = 0;
+                            if (pendencia == 2)
+                            {
+                                var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                                query += string.Concat(calendario);
+                            }
+                            if (pendencia == 1)
+                            {
+                                var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                                query += string.Concat(fechamento);
+                            }
+                            if (pendencia == 4)
+                            {
+                                var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                                query += string.Concat(aee);
+                            }
+                            volta++;
+                            if (volta < tipoPendenciaGrupo.Count())
+                                query += string.Concat("\n union all \n");
+                        }
+                    }
                 }
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);

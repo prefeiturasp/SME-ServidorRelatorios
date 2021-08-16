@@ -18,5 +18,6 @@
         public string CriadorRf { get; set; }
         public string Aprovador { get; set; }
         public string AprovadorRf { get; set; }
+        public string TipoPendencia { get; set; }
     }
 }
