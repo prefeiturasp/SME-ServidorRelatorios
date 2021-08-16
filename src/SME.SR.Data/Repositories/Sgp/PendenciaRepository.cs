@@ -34,6 +34,12 @@ namespace SME.SR.Data
                     query += string.Concat("\n union all \n");
                     var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                     query += string.Concat(fechamento);
+                    query += string.Concat("\n union all \n");
+                    var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                    query += string.Concat(aee);
+                    query += string.Concat("\n union all \n");
+                    var planejamento = ObterPendenciasPlanejamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                    query += string.Concat(planejamento);
                 }
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
@@ -169,6 +175,74 @@ namespace SME.SR.Data
 
             return query.ToString();
 
+        }
+        private string ObterPendenciasAee(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
+                                                                                    string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida)
+        {
+            var query = new StringBuilder($@"select 
+                            p.titulo,
+                            p.descricao as Detalhe,
+                            p.situacao,
+                            d.abreviacao as DreNome,
+                            te.descricao || ' - ' || u.nome as UeNome,
+                            t.ano_letivo as AnoLetivo,
+                            t.modalidade_codigo as ModalidadeCodigo,
+                            t.semestre,
+                            t.nome as TurmaNome,
+                            t.turma_id as TurmaCodigo,
+                            a.disciplina_id::int as DisciplinaId,
+                            pe.bimestre,
+                            p.criado_por as criador,
+                            p.criado_rf as criadorRf,
+                            p.alterado_por as aprovador,
+                            p.alterado_rf as aprovadorRf
+                        from pendencia_plano_aee ppa
+                        inner join pendencia p 
+                            on p.id = ppa.pendencia_id
+                        inner join plano_aee pa 
+                            on pa.id = ppa.plano_aee_id 
+                        inner join turma t 
+                            on t.id = pa.turma_id 
+                        inner join ue u 
+                            on u.id  = t.ue_id       
+                        inner join tipo_escola te
+                            on te.id = u.tipo_escola   
+                        inner join dre d 
+                            on u.dre_id  = d.id          
+                        inner join aula a 
+                            on a.turma_id  = t.turma_id
+                        inner join fechamento_turma ft
+                            on t.id = ft.turma_id
+                        inner  join periodo_escolar pe 
+                            on ft.periodo_escolar_id  = pe.id 
+                        where t.ano_letivo = '{anoLetivo}'
+                        and d.dre_id  = '{dreCodigo}'
+                        and u.ue_id  = '{ueCodigo}'
+                        and t.modalidade_codigo = '{modalidadeId}'  
+                            and not p.excluido ");
+            if (pendenciaResolvida)
+                query.AppendLine(" and p.situacao =3 ");
+            else
+                query.AppendLine(" and p.situacao in(1,2) ");
+
+            if (semestre.HasValue)
+                query.AppendLine($" and t.semestre = {semestre} ");
+
+            if (turmasCodigo.Length > 0)
+                query.AppendLine($" and t.turma_id = any({turmasCodigo}) ");
+
+            if (componentesCodigo.Length > 0)
+                query.AppendLine($" and ftd.disciplina_id = any('{componentesCodigo}')");
+
+            if (bimestre > 0)
+                query.AppendLine($" and pe.bimestre  = {bimestre}");
+
+            return query.ToString();
+        }
+        private string ObterPendenciasPlanejamento(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
+                                                                            string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida)
+        {
+            return "";
         }
     }
 }
