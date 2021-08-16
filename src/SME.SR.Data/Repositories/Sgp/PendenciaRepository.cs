@@ -27,7 +27,22 @@ namespace SME.SR.Data
             tipoPendencia = "-99";
             try
             {
-                if (tipoPendencia == "-99")
+                if (tipoPendencia == "calendario")
+                {
+                    var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                    query += string.Concat(calendario);
+                }
+                else if (tipoPendencia == "fechamento" )
+                {
+                    var fechamento = ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                    query += string.Concat(fechamento);
+                }
+                else if (tipoPendencia =="aee")
+                {
+                    var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
+                    query += string.Concat(aee);
+                }
+                else
                 {
                     var calendario = ObterPendenciasCalandario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                     query += string.Concat(calendario);
@@ -37,9 +52,6 @@ namespace SME.SR.Data
                     query += string.Concat("\n union all \n");
                     var aee = ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
                     query += string.Concat(aee);
-                    query += string.Concat("\n union all \n");
-                    var planejamento = ObterPendenciasPlanejamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida);
-                    query += string.Concat(planejamento);
                 }
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
@@ -238,11 +250,6 @@ namespace SME.SR.Data
                 query.AppendLine($" and pe.bimestre  = {bimestre}");
 
             return query.ToString();
-        }
-        private string ObterPendenciasPlanejamento(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
-                                                                            string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida)
-        {
-            return "";
         }
     }
 }
