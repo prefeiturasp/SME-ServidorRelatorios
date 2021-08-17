@@ -13,9 +13,9 @@ namespace SME.SR.Application
     public class ObterRelatorioFechamentoPedenciasQueryHandler : IRequestHandler<ObterRelatorioFechamentoPedenciasQuery, RelatorioFechamentoPendenciasDto>
     {
         private readonly IMediator mediator;
-        private readonly IFechamentoPendenciaRepository fechamentoPendenciaRepository;        
+        private readonly IPendenciaRepository fechamentoPendenciaRepository;        
 
-        public ObterRelatorioFechamentoPedenciasQueryHandler(IMediator mediator, IFechamentoPendenciaRepository fechamentoPendenciaRepository)
+        public ObterRelatorioFechamentoPedenciasQueryHandler(IMediator mediator, IPendenciaRepository fechamentoPendenciaRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.fechamentoPendenciaRepository = fechamentoPendenciaRepository ?? throw new ArgumentNullException(nameof(fechamentoPendenciaRepository));
@@ -26,7 +26,7 @@ namespace SME.SR.Application
             var filtros = request.filtroRelatorioPendenciasFechamentoDto;
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo, 
-                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre);
+                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre,filtros.PendenciaResolvida,filtros.TipoPendenciaGrupo);
 
             if (!resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
