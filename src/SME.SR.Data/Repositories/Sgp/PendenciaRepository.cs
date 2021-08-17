@@ -101,7 +101,8 @@ namespace SME.SR.Data
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-                return await conexao.QueryAsync<RelatorioFechamentoPendenciasQueryRetornoDto>(query.ToString());
+                var retorno = await conexao.QueryAsync<RelatorioFechamentoPendenciasQueryRetornoDto>(query.ToString());
+                return retorno.OrderBy(x => x.CriadorRf).OrderBy(x => x.TipoPendencia);
             }
             catch (Exception)
             {
@@ -130,7 +131,7 @@ namespace SME.SR.Data
 	                        p.criado_rf as criadorRf,
 	                        p.alterado_por as aprovador,
 	                        p.alterado_rf as aprovadorRf,
-                            '' as TipoPendencia
+                            'Calendário' as TipoPendencia
                         from pendencia_calendario_ue pcu 
                         inner join pendencia p 
 	                        on pcu.pendencia_id  = p.id
@@ -192,7 +193,7 @@ namespace SME.SR.Data
 	                        p.criado_rf as criadorRf,
 	                        p.alterado_por as aprovador,
 	                        p.alterado_rf as aprovadorRf,
-                            '' as TipoPendencia
+                            'Fechamento' as TipoPendencia
                         from pendencia_fechamento pf
                         inner join pendencia p 
 	                        on pf.pendencia_id  = p.id
@@ -255,7 +256,7 @@ namespace SME.SR.Data
                             p.criado_rf as criadorRf,
                             p.alterado_por as aprovador,
                             p.alterado_rf as aprovadorRf,
-                            '' as TipoPendencia
+                            'AEE' as TipoPendencia
                         from pendencia_plano_aee ppa
                         inner join pendencia p 
                             on p.id = ppa.pendencia_id
@@ -319,7 +320,7 @@ namespace SME.SR.Data
                             p.criado_rf as criadorRf,
                             p.alterado_por as aprovador,
                             p.alterado_rf as aprovadorRf,
-                            'TipoPendencia' as TipoPendencia
+                            'Diário de Classe' as TipoPendencia
                         from pendencia_registro_individual pri 
                         inner join pendencia p 
                             on p.id = pri.pendencia_id
@@ -333,9 +334,9 @@ namespace SME.SR.Data
                             on u.dre_id  = d.id          
                         inner join aula a 
                             on a.turma_id  = t.turma_id
-                        inner join fechamento_turma ft
+                        left join fechamento_turma ft
                             on t.id = ft.turma_id
-                        inner  join periodo_escolar pe 
+                        left  join periodo_escolar pe 
                             on ft.periodo_escolar_id  = pe.id 
                         where t.ano_letivo = '{anoLetivo}'
                         and d.dre_id  = '{dreCodigo}'
