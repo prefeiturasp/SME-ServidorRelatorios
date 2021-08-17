@@ -20,7 +20,7 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<FiltroRelatorioPendenciasDto>();
 
-            var resultado = await mediator.Send(new ObterRelatorioPedenciasQuery() { filtroRelatorioPendenciasFechamentoDto = filtros });
+            var resultado = await mediator.Send(new ObterRelatorioPedenciasQuery(filtros));
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPendencias", resultado, request.CodigoCorrelacao));
 
         }     

@@ -23,22 +23,22 @@ namespace SME.SR.Application
 
         public async Task<RelatorioPendenciasDto> Handle(ObterRelatorioPedenciasQuery request, CancellationToken cancellationToken)
         {
-            var filtros = request.filtroRelatorioPendenciasFechamentoDto;
+            var filtros = request.FiltroRelatorioPendencias;
 
             filtros.ExibirDetalhamento = true;
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo, 
                 (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre,filtros.ExibirPendenciasResolvidas,filtros.TipoPendenciaGrupo);
 
-            if (!resultadoQuery.Any())
+            if (resultadoQuery == null || !resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
 
 
             //Obter as disciplinas do EOL por código\\
             var componentesCurricularesIds = resultadoQuery.Select(a => a.DisciplinaId).Distinct().ToArray();
-            var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = componentesCurricularesIds });
+            var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesIds));
             
-            if (!componentesCurricularesDescricoes.Any())
+            if (componentesCurricularesDescricoes == null || !componentesCurricularesDescricoes.Any())
                 throw new NegocioException("Não foram localizadas descrições dos componentes curriculares no EOL.");
 
             var retorno = new RelatorioPendenciasDto();
@@ -48,8 +48,8 @@ namespace SME.SR.Application
             retorno.UeNome = string.IsNullOrEmpty(retornoLinearParaCabecalho.UeNome) ? "Todas" : retornoLinearParaCabecalho.UeNome;
             retorno.DreNome = retornoLinearParaCabecalho.DreNome;
             retorno.Modalidade = ((Modalidade)retornoLinearParaCabecalho.ModalidadeCodigo).GetAttribute<DisplayAttribute>().Name;
-            retorno.Usuario = request.filtroRelatorioPendenciasFechamentoDto.UsuarioNome;
-            retorno.RF = request.filtroRelatorioPendenciasFechamentoDto.UsuarioRf;
+            retorno.Usuario = filtros.UsuarioNome;
+            retorno.RF = filtros.UsuarioRf;
             retorno.ExibeDetalhamento = filtros.ExibirDetalhamento;
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
             retorno.Semestre = filtros.Semestre.ToString();

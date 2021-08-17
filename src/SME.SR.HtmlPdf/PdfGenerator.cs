@@ -52,14 +52,8 @@ namespace SME.SR.HtmlPdf
                     WebSettings = { DefaultEncoding = "utf-8" } ,
                     PagesCount = true,
                 });
-
-            try
-            {
-                converter.Convert(doc);
-            }catch (Exception ex)
-            {
-                throw ex;
-            }
+            
+                converter.Convert(doc);            
         }
 
         public void ConvertToPdf(List<string> paginas, string nomeArquivo)
