@@ -18,6 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAtaFinalResultados;
             var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
             var mensagensErro = new StringBuilder();
