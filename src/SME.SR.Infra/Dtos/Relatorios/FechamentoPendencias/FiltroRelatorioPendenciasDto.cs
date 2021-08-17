@@ -1,6 +1,6 @@
 ﻿namespace SME.SR.Infra.Dtos
 {
-    public class FiltroRelatorioPendenciasFechamentoDto
+    public class FiltroRelatorioPendenciasDto
     {
         public int AnoLetivo { get; set; }
         public string DreCodigo { get; set; }
@@ -13,7 +13,7 @@
         public int? Semestre { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRf { get; set; }
-        public bool PendenciaResolvida { get; set; }
+        public bool ExibirPendenciasResolvidas { get; set; }
         public int[] TipoPendenciaGrupo { get; set; }
     }
 }

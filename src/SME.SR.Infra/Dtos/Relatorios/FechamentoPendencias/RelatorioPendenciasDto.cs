@@ -2,9 +2,9 @@
 
 namespace SME.SR.Infra
 {
-    public class RelatorioFechamentoPendenciasDto
+    public class RelatorioPendenciasDto
     {
-        public RelatorioFechamentoPendenciasDto()
+        public RelatorioPendenciasDto()
         {
             
         }
@@ -20,6 +20,6 @@ namespace SME.SR.Infra
         public string TurmaNome { get; set; }
         public string Modalidade { get; set; }
         public string Semestre { get; set; }
-        public RelatorioFechamentoPendenciasDreDto Dre { get; set; }
+        public RelatorioPendenciasDreDto Dre { get; set; }
     }
 }

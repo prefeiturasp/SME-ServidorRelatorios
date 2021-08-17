@@ -19,7 +19,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<RelatorioFechamentoPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
+        public async Task<IEnumerable<RelatorioPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
                                                                                                     string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, int[] tipoPendenciaGrupo)
         {
             string query = String.Empty;
@@ -101,7 +101,7 @@ namespace SME.SR.Data
 
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-                var retorno = await conexao.QueryAsync<RelatorioFechamentoPendenciasQueryRetornoDto>(query.ToString());
+                var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString());
                 return retorno.OrderBy(x => x.CriadorRf).OrderBy(x => x.TipoPendencia);
             }
             catch (Exception)

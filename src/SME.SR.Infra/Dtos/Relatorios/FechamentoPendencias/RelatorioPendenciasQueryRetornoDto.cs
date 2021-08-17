@@ -1,6 +1,6 @@
 ﻿namespace SME.SR.Infra
 {
-    public class RelatorioFechamentoPendenciasQueryRetornoDto
+    public class RelatorioPendenciasQueryRetornoDto
     {
         public string Titulo { get; set; }
         public string Detalhe { get; set; }

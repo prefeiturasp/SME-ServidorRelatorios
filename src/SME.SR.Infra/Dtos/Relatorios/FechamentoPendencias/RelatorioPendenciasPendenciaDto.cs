@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace SME.SR.Infra
 {
-    public class RelatorioFechamentoPendenciasPendenciaDto
+    public class RelatorioPendenciasPendenciaDto
     {
-        public RelatorioFechamentoPendenciasPendenciaDto()
+        public RelatorioPendenciasPendenciaDto()
         {
             
         }        
