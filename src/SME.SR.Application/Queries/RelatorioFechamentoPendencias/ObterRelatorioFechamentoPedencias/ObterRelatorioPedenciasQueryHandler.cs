@@ -25,6 +25,8 @@ namespace SME.SR.Application
         {
             var filtros = request.filtroRelatorioPendenciasFechamentoDto;
 
+            filtros.ExibirDetalhamento = true;
+
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo, 
                 (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre,filtros.ExibirPendenciasResolvidas,filtros.TipoPendenciaGrupo);
 

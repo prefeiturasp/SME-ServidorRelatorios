@@ -53,8 +53,13 @@ namespace SME.SR.HtmlPdf
                     PagesCount = true,
                 });
 
-
-            converter.Convert(doc);
+            try
+            {
+                converter.Convert(doc);
+            }catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public void ConvertToPdf(List<string> paginas, string nomeArquivo)
