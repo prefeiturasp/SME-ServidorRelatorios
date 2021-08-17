@@ -10,23 +10,23 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioFechamentoPedenciasQueryHandler : IRequestHandler<ObterRelatorioFechamentoPedenciasQuery, RelatorioFechamentoPendenciasDto>
+    public class ObterRelatorioPedenciasQueryHandler : IRequestHandler<ObterRelatorioPedenciasQuery, RelatorioPendenciasDto>
     {
         private readonly IMediator mediator;
         private readonly IPendenciaRepository fechamentoPendenciaRepository;        
 
-        public ObterRelatorioFechamentoPedenciasQueryHandler(IMediator mediator, IPendenciaRepository fechamentoPendenciaRepository)
+        public ObterRelatorioPedenciasQueryHandler(IMediator mediator, IPendenciaRepository fechamentoPendenciaRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.fechamentoPendenciaRepository = fechamentoPendenciaRepository ?? throw new ArgumentNullException(nameof(fechamentoPendenciaRepository));
         }
 
-        public async Task<RelatorioFechamentoPendenciasDto> Handle(ObterRelatorioFechamentoPedenciasQuery request, CancellationToken cancellationToken)
+        public async Task<RelatorioPendenciasDto> Handle(ObterRelatorioPedenciasQuery request, CancellationToken cancellationToken)
         {
             var filtros = request.filtroRelatorioPendenciasFechamentoDto;
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo, 
-                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre,filtros.PendenciaResolvida,filtros.TipoPendenciaGrupo);
+                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre,filtros.ExibirPendenciasResolvidas,filtros.TipoPendenciaGrupo);
 
             if (!resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
@@ -39,7 +39,7 @@ namespace SME.SR.Application
             if (!componentesCurricularesDescricoes.Any())
                 throw new NegocioException("Não foram localizadas descrições dos componentes curriculares no EOL.");
 
-            var retorno = new RelatorioFechamentoPendenciasDto();
+            var retorno = new RelatorioPendenciasDto();
             var retornoLinearParaCabecalho = resultadoQuery.FirstOrDefault();
 
 
@@ -65,13 +65,13 @@ namespace SME.SR.Application
                 retorno.Bimestre = filtros.Bimestre.ToString();
             else retorno.Bimestre = "Todos";
 
-            retorno.Dre = new RelatorioFechamentoPendenciasDreDto()
+            retorno.Dre = new RelatorioPendenciasDreDto()
             {
                 Codigo = filtros.DreCodigo,
                 Nome = retornoLinearParaCabecalho.DreNome
             };
 
-            retorno.Dre.Ue = new RelatorioFechamentoPendenciasUeDto() { 
+            retorno.Dre.Ue = new RelatorioPendenciasUeDto() { 
              Codigo = filtros.UeCodigo,
               Nome = retornoLinearParaCabecalho.UeNome            
             };
@@ -80,21 +80,21 @@ namespace SME.SR.Application
 
             foreach (var turmaCodigo in turmasCodigos)
             {
-                var turma = new RelatorioFechamentoPendenciasTurmaDto();
+                var turma = new RelatorioPendenciasTurmaDto();
                 turma.Nome = resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).TurmaNome;
 
                 var bimestresDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo).Select(a => a.Bimestre).Distinct();
 
                 foreach (var bimestreDaTurma in bimestresDaTurma)
                 {
-                    var bimestreParaAdicionar = new RelatorioFechamentoPendenciasBimestreDto();
+                    var bimestreParaAdicionar = new RelatorioPendenciasBimestreDto();
                     bimestreParaAdicionar.Nome = bimestreDaTurma.ToString() + "º BIMESTRE";
 
                     var componentesDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma).Select(a => a.DisciplinaId).Distinct();
 
                     foreach (var componenteDaTurma in componentesDaTurma)
                     {
-                        var componenteParaAdicionar = new RelatorioFechamentoPendenciasComponenteDto();
+                        var componenteParaAdicionar = new RelatorioPendenciasComponenteDto();
                         componenteParaAdicionar.CodigoComponente = componenteDaTurma.ToString();
                         componenteParaAdicionar.NomeComponente = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma).Disciplina;
 
@@ -102,7 +102,7 @@ namespace SME.SR.Application
                         
                         foreach (var pendenciaDoComponenteDaTurma in pendenciasDoComponenteDaTurma)
                         {
-                            var pendenciaParaAdicionar = new RelatorioFechamentoPendenciasPendenciaDto();
+                            var pendenciaParaAdicionar = new RelatorioPendenciasPendenciaDto();
 
                             pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
                             pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
