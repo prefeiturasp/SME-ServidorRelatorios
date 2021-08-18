@@ -89,7 +89,7 @@ namespace SME.SR.Application
             foreach (var turmaCodigo in turmasCodigos)
             {
                 var turma = new RelatorioPendenciasTurmaDto();
-                turma.Nome = resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).TurmaNome;
+                turma.Nome = modalidade.descricao.ToUpper() + " - " + resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).TurmaNome.ToUpper();
 
                 var bimestresDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo).Select(a => a.Bimestre).Distinct();
 
