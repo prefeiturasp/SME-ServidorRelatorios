@@ -13,7 +13,7 @@ namespace SME.SR.Application
     public class ObterRelatorioPedenciasQueryHandler : IRequestHandler<ObterRelatorioPedenciasQuery, RelatorioPendenciasDto>
     {
         private readonly IMediator mediator;
-        private readonly IPendenciaRepository fechamentoPendenciaRepository;        
+        private readonly IPendenciaRepository fechamentoPendenciaRepository;
 
         public ObterRelatorioPedenciasQueryHandler(IMediator mediator, IPendenciaRepository fechamentoPendenciaRepository)
         {
@@ -27,8 +27,8 @@ namespace SME.SR.Application
 
             filtros.ExibirDetalhamento = true;
 
-            var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo, 
-                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre,filtros.ExibirPendenciasResolvidas,filtros.TipoPendenciaGrupo);
+            var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo,
+                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo);
 
             if (resultadoQuery == null || !resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
@@ -37,7 +37,7 @@ namespace SME.SR.Application
             //Obter as disciplinas do EOL por código\\
             var componentesCurricularesIds = resultadoQuery.Select(a => a.DisciplinaId).Distinct().ToArray();
             var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesIds));
-            
+
             if (componentesCurricularesDescricoes == null || !componentesCurricularesDescricoes.Any())
                 throw new NegocioException("Não foram localizadas descrições dos componentes curriculares no EOL.");
 
@@ -55,8 +55,13 @@ namespace SME.SR.Application
             retorno.Semestre = filtros.Semestre.ToString();
             retorno.Ano = filtros.AnoLetivo.ToString();
 
+            var modalidade = Enum.GetValues(typeof(Modalidade))
+                        .Cast<Modalidade>()
+                        .Where(d => (int)d == retornoLinearParaCabecalho.ModalidadeCodigo)
+                        .Select(d => new { descricao = d.ShortName() }).FirstOrDefault();
+
             if (filtros.TurmasCodigo.Count() == 1)
-                retorno.TurmaNome = retornoLinearParaCabecalho.TurmaNome.ToUpper();
+                retorno.TurmaNome = modalidade.descricao.ToUpper() + " - " + retornoLinearParaCabecalho.TurmaNome.ToUpper();
             else retorno.TurmaNome = "Todas";
 
             if (filtros.ComponentesCurriculares.Count() == 1)
@@ -73,9 +78,10 @@ namespace SME.SR.Application
                 Nome = retornoLinearParaCabecalho.DreNome
             };
 
-            retorno.Dre.Ue = new RelatorioPendenciasUeDto() { 
-             Codigo = filtros.UeCodigo,
-              Nome = retornoLinearParaCabecalho.UeNome            
+            retorno.Dre.Ue = new RelatorioPendenciasUeDto()
+            {
+                Codigo = filtros.UeCodigo,
+                Nome = retornoLinearParaCabecalho.UeNome
             };
 
             var turmasCodigos = resultadoQuery.Select(a => a.TurmaCodigo).Distinct();
@@ -111,9 +117,10 @@ namespace SME.SR.Application
                             pendenciaParaAdicionar.DescricaoPendencia = pendenciaDoComponenteDaTurma.Titulo;
                             pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
 
-                            if (filtros.ExibirDetalhamento) {
+                            if (filtros.ExibirDetalhamento)
+                            {
                                 pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Detalhe);
-                                pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.","");
+                                pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
                                 pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
                                 pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
@@ -126,8 +133,8 @@ namespace SME.SR.Application
 
                             pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador;
                             pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador;
-                            
-                            pendenciaParaAdicionar.Situacao = ((SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao).ToString();                            
+
+                            pendenciaParaAdicionar.Situacao = ((SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao).ToString();
 
                             componenteParaAdicionar.Pendencias.Add(pendenciaParaAdicionar);
                         }
@@ -140,7 +147,7 @@ namespace SME.SR.Application
                     turma.Bimestres.Add(bimestreParaAdicionar);
                 }
 
-                
+
                 retorno.Dre.Ue.Turmas.Add(turma);
             }
 
