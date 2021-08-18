@@ -56,7 +56,7 @@ namespace SME.SR.Application
             retorno.Ano = filtros.AnoLetivo.ToString();
 
             if (filtros.TurmasCodigo.Count() == 1)
-                retorno.TurmaNome = retornoLinearParaCabecalho.TurmaNome;
+                retorno.TurmaNome = retornoLinearParaCabecalho.TurmaNome.ToUpper();
             else retorno.TurmaNome = "Todas";
 
             if (filtros.ComponentesCurriculares.Count() == 1)
@@ -98,7 +98,7 @@ namespace SME.SR.Application
                     {
                         var componenteParaAdicionar = new RelatorioPendenciasComponenteDto();
                         componenteParaAdicionar.CodigoComponente = componenteDaTurma.ToString();
-                        componenteParaAdicionar.NomeComponente = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma).Disciplina;
+                        componenteParaAdicionar.NomeComponente = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma).Disciplina.ToUpper();
 
                         var pendenciasDoComponenteDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma && a.DisciplinaId == componenteDaTurma);
 
