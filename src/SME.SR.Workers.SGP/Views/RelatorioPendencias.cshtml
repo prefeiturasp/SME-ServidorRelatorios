@@ -1,7 +1,6 @@
 ﻿@model SME.SR.Infra.RelatorioPendenciasDto
-
 @{
-    
+
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 48;
     int contadorPagina = 0;
@@ -22,67 +21,70 @@
     }
 
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(string descricao, string[] detalhamentos, bool mostraDetalhe, string usuario, string aprovador, string usuarioRf, string aprovadorRf, string status)
+    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias)
     {
         var str = $@"
 <table class='tabela-alunos'>
     <thead>
-        <th style='width: 100%;'>DESCRIÇÃO DA PENDÊNCIA</th>
+        <th style='width: 30%;'>DESCRIÇÃO DA PENDÊNCIA</th>
+        <th style='width: 70%;'>DETALHAMENTO</th>
    </thead>
     <tbody>
         <tr>
-            <td colspan='4' style='border-bottom: none;border-top: none;' >{descricao}</td>
+            <td style='border-bottom: none;border-top: none;'>{pendencias.DescricaoPendencia}</td>
+            <td style='border-bottom: none;border-top: none;'>{pendencias.DetalhamentoPendencia}</td>
         </tr>
-   </tbody>";
-        contadorQuebrarPagina = contadorQuebrarPagina + 2;         
+   </tbody></table>";
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;
 
-        if (mostraDetalhe)
-        {
-            str = str + $@"<table class='tabela-alunos'>
-            <thead>
-                <th style='width: 100%;'>DETALHE DA PENDÊNCIA</th>     
-           </thead>
-            <tbody><tr>
-                    <td colspan='4' style='border-top: none;' >";
+        //if (Model.ExibeDetalhamento)
+        //{
+        //str = str + $@"<table class='tabela-alunos'>
+        //    <thead>
+        //        <th style='width: 30%;'>DETALHE DA PENDÊNCIA</th>   
+        //        <th style='width: 70%;'>DETALHAMENTO</th>
+        //   </thead>
+        //    <tbody><tr>
+        //            <td style='border-top: none;' >";
 
-            for (int i = 0; i < detalhamentos.Length; i++)
-            {
-                str = str + $@"{detalhamentos[i]}";
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                var quebra = VerificaQuebra();
-                if (!string.IsNullOrEmpty(quebra))
-                {
-                       str = str + $@"</td></tr></tbody></table>";
-                    str = str + quebra;
-                    str = str + $@"<table class='tabela-alunos'>
-                                    <thead>
-                                        <th style='width: 100%;'>DETALHE DA PENDÊNCIA</th>     
-                                   </thead>
-                                    <tbody><tr>
-                    <td colspan='4' style='border-top: none;' >";    
-                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                }
-            }
+        //for (int i = 0; i < pendencias.DetalhamentoPendencia.Length; i++)
+        //{
+        //    str = str + $@"{ pendencias.DetalhamentoPendencia[i]}";
+        //    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        //    var quebra = VerificaQuebra();
+        //    if (!string.IsNullOrEmpty(quebra))
+        //    {
+        //        str = str + $@"</td></tr></tbody></table>";
+        //        str = str + quebra;
+        //        str = str + $@"<table class='tabela-alunos'>
+        //                            <thead>
+        //                                <th style='width: 30%;'>DETALHE DA PENDÊNCIA</th>     
+        //                           </thead>
+        //                            <tbody><tr>
+        //            <td colspan='4' style='border-top: none;' >";
+        //        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        //    }
+        //}
 
-            str = str + $@"</td></tr></tbody></table>";
-        }
+        //str = str + $@"</td></tr></tbody></table>";
+        //}
 
         str = str + $@"<table class='tabela-alunos'>
     <thead>
         <th style='width: 10%;'>Situação:</th>
-        <th style='width: 10%;'>{status}</th>
+        <th style='width: 10%;'>{pendencias.Situacao}</th>
         <th style='width: 10%;' class='thLimpo'>Usuário:</th>
-        <th style='width: 30%;' class='thLimpo'>{usuario}</th>
+        <th style='width: 30%;' class='thLimpo'>{pendencias.NomeUsuario}</th>
         <th style='width: 10%;' class='thLimpo'>Aprovação:</th>
-        <th style='width: 30%;' class='thLimpo'>{aprovador}</th>
+        <th style='width: 30%;' class='thLimpo'>{pendencias.NomeUsuarioAprovacao}</th>
    </thead>
     <tbody>
         <tr>
             <td colspan='2' style='border-top: none;'></td>
             <td colspan='1' style='border-top: none;'>RF:</td>
-            <td colspan='1' style='border-top: none;'>{usuarioRf}</td>
+            <td colspan='1' style='border-top: none;'>{pendencias.CodigoUsuarioRf}</td>
             <td colspan='1' style='border-top: none;'>RF:</td>
-            <td colspan='1' style='border-top: none;'>{aprovadorRf}</td>
+            <td colspan='1' style='border-top: none;'>{pendencias.CodigoUsuarioAprovacaoRf}</td>
 
         </tr>
         <tr>
@@ -97,6 +99,7 @@
 
         return Html.Raw(str);
     }
+
     string MontarCabecalho()
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 8;
@@ -110,8 +113,8 @@
         <table class='tblTopo'>
         <tbody>
         <tr>
-        <td  width='40%' >DRE: {Model.DreNome}</td>
-        <td width='40%' >UE: {Model.UeNome}</td>
+        <td  width='20%' >DRE: {Model.DreNome}</td>
+        <td width='60%' >UE: {Model.UeNome}</td>
         <td  width='20%' >ANO LETIVO: {Model.Ano}</td>
         </tr>
         </tbody>
@@ -326,19 +329,6 @@
 
                         @if (bimestre.Componentes != null)
                         {
-                            if (Model.Bimestre == "Todos")
-                            {
-                                <table class="tabela-alunos">
-                                    <thead>
-                                        <tr>
-                                            <th>@bimestre.Nome</th>
-                                        </tr>                                        
-                                    </thead>
-                                </table>
-                                contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                @Html.Raw(VerificaQuebra())
-                            }
-
                             for (int c = 0; c < bimestre.Componentes.Count; c++)
                             {
                                 var componente = bimestre.Componentes[c];
@@ -357,15 +347,27 @@
                                     @Html.Raw(VerificaQuebra())
                                 }
 
+                                if (Model.Bimestre == "Todos")
+                                {
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th>@bimestre.Nome</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                    @Html.Raw(VerificaQuebra())
+                                }
+
                                 if (componente.Pendencias != null)
                                 {
 
                                     for (int i = 0; i < componente.Pendencias.Count; i++)
                                     {
-                                        var pendencia = componente.Pendencias[i];
-                                        @MontarLinhaPendencia(pendencia.DescricaoPendencia, pendencia.DetalhamentoPendenciaArray, Model.ExibeDetalhamento, pendencia.NomeUsuario, pendencia.NomeUsuarioAprovacao, pendencia.CodigoUsuarioRf, pendencia.CodigoUsuarioAprovacaoRf, pendencia.Situacao)
+                                        var pendencias = componente.Pendencias[i];
+                                        @MontarLinhaPendencia(pendencias)
                                     }
-
                                 }
                             }
                         }

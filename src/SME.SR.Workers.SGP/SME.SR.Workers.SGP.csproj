@@ -47,6 +47,9 @@
     <Content Update="Views\RelatorioFaltasFrequencias.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Views\RelatorioPendencias.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\RelatorioFechamentoPendencias.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
