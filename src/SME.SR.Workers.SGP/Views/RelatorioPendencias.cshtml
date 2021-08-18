@@ -2,101 +2,106 @@
 @{
 
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 48;
+    int contadorMaximoLinhasPorPagina = 49;
     int contadorPagina = 0;
+    bool quebrou = false;
 
-    string VerificaQuebra()
+    string VerificaQuebra(int linhas, string nomeBimestre)
     {
-        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
         {
             contadorQuebrarPagina = 0;
             contadorPagina = contadorPagina + 1;
 
-            return $@"<div style='page-break-before:always' />";
+            <div style='page-break-before:always' />
+
             MontarCabecalho();
+            if (Model.Bimestre == "Todos" && !String.IsNullOrEmpty(nomeBimestre))
+            {
+                MontarLinhaTabela(nomeBimestre);
+                contadorQuebrarPagina++;
+            }
 
+            quebrou = true;
+            return string.Empty;
         }
-        return string.Empty;
 
+        quebrou = false;
+        return string.Empty;
     }
 
-
-    void MontarLinhaPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias)
+    int CalcularLinhas(int valorLinha = 0, int caracteres = 0)
     {
+        if (valorLinha > 0)
+        {
+            var numeroLinhasDescricao = valorLinha / caracteres;
+
+            return numeroLinhasDescricao;
+        }
+        return 2;
+    }
+
+    void MontarLinhaPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, int contadorPendencias, int quantidadePendencias, string nomeBimestre)
+    {
+        var numeroCaracteresDetalhamentoPendencias = pendencias.DetalhamentoPendencia.Length;
+
+        int numLinhas = CalcularLinhas(numeroCaracteresDetalhamentoPendencias, 100);
+        VerificaQuebra(numLinhas, nomeBimestre);
+        @if (contadorPendencias != 0 && !quebrou)
+        {
+            <table  class="tabela-alunos estilo-texto">
+                <tr style="height: 5px;">
+                    <td colspan="4" class="thLimpo" style="border-top: 0; border-bottom: 0;"></td>
+                </tr>
+            </table>
+        }
+
         <table class="tabela-alunos estilo-texto">
             <thead>
-                <th style="width: 40%;">DESCRIÇÃO DA PENDÊNCIA</th>
-                <th style="width: 60%;">DETALHAMENTO</th>
+            <th style="width: 40%;">DESCRIÇÃO DA PENDÊNCIA</th>
+            <th style="width: 60%;">DETALHAMENTO  @contadorQuebrarPagina</th>
             </thead>
+
+            @{ contadorQuebrarPagina++;}
+
             <tbody>
                 <tr>
-                    <td style="border-bottom: none;border-top: none;">@pendencias.DescricaoPendencia</td>
-                    <td style="border-bottom: none;border-top: none;">@pendencias.DetalhamentoPendencia</td>
+                    <td>@pendencias.DescricaoPendencia</td>
+                    <td>@pendencias.DetalhamentoPendencia @contadorQuebrarPagina</td>
                 </tr>
             </tbody>
         </table>
-        contadorQuebrarPagina = contadorQuebrarPagina + 2;
 
-        //if (Model.ExibeDetalhamento)
-        //{
-        //str = str + $@"<table class='tabela-alunos'>
-        //    <thead>
-        //        <th style='width: 30%;'>DETALHE DA PENDÊNCIA</th>
-        //        <th style='width: 70%;'>DETALHAMENTO</th>
-        //   </thead>
-        //    <tbody><tr>
-        //            <td style='border-top: none;' >";
-
-        //for (int i = 0; i < pendencias.DetalhamentoPendencia.Length; i++)
-        //{
-        //    str = str + $@"{ pendencias.DetalhamentoPendencia[i]}";
-        //    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-        //    var quebra = VerificaQuebra();
-        //    if (!string.IsNullOrEmpty(quebra))
-        //    {
-        //        str = str + $@"</td></tr></tbody></table>";
-        //        str = str + quebra;
-        //        str = str + $@"<table class='tabela-alunos'>
-        //                            <thead>
-        //                                <th style='width: 30%;'>DETALHE DA PENDÊNCIA</th>
-        //                           </thead>
-        //                            <tbody><tr>
-        //            <td colspan='4' style='border-top: none;' >";
-        //        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-        //    }
-        //}
-
-        //str = str + $@"</td></tr></tbody></table>";
-        //}
+        contadorQuebrarPagina = contadorQuebrarPagina + numLinhas;
+        VerificaQuebra(2, nomeBimestre);
 
         <table class="tabela-alunos estilo-texto">
             <thead>
-                <th style="width: 20%;">TIPO DE PENDÊNCIA</th>
-                <th style="width: 20%;">SITUAÇÃO</th>
-                <th style="width: 30%;">USUÁRIO</th>
-                <th style="width: 30%;">APROVAÇÃO</th>
+
+            <th style="width: 20%;">TIPO DE PENDÊNCIA</th>
+            <th style="width: 20%;">SITUAÇÃO</th>
+            <th style="width: 30%;">USUÁRIO</th>
+            <th style="width: 30%;">APROVAÇÃO  @contadorQuebrarPagina</th>
             </thead>
+
+            @{ contadorQuebrarPagina++;}
+
             <tbody>
-            <tr>
-                <td style="border-top: none;">@pendencias.TipoPendencia</td>
-                <td style="border-top: none;">@pendencias.Situacao</td>
-                <td style="border-top: none;">@pendencias.NomeUsuario</td>
-                <td style="border-top: none;">@pendencias.NomeUsuarioAprovacao</td>
-            </tr>
-            <tr style="height:5px;">
-                <td colspan="4" class="thLimpo"></td>
-            </tr>
+                <tr>
+                    <td>@pendencias.TipoPendencia</td>
+                    <td>@pendencias.Situacao</td>
+                    <td>@pendencias.NomeUsuario</td>
+                    <td>@pendencias.NomeUsuarioAprovacao  @contadorQuebrarPagina</td>
+                </tr>
             </tbody>
         </table>
 
-        contadorQuebrarPagina = contadorQuebrarPagina + 3;
-
-         VerificaQuebra();
+        contadorQuebrarPagina++;
     }
 
     void MontarCabecalho()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
         <div>
             <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
         </div>
@@ -106,9 +111,9 @@
             <table class='tblTopo'>
                 <tbody>
                     <tr>
-                        <td  width='20%' >DRE: @Model.DreNome</td>
-                        <td width='60%' >UE: @Model.UeNome</td>
-                        <td  width='20%' >ANO LETIVO: @Model.Ano</td>
+                        <td width='20%'>DRE: @Model.DreNome</td>
+                        <td width='60%'>UE: @Model.UeNome</td>
+                        <td width='20%'>ANO LETIVO: @Model.Ano</td>
                     </tr>
                 </tbody>
             </table>
@@ -125,7 +130,7 @@
                 <tbody>
                     <tr>
                         <td class='campo-componente-curricular'>
-                        COMPONENTE CURRICULAR: @Model.ComponenteCurricular
+                            COMPONENTE CURRICULAR: @Model.ComponenteCurricular
                         </td>
                         <td class='campo-bimestre'>BIMESTRE: @Model.Bimestre</td>
                     </tr>
@@ -141,6 +146,18 @@
                 </tbody>
             </table>
         </div>
+    }
+
+    void MontarLinhaTabela(string nome, bool ehEspacoVazio = false)
+    {
+        var classeEspacoVazio = ehEspacoVazio ? "thLimpo" : "";
+        <table class="tabela-alunos">
+            <thead>
+                <tr>
+                    <th class="@classeEspacoVazio">@nome @contadorQuebrarPagina</th>
+                </tr>
+            </thead>
+        </table>
     }
 }
 
@@ -293,84 +310,74 @@
         @{
             MontarCabecalho();
 
-            for (int a = 0; a < Model.Dre.Ue.Turmas.Count; a++)
+            int numeroMaximoTurmas = Model.Dre.Ue.Turmas.Count;
+            for (int contadorTurmas = 0; contadorTurmas < numeroMaximoTurmas; contadorTurmas++)
             {
-
-                @if (Model.Dre.Ue.Turmas[a].Bimestres != null)
+                @if (Model.Dre.Ue.Turmas[contadorTurmas].Bimestres != null)
                 {
-
-                    foreach (var bimestre in Model.Dre.Ue.Turmas[a].Bimestres)
+                    int contadorBimestres = 0;
+                    int numeroMaximoBimestres = Model.Dre.Ue.Turmas[contadorTurmas].Bimestres.Count;
+                    foreach (var bimestre in Model.Dre.Ue.Turmas[contadorTurmas].Bimestres)
                     {
-
-                        if (Model.TurmaNome == "Todas")
-                        {
-                            var turma = Model.Dre.Ue.Turmas[a];
-                            <table class="tabela-alunos">
-                                <thead>
-
-                                    <tr>
-                                        <th>@turma.Nome</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                            @Html.Raw(VerificaQuebra())
-                        }
+                        int contarNumeroLinhas = 2;
 
                         @if (bimestre.Componentes != null)
                         {
-                            for (int c = 0; c < bimestre.Componentes.Count; c++)
+                            if (Model.TurmaNome == "Todas")
                             {
-                                var componente = bimestre.Componentes[c];
+                                var turma = Model.Dre.Ue.Turmas[contadorTurmas];
+                                MontarLinhaTabela(turma.Nome);
+                                contadorQuebrarPagina++;
+                                contarNumeroLinhas++;
+                            }
 
-                                if (c != 0)
+                            int numeroMaximoComponentes = bimestre.Componentes.Count;
+                            quebrou = false;
+                            for (int contadorComponentes = 0; contadorComponentes < numeroMaximoComponentes; contadorComponentes++)
+                            {
+                                var componente = bimestre.Componentes[contadorComponentes];
+                                var nomeBimestre = bimestre.Nome;
+
+                                if (contadorComponentes != 0 && !quebrou)
                                 {
-                                    <table class="tabela-alunos">
-                                        <tr>
-                                            <td colspan="4" class="thLimpo"></td>
-                                        </tr>
-                                    </table>
+                                    MontarLinhaTabela(String.Empty, true);
+                                    contadorQuebrarPagina++;
+                                    contarNumeroLinhas++;
                                 }
 
                                 if (Model.ComponenteCurricular == "Todos")
                                 {
-                                    <table class="tabela-alunos">
-                                        <thead>
-                                            <tr>
-                                                <th style="border-bottom:0">@componente.NomeComponente</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-
-                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                    @Html.Raw(VerificaQuebra())
+                                    MontarLinhaTabela(componente.NomeComponente);
+                                    contadorQuebrarPagina++;
+                                    contarNumeroLinhas++;
                                 }
 
-                                if (Model.Bimestre == "Todos")
+                                if (Model.Bimestre == "Todos" && !String.IsNullOrEmpty(nomeBimestre))
                                 {
-                                    <table class="tabela-alunos">
-                                        <thead>
-                                            <tr>
-                                                <th>@bimestre.Nome</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-
-                                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                                    @Html.Raw(VerificaQuebra())
+                                    MontarLinhaTabela(nomeBimestre);
+                                    contadorQuebrarPagina++;
+                                    contarNumeroLinhas++;
                                 }
 
                                 if (componente.Pendencias != null)
                                 {
-
-                                    for (int i = 0; i < componente.Pendencias.Count; i++)
+                                    for (int contadorPendencias = 0; contadorPendencias < componente.Pendencias.Count; contadorPendencias++)
                                     {
-                                        var pendencias = componente.Pendencias[i];
-                                        MontarLinhaPendencia(pendencias);
+                                        var pendencias = componente.Pendencias[contadorPendencias];
+                                        var quantidadeMaximaPendencias = componente.Pendencias.Count;
+                                        MontarLinhaPendencia(pendencias, contadorPendencias, quantidadeMaximaPendencias, nomeBimestre);
                                     }
+                                }
+
+                                if (contadorComponentes < numeroMaximoComponentes - 1 || contadorBimestres < numeroMaximoBimestres - 1 || contadorTurmas < numeroMaximoTurmas -1)
+                                {
+                                    VerificaQuebra(contarNumeroLinhas, String.Empty);
+                                    contarNumeroLinhas = 3;
                                 }
                             }
                         }
+
+                        contadorBimestres++;
                     }
                 }
             }
