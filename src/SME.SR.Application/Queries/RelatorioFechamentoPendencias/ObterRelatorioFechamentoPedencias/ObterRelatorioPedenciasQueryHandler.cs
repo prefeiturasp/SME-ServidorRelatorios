@@ -101,7 +101,7 @@ namespace SME.SR.Application
                         componenteParaAdicionar.NomeComponente = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma).Disciplina;
 
                         var pendenciasDoComponenteDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma && a.DisciplinaId == componenteDaTurma);
-                        
+
                         foreach (var pendenciaDoComponenteDaTurma in pendenciasDoComponenteDaTurma)
                         {
                             var pendenciaParaAdicionar = new RelatorioPendenciasPendenciaDto();
@@ -109,9 +109,15 @@ namespace SME.SR.Application
                             pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
                             pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
                             pendenciaParaAdicionar.DescricaoPendencia = pendenciaDoComponenteDaTurma.Titulo;
+                            pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
+
+                            if (filtros.ExibirDetalhamento) {
+                                pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Detalhe);
+                                pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.","");
+                                pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+                            }                              
+
                             
-                            if (filtros.ExibirDetalhamento)
-                                pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaDoComponenteDaTurma.Detalhe;
                             
                             pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador;
                             pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador;
