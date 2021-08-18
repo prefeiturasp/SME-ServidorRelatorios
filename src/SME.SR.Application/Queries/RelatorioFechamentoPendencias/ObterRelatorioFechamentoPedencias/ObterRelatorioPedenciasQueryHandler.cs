@@ -96,7 +96,9 @@ namespace SME.SR.Application
                 foreach (var bimestreDaTurma in bimestresDaTurma)
                 {
                     var bimestreParaAdicionar = new RelatorioPendenciasBimestreDto();
-                    bimestreParaAdicionar.Nome = bimestreDaTurma.ToString() + "º BIMESTRE";
+
+                    if (retornoLinearParaCabecalho.ModalidadeCodigo != (int)Modalidade.Infantil)
+                        bimestreParaAdicionar.Nome = bimestreDaTurma.ToString() + "º BIMESTRE";
 
                     var componentesDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma).Select(a => a.DisciplinaId).Distinct();
 

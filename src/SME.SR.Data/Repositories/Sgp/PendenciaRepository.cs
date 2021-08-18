@@ -61,10 +61,10 @@ namespace SME.SR.Data
                 {
                     if (tipoPendenciaGrupo.Count() > 1)
                     {
+                        int volta = 0;
                         for (int i = 0; i < tipoPendenciaGrupo.Count(); i++)
                         {
                             var pendencia = tipoPendenciaGrupo[i];
-                            int volta = 0;
 
                             if (pendencia == (int)TipoPendenciaGrupo.Calendario)
                             {
