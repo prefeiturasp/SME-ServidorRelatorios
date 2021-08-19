@@ -153,12 +153,9 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
+                        and p.situacao in(1,2)
                         and t.modalidade_codigo = @modalidadeId
                             and not p.excluido ");
-            if (pendenciaResolvida)
-                query.AppendLine(" and p.situacao =3 ");
-            else
-                query.AppendLine(" and p.situacao in(1,2) ");
 
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
@@ -280,12 +277,9 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
+                        and p.situacao in(1,2)
                         and t.modalidade_codigo = @modalidadeId
                             and not p.excluido ");
-            if (pendenciaResolvida)
-                query.AppendLine(" and p.situacao =3 ");
-            else
-                query.AppendLine(" and p.situacao in(1,2) ");
 
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
@@ -342,12 +336,9 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
+                        and p.situacao in(1,2)
                         and t.modalidade_codigo = @modalidadeId  
                             and not p.excluido ");
-            if (pendenciaResolvida)
-                query.AppendLine(" and p.situacao =3 ");
-            else
-                query.AppendLine(" and p.situacao in(1,2) ");
 
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
