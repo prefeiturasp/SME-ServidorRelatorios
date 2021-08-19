@@ -106,7 +106,7 @@ namespace SME.SR.Application
                     {
                         var componenteParaAdicionar = new RelatorioPendenciasComponenteDto();
                         componenteParaAdicionar.CodigoComponente = componenteDaTurma.ToString();
-                        componenteParaAdicionar.NomeComponente = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma).Disciplina.ToUpper();
+                        componenteParaAdicionar.NomeComponente = componentesCurricularesDescricoes?.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma)?.Disciplina.ToUpper();
 
                         var pendenciasDoComponenteDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma && a.DisciplinaId == componenteDaTurma);
 

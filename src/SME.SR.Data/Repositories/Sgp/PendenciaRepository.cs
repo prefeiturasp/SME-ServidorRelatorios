@@ -126,7 +126,7 @@ namespace SME.SR.Data
 	                        t.semestre,
 	                        t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
                             t.turma_id as TurmaCodigo,
-	                        a.disciplina_id::int as DisciplinaId,
+	                        a.disciplina_id::bigint as DisciplinaId,
 	                        pe.bimestre,
 	                        p.criado_por as criador,
 	                        p.criado_rf as criadorRf,
@@ -164,7 +164,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo.Length > 0)
-                query.AppendLine($" and a.disciplina_id::int = any(@componentesCodigo)");
+                query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo)");
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
@@ -248,7 +248,7 @@ namespace SME.SR.Data
                             t.semestre,
                             t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
                             t.turma_id as TurmaCodigo,
-                            a.disciplina_id::int as DisciplinaId,
+                            a.disciplina_id::bigint as DisciplinaId,
                             pe.bimestre,
                             p.criado_por as criador,
                             p.criado_rf as criadorRf,
@@ -288,7 +288,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo.Length > 0)
-                query.AppendLine($" and a.disciplina_id::int = any(@componentesCodigo)");
+                query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo)");
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
@@ -309,7 +309,7 @@ namespace SME.SR.Data
                             t.semestre,
                             t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
                             t.turma_id as TurmaCodigo,
-                            a.disciplina_id::int as DisciplinaId,
+                            a.disciplina_id::bigint as DisciplinaId,
                             pe.bimestre,
                             p.criado_por as criador,
                             p.criado_rf as criadorRf,
@@ -347,7 +347,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo.Length > 0)
-                query.AppendLine($" and a.disciplina_id::int = any(@componentesCodigo) ");
+                query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo) ");
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre ");
