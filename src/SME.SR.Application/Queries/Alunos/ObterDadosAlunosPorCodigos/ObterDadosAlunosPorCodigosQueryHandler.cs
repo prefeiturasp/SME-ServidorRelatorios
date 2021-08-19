@@ -21,7 +21,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<AlunoHistoricoEscolar>> Handle(ObterDadosAlunosPorCodigosQuery request, CancellationToken cancellationToken)
         {
-            var dadosAlunos = await alunoRepository.ObterDadosAlunosPorCodigos(request.CodigosAluno);
+            var dadosAlunos = await alunoRepository.ObterDadosAlunosPorCodigos(request.CodigosAluno, request.AnoLetivo);
 
             if (dadosAlunos == null || !dadosAlunos.Any())
                 throw new NegocioException("Não foram encontrados alunos com os dados informados!");
