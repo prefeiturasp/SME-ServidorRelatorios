@@ -217,7 +217,7 @@ namespace SME.SR.Data
                             and not p.excluido ");
             
             if (pendenciaResolvida)
-                query.AppendLine(" and p.situacao =3 ");
+                query.AppendLine(" and p.situacao in(1,2,3) ");
 
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
