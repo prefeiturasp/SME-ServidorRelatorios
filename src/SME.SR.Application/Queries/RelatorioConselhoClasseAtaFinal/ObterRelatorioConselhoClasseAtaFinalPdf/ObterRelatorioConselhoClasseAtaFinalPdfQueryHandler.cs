@@ -233,8 +233,7 @@ namespace SME.SR.Application
 
             var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
             var frequenciaAlunos = await ObterFrequenciaComponente(listaTurmas.ToArray(), componentesCurricularesPorTurma, bimestres, tipoCalendarioId);
-
-            //var frequenciaAlunos = Enumerable.Empty<FrequenciaAluno>();
+                        
             var areasDoConhecimento = await ObterAreasConhecimento(componentesDaTurma);
 
             var ordenacaoGrupoArea = await ObterOrdenacaoAreasConhecimento(componentesDaTurma, areasDoConhecimento);
