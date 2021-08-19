@@ -132,9 +132,15 @@ namespace SME.SR.Application
                             }
 
 
+                            if (!String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.CriadorRf) && pendenciaDoComponenteDaTurma.CriadorRf != "0")
+                                pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador + $"({pendenciaDoComponenteDaTurma.CriadorRf})";
+                            else
+                                pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador;
 
-                            pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador;
-                            pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador;
+                            if (!String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.AprovadorRf) && pendenciaDoComponenteDaTurma.AprovadorRf != "0")
+                                pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador + $"({pendenciaDoComponenteDaTurma.AprovadorRf})";
+                            else
+                                pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador;
 
                             pendenciaParaAdicionar.Situacao = ((SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao).ToString();
 
