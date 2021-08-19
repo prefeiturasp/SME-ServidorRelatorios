@@ -215,6 +215,7 @@ namespace SME.SR.Data
                         and p.situacao in(1,2) 
                         and t.modalidade_codigo = @modalidadeId
                             and not p.excluido ");
+            
             if (pendenciaResolvida)
                 query.AppendLine(" and p.situacao =3 ");
 
