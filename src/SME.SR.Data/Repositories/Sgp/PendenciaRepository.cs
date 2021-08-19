@@ -160,10 +160,10 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
-            if (turmasCodigo.Length > 0)
+            if (turmasCodigo?.Length > 0)
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
-            if (componentesCodigo.Length > 0)
+            if (componentesCodigo?.Length > 0)
                 query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo)");
 
             if (bimestre > 0)
@@ -222,10 +222,10 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
-            if (turmasCodigo.Length > 0)
+            if (turmasCodigo?.Length > 0)
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
-            if (componentesCodigo.Length > 0)
+            if (componentesCodigo?.Length > 0)
                 query.AppendLine($" and ftd.disciplina_id = any(@componentesCodigo)");
 
             if (bimestre > 0)
@@ -284,10 +284,10 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
-            if (turmasCodigo.Length > 0)
+            if (turmasCodigo?.Length > 0)
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
-            if (componentesCodigo.Length > 0)
+            if (componentesCodigo?.Length > 0)
                 query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo)");
 
             if (bimestre > 0)
@@ -343,10 +343,10 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
-            if (turmasCodigo.Length > 0)
+            if (turmasCodigo?.Length > 0)
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
-            if (componentesCodigo.Length > 0)
+            if (componentesCodigo?.Length > 0)
                 query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo) ");
 
             if (bimestre > 0)
