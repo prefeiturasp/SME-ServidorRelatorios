@@ -105,10 +105,10 @@ namespace SME.SR.Data
                 var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida  });
                 return retorno.OrderBy(x => x.CriadorRf).OrderBy(x => x.TipoPendencia);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
 
@@ -167,7 +167,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo.Length > 0)
-                query.AppendLine($" and ftd.disciplina_id = any(@componentesCodigo)");
+                query.AppendLine($" and a.disciplina_id::int = any(@componentesCodigo)");
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
@@ -294,7 +294,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo.Length > 0)
-                query.AppendLine($" and ftd.disciplina_id = any(@componentesCodigo)");
+                query.AppendLine($" and a.disciplina_id::int = any(@componentesCodigo)");
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
@@ -356,7 +356,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo.Length > 0)
-                query.AppendLine($" and ftd.disciplina_id = any(@componentesCodigo) ");
+                query.AppendLine($" and a.disciplina_id::int = any(@componentesCodigo) ");
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre ");
