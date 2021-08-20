@@ -20,7 +20,7 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<RelatorioPendenciasQueryRetornoDto>> ObterPendencias(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
-                                                            string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, int[] tipoPendenciaGrupo, string usuarioRf,bool exibirHistorico)
+                                                            string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, int[] tipoPendenciaGrupo, string usuarioRf, bool exibirHistorico)
         {
             StringBuilder query = new StringBuilder();
 
@@ -30,30 +30,30 @@ namespace SME.SR.Data
                 int pendencia = tipoPendenciaGrupo[0];
                 if (pendencia == (int)TipoPendenciaGrupo.Calendario)
                 {
-                    query.AppendLine(ObterPendenciasCalendario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                    query.AppendLine(ObterPendenciasCalendario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                 }
                 if (pendencia == (int)TipoPendenciaGrupo.Fechamento)
                 {
-                    query.AppendLine(ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida,usuarioRf, exibirHistorico));
+                    query.AppendLine(ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf, exibirHistorico));
                 }
                 if (pendencia == (int)TipoPendenciaGrupo.AEE)
                 {
-                    query.AppendLine(ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                    query.AppendLine(ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
 
                 }
                 if (pendencia == (int)TipoPendenciaGrupo.DiarioClasse)
                 {
-                    query.AppendLine(ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                    query.AppendLine(ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                 }
                 if (pendencia == (int)TipoPendenciaGrupo.Todos)
                 {
-                    query.AppendLine(ObterPendenciasCalendario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                    query.AppendLine(ObterPendenciasCalendario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                     query.AppendLine(" union all ");
-                    query.AppendLine(ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida,usuarioRf, exibirHistorico));
+                    query.AppendLine(ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf, exibirHistorico));
                     query.AppendLine(" union all ");
-                    query.AppendLine(ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                    query.AppendLine(ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                     query.AppendLine(" union all ");
-                    query.AppendLine(ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf,exibirHistorico));
+                    query.AppendLine(ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                 }
             }
             else
@@ -71,26 +71,26 @@ namespace SME.SR.Data
                         }
                         if (pendencia == (int)TipoPendenciaGrupo.Fechamento)
                         {
-                            query.AppendLine(ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida,usuarioRf, exibirHistorico));
+                            query.AppendLine(ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf, exibirHistorico));
                         }
                         if (pendencia == (int)TipoPendenciaGrupo.AEE)
                         {
-                            query.AppendLine(ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                            query.AppendLine(ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
 
                         }
                         if (pendencia == (int)TipoPendenciaGrupo.DiarioClasse)
                         {
-                            query.AppendLine(ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                            query.AppendLine(ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                         }
                         if (pendencia == (int)TipoPendenciaGrupo.Todos)
                         {
                             query.AppendLine(ObterPendenciasCalendario(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                             query.AppendLine(" union all ");
-                            query.AppendLine(ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida,usuarioRf, exibirHistorico));
+                            query.AppendLine(ObterPendenciasFechamento(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf, exibirHistorico));
                             query.AppendLine(" union all ");
-                            query.AppendLine(ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                            query.AppendLine(ObterPendenciasAee(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                             query.AppendLine(" union all ");
-                            query.AppendLine(ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre,usuarioRf, exibirHistorico));
+                            query.AppendLine(ObterPendenciasDiarioClasse(anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, usuarioRf, exibirHistorico));
                         }
                         volta++;
                         if (volta < tipoPendenciaGrupo.Count())
@@ -104,11 +104,12 @@ namespace SME.SR.Data
             var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf });
             return retorno.OrderBy(x => x.Criador).OrderBy(x => x.TipoPendencia);
 
+
         }
 
 
         private string ObterPendenciasCalendario(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
-                                                                                            string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf,bool exibirHistorico)
+                                                                                            string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf, bool exibirHistorico)
         {
             var query = new StringBuilder(@$"select distinct p.titulo,
 	                        p.descricao as Detalhe,
@@ -166,7 +167,7 @@ namespace SME.SR.Data
             if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99"))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
-            if (componentesCodigo !=null && componentesCodigo.Any(t => t != -99))
+            if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
                 query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo)");
 
             if (bimestre > 0)
@@ -299,7 +300,7 @@ namespace SME.SR.Data
                         and t.modalidade_codigo = @modalidadeId
                             and not p.excluido ");
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
-                query.AppendLine(" and usu.logi = @usuarioRf ");
+                query.AppendLine(" and usu.login = @usuarioRf ");
 
             if (exibirHistorico)
                 query.AppendLine(" and t.historica  = true ");
@@ -372,7 +373,7 @@ namespace SME.SR.Data
 
             if (exibirHistorico)
                 query.AppendLine(" and t.historica  = true ");
-            
+
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
