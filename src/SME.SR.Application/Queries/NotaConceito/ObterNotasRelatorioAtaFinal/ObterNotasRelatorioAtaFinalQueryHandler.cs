@@ -23,7 +23,7 @@ namespace SME.SR.Application
             var notas = await notasConceitoRepository.ObterNotasTurmasAlunosParaAtaFinalAsync(request.CodigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre, request.TiposTurma);
 
             if (notas == null || !notas.Any())
-                throw new NegocioException("Não foi possível obter as notas dos alunos");
+                return default;
 
             return notas.GroupBy(nf => nf.CodigoTurma);
         }

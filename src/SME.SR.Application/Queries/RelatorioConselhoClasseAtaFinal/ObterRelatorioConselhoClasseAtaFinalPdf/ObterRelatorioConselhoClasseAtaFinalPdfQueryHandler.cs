@@ -65,9 +65,8 @@ namespace SME.SR.Application
                 //}
                 #endregion
 
-
                 #region PARALLEL.FOREACH
-                //USANDO PARALLEL.FOREACH
+                ////USANDO PARALLEL.FOREACH
                 //Parallel.ForEach(turmas, (turma) =>
                 //{
                 //    try
@@ -83,6 +82,30 @@ namespace SME.SR.Application
                 //        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
                 //    }
                 //});
+                #endregion
+
+                #region PARALLEL.FOREACH_NEW
+                //USANDO PARALLEL.FOREACH COM TASK
+                try
+                {
+                    Task task = Task.Run(() =>
+                        Parallel.ForEach(turmas, new ParallelOptions { MaxDegreeOfParallelism = turmas.Count() }, currentTurma =>
+                        {
+                            Console.WriteLine($"Obtendo {currentTurma.Codigo}");
+                            var retorno = ObterRelatorioTurma(currentTurma, request.Filtro, request.Filtro.Visualizacao).Result;
+                            if (retorno != null && retorno.Any())
+                                relatoriosTurmas.AddRange(retorno);
+                            Console.WriteLine($"Processado {currentTurma.Codigo}");
+                        })
+                    );
+
+                    task.Wait();
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
                 #endregion
 
                 #region ORIGINAL
