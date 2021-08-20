@@ -13,11 +13,13 @@ namespace SME.SR.Infra
         }        
         public string DescricaoPendencia { get; set; }
         public string DetalhamentoPendencia { get; set; }
+        public string TipoPendencia { get; set; }
         public string Situacao { get; set; }
         public string NomeUsuario { get; set; }
         public string CodigoUsuarioRf { get; set; }
         public string NomeUsuarioAprovacao { get; set; }
         public string CodigoUsuarioAprovacaoRf { get; set; }
+        public bool ExibirAprovacao { get; set; }
 
         public string[] DetalhamentoPendenciaArray 
         { 
