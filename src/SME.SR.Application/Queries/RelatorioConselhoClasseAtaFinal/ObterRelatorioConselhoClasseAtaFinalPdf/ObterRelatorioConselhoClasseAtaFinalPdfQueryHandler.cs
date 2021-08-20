@@ -13,7 +13,7 @@ namespace SME.SR.Application
     public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
         private const string FREQUENCIA_100 = "100";
-
+        private static Semaphore semaphore = new Semaphore(2, 10);
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
 
@@ -30,21 +30,122 @@ namespace SME.SR.Application
             if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Turma || !request.Filtro.Visualizacao.HasValue)
             {
                 var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
-                for(var i=0; i< turmas.Count(); i++)
-                {
-                    var turma = turmas.ElementAt(i);
-                    try
-                    {
-                        var retorno = await ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao);
-                        if (retorno != null && retorno.Any())
-                            relatoriosTurmas.AddRange(retorno);
 
-                    }
-                    catch (Exception e)
-                    {
-                        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                    }
-                }
+                #region USANDO SEMAPHORE
+                //USANDO SEMAPHORE
+                //List<Thread> threads = new List<Thread>();
+                //for (var i = 0; i < turmas.Count(); i++)
+                //{
+                //    var turma = turmas.ElementAt(i);
+                //    Thread thread = new Thread(() =>
+                //    {
+                //        try
+                //        {
+                //            semaphore.WaitOne();
+                //            Console.WriteLine($"Obtendo {turma.Codigo}");
+                //            var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
+                //            if (retorno != null && retorno.Any())
+                //                relatoriosTurmas.AddRange(retorno);
+                //            Console.WriteLine($"Processado {turma.Codigo}");
+
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                //        }
+                //        finally
+                //        {
+                //            //Release() method to releage semaphore  
+                //            semaphore.Release();
+                //        }
+                //    })
+                //    { Name = $"ATAFINALRESULTADOS_TURMA_{turma.Codigo}" };
+
+                //    thread.Start();
+                //}
+                #endregion
+
+
+                #region PARALLEL.FOREACH
+                //USANDO PARALLEL.FOREACH
+                //Parallel.ForEach(turmas, (turma) =>
+                //{
+                //    try
+                //    {
+                //        Console.WriteLine($"Obtendo {turma.Codigo}");
+                //        var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
+                //        if (retorno != null && retorno.Any())
+                //            relatoriosTurmas.AddRange(retorno);
+                //        Console.WriteLine($"Processado {turma.Codigo}");
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                //    }
+                //});
+                #endregion
+
+                #region ORIGINAL
+                //ORIGINAL
+                //for (var i = 0; i < turmas.Count(); i++)
+                //{
+                //    var turma = turmas.ElementAt(i);
+                //    try
+                //    {
+                //        var retorno = await ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao);
+                //        if (retorno != null && retorno.Any())
+                //            relatoriosTurmas.AddRange(retorno);
+
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                //    }
+                //}
+                #endregion
+
+
+                #region THREADS
+                //USANDO THREADS
+                //List<Thread> threads = new List<Thread>();
+                //for (var i = 0; i < turmas.Count(); i++)
+                //{
+                //    var turma = turmas.ElementAt(i);
+                //    threads.Add(new Thread(() =>
+                //    {
+                //        try
+                //        {
+                //            var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
+                //            if (retorno != null && retorno.Any())
+                //                relatoriosTurmas.AddRange(retorno);
+
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                //        }
+                //    })
+                //    { Name = $"ATAFINALRESULTADOS_TURMA_{turma.Codigo}" });
+                //}
+
+
+                //for (var t=0; t < threads.Count(); t++)
+                //{
+                //    threads[t].Start();
+                //    threads[t].Join();
+                //}
+                //foreach (var thread in threads)
+                //{
+                //    thread.Start();
+                //}
+
+                //foreach (var thread in threads)
+                //{
+                //    thread.Join();
+                //}
+                #endregion
+
+
             }
 
             else if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Estudantes)
@@ -69,7 +170,7 @@ namespace SME.SR.Application
             if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
                 throw new NegocioException(mensagensErro.ToString());
 
-            return relatoriosTurmas;
+            return relatoriosTurmas.OrderBy(a => a.Cabecalho.Turma).ToList();
         }
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, AtaFinalTipoVisualizacao? visualizacao)
