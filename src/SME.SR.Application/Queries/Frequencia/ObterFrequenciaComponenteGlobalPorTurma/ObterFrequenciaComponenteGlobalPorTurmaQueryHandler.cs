@@ -12,7 +12,7 @@ namespace SME.SR.Application
     public class ObterFrequenciaComponenteGlobalPorTurmaQueryHandler : IRequestHandler<ObterFrequenciaComponenteGlobalPorTurmaQuery, IEnumerable<FrequenciaAluno>>
     {
         private readonly IFrequenciaAlunoRepository frequenciaAlunoRepository;
-       
+
         private readonly IMediator mediator;
 
         public ObterFrequenciaComponenteGlobalPorTurmaQueryHandler(IMediator mediator, IFrequenciaAlunoRepository frequenciaAlunoRepository, IRegistroFrequenciaRepository registroFrequenciaRepository)
@@ -46,19 +46,18 @@ namespace SME.SR.Application
                 };
 
                 var turmaCodigo = componentesCurricularesPorTurma.FirstOrDefault(cc => cc.ComponenteCurricularId.ToString() == alunoComponente.Key.DisciplinaId).CodigoTurma;
-
+                var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
+                
                 foreach (var bimestre in bimestres)
                 {
                     var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
                     var disciplinaId = !string.IsNullOrEmpty(frequenciaAluno.DisciplinaId) ? Convert.ToInt64(frequenciaAluno.DisciplinaId) : 0;
 
-                    if(totalAulas.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()) != null)
+                    if (totalAulas.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()) != null)
                         frequenciaAluno.TotalAulas += totalAulas.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()).AulasQuantidade;
 
                     frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
                     frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;
-
-                    var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
 
                     // Particularidade de cálculo de frequência para 2020.
                     if (turma.AnoLetivo.Equals(2020))
