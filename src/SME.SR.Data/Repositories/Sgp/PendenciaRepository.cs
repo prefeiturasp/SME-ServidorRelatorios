@@ -98,11 +98,19 @@ namespace SME.SR.Data
                     }
                 }
             }
+            try
+            {
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf });
-            return retorno.OrderBy(x => x.Criador).OrderBy(x => x.TipoPendencia);
+                var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf });
+                return retorno.OrderBy(x => x.Criador).OrderBy(x => x.TipoPendencia);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
 
         }
 
@@ -299,7 +307,7 @@ namespace SME.SR.Data
                         and t.modalidade_codigo = @modalidadeId
                             and not p.excluido ");
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
-                query.AppendLine(" and usu.logi = @usuarioRf ");
+                query.AppendLine(" and usu.login = @usuarioRf ");
 
             if (exibirHistorico)
                 query.AppendLine(" and t.historica  = true ");
