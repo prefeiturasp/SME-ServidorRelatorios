@@ -1098,17 +1098,28 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<Turma>> ObterTurmasPorCodigos(string[] codigos)
         {
-            var query = @"select t.turma_id as Codigo
-                            , t.nome
-                            , t.modalidade_codigo  ModalidadeCodigo
-                            , t.semestre
-                            , t.ano
-                            , t.ano_letivo AnoLetivo
-                        from turma t
-                       where t.turma_id = ANY(@codigos)";
+            var query = @"select t.turma_id Codigo, t.nome, 
+			                t.modalidade_codigo  ModalidadeCodigo, t.semestre, t.ano, t.ano_letivo AnoLetivo, tc.descricao Ciclo, t.etapa_eja EtapaEJA, t.tipo_turma TipoTurma,
+			                ue.id, ue.ue_id Codigo, ue.nome, ue.tipo_escola TipoEscola,		
+			                dre.id, dre.dre_id Codigo, dre.abreviacao, dre.nome
+			                from  turma t
+			                inner join ue on ue.id = t.ue_id 
+			                inner join dre on ue.dre_id = dre.id 
+                            left join tipo_ciclo_ano tca on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
+                            left join tipo_ciclo tc on tca.tipo_ciclo_id = tc.id
+			                where t.turma_id = ANY(@codigos)";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryAsync<Turma>(query, new { codigos });
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return (await conexao.QueryAsync<Turma, Ue, Dre, Turma>(query, (turma, ue, dre) =>
+                {
+                    turma.Dre = dre;
+                    turma.Ue = ue;
+
+                    return turma;
+                }
+                , new { codigos }, splitOn: "Codigo,Id,Id"));
+            }
         }
 
 

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
+namespace SME.SR.Application
 {
     public class GerarRelatorioAtaFinalHtmlParaPdfCommandHandler : IRequestHandler<GerarRelatorioAtaFinalHtmlParaPdfCommand, bool>
     {
