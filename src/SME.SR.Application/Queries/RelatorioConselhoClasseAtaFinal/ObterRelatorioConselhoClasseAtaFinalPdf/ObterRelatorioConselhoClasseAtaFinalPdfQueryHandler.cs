@@ -573,7 +573,10 @@ namespace SME.SR.Application
                 var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
                 var textoParecer = parecerConclusivo?.ParecerConclusivo;
                 if (textoParecer == null)
-                    textoParecer = (aluno.CodigoSituacaoMatricula != SituacaoMatriculaAluno.Ativo) ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
+                {
+                    var ativoOuConcluido = new SituacaoMatriculaAluno[] { SituacaoMatriculaAluno.Ativo, SituacaoMatriculaAluno.Concluido };
+                    textoParecer = !ativoOuConcluido.Contains(aluno.CodigoSituacaoMatricula) ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
+                }
                 linhaDto.AdicionaCelula(99, 99, textoParecer, 4);
                 return;
             }
