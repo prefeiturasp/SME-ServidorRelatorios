@@ -19,6 +19,7 @@ namespace SME.SR.Infra
         public string CodigoUsuarioRf { get; set; }
         public string NomeUsuarioAprovacao { get; set; }
         public string CodigoUsuarioAprovacaoRf { get; set; }
+        public bool ExibirAprovacao { get; set; }
 
         public string[] DetalhamentoPendenciaArray 
         { 

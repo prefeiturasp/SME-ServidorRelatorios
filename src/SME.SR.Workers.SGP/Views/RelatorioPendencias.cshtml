@@ -39,6 +39,52 @@
         return 2;
     }
 
+    void MontarLinhaPendenciaSemAprovacao(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias)
+    {
+        <table class="tabela-alunos estilo-texto">
+            <thead>
+
+            <th style="width: 20%;">TIPO DE PENDÊNCIA</th>
+            <th style="width: 20%;">SITUAÇÃO</th>
+            <th style="width: 60%;">USUÁRIO</th>
+            </thead>
+
+            @{ contadorQuebrarPagina++;}
+
+            <tbody>
+                <tr>
+                    <td>@pendencias.TipoPendencia</td>
+                    <td>@pendencias.Situacao</td>
+                    <td>@pendencias.NomeUsuario  @contadorQuebrarPagina</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    void MontarLinhaPendenciaComAprovacao(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias)
+    {
+        <table class="tabela-alunos estilo-texto">
+            <thead>
+
+            <thbnb style="width: 20%;">TIPO DE PENDÊNCIA</thbnb>  
+            <th style="width: 20%;">SITUAÇÃO</th>
+            <th style="width: 30%;">USUÁRIO</th>
+            <th style="width: 30%;">APROVAÇÃO  @contadorQuebrarPagina</th>
+            </thead>
+
+            @{ contadorQuebrarPagina++;}
+
+            <tbody>
+                <tr>
+                    <td>@pendencias.TipoPendencia</td>
+                    <td>@pendencias.Situacao</td>
+                    <td>@pendencias.NomeUsuario  @contadorQuebrarPagina</td>
+                    <td>@pendencias.NomeUsuarioAprovacao</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
     void MontarLinhaPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, int contadorPendencias, int quantidadePendencias, string nomeBimestre, string nomeComponente)
     {
         var numeroCaracteresDetalhamentoPendencias = pendencias.DetalhamentoPendencia.Length;
@@ -47,7 +93,7 @@
         VerificaQuebra(numLinhas, nomeBimestre, nomeComponente);
         @if (contadorPendencias != 0 && !quebrou)
         {
-            <table  class="tabela-alunos estilo-texto">
+            <table class="tabela-alunos estilo-texto">
                 <tr style="height: 5px;">
                     <td colspan="4" class="thLimpo" style="border-top: 0; border-bottom: 0;"></td>
                 </tr>
@@ -73,26 +119,14 @@
         contadorQuebrarPagina = contadorQuebrarPagina + numLinhas;
         VerificaQuebra(2, nomeBimestre, nomeComponente);
 
-        <table class="tabela-alunos estilo-texto">
-            <thead>
-
-            <th style="width: 20%;">TIPO DE PENDÊNCIA</th>
-            <th style="width: 20%;">SITUAÇÃO</th>
-            <th style="width: 30%;">USUÁRIO</th>
-            <th style="width: 30%;">APROVAÇÃO  @contadorQuebrarPagina</th>
-            </thead>
-
-            @{ contadorQuebrarPagina++;}
-
-            <tbody>
-                <tr>
-                    <td>@pendencias.TipoPendencia</td>
-                    <td>@pendencias.Situacao</td>
-                    <td>@pendencias.NomeUsuario  @contadorQuebrarPagina</td>
-                    <td>@pendencias.NomeUsuarioAprovacao</td>
-                </tr>
-            </tbody>
-        </table>
+        if (pendencias.ExibirAprovacao)
+        {
+            MontarLinhaPendenciaComAprovacao(pendencias);
+        }
+        else
+        {
+            MontarLinhaPendenciaSemAprovacao(pendencias);
+        }
 
         contadorQuebrarPagina++;
     }
@@ -167,7 +201,7 @@
             contarNumeroLinhas++;
         }
 
-        if (Model.ComponenteCurricular == "Todos")
+        if (Model.ComponenteCurricular == "Todos" && !String.IsNullOrEmpty(nomeComponente))
         {
             MontarLinhaTabela(nomeComponente);
             contadorQuebrarPagina++;
@@ -373,7 +407,7 @@
                                     }
                                 }
 
-                                if (contadorComponentes < numeroMaximoComponentes - 1 || contadorBimestres < numeroMaximoBimestres - 1 || contadorTurmas < numeroMaximoTurmas -1)
+                                if (contadorComponentes < numeroMaximoComponentes - 1 || contadorBimestres < numeroMaximoBimestres - 1 || contadorTurmas < numeroMaximoTurmas - 1)
                                 {
                                     VerificaQuebra(contarNumeroLinhas, String.Empty, String.Empty);
                                     contarNumeroLinhas = 3;

@@ -131,14 +131,16 @@ namespace SME.SR.Application
 
                             }
 
+                            if (pendenciaDoComponenteDaTurma.TipoPendencia == TipoPendenciaGrupo.Fechamento.Name() && (SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao == SituacaoPendencia.Aprovada && !String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.Aprovador))
+                                pendenciaParaAdicionar.ExibirAprovacao = true;
 
                             if (!String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.CriadorRf) && pendenciaDoComponenteDaTurma.CriadorRf != "0")
-                                pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador + $"({pendenciaDoComponenteDaTurma.CriadorRf})";
+                                pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador + $" ({pendenciaDoComponenteDaTurma.CriadorRf})";
                             else
                                 pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador;
 
                             if (!String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.AprovadorRf) && pendenciaDoComponenteDaTurma.AprovadorRf != "0")
-                                pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador + $"({pendenciaDoComponenteDaTurma.AprovadorRf})";
+                                pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador + $" ({pendenciaDoComponenteDaTurma.AprovadorRf})";
                             else
                                 pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador;
 
