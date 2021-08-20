@@ -13,12 +13,14 @@ namespace SME.SR.Application
     public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
         private const string FREQUENCIA_100 = "100";
-        private static Semaphore semaphore = new Semaphore(2, 10);
+        private readonly VariaveisAmbiente variaveisAmbiente;
+
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
 
-        public ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler(IMediator mediator)
+        public ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler(IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {
+            this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
@@ -30,145 +32,22 @@ namespace SME.SR.Application
             if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Turma || !request.Filtro.Visualizacao.HasValue)
             {
                 var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
-
-                #region USANDO SEMAPHORE
-                //USANDO SEMAPHORE
-                //List<Thread> threads = new List<Thread>();
-                //for (var i = 0; i < turmas.Count(); i++)
-                //{
-                //    var turma = turmas.ElementAt(i);
-                //    Thread thread = new Thread(() =>
-                //    {
-                //        try
-                //        {
-                //            semaphore.WaitOne();
-                //            Console.WriteLine($"Obtendo {turma.Codigo}");
-                //            var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
-                //            if (retorno != null && retorno.Any())
-                //                relatoriosTurmas.AddRange(retorno);
-                //            Console.WriteLine($"Processado {turma.Codigo}");
-
-                //        }
-                //        catch (Exception e)
-                //        {
-                //            mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                //        }
-                //        finally
-                //        {
-                //            //Release() method to releage semaphore  
-                //            semaphore.Release();
-                //        }
-                //    })
-                //    { Name = $"ATAFINALRESULTADOS_TURMA_{turma.Codigo}" };
-
-                //    thread.Start();
-                //}
-                #endregion
-
-                #region PARALLEL.FOREACH
-                ////USANDO PARALLEL.FOREACH
-                //Parallel.ForEach(turmas, (turma) =>
-                //{
-                //    try
-                //    {
-                //        Console.WriteLine($"Obtendo {turma.Codigo}");
-                //        var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
-                //        if (retorno != null && retorno.Any())
-                //            relatoriosTurmas.AddRange(retorno);
-                //        Console.WriteLine($"Processado {turma.Codigo}");
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                //    }
-                //});
-                #endregion
-
-                #region PARALLEL.FOREACH_NEW
-                //USANDO PARALLEL.FOREACH COM TASK
+               
+                turmas.AsParallel().WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas).ForAll(turma => 
+                {
                 try
-                {
-                    Task task = Task.Run(() =>
-                        Parallel.ForEach(turmas, new ParallelOptions { MaxDegreeOfParallelism = turmas.Count() }, currentTurma =>
-                        {
-                            Console.WriteLine($"Obtendo {currentTurma.Codigo}");
-                            var retorno = ObterRelatorioTurma(currentTurma, request.Filtro, request.Filtro.Visualizacao).Result;
-                            if (retorno != null && retorno.Any())
-                                relatoriosTurmas.AddRange(retorno);
-                            Console.WriteLine($"Processado {currentTurma.Codigo}");
-                        })
-                    );
-
-                    task.Wait();
-
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                #endregion
-
-                #region ORIGINAL
-                //ORIGINAL
-                //for (var i = 0; i < turmas.Count(); i++)
-                //{
-                //    var turma = turmas.ElementAt(i);
-                //    try
-                //    {
-                //        var retorno = await ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao);
-                //        if (retorno != null && retorno.Any())
-                //            relatoriosTurmas.AddRange(retorno);
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                //    }
-                //}
-                #endregion
-
-
-                #region THREADS
-                //USANDO THREADS
-                //List<Thread> threads = new List<Thread>();
-                //for (var i = 0; i < turmas.Count(); i++)
-                //{
-                //    var turma = turmas.ElementAt(i);
-                //    threads.Add(new Thread(() =>
-                //    {
-                //        try
-                //        {
-                //            var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
-                //            if (retorno != null && retorno.Any())
-                //                relatoriosTurmas.AddRange(retorno);
-
-                //        }
-                //        catch (Exception e)
-                //        {
-                //            mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                //        }
-                //    })
-                //    { Name = $"ATAFINALRESULTADOS_TURMA_{turma.Codigo}" });
-                //}
-
-
-                //for (var t=0; t < threads.Count(); t++)
-                //{
-                //    threads[t].Start();
-                //    threads[t].Join();
-                //}
-                //foreach (var thread in threads)
-                //{
-                //    thread.Start();
-                //}
-
-                //foreach (var thread in threads)
-                //{
-                //    thread.Join();
-                //}
-                #endregion
-
-
+                    {
+                        Console.WriteLine($"Obtendo {turma.Codigo}");
+                        var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
+                        if (retorno != null && retorno.Any())
+                            relatoriosTurmas.AddRange(retorno);
+                        Console.WriteLine($"Processado {turma.Codigo}");
+                    }
+                    catch (Exception e)
+                    {
+                        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                    }
+                });
             }
 
             else if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Estudantes)
@@ -183,8 +62,6 @@ namespace SME.SR.Application
                         if (retorno != null && retorno.Any())
                             relatoriosTurmas.AddRange(retorno);
                     }
-
-
                 }
             }
 

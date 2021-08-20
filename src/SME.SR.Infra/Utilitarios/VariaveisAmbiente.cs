@@ -12,5 +12,7 @@ namespace SME.SR.Infra
         public string ConnectionStringSondagem => Environment.GetEnvironmentVariable("sondagemConnection");
         public string ConnectionStringAE => Environment.GetEnvironmentVariable("AEConnection");
         public string PastaArquivosSGP => Environment.GetEnvironmentVariable("SGPPastaArquivos");
+        public int ProcessamentoMaximoTurmas => !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SR__ProcessamentoMaximoTurmas")) ? 
+            int.Parse(Environment.GetEnvironmentVariable("SR__ProcessamentoMaximoTurmas")) : 10;
     }
 }
