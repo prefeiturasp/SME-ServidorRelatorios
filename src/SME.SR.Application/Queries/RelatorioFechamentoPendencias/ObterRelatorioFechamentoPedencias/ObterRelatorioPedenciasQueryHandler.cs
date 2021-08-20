@@ -28,7 +28,7 @@ namespace SME.SR.Application
             filtros.ExibirDetalhamento = true;
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo,
-                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo);
+                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo,filtros.UsuarioRf);
 
             if (resultadoQuery == null || !resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
@@ -109,8 +109,8 @@ namespace SME.SR.Application
                         componenteParaAdicionar.NomeComponente = componentesCurricularesDescricoes?.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma)?.Disciplina.ToUpper();
 
                         var pendenciasDoComponenteDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma && a.DisciplinaId == componenteDaTurma);
-
-                        foreach (var pendenciaDoComponenteDaTurma in pendenciasDoComponenteDaTurma)
+                        var pendenciasDoComponenteDaTurmaOrdenado =  pendenciasDoComponenteDaTurma.OrderBy(p => p.Criador).OrderBy(p => p.TipoPendencia);
+                        foreach (var pendenciaDoComponenteDaTurma in pendenciasDoComponenteDaTurmaOrdenado)
                         {
                             var pendenciaParaAdicionar = new RelatorioPendenciasPendenciaDto();
 
@@ -160,8 +160,6 @@ namespace SME.SR.Application
 
                 retorno.Dre.Ue.Turmas.Add(turma);
             }
-
-
 
             return await Task.FromResult(retorno);
         }
