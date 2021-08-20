@@ -13,12 +13,14 @@ namespace SME.SR.Application
     public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
         private const string FREQUENCIA_100 = "100";
-        private static Semaphore semaphore = new Semaphore(2, 10);
+        private readonly VariaveisAmbiente variaveisAmbiente;
+
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
 
-        public ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler(IMediator mediator)
+        public ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler(IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {
+            this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
@@ -30,122 +32,22 @@ namespace SME.SR.Application
             if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Turma || !request.Filtro.Visualizacao.HasValue)
             {
                 var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
-
-                #region USANDO SEMAPHORE
-                //USANDO SEMAPHORE
-                //List<Thread> threads = new List<Thread>();
-                //for (var i = 0; i < turmas.Count(); i++)
-                //{
-                //    var turma = turmas.ElementAt(i);
-                //    Thread thread = new Thread(() =>
-                //    {
-                //        try
-                //        {
-                //            semaphore.WaitOne();
-                //            Console.WriteLine($"Obtendo {turma.Codigo}");
-                //            var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
-                //            if (retorno != null && retorno.Any())
-                //                relatoriosTurmas.AddRange(retorno);
-                //            Console.WriteLine($"Processado {turma.Codigo}");
-
-                //        }
-                //        catch (Exception e)
-                //        {
-                //            mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                //        }
-                //        finally
-                //        {
-                //            //Release() method to releage semaphore  
-                //            semaphore.Release();
-                //        }
-                //    })
-                //    { Name = $"ATAFINALRESULTADOS_TURMA_{turma.Codigo}" };
-
-                //    thread.Start();
-                //}
-                #endregion
-
-
-                #region PARALLEL.FOREACH
-                //USANDO PARALLEL.FOREACH
-                //Parallel.ForEach(turmas, (turma) =>
-                //{
-                //    try
-                //    {
-                //        Console.WriteLine($"Obtendo {turma.Codigo}");
-                //        var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
-                //        if (retorno != null && retorno.Any())
-                //            relatoriosTurmas.AddRange(retorno);
-                //        Console.WriteLine($"Processado {turma.Codigo}");
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                //    }
-                //});
-                #endregion
-
-                #region ORIGINAL
-                //ORIGINAL
-                //for (var i = 0; i < turmas.Count(); i++)
-                //{
-                //    var turma = turmas.ElementAt(i);
-                //    try
-                //    {
-                //        var retorno = await ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao);
-                //        if (retorno != null && retorno.Any())
-                //            relatoriosTurmas.AddRange(retorno);
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                //    }
-                //}
-                #endregion
-
-
-                #region THREADS
-                //USANDO THREADS
-                //List<Thread> threads = new List<Thread>();
-                //for (var i = 0; i < turmas.Count(); i++)
-                //{
-                //    var turma = turmas.ElementAt(i);
-                //    threads.Add(new Thread(() =>
-                //    {
-                //        try
-                //        {
-                //            var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
-                //            if (retorno != null && retorno.Any())
-                //                relatoriosTurmas.AddRange(retorno);
-
-                //        }
-                //        catch (Exception e)
-                //        {
-                //            mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                //        }
-                //    })
-                //    { Name = $"ATAFINALRESULTADOS_TURMA_{turma.Codigo}" });
-                //}
-
-
-                //for (var t=0; t < threads.Count(); t++)
-                //{
-                //    threads[t].Start();
-                //    threads[t].Join();
-                //}
-                //foreach (var thread in threads)
-                //{
-                //    thread.Start();
-                //}
-
-                //foreach (var thread in threads)
-                //{
-                //    thread.Join();
-                //}
-                #endregion
-
-
+               
+                turmas.AsParallel().WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas).ForAll(turma => 
+                {
+                try
+                    {
+                        Console.WriteLine($"Obtendo {turma.Codigo}");
+                        var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
+                        if (retorno != null && retorno.Any())
+                            relatoriosTurmas.AddRange(retorno);
+                        Console.WriteLine($"Processado {turma.Codigo}");
+                    }
+                    catch (Exception e)
+                    {
+                        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                    }
+                });
             }
 
             else if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Estudantes)
@@ -160,8 +62,6 @@ namespace SME.SR.Application
                         if (retorno != null && retorno.Any())
                             relatoriosTurmas.AddRange(retorno);
                     }
-
-
                 }
             }
 
@@ -503,21 +403,21 @@ namespace SME.SR.Application
             }));
 
             // Primmeiro alunos com numero de chamada
-            var alunosComNumeroChamada = await MontarLinhaAlunoV2(alunos.Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0).Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada),
+            var alunosComNumeroChamada = await MontarLinhaAluno(alunos.Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0).Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada),
                 gruposMatrizes, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma, listaTurmasAlunos, qtdeDisciplinasLancamFrequencia,
                 compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
 
             relatorio.Linhas.AddRange(alunosComNumeroChamada);
 
             // Depois alunos sem numero ordenados por nome
-            var alunosSemNumeroChamada = await MontarLinhaAlunoV2(alunos.Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") == 0).Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada),
+            var alunosSemNumeroChamada = await MontarLinhaAluno(alunos.Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") == 0).Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada),
                 gruposMatrizes, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma, listaTurmasAlunos, qtdeDisciplinasLancamFrequencia,
                 compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
 
             relatorio.Linhas.AddRange(alunosSemNumeroChamada);
         }
 
-        private async Task<List<ConselhoClasseAtaFinalLinhaDto>> MontarLinhaAlunoV2(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares, Turma turma, IEnumerable<IGrouping<int, AlunoHistoricoEscolar>> listaTurmasAlunos, int qtdeDisciplinasLancamFrequencia = 0, double compensacaoAusenciaPercentualRegenciaClasse = 0, double compensacaoAusenciaPercentualFund2 = 0)
+        private async Task<List<ConselhoClasseAtaFinalLinhaDto>> MontarLinhaAluno(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares, Turma turma, IEnumerable<IGrouping<int, AlunoHistoricoEscolar>> listaTurmasAlunos, int qtdeDisciplinasLancamFrequencia = 0, double compensacaoAusenciaPercentualRegenciaClasse = 0, double compensacaoAusenciaPercentualFund2 = 0)
         {
             List<ConselhoClasseAtaFinalLinhaDto> linhas = new List<ConselhoClasseAtaFinalLinhaDto>();
             for (var i = 0; i < alunos.Count(); i++)
@@ -599,7 +499,7 @@ namespace SME.SR.Application
                                                                                 n.ConselhoClasseAlunoId != 0 &&
                                                                                 n.ComponenteCurricularCodigo == componente.CodDisciplina);
 
-                        var frequenciaAluno = ObterFrequenciaAlunoV2(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, componentesTurmas);
+                        var frequenciaAluno = ObterFrequenciaAluno(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, componentesTurmas);
 
                         var sintese = ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente, compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
 
@@ -736,19 +636,9 @@ namespace SME.SR.Application
             return percentualFrequencia >= parametro ? "F" : "NF";
         }
 
-        private FrequenciaAluno ObterFrequenciaAlunoV2(IEnumerable<FrequenciaAluno> frequenciaAlunos, string alunoCodigo, ComponenteCurricularPorTurma componenteCurricular, List<ComponenteCurricularPorTurma> componentesTurmas)
+        private FrequenciaAluno ObterFrequenciaAluno(IEnumerable<FrequenciaAluno> frequenciaAlunos, string alunoCodigo, ComponenteCurricularPorTurma componenteCurricular, List<ComponenteCurricularPorTurma> componentesTurmas)
         {
-            var componenteFrequencia = componenteCurricular.Regencia ? ObterComponenteRegenciaTurmaV2(componentesTurmas) : componenteCurricular;
-
-            return frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == alunoCodigo
-                                                && c.DisciplinaId == componenteFrequencia.CodDisciplina.ToString());
-        }
-
-        private async Task<FrequenciaAluno> ObterFrequenciaAluno(IEnumerable<FrequenciaAluno> frequenciaAlunos, string alunoCodigo, ComponenteCurricularPorTurma componenteCurricular, string turmaCodigo)
-        {
-            var componenteFrequencia = componenteCurricular.Regencia ?
-                await ObterComponenteRegenciaTurma(turmaCodigo) :
-                componenteCurricular;
+            var componenteFrequencia = componenteCurricular.Regencia ? ObterComponenteRegenciaTurma(componentesTurmas) : componenteCurricular;
 
             return frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == alunoCodigo
                                                 && c.DisciplinaId == componenteFrequencia.CodDisciplina.ToString());
@@ -814,7 +704,7 @@ namespace SME.SR.Application
                                                                      .ThenBy(c => c.Key.Nome, StringComparer.OrdinalIgnoreCase);
         }
 
-        private ComponenteCurricularPorTurma ObterComponenteRegenciaTurmaV2(IEnumerable<ComponenteCurricularPorTurma> componentesTurma)
+        private ComponenteCurricularPorTurma ObterComponenteRegenciaTurma(IEnumerable<ComponenteCurricularPorTurma> componentesTurma)
         {
             if (componenteRegencia == null)
             {
@@ -824,16 +714,6 @@ namespace SME.SR.Application
             return componenteRegencia;
         }
 
-        private async Task<ComponenteCurricularPorTurma> ObterComponenteRegenciaTurma(string turmaCodigo)
-        {
-            if (componenteRegencia == null)
-            {
-                var componentesTurma = await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery(turmaCodigo));
-                componenteRegencia = componentesTurma.FirstOrDefault(c => c.Regencia);
-            }
-
-            return componenteRegencia;
-        }
 
         private async Task<long> ObterIdTipoCalendario(ModalidadeTipoCalendario modalidade, int anoLetivo, int semestre)
             => await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo, modalidade, semestre));
