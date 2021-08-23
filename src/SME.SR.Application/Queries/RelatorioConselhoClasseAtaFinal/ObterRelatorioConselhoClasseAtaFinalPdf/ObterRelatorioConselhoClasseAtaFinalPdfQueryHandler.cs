@@ -51,7 +51,7 @@ namespace SME.SR.Application
                 }
                 catch (Exception e)
                 {
-                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.InnerException.Message}");
                 }
             });
 
