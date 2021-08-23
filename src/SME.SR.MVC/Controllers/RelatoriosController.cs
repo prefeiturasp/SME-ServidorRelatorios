@@ -203,7 +203,7 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("fechamentos-pendencias")]
         public IActionResult RelatorioFechamentoPendencia([FromServices] IMediator mediator)
         {
-            RelatorioFechamentoPendenciasDto model = GeraVariasPendencias2Componentes2Turmas();
+            RelatorioPendenciasDto model = GeraVariasPendencias2Componentes2Turmas();
 
             return View("RelatorioFechamentoPendencias", model);
         }
@@ -251,9 +251,9 @@ namespace SME.SR.MVC.Controllers
             return View("RelatorioRecuperacaoParalela", model);
         }
 
-        private static RelatorioFechamentoPendenciasDto GeraVariasPendencias2Componentes2Turmas()
+        private static RelatorioPendenciasDto GeraVariasPendencias2Componentes2Turmas()
         {
-            var model = new RelatorioFechamentoPendenciasDto();
+            var model = new RelatorioPendenciasDto();
 
             model.DreNome = "DRE 001";
             model.UeNome = "UE 001";
@@ -267,31 +267,31 @@ namespace SME.SR.MVC.Controllers
             //model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            model.Dre = new RelatorioFechamentoPendenciasDreDto
+            model.Dre = new RelatorioPendenciasDreDto
             {
                 Codigo = "123",
                 Nome = "DRE 01",
-                Ue = new RelatorioFechamentoPendenciasUeDto
+                Ue = new RelatorioPendenciasUeDto
                 {
                     Nome = "UE 01",
                     Codigo = "456",
-                    Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>() {
-                         new RelatorioFechamentoPendenciasTurmaDto() {
+                    Turmas = new List<RelatorioPendenciasTurmaDto>() {
+                         new RelatorioPendenciasTurmaDto() {
                           Nome = "TURMA 01",
-                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                          Bimestres =  new List<RelatorioPendenciasBimestreDto>
                                 {
-                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    new RelatorioPendenciasBimestreDto
                                     {
                                          Nome="1º BIMESTRE",
-                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         Componentes = new List<RelatorioPendenciasComponenteDto>
                                          {
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "001",
                                                      NomeComponente = "Matemática",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -300,7 +300,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -309,7 +309,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -322,13 +322,13 @@ namespace SME.SR.MVC.Controllers
 
                                                       }
                                                },
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "002",
                                                      NomeComponente = "Ciências",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -337,7 +337,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -346,7 +346,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -364,22 +364,22 @@ namespace SME.SR.MVC.Controllers
                                     }
                         }
                          },
-                         new RelatorioFechamentoPendenciasTurmaDto() {
+                         new RelatorioPendenciasTurmaDto() {
                           Nome = "TURMA 02",
-                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                          Bimestres =  new List<RelatorioPendenciasBimestreDto>
                                 {
-                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    new RelatorioPendenciasBimestreDto
                                     {
                                          Nome="1º BIMESTRE",
-                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         Componentes = new List<RelatorioPendenciasComponenteDto>
                                          {
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "001",
                                                      NomeComponente = "Matemática",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -388,7 +388,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -397,7 +397,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -410,13 +410,13 @@ namespace SME.SR.MVC.Controllers
 
                                                       }
                                                },
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "002",
                                                      NomeComponente = "Ciências",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -425,7 +425,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -434,7 +434,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
