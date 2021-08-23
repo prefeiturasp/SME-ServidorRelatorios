@@ -129,7 +129,7 @@ namespace SME.SR.Data
                 anoLetivo,
                 modalidade,
                 semestre,
-                tiposTurma
+                tiposTurma = tiposTurma.Length > 0 ? tiposTurma : null
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))

@@ -28,43 +28,37 @@ namespace SME.SR.Application
         {
             var mensagensErro = new StringBuilder();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
-
-            if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Turma || !request.Filtro.Visualizacao.HasValue)
+            var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
+            
+            turmas.AsParallel().WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas).ForAll(turma =>
             {
-                var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
-
-                turmas.AsParallel().WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas).ForAll(turma =>
+                try
                 {
-                    try
+                    if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Turma || !request.Filtro.Visualizacao.HasValue)
                     {
                         var retorno = ObterRelatorioTurma(turma, request.Filtro, request.Filtro.Visualizacao).Result;
                         if (retorno != null && retorno.Any())
                             relatoriosTurmas.AddRange(retorno);
                     }
-                    catch (Exception e)
-                    {
-                        mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
-                    }
-                });
-            }
+                    else if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Estudantes)
+                        if (turma.TipoTurma == TipoTurma.Regular)
+                        {
+                            var retorno = ObterRelatorioEstudante(turma, request.Filtro, request.Filtro.Visualizacao).Result;
+                            if (retorno != null && retorno.Any())
+                                relatoriosTurmas.AddRange(retorno);
+                        }
 
-            else if (request.Filtro.Visualizacao == AtaFinalTipoVisualizacao.Estudantes)
-            {
-                foreach (var turmaCodigo in request.Filtro.TurmasCodigos)
-                {
-
-                    var turma = await ObterTurma(turmaCodigo);
-                    if (turma.TipoTurma == TipoTurma.Regular)
-                    {
-                        var retorno = await ObterRelatorioEstudante(turma, request.Filtro, request.Filtro.Visualizacao);
-                        if (retorno != null && retorno.Any())
-                            relatoriosTurmas.AddRange(retorno);
-                    }
                 }
-            }
+                catch (Exception e)
+                {
+                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.Message}");
+                }
+            });
+
 
             if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
                 throw new NegocioException(mensagensErro.ToString());
+
 
             return relatoriosTurmas.OrderBy(a => a.Cabecalho.Turma).ToList();
         }
