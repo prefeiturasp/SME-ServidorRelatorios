@@ -24,7 +24,7 @@ namespace SME.SR.Application
         public async Task<RelatorioPendenciasDto> Handle(ObterRelatorioPedenciasQuery request, CancellationToken cancellationToken)
         {
             var filtros = request.FiltroRelatorioPendencias;
-
+            
             filtros.ExibirDetalhamento = true;
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo,
@@ -43,7 +43,9 @@ namespace SME.SR.Application
 
             var retorno = new RelatorioPendenciasDto();
             var retornoLinearParaCabecalho = resultadoQuery.FirstOrDefault();
-
+            retorno.UsuarioLogadoNome = filtros.UsuarioLogadoNome;
+            retorno.UsuarioLogadoRf = filtros.UsuarioLogadoRf;
+            retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
             retorno.UeNome = string.IsNullOrEmpty(retornoLinearParaCabecalho.UeNome) ? "Todas" : retornoLinearParaCabecalho.UeNome;
             retorno.DreNome = retornoLinearParaCabecalho.DreNome;

@@ -16,5 +16,7 @@
         public bool ExibirPendenciasResolvidas { get; set; }
         public int[] TipoPendenciaGrupo { get; set; }
         public bool ExibirHistorico { get; set; }
+        public string UsuarioLogadoNome { get; set; }
+        public string UsuarioLogadoRf { get; set; }
     }
 }
