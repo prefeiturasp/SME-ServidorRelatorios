@@ -20,6 +20,8 @@ namespace SME.SR.Infra
         public string TurmaNome { get; set; }
         public string Modalidade { get; set; }
         public string Semestre { get; set; }
+        public string UsuarioLogadoNome { get; set; }
+        public string UsuarioLogadoRf { get; set; }
         public RelatorioPendenciasDreDto Dre { get; set; }
     }
 }
