@@ -143,6 +143,13 @@ namespace SME.SR.Application
                 worksheet.Range(LINHA_GRUPOS + indice, 1, LINHA_GRUPOS + indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
             }
 
+            var linhasAlunosDesistentesComNumeroChamada = tabelaDados.Select("NumeroChamada <> '0' AND NomeAluno like '%(Desistente)%'");
+            foreach (DataRow linha in linhasAlunosDesistentesComNumeroChamada)
+            {
+                int indice = tabelaDados.Rows.IndexOf(linha);
+                worksheet.Range(LINHA_GRUPOS + indice, 1, LINHA_GRUPOS + indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            }
+
             var linhaInicialInativos = tabelaDados.AsEnumerable()
                         .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
             var indiceLinhaInativos = tabelaDados.Rows.IndexOf(linhaInicialInativos);
