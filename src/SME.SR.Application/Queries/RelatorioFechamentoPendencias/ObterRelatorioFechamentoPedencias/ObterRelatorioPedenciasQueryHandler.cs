@@ -62,7 +62,7 @@ namespace SME.SR.Application
                         .Where(d => (int)d == retornoLinearParaCabecalho.ModalidadeCodigo)
                         .Select(d => new { descricao = d.ShortName() }).FirstOrDefault();
 
-            if (filtros.TurmasCodigo.Count() == 1)
+            if (filtros.TurmasCodigo.Any(t => t != "-99"))
                 retorno.TurmaNome = modalidade.descricao.ToUpper() + " - " + retornoLinearParaCabecalho.TurmaNome.ToUpper();
             else retorno.TurmaNome = "Todas";
 
