@@ -147,7 +147,8 @@ namespace SME.SR.Application
                         .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
             var indiceLinhaInativos = tabelaDados.Rows.IndexOf(linhaInicialInativos);
 
-            worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            if(indiceLinhaInativos != -1)
+                worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
             foreach (var celula in worksheet.Range(LINHA_COMPONENTES + 2, 1, ultimaLinhaUsada, ultimaColunaUsada).CellsUsed().Where(c => decimal.TryParse(c.Value.ToString().Replace(",", "."), out _)))
             {
