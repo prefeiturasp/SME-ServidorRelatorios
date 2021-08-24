@@ -26,7 +26,7 @@ namespace SME.SR.Application
 
         public async Task<List<ConselhoClasseAtaFinalPaginaDto>> Handle(ObterRelatorioConselhoClasseAtaFinalPdfQuery request, CancellationToken cancellationToken)
         {
-            var mensagensErro = new StringBuilder();
+            var mensagensErro = new List<string>();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
             var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
             
@@ -51,13 +51,20 @@ namespace SME.SR.Application
                 }
                 catch (Exception e)
                 {
-                    mensagensErro.AppendLine($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.InnerException.Message}");
+                    mensagensErro.Add($"<br/>Erro na carga de dados da turma {turma.NomeRelatorio}: {e.InnerException.Message}");
                 }
             });
 
 
-            if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
-                throw new NegocioException(mensagensErro.ToString());
+            if (mensagensErro.Count() > 0 && relatoriosTurmas.Count() == 0)
+            {
+                StringBuilder erros = new StringBuilder();
+                foreach (var erro in mensagensErro.OrderBy(a => a))
+                    erros.AppendLine(erro);
+
+                throw new NegocioException(erros.ToString());
+            }
+                
 
 
             return relatoriosTurmas.OrderBy(a => a.Cabecalho.Turma).ToList();
