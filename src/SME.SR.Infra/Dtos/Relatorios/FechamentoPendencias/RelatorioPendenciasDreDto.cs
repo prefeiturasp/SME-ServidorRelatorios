@@ -2,15 +2,15 @@
 
 namespace SME.SR.Infra
 {
-    public class RelatorioFechamentoPendenciasDreDto
+    public class RelatorioPendenciasDreDto
     {
-        public RelatorioFechamentoPendenciasDreDto()
+        public RelatorioPendenciasDreDto()
         {
             
         }
         public string Codigo { get; set; }
         public string Nome { get; set; }
 
-        public RelatorioFechamentoPendenciasUeDto Ue { get; set; }
+        public RelatorioPendenciasUeDto Ue { get; set; }
     }
 }

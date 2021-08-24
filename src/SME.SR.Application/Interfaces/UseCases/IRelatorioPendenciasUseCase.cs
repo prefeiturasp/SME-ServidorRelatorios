@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public interface IRelatorioFechamentoPendenciasUseCase
+    public interface IRelatorioPendenciasUseCase
     {
         Task Executar(FiltroRelatorioDto request);
     }

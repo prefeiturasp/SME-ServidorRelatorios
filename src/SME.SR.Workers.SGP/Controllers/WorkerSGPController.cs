@@ -117,11 +117,11 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet("relatorios/fechamentopendencias")]
-        [Action("relatorios/fechamentopendencias", typeof(IRelatorioFechamentoPendenciasUseCase))]
-        public async Task<bool> RelatorioFechamentoPendencias([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioFechamentoPendenciasUseCase relatorioFechamentoPendenciasUseCase)
+        [HttpGet("relatorios/pendencias")]
+        [Action("relatorios/pendencias", typeof(IRelatorioPendenciasUseCase))]
+        public async Task<bool> RelatorioPendencias([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioPendenciasUseCase relatorioPendenciasUseCase)
         {
-            await relatorioFechamentoPendenciasUseCase.Executar(request);
+            await relatorioPendenciasUseCase.Executar(request);
             return true;
         }
 
