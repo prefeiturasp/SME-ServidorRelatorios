@@ -7596,7 +7596,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
 
             var mensagensErro = new StringBuilder();
-            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtro, new Data.Usuario() { CodigoRf = "9999999", Nome = "Teste" }));
+            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtro));
 
             //var rel = relatoriosTurmas.Where(a => a.GruposMatriz)
             return View("RelatorioAtasComColunaFinal", relatoriosTurmas[2]);
