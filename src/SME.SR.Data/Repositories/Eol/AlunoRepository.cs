@@ -559,13 +559,14 @@ namespace SME.SR.Data
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 						WHERE aluno.cd_aluno in (#codigosAlunos)
-						and mte.dt_situacao_aluno =                    
-							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+						and mte.dt_situacao_aluno in                    
+							(select mte2.dt_situacao_aluno from v_historico_matricula_cotic  matr2
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-							where
-								matr2.cd_aluno in (#codigosAlunos)
-							and matr2.cd_aluno = matr.cd_aluno 
+							where mte2.cd_situacao_aluno = @situacaoHistorica
 							{(anoLetivo.HasValue ? $"and matr2.an_letivo = @anoLetivo" : string.Empty)}
+							and matr2.cd_aluno = matr.cd_aluno
+							and mte2.cd_turma_escola = mte.cd_turma_escola
+								
 						)
 						AND NOT EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
@@ -614,7 +615,7 @@ namespace SME.SR.Data
                     NumeroAlunoChamada";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 60);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo, situacaoHistorica = SituacaoMatriculaAluno.Concluido }, commandTimeout: 60);
         }
 
         public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
