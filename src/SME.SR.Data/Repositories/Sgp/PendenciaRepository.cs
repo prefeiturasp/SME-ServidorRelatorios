@@ -153,8 +153,10 @@ namespace SME.SR.Data
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
                         and p.situacao in(1,2)
-                        and t.modalidade_codigo = @modalidadeId
                             and not p.excluido ");
+            if (modalidadeId > 0)
+                query.AppendLine(" and t.modalidade_codigo = @modalidadeId");
+
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 query.AppendLine(" and usu.login = @usuarioRf ");
 
@@ -164,7 +166,7 @@ namespace SME.SR.Data
             if (exibirHistorico)
                 query.AppendLine(" and t.historica  = true ");
 
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99"))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
@@ -220,8 +222,9 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
-                        and t.modalidade_codigo = @modalidadeId
                             and not p.excluido ");
+            if (modalidadeId > 0)
+                query.AppendLine(" and t.modalidade_codigo = @modalidadeId");
 
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 query.AppendLine(" and usu.login = @usuarioRf ");
@@ -237,7 +240,7 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99"))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
@@ -297,8 +300,11 @@ namespace SME.SR.Data
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
                         and p.situacao in(1,2)
-                        and t.modalidade_codigo = @modalidadeId
                             and not p.excluido ");
+
+            if (modalidadeId > 0)
+                query.AppendLine(" and t.modalidade_codigo = @modalidadeId");
+
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 query.AppendLine(" and usu.login = @usuarioRf ");
 
@@ -308,7 +314,7 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99"))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
@@ -365,8 +371,10 @@ namespace SME.SR.Data
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
                         and p.situacao in(1,2)
-                        and t.modalidade_codigo = @modalidadeId  
                             and not p.excluido ");
+
+            if (modalidadeId > 0)
+                query.AppendLine(" and t.modalidade_codigo = @modalidadeId");
 
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 query.AppendLine(" and usu.login = @usuarioRf ");
@@ -377,7 +385,7 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99"))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))

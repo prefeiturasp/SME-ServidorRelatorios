@@ -24,11 +24,11 @@ namespace SME.SR.Application
         public async Task<RelatorioPendenciasDto> Handle(ObterRelatorioPedenciasQuery request, CancellationToken cancellationToken)
         {
             var filtros = request.FiltroRelatorioPendencias;
-            
+
             filtros.ExibirDetalhamento = true;
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo,
-                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo,filtros.UsuarioRf,filtros.ExibirHistorico);
+                (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo, filtros.UsuarioRf, filtros.ExibirHistorico);
 
             if (resultadoQuery == null || !resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
@@ -66,7 +66,7 @@ namespace SME.SR.Application
                 retorno.TurmaNome = modalidade.descricao.ToUpper() + " - " + retornoLinearParaCabecalho.TurmaNome.ToUpper();
             else retorno.TurmaNome = "Todas";
 
-            if (filtros.ComponentesCurriculares.Count() == 1)
+            if (filtros.ComponentesCurriculares?.Count() == 1)
                 retorno.ComponenteCurricular = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == filtros.ComponentesCurriculares.FirstOrDefault())?.Disciplina;
             else retorno.ComponenteCurricular = "Todos";
 
@@ -111,7 +111,7 @@ namespace SME.SR.Application
                         componenteParaAdicionar.NomeComponente = componentesCurricularesDescricoes?.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma)?.Disciplina.ToUpper();
 
                         var pendenciasDoComponenteDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma && a.DisciplinaId == componenteDaTurma);
-                        var pendenciasDoComponenteDaTurmaOrdenado =  pendenciasDoComponenteDaTurma.OrderBy(p => p.Criador).OrderBy(p => p.TipoPendencia);
+                        var pendenciasDoComponenteDaTurmaOrdenado = pendenciasDoComponenteDaTurma.OrderBy(p => p.Criador).OrderBy(p => p.TipoPendencia);
                         foreach (var pendenciaDoComponenteDaTurma in pendenciasDoComponenteDaTurmaOrdenado)
                         {
                             var pendenciaParaAdicionar = new RelatorioPendenciasPendenciaDto();
