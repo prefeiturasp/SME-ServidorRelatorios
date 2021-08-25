@@ -1,11 +1,11 @@
 ﻿@model SME.SR.Infra.RelatorioPendenciasDto
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 49;
+    int contadorMaximoLinhasPorPagina = 48;
     int contadorPagina = 0;
     bool quebrou = false;
     int contarNumeroLinhas = 0;
-    int contadorMaximoCaracteresPorLinha = 140;
+    int contadorMaximoCaracteresPorLinha = 120;
 
     string VerificaQuebra(int linhas, string nomeBimestre, string nomeComponente)
     {
