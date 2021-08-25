@@ -54,6 +54,9 @@ namespace SME.SR.Application
                         TipoNota = tipoNota
                     };
 
+                    if (!componentesCurriculares.First(c => c.Key == aluno.Key).Any())
+                        throw new Exception($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
+
                     var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
                     foreach (var turmaAluno in aluno)
                     {
@@ -75,7 +78,6 @@ namespace SME.SR.Application
                 }
                 catch (Exception e)
                 {
-
                     throw;
                 }
             }

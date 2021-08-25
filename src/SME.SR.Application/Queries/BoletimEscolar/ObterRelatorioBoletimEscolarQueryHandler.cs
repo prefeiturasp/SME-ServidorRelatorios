@@ -35,7 +35,7 @@ namespace SME.SR.Application
 
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo);
 
-            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario);
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario, request.ConsideraHistorico);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
 
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
@@ -102,9 +102,9 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(int[] codigosAlunos, int anoLetivo, int semestre, string codigoUe, Modalidade modalidade, Usuario usuario)
+        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(int[] codigosAlunos, int anoLetivo, int semestre, string codigoUe, Modalidade modalidade, Usuario usuario, bool consideraHistorico = false)
         {
-            return await mediator.Send(new ObterComponentesCurricularesPorAlunosQuery(codigosAlunos, anoLetivo, semestre, codigoUe, modalidade, usuario));
+            return await mediator.Send(new ObterComponentesCurricularesPorAlunosQuery(codigosAlunos, anoLetivo, semestre, codigoUe, modalidade, usuario, consideraHistorico));
         }
 
         private async Task<IDictionary<string, string>> ObterTiposNotaRelatorio(int anoLetivo, long dreId, long ueId, int semestre, Modalidade modalidade, IEnumerable<Turma> turmas)
