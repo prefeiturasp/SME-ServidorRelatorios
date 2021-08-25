@@ -7,7 +7,7 @@
     int contarNumeroLinhas = 0;
     int contadorMaximoCaracteresPorLinha = 140;
 
-    string VerificaQuebra(int linhas, string nomeBimestre, string nomeComponente)
+    string VerificaQuebra(string nomeModalidade, int linhas, string nomeBimestre, string nomeComponente)
     {
         if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
         {
@@ -18,7 +18,7 @@
 
             MontarCabecalho();
 
-            MontarTitulos(nomeBimestre, nomeComponente);
+            MontarTitulos(nomeModalidade, nomeBimestre, nomeComponente);
 
             quebrou = true;
             return string.Empty;
@@ -101,11 +101,11 @@
         MontarLinhaDetalhamento(descricaoPendencia);
     }
 
-    void MontarDetalhamentoPendencia(string descricaoPendencia, string detalhamentoPendencia, string nomeBimestre, string nomeComponente)
+    void MontarDetalhamentoPendencia(string nomeModalidade, string descricaoPendencia, string detalhamentoPendencia, string nomeBimestre, string nomeComponente)
     {
         var iContadorCaracteres = 0;
         var numeroCaracteresDetalhamentoPendencias = detalhamentoPendencia.Length;
-        
+
         @while (iContadorCaracteres != numeroCaracteresDetalhamentoPendencias)
         {
             bool quebrarPagina = contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina;
@@ -115,7 +115,7 @@
                 MontarDetalhamentoRodape();
                 @Html.Raw("<div style='page-break-before:always'></div>");
                 MontarCabecalho();
-                MontarTitulos(nomeBimestre, nomeComponente);
+                MontarTitulos(nomeModalidade, nomeBimestre, nomeComponente);
                 MontarParteDetalhamento(descricaoPendencia);
                 quebrou = true;
             }
@@ -137,10 +137,10 @@
             }
         }
 
-        MontarDetalhamentoRodape();        
+        MontarDetalhamentoRodape();
     }
 
-    void MontarLinhaPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, int contadorPendencias, int quantidadePendencias, string nomeBimestre, string nomeComponente)
+    void MontarLinhaPendencia(string nomeModalidade, SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, int contadorPendencias, int quantidadePendencias, string nomeBimestre, string nomeComponente)
     {
         @if (contadorPendencias != 0 && !quebrou && contadorQuebrarPagina + 1 < contadorMaximoLinhasPorPagina)
         {
@@ -149,11 +149,11 @@
                     <td colspan="4" class="thLimpo" style="border-top: 0; border-bottom: 0;"></td>
                 </tr>
             </table>
-         }
+        }
 
-        MontarDetalhamentoPendencia(pendencias.DescricaoPendencia, pendencias.DetalhamentoPendencia, nomeBimestre, nomeComponente);
+        MontarDetalhamentoPendencia(nomeModalidade, pendencias.DescricaoPendencia, pendencias.DetalhamentoPendencia, nomeBimestre, nomeComponente);
 
-        VerificaQuebra(2, nomeBimestre, nomeComponente);
+        VerificaQuebra(nomeModalidade,2, nomeBimestre, nomeComponente);
 
         if (pendencias.ExibirAprovacao)
         {
@@ -229,10 +229,11 @@
         </table>
     }
 
-    void MontarTitulos(string nomeBimestre, string nomeComponente)
+    void MontarTitulos(string nomeModalidade, string nomeBimestre, string nomeComponente)
     {
         if (Model.Bimestre == "Todos" && !String.IsNullOrEmpty(nomeBimestre))
         {
+            MontarLinhaTabela(nomeModalidade);
             MontarLinhaTabela(nomeBimestre);
             contadorQuebrarPagina++;
             contarNumeroLinhas++;
@@ -422,7 +423,8 @@
                             for (int contadorComponentes = 0; contadorComponentes < numeroMaximoComponentes; contadorComponentes++)
                             {
                                 var componente = bimestre.Componentes[contadorComponentes];
-                                var nomeBimestre = bimestre.Nome;
+                                var nomeBimestre = bimestre.NomeBimestre;
+                                var nomeModalidade = bimestre.NomeModalidade;
                                 var nomeComponente = componente.NomeComponente;
 
                                 if (contadorComponentes != 0 && !quebrou)
@@ -432,7 +434,7 @@
                                     contarNumeroLinhas++;
                                 }
 
-                                MontarTitulos(nomeBimestre, nomeComponente);
+                                MontarTitulos(nomeModalidade, nomeBimestre, nomeComponente);
 
                                 if (componente.Pendencias != null)
                                 {
@@ -440,13 +442,13 @@
                                     {
                                         var pendencias = componente.Pendencias[contadorPendencias];
                                         var quantidadeMaximaPendencias = componente.Pendencias.Count;
-                                        MontarLinhaPendencia(pendencias, contadorPendencias, quantidadeMaximaPendencias, nomeBimestre, nomeComponente);
+                                        MontarLinhaPendencia(nomeModalidade,pendencias, contadorPendencias, quantidadeMaximaPendencias, nomeBimestre, nomeComponente);
                                     }
                                 }
 
                                 if (contadorComponentes < numeroMaximoComponentes - 1 || contadorBimestres < numeroMaximoBimestres - 1 || contadorTurmas < numeroMaximoTurmas - 1)
                                 {
-                                    VerificaQuebra(contarNumeroLinhas, String.Empty, String.Empty);
+                                    VerificaQuebra(nomeModalidade, contarNumeroLinhas, String.Empty, String.Empty);
                                     contarNumeroLinhas = 0;
                                 }
                             }
