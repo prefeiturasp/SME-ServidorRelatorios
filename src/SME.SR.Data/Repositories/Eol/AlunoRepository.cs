@@ -435,9 +435,9 @@ namespace SME.SR.Data
 
         }
 
-        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos)
+        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos, int? anoLetivo)
         {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
+            var query = @$"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
 					CREATE TABLE #tmpAlunosPorCodigo 
 					(
@@ -564,7 +564,8 @@ namespace SME.SR.Data
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							where
 								matr2.cd_aluno in (#codigosAlunos)
-							and matr2.cd_aluno = matr.cd_aluno
+							and matr2.cd_aluno = matr.cd_aluno 
+							{(anoLetivo.HasValue ? $"and matr2.an_letivo = @anoLetivo" : string.Empty)}
 						)
 						AND NOT EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
@@ -613,7 +614,7 @@ namespace SME.SR.Data
                     NumeroAlunoChamada";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), commandTimeout: 60);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 60);
         }
 
         public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
@@ -1284,11 +1285,11 @@ namespace SME.SR.Data
 
             var parametros = new { turmasCodigo, anoLetivo };
 
-			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-			{
-				return await conexao.QueryAsync<AlunoResponsavelAdesaoAEDto>(query, parametros);
-			}
-		}
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<AlunoResponsavelAdesaoAEDto>(query, parametros);
+            }
+        }
 
         public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
         {
@@ -1302,9 +1303,9 @@ namespace SME.SR.Data
             }
         }
 
-		public async Task<IEnumerable<AlunoReduzidoDto>> ObterAlunosReduzidosPorTurmaEAluno(long turmaCodigo, long? alunoCodigo)
-		{
-			var query = @$"SELECT distinct aluno.cd_aluno AlunoCodigo,
+        public async Task<IEnumerable<AlunoReduzidoDto>> ObterAlunosReduzidosPorTurmaEAluno(long turmaCodigo, long? alunoCodigo)
+        {
+            var query = @$"SELECT distinct aluno.cd_aluno AlunoCodigo,
 										   aluno.nm_aluno NomeAluno,
 										   aluno.nm_social_aluno NomeSocialAluno,					   
 										   mte.cd_turma_escola TurmaCodigo                       
@@ -1344,17 +1345,17 @@ namespace SME.SR.Data
 												 AND mte.cd_situacao_aluno in (1,5,6,10,13)
 											 )";
 
-			var parametros = new { turmaCodigo, alunoCodigo };
+            var parametros = new { turmaCodigo, alunoCodigo };
 
-			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-			{
-				return await conexao.QueryAsync<AlunoReduzidoDto>(query, parametros);
-			}
-		}
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<AlunoReduzidoDto>(query, parametros);
+            }
+        }
 
-		public async Task<IEnumerable<AlunoRetornoDto>> ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long turmaCodigo, long? alunoCodigo, int anoLetivo)
-		{
-			var query = @$"SELECT distinct aluno.cd_aluno AlunoCodigo,
+        public async Task<IEnumerable<AlunoRetornoDto>> ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long turmaCodigo, long? alunoCodigo, int anoLetivo)
+        {
+            var query = @$"SELECT distinct aluno.cd_aluno AlunoCodigo,
 					   aluno.nm_aluno NomeAluno,
 					   aluno.nm_social_aluno NomeSocialAluno,
 					   mte.nr_chamada_aluno NumeroAlunoChamada,
@@ -1447,12 +1448,12 @@ namespace SME.SR.Data
 									 {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : (anoLetivo == DateTime.Now.Year ? "AND mte.cd_situacao_aluno in (1,5,6,10,13)" : "AND mte.cd_situacao_aluno = 5 "))}	
 								)";
 
-			var parametros = new { turmaCodigo, alunoCodigo };
+            var parametros = new { turmaCodigo, alunoCodigo };
 
-			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-			{
-				return await conexao.QueryAsync<AlunoRetornoDto>(query, parametros);
-			}
-		}
-	}
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<AlunoRetornoDto>(query, parametros);
+            }
+        }
+    }
 }
