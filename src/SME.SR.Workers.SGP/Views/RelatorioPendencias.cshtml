@@ -411,6 +411,10 @@
                         {
                             var nomeModalidade = bimestre.NomeModalidade;
                             MontarLinhaTabela(nomeModalidade);
+                            if (nomeModalidade == "EJA")
+                            {
+                                MontarLinhaTabela(bimestre.SemestreTurma);
+                            }
                         }
                         @if (bimestre.Componentes != null)
                         {
