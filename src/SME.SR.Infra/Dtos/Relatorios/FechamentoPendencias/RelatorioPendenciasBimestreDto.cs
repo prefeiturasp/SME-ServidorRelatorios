@@ -10,6 +10,7 @@ namespace SME.SR.Infra
         }
         public string NomeBimestre { get; set; }
         public string NomeModalidade { get; set; }
+        public string SemestreTurma { get; set; }
 
         public List<RelatorioPendenciasComponenteDto> Componentes { get; set; }
 

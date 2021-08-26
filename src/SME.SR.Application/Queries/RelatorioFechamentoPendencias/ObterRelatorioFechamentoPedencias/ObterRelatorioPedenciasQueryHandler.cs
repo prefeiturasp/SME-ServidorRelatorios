@@ -104,10 +104,11 @@ namespace SME.SR.Application
                 var turma = new RelatorioPendenciasTurmaDto();
 
                 var bimestresDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo).Select(a => a.Bimestre).Distinct();
+                var semestreDaTurma = resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).Semestre.ToUpper();
                 var bimestresCodigoModalidade = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo).Select(a => a.ModalidadeCodigo).Distinct();
                 var bimestresNomeModalidade = ObterModalidade(bimestresCodigoModalidade.FirstOrDefault());
                 turma.Nome = bimestresNomeModalidade.name.ToUpper() + " - " + resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).TurmaNome.ToUpper();
-                
+
                 foreach (var bimestreDaTurma in bimestresDaTurma)
                 {
                     var bimestreParaAdicionar = new RelatorioPendenciasBimestreDto();
@@ -116,6 +117,8 @@ namespace SME.SR.Application
                     {
                         bimestreParaAdicionar.NomeBimestre = bimestreDaTurma.ToString() + "º BIMESTRE";
                         bimestreParaAdicionar.NomeModalidade = bimestresNomeModalidade.shortName.ToUpper();
+                        if (bimestreParaAdicionar.NomeModalidade == "EJA" && semestreDaTurma != "0")
+                            bimestreParaAdicionar.SemestreTurma = semestreDaTurma + "º SEMESTRE";
 
                     }
                     var componentesDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma).Select(a => a.DisciplinaId).Distinct();
