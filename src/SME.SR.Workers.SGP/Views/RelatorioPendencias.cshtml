@@ -105,7 +105,7 @@
     {
         var iContadorCaracteres = 0;
         var numeroCaracteresDetalhamentoPendencias = detalhamentoPendencia.Length;
-        
+
         @while (iContadorCaracteres != numeroCaracteresDetalhamentoPendencias)
         {
             bool quebrarPagina = contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina;
@@ -137,7 +137,7 @@
             }
         }
 
-        MontarDetalhamentoRodape();        
+        MontarDetalhamentoRodape();
     }
 
     void MontarLinhaPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, int contadorPendencias, int quantidadePendencias, string nomeBimestre, string nomeComponente)
@@ -149,7 +149,7 @@
                     <td colspan="4" class="thLimpo" style="border-top: 0; border-bottom: 0;"></td>
                 </tr>
             </table>
-         }
+        }
 
         MontarDetalhamentoPendencia(pendencias.DescricaoPendencia, pendencias.DetalhamentoPendencia, nomeBimestre, nomeComponente);
 
@@ -407,6 +407,11 @@
                     int numeroMaximoBimestres = Model.Dre.Ue.Turmas[contadorTurmas].Bimestres.Count;
                     foreach (var bimestre in Model.Dre.Ue.Turmas[contadorTurmas].Bimestres)
                     {
+                        if (Model.TurmaNome == "Todas")
+                        {
+                            var nomeModalidade = bimestre.NomeModalidade;
+                            MontarLinhaTabela(nomeModalidade);
+                        }
                         @if (bimestre.Componentes != null)
                         {
                             if (Model.TurmaNome == "Todas")
@@ -422,7 +427,7 @@
                             for (int contadorComponentes = 0; contadorComponentes < numeroMaximoComponentes; contadorComponentes++)
                             {
                                 var componente = bimestre.Componentes[contadorComponentes];
-                                var nomeBimestre = bimestre.Nome;
+                                var nomeBimestre = bimestre.NomeBimestre;
                                 var nomeComponente = componente.NomeComponente;
 
                                 if (contadorComponentes != 0 && !quebrou)
