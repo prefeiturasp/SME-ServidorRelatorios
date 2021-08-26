@@ -27,7 +27,7 @@ namespace SME.SR.Application
             return Enum.GetValues(typeof(Modalidade))
                             .Cast<Modalidade>()
                             .Where(d => (int)d == modalidadeCodigo)
-                            .Select(d => new { descricao = d.Name() }).FirstOrDefault();
+                            .Select(d => new { name = d.Name(), shortName = d.ShortName() }).FirstOrDefault();
         }
         public async Task<RelatorioPendenciasDto> Handle(ObterRelatorioPedenciasQuery request, CancellationToken cancellationToken)
         {
@@ -74,7 +74,7 @@ namespace SME.SR.Application
 
 
             if (filtros.TurmasCodigo.Any(t => t != "-99" && t != null))
-                retorno.TurmaNome = modalidade.descricao.ToUpper() + " - " + retornoLinearParaCabecalho.TurmaNome.ToUpper();
+                retorno.TurmaNome = modalidade.name.ToUpper() + " - " + retornoLinearParaCabecalho.TurmaNome.ToUpper();
             else retorno.TurmaNome = "Todas";
 
             if (filtros.ComponentesCurriculares?.Count() == 1)
@@ -102,20 +102,20 @@ namespace SME.SR.Application
             foreach (var turmaCodigo in turmasCodigos)
             {
                 var turma = new RelatorioPendenciasTurmaDto();
-                turma.Nome = modalidade.descricao.ToUpper() + " - " + resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).TurmaNome.ToUpper();
 
                 var bimestresDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo).Select(a => a.Bimestre).Distinct();
                 var bimestresCodigoModalidade = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo).Select(a => a.ModalidadeCodigo).Distinct();
+                var bimestresNomeModalidade = ObterModalidade(bimestresCodigoModalidade.FirstOrDefault());
+                turma.Nome = bimestresNomeModalidade.name.ToUpper() + " - " + resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).TurmaNome.ToUpper();
+                
                 foreach (var bimestreDaTurma in bimestresDaTurma)
                 {
                     var bimestreParaAdicionar = new RelatorioPendenciasBimestreDto();
 
                     if (retornoLinearParaCabecalho.ModalidadeCodigo != (int)Modalidade.Infantil)
                     {
-                        var bimestresNomeModalidade = ObterModalidade(bimestresCodigoModalidade.FirstOrDefault());
-
                         bimestreParaAdicionar.NomeBimestre = bimestreDaTurma.ToString() + "º BIMESTRE";
-                        bimestreParaAdicionar.NomeModalidade = bimestresNomeModalidade.descricao.ToUpper();
+                        bimestreParaAdicionar.NomeModalidade = bimestresNomeModalidade.shortName.ToUpper();
 
                     }
                     var componentesDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma).Select(a => a.DisciplinaId).Distinct();
@@ -175,7 +175,7 @@ namespace SME.SR.Application
                     turma.Bimestres.Add(bimestreParaAdicionar);
                 }
 
-
+                turma.Bimestres.OrderBy(x => x.NomeModalidade).OrderBy(x => x.NomeBimestre);
                 retorno.Dre.Ue.Turmas.Add(turma);
             }
 
