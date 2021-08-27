@@ -98,19 +98,17 @@ namespace SME.SR.Data
                     }
                 }
             }
-
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
             var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf });
             return retorno.OrderBy(x => x.Criador).OrderBy(x => x.TipoPendencia);
-
-
         }
 
 
         private string ObterPendenciasCalendario(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
                                                                                             string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf, bool exibirHistorico)
         {
+            var outrasPendencias = new StringBuilder();
             var query = new StringBuilder(@$"select distinct p.titulo,
 	                        p.descricao as Detalhe,
 	                        p.situacao,
@@ -127,7 +125,8 @@ namespace SME.SR.Data
                             usu.login as criadorRf,
 	                        p.alterado_por as aprovador,
 	                        p.alterado_rf as aprovadorRf,
-                            'Calendário' as TipoPendencia
+                            'Calendário' as TipoPendencia,
+                            false as OutrasPendencias
                         from pendencia_calendario_ue pcu 
                         inner join pendencia p 
 	                        on pcu.pendencia_id  = p.id
@@ -174,6 +173,44 @@ namespace SME.SR.Data
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
+
+            outrasPendencias.AppendLine($@"select  distinct 
+                                            p.titulo,
+                                             p.descricao as Detalhe,
+                                             p.situacao,
+                                             '' as DreNome,
+                                             '' as UeNome,
+                                             0 as AnoLetivo,
+                                             0 as ModalidadeCodigo,
+                                             0 as  semestre,
+                                             '' as TurmaNome,
+                                             '' as TurmaCodigo,
+                                             0 as DisciplinaId,
+                                             0 as bimestre,
+                                            usu.nome as criador,
+                                            usu.login as criadorRf,
+                                            p.alterado_por as aprovador,
+                                            p.alterado_rf as aprovadorRf,
+                                            'Calendário' as TipoPendencia,
+                                             true as OutrasPendencias
+                                        from pendencia p
+                                        left join pendencia_calendario_ue pcu 
+                                            on pcu.pendencia_id  = p.id
+                                        left join ue u 
+                                            on pcu.ue_id  = u.id
+                                        left join turma t 
+                                            on t.ue_id = u.id
+                                        inner join pendencia_usuario pu 
+                                              on pu.pendencia_id = p.id
+                                        inner join usuario usu 
+                                              on usu.id = pu.usuario_id
+                                        where p.situacao in(1,2)
+                                        and tipo  in(7,8,9,10,11,12,13)
+                                        and not p.excluido  ");
+            if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
+                outrasPendencias.AppendLine(" and usu.login = @usuarioRf ");
+            query.AppendLine(" union all ");
+            query.AppendLine(outrasPendencias.ToString());
             return query.ToString();
         }
 
@@ -197,7 +234,8 @@ namespace SME.SR.Data
                             usu.login as criadorRf,
 	                        p.alterado_por as aprovador,
 	                        p.alterado_rf as aprovadorRf,
-                            'Fechamento' as TipoPendencia
+                            'Fechamento' as TipoPendencia,
+                            false as OutrasPendencias
                         from pendencia_fechamento pf
                         inner join pendencia p 
 	                        on pf.pendencia_id  = p.id
@@ -255,7 +293,8 @@ namespace SME.SR.Data
         private string ObterPendenciasAee(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
                                                                                     string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf, bool exibirHistorico)
         {
-            var query = new StringBuilder($@"select distinct 
+            var outrasPendencias = new StringBuilder();
+            var query = new StringBuilder($@" select distinct 
                             p.titulo,
                             p.descricao as Detalhe,
                             p.situacao,
@@ -272,7 +311,8 @@ namespace SME.SR.Data
                             usu.login as criadorRf,
                             p.alterado_por as aprovador,
                             p.alterado_rf as aprovadorRf,
-                            'AEE' as TipoPendencia
+                            'AEE' as TipoPendencia,
+                            false as OutrasPendencias
                         from pendencia_plano_aee ppa
                         inner join pendencia p 
                             on p.id = ppa.pendencia_id
@@ -323,6 +363,46 @@ namespace SME.SR.Data
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
 
+            outrasPendencias.AppendLine($@"select  distinct    
+                                             p.titulo,
+                                             p.descricao as Detalhe,
+                                             p.situacao,
+                                             '' as DreNome,
+                                             '' as UeNome,
+                                             0 as AnoLetivo,
+                                             0 as ModalidadeCodigo,
+                                             0 as  semestre,
+                                             '' as TurmaNome,
+                                             '' as TurmaCodigo,
+                                             0 as DisciplinaId,
+                                             0 as bimestre,
+                                            usu.nome as criador,
+                                            usu.login as criadorRf,
+                                            p.alterado_por as aprovador,
+                                            p.alterado_rf as aprovadorRf,
+                                         'AEE' as TipoPendencia,
+                                         true as OutrasPendencias
+                                    from pendencia p
+                                    left join  pendencia_plano_aee ppa
+                                        on ppa.pendencia_id  = p.id
+                                    inner join plano_aee pa 
+                                        on pa.id = ppa.plano_aee_id 
+                                    inner join turma t 
+                                        on t.id = pa.turma_id 
+                                    inner join ue u 
+                                        on u.id  = t.ue_id 
+                                    inner join pendencia_usuario pu 
+                                          on pu.pendencia_id = p.id
+                                    inner join usuario usu 
+                                          on usu.id = pu.usuario_id
+                                    where p.situacao in(1,2)
+                                    and tipo = (18)
+                                    and not p.excluido ");
+            if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
+                outrasPendencias.AppendLine(" and usu.login = @usuarioRf ");
+
+            query.AppendLine(" union all ");
+            query.AppendLine(outrasPendencias.ToString());
             return query.ToString();
         }
         private string ObterPendenciasDiarioClasse(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
@@ -345,7 +425,8 @@ namespace SME.SR.Data
                             usu.login as criadorRf,
                             p.alterado_por as aprovador,
                             p.alterado_rf as aprovadorRf,
-                            'Diário de Classe' as TipoPendencia
+                            'Diário de Classe' as TipoPendencia,
+                            false as OutrasPendencias
                         from pendencia_registro_individual pri 
                         inner join pendencia p 
                             on p.id = pri.pendencia_id
