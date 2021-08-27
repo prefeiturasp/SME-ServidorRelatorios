@@ -98,21 +98,10 @@ namespace SME.SR.Data
                     }
                 }
             }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-            try
-            {
-                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-
-                var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf });
-                return retorno.OrderBy(x => x.Criador).OrderBy(x => x.TipoPendencia);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-
+            var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf });
+            return retorno.OrderBy(x => x.Criador).OrderBy(x => x.TipoPendencia);
         }
 
 
@@ -411,7 +400,7 @@ namespace SME.SR.Data
                                     and not p.excluido ");
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 outrasPendencias.AppendLine(" and usu.login = @usuarioRf ");
-            
+
             query.AppendLine(" union all ");
             query.AppendLine(outrasPendencias.ToString());
             return query.ToString();
