@@ -19,5 +19,6 @@
         public string Aprovador { get; set; }
         public string AprovadorRf { get; set; }
         public string TipoPendencia { get; set; }
+        public bool OutrasPendencias { get; set; }
     }
 }
