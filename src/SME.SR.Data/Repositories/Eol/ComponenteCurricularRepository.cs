@@ -351,6 +351,8 @@ namespace SME.SR.Data
                 ComponenteCurricularConsultas.BuscarPorAlunos :
                 ComponenteCurricularConsultas.BuscarPorAlunosHistorico;
 
+            query += " order by 2";
+
             var parametros = new
             {
                 alunosCodigos,
