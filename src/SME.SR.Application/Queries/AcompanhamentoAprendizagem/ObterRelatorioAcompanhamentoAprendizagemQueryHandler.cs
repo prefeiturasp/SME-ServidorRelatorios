@@ -69,33 +69,29 @@ namespace SME.SR.Application
             var acompanhamento = acompanhamentoTurma.Count() > 0 ? acompanhamentoTurma?.First() : null;
             var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado() ?? "") : "";
 
-            List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> percursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>(); 
+            List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> percursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
 
-            if (acompanhamento != null)
+            if (acompanhamento != null && acompanhamento.PercursoTurmaImagens.Count > 0)
             {
-                if (acompanhamento.PercursoTurmaImagens.Count > 0)
+                foreach (var imagem in acompanhamento.PercursoTurmaImagens)
                 {
-                    foreach (var imagem in acompanhamento.PercursoTurmaImagens)
+                    var arr = imagem.Imagem.Split("/");
+                    var codigo = arr[arr.Length - 1];
+                    codigo = codigo.Split(".")[0];
+                    var arquivo = await mediator.Send(new ObterArquivoPorCodigoQuery(Guid.Parse(codigo)));
+
+                    var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(arquivo));
+                    if (!String.IsNullOrEmpty(fotoBase64))
                     {
-                        var arr = imagem.Imagem.Split("/");
-                        var codigo = arr[arr.Length - 1];
-                        codigo = codigo.Split(".")[0];
-                        var arquivo = await mediator.Send(new ObterArquivoPorCodigoQuery(Guid.Parse(codigo)));
-
-                        var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(arquivo));
-                        if (!String.IsNullOrEmpty(fotoBase64))
+                        percursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
                         {
-                            percursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
-                            {
-                                NomeImagem = imagem.NomeImagem,
-                                Imagem = fotoBase64
-                            });
-                        }
-
+                            NomeImagem = imagem.NomeImagem,
+                            Imagem = fotoBase64
+                        });
                     }
+
                 }
             }
-
 
             foreach (var alunoEol in alunosEol)
             {
@@ -143,6 +139,7 @@ namespace SME.SR.Application
 
                 alunosRelatorio.Add(alunoRelatorio);
             }
+
             return alunosRelatorio;
         }
         private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, long periodoId, Turma turma)
