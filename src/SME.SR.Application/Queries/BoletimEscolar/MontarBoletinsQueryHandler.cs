@@ -48,6 +48,9 @@ namespace SME.SR.Application
 
                     var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
+                    if (!conselhoClassBimestres.Any())
+                        continue;
+
                     var tipoNota = tiposNota[turma.Codigo];
                     var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
                     {
