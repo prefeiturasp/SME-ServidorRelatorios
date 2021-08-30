@@ -49,7 +49,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foram localizadas descrições dos componentes curriculares no EOL.");
 
             var retorno = new RelatorioPendenciasDto();
-            var retornoLinearParaCabecalho = resultadoQuery.FirstOrDefault();
+            var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome.Length > 0 && x.UeNome.Length > 0).FirstOrDefault();
             retorno.UsuarioLogadoNome = filtros.UsuarioLogadoNome;
             retorno.UsuarioLogadoRf = filtros.UsuarioLogadoRf;
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
