@@ -62,11 +62,6 @@ namespace SME.SR.Application
             return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmasCodigo?.ToArray(), turmas, componentesCurriculares, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurma>> OrdenarComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares)
-        {
-            return await mediator.Send(new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurriculares));
-        }
-
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorCodigo(long[] componentesCurricularesId)
         {
             return await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesId));

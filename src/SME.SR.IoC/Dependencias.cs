@@ -170,8 +170,6 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
             services.TryAddScoped(typeof(IArquivoRepository), typeof(ArquivoRepository));
 
-            services.TryAddScoped(typeof(IAlunoFotoRepository), typeof(AlunoFotoRepository));
-
             services.TryAddScoped(typeof(IConselhoClasseConsolidadoRepository), typeof(ConselhoClasseConsolidadoRepository));
             services.TryAddScoped(typeof(IFechamentoConsolidadoRepository), typeof(FechamentoConsolidadoRepository));
             services.TryAddScoped(typeof(IPendenciaFechamentoRepository), typeof(PendenciaFechamentoRepository));
