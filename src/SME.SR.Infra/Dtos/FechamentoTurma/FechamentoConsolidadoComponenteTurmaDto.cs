@@ -22,7 +22,7 @@ namespace SME.SR.Infra
 
         private SituacaoFechamento ObterSituacaoFechamento()
         {
-            if (StatusRelatorio != Infra.SituacaoFechamento.EmProcessamento)
+            if (Status != Infra.SituacaoFechamento.EmProcessamento)
                 return Status;
 
             return Infra.SituacaoFechamento.NaoIniciado;
