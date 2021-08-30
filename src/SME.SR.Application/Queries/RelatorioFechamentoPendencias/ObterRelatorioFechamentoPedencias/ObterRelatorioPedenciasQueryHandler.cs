@@ -56,7 +56,7 @@ namespace SME.SR.Application
 
             retorno.UeNome = string.IsNullOrEmpty(retornoLinearParaCabecalho.UeNome) ? "Todas" : retornoLinearParaCabecalho.UeNome;
             retorno.DreNome = retornoLinearParaCabecalho.DreNome;
-            var qtdModalidades = resultadoQuery?.GroupBy(c => c.ModalidadeCodigo).Count();
+            var qtdModalidades = resultadoQuery?.Where(c => c.ModalidadeCodigo > 0).GroupBy(c => c.ModalidadeCodigo).Count();
 
             var modalidade = ObterModalidade(retornoLinearParaCabecalho.ModalidadeCodigo);
 
@@ -118,7 +118,7 @@ namespace SME.SR.Application
                         if (retornoLinearParaCabecalho.ModalidadeCodigo != (int)Modalidade.Infantil)
                         {
                             bimestreParaAdicionar.NomeBimestre = bimestreDaTurma.ToString() + "º BIMESTRE";
-                            bimestreParaAdicionar.NomeModalidade = bimestresNomeModalidade.shortName.ToUpper();
+                            bimestreParaAdicionar.NomeModalidade = bimestresNomeModalidade.name.ToUpper();
                             if (bimestreParaAdicionar.NomeModalidade == "EJA" && semestreDaTurma != "0")
                                 bimestreParaAdicionar.SemestreTurma = semestreDaTurma + "º SEMESTRE";
 
