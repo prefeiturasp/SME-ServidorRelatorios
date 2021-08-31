@@ -1,9 +1,18 @@
-﻿namespace SME.SR.Infra
+﻿using System.Collections.Generic;
+
+namespace SME.SR.Infra
 {
     public class RelatorioPendenciasQueryRetornoDto
     {
+        public RelatorioPendenciasQueryRetornoDto()
+        {
+            Detalhes = new List<string>();
+        }
+
         public string Titulo { get; set; }
-        public string Detalhe { get; set; }
+        public string Descricao { get; set; }
+        public IList<string> Detalhes { get; set; }
+        public string Instrucao { get; set; }
         public int Situacao { get; set; }
         public string DreNome { get; set; }
         public string UeNome { get; set; }
