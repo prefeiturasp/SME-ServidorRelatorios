@@ -32,9 +32,9 @@
     {
         <table class="tabela-alunos estilo-texto">
             <thead>
-                <th style="width: 20%;">TIPO DE PENDÊNCIA</th>
-                <th style="width: 20%;">SITUAÇÃO</th>
-                <th style="width: 60%;">USUÁRIO</th>
+            <th style="width: 20%;">TIPO DE PENDÊNCIA</th>
+            <th style="width: 20%;">SITUAÇÃO</th>
+            <th style="width: 60%;">USUÁRIO</th>
             </thead>
 
             @{ contadorQuebrarPagina++;}
@@ -89,10 +89,10 @@
     {
         int numeroCaracteresDescricaoPendencias = descricaoPendencia.Length;
 
-        if(numeroCaracteresDetalhamentoPendencias < numeroCaracteresDescricaoPendencias)
+        if (numeroCaracteresDetalhamentoPendencias < numeroCaracteresDescricaoPendencias)
         {
-            int numeroLinhas = numeroCaracteresDescricaoPendencias /45;
-            if(numeroLinhas > 1)
+            int numeroLinhas = numeroCaracteresDescricaoPendencias / 45;
+            if (numeroLinhas > 1)
             {
                 contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
             }
@@ -111,7 +111,7 @@
         MontarLinhaDetalhamento(descricaoPendencia, numeroCaracteresDetalhamentoPendencias);
     }
 
-    void MontarDetalhamentoPendencia(string descricaoPendencia, string detalhamentoPendencia, string nomeBimestre, string nomeComponente,bool temOutrasPendencias)
+    void MontarDetalhamentoPendencia(string descricaoPendencia, string detalhamentoPendencia, string nomeBimestre, string nomeComponente, bool temOutrasPendencias)
     {
         int iContadorCaracteres = 0;
         int numeroCaracteresDetalhamentoPendencias = detalhamentoPendencia.Length;
@@ -240,7 +240,7 @@
     }
 
     void MontarTitulos(string nomeBimestre, string nomeComponente, bool temOutrasPendencias = false)
-    {        
+    {
         if (Model.ComponenteCurricular == "Todos" && !String.IsNullOrEmpty(nomeComponente) && !temOutrasPendencias)
         {
             MontarLinhaTabela(nomeComponente);
@@ -255,6 +255,114 @@
             contadorQuebrarPagina++;
             contarNumeroLinhas++;
             quebrou = false;
+        }
+    }
+   
+    void MontarPendencias()
+    {
+        int numeroMaximoTurmas = Model.Dre.Ue.Turmas.Count;
+
+        for (int contadorTurmas = 0; contadorTurmas < numeroMaximoTurmas; contadorTurmas++)
+        {
+            @if (Model.Dre.Ue.Turmas[contadorTurmas].Bimestres != null)
+            {
+                int contadorBimestres = 0;
+                int numeroMaximoBimestres = Model.Dre.Ue.Turmas[contadorTurmas].Bimestres.Count;
+                foreach (var bimestre in Model.Dre.Ue.Turmas[contadorTurmas].Bimestres)
+                {
+                    var nomeBimestre = bimestre.NomeBimestre;
+
+                    @if (bimestre.Componentes != null)
+                    {
+                        if (Model.TurmaNome == "Todas")
+                        {
+                            var turma = Model.Dre.Ue.Turmas[contadorTurmas];
+                            var nomeModalidade = bimestre.NomeModalidade;
+
+                            if (!String.IsNullOrEmpty(nomeModalidade))
+                            {
+                                MontarLinhaTabela(nomeModalidade);
+
+                                contadorQuebrarPagina++;
+                                contarNumeroLinhas++;
+
+                                if (nomeModalidade == "EJA")
+                                {
+                                    MontarLinhaTabela(bimestre.SemestreTurma);
+
+                                    contadorQuebrarPagina++;
+                                    contarNumeroLinhas++;
+                                }
+                            }
+
+                            MontarLinhaTabela(turma.Nome);
+                            contadorQuebrarPagina++;
+                            contarNumeroLinhas++;
+                        }
+
+                        if (Model.Bimestre == "Todos" && !String.IsNullOrEmpty(nomeBimestre))
+                        {
+                            MontarLinhaTabela(nomeBimestre);
+                            contadorQuebrarPagina++;
+                            contarNumeroLinhas++;
+                            quebrou = false;
+                        }
+
+                        int numeroMaximoComponentes = bimestre.Componentes.Count;
+                        quebrou = false;
+                        for (int contadorComponentes = 0; contadorComponentes < numeroMaximoComponentes; contadorComponentes++)
+                        {
+                            var componente = bimestre.Componentes[contadorComponentes];
+                            var nomeComponente = componente.NomeComponente;
+
+                            if (contadorComponentes != 0 && !quebrou)
+                            {
+                                MontarLinhaTabela(String.Empty, true);
+                                contadorQuebrarPagina++;
+                                contarNumeroLinhas++;
+                            }
+
+                            MontarTitulos(nomeBimestre, nomeComponente);
+
+                            if (componente.Pendencias != null)
+                            {
+                                for (int contadorPendencias = 0; contadorPendencias < componente.Pendencias.Count; contadorPendencias++)
+                                {
+                                    var pendencias = componente.Pendencias[contadorPendencias];
+                                    var quantidadeMaximaPendencias = componente.Pendencias.Count;
+                                    MontarLinhaPendencia(pendencias, contadorPendencias, quantidadeMaximaPendencias, nomeBimestre, nomeComponente);
+                                }
+                            }
+
+                            if (contadorComponentes < numeroMaximoComponentes - 1 || contadorBimestres < numeroMaximoBimestres - 1 || contadorTurmas < numeroMaximoTurmas - 1)
+                            {
+                                VerificaQuebra(contarNumeroLinhas, String.Empty, String.Empty);
+                                contarNumeroLinhas = 0;
+                            }
+                        }
+                    }
+
+                    contadorBimestres++;
+                }
+            }
+                    }
+                }
+
+    void MontarOutrasPendencias()
+    {
+        if (Model.Dre.Ue.OutrasPendencias.Count > 0)
+        {
+            quebrou = false;
+            MontarLinhaTabela("Outras pendências");
+
+            int contadorOutrasPendencias = 0;
+            foreach (var outrasPendencias in Model.Dre.Ue.OutrasPendencias)
+            {
+                bool temOutrasPendencias =outrasPendencias.OutrasPendencias;
+
+                var quantidadeMaximaPendencias = Model.Dre.Ue.OutrasPendencias.Count;
+                MontarLinhaPendencia(outrasPendencias, contadorOutrasPendencias, quantidadeMaximaPendencias, "", "", temOutrasPendencias);
+            }
         }
     }
 }
@@ -408,106 +516,9 @@
         @{
             MontarCabecalho();
 
-            int numeroMaximoTurmas = Model.Dre.Ue.Turmas.Count;
+            MontarPendencias();
 
-            for (int contadorTurmas = 0; contadorTurmas < numeroMaximoTurmas; contadorTurmas++)
-            {
-                @if (Model.Dre.Ue.Turmas[contadorTurmas].Bimestres != null)
-                {
-                    int contadorBimestres = 0;
-                    int numeroMaximoBimestres = Model.Dre.Ue.Turmas[contadorTurmas].Bimestres.Count;
-                    foreach (var bimestre in Model.Dre.Ue.Turmas[contadorTurmas].Bimestres)
-                    {
-                        var nomeBimestre = bimestre.NomeBimestre;
-                       
-                        @if (bimestre.Componentes != null)
-                        {
-                            if (Model.TurmaNome == "Todas")
-                            {
-                                var turma = Model.Dre.Ue.Turmas[contadorTurmas];
-                                var nomeModalidade = bimestre.NomeModalidade;
-
-                                if (!String.IsNullOrEmpty(nomeModalidade))
-                                {
-                                    MontarLinhaTabela(nomeModalidade);
-
-                                    contadorQuebrarPagina++;
-                                    contarNumeroLinhas++;
-
-                                    if (nomeModalidade == "EJA")
-                                    {
-                                        MontarLinhaTabela(bimestre.SemestreTurma);
-
-                                        contadorQuebrarPagina++;
-                                        contarNumeroLinhas++;
-                                    }
-                                }
-
-                                MontarLinhaTabela(turma.Nome);
-                                contadorQuebrarPagina++;
-                                contarNumeroLinhas++;
-                            }
-
-                            if (Model.Bimestre == "Todos" && !String.IsNullOrEmpty(nomeBimestre))
-                            {
-                                MontarLinhaTabela(nomeBimestre);
-                                contadorQuebrarPagina++;
-                                contarNumeroLinhas++;
-                                quebrou = false;
-                            }
-
-                            int numeroMaximoComponentes = bimestre.Componentes.Count;
-                            quebrou = false;
-                            for (int contadorComponentes = 0; contadorComponentes < numeroMaximoComponentes; contadorComponentes++)
-                            {
-                                var componente = bimestre.Componentes[contadorComponentes];
-                                var nomeComponente = componente.NomeComponente;
-
-                                if (contadorComponentes != 0 && !quebrou)
-                                {
-                                    MontarLinhaTabela(String.Empty, true);
-                                    contadorQuebrarPagina++;
-                                    contarNumeroLinhas++;
-                                }
-
-                                MontarTitulos(nomeBimestre, nomeComponente);
-
-                                if (componente.Pendencias != null)
-                                {
-                                    for (int contadorPendencias = 0; contadorPendencias < componente.Pendencias.Count; contadorPendencias++)
-                                    {
-                                        var pendencias = componente.Pendencias[contadorPendencias];
-                                        var quantidadeMaximaPendencias = componente.Pendencias.Count;
-                                        MontarLinhaPendencia(pendencias, contadorPendencias, quantidadeMaximaPendencias, nomeBimestre, nomeComponente);
-                                    }
-                                }
-
-                                if (contadorComponentes < numeroMaximoComponentes - 1 || contadorBimestres < numeroMaximoBimestres - 1 || contadorTurmas < numeroMaximoTurmas - 1)
-                                {
-                                    VerificaQuebra(contarNumeroLinhas, String.Empty, String.Empty);
-                                    contarNumeroLinhas = 0;
-                                }
-                            }
-                        }
-
-                        contadorBimestres++;
-                    }
-
-                    bool temOutrasPendencias = Model.Dre.Ue.OutrasPendencias.FirstOrDefault().OutrasPendencias;
-                    if (temOutrasPendencias)
-                    {
-                        quebrou = false;
-                        MontarLinhaTabela("Outras pendências");
-
-                        int contadorOutrasPendencias = 0;
-                        foreach (var outrasPendencias in Model.Dre.Ue.OutrasPendencias)
-                        {
-                            var quantidadeMaximaPendencias = Model.Dre.Ue.OutrasPendencias.Count;
-                            MontarLinhaPendencia(outrasPendencias, contadorOutrasPendencias, quantidadeMaximaPendencias, "", "", temOutrasPendencias);
-                        }
-                    }
-                }
-            }
+            MontarOutrasPendencias();
         }
     </div>
 </body>
