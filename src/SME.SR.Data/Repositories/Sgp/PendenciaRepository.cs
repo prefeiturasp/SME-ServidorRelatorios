@@ -23,8 +23,6 @@ namespace SME.SR.Data
                                                             string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, int[] tipoPendenciaGrupo, string usuarioRf, bool exibirHistorico)
         {
             StringBuilder query = new StringBuilder();
-
-
             if (tipoPendenciaGrupo.Count() == 1)
             {
                 int pendencia = tipoPendenciaGrupo[0];
@@ -209,6 +207,14 @@ namespace SME.SR.Data
                                         and not p.excluido  ");
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 outrasPendencias.AppendLine(" and usu.login = @usuarioRf ");
+            else
+            {
+                outrasPendencias.AppendLine(@" and usu.login in (select distinct usu.login 
+                                        from public.v_abrangencia a
+                                        inner join usuario usu on usu.id = a.usuario_id
+                                        where a.dre_codigo= @dreCodigo
+                                        and a.ue_codigo = @ueCodigo) ");
+            }
             query.AppendLine(" union all ");
             query.AppendLine(outrasPendencias.ToString());
             return query.ToString();
@@ -400,7 +406,14 @@ namespace SME.SR.Data
                                     and not p.excluido ");
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 outrasPendencias.AppendLine(" and usu.login = @usuarioRf ");
-
+            else
+            {
+                outrasPendencias.AppendLine(@" and usu.login in (select distinct usu.login 
+                                        from public.v_abrangencia a
+                                        inner join usuario usu on usu.id = a.usuario_id
+                                        where a.dre_codigo= @dreCodigo
+                                        and a.ue_codigo = @ueCodigo) ");
+            }
             query.AppendLine(" union all ");
             query.AppendLine(outrasPendencias.ToString());
             return query.ToString();

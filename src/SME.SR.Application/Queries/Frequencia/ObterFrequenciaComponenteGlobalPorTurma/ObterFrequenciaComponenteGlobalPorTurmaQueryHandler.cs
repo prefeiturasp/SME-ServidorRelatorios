@@ -47,7 +47,7 @@ namespace SME.SR.Application
 
                 var turmaCodigo = componentesCurricularesPorTurma.FirstOrDefault(cc => cc.ComponenteCurricularId.ToString() == alunoComponente.Key.DisciplinaId).CodigoTurma;
                 var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
-                
+
                 foreach (var bimestre in bimestres)
                 {
                     var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
@@ -58,6 +58,8 @@ namespace SME.SR.Application
 
                     frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
                     frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;
+
+                    frequenciaAluno.TotalAulas += frequenciaAluno.TotalAulas == 0 ? frequenciaBimestre?.TotalAulas ?? 0 : 0;
 
                     // Particularidade de cálculo de frequência para 2020.
                     if (turma.AnoLetivo.Equals(2020))
