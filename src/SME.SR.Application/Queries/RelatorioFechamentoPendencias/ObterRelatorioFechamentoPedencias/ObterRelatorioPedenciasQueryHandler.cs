@@ -118,7 +118,8 @@ namespace SME.SR.Application
                         if (retornoLinearParaCabecalho.ModalidadeCodigo != (int)Modalidade.Infantil)
                         {
                             bimestreParaAdicionar.NomeBimestre = bimestreDaTurma.ToString() + "º BIMESTRE";
-                            bimestreParaAdicionar.NomeModalidade = bimestresNomeModalidade.name.ToUpper();
+                            if (qtdModalidades > 1)
+                                bimestreParaAdicionar.NomeModalidade = bimestresNomeModalidade.name.ToUpper();
                             if (bimestreParaAdicionar.NomeModalidade == "EJA" && semestreDaTurma != "0")
                                 bimestreParaAdicionar.SemestreTurma = semestreDaTurma + "º SEMESTRE";
 
@@ -187,12 +188,12 @@ namespace SME.SR.Application
 
             var outrasPendencias = resultadoQuery.Where(a => a.OutrasPendencias).OrderBy(p => p.TipoPendencia).OrderBy(p => p.Criador).ToList();
 
-            retorno.Dre.Ue.OutrasPendencias = RetornarOutrasPendencias(outrasPendencias,filtros.ExibirDetalhamento);
+            retorno.Dre.Ue.OutrasPendencias = RetornarOutrasPendencias(outrasPendencias, filtros.ExibirDetalhamento);
 
             return await Task.FromResult(retorno);
         }
 
-        private List<RelatorioPendenciasPendenciaDto> RetornarOutrasPendencias(List<RelatorioPendenciasQueryRetornoDto> outrasPendencias,bool exibirDetalhamento)
+        private List<RelatorioPendenciasPendenciaDto> RetornarOutrasPendencias(List<RelatorioPendenciasQueryRetornoDto> outrasPendencias, bool exibirDetalhamento)
         {
             var listaOutrasPendencias = new List<RelatorioPendenciasPendenciaDto>();
 
@@ -232,7 +233,7 @@ namespace SME.SR.Application
                     pendenciaParaAdicionar.NomeUsuarioAprovacao = item.Aprovador;
 
                 pendenciaParaAdicionar.Situacao = ((SituacaoPendencia)item.Situacao).ToString();
-                
+
                 listaOutrasPendencias.Add(pendenciaParaAdicionar);
             }
 
