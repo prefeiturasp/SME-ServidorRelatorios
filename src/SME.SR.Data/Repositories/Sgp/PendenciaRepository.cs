@@ -124,7 +124,7 @@ namespace SME.SR.Data
 	                        p.alterado_por as aprovador,
 	                        p.alterado_rf as aprovadorRf,
                             'Calendário' as TipoPendencia,
-                            false as OutrasPendencias
+                            true as OutrasPendencias
                         from pendencia_calendario_ue pcu 
                         inner join pendencia p 
 	                        on pcu.pendencia_id  = p.id
@@ -318,7 +318,7 @@ namespace SME.SR.Data
                             p.alterado_por as aprovador,
                             p.alterado_rf as aprovadorRf,
                             'AEE' as TipoPendencia,
-                            false as OutrasPendencias
+                            true as OutrasPendencias
                         from pendencia_plano_aee ppa
                         inner join pendencia p 
                             on p.id = ppa.pendencia_id

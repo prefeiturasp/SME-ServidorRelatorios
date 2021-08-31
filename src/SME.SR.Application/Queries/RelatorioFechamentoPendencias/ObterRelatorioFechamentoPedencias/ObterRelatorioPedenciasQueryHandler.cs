@@ -96,7 +96,7 @@ namespace SME.SR.Application
                 Nome = retornoLinearParaCabecalho.UeNome
             };
 
-            var turmasCodigos = resultadoQuery.Select(a => a.TurmaCodigo).Distinct();
+            var turmasCodigos = resultadoQuery.Where(x => x.OutrasPendencias == false).Select(a => a.TurmaCodigo).Distinct();
 
             foreach (var turmaCodigo in turmasCodigos)
             {
