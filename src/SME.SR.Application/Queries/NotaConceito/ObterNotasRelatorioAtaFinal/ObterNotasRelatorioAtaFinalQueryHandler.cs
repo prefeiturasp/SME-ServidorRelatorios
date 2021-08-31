@@ -20,7 +20,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> Handle(ObterNotasRelatorioAtaFinalQuery request, CancellationToken cancellationToken)
         {
-            var notas = await notasConceitoRepository.ObterNotasTurmasAlunosParaAtaFinalAsync(request.CodigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre, request.TiposTurma);
+            var notas = await notasConceitoRepository.ObterNotasTurmasAlunosParaAtaFinalAsync(request.CodigosAlunos, request.CodigoTurma, request.AnoLetivo, request.Modalidade, request.Semestre, request.TiposTurma);
 
             if (notas == null || !notas.Any())
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
