@@ -107,7 +107,9 @@ namespace SME.SR.Data
                                                                                             string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf, bool exibirHistorico)
         {
             var outrasPendencias = new StringBuilder();
-            var query = new StringBuilder(@$"select distinct p.titulo,
+            var query = new StringBuilder(@$"select distinct 
+                            p.id as pendenciaId,
+                            p.titulo,
 	                        p.descricao as Detalhe,
 	                        p.situacao,
 	                        d.abreviacao as DreNome,
@@ -124,7 +126,8 @@ namespace SME.SR.Data
 	                        p.alterado_por as aprovador,
 	                        p.alterado_rf as aprovadorRf,
                             'Calendário' as TipoPendencia,
-                            true as OutrasPendencias
+                            true as OutrasPendencias,
+                            p.tipo
                         from pendencia_calendario_ue pcu 
                         inner join pendencia p 
 	                        on pcu.pendencia_id  = p.id
@@ -173,6 +176,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and pe.bimestre  = @bimestre");
 
             outrasPendencias.AppendLine($@"select  distinct 
+                                            p.id as pendenciaId,
                                             p.titulo,
                                              p.descricao as Detalhe,
                                              p.situacao,
@@ -190,7 +194,8 @@ namespace SME.SR.Data
                                             p.alterado_por as aprovador,
                                             p.alterado_rf as aprovadorRf,
                                             'Calendário' as TipoPendencia,
-                                             true as OutrasPendencias
+                                             true as OutrasPendencias,
+                                             p.tipo
                                         from pendencia p
                                         left join pendencia_calendario_ue pcu 
                                             on pcu.pendencia_id  = p.id
@@ -224,7 +229,8 @@ namespace SME.SR.Data
                                                                                                 string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, string usuarioRf, bool exibirHistorico)
         {
             var query = new StringBuilder(@$"select distinct
-	                        p.titulo,
+	                        p.id as pendenciaId,
+                            p.titulo,
 	                        p.descricao as Detalhe,
 	                        p.situacao,
 	                        d.abreviacao as DreNome,
@@ -301,6 +307,7 @@ namespace SME.SR.Data
         {
             var outrasPendencias = new StringBuilder();
             var query = new StringBuilder($@" select distinct 
+                            p.id as pendenciaId,
                             p.titulo,
                             p.descricao as Detalhe,
                             p.situacao,
@@ -370,7 +377,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and pe.bimestre  = @bimestre");
 
             outrasPendencias.AppendLine($@"select  distinct    
-                                             p.titulo,
+                                             p.id as pendenciaId,p.titulo,
                                              p.descricao as Detalhe,
                                              p.situacao,
                                              '' as DreNome,
@@ -422,6 +429,7 @@ namespace SME.SR.Data
                                                                             string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf, bool exibirHistorico)
         {
             var query = new StringBuilder($@"select distinct 
+                            p.id as pendenciaId,
                             p.titulo,
                             p.descricao as Detalhe,
                             p.situacao,

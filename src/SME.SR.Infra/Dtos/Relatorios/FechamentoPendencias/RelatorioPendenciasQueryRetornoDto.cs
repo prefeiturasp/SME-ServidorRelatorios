@@ -2,6 +2,7 @@
 {
     public class RelatorioPendenciasQueryRetornoDto
     {
+        public long PendenciaId { get; set; }
         public string Titulo { get; set; }
         public string Detalhe { get; set; }
         public int Situacao { get; set; }
@@ -20,5 +21,6 @@
         public string AprovadorRf { get; set; }
         public string TipoPendencia { get; set; }
         public bool OutrasPendencias { get; set; }
+        public int Tipo { get; set; }
     }
 }
