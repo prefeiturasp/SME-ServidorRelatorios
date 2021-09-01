@@ -3,6 +3,7 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
@@ -128,7 +129,16 @@ namespace SME.SR.Application
 
                             if (filtros.ExibirDetalhamento)
                             {
-                                pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Detalhe);
+                                pendenciaParaAdicionar.Detalhes = new List<string>
+                                {
+                                    "Quantidade de Eventos de Conselho de Escola (8)",
+                                    "Quantidade de Eventos de Conselho de Classe (8)",
+                                    "Quantidade de Eventos de Conselho de Escola (8)",
+                                    "Quantidade de Eventos de Conselho de Classe (8)",
+                                    "Quantidade de Eventos de Conselho de Escola (8)",
+                                    "Quantidade de Eventos de Conselho de Escola (8)"
+                                };
+                                pendenciaParaAdicionar.DetalhamentoPendencia = "Eventos pendentes de cadastro:"; //UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Descricao);
                                 pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
                                 pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
