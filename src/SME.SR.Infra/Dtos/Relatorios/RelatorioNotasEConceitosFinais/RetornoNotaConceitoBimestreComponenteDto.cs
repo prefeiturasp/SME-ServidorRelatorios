@@ -26,7 +26,7 @@ namespace SME.SR.Infra
         public string TurmaCodigo { get; set; }
         public string TurmaNome { get; set; }
         public TipoEscola TipoEscola { get; set; }
-        public string NotaConceitoFinal => $"{NotaConceito} {(EhNotaConceitoFechamento ? "*" : string.Empty)}";
+        public string NotaConceitoFinal => $"{NotaConceito} {(!ConselhoClasseAlunoId.HasValue ? "*" : string.Empty)}";
         public string UeNomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {UeNome}"; } }
         public bool ExcluirNota { get; set; }
     }
