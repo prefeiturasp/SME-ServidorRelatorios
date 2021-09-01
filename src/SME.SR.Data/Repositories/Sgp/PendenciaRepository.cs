@@ -184,7 +184,6 @@ namespace SME.SR.Data
                 query.AppendLine($" and pe.bimestre  = @bimestre");
 
             query.AppendLine(" union all  ");
-
             query.AppendLine(@" select distinct 
                             p.titulo,
 	                        p.descricao as Descricao,
