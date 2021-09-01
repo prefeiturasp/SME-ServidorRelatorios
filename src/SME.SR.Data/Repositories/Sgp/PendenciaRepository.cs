@@ -202,14 +202,14 @@ namespace SME.SR.Data
 	                        on pa.pendencia_id  = p.id
 	                    inner join aula a 
                             on a.id  = pa.aula_id
-	                    inner join dre d 
-	                        on u.dre_id  = d.id   
-	                    inner join tipo_escola te
-                            on te.id = u.tipo_escola       
 	               	    inner join turma t 
 	                        on t.id = a.turma_id
 	                    inner join ue u 
 	                        on t.ue_id  = u.id 
+	                    inner join dre d 
+	                        on u.dre_id  = d.id   
+	                    inner join tipo_escola te
+                            on te.id = u.tipo_escola       
                         inner join pendencia_usuario pu 
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
