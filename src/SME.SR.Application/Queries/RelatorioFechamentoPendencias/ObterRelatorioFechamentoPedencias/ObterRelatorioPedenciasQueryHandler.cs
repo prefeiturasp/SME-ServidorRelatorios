@@ -152,7 +152,7 @@ namespace SME.SR.Application
                                 if (filtros.ExibirDetalhamento)
                                 {
                                     
-                                    pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Detalhe);
+                                    //pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Detalhe);
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
@@ -215,13 +215,13 @@ namespace SME.SR.Application
 
                 if (exibirDetalhamento)
                 {
-                    pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(item.Detalhe);
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+                    //pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(item.Detalhes);
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o encaminhamento.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
 
                 }
 
