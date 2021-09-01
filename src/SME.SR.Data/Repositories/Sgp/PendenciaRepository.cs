@@ -199,7 +199,7 @@ namespace SME.SR.Data
 	                        '' as TurmaNome,
                             '' as TurmaCodigo,
 	                        0 as DisciplinaId,
-	                        pe.bimestre,
+	                        0 as bimestre,
                             usu.nome as criador,
                             usu.login as criadorRf,
 	                        p.alterado_por as aprovador,
@@ -223,8 +223,6 @@ namespace SME.SR.Data
 	                        on u.dre_id  = d.id 
 	                    inner join tipo_calendario tc
 		                    on pcu.tipo_calendario_id  = tc.id 
-	                    inner join periodo_escolar pe
-		                    on pe.tipo_calendario_id = tc.id 
                         inner join pendencia_usuario pu 
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
