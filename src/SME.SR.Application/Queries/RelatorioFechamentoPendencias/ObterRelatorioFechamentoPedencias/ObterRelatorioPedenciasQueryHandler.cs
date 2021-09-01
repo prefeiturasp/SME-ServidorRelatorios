@@ -46,9 +46,6 @@ namespace SME.SR.Application
             var componentesCurricularesIds = resultadoQuery.Select(a => a.DisciplinaId).Distinct().ToArray();
             var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesIds));
 
-            if (componentesCurricularesDescricoes == null || !componentesCurricularesDescricoes.Any())
-                throw new NegocioException("Não foram localizadas descrições dos componentes curriculares no EOL.");
-
             var retorno = new RelatorioPendenciasDto();
             var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0).FirstOrDefault();
             retorno.UsuarioLogadoNome = filtros.UsuarioLogadoNome;
