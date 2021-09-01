@@ -37,6 +37,11 @@ namespace SME.SR.Application
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo,
                 (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo, filtros.UsuarioRf, filtros.ExibirHistorico);
 
+            //ObterDescricaoPendenciaAula(resultadoQuery);
+            //ObterDescricaoPendenciaEvento(resultadoQuery);
+            //ObterDescricaoPendenciaAusenciaAvaliacaoCP(resultadoQuery);
+            //ObterDescricaoPendenciaAusenciaRegistroIndividualAsync(resultadoQuery);
+
             if (resultadoQuery == null || !resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
 
