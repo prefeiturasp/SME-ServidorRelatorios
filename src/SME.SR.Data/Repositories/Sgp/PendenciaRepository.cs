@@ -203,7 +203,7 @@ namespace SME.SR.Data
 	                    inner join aula a 
                             on a.id  = pa.aula_id
 	               	    inner join turma t 
-	                        on t.id = a.turma_id
+	                        on t.turma_id = a.turma_id
 	                    inner join ue u 
 	                        on t.ue_id  = u.id 
 	                    inner join dre d 
