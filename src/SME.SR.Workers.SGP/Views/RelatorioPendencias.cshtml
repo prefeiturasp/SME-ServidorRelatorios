@@ -125,7 +125,7 @@
     void MontarDetalhamentoPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias)
     {
         int iContadorCaracteres = 0;
-        int numeroCaracteresDetalhamentoPendencias = pendencias.DetalhamentoPendencia != null ? pendencias.DetalhamentoPendencia.Length : 1;
+        int numeroCaracteresDetalhamentoPendencias = pendencias.DetalhamentoPendencia != null ? pendencias.DetalhamentoPendencia.Length : 0;
 
         @while (iContadorCaracteres != numeroCaracteresDetalhamentoPendencias)
         {
@@ -140,17 +140,21 @@
                 {
                     MontarParteDetalhamento(pendencias.DescricaoPendencia, numeroCaracteresDetalhamentoPendencias);
                 }
-                if (pendencias.DetalhamentoPendencia != null)
-                {
-                    var qntCaracteresParaBuscar = numeroCaracteresDetalhamentoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDetalhamentoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
-                    var textParaExibir = pendencias.DetalhamentoPendencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
-                    iContadorCaracteres += textParaExibir.Length;
-                    quebrou = true;
+                
+                var qntCaracteresParaBuscar = numeroCaracteresDetalhamentoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDetalhamentoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = pendencias.DetalhamentoPendencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+                quebrou = true;
 
-                    @Html.Raw(textParaExibir)
-                }
-                    contadorQuebrarPagina++;
+                @Html.Raw(textParaExibir)
+                
+                contadorQuebrarPagina++;
             }
+        }
+
+        if (pendencias.DetalhamentoPendencia == null)
+        {
+            MontarParteDetalhamento(pendencias.DescricaoPendencia, 0);            
         }
 
         if (pendencias.Detalhes.Count > 0)
