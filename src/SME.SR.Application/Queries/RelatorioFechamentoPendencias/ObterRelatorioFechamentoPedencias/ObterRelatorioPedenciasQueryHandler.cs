@@ -36,11 +36,7 @@ namespace SME.SR.Application
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo,
                 (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo, filtros.UsuarioRf, filtros.ExibirHistorico);
-
-            //ObterDescricaoPendenciaAula(resultadoQuery);
-            //ObterDescricaoPendenciaEvento(resultadoQuery);
-            //ObterDescricaoPendenciaAusenciaAvaliacaoCP(resultadoQuery);
-            //ObterDescricaoPendenciaAusenciaRegistroIndividualAsync(resultadoQuery);
+                      
 
             if (resultadoQuery == null || !resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
@@ -54,7 +50,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foram localizadas descrições dos componentes curriculares no EOL.");
 
             var retorno = new RelatorioPendenciasDto();
-            var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome.Length > 0 && x.UeNome.Length > 0).FirstOrDefault();
+            var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0).FirstOrDefault();
             retorno.UsuarioLogadoNome = filtros.UsuarioLogadoNome;
             retorno.UsuarioLogadoRf = filtros.UsuarioLogadoRf;
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
@@ -226,8 +222,8 @@ namespace SME.SR.Application
                     else
                         pendenciaParaAdicionar.Detalhes = item.Detalhes;
 
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o encaminhamento.", "");
                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");

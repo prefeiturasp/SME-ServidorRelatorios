@@ -125,7 +125,7 @@
     void MontarDetalhamentoPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias)
     {
         int iContadorCaracteres = 0;
-        int numeroCaracteresDetalhamentoPendencias = pendencias.DetalhamentoPendencia.Length;
+        int numeroCaracteresDetalhamentoPendencias = pendencias.DetalhamentoPendencia != null ? pendencias.DetalhamentoPendencia.Length : 1;
 
         @while (iContadorCaracteres != numeroCaracteresDetalhamentoPendencias)
         {
@@ -140,14 +140,16 @@
                 {
                     MontarParteDetalhamento(pendencias.DescricaoPendencia, numeroCaracteresDetalhamentoPendencias);
                 }
+                if (pendencias.DetalhamentoPendencia != null)
+                {
+                    var qntCaracteresParaBuscar = numeroCaracteresDetalhamentoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDetalhamentoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
+                    var textParaExibir = pendencias.DetalhamentoPendencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                    iContadorCaracteres += textParaExibir.Length;
+                    quebrou = true;
 
-                var qntCaracteresParaBuscar = numeroCaracteresDetalhamentoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDetalhamentoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
-                var textParaExibir = pendencias.DetalhamentoPendencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
-                iContadorCaracteres += textParaExibir.Length;
-                quebrou = false;
-
-                @Html.Raw(textParaExibir)
-                contadorQuebrarPagina++;
+                    @Html.Raw(textParaExibir)
+                }
+                    contadorQuebrarPagina++;
             }
         }
 
@@ -165,7 +167,7 @@
                 {
                     @Html.Raw("<br>")
                 }
-                
+
                 @Html.Raw(detalhes)
                 quebrou = false;
                 contadorQuebrarPagina = contadorQuebrarPagina + 0.5;
@@ -446,9 +448,9 @@
             margin-bottom: 22px;
         }
 
-        .header-pagina td {
-            text-align: left;
-        }
+            .header-pagina td {
+                text-align: left;
+            }
 
         .campo-dre {
             width: 25%;
