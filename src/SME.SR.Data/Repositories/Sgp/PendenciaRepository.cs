@@ -399,7 +399,7 @@ namespace SME.SR.Data
 	                        p.situacao,
                             p.instrucao,
 	                        d.abreviacao as DreNome,
-	                        te.descricao || ' - ' || u.nome as UeNome,
+	                        te.descricao || ' - ' || ue.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
 	                        t.modalidade_codigo as ModalidadeCodigo,
 	                        t.semestre,

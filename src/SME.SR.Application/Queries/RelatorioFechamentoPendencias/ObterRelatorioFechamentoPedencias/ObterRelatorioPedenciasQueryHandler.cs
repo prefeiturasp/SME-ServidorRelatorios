@@ -140,7 +140,9 @@ namespace SME.SR.Application
 
                                 pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
                                 pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
-                                pendenciaParaAdicionar.DescricaoPendencia = pendenciaDoComponenteDaTurma.Titulo;
+                                pendenciaParaAdicionar.Titulo = pendenciaDoComponenteDaTurma.Titulo;
+                                pendenciaParaAdicionar.DescricaoPendencia = pendenciaDoComponenteDaTurma.Descricao;
+                                pendenciaParaAdicionar.Instrucao = pendenciaDoComponenteDaTurma.Instrucao;
                                 pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
                                 pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;                                
 
@@ -151,16 +153,13 @@ namespace SME.SR.Application
                                     else
                                         pendenciaParaAdicionar.Detalhes = pendenciaDoComponenteDaTurma.Detalhes;
 
-                                    pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Descricao);
-                                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
-                                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+                                    pendenciaParaAdicionar.DescricaoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Descricao);
+                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano.", "");
+                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
-                                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
-                                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
-                                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
-
-                                    pendenciaParaAdicionar.Instrucao = "Acesse a tela de Eventos e realize o cadastro dos eventos relatados acima.";
-
+                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
+                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
+                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
                                 }
 
                                 if (pendenciaDoComponenteDaTurma.TipoPendencia == TipoPendenciaGrupo.Fechamento.Name() && (SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao == SituacaoPendencia.Aprovada && !String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.Aprovador))
@@ -210,7 +209,9 @@ namespace SME.SR.Application
 
                 pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = item.AprovadorRf;
                 pendenciaParaAdicionar.CodigoUsuarioRf = item.CriadorRf;
-                pendenciaParaAdicionar.DescricaoPendencia = item.Titulo;
+                pendenciaParaAdicionar.Titulo = item.Titulo;
+                pendenciaParaAdicionar.DescricaoPendencia = item.Descricao;
+                pendenciaParaAdicionar.Instrucao = item.Instrucao;
                 pendenciaParaAdicionar.TipoPendencia = item.TipoPendencia;
                 pendenciaParaAdicionar.OutrasPendencias = item.OutrasPendencias;                
 
@@ -220,13 +221,14 @@ namespace SME.SR.Application
                         pendenciaParaAdicionar.Detalhes = await ObterAlunosRegistroIndividual(item.Detalhes);
                     else
                         pendenciaParaAdicionar.Detalhes = item.Detalhes;
+                    
+                    pendenciaParaAdicionar.DescricaoPendencia = UtilRegex.RemoverTagsHtml(item.Descricao);
+                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar?.DescricaoPendencia?.Replace("Clique aqui para acessar o plano.", "");
+                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar?.DescricaoPendencia?.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
-
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o encaminhamento.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar?.DescricaoPendencia?.Replace("Clique aqui para acessar o encaminhamento.", "");
+                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar?.DescricaoPendencia?.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
+                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar?.DescricaoPendencia?.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
                 }
 
                 if (item.TipoPendencia == TipoPendenciaGrupo.Fechamento.Name() && (SituacaoPendencia)item.Situacao == SituacaoPendencia.Aprovada && !String.IsNullOrEmpty(item.Aprovador))
