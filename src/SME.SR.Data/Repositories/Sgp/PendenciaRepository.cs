@@ -134,7 +134,7 @@ namespace SME.SR.Data
         private string ObterPendenciasCalendario(long modalidadeId, int? semestre, string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf, bool exibirHistorico)
         {
             var query = new StringBuilder(@$"select distinct 
-	                        p.id as pendenciaId,
+	                        p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
@@ -186,7 +186,7 @@ namespace SME.SR.Data
             query.AppendLine(" union all  ");
 
             query.AppendLine(@"select distinct 
-                            p.id as pendenciaId,
+                            p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
@@ -239,7 +239,7 @@ namespace SME.SR.Data
             query.AppendLine(" union all  ");
 
             query.AppendLine(@" select distinct 
-                            p.id as pendenciaId,
+                            p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
@@ -315,7 +315,7 @@ namespace SME.SR.Data
         private string ObterPendenciasFechamento(long modalidadeId, int? semestre, string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, string usuarioRf, bool exibirHistorico)
         {
             var query = new StringBuilder(@$"select distinct
-                            p.id as pendenciaId,
+                            p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
@@ -391,7 +391,7 @@ namespace SME.SR.Data
 
             query.AppendLine(" union all");
             query.AppendLine(@"select distinct
-                            p.id as pendenciaId,
+                            p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
@@ -466,7 +466,7 @@ namespace SME.SR.Data
 
             query.AppendLine(" union all");
             query.AppendLine(@"select distinct
-                            p.id as pendenciaId,
+                            p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
@@ -547,7 +547,7 @@ namespace SME.SR.Data
         {
             var outrasPendencias = new StringBuilder();
             var query = new StringBuilder($@" select distinct 
-                            p.id as pendenciaId,
+                            p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
@@ -610,7 +610,7 @@ namespace SME.SR.Data
             query.AppendLine("union all");
 
             query.AppendLine(@" select distinct 
-                            p.id as pendenciaId,
+                            p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
@@ -676,7 +676,7 @@ namespace SME.SR.Data
         private string ObterPendenciasDiarioClasse(long modalidadeId, int? semestre, string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf, bool exibirHistorico)
         {
             var query = new StringBuilder($@"select distinct 
-                            p.id as pendenciaId,
+                            p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
 	                        p.situacao,
