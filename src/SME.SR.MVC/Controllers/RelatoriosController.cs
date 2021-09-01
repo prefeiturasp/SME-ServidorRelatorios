@@ -282,7 +282,7 @@ namespace SME.SR.MVC.Controllers
                                 {
                                     new RelatorioPendenciasBimestreDto
                                     {
-                                         Nome="1º BIMESTRE",
+                                         NomeBimestre="1º BIMESTRE",
                                          Componentes = new List<RelatorioPendenciasComponenteDto>
                                          {
                                                new RelatorioPendenciasComponenteDto()
@@ -370,7 +370,7 @@ namespace SME.SR.MVC.Controllers
                                 {
                                     new RelatorioPendenciasBimestreDto
                                     {
-                                         Nome="1º BIMESTRE",
+                                         NomeBimestre="1º BIMESTRE",
                                          Componentes = new List<RelatorioPendenciasComponenteDto>
                                          {
                                                new RelatorioPendenciasComponenteDto()

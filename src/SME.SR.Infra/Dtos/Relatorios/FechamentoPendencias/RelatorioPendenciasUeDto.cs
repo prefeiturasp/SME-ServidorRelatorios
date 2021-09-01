@@ -11,5 +11,7 @@ namespace SME.SR.Infra
         public string Codigo { get; set; }
         public string Nome { get; set; }
         public List<RelatorioPendenciasTurmaDto> Turmas { get; set; }
+
+        public List<RelatorioPendenciasPendenciaDto> OutrasPendencias { get; set; }
     }
 }

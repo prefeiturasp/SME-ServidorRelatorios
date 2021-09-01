@@ -8,7 +8,9 @@ namespace SME.SR.Infra
         {
             Componentes = new List<RelatorioPendenciasComponenteDto>();
         }
-        public string Nome { get; set; }
+        public string NomeBimestre { get; set; }
+        public string NomeModalidade { get; set; }
+        public string SemestreTurma { get; set; }
 
         public List<RelatorioPendenciasComponenteDto> Componentes { get; set; }
 
