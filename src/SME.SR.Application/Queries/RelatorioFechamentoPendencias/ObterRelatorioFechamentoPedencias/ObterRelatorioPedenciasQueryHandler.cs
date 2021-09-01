@@ -149,9 +149,9 @@ namespace SME.SR.Application
                                 pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
                                 pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;
 
-                            if (filtros.ExibirDetalhamento)
-                            {
-                                pendenciaParaAdicionar.Detalhes = new List<string>
+                                if (filtros.ExibirDetalhamento)
+                                {
+                                    pendenciaParaAdicionar.Detalhes = new List<string>
                                 {
                                     "Quantidade de Eventos de Conselho de Escola (8)",
                                     "Quantidade de Eventos de Conselho de Classe (8)",
@@ -160,13 +160,15 @@ namespace SME.SR.Application
                                     "Quantidade de Eventos de Conselho de Escola (8)",
                                     "Quantidade de Eventos de Conselho de Escola (8)"
                                 };
-                                pendenciaParaAdicionar.DetalhamentoPendencia = "Eventos pendentes de cadastro:"; //UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Descricao);
-                                pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
-                                pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+                                    pendenciaParaAdicionar.DetalhamentoPendencia = "Eventos pendentes de cadastro:"; //UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Descricao);
+                                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
+                                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+
+                                    pendenciaParaAdicionar.Instrucao = "Acesse a tela de Eventos e realize o cadastro dos eventos relatados acima.";
 
                                 }
 
@@ -239,6 +241,8 @@ namespace SME.SR.Application
                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o encaminhamento.", "");
                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+
+                    pendenciaParaAdicionar.Instrucao = "Acesse a tela de Eventos e realize o cadastro dos eventos relatados acima.";
 
                 }
 

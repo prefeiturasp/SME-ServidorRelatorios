@@ -23,6 +23,7 @@ namespace SME.SR.Infra
         public string CodigoUsuarioAprovacaoRf { get; set; }
         public bool ExibirAprovacao { get; set; }
         public IList<string> Detalhes { get; set; }
+        public string Instrucao { get; set; }
 
         public string[] DetalhamentoPendenciaArray 
         { 
