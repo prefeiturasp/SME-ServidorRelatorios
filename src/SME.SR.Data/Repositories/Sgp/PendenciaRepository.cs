@@ -96,18 +96,10 @@ namespace SME.SR.Data
                     }
                 }
             }
-            try
-            {
-                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
-                var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf });
-                return retorno.OrderBy(x => x.Criador).OrderBy(x => x.TipoPendencia);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            var retorno = await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto>(query.ToString(), new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf });
+            return retorno.OrderBy(x => x.Criador).OrderBy(x => x.TipoPendencia);
         }
 
 
@@ -203,7 +195,7 @@ namespace SME.SR.Data
 	                        p.alterado_por as aprovador,
 	                        p.alterado_rf as aprovadorRf,
                             'Calendário' as TipoPendencia,
-                            true as OutrasPendencias,
+                            false as OutrasPendencias,
                             p.tipo
                         from pendencia_aula pa
                         inner join pendencia p 
@@ -252,54 +244,7 @@ namespace SME.SR.Data
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
 
-            outrasPendencias.AppendLine($@" 
-                                            select  distinct 
-                                            p.titulo,
-	                                        p.descricao as Descricao,
-	                                        p.situacao,
-                                            p.instrucao ,
-                                             '' as DreNome,
-                                             '' as UeNome,
-                                             0 as AnoLetivo,
-                                             0 as ModalidadeCodigo,
-                                             0 as  semestre,
-                                             '' as TurmaNome,
-                                             '' as TurmaCodigo,
-                                             0 as DisciplinaId,
-                                             0 as bimestre,
-                                            usu.nome as criador,
-                                            usu.login as criadorRf,
-                                            p.alterado_por as aprovador,
-                                            p.alterado_rf as aprovadorRf,
-                                            'Calendário' as TipoPendencia,
-                                             true as OutrasPendencias,
-                                             p.tipo
-                                        from pendencia p
-                                        left join pendencia_calendario_ue pcu 
-                                            on pcu.pendencia_id  = p.id
-                                        left join ue u 
-                                            on pcu.ue_id  = u.id
-                                        left join turma t 
-                                            on t.ue_id = u.id
-                                        inner join pendencia_usuario pu 
-                                              on pu.pendencia_id = p.id
-                                        inner join usuario usu 
-                                              on usu.id = pu.usuario_id
-                                        where p.situacao in(1,2)
-                                        and tipo  in(7,8,9,10,11,12,13)
-                                        and not p.excluido  ");
-            if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
-                outrasPendencias.AppendLine(" and usu.login = @usuarioRf ");
-            else
-            {
-                outrasPendencias.AppendLine(@" and usu.login in (select distinct usu.login 
-                                        from public.v_abrangencia a
-                                        inner join usuario usu on usu.id = a.usuario_id
-                                        where a.dre_codigo= @dreCodigo
-                                        and a.ue_codigo = @ueCodigo) ");
-            }
-            query.AppendLine(" union all ");
-            query.AppendLine(outrasPendencias.ToString());
+
             return query.ToString();
         }
 
@@ -455,56 +400,7 @@ namespace SME.SR.Data
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
-
-            outrasPendencias.AppendLine($@"select  distinct    
-                                             p.titulo,
-	                                         p.descricao as Descricao,
-	                                         p.situacao,
-                                             p.instrucao,
-                                             '' as DreNome,
-                                             '' as UeNome,
-                                             0 as AnoLetivo,
-                                             0 as ModalidadeCodigo,
-                                             0 as  semestre,
-                                             '' as TurmaNome,
-                                             '' as TurmaCodigo,
-                                             0 as DisciplinaId,
-                                             0 as bimestre,
-                                            usu.nome as criador,
-                                            usu.login as criadorRf,
-                                            p.alterado_por as aprovador,
-                                            p.alterado_rf as aprovadorRf,
-                                         'AEE' as TipoPendencia,
-                                         true as OutrasPendencias,
-                                        p.tipo
-                                    from pendencia p
-                                    left join  pendencia_plano_aee ppa
-                                        on ppa.pendencia_id  = p.id
-                                    inner join plano_aee pa 
-                                        on pa.id = ppa.plano_aee_id 
-                                    inner join turma t 
-                                        on t.id = pa.turma_id 
-                                    inner join ue u 
-                                        on u.id  = t.ue_id 
-                                    inner join pendencia_usuario pu 
-                                          on pu.pendencia_id = p.id
-                                    inner join usuario usu 
-                                          on usu.id = pu.usuario_id
-                                    where p.situacao in(1,2)
-                                    and tipo = (18)
-                                    and not p.excluido ");
-            if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
-                outrasPendencias.AppendLine(" and usu.login = @usuarioRf ");
-            else
-            {
-                outrasPendencias.AppendLine(@" and usu.login in (select distinct usu.login 
-                                        from public.v_abrangencia a
-                                        inner join usuario usu on usu.id = a.usuario_id
-                                        where a.dre_codigo= @dreCodigo
-                                        and a.ue_codigo = @ueCodigo) ");
-            }
-            query.AppendLine(" union all ");
-            query.AppendLine(outrasPendencias.ToString());
+            
             return query.ToString();
         }
         private string ObterPendenciasDiarioClasse(int anoLetivo, string dreCodigo, string ueCodigo, long modalidadeId, int? semestre,
