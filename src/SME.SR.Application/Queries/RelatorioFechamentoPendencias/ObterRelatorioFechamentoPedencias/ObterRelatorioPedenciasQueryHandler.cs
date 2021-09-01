@@ -94,7 +94,10 @@ namespace SME.SR.Application
                 Nome = retornoLinearParaCabecalho.UeNome
             };
 
-            var turmasCodigos = resultadoQuery.Where(x => x.OutrasPendencias == false).Select(a => a.TurmaCodigo).Distinct();
+            var turmasCodigos = resultadoQuery
+                .Where(x => !x.OutrasPendencias)
+                .Select(a => a.TurmaCodigo)
+                .Distinct();
 
             foreach (var turmaCodigo in turmasCodigos)
             {
@@ -102,12 +105,11 @@ namespace SME.SR.Application
 
                 if (!string.IsNullOrWhiteSpace(turmaCodigo))
                 {
-                    var bimestresDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo).Select(a => a.Bimestre).Distinct();
-                    var semestreDaTurma = resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).Semestre.ToUpper();
-                    var bimestresCodigoModalidade = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo).Select(a => a.ModalidadeCodigo).Distinct();
+                    var bimestresDaTurma = resultadoQuery.Where(a => !a.OutrasPendencias && a.TurmaCodigo == turmaCodigo).Select(a => a.Bimestre).Distinct();
+                    var semestreDaTurma = resultadoQuery.FirstOrDefault(a => !a.OutrasPendencias && a.TurmaCodigo == turmaCodigo).Semestre.ToUpper();
+                    var bimestresCodigoModalidade = resultadoQuery.Where(a => !a.OutrasPendencias && a.TurmaCodigo == turmaCodigo).Select(a => a.ModalidadeCodigo).Distinct();
                     var bimestresNomeModalidade = ObterModalidade(bimestresCodigoModalidade.FirstOrDefault());
                     turma.Nome = bimestresNomeModalidade?.name.ToUpper() + " - " + resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).TurmaNome.ToUpper();
-
 
                     foreach (var bimestreDaTurma in bimestresDaTurma)
                     {
@@ -256,7 +258,7 @@ namespace SME.SR.Application
             var detalheAlunos = new List<string>();
             var alunos = await mediator.Send(new ObterNomesAlunosPorCodigosQuery(alunosCodigos.ToArray()));
 
-            foreach (var aluno in alunos)            
+            foreach (var aluno in alunos.OrderBy(a => a.Nome))
                 detalheAlunos.Add($"{aluno.Nome} ({aluno.Codigo})");            
 
             return detalheAlunos;
