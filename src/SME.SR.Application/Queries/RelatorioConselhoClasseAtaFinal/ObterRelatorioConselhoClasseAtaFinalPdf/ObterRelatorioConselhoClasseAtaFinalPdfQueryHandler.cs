@@ -29,7 +29,7 @@ namespace SME.SR.Application
             var mensagensErro = new List<string>();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
             var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
-            
+
             turmas.AsParallel().WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas).ForAll(turma =>
             {
                 try
@@ -115,7 +115,7 @@ namespace SME.SR.Application
             }
 
             var componentesDaTurma = componentesCurriculares.SelectMany(cc => cc).ToList();
-            var componentesCurricularesPorTurma = componentesDaTurma.Select(cc => (cc.CodigoTurma, cc.CodDisciplina)).Distinct();
+            var componentesCurricularesPorTurma = ObterComponentesCurricularesTurma(componentesDaTurma);
 
             var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
 
@@ -218,7 +218,7 @@ namespace SME.SR.Application
             var pareceresConclusivos = await ObterPareceresConclusivos(turma.Codigo);
 
             var componentesCurriculares = componentesDaTurma.SelectMany(cc => cc).ToList();
-            var componentesCurricularesPorTurma = componentesCurriculares.Select(cc => (cc.CodigoTurma, cc.CodDisciplina)).Distinct();
+            var componentesCurricularesPorTurma = ObterComponentesCurricularesTurma(componentesCurriculares);
 
             var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
             var frequenciaAlunos = await ObterFrequenciaComponente(listaTurmas.ToArray(), componentesCurricularesPorTurma, bimestres, tipoCalendarioId);
@@ -246,6 +246,19 @@ namespace SME.SR.Application
             var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesCurriculares,
                 notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea);
             return MontarEstruturaPaginada(dadosRelatorio);
+        }
+
+        private IEnumerable<(string, long)> ObterComponentesCurricularesTurma(List<ComponenteCurricularPorTurma> componentesCurriculares)
+        {
+            var componentes = new List<(string, long)>();
+            componentes.AddRange(componentesCurriculares.Select(cc => (cc.CodigoTurma, cc.CodDisciplina)).Distinct());
+            if (componentesCurriculares.Any(a => a.Regencia))
+            {
+                foreach(var componenteRegencia in componentesCurriculares.Where(a => a.Regencia))
+                    componentes.AddRange(componenteRegencia.ComponentesCurricularesRegencia.Select(cc => (componenteRegencia.CodigoTurma, cc.CodDisciplina)).Distinct());
+            }
+
+            return componentes.Distinct().ToList();
         }
 
         private async Task<IEnumerable<AreaDoConhecimento>> ObterAreasConhecimento(IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares)
