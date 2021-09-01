@@ -6,7 +6,6 @@
     bool quebrou = false;
     int contarNumeroLinhas = 0;
     int contadorMaximoCaracteresPorLinha = 135;
-    bool imprimiuLinhaPendencia = false;
 
     string VerificaQuebra(int linhas, string nomeBimestre, string nomeComponente, bool temOutrasPendencias = false)
     {
@@ -119,9 +118,8 @@
         @Html.Raw("<div style='page-break-before:always'></div>");
         MontarCabecalho();
         MontarTitulos(nomeBimestre, nomeComponente, temOutrasPendencias);
-        MontarParteDetalhamento(pendencias.DescricaoPendencia, numeroCaracteresDetalhamentoPendencias);
+        MontarParteDetalhamento(pendencias.Titulo, numeroCaracteresDetalhamentoPendencias);
         quebrou = true;
-        imprimiuLinhaPendencia = false;
     }
 
     void MontarDetalhamentoPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias)
@@ -129,8 +127,7 @@
         int iContadorCaracteres = 0;
         var descricaoPendencia = pendencias.DescricaoPendencia;
         int numeroCaracteresDescricaoPendencias = descricaoPendencia != null ? descricaoPendencia.Length : 0; 
-        imprimiuLinhaPendencia = false;                    
-
+        
         @while (iContadorCaracteres != numeroCaracteresDescricaoPendencias)
         {
             bool quebrarPagina = contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina;
@@ -140,7 +137,7 @@
             }
             else
             {
-                if (!imprimiuLinhaPendencia)
+                if (!quebrou)
                 {
                     MontarParteDetalhamento(pendencias.Titulo, numeroCaracteresDescricaoPendencias);
                 }
@@ -148,7 +145,7 @@
                 var qntCaracteresParaBuscar = numeroCaracteresDescricaoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDescricaoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
                 var textParaExibir = descricaoPendencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
                 iContadorCaracteres += textParaExibir.Length;
-                imprimiuLinhaPendencia = true;
+                quebrou = true;
 
                 @Html.Raw(textParaExibir)
                 
