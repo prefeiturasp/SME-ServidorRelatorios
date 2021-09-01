@@ -99,31 +99,24 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
             var pendencias = new Dictionary<long, RelatorioPendenciasQueryRetornoDto>();
-            try
-            {
-                await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto, string, RelatorioPendenciasQueryRetornoDto>(query.ToString()
-                        , (dto, detalhe) =>
+
+            await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto, string, RelatorioPendenciasQueryRetornoDto>(query.ToString()
+                    , (dto, detalhe) =>
+                    {
+                        var pendencia = new RelatorioPendenciasQueryRetornoDto();
+
+                        if (!pendencias.TryGetValue(dto.PendenciaId, out pendencia))
                         {
-                            var pendencia = new RelatorioPendenciasQueryRetornoDto();
-
-                            if (!pendencias.TryGetValue(dto.PendenciaId, out pendencia))
-                            {
-                                dto.AdicionaDetalhe(detalhe);
-                                pendencias.Add(dto.PendenciaId, dto);
-                            }
-                            else
-                                pendencia.AdicionaDetalhe(detalhe);
-
-                            return dto;
+                            dto.AdicionaDetalhe(detalhe);
+                            pendencias.Add(dto.PendenciaId, dto);
                         }
-                        , new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf }
-                        , splitOn: "pendenciaId, Detalhe");
-            }
-            catch (Exception e)
-            {
+                        else
+                            pendencia.AdicionaDetalhe(detalhe);
 
-                throw;
-            }
+                        return dto;
+                    }
+                    , new { anoLetivo, dreCodigo, ueCodigo, modalidadeId, semestre, turmasCodigo, componentesCodigo, bimestre, pendenciaResolvida, usuarioRf }
+                    , splitOn: "pendenciaId, Detalhe");
 
             return pendencias.Values
                 .OrderBy(x => x.Criador)
@@ -472,7 +465,7 @@ namespace SME.SR.Data
 	                        p.situacao,
                             p.instrucao,
 	                        d.abreviacao as DreNome,
-	                        te.descricao || ' - ' || u.nome as UeNome,
+	                        te.descricao || ' - ' || ue.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
 	                        t.modalidade_codigo as ModalidadeCodigo,
 	                        t.semestre,
