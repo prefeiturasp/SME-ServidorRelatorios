@@ -20,10 +20,10 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AcompanhamentoAprendizagemTurmaDto>> ObterAcompanhamentoAprendizagemPorTurmaESemestre(long turmaId, string alunoCodigo, int semestre)
         {
-            var query = new StringBuilder(@"SELECT tb1.id,
-	                                               tb1.ApanhadoGeral,
-	                                               tb1.semestre,
-	                                               aa.id,
+            var query = new StringBuilder(@"select tb1.id,
+                                                   tb1.ApanhadoGeral,
+                                                   tb1.semestre,
+                                                   aa.id,
                                                    aa.aluno_codigo AS AlunoCodigo,
                                                    aas.observacoes AS Observacoes,
                                                    aas.percurso_individual AS PercursoIndividual,
@@ -32,30 +32,32 @@ namespace SME.SR.Data
                                                    arq.nome AS NomeOriginal,
                                                    arq.tipo_conteudo AS TipoArquivo,
                                                    arq.tipo
-                                            FROM   acompanhamento_aluno aa
-                                                   INNER JOIN acompanhamento_aluno_semestre aas
-                                                           ON aas.acompanhamento_aluno_id = aa.id
-                                                   LEFT JOIN acompanhamento_aluno_foto aaf
-                                                          ON aaf.acompanhamento_aluno_semestre_id = aas.id
-                                                   LEFT JOIN arquivo arq
-                                                          ON arq.id = aaf.arquivo_id  AND aaf.miniatura_id IS NOT null
-                                                   left join (select atr.id, 
-       				                                               atr.apanhado_geral AS ApanhadoGeral, 
-       				                                               atr.semestre,
-       				                                               atr.turma_id
-       		                                                  from acompanhamento_turma atr) as tb1 ON tb1.turma_id = aa.turma_id AND tb1.semestre = aas.semestre
-                                            WHERE aa.turma_id = @turmaId ");
+	                                            from (select atr.id, 
+                                                             atr.apanhado_geral AS ApanhadoGeral, 
+                                                             atr.semestre,
+                                                             atr.turma_id
+     	                                              from acompanhamento_turma atr) as tb1    	
+   	                                            left join  acompanhamento_aluno aa
+		                                            on tb1.turma_id = aa.turma_id
+                                                left join acompanhamento_aluno_semestre aas
+                                                    on aas.acompanhamento_aluno_id = aa.id and
+                                                       tb1.semestre = aas.semestre
+                                                left join acompanhamento_aluno_foto aaf
+                                                    on aaf.acompanhamento_aluno_semestre_id = aas.id
+                                                left join arquivo arq
+                                                    on arq.id = aaf.arquivo_id and 
+                                                       aaf.miniatura_id IS NOT null
+                                            where tb1.turma_id = @turmaId ");
 
             if (!string.IsNullOrEmpty(alunoCodigo))
                 query.AppendLine("and aa.aluno_codigo = @alunoCodigo ");
 
             if (semestre > 0)
-                query.AppendLine("AND aas.semestre = @semestre");
+                query.AppendLine("and tb1.semestre = @semestre");
 
             var parametros = new { turmaId, alunoCodigo, semestre };
 
             var lookup = new Dictionary<long, AcompanhamentoAprendizagemTurmaDto>();
-
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
@@ -67,17 +69,16 @@ namespace SME.SR.Data
                      if (!lookup.TryGetValue(acompanhamentoAprendizagemTurmaDto.Id, out acompanhamentoAprendizagem))
                      {
                          acompanhamentoAprendizagem = acompanhamentoAprendizagemTurmaDto;
-                         lookup.Add(acompanhamentoAprendizagem.Id, acompanhamentoAprendizagemTurmaDto);
+                         lookup.Add(acompanhamentoAprendizagem?.Id ?? 0, acompanhamentoAprendizagemTurmaDto);
                      }
                      if (acompanhamentoAprendizagemAlunoDto != null)
                          acompanhamentoAprendizagem.Add(acompanhamentoAprendizagemAlunoDto);
 
                      if (arquivoDto != null)
-                         acompanhamentoAprendizagem.AddFotoAluno(acompanhamentoAprendizagemAlunoDto.AlunoCodigo, arquivoDto);
+                         acompanhamentoAprendizagem.AddFotoAluno(acompanhamentoAprendizagemAlunoDto?.AlunoCodigo, arquivoDto);
 
                      return acompanhamentoAprendizagem;
                  }, param: parametros);
-
             }
 
             return lookup.Values;
