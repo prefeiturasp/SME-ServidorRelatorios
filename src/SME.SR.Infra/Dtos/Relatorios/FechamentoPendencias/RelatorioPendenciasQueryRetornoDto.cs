@@ -29,5 +29,6 @@ namespace SME.SR.Infra
         public string AprovadorRf { get; set; }
         public string TipoPendencia { get; set; }
         public bool OutrasPendencias { get; set; }
+        public int Tipo { get; set; }
     }
 }
