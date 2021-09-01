@@ -6,6 +6,7 @@
     bool quebrou = false;
     int contarNumeroLinhas = 0;
     int contadorMaximoCaracteresPorLinha = 135;
+    bool imprimiuLinhaPendencia = false;
 
     string VerificaQuebra(int linhas, string nomeBimestre, string nomeComponente, bool temOutrasPendencias = false)
     {
@@ -85,11 +86,11 @@
         @Html.Raw("</td></tr></tbody></table>")
     }
 
-    void MontarLinhaDetalhamento(string descricaoPendencia, int numeroCaracteresDetalhamentoPendencias)
+    void MontarLinhaDetalhamento(string tituloPendencia, int numeroCaracteresDescricaoPendencias)
     {
-        int numeroCaracteresDescricaoPendencias = descricaoPendencia.Length;
+        int numeroCaracteresTituloPendencias = tituloPendencia.Length;
 
-        if (numeroCaracteresDetalhamentoPendencias < numeroCaracteresDescricaoPendencias)
+        if (numeroCaracteresDescricaoPendencias < numeroCaracteresTituloPendencias)
         {
             int numeroLinhas = numeroCaracteresDescricaoPendencias / 45;
             if (numeroLinhas > 1)
@@ -99,16 +100,16 @@
         }
 
         @Html.Raw("<tbody><tr><td>");
-        @Html.Raw(descricaoPendencia)
+        @Html.Raw(tituloPendencia)
         @Html.Raw("</td><td>");
     }
 
-    void MontarParteDetalhamento(string descricaoPendencia, int numeroCaracteresDetalhamentoPendencias)
+    void MontarParteDetalhamento(string tituloPendencia, int numeroCaracteresDescricaoPendencias)
     {
         @Html.Raw("<table class='tabela-alunos estilo-texto'>");
         MontarCabecalhoDetalhamento();
         contadorQuebrarPagina++;
-        MontarLinhaDetalhamento(descricaoPendencia, numeroCaracteresDetalhamentoPendencias);
+        MontarLinhaDetalhamento(tituloPendencia, numeroCaracteresDescricaoPendencias);
     }
 
     void MontarQuebraPagina(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias, int numeroCaracteresDetalhamentoPendencias)
@@ -120,31 +121,34 @@
         MontarTitulos(nomeBimestre, nomeComponente, temOutrasPendencias);
         MontarParteDetalhamento(pendencias.DescricaoPendencia, numeroCaracteresDetalhamentoPendencias);
         quebrou = true;
+        imprimiuLinhaPendencia = false;
     }
 
     void MontarDetalhamentoPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias)
     {
         int iContadorCaracteres = 0;
-        int numeroCaracteresDetalhamentoPendencias = pendencias.DetalhamentoPendencia != null ? pendencias.DetalhamentoPendencia.Length : 0;
+        var descricaoPendencia = pendencias.DescricaoPendencia;
+        int numeroCaracteresDescricaoPendencias = descricaoPendencia != null ? descricaoPendencia.Length : 0; 
+        imprimiuLinhaPendencia = false;                    
 
-        @while (iContadorCaracteres != numeroCaracteresDetalhamentoPendencias)
+        @while (iContadorCaracteres != numeroCaracteresDescricaoPendencias)
         {
             bool quebrarPagina = contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina;
             if (quebrarPagina)
             {
-                MontarQuebraPagina(pendencias, nomeBimestre, nomeComponente, temOutrasPendencias, numeroCaracteresDetalhamentoPendencias);
+                MontarQuebraPagina(pendencias, nomeBimestre, nomeComponente, temOutrasPendencias, numeroCaracteresDescricaoPendencias);
             }
             else
             {
-                if (!quebrou)
+                if (!imprimiuLinhaPendencia)
                 {
-                    MontarParteDetalhamento(pendencias.DescricaoPendencia, numeroCaracteresDetalhamentoPendencias);
+                    MontarParteDetalhamento(pendencias.Titulo, numeroCaracteresDescricaoPendencias);
                 }
-                
-                var qntCaracteresParaBuscar = numeroCaracteresDetalhamentoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDetalhamentoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
-                var textParaExibir = pendencias.DetalhamentoPendencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+
+                var qntCaracteresParaBuscar = numeroCaracteresDescricaoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDescricaoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = descricaoPendencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
                 iContadorCaracteres += textParaExibir.Length;
-                quebrou = true;
+                imprimiuLinhaPendencia = true;
 
                 @Html.Raw(textParaExibir)
                 
@@ -152,7 +156,7 @@
             }
         }
 
-        if (pendencias.DetalhamentoPendencia == null)
+        if (descricaoPendencia == null)
         {
             MontarParteDetalhamento(pendencias.DescricaoPendencia, 0);            
         }
