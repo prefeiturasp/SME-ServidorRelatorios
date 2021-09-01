@@ -258,7 +258,7 @@ namespace SME.SR.Application
             var detalheAlunos = new List<string>();
             var alunos = await mediator.Send(new ObterNomesAlunosPorCodigosQuery(alunosCodigos.ToArray()));
 
-            foreach (var aluno in alunos)            
+            foreach (var aluno in alunos.OrderBy(a => a.Nome))
                 detalheAlunos.Add($"{aluno.Nome} ({aluno.Codigo})");            
 
             return detalheAlunos;
