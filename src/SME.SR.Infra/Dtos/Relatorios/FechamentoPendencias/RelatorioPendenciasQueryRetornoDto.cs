@@ -31,5 +31,11 @@ namespace SME.SR.Infra
         public string TipoPendencia { get; set; }
         public bool OutrasPendencias { get; set; }
         public int Tipo { get; set; }
+
+        public void AdicionaDetalhe(string detalhe)
+        {
+            if (!string.IsNullOrEmpty(detalhe))
+                Detalhes.Add(detalhe);
+        }
     }
 }
