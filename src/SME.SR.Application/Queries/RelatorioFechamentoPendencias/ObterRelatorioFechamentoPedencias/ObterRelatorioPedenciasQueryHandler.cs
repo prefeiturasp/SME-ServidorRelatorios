@@ -36,6 +36,7 @@ namespace SME.SR.Application
 
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo,
                 (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo, filtros.UsuarioRf, filtros.ExibirHistorico);
+                      
 
             if (resultadoQuery == null || !resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
@@ -49,7 +50,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foram localizadas descrições dos componentes curriculares no EOL.");
 
             var retorno = new RelatorioPendenciasDto();
-            var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome.Length > 0 && x.UeNome.Length > 0).FirstOrDefault();
+            var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0).FirstOrDefault();
             retorno.UsuarioLogadoNome = filtros.UsuarioLogadoNome;
             retorno.UsuarioLogadoRf = filtros.UsuarioLogadoRf;
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
@@ -142,17 +143,24 @@ namespace SME.SR.Application
                                 pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
                                 pendenciaParaAdicionar.DescricaoPendencia = pendenciaDoComponenteDaTurma.Titulo;
                                 pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
-                                pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;
+                                pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;                                
 
                                 if (filtros.ExibirDetalhamento)
                                 {
-                                    pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Detalhe);
+                                    if (pendenciaDoComponenteDaTurma.Tipo == (int)TipoPendencia.AusenciaDeRegistroIndividual)
+                                        pendenciaParaAdicionar.Detalhes = await ObterAlunosRegistroIndividual(pendenciaDoComponenteDaTurma.Detalhes);
+                                    else
+                                        pendenciaParaAdicionar.Detalhes = pendenciaDoComponenteDaTurma.Detalhes;
+
+                                    pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Descricao);
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
 
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+
+                                    pendenciaParaAdicionar.Instrucao = "Acesse a tela de Eventos e realize o cadastro dos eventos relatados acima.";
 
                                 }
 
@@ -188,12 +196,12 @@ namespace SME.SR.Application
 
             var outrasPendencias = resultadoQuery.Where(a => a.OutrasPendencias).OrderBy(p => p.TipoPendencia).OrderBy(p => p.Criador).ToList();
 
-            retorno.Dre.Ue.OutrasPendencias = RetornarOutrasPendencias(outrasPendencias, filtros.ExibirDetalhamento);
+            retorno.Dre.Ue.OutrasPendencias = await RetornarOutrasPendencias(outrasPendencias, filtros.ExibirDetalhamento);
 
             return await Task.FromResult(retorno);
         }
 
-        private List<RelatorioPendenciasPendenciaDto> RetornarOutrasPendencias(List<RelatorioPendenciasQueryRetornoDto> outrasPendencias, bool exibirDetalhamento)
+        private async Task<List<RelatorioPendenciasPendenciaDto>> RetornarOutrasPendencias(List<RelatorioPendenciasQueryRetornoDto> outrasPendencias, bool exibirDetalhamento)
         {
             var listaOutrasPendencias = new List<RelatorioPendenciasPendenciaDto>();
 
@@ -205,17 +213,23 @@ namespace SME.SR.Application
                 pendenciaParaAdicionar.CodigoUsuarioRf = item.CriadorRf;
                 pendenciaParaAdicionar.DescricaoPendencia = item.Titulo;
                 pendenciaParaAdicionar.TipoPendencia = item.TipoPendencia;
-                pendenciaParaAdicionar.OutrasPendencias = item.OutrasPendencias;
+                pendenciaParaAdicionar.OutrasPendencias = item.OutrasPendencias;                
 
                 if (exibirDetalhamento)
                 {
-                    pendenciaParaAdicionar.DetalhamentoPendencia = UtilRegex.RemoverTagsHtml(item.Detalhe);
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+                    if (item.Tipo == (int)TipoPendencia.AusenciaDeRegistroIndividual)
+                        pendenciaParaAdicionar.Detalhes = await ObterAlunosRegistroIndividual(item.Detalhes);
+                    else
+                        pendenciaParaAdicionar.Detalhes = item.Detalhes;
 
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
-                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o encaminhamento.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
+                    pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+
+                    pendenciaParaAdicionar.Instrucao = "Acesse a tela de Eventos e realize o cadastro dos eventos relatados acima.";
 
                 }
 
@@ -238,6 +252,17 @@ namespace SME.SR.Application
             }
 
             return listaOutrasPendencias;
+        }
+
+        private async Task<List<string>> ObterAlunosRegistroIndividual(IList<string> alunosCodigos)
+        {
+            var detalheAlunos = new List<string>();
+            var alunos = await mediator.Send(new ObterNomesAlunosPorCodigosQuery(alunosCodigos.ToArray()));
+
+            foreach (var aluno in alunos)            
+                detalheAlunos.Add($"{aluno.Nome} ({aluno.Codigo})");            
+
+            return detalheAlunos;
         }
     }
 }

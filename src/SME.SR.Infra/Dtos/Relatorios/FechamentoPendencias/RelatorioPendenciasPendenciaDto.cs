@@ -9,8 +9,9 @@ namespace SME.SR.Infra
     {
         public RelatorioPendenciasPendenciaDto()
         {
-            
-        }        
+            Detalhes = new List<string>();
+        }
+
         public string DescricaoPendencia { get; set; }
         public string DetalhamentoPendencia { get; set; }
         public string TipoPendencia { get; set; }
@@ -21,6 +22,8 @@ namespace SME.SR.Infra
         public string NomeUsuarioAprovacao { get; set; }
         public string CodigoUsuarioAprovacaoRf { get; set; }
         public bool ExibirAprovacao { get; set; }
+        public IList<string> Detalhes { get; set; }
+        public string Instrucao { get; set; }
 
         public string[] DetalhamentoPendenciaArray 
         { 
