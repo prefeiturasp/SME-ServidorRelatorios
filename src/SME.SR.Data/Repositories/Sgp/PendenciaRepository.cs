@@ -203,7 +203,7 @@ namespace SME.SR.Data
 	                        p.alterado_por as aprovador,
 	                        p.alterado_rf as aprovadorRf,
                             'Calendário' as TipoPendencia,
-                            true as OutrasPendencias,
+                            false as OutrasPendencias,
                             p.tipo
                         from pendencia_aula pa
                         inner join pendencia p 
