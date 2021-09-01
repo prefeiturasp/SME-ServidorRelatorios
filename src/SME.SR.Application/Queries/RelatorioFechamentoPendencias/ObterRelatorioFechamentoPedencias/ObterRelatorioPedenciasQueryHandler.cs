@@ -140,7 +140,9 @@ namespace SME.SR.Application
 
                                 pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
                                 pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
-                                pendenciaParaAdicionar.DescricaoPendencia = pendenciaDoComponenteDaTurma.Titulo;
+                                pendenciaParaAdicionar.Titulo = pendenciaDoComponenteDaTurma.Titulo;
+                                pendenciaParaAdicionar.DescricaoPendencia = pendenciaDoComponenteDaTurma.Descricao;
+                                pendenciaParaAdicionar.Instrucao = pendenciaDoComponenteDaTurma.Instrucao;
                                 pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
                                 pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;                                
 
@@ -158,9 +160,6 @@ namespace SME.SR.Application
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
                                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar.DetalhamentoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
-
-                                    pendenciaParaAdicionar.Instrucao = "Acesse a tela de Eventos e realize o cadastro dos eventos relatados acima.";
-
                                 }
 
                                 if (pendenciaDoComponenteDaTurma.TipoPendencia == TipoPendenciaGrupo.Fechamento.Name() && (SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao == SituacaoPendencia.Aprovada && !String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.Aprovador))
@@ -210,7 +209,9 @@ namespace SME.SR.Application
 
                 pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = item.AprovadorRf;
                 pendenciaParaAdicionar.CodigoUsuarioRf = item.CriadorRf;
-                pendenciaParaAdicionar.DescricaoPendencia = item.Titulo;
+                pendenciaParaAdicionar.Titulo = item.Titulo;
+                pendenciaParaAdicionar.DescricaoPendencia = item.Descricao;
+                pendenciaParaAdicionar.Instrucao = item.Instrucao;
                 pendenciaParaAdicionar.TipoPendencia = item.TipoPendencia;
                 pendenciaParaAdicionar.OutrasPendencias = item.OutrasPendencias;                
 

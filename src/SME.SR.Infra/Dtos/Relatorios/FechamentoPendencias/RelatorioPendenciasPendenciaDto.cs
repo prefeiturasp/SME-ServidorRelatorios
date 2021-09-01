@@ -12,6 +12,7 @@ namespace SME.SR.Infra
             Detalhes = new List<string>();
         }
 
+        public string Titulo { get; set; }
         public string DescricaoPendencia { get; set; }
         public string DetalhamentoPendencia { get; set; }
         public string TipoPendencia { get; set; }
