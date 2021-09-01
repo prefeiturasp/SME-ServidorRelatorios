@@ -227,9 +227,6 @@ namespace SME.SR.Application
                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o encaminhamento.", "");
                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
                     pendenciaParaAdicionar.DetalhamentoPendencia = pendenciaParaAdicionar?.DetalhamentoPendencia?.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
-
-                    pendenciaParaAdicionar.Instrucao = "Acesse a tela de Eventos e realize o cadastro dos eventos relatados acima.";
-
                 }
 
                 if (item.TipoPendencia == TipoPendenciaGrupo.Fechamento.Name() && (SituacaoPendencia)item.Situacao == SituacaoPendencia.Aprovada && !String.IsNullOrEmpty(item.Aprovador))
