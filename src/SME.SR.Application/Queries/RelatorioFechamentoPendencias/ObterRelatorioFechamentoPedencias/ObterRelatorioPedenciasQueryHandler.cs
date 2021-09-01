@@ -94,7 +94,8 @@ namespace SME.SR.Application
                 Nome = retornoLinearParaCabecalho.UeNome
             };
 
-            var turmasCodigos = resultadoQuery
+
+            var turmasCodigos = resultadoQuery.OrderBy(d => d.TurmaNome)
                 .Where(x => !x.OutrasPendencias)
                 .Select(a => a.TurmaCodigo)
                 .Distinct();
@@ -111,7 +112,7 @@ namespace SME.SR.Application
                     var bimestresNomeModalidade = ObterModalidade(bimestresCodigoModalidade.FirstOrDefault());
                     turma.Nome = bimestresNomeModalidade?.name.ToUpper() + " - " + resultadoQuery.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo).TurmaNome.ToUpper();
 
-                    foreach (var bimestreDaTurma in bimestresDaTurma)
+                    foreach (var bimestreDaTurma in bimestresDaTurma.OrderBy(b => b))
                     {
                         var bimestreParaAdicionar = new RelatorioPendenciasBimestreDto();
 
@@ -192,7 +193,7 @@ namespace SME.SR.Application
                 retorno.Dre.Ue.Turmas.Add(turma);
             }
 
-            var outrasPendencias = resultadoQuery.Where(a => a.OutrasPendencias).OrderBy(p => p.TipoPendencia).OrderBy(p => p.Criador).ToList();
+            var outrasPendencias = resultadoQuery.Where(a => a.OutrasPendencias).OrderBy(p => p.TipoPendencia).OrderBy(p => p.TurmaNome).OrderBy(p => p.Criador).ToList();
 
             retorno.Dre.Ue.OutrasPendencias = await RetornarOutrasPendencias(outrasPendencias, filtros.ExibirDetalhamento);
 
