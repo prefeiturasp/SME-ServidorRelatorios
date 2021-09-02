@@ -194,7 +194,7 @@ namespace SME.SR.Data
 							where
 							mte2.cd_turma_escola = @turmaCodigo
 							and matr2.cd_aluno = matr.cd_aluno
-							and mte2.cd_situacao_aluno = 1
+							and mte2.cd_situacao_aluno in (1, 5)
 						)
 						AND NOT EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
