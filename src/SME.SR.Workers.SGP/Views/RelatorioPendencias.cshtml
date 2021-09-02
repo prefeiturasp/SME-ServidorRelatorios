@@ -129,6 +129,8 @@
 
         @while (iContadorCaracteres != numeroCaracteresDescricaoPendencias)
         {
+            contadorMaximoLinhasPorPagina = numeroCaracteresDescricaoPendencias > 3000 ? 46 : 48;
+
             bool quebrarPagina = contadorQuebrarPagina + 2 >= contadorMaximoLinhasPorPagina;
             if (quebrarPagina)
             {
