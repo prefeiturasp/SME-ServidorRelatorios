@@ -6,7 +6,10 @@ services:
     build:
       context: .
       dockerfile: src/SME.SR.Workers.SGP/Dockerfile
+    networks:
+      - sme-network
 networks:
   sme-network:
+    external:
+      name: sme-network
     driver: bridge
-    name: sme_external_network
