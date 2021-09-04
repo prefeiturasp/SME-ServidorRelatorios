@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testes", "testes", "{FA28DF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.Testes.QueryHandlers", "testes\SME.SR.Testes.QueryHandlers\SME.SR.Testes.QueryHandlers.csproj", "{C0C85753-0700-4D3A-9195-66E8374FB3EA}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{593BCB6A-CEC1-4EF2-98FD-DAA0AE6EEEA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{C0C85753-0700-4D3A-9195-66E8374FB3EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0C85753-0700-4D3A-9195-66E8374FB3EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0C85753-0700-4D3A-9195-66E8374FB3EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{593BCB6A-CEC1-4EF2-98FD-DAA0AE6EEEA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{593BCB6A-CEC1-4EF2-98FD-DAA0AE6EEEA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{593BCB6A-CEC1-4EF2-98FD-DAA0AE6EEEA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{593BCB6A-CEC1-4EF2-98FD-DAA0AE6EEEA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
