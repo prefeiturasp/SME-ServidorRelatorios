@@ -60,12 +60,8 @@ namespace SME.SR.Application
                         if (retorno != null && retorno.Any())
                             relatoriosTurmas.AddRange(retorno);
                     }
-
-
                 }
             }
-
-
 
             if (mensagensErro.Length > 0 && relatoriosTurmas.Count() == 0)
                 throw new NegocioException(mensagensErro.ToString());
