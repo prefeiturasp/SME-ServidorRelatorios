@@ -1,17 +1,17 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-bionic AS base
 WORKDIR /app
-RUN apt-get update && apt-get install -y wget libfontconfig1 libgdiplus libxrender1
+RUN apt-get update && apt-get install -y wget libfontconfig1 libgdiplus libxrender1 unzip fontconfig
+
+RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
+     && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono
+RUN find RobotoMono-main/fonts/ttf/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/robotomono/ \; || return 1 \
+     && rm -rf roboto.zip &&  rm -rf RobotoMono-main && rm -rf /usr/share/fonts/truetype/dejavu \ && fc-cache -f && rm -rf /var/cache/*
 
 EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0-bionic AS build
 WORKDIR /src
-# unzip fontconfig 
-RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
-     && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono
-RUN find RobotoMono-main/fonts/ttf/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/robotomono/ \; || return 1 \
-     && rm -rf roboto.zip &&  rm -rf RobotoMono-main && rm -rf /usr/share/fonts/truetype/dejavu \ && fc-cache -f && rm -rf /var/cache/*
 
 COPY ["src/SME.SR.Application/SME.SR.Application.csproj", "src/SME.SR.Application/"]
 COPY ["src/SME.SR.Data/SME.SR.Data.csproj", "src/SME.SR.Data/"]
