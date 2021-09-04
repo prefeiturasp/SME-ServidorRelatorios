@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  sme.sr.workers.sgp:
+    image: ${DOCKER_REGISTRY-}smesrworkerssgp
+    build:
+      context: .
+      dockerfile: src/SME.SR.Workers.SGP/Dockerfile
+    ports:
+      - '5010:80'
+      - '5011:443'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=AMCOMSME
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - sme-network
+networks:
+  sme-network:
+    external:
+      name: sme-network
+    driver: bridge

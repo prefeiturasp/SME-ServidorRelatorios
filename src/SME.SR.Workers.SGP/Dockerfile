@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-bionic AS base
 WORKDIR /app
+RUN apt-get update && apt-get install -y wget libfontconfig1 libgdiplus libxrender1
+
 EXPOSE 80
 EXPOSE 443
 

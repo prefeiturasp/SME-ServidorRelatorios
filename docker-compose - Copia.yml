@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  sme.sr.workers.sgp:
+    image: ${DOCKER_REGISTRY-}smesrworkerssgp
+    build:
+      context: .
+      dockerfile: src/SME.SR.Workers.SGP/Dockerfile
+    ports:
+      - '5010:80'
+      - '5011:443'
+    networks:
+      - sme-network
+networks:
+  sme-network:
+    external:
+      name: sme-network
+    driver: bridge

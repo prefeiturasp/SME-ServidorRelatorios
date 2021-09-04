@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SME.SR.IoC;
 using SME.SR.Workers.SGP.Middlewares;
@@ -58,6 +59,15 @@ namespace SME.SR.Workers.SGP
             });
 
             app.UseMiddleware<ExcecaoMiddleware>();
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseStaticFiles();
 

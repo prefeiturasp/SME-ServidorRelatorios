@@ -6,6 +6,11 @@ services:
     build:
       context: .
       dockerfile: src/SME.SR.Workers.SGP/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - '5010:80'
+      - '5011:443'
     networks:
       - sme-network
 networks:
