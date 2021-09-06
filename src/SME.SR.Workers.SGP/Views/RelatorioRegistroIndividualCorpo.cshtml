@@ -89,24 +89,24 @@
     {
         <tr>
             <td width="10%">@dataRegistro</td>
-            <td width="60%" class="alinhar-esquerda espaco-esquerda-15">@descricao</td>
+            <td width="60%" class="justificar">@descricao</td>
             <td width="30%" style="padding:0 3px">@registradoPor</td>
         </tr>
         return "";
     }
 
-    string CalcularDescricao(string estudante, string descricaoRetante, string dataRegistro, string registradoPor)
+    string CalcularDescricao(string estudante, string descricaoRestante, string dataRegistro, string registradoPor)
     {
-        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRetante.Length, 100);
+        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRestante.Length, 100);
 
-        if (numeroLinhasDescricaoRestante > 50)
+        if (numeroLinhasDescricaoRestante > 36)
         {
-            DivideDescricao(estudante, descricaoRetante, dataRegistro, registradoPor);
+            DivideDescricao(estudante, descricaoRestante, dataRegistro, registradoPor);
         }
         else
         {
             @Html.Raw(QuebrarLinhas(estudante, numeroLinhasDescricaoRestante))
-            @Html.Raw(MontarDescricao(dataRegistro, descricaoRetante, registradoPor))
+            @Html.Raw(MontarDescricao(dataRegistro, descricaoRestante, registradoPor))
             @Html.Raw(SomaLinhasContador(numeroLinhasDescricaoRestante))
         }
 
@@ -115,8 +115,8 @@
 
     string DivideDescricao(string estudante, string descricao, string dataRegistro, string registradoPor)
     {
-        var descricaoDivida = descricao.Substring(0, 5000);
-        var descricaoRetante = descricao.Substring(5001);
+        var descricaoDivida = descricao.Substring(0, 3650);
+        var descricaoRetante = descricao.Substring(3651);
         @Html.Raw(QuebrarLinhas(estudante, 43))
         @Html.Raw(MontarDescricao(dataRegistro, descricaoDivida, registradoPor))
         @Html.Raw(SomaLinhasContador(43))
@@ -126,33 +126,34 @@
     }
 
     
-                <table class="tabela-cabecalho">
+<table class="tabela-cabecalho">
 
-                    @Html.Raw(MontarCabecalhoRegistros(Model.Nome))
+    @Html.Raw(MontarCabecalhoRegistros(Model.Nome))
+    @SomaLinhasContador(2)
 
-                    <tbody>
-                        @foreach (var registros in Model.Registros)
-                        {
-                            var estudante = Model.Nome;
-                            var descricao = registros.Descricao;
-                            var registradoPor = registros.RegistradoPor;
-                            var dataRegistro = registros.DataRegistro;
+    <tbody>
+        @foreach (var registros in Model.Registros)
+        {
+            var estudante = Model.Nome;
+            var descricao = registros.Descricao;
+            var registradoPor = registros.RegistradoPor;
+            var dataRegistro = registros.DataRegistro;
 
-                            int numeroLinhasDescricao = CalcularLinhas(descricao.Length, 100);
-                            int numeroLinhasResgistradoPor = CalcularLinhas(registradoPor.Length, 30);
-                            int numeroCalulo = numeroLinhasDescricao > numeroLinhasResgistradoPor ? numeroLinhasDescricao : numeroLinhasResgistradoPor;
+            int numeroLinhasDescricao = CalcularLinhas(descricao.Length, 100);
+            int numeroLinhasResgistradoPor = CalcularLinhas(registradoPor.Length, 30);
+            int numeroCalulo = numeroLinhasDescricao > numeroLinhasResgistradoPor ? numeroLinhasDescricao : numeroLinhasResgistradoPor;
 
-                            if (numeroLinhasDescricao > 50)
-                            {
-                                DivideDescricao(estudante, descricao, dataRegistro, registradoPor);
-                            }
-                            else
-                            {
-                                @Html.Raw(QuebrarLinhas(estudante, numeroCalulo))
-                                @Html.Raw(SomaLinhasContador(numeroCalulo))
-                                @Html.Raw(MontarDescricao(dataRegistro, descricao, registradoPor))
-                            }
-                        }
-                    </tbody>
-                </table>
+            if (numeroLinhasDescricao > 36)
+            {
+                DivideDescricao(estudante, descricao, dataRegistro, registradoPor);
+            }
+            else
+            {
+                @Html.Raw(QuebrarLinhas(estudante, numeroCalulo))
+                @Html.Raw(SomaLinhasContador(numeroCalulo))
+                @Html.Raw(MontarDescricao(dataRegistro, descricao, registradoPor))
+            }
+        }
+    </tbody>
+</table>
             }
