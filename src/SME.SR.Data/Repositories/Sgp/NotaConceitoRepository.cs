@@ -17,7 +17,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, string[] codigosTurmas, int anoLetivo, int modalidade, int semestre)
         {
             var query = @"select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
                                  fn.disciplina_id CodigoComponenteCurricular,
@@ -52,6 +52,7 @@ namespace SME.SR.Data
  	                        and t.modalidade_codigo = @modalidade
  	                        and t.semestre = @semestre
  	                        and fa.aluno_codigo = any(@codigosAluno)
+                            and t.turma_id = any(@codigosTurmas)
  
                          union
                           
@@ -94,11 +95,13 @@ namespace SME.SR.Data
                         where cca.aluno_codigo = any(@codigosAluno)
 	                        and t.ano_letivo = @anoLetivo
 	                        and t.modalidade_codigo = @modalidade
- 	                        and t.semestre = @semestre;";
+ 	                        and t.semestre = @semestre
+                            and t.turma_id = any(@codigosTurmas);";
 
             var parametros = new
             {
                 codigosAluno,
+                codigosTurmas,
                 anoLetivo,
                 modalidade,
                 semestre
@@ -119,7 +122,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre, int[] tiposTurma)
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, string codigoTurma, int anoLetivo, int modalidade, int semestre, int[] tiposTurma)
         {
             const string queryNotasRegular = @"
                         select cca.id as ConselhoClasseAlunoId, t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, fa.aluno_codigo CodigoAluno,
@@ -143,7 +146,8 @@ namespace SME.SR.Data
                          left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and ccn.componente_curricular_codigo = fn.disciplina_id 
                          left join conceito_valores cvc on ccn.conceito_id = cvc.id
                          where fa.aluno_codigo = ANY(@codigosAlunos)
-                           and t.ano_letivo = @anoLetivo ";
+                           and t.ano_letivo = @anoLetivo
+                           and t.turma_id = @codigoTurma ";
 
             const string queryNotasComplementar = @"
                         select cca.id as ConselhoClasseAlunoId, t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, ccatc.turma_id TurmaComplementarId, cca.aluno_codigo CodigoAluno,
@@ -169,7 +173,8 @@ namespace SME.SR.Data
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
                          where cca.aluno_codigo = ANY(@codigosAlunos)
-                           and t.ano_letivo = @anoLetivo ";
+                           and t.ano_letivo = @anoLetivo
+                           and t.turma_id = @codigoTurma ";
 
             const string queryNotasConselhoClasse = @"
                         select cca.id as ConselhoClasseAlunoId, t.turma_id CodigoTurma, t.tipo_turma as TipoTurma, null as TurmaComplementarId, cca.aluno_codigo CodigoAluno,
@@ -194,7 +199,8 @@ namespace SME.SR.Data
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
                          where cca.aluno_codigo = ANY(@codigosAlunos)
-                           and t.ano_letivo = @anoLetivo";
+                           and t.ano_letivo = @anoLetivo 
+                           and t.turma_id = @codigoTurma ";
 
             var queryRegular = new StringBuilder(queryNotasRegular);
             var queryComplementar = new StringBuilder(queryNotasComplementar);
@@ -232,6 +238,7 @@ namespace SME.SR.Data
             var parametros = new
             {
                 codigosAlunos,
+                codigoTurma,
                 anoLetivo,
                 modalidade,
                 semestre,

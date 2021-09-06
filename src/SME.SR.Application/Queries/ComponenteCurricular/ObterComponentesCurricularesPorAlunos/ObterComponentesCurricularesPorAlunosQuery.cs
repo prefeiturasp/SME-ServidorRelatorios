@@ -10,7 +10,7 @@ namespace SME.SR.Application
 {
     public class ObterComponentesCurricularesPorAlunosQuery : IRequest<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>>
     {
-        public ObterComponentesCurricularesPorAlunosQuery(int[] alunosCodigos, int anoLetivo, int semestre, string codigoUe, Modalidade modalidade, Usuario usuario)
+        public ObterComponentesCurricularesPorAlunosQuery(int[] alunosCodigos, int anoLetivo, int semestre, string codigoUe, Modalidade modalidade, Usuario usuario, bool consideraHistorico = false)
         {
             AlunosCodigos = alunosCodigos;
             AnoLetivo = anoLetivo;
@@ -18,6 +18,7 @@ namespace SME.SR.Application
             CodigoUe = codigoUe;
             Modalidade = modalidade;
             Usuario = usuario;
+            ConsideraHistorico = consideraHistorico;
         }
 
         public int[] AlunosCodigos { get; }
@@ -26,5 +27,6 @@ namespace SME.SR.Application
         public string CodigoUe { get; }
         public Modalidade Modalidade { get; }
         public Usuario Usuario { get; }
+        public bool ConsideraHistorico { get; }
     }
 }

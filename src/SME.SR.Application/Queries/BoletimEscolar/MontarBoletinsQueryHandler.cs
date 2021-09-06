@@ -48,11 +48,17 @@ namespace SME.SR.Application
 
                     var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
+                    if (!conselhoClassBimestres.Any())
+                        continue;
+
                     var tipoNota = tiposNota[turma.Codigo];
                     var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
                     {
                         TipoNota = tipoNota
                     };
+
+                    if (!componentesCurriculares.First(c => c.Key == aluno.Key).Any())
+                        throw new Exception($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
 
                     var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
                     foreach (var turmaAluno in aluno)
@@ -75,10 +81,12 @@ namespace SME.SR.Application
                 }
                 catch (Exception e)
                 {
-
                     throw;
                 }
             }
+
+            if (!boletinsAlunos.Any())
+                throw new NegocioException("Não foram encontrados dados para geração do boletim.");
 
             return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos));
         }

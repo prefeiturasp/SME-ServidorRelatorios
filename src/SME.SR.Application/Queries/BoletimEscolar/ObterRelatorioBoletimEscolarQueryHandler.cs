@@ -35,12 +35,12 @@ namespace SME.SR.Application
 
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo);
 
-            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario);
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario, request.ConsideraHistorico);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
 
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
 
-            var notas = await ObterNotasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var notas = await ObterNotasAlunos(codigosAlunos, turmas.Select(t => t.Codigo).ToArray(), request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
 
@@ -102,9 +102,9 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(int[] codigosAlunos, int anoLetivo, int semestre, string codigoUe, Modalidade modalidade, Usuario usuario)
+        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(int[] codigosAlunos, int anoLetivo, int semestre, string codigoUe, Modalidade modalidade, Usuario usuario, bool consideraHistorico = false)
         {
-            return await mediator.Send(new ObterComponentesCurricularesPorAlunosQuery(codigosAlunos, anoLetivo, semestre, codigoUe, modalidade, usuario));
+            return await mediator.Send(new ObterComponentesCurricularesPorAlunosQuery(codigosAlunos, anoLetivo, semestre, codigoUe, modalidade, usuario, consideraHistorico));
         }
 
         private async Task<IDictionary<string, string>> ObterTiposNotaRelatorio(int anoLetivo, long dreId, long ueId, int semestre, Modalidade modalidade, IEnumerable<Turma> turmas)
@@ -120,9 +120,9 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, string[] codigosTurmas, int anoLetivo, Modalidade modalidade, int semestre)
         {
-            return await mediator.Send(new ObterNotasRelatorioBoletimQuery(alunosCodigo, anoLetivo, (int)modalidade, semestre));
+            return await mediator.Send(new ObterNotasRelatorioBoletimQuery(alunosCodigo, codigosTurmas, anoLetivo, (int)modalidade, semestre));
         }
 
         private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
