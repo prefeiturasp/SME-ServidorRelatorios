@@ -16,7 +16,50 @@ services:
       - default
     ports:
       - "5672:5672"
-      - "15672:15672"  
+      - "15672:15672"
+
+  ##########################################################
+  ### JRS - Jasper Reports Server ##########################
+  ##########################################################
+  mariadb:
+    image: "bitnami/mariadb:10.3"
+    environment:
+      - MARIADB_USER=jasperreports
+      - MARIADB_DATABASE=jasperreports
+      - ALLOW_EMPTY_PASSWORD=yes
+    #volumes:
+    #  - 'mariadb_data:/volumes/mariadb:Z'
+
+  sme_sr_jasper_reports_server:
+    container_name: jasper_reports_server_edited
+    environment:
+      - MARIADB_HOST=mariadb
+      - MARIADB_PORT_NUMBER=3306
+      - JASPERREPORTS_DATABASE_USER=jasperreports
+      - JASPERREPORTS_DATABASE_NAME=jasperreports
+      - ALLOW_EMPTY_PASSWORD=yes
+    build:
+      context: .
+      dockerfile: jasper_server/Dockerfile  
+    # volumes:
+    #  - ./jasper_server/WEB-INF/web.xml:/bitnami/tomcat/data/jasperserver/WEB-INF/web.xml:z
+    networks:
+      - default
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    depends_on:
+      - mariadb
+
+##########################################################
+### Volumes, rede e infra estrutura ######################
+##########################################################
+volumes:
+  jasperreports_data:
+    driver: local
+  mariadb_data:
+    driver: local
+
 networks:
   default:
     driver: bridge
