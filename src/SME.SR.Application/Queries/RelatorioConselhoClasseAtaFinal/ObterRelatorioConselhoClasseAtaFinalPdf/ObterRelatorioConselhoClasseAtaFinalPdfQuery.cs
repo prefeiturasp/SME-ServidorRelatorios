@@ -6,10 +6,10 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAtaFinalPdfQuery : IRequest<List<ConselhoClasseAtaFinalPaginaDto>>
     {
-        public FiltroConselhoClasseAtaBimestralDto Filtro { get; set; }
+        public FiltroConselhoClasseAtaFinalDto Filtro { get; set; }
 
 
-        public ObterRelatorioConselhoClasseAtaFinalPdfQuery(FiltroConselhoClasseAtaBimestralDto filtros)
+        public ObterRelatorioConselhoClasseAtaFinalPdfQuery(FiltroConselhoClasseAtaFinalDto filtros)
         {
             this.Filtro = filtros;
         }
