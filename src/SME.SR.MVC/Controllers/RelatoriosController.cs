@@ -7588,7 +7588,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public async Task<IActionResult> RelatorioAtaFinal()
         {
 
-            var filtro = new FiltroConselhoClasseAtaFinalDto()
+            var filtro = new FiltroConselhoClasseAtaBimestralDto()
             {
                 AnoLetivo = 2021,
                 TurmasCodigos = new[] { "2317820" },

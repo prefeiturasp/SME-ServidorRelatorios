@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioConselhoClasseAtaFinalPdfQuery : IRequest<List<ConselhoClasseAtaFinalPaginaDto>>
+    public class ObterRelatorioConselhoClasseAtaBimestralPdfQuery : IRequest<List<ConselhoClasseAtaFinalPaginaDto>>
     {
         public FiltroConselhoClasseAtaBimestralDto Filtro { get; set; }
 
 
-        public ObterRelatorioConselhoClasseAtaFinalPdfQuery(FiltroConselhoClasseAtaBimestralDto filtros)
+        public ObterRelatorioConselhoClasseAtaBimestralPdfQuery(FiltroConselhoClasseAtaBimestralDto filtros)
         {
             this.Filtro = filtros;
         }

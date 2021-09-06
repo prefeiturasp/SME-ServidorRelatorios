@@ -20,7 +20,7 @@ namespace SME.SR.Application
         {
 
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAtaFinalResultados;
-            var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
+            var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaBimestralDto>();
             var mensagensErro = new StringBuilder();
             var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtros));
 

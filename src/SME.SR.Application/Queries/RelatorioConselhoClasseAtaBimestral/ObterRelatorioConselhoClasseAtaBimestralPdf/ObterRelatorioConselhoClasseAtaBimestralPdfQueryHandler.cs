@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
+    public class ObterRelatorioConselhoClasseAtaBimestralPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaBimestralPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
         private const string FREQUENCIA_100 = "100";
         private readonly VariaveisAmbiente variaveisAmbiente;
@@ -18,13 +18,13 @@ namespace SME.SR.Application
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
 
-        public ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler(IMediator mediator, VariaveisAmbiente variaveisAmbiente)
+        public ObterRelatorioConselhoClasseAtaBimestralPdfQueryHandler(IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<List<ConselhoClasseAtaFinalPaginaDto>> Handle(ObterRelatorioConselhoClasseAtaFinalPdfQuery request, CancellationToken cancellationToken)
+        public async Task<List<ConselhoClasseAtaFinalPaginaDto>> Handle(ObterRelatorioConselhoClasseAtaBimestralPdfQuery request, CancellationToken cancellationToken)
         {
             var mensagensErro = new List<string>();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
@@ -792,7 +792,7 @@ namespace SME.SR.Application
         }
         private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre, int[] tiposTurma)
         {
-            return await mediator.Send(new ObterNotasRelatorioAtaFinalQuery(alunosCodigo, anoLetivo, (int)modalidade, semestre, tiposTurma));
+            return await mediator.Send(new ObterNotasRelatorioAtaBimestralQuery(alunosCodigo, anoLetivo, (int)modalidade, semestre, tiposTurma));
         }
 
         private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade)
