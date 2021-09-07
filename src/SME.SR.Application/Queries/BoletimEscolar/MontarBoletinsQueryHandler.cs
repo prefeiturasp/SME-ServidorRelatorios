@@ -261,9 +261,11 @@ namespace SME.SR.Application
 
         private string ObterFrequenciaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<FrequenciaAluno> frequenciasComponente, int bimestre)
         {
-            return !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
-                frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? FREQUENCIA_100;
+            var frequenciaCorrespondente = frequenciasComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre);
+            var semAulasAusencias = (frequenciaCorrespondente?.TotalAulas ?? 0) == 0 && (frequenciaCorrespondente?.TotalAusencias ?? 0) == 0;
 
+            return !VerificaPossuiConselho(conselhoClassBimestres, bimestre) || semAulasAusencias ? string.Empty :
+                frequenciaCorrespondente?.PercentualFrequencia.ToString() ?? FREQUENCIA_100;
         }
 
         private string ObterFrequenciaRegenciaBimestre(bool nota, IEnumerable<int> conselhoClassBimestres, IEnumerable<FrequenciaAluno> frequenciasComponente, int bimestre)
@@ -276,7 +278,10 @@ namespace SME.SR.Application
 
         private string ObterFrequenciaFinalAluno(IEnumerable<FrequenciaAluno> frequencias, IEnumerable<int> conselhoClassBimestres)
         {
-            if (!conselhoClassBimestres.Any(a => a == 0))
+            var totalAulas = frequencias.Sum(f => f.TotalAulas);
+            var totalAusencias = frequencias.Sum(f => f.TotalAusencias);
+
+            if (!conselhoClassBimestres.Any(a => a == 0) || (totalAulas == 0 && totalAusencias == 0))
                 return "";
             else if (frequencias == null || !frequencias.Any())
                 return FREQUENCIA_100;
@@ -286,8 +291,8 @@ namespace SME.SR.Application
             {
                 var frequenciaFinal = new FrequenciaAluno()
                 {
-                    TotalAulas = frequencias.Sum(f => f.TotalAulas),
-                    TotalAusencias = frequencias.Sum(f => f.TotalAusencias),
+                    TotalAulas = totalAulas,
+                    TotalAusencias = totalAusencias,
                     TotalCompensacoes = frequencias.Sum(f => f.TotalCompensacoes)
                 };
 
