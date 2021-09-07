@@ -119,7 +119,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorios/pendencias")]
         [Action("relatorios/pendencias", typeof(IRelatorioPendenciasUseCase))]
-        public async Task<bool> RelatorioPendencias([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioPendenciasUseCase relatorioPendenciasUseCase)
+        public async Task<bool> RelatorioPendencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPendenciasUseCase relatorioPendenciasUseCase)
         {
             await relatorioPendenciasUseCase.Executar(request);
             return true;
@@ -127,12 +127,12 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorios/parecerconclusivo")]
         [Action("relatorios/parecerconclusivo", typeof(IRelatorioParecerConclusivoUseCase))]
-        public async Task<bool> RelatorioParecerConclusivo([FromQuery] FiltroRelatorioDto request, [FromServices]IRelatorioParecerConclusivoUseCase relatorioParecerConclusivoUseCase)
+        public async Task<bool> RelatorioParecerConclusivo([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioParecerConclusivoUseCase relatorioParecerConclusivoUseCase)
         {
             await relatorioParecerConclusivoUseCase.Executar(request);
             return true;
         }
-        
+
         [HttpGet("relatorios/recuperacaoparalela")]
         [Action("relatorios/recuperacaoparalela", typeof(IRelatorioRecuperacaoParalelaUseCase))]
         public async Task<bool> RelatorioRecuperacaoParalela([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioRecuperacaoParalelaUseCase relatorioRecuperacaoParalelaUseCase)
@@ -150,7 +150,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
         [HttpGet("relatorios/compensacaoausencia")]
         [Action("relatorios/compensacaoausencia", typeof(IRelatorioCompensacaoAusenciaUseCase))]
-        public async Task<bool> RelatorioCompensacaoAusencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioCompensacaoAusenciaUseCase  relatorioCompensacaoAusenciaUseCase)
+        public async Task<bool> RelatorioCompensacaoAusencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioCompensacaoAusenciaUseCase relatorioCompensacaoAusenciaUseCase)
         {
             await relatorioCompensacaoAusenciaUseCase.Executar(request);
             return true;
@@ -288,6 +288,13 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> AcompanhamentoFechamento([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoFechamentoUseCase relatorioUseCase)
         {
             await relatorioUseCase.Executar(request);
+            return true;
+        }
+        [HttpGet("relatorios/conselhoclasseatabimestral")]
+        [Action("relatorios/conselhoclasseatabimestral", typeof(IRelatorioConselhoClasseAtaBimestralUseCase))]
+        public async Task<bool> RelatorioConselhoClasseAtaBimestralinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaBimestralUseCase relatorioConselhoClasseAtaBimestralUseCase)
+        {
+            await relatorioConselhoClasseAtaBimestralUseCase.Executar(request);
             return true;
         }
     }

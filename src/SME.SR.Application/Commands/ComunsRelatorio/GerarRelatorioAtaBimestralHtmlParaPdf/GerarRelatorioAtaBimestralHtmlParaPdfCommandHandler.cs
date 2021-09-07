@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class GerarRelatorioAtaFinalHtmlParaPdfCommandHandler : IRequestHandler<GerarRelatorioAtaBimestralHtmlParaPdfCommand, bool>
+    public class GerarRelatorioAtaBimestralHtmlParaPdfCommandHandler : IRequestHandler<GerarRelatorioAtaBimestralHtmlParaPdfCommand, bool>
     {
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
 
-        public GerarRelatorioAtaFinalHtmlParaPdfCommandHandler(IConverter converter,
+        public GerarRelatorioAtaBimestralHtmlParaPdfCommandHandler(IConverter converter,
                                                        IServicoFila servicoFila)
         {
             this.converter = converter;
@@ -37,18 +37,17 @@ namespace SME.SR.Application
                 html = html.Replace("logo.png", SmeConstants.LogoSme);
 
                 paginasEmHtml.Add(html);
-            }
-
-            //TODO: FILA PARA RELATORIO SEM DADOS?
+            }           
+            
             if (paginasEmHtml.Any())
             {
+
                 PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
-                var directory = AppDomain.CurrentDomain.BaseDirectory;
+                var directory = AppDomain.CurrentDomain.BaseDirectory;                
 
-                pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());
-
-                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, string.Empty), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());                
+                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, string.Empty), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));                
             }
 
             return true;
@@ -61,7 +60,11 @@ namespace SME.SR.Application
             var nomeArquivo = $"wwwroot/templates/{nomeDoArquivoDoTemplate}";
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
 
+            SentrySdk.AddBreadcrumb($"Caminho arquivo cshtml: {caminhoArquivo}");
+
             string templateBruto = File.ReadAllText(caminhoArquivo);
+
+            SentrySdk.AddBreadcrumb($"Leu arquivo de template.");
 
             RazorProcessor processor = new RazorProcessor();
 
