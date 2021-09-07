@@ -34,8 +34,8 @@
                 <table class='tblTopo'>
                     <tbody>
                         <tr>
-                            <td  width='40%' class='espaco-esquerda-15'>DRE: {Model.DreNome}</td>
-                            <td width='40%' class='espaco-esquerda-15'>UE: {Model.UeNome}</td>
+                            <td  width='20%' class='espaco-esquerda-15'>DRE: {Model.DreNome}</td>
+                            <td width='60%' class='espaco-esquerda-15'>UE: {Model.UeNome}</td>
                             <td width='20%' class='espaco-esquerda-15'>DATA: {Model.DataImpressao}</td>
                         </tr>
                     </tbody>
@@ -46,7 +46,7 @@
         return str;
     }
 
-string MontarCabecalhoEventos(string mes)
+    string MontarCabecalhoEventos(string mes)
     {
         var str = $@"
             <table class='tabela-eventos'>
@@ -219,7 +219,7 @@ string MontarCabecalhoEventos(string mes)
                 @Html.Raw(VerificaQuebra())
                 @Html.Raw(MontarTabelaEventos(mes.Eventos.ToList(), mes.MesDescricao))
 
-                if (i != meses.Count - 1)
+                if (i != meses.Count - 1 && contadorQuebrarPagina > 7)
                 {
                     <table>
                         <thead>

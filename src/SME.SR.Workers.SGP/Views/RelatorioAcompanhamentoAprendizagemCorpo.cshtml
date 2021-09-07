@@ -486,22 +486,19 @@
     string MontarRegistroPercursoCabecalho()
     {
         return $@"<table class='tabela-alunos sem-border-top'>
-<thead>
-<tr>
-<td width='100%' class='centralizar negrito'>REGISTRO DO PERCURSO DA TURMA</td>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class='alinhar-esquerda espaco-esquerda-15 espaco-esquerda-15'>";
+                <thead>
+                <tr>
+                <td width='100%' class='centralizar negrito'>REGISTRO DO PERCURSO DA TURMA</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td class='alinhar-esquerda espaco-esquerda-15 espaco-esquerda-15'>";
     }
 
     string MontarRegistroPercursoRodape()
     {
-        return @"             </td>
-</tr>
-</tbody>
-</table>";
+        return @"</td></tr></tbody></table>";
     }
 
     void MontarRegistroPercursoNovo(string registroPercursoTurma, string estudante)
