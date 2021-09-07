@@ -52,9 +52,6 @@ namespace SME.SR.Data
             if (!string.IsNullOrEmpty(alunoCodigo))
                 query.AppendLine("and aa.aluno_codigo = @alunoCodigo ");
 
-            //query.AppendLine(@"and aaf.miniatura_id is not null) as tb1 on tb1.turma_id = at2.turma_id and tb1.semestre = at2.semestre
-            //                   where at2.turma_id = @turmaId ");
-
             if (semestre > 0)
                 query.AppendLine("and tb1.semestre = @semestre");
 
