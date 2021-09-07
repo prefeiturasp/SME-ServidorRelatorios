@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SME.SR.Application
 {
-    public class ObterUesConclusaoQuery : IRequest<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>>
+    public class ObterUesConclusaoQuery : IRequest<IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>>>
     {
         public long[] CodigosAlunos { get; internal set; }
         public Modalidade Modalidade { get; internal set; }
