@@ -53,17 +53,21 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
             {
                 str += $@"<table><tbody>
 <tr class='tabela-objetivos-items-tr'>
-<td class='fonte-16 tabela-objetivos-items-titulo'>
+<td class='fonte-12 tabela-objetivos-items-titulo'>
 {objetivo.Codigo}
 </td>
-<td class='fonte-16 tabela-objetivos-items-descricao'>
+<td class='fonte-12 tabela-objetivos-items-descricao'>
 {objetivo.Descricao}
 </td>
 </tr>
 </tbody>
 </table>";
-                contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
+                contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 80 ? (int)(objetivo.Descricao.Length / 80) + 1 : 1);
                 str += VerificaQuebra();
+                if(objetivo != last)
+                {
+                    str += MontaCabecalhoObjetivos();
+                }
             }
         }
         else
@@ -90,7 +94,7 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         }
 
 
-        str += @"<table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
+        str += @"<table> <tbody><tr class='h-50'><td class='fonte-12 caixa-2'>";
 
         int tamanho = 0;
         descricao = UtilRegex.RemoverTagsHtmlMidia(descricao);
@@ -115,7 +119,7 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
                     {
                         str += $@"<table><tr><td width='100%' class='tb-cabecalho2'>{titulo}</td></tr></table>";
                     }
-                    str += "<table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
+                    str += "<table> <tbody><tr class='h-50'><td class='fonte-12 caixa-2'>";
                 }
                 else
                 {
@@ -167,8 +171,8 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
 <tbody>
 <tr>
 <td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
-<td class='campo-rf-data'>RF: {Model.RF}</td>
-<td class='campo-rf-data'>DATA: {Model.Data:dd/MM/yyyy}</td>
+<td class='campo-rf'>RF: {Model.RF}</td>
+<td class='campo-data'>DATA: {Model.Data:dd/MM/yyyy}</td>
 </tr>
 </tbody>
 </table>
@@ -245,12 +249,17 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         }
 
         .campo-usuario {
-            width: 60%;
+            width: 55%;
             border-top: none;
         }
 
-        .campo-rf-data {
+        .campo-rf {
             width: 15%;
+            border-top: none;
+        }
+
+        .campo-data {
+            width: 20%;
             border-top: none;
         }
 
@@ -314,7 +323,7 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         .tb-cabecalho {
             background-color: #f3f3f3;
             text-align: left;
-            font-size: 16px;
+            font-size: 14px;
             padding: 10px;
             padding-left: 20px;
         }
@@ -322,7 +331,7 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         .tb-cabecalho2 {
             background-color: #f3f3f3;
             text-align: left;
-            font-size: 16px;
+            font-size: 14px;
             padding: 10px;
             border-bottom: none;
             padding-left: 20px;

@@ -84,7 +84,7 @@ namespace SME.SR.IoC
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddScoped<IHtmlHelper, HtmlHelper>();
 
-            services.AddSingleton(new VariaveisAmbiente());
+            services.AddSingleton(new VariaveisAmbiente(configuration));
             RegistrarRepositorios(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
