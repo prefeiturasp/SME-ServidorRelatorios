@@ -70,7 +70,7 @@ namespace SME.SR.Application
             var turmasCodigo = todasTurmas.Select(a => a.Codigo);
             var alunosCodigo = todosAlunos.Select(a => a.Codigo);
 
-            IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes = null;
+            IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>> historicoUes = null;
 
             if (todosAlunos != null && todosAlunos.Any())
             {
@@ -85,21 +85,15 @@ namespace SME.SR.Application
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmasCodigo.ToArray(), filtros.UeCodigo, filtros.Modalidade, filtros.Usuario);
 
             if (componentesCurriculares.Any(cc => turmasAssociadasCodigo.Contains(cc.Key)))
-            {
                 componentesCurriculares = ConverterTurmasAssociadasParaRegular(componentesCurriculares, turmasAssociadasCodigo, todasTurmasAssociadas);
-            }
 
             var registroFrequenciasAlunos = await mediator.Send(new ObterRegistrosFrequenciasAlunoQuery(alunosCodigo.ToArray(), turmasCodigo.ToArray(), new string[] { }, 0, new int[] { }));
 
             if (notas.Any(n => turmasAssociadasCodigo.Contains(n.Key)))
-            {
                 notas = ConverterTurmasAssociadasParaRegular(notas, turmasAssociadasCodigo, todasTurmasAssociadas);
-            }
 
             if (frequencias.Any(n => turmasAssociadasCodigo.Contains(n.Key)))
-            {
                 frequencias = ConverterTurmasAssociadasParaRegular(frequencias, turmasAssociadasCodigo, todasTurmasAssociadas);
-            }
 
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
 
@@ -355,7 +349,7 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusaoParaTurma(IEnumerable<string> alunosCodigo, Modalidade modalidade)
+        private async Task<IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>>> ObterUesConclusaoParaTurma(IEnumerable<string> alunosCodigo, Modalidade modalidade)
         {
             var alunosCodigosFiltro = alunosCodigo.Select(long.Parse).ToArray();
 
@@ -366,16 +360,30 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> ObterUesConclusaoParaAluno(IEnumerable<string> alunosCodigo, List<AlunoTurmasHistoricoEscolarDto> alunosTurmas)
+        private async Task<IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>>> ObterUesConclusaoParaAluno(IEnumerable<string> alunosCodigo, List<AlunoTurmasHistoricoEscolarDto> alunosTurmas)
         {
-            var alunosCodigosFiltro = alunosCodigo.Select(long.Parse).ToArray();
-            var modalidade = alunosTurmas.SelectMany(x => x.Turmas).FirstOrDefault(x => x.TipoTurma == TipoTurma.Regular).ModalidadeCodigo;
+            var alunosCodigosFiltro = alunosCodigo
+                .Select(long.Parse)
+                .ToArray();
 
-            return await mediator.Send(new ObterUesConclusaoQuery()
+            var modalidades = alunosTurmas
+                .SelectMany(x => x.Turmas)
+                .Where(x => x.TipoTurma == TipoTurma.Regular)
+                .Select(x => x.ModalidadeCodigo)
+                .Distinct();
+
+            var retorno = new List<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>>();
+
+            foreach (var modalidade in modalidades)
             {
-                CodigosAlunos = alunosCodigosFiltro,
-                Modalidade = modalidade
-            });
+                retorno.AddRange(await mediator.Send(new ObterUesConclusaoQuery()
+                {
+                    CodigosAlunos = alunosCodigosFiltro,
+                    Modalidade = modalidade
+                }));
+            }
+
+            return retorno;
         }
 
         private async Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia()
