@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 47;
+    int contadorMaximoLinhasPorPagina = 46;
     int contadorPagina = 0;
     int contadorDescricao = 0;
 
@@ -115,8 +115,8 @@
 
     string DivideDescricao(string estudante, string descricao, string dataRegistro, string registradoPor)
     {
-        var descricaoDivida = descricao.Substring(0, 3650);
-        var descricaoRetante = descricao.Substring(3651);
+        var descricaoDivida = descricao.Substring(0, 3600);
+        var descricaoRetante = descricao.Substring(3601);
         @Html.Raw(QuebrarLinhas(estudante, 43))
         @Html.Raw(MontarDescricao(dataRegistro, descricaoDivida, registradoPor))
         @Html.Raw(SomaLinhasContador(43))
@@ -139,7 +139,7 @@
             var registradoPor = registros.RegistradoPor;
             var dataRegistro = registros.DataRegistro;
 
-            int numeroLinhasDescricao = CalcularLinhas(descricao.Length, 100);
+            int numeroLinhasDescricao = CalcularLinhas(descricao.Length, 80);
             int numeroLinhasResgistradoPor = CalcularLinhas(registradoPor.Length, 30);
             int numeroCalulo = numeroLinhasDescricao > numeroLinhasResgistradoPor ? numeroLinhasDescricao : numeroLinhasResgistradoPor;
 
