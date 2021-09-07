@@ -64,7 +64,7 @@ namespace SME.SR.Application
         private async Task<IEnumerable<ConselhoClasseAtaBimestralPaginaDto>> ObterRelatorioTurma(Turma turma, FiltroConselhoClasseAtaBimestralDto filtro)
         {
             var alunos = await ObterAlunos(turma.Codigo);
-            var alunosCodigos = new string[] { "6822099" }; //alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+            var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
             List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
             if (turma.TipoTurma == TipoTurma.Regular)
                 tiposTurma.Add((int)TipoTurma.EdFisica);
