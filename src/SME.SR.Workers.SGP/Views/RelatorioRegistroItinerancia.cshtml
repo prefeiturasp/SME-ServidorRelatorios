@@ -91,7 +91,7 @@
         @foreach (var objetivo in listaObjetivos)
         {
             <tr>
-                <td class="alinhar-esquerda espaco-esquerda-15">@objetivo.NomeObjetivo</td>
+                <td class="alinhar-esquerda espaco-esquerda-15 td-descricao"><span class="span-descricao">@objetivo.NomeObjetivo</span></td>
             </tr>
             contadorQuebrarPagina++;
 
@@ -123,7 +123,7 @@
         </tr>
         contadorQuebrarPagina++;
         <tr>
-            <td class="@classeAlinhamento" style="padding: 3px;">@valorSecao</td>
+            <td class="@classeAlinhamento td-descricao" style="padding: 3px;"><span class="span-descricao">@valorSecao</span></td>
         </tr>
 
         return "";
@@ -290,6 +290,15 @@
 
             .centralizar {
                 text-align: center;
+            }
+
+            .td-descricao {
+                max-width: 784px;
+                height: auto;
+                word-wrap: break-word
+            }
+            .span-descricao {
+                padding: 16px;
             }
         </style>
         <div>
