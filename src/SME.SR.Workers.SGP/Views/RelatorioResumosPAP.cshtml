@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -568,17 +568,20 @@
                 @Html.Raw(MontarTabelaFrequencia())
             }
 
-            @Html.Raw(EspacoEmBranco())
+            if (Model.ResultadoDto == null)
+	            {
+		                @Html.Raw(EspacoEmBranco())
 
-            contadorQuebrarPagina++;
-            @Html.Raw(VerificaQuebra())
+                        contadorQuebrarPagina++;
+                        @Html.Raw(VerificaQuebra())
 
-            @Html.Raw(MontarCabecalhoTabela("RESULTADOS"))
+                        @Html.Raw(MontarCabecalhoTabela("RESULTADOS"))
 
-            contadorQuebrarPagina++;
-            @Html.Raw(VerificaQuebra())
+                        contadorQuebrarPagina++;
+                        @Html.Raw(VerificaQuebra())
 
-            @Html.Raw(MontarResultados())
+                        @Html.Raw(MontarResultados()) 
+	            }
         }
     </div>
 </body>
