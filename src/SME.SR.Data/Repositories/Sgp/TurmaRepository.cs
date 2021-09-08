@@ -97,7 +97,7 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo },  commandTimeout: 120);
+                return await conexao.QueryAsync<AlunoSituacaoDto>(query, new { turmaCodigo }, commandTimeout: 120);
             }
         }
 
@@ -1094,6 +1094,62 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryAsync<Turma>(query, new { turmaCodigos }, commandTimeout: 120);
             }
+        }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasPorCodigos(string[] codigos)
+        {
+            var query = @"select t.turma_id as Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo
+                        from turma t
+                       where t.turma_id = ANY(@codigos)";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<Turma>(query, new { codigos });
+        }
+
+        public async Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(@"select ano, anoLetivo, codigo, 
+								codigoModalidade modalidadeCodigo, nome, semestre 
+							from f_abrangencia_turmas_tipos(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo, @tipos)
+                            where 1=1    ");
+
+
+            if (possuiFechamento.HasValue)
+                query.Append(@" and codigo in (select t.turma_id from fechamento_turma ft
+                                 inner join turma t on ft.turma_id = t.id
+                                 where not ft.excluido)");
+
+            if (somenteEscolarizada.HasValue && somenteEscolarizada.Value)
+                query.Append(" and ano != '0'");
+
+
+            if (!string.IsNullOrEmpty(codigoDre))
+                query.Append(@" and codigo in (select t.turma_id from turma t
+                                 inner join ue on ue.id = t.ue_id
+                                 inner join dre on dre.id = ue.dre_id
+                                 where dre.dre_id = @codigoDre)");
+
+            var parametros = new
+            {
+                CodigoDre = codigoDre,
+                CodigoUe = codigoUe,
+                Modalidade = (int)modalidade,
+                Tipos = tipos,
+                AnoLetivo = anoLetivo,
+                Semestre = semestre,
+                Login = login,
+                Perfil = perfil,
+                ConsideraHistorico = consideraHistorico
+            };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<Turma>(query.ToString(), parametros);
         }
     }
 }
