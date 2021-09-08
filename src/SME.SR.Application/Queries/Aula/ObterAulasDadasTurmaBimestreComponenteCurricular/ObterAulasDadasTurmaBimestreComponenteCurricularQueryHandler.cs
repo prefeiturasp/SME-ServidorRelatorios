@@ -1,12 +1,12 @@
 ﻿using MediatR;
 using SME.SR.Data;
-using SME.SR.Infra.Dtos.AulasPrevistas;
+using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.Aula.ObterAulasDadasTurmaBimestreComponenteCurricular
+namespace SME.SR.Application
 {
     public class ObterAulasDadasTurmaBimestreComponenteCurricularQueryHandler : IRequestHandler<ObterAulasDadasTurmaBimestreComponenteCurricularQuery, IEnumerable<TurmaComponenteQuantidadeAulasDto>>
     {

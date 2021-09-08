@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.SR.Infra.Dtos.AulasPrevistas;
+using SME.SR.Infra;
 using System.Collections.Generic;
 
 namespace SME.SR.Application

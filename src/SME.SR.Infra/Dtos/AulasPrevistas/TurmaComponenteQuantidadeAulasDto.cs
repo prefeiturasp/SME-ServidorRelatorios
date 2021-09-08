@@ -1,4 +1,4 @@
-﻿namespace SME.SR.Infra.Dtos.AulasPrevistas
+﻿namespace SME.SR.Infra
 {
     public class TurmaComponenteQuantidadeAulasDto
     {
