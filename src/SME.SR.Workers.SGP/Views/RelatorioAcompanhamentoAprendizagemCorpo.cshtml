@@ -2,13 +2,12 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 52;
+    int contadorMaximoLinhasPorPagina = 53;
     int contadorMaximoDescricao = 0;
     bool quebrou = false;
     int contadorMaximoCaracteresPorLinhaPercurso = 120;
     int contadorMaximoCaracteresPorLinhaRegistroIndividual = 75;
     int contadorMaximoCaracteresPorLinhaOcorrencias = 62;
-    int maximoCaracteresTipoOcorrencia = 17;
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
     {
@@ -24,18 +23,6 @@
         }
 
         return @"<table><tbody><tr><td height='17px' width='100%' class='tabela-cabecalho sem-border-bottom'></td></tr></tbody></table>";
-    }
-
-    void SomaLinhasContador(int numeroLinhasDescricao)
-    {
-        if (numeroLinhasDescricao > 1)
-        {
-            contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
-        }
-        else
-        {
-            contadorQuebrarPagina++;
-        }
     }
 
     bool VerificaQuebra(int numeroLinhasDescricao = 0)
@@ -283,6 +270,7 @@
     {
         var titulo = "REGISTRO INDIVIDUAL";
         int contarRegistroIndividual = 0;
+        QuebrarLinhas(3, Model.Nome);
 
         @foreach (var registroIndividual in aluno.RegistrosIndividuais)
         {
@@ -371,8 +359,6 @@
                 iContadorCaracteres += textParaExibir.Length;
 
                 @Html.Raw(textParaExibir)
-
-                contadorQuebrarPagina++;
             }
         }
 
@@ -406,9 +392,10 @@
                 @foreach (var ocorrencia in aluno.Ocorrencias)
                 {
                     var descricaoOcorrencia = ocorrencia.Descricao;
-                    int numeroLinhasOcorrencia = CalcularLinhas(descricaoOcorrencia.Length);
+                    int numeroLinhasOcorrencia = CalcularLinhas(descricaoOcorrencia.Length) + CalcularLinhas(ocorrencia.Titulo.Length);
                     int numeroTipoOcorrencia = CalcularLinhas(ocorrencia.Tipo.Length, 17);
                     int totalLinhas = numeroLinhasOcorrencia > numeroTipoOcorrencia ? numeroLinhasOcorrencia : numeroTipoOcorrencia;
+                    QuebrarLinhas(totalLinhas, Model.Nome, tituloOcorrencias);
 
                     MontarCabecalhoOcorrencias(ocorrencia.Data, ocorrencia.Tipo, ocorrencia.Titulo);
 
@@ -599,7 +586,7 @@
 
             if (!quebrou)
             {
-                contadorQuebrarPagina = contadorQuebrarPagina + 11;
+                contadorQuebrarPagina = contadorQuebrarPagina + 12;
                 if (contarImpressao != 0)
                     imprimirTitulo = false;
             }
@@ -638,17 +625,16 @@
     var descricaoObservacoes = Model.Observacoes;
     if (!String.IsNullOrEmpty(descricaoObservacoes))
     {
-        int numeroLinhasObservacoes = CalcularLinhas(descricaoObservacoes.Length, 75);
+        int numeroLinhasObservacoes = CalcularLinhas(descricaoObservacoes.Length, 120);
 
         QuebrarLinhas(numeroLinhasObservacoes + 2, Model.Nome);
         @Html.Raw(EspacoEmBranco())
         contadorQuebrarPagina++;
 
         MontarObservacoes(Model.Observacoes);
-        SomaLinhasContador(numeroLinhasObservacoes);
     }
 
-    QuebrarLinhas(5, Model.Nome);
+    QuebrarLinhas(4, Model.Nome);
 
     @Html.Raw(EspacoEmBranco())
     contadorQuebrarPagina++;
