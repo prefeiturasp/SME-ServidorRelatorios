@@ -32,8 +32,9 @@ namespace SME.SR.Application
             {
                 string html = string.Empty;
 
-                html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
+               html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
 
+                html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
                 html = html.Replace("logo.png", SmeConstants.LogoSme);
 
                 paginasEmHtml.Add(html);

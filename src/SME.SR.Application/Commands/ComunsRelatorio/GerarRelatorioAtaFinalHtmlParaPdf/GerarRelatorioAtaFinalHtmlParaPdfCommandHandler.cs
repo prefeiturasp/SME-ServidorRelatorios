@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class GerarRelatorioAtaFinalHtmlParaPdfCommandHandler : IRequestHandler<GerarRelatorioAtaBimestralHtmlParaPdfCommand, bool>
+    public class GerarRelatorioAtaFinalHtmlParaPdfCommandHandler : IRequestHandler<GerarRelatorioAtaFinalHtmlParaPdfCommand, bool>
     {
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
@@ -24,7 +24,7 @@ namespace SME.SR.Application
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
 
-        public async Task<bool> Handle(GerarRelatorioAtaBimestralHtmlParaPdfCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(GerarRelatorioAtaFinalHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
             List<string> paginasEmHtml = new List<string>();
 

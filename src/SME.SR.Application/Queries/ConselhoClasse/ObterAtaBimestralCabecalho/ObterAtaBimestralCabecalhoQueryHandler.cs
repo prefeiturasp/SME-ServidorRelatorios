@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,13 +20,14 @@ namespace SME.SR.Application
         public async Task<ConselhoClasseAtaBimestralCabecalhoDto> Handle(ObterAtaBimestralCabecalhoQuery request, CancellationToken cancellationToken)
         {
             var turma = await ObterTurma(request.TurmaCodigo);
-            var dreUe = await ObterDreUe(request.TurmaCodigo);            
+            var dreUe = await ObterDreUe(request.TurmaCodigo);
 
             return new ConselhoClasseAtaBimestralCabecalhoDto()
             {
                 Dre = dreUe?.DreNome,
                 Ue = dreUe?.UeNome,
                 Turma = turma.Nome,
+                ModalidadeResumida = turma.ModalidadeCodigo.ShortName(),
                 AnoLetivo = turma.AnoLetivo                  
             };
         }        
