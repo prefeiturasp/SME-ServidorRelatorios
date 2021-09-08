@@ -128,6 +128,7 @@ namespace SME.SR.Data
 					(
 						CodigoAluno int,
 						NomeAluno VARCHAR(70),
+					    NomeSocialAluno VARCHAR(70),
 						CodigoSituacaoMatricula INT,
 						SituacaoMatricula VARCHAR(40),
 						NumeroAlunoChamada VARCHAR(5),
@@ -135,7 +136,8 @@ namespace SME.SR.Data
 					)
 					INSERT INTO #tmpAlunosSituacao
 					SELECT aluno.cd_aluno CodigoAluno,
-					   aluno.nm_aluno NomeAluno,
+					       aluno.nm_aluno NomeAluno,
+						   aluno.nm_social_aluno NomeSocialAluno,
 					   mte.cd_situacao_aluno CodigoSituacaoMatricula,
 					   CASE
 							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
@@ -156,6 +158,7 @@ namespace SME.SR.Data
 							END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
 						mte.dt_situacao_aluno DataSituacaoAluno
+
 					FROM v_aluno_cotic aluno
 					INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 					INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
@@ -163,6 +166,7 @@ namespace SME.SR.Data
 						UNION 
 					SELECT  aluno.cd_aluno CodigoAluno,
 					    aluno.nm_aluno NomeAluno,
+					    aluno.nm_social_aluno NomeSocialAluno,
 					    mte.cd_situacao_aluno CodigoSituacaoMatricula,
 					    CASE
 						    WHEN mte.cd_situacao_aluno = 1 AND NOT (mte.nr_chamada_aluno is null and mte.dt_situacao_aluno < te.dt_inicio_turma) THEN 'Ativo'
@@ -205,6 +209,7 @@ namespace SME.SR.Data
 					SELECT
 					CodigoAluno,
 					NomeAluno,
+					NomeSocialAluno,
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
 					NumeroAlunoChamada,
@@ -213,6 +218,7 @@ namespace SME.SR.Data
 					GROUP BY
 					CodigoAluno,
 					NomeAluno,
+			        NomeSocialAluno,
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
 					NumeroAlunoChamada,

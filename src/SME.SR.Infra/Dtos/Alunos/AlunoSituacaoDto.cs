@@ -8,6 +8,7 @@ namespace SME.SR.Infra
     {
         public long CodigoAluno { get; set; }
         public string NomeAluno { get; set; }
+        public string NomeSocialAluno { get; set; }
         public SituacaoMatriculaAluno CodigoSituacaoMatricula { get; set; }
         public string SituacaoMatricula { get; set; }
         public string NumeroAlunoChamada { get; set; }
