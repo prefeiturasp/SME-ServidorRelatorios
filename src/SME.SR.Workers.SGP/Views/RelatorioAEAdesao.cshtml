@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 44;
+    int contadorMaximoLinhasPorPagina = 43;
     int contadorPagina = 0;
     int contadorEspaco = 0;
 
@@ -75,7 +75,7 @@
                 <td colspan="6">ADESÃO DE RESPONSÁVEIS</td>
             </tr>
             <tr>
-                <td width="25%"></td>
+                <td width="24%"></td>
                 <td width="15%">
                     SEM CPF OU CPF INVÁLIDO NO EOL
                 </td>
@@ -99,7 +99,7 @@
     void MontarLinhaValores(SME.SR.Infra.AdesaoAEValoresDto valores)
     {
         <tr>
-            <td class="fundo-cinza" width="25%">@valores.Nome</td>
+            <td class="fundo-cinza" width="24%">@valores.Nome</td>
             <td width="15%">@valores.SemCpfOuCpfInvalido</td>
             <td width="15%">@valores.NaoRealizaram</td>
             <td width="15%">@valores.PrimeiroAcessoIncompleto</td>
