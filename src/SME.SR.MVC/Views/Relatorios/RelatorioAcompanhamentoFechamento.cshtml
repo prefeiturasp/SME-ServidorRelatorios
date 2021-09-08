@@ -1,0 +1,432 @@
+﻿@model SME.SR.Infra.RelatorioAcompanhamentoFechamentoPorUeDto
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 45;
+    bool quebrou = false;
+
+    string informacoesQuebra()
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");
+
+        return "";
+    }
+
+    void MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE ACOMPANHAMENTO DO FECHAMENTO</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.DreNome</td>
+                        <td width='80%' class='espaco-esquerda-15'>UE: @Model.UeNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Turma</td>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>Bimestre: @Model.Bimestre</td>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='50%' class='sem-border-top espaco-esquerda-15'>RF: @Model.RF</td>
+                        <td width='50%' class='sem-border-top espaco-esquerda-15'>DATA DE IMPRESSÃO: @Model.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    string EspacoEmBranco()
+    {
+        if (quebrou)
+        {
+            return "";
+        }
+
+        return @"<table><tbody><tr><td height='17px' width='100%' class='tabela-cabecalho sem-border-bottom sem-border-top'></td></tr></tbody></table>";
+    }
+
+    bool VerificaQuebra(int numeroLinhasDescricao = 0)
+    {
+        if (contadorQuebrarPagina + numeroLinhasDescricao >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+            quebrou = true;
+            return true;
+        }
+        quebrou = false;
+        return false;
+
+    }
+
+    string MontarTituloPrincipal(string turmaDescricao)
+    {
+        <tr>
+            <td colspan="2" class="fundo-cinza">@turmaDescricao @contadorQuebrarPagina</td>
+        </tr>
+
+        return "";
+    }
+
+    string MontarTituloComponentesFechamento()
+    {
+        <tr>
+            <td class="fundo-cinza">COMPONENTES</td>
+            <td class="fundo-cinza">
+                FECHAMENTO <br />
+                <span style="font-size:12px">SITUAÇÃO POR COMPONENTE CURRICULAR @contadorQuebrarPagina</span>
+            </td>
+        </tr>
+
+        return "";
+    }
+
+    void MontarComponentesFechamento(SME.SR.Infra.RelatorioAcompanhamentoFechamentoBimestreDto bimestres, string turmaDescricao, int contadorBimestres)
+    {
+        var bimestre = bimestres.Bimestre;
+        bool temBimestre = !String.IsNullOrEmpty(bimestre);
+        bool temTurmaDescricao = !String.IsNullOrEmpty(turmaDescricao);
+        int numeroLinhas = 3;
+
+        if (temTurmaDescricao)
+        {
+            numeroLinhas++;
+        }
+
+        if (temBimestre)
+        {
+            numeroLinhas++;
+        }
+
+        var quebraInicial = VerificaQuebra(numeroLinhas);
+
+        if (quebraInicial)
+        {
+            informacoesQuebra();
+            MontarCabecalho();
+            @Html.Raw("<table class='tabela-cabecalho'>");
+        }
+
+        <table class="tabela-cabecalho">
+            <tbody>
+
+                @if (contadorBimestres == 0 && temTurmaDescricao || quebrou && temTurmaDescricao)
+                {
+                    @Html.Raw(MontarTituloPrincipal(@turmaDescricao))
+
+                    contadorQuebrarPagina++;
+                }
+
+                @if (temBimestre)
+                {
+                    @Html.Raw(MontarTituloPrincipal(bimestre))
+
+                    contadorQuebrarPagina++;
+                }
+
+                @Html.Raw(MontarTituloComponentesFechamento())
+
+                @{
+                    contadorQuebrarPagina += 2;
+                    int contadorFechamentoComponentes = 0;
+                }
+
+
+                @foreach (var fechamentosComponente in bimestres.FechamentosComponente)
+                {
+                    int numeroPendencias = fechamentosComponente.Pendencias.Count;
+                    var temPendencias = numeroPendencias > 0;
+                    var rowspan = temPendencias ? numeroPendencias + 1 : 1;
+
+                    var quebraIntermediaria = VerificaQuebra(numeroPendencias);
+                    if (quebraIntermediaria)
+                    {
+                        informacoesQuebra();
+                        MontarCabecalho();
+                        @Html.Raw("<table class='tabela-cabecalho'>");
+
+                        if (temTurmaDescricao)
+                        {
+                            @Html.Raw(MontarTituloPrincipal(@turmaDescricao))
+                        }
+
+                        if (temBimestre)
+                        {
+                            @Html.Raw(MontarTituloPrincipal(bimestre))
+                        }
+
+                        @Html.Raw(MontarTituloComponentesFechamento())
+                    }
+
+                    <tr>
+                        <td rowspan="@rowspan">@fechamentosComponente.Componente</td>
+                        <td>@fechamentosComponente.Status @contadorQuebrarPagina</td>
+                    </tr>
+
+                    contadorQuebrarPagina++;
+
+                    @if (temPendencias)
+                    {
+                        foreach (var pendencia in fechamentosComponente.Pendencias)
+                        {
+                            <tr class="linha-pendencias">
+                                <td>@pendencia @contadorQuebrarPagina</td>
+                            </tr>
+
+                            contadorQuebrarPagina++;
+                        }
+                    }
+
+                    if (contadorFechamentoComponentes < bimestres.FechamentosComponente.Count - 1)
+                    {
+                        var quebraFinal = VerificaQuebra();
+                        if (quebraFinal)
+                        {
+                            informacoesQuebra();
+                            MontarCabecalho();
+                            @Html.Raw("<table class='tabela-cabecalho'>");
+
+                            if (temTurmaDescricao)
+                            {
+                                @Html.Raw(MontarTituloPrincipal(@turmaDescricao))
+                            }
+
+                            if (temBimestre)
+                            {
+                                @Html.Raw(MontarTituloPrincipal(bimestre))
+                            }
+
+                            @Html.Raw(MontarTituloComponentesFechamento())
+                        }
+                    }
+                    else
+                    {
+                        quebrou = false;
+                    }
+
+                    contadorFechamentoComponentes++;
+                }
+            </tbody>
+        </table>
+    }
+
+    void MontarConselhoClasse(SME.SR.Infra.RelatorioAcompanhamentoFechamentoBimestreDto turmas, string turmaDescricao, int contadorBimestres)
+    {
+        var classe = quebrou ? "" : "sem-border-top";
+
+        var quebraInicial = VerificaQuebra(3);
+        if (quebraInicial)
+        {
+            informacoesQuebra();
+            MontarCabecalho();
+            @Html.Raw("<table class='tabela-cabecalho'>");
+            @Html.Raw(MontarTituloPrincipal(@turmaDescricao))
+        }
+
+        <table class="tabela-cabecalho">
+            <tbody>
+                <tr>
+                    <td colspan="3" class="fundo-cinza @classe">
+                        CONSELHO DE CLASSE <br />
+                        <span style="font-size:12px">SITUAÇÃO POR TURMA @contadorQuebrarPagina</span>
+                    </td>
+                </tr>
+
+                @{ contadorQuebrarPagina += 2; }
+
+                <tr>
+                    @foreach (var conselhosClasse in turmas.ConselhosClasse)
+                    {
+                        <td >@conselhosClasse.Status @contadorQuebrarPagina</td>
+                    }
+                </tr>
+
+                @{ contadorQuebrarPagina++; }
+
+                <tr>
+                    @foreach (var conselhosClasse in turmas.ConselhosClasse)
+                    {
+                        <td>@conselhosClasse.Quantidade @contadorQuebrarPagina</td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+
+        quebrou = false;
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE ACOMPANHAMENTO DO FECHAMENTO</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .subtitulo-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .linha-pendencias {
+            height: 17px !important;
+            font-size: 12px !important;
+        }
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+
+            int contadorTurmas = 0;
+            foreach (var turmas in Model.Turmas)
+            {
+                int contadorBimestres = 0;
+                foreach (var bimestres in turmas.Bimestres)
+                {
+                    MontarComponentesFechamento(bimestres, turmas.TurmaDescricao, contadorBimestres);
+
+                    MontarConselhoClasse(bimestres, turmas.TurmaDescricao, contadorBimestres);
+
+                    if (contadorTurmas < Model.Turmas.Count - 1 && contadorQuebrarPagina + 3 < contadorMaximoLinhasPorPagina && !String.IsNullOrEmpty(bimestres.Bimestre))
+                    {
+                        @Html.Raw(EspacoEmBranco());
+
+                        contadorQuebrarPagina++;
+                    }
+
+                    contadorBimestres++;
+                }
+                contadorTurmas++;
+            }
+        }
+    </div>
+</body>
+</html>
