@@ -45,28 +45,31 @@ namespace SME.SR.Application
             var modalidadeCalendario = DefinirTipoModalidadeCalendario(request);
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
             var codigosDisciplinas = componentesCurriculares.SelectMany(cc => cc.Select(cc => cc.CodDisciplina.ToString())).Distinct().ToArray();
-
             var aulasPrevistas = await mediator.Send(new ObterAulasDadasTurmaBimestreComponenteCurricularQuery(codigosTurma, tipoCalendarioId, codigosDisciplinas));
-            var frequenciasAulasPrevistasInclusao = (from ap in aulasPrevistas
-                                                     from fq in frequencias
-                                                     where !fq.Any(f => f.TurmaId.Equals(ap.TurmaCodigo) &&
-                                                                       f.DisciplinaId.Equals(ap.ComponenteCurricularCodigo) &&
-                                                                       f.Bimestre.Equals(ap.Bimestre))
-                                                     select new FrequenciaAluno()
-                                                     {
-                                                         CodigoAluno = fq.Key,
-                                                         DisciplinaId = ap.ComponenteCurricularCodigo,
-                                                         TurmaId = ap.TurmaCodigo,
-                                                         TotalAulas = ap.AulasQuantidade,
-                                                         Bimestre = ap.Bimestre,
-                                                         PeriodoEscolarId = ap.PeriodoEscolarId
-                                                     }).GroupBy(fap => fap.CodigoAluno);
-            
+            var frequenciasAulasPrevistasInclusao = ObterAulasPrevistasParaInclusao(frequencias, aulasPrevistas);
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
 
             var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, frequencias.Concat(frequenciasAulasPrevistasInclusao), tiposNota, mediasFrequencia, frequenciaGlobal);
 
             return new RelatorioBoletimEscolarDto(boletins);
+        }
+
+        private IEnumerable<IGrouping<string, FrequenciaAluno>> ObterAulasPrevistasParaInclusao(IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
+        {
+            return (from ap in aulasPrevistas
+                    from fq in frequencias
+                    where !fq.Any(f => f.TurmaId.Equals(ap.TurmaCodigo) &&
+                                       f.DisciplinaId.Equals(ap.ComponenteCurricularCodigo) &&
+                                       f.Bimestre.Equals(ap.Bimestre))
+                    select new FrequenciaAluno()
+                    {
+                        CodigoAluno = fq.Key,
+                        DisciplinaId = ap.ComponenteCurricularCodigo,
+                        TurmaId = ap.TurmaCodigo,
+                        TotalAulas = ap.AulasQuantidade,
+                        Bimestre = ap.Bimestre,
+                        PeriodoEscolarId = ap.PeriodoEscolarId
+                    }).GroupBy(fap => fap.CodigoAluno);
         }
 
         private ModalidadeTipoCalendario DefinirTipoModalidadeCalendario(ObterRelatorioBoletimEscolarQuery request)
