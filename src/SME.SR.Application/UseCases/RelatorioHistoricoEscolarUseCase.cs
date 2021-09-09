@@ -155,10 +155,10 @@ namespace SME.SR.Application
                 (resultadoEJA != null && resultadoEJA.Any()))
             {
                 if (resultadoEJA != null && resultadoEJA.Any())
-                    EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao).Wait();
+                    await EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao);
 
                 if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
-                    EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao).Wait();
+                    await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
 
                 if (resultadoFinalMedio != null && resultadoFinalMedio.Any())
                     await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
@@ -222,7 +222,7 @@ namespace SME.SR.Application
 
         private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
         {
-            var codigoCorrelacao = await mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio));
+            var codigoCorrelacao = mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio)).Result();
 
             var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalMedio });
             await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));
