@@ -4,7 +4,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 44;
+    int contadorMaximoLinhasPorPagina = 40;
     int contadorPagina = 0;
     bool montarCabecalho = true;
 
@@ -177,7 +177,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                             for (int i = 0; i < mensagem.Length; i++)
                             {
 
-                                if (tamanho <= 90)
+                                if (tamanho <= 84)
                                 {
                                     str += mensagem[i];
                                     tamanho = tamanho + 1;
