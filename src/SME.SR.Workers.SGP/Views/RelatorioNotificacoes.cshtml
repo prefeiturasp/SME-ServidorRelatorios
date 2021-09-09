@@ -4,7 +4,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 40;
+    int contadorMaximoLinhasPorPagina = 46;
     int contadorPagina = 0;
     bool montarCabecalho = true;
 
@@ -20,6 +20,24 @@
 
         }
         return string.Empty;
+    }
+
+    int CalcularLinhas(int valorLinha = 0, int caracteres = 120)
+    {
+        if (valorLinha <= caracteres)
+        {
+            return 1;
+        }
+        var valorMod = valorLinha % caracteres;
+        int valorInt = valorLinha / caracteres;
+        if (valorMod > 0)
+        {
+            return valorInt + 1;
+        }
+        else
+        {
+            return valorInt;
+        }
     }
 
     string MontarCabecalho()
@@ -135,13 +153,16 @@ RELATÓRIO DE NOTIFICAÇÕES
                             <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
                         </tr>";
 
-                        if ((int)(notificacao.Titulo.ToString().Length / 22) > 2)
+                        var totalLinhasAcrescentar = CalcularLinhas(notificacao.Titulo.ToString().Length, 22);
+
+                        if (totalLinhasAcrescentar > 2)
                         {
-                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 22 ? (int)(notificacao.Titulo.ToString().Length / 22) + 1 : 1);
+                            contadorQuebrarPagina += totalLinhasAcrescentar;
                         }
                         else
                         {
-                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 11 ? (int)(notificacao.DataRecebimento.ToString().Length / 11) + 1 : 1);
+                            totalLinhasAcrescentar = CalcularLinhas(notificacao.DataRecebimento.ToString().Length, 11);
+                            contadorQuebrarPagina += totalLinhasAcrescentar;
                         }
 
                         retornoVerificacao = VerificaQuebra();
@@ -172,12 +193,12 @@ RELATÓRIO DE NOTIFICAÇÕES
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;
                             int tamanho = 0;
                             var mensagem = UtilRegex.RemoverTagsHtml(notificacao.Mensagem);
-                            
+
                             str += "<tr><td colspan='7' style='padding:5px;font-size: 14.5px'>";
                             for (int i = 0; i < mensagem.Length; i++)
                             {
 
-                                if (tamanho <= 84)
+                                if (tamanho <= 86)
                                 {
                                     str += mensagem[i];
                                     tamanho = tamanho + 1;
