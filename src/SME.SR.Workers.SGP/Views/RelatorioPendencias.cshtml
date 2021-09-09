@@ -1,10 +1,12 @@
 ﻿@model SME.SR.Infra.RelatorioPendenciasDto
 @{
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 30;
+    int contadorCaracteresExtensos = 45;
+    int contadorMaximoLinhasPorPagina = 46;
     int contadorPagina = 0;
     bool quebrou = false;
-    int contadorMaximoCaracteresPorLinha = 100;
+    int contadorMaximoCaracteresPorLinha = 115;
+    int contadorMaximoCaracteresPorLinhaDescricao = 35;
 
     string VerificaQuebra(int linhas, string nomeBimestre, string nomeComponente, bool temOutrasPendencias = false)
     {
@@ -90,7 +92,7 @@
 
         if (numeroCaracteresDescricaoPendencias < numeroCaracteresTituloPendencias)
         {
-            int numeroLinhas = numeroCaracteresDescricaoPendencias / 45;
+            int numeroLinhas = numeroCaracteresDescricaoPendencias / contadorMaximoCaracteresPorLinhaDescricao;
             if (numeroLinhas > 1)
             {
                 contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
@@ -129,7 +131,7 @@
 
         @while (iContadorCaracteres != numeroCaracteresDescricaoPendencias)
         {
-            contadorMaximoLinhasPorPagina = numeroCaracteresDescricaoPendencias > 3000 ? 46 : 48;
+            contadorMaximoLinhasPorPagina = numeroCaracteresDescricaoPendencias > 3000 ? contadorCaracteresExtensos : contadorMaximoLinhasPorPagina;
 
             bool quebrarPagina = contadorQuebrarPagina + 2 >= contadorMaximoLinhasPorPagina;
             if (quebrarPagina)
@@ -163,20 +165,21 @@
         {
             foreach (var detalhes in pendencias.Detalhes)
             {
-                bool quebrarPagina = contadorQuebrarPagina + 0.5 >= contadorMaximoLinhasPorPagina;
+                bool quebrarPagina = contadorQuebrarPagina + 0.65 >= contadorMaximoLinhasPorPagina;
                 if (quebrarPagina)
                 {
                     MontarQuebraPagina(pendencias, nomeBimestre, nomeComponente, temOutrasPendencias, detalhes.Length);
                 }
 
-                if (!quebrou)
+                if (!quebrarPagina)
                 {
                     @Html.Raw("<br>")
                 }
 
                 @Html.Raw(detalhes)
+                @Html.Raw(contadorQuebrarPagina)
                 quebrou = false;
-                contadorQuebrarPagina = contadorQuebrarPagina + 0.5;
+                contadorQuebrarPagina = contadorQuebrarPagina + 0.65;
             }
         }
 
@@ -307,7 +310,7 @@
             quebrou = false;
         }
     }
-    
+
     int CalcularNumeroLinhasQuebra(string nomeModalidade, string nomeBimestre)
     {
         int contarNumeroLinhas = 0;
@@ -318,8 +321,8 @@
                 contarNumeroLinhas++;
             if (nomeModalidade == "EJA")
                 contarNumeroLinhas++;
-                                    
-            contarNumeroLinhas++;    
+
+            contarNumeroLinhas++;
         }
 
         if (Model.Bimestre == "Todos" && !String.IsNullOrEmpty(nomeBimestre))
