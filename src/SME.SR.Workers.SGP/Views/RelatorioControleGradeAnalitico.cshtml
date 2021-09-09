@@ -2,7 +2,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoLinhasPorPagina = 43;
     int contadorPagina = 0;
 
     string VerificaQuebra()
@@ -131,13 +131,17 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                         </tr></table>
                         ";
                     contadorQuebrarPagina += 1;
-                    str += "</br>";
-                    contadorQuebrarPagina += 1;
 
                     retornoVerificacao = VerificaQuebra();
+
                     if (retornoVerificacao != string.Empty)
                     {
                         str = str + $@"{retornoVerificacao}";
+                    }
+                    else
+                    {
+                        str += "</br>";
+                        contadorQuebrarPagina += 1;
                     }
 
                     if (componente.DetalhamentoDivergencias != null)
@@ -520,7 +524,7 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                     <td width='20%' class='td-valor'>{aula.DiasLetivo}</td>
                     <td width='20%' class='td-valor'>{aula.QuantidadeGrade}</td>
                     <td width='20%' class='td-valor'>{aula.AulasCriadas}</td>
-                    <td width='20%' class='td-valor'>{aula.Diferenca}</td>
+                    <td width='20%' class='td-valor'>{aula.Diferenca} {contadorQuebrarPagina}</td>
                   </tr>";
 
             if(aula.Data == "09/03/2020")
