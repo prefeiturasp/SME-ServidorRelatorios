@@ -18,6 +18,24 @@
 
     }
 
+    int CalcularLinhas(int valorLinha = 0, int caracteres = 120)
+    {
+        if (valorLinha <= caracteres)
+        {
+            return 1;
+        }
+        var valorMod = valorLinha % caracteres;
+        int valorInt = valorLinha / caracteres;
+        if (valorMod > 0)
+        {
+            return valorInt + 1;
+        }
+        else
+        {
+            return valorInt;
+        }
+    }
+
     string VerificaQuebraAlunos()
     {
         if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
@@ -323,7 +341,10 @@
 
                                     @foreach (var parecerConclusivo in ano.PareceresConclusivos)
                                     {
-                                        int numeroLinhas = (parecerConclusivo.AlunoNomeCompleto.Length / 47);
+
+                                        int numeroLinhasNomeAluno = CalcularLinhas(parecerConclusivo.AlunoNomeCompleto.Length, 47);
+                                        int numeroLinhasTipoParecer = CalcularLinhas(parecerConclusivo.ParecerConclusivoDescricao.Length, 20);
+                                        int numeroLinhas = numeroLinhasNomeAluno > numeroLinhasTipoParecer ? numeroLinhasNomeAluno : numeroLinhasTipoParecer;
 
                                         @Html.Raw(VerificaQuebraAlunos())
                                         ;
@@ -338,7 +359,7 @@
 
                                         if (numeroLinhas > 0)
                                         {
-                                            contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas + 1;
+                                            contadorQuebrarPagina += numeroLinhas;
                                         }
                                         else
                                         {
