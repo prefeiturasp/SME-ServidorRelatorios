@@ -169,6 +169,10 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IOcorrenciaRepository), typeof(OcorrenciaRepository));
             services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
             services.TryAddScoped(typeof(IArquivoRepository), typeof(ArquivoRepository));
+
+            services.TryAddScoped(typeof(IConselhoClasseConsolidadoRepository), typeof(ConselhoClasseConsolidadoRepository));
+            services.TryAddScoped(typeof(IFechamentoConsolidadoRepository), typeof(FechamentoConsolidadoRepository));
+            services.TryAddScoped(typeof(IPendenciaFechamentoRepository), typeof(PendenciaFechamentoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -216,6 +220,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioItineranciasUseCase, RelatorioItineranciasUseCase>();
             services.TryAddScoped<IRelatorioRegistroIndividualUseCase, RelatorioRegistroIndividualUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoAprendizagemUseCase, RelatorioAcompanhamentoAprendizagemUseCase>();
+            services.TryAddScoped<IRelatorioAcompanhamentoFechamentoUseCase, RelatorioAcompanhamentoFechamentoUseCase>();
 
         }
     }
