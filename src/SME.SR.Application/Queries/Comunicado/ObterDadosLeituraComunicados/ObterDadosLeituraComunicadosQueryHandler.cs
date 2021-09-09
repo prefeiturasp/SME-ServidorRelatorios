@@ -90,7 +90,7 @@ namespace SME.SR.Application
                                         {
                                             estudante.NumeroChamada = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NumeroAlunoChamada;
                                             estudante.CodigoEstudante = responsavel.AlunoId;
-                                            estudante.Estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.NomeAluno;
+                                            estudante.Estudante = estudantes.FirstOrDefault(a => a.CodigoAluno.ToString() == responsavel.AlunoId && a.NumeroAlunoChamada != null)?.ObterNomeFinal();
                                             estudante.Responsavel = responsavel.ResponsavelNome;
                                             estudante.TipoResponsavel = responsavel.TipoResponsavel.Name();
                                             estudante.ContatoResponsavel = responsavel.Contato;

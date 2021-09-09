@@ -14,10 +14,10 @@ namespace SME.SR.Data
                 return NomeAluno;
             else return NomeSocialAluno;
         }
-
+        private string nomeAluno;
         public int CodigoTurma { get; set; }
         public int CodigoAluno { get; set; }
-        public string NomeAluno { get; set; }
+        public string NomeAluno { get => string.IsNullOrWhiteSpace(NomeSocialAluno) ? nomeAluno : NomeSocialAluno; set { nomeAluno = value; } }
         public string NomeSocialAluno { get; set; }
         public DateTime DataNascimento { get; set; }
         public SituacaoMatriculaAluno CodigoSituacaoMatricula { get; set; }

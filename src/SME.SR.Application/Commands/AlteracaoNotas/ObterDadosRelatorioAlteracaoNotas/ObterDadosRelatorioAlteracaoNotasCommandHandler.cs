@@ -58,7 +58,7 @@ namespace SME.SR.Application
 
                             if(alunoAtual != null)
                             {
-                                historicoNota.NomeAluno = alunoAtual.NomeAluno;
+                                historicoNota.NomeAluno = alunoAtual.ObterNomeFinal();
                                 historicoNota.NumeroChamada = alunoAtual.NumeroAlunoChamada;
                                 historicoNota.NomeTurma = nomeTurma;
                             }                            
