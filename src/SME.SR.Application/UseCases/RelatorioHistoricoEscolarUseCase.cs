@@ -148,19 +148,13 @@ namespace SME.SR.Application
                 (resultadoEJA != null && resultadoEJA.Any()))
             {
                 if (resultadoEJA != null && resultadoEJA.Any())
-                {
-                    await EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao);
-                }
+                    EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao).Wait();
 
                 if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
-                {
-                    await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
-                }
+                    EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao).Wait();
 
                 if (resultadoFinalMedio != null && resultadoFinalMedio.Any())
-                {
                     await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
-                }
             }
             else
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
