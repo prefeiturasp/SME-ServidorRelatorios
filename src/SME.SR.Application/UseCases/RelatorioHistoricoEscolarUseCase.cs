@@ -222,7 +222,7 @@ namespace SME.SR.Application
 
         private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
         {
-            var codigoCorrelacao = mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio)).Result();
+            var codigoCorrelacao = mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio)).Result;
 
             var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalMedio });
             await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));
