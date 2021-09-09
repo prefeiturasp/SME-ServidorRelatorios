@@ -147,14 +147,20 @@ namespace SME.SR.Application
                 (resultadoFinalMedio != null && resultadoFinalMedio.Any()) ||
                 (resultadoEJA != null && resultadoEJA.Any()))
             {
+
+                if (resultadoFinalMedio != null && resultadoFinalMedio.Any())
+                {
+                    await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
+                    request.CodigoCorrelacao = await CopiarCorrelacao(request.CodigoCorrelacao);
+                }
+
                 if (resultadoEJA != null && resultadoEJA.Any())
                     await EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao);
 
                 if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
                     await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
 
-                if (resultadoFinalMedio != null && resultadoFinalMedio.Any())
-                    await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
+                
             }
             else
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
@@ -215,10 +221,13 @@ namespace SME.SR.Application
 
         private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
         {
-            var codigoCorrelacao = mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio)).Result;
-
             var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalMedio });
-            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao));
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacaoMedio));
+        }
+
+        private async Task<Guid> CopiarCorrelacao(Guid codigoCorrelacaoMedio)
+        {
+            return await mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio));
         }
 
         private async Task EnviaRelatorioFundamental(IEnumerable<HistoricoEscolarDTO> resultadoFinalFundamental, Guid codigoCorrelacao)
