@@ -71,6 +71,9 @@
     <Content Update="Views\RelatorioResumosPAP.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\templates\RelatorioAtaBimestralComColunaFinal.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\templates\RelatorioAtasComColunaFinal.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>    
