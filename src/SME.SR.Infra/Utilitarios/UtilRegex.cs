@@ -35,6 +35,13 @@ namespace SME.SR.Infra.Utilitarios
             return texto;
         }
 
+        public static string RemoverTagsHtmlVideo(string texto)
+        {
+            texto = Regex.Replace(texto, @"<iframe[^>]*>", " [arquivo indisponível na impressão] ");
+            texto = Regex.Replace(texto, @"<video.+</video>", " [arquivo indisponível na impressão] ");
+            return texto;
+        }
+
         public static string AdicionarEspacos(string texto)
         {
             texto = Regex.Replace(texto, @"\.(?! |$)", ". ");

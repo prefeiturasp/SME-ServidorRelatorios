@@ -29,6 +29,21 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<AnotacoesPedagogicasAlunoIdsQueryDto>> ObterAnotacoesPedagogicasPorConselhoClasseAlunoIdsAsync(long[] conselhoClasseAlunoIds)
+        {
+            var query = @"select
+	                        cca.aluno_codigo as AlunoCodigo,
+	                        cca.anotacoes_pedagogicas as AnotacaoPedagogica
+                        from
+	                        conselho_classe_aluno cca
+                        where
+	                        cca.id =  ANY(@conselhoClasseAlunoIds)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<AnotacoesPedagogicasAlunoIdsQueryDto>(query, new { conselhoClasseAlunoIds });
+            }
+        }
 
         public async Task<IEnumerable<ConselhoClasseParecerConclusivo>> ObterParecerConclusivoPorTurma(string turmaCodigo)
         {

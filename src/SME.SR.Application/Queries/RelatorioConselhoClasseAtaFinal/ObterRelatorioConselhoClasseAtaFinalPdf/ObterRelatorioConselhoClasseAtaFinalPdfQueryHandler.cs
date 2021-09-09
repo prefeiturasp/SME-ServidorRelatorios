@@ -28,7 +28,7 @@ namespace SME.SR.Application
         {
             var mensagensErro = new List<string>();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
-            var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
+            var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray())) ;
 
             turmas.AsParallel().WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas).ForAll(turma =>
             {

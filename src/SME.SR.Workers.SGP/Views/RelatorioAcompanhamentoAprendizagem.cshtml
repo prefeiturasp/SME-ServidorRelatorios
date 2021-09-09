@@ -249,17 +249,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
 
         return "";
     }
-
-    string MontarCabecalhoRegistroIndividual()
-    {
-        var classeRegistroIndividual = !quebrou ? "sem-border-top" : "";
-
-        <tr>
-            <td width="20%" class="fundo-cinza sem-border-bottom negrito {@classeRegistroIndividual}">DATA DO REGISTRO</td>
-            <td class="fundo-cinza sem-border-bottom negrito">REGISTRO</td>
-        </tr>
-        return "";
-    }
     
     void MontarRegistroIndividualNovo(string descricaoRegistroIndividual, string estudante, string dataRegistroIndividual)
     {
@@ -284,7 +273,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 {
                     @Html.Raw(MontarTitulo(estudante));
                     @Html.Raw("<table class='tabela-alunos'><tbody>")
-                    @Html.Raw(MontarCabecalhoRegistroIndividual())
                     contadorQuebrarPagina++;
                     @Html.Raw($@"<tr><td width='15%' class='centralizar'>{dataRegistroIndividual}</td>")
                     @Html.Raw("<td width='85%' class='alinhar-esquerda espaco-esquerda-15'>")
@@ -303,32 +291,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
         }
 
         @Html.Raw("</td></tr>")
-    }
-
-    void MontarRegistroIndividual(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
-    {
-        var titulo = "REGISTRO INDIVIDUAL";
-        int contarRegistroIndividual = 0;
-
-        @foreach (var registroIndividual in aluno.RegistrosIndividuais)
-        {
-            var descricaoRegistroIndividual = registroIndividual.Descricao;
-            var dataRegistroIndividual = registroIndividual.Data;
-
-            if (contarRegistroIndividual == 0 && contadorQuebrarPagina < contadorMaximoLinhasPorPagina)
-            {
-                @Html.Raw(MontarTitulo(titulo))
-                @Html.Raw("<table class='tabela-alunos'><tbody>")
-                @Html.Raw(MontarCabecalhoRegistroIndividual())
-                contadorQuebrarPagina++;
-            }
-
-            MontarRegistroIndividualNovo(descricaoRegistroIndividual, aluno.Nome, dataRegistroIndividual);
-
-            contarRegistroIndividual++;
-        }
-
-        @Html.Raw("</tbody></table>")
     }
 
     string MontarObservacoes(string observacao)
@@ -773,11 +735,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
                     }
 
                     MontarFrequencia(aluno);
-                }
-
-                if (aluno.RegistrosIndividuais.Count() > 0)
-                {
-                    MontarRegistroIndividual(aluno);
                 }
 
                 var descricaoObservacoes = aluno.Observacoes;
