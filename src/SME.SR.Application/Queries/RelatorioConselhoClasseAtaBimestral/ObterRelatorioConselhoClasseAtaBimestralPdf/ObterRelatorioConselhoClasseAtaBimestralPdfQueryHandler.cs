@@ -113,7 +113,7 @@ namespace SME.SR.Application
 
             var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
 
-            var frequenciaBimestre = await mediator.Send(new ObterFrequenciaAlunoPorComponentesBimestresETurmasQuery(listaTurmas.ToArray(), bimestres, componentesCurricularesPorTurma.Select(a => a.Item2)));
+            var frequenciaBimestre = await mediator.Send(new ObterFrequenciaAlunoPorComponentesBimestresETurmasQuery(listaTurmas.ToArray(), new int[] { filtro.Bimestre }, componentesCurricularesPorTurma.Select(a => a.Item2)));
 
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
 
