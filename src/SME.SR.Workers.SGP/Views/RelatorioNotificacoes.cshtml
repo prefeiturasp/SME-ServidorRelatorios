@@ -1,4 +1,5 @@
-﻿@model SME.SR.Infra.RelatorioNotificacaoDto
+
+@model SME.SR.Infra.RelatorioNotificacaoDto
 @using System.Text.RegularExpressions;
 @using SME.SR.Infra.Utilitarios;
 
@@ -73,13 +74,13 @@ RELATÓRIO DE NOTIFICAÇÕES
         contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
 <tr>
-    <td width='11%' class='td-titulo'>CÓDIGO</td>
-    <td width='25%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
-    <td width='12%' class='td-titulo'>CATEGORIA</td>
-    <td width='12%' class='td-titulo'>TIPO</td>
-    <td width='12%' class='td-titulo'>SITUAÇÃO</td>
-    <td width='15%' class='td-titulo'>RECEBIMENTO</td>
-    <td width='15%' class='td-titulo'>LEITURA/AÇÃO</td>
+<td width='11%' class='td-titulo'>CÓDIGO</td>
+<td width='25%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
+<td width='12%' class='td-titulo'>CATEGORIA</td>
+<td width='12%' class='td-titulo'>TIPO</td>
+<td width='12%' class='td-titulo'>SITUAÇÃO</td>
+<td width='15%' class='td-titulo'>RECEBIMENTO</td>
+<td width='15%' class='td-titulo'>LEITURA/AÇÃO</td>
 </tr>";
     }
 
@@ -87,7 +88,7 @@ RELATÓRIO DE NOTIFICAÇÕES
     {
         var str = "";
         var retornoVerificacao = string.Empty;
-        if(Model.DREs.Count() == 0)
+        if (Model.DREs.Count() == 0)
         {
             return "";
         }
@@ -97,7 +98,7 @@ RELATÓRIO DE NOTIFICAÇÕES
 
         foreach (var dre in dres)
         {
-            if(Model.DREs.Count > 1)
+            if (Model.DREs.Count > 1)
             {
                 str += MontaTitulo(dre.Nome);
             }
@@ -126,14 +127,14 @@ RELATÓRIO DE NOTIFICAÇÕES
                             montarCabecalho = false;
                         }
                         str += $@"<tr>
-                            <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
-                            <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
-                            <td width='15%' class='td-valor'>{notificacao.DataRecebimento:dd/MM/yyyy HH:mm:ss}</td>
-                            <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
-                        </tr>";
+                    <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
+                    <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
+                    <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
+                    <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
+                    <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
+                    <td width='15%' class='td-valor'>{notificacao.DataRecebimento:dd/MM/yyyy HH:mm:ss}</td>
+                    <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
+                </tr>";
 
                         if ((int)(notificacao.Titulo.ToString().Length / 18) > 2)
                         {
@@ -158,7 +159,8 @@ RELATÓRIO DE NOTIFICAÇÕES
                                     str += $@"</table>{retornoVerificacao}";
                                     str += MontaTitulo(usuario.Nome);
                                     str += $@"<table class='fixed'>";
-                                } else
+                                }
+                                else
                                 {
                                     str = str + $@"</table>{retornoVerificacao}{MontaTitulo(usuario.Nome)}{MontaCabecalhoEstrutura()}";
                                 }
@@ -172,7 +174,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;
                             int tamanho = 0;
                             var mensagem = UtilRegex.RemoverTagsHtml(notificacao.Mensagem);
-                            
+
                             str += "<tr><td colspan='7' style='padding:5px;font-size: 14.5px'>";
                             for (int i = 0; i < mensagem.Length; i++)
                             {
@@ -461,13 +463,13 @@ RELATÓRIO DE NOTIFICAÇÕES
             table-layout: fixed;
         }
 
-        table.fixed td {
-            overflow: hidden;
-        }
+            table.fixed td {
+                overflow: hidden;
+            }
 
-        table.fixed td {
-            height: 24px;
-        }
+            table.fixed td {
+                height: 24px;
+            }
     </style>
     <div>
         @Html.Raw(MontarCabecalho())
@@ -477,7 +479,3 @@ RELATÓRIO DE NOTIFICAÇÕES
     </div>
 </body>
 </html>
-
-
-
-
