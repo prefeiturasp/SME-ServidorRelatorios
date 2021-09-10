@@ -1,10 +1,11 @@
-﻿@model SME.SR.Infra.RelatorioNotificacaoDto
+﻿
+@model SME.SR.Infra.RelatorioNotificacaoDto
 @using System.Text.RegularExpressions;
 @using SME.SR.Infra.Utilitarios;
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoLinhasPorPagina = 43;
     int contadorPagina = 0;
     bool montarCabecalho = true;
 
@@ -20,24 +21,6 @@
 
         }
         return string.Empty;
-    }
-
-    int CalcularLinhas(int valorLinha = 0, int caracteres = 120)
-    {
-        if (valorLinha <= caracteres)
-        {
-            return 1;
-        }
-        var valorMod = valorLinha % caracteres;
-        int valorInt = valorLinha / caracteres;
-        if (valorMod > 0)
-        {
-            return valorInt + 1;
-        }
-        else
-        {
-            return valorInt;
-        }
     }
 
     string MontarCabecalho()
@@ -91,13 +74,13 @@ RELATÓRIO DE NOTIFICAÇÕES
         contadorQuebrarPagina += 1;
         return $@"<table class='fixed'>
 <tr>
-    <td width='11%' class='td-titulo'>CÓDIGO</td>
-    <td width='25%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
-    <td width='12%' class='td-titulo'>CATEGORIA</td>
-    <td width='12%' class='td-titulo'>TIPO</td>
-    <td width='12%' class='td-titulo'>SITUAÇÃO</td>
-    <td width='15%' class='td-titulo'>RECEBIMENTO</td>
-    <td width='15%' class='td-titulo'>LEITURA/AÇÃO</td>
+<td width='11%' class='td-titulo'>CÓDIGO</td>
+<td width='25%' class='td-titulo'>TÍTULO DA NOTIFICAÇÃO</td>
+<td width='12%' class='td-titulo'>CATEGORIA</td>
+<td width='12%' class='td-titulo'>TIPO</td>
+<td width='12%' class='td-titulo'>SITUAÇÃO</td>
+<td width='15%' class='td-titulo'>RECEBIMENTO</td>
+<td width='15%' class='td-titulo'>LEITURA/AÇÃO</td>
 </tr>";
     }
 
@@ -105,7 +88,7 @@ RELATÓRIO DE NOTIFICAÇÕES
     {
         var str = "";
         var retornoVerificacao = string.Empty;
-        if(Model.DREs.Count() == 0)
+        if (Model.DREs.Count() == 0)
         {
             return "";
         }
@@ -115,7 +98,7 @@ RELATÓRIO DE NOTIFICAÇÕES
 
         foreach (var dre in dres)
         {
-            if(Model.DREs.Count > 1)
+            if (Model.DREs.Count > 1)
             {
                 str += MontaTitulo(dre.Nome);
             }
@@ -144,25 +127,22 @@ RELATÓRIO DE NOTIFICAÇÕES
                             montarCabecalho = false;
                         }
                         str += $@"<tr>
-                            <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
-                            <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
-                            <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
-                            <td width='15%' class='td-valor'>{notificacao.DataRecebimento:dd/MM/yyyy HH:mm:ss}</td>
-                            <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
-                        </tr>";
+                    <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
+                    <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
+                    <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
+                    <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
+                    <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
+                    <td width='15%' class='td-valor'>{notificacao.DataRecebimento:dd/MM/yyyy HH:mm:ss}</td>
+                    <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
+                </tr>";
 
-                        var totalLinhasAcrescentar = CalcularLinhas(notificacao.Titulo.ToString().Length, 22);
-
-                        if (totalLinhasAcrescentar > 2)
+                        if ((int)(notificacao.Titulo.ToString().Length / 18) > 2)
                         {
-                            contadorQuebrarPagina += totalLinhasAcrescentar;
+                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 18 ? (int)(notificacao.Titulo.ToString().Length / 18) + 1 : 1);
                         }
                         else
                         {
-                            totalLinhasAcrescentar = CalcularLinhas(notificacao.DataRecebimento.ToString().Length, 11);
-                            contadorQuebrarPagina += totalLinhasAcrescentar;
+                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.DataRecebimento.ToString().Length > 11 ? (int)(notificacao.DataRecebimento.ToString().Length / 11) + 1 : 1);
                         }
 
                         retornoVerificacao = VerificaQuebra();
@@ -179,7 +159,8 @@ RELATÓRIO DE NOTIFICAÇÕES
                                     str += $@"</table>{retornoVerificacao}";
                                     str += MontaTitulo(usuario.Nome);
                                     str += $@"<table class='fixed'>";
-                                } else
+                                }
+                                else
                                 {
                                     str = str + $@"</table>{retornoVerificacao}{MontaTitulo(usuario.Nome)}{MontaCabecalhoEstrutura()}";
                                 }
@@ -198,7 +179,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                             for (int i = 0; i < mensagem.Length; i++)
                             {
 
-                                if (tamanho <= 86)
+                                if (tamanho <= 100)
                                 {
                                     str += mensagem[i];
                                     tamanho = tamanho + 1;
@@ -226,7 +207,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                                 }
                             }
 
-                            str += "</td></tr><tr><td colspan='7' style='border-top:none;border-bottom:none'><br/></td></tr>";
+                            str += "</td></tr>";
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;
                         }
                     }
@@ -485,6 +466,10 @@ RELATÓRIO DE NOTIFICAÇÕES
             table.fixed td {
                 overflow: hidden;
             }
+
+            table.fixed td {
+                height: 24px;
+            }
     </style>
     <div>
         @Html.Raw(MontarCabecalho())
@@ -494,7 +479,3 @@ RELATÓRIO DE NOTIFICAÇÕES
     </div>
 </body>
 </html>
-
-
-
-
