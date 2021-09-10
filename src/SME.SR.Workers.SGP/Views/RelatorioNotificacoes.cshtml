@@ -4,7 +4,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 44;
+    int contadorMaximoLinhasPorPagina = 43;
     int contadorPagina = 0;
     bool montarCabecalho = true;
 
@@ -135,9 +135,9 @@ RELATÓRIO DE NOTIFICAÇÕES
                             <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
                         </tr>";
 
-                        if ((int)(notificacao.Titulo.ToString().Length / 22) > 2)
+                        if ((int)(notificacao.Titulo.ToString().Length / 18) > 2)
                         {
-                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 22 ? (int)(notificacao.Titulo.ToString().Length / 22) + 1 : 1);
+                            contadorQuebrarPagina = contadorQuebrarPagina + (notificacao.Titulo.ToString().Length > 18 ? (int)(notificacao.Titulo.ToString().Length / 18) + 1 : 1);
                         }
                         else
                         {
@@ -177,7 +177,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                             for (int i = 0; i < mensagem.Length; i++)
                             {
 
-                                if (tamanho <= 90)
+                                if (tamanho <= 100)
                                 {
                                     str += mensagem[i];
                                     tamanho = tamanho + 1;
@@ -205,7 +205,7 @@ RELATÓRIO DE NOTIFICAÇÕES
                                 }
                             }
 
-                            str += "</td></tr><tr><td colspan='7' style='border-top:none;border-bottom:none'><br/></td></tr>";
+                            str += "</td></tr>";
                             contadorQuebrarPagina = contadorQuebrarPagina + 1;
                         }
                     }
@@ -461,9 +461,13 @@ RELATÓRIO DE NOTIFICAÇÕES
             table-layout: fixed;
         }
 
-            table.fixed td {
-                overflow: hidden;
-            }
+        table.fixed td {
+            overflow: hidden;
+        }
+
+        table.fixed td {
+            height: 24px;
+        }
     </style>
     <div>
         @Html.Raw(MontarCabecalho())
