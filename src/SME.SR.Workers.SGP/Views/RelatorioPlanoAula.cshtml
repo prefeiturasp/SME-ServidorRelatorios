@@ -21,6 +21,29 @@
 
     }
 
+    int CalcularLinhas(int valorLinha = 0, int caracteres = 120)
+    {
+        if (valorLinha > 0)
+        {
+            if (valorLinha < caracteres)
+            {
+                return 1;
+            }
+            var valorMod = valorLinha % caracteres;
+            int valorInt = valorLinha / caracteres;
+            if (valorMod > 0)
+            {
+                return valorInt + 1;
+            }
+            else
+            {
+                return valorInt;
+            }
+        }
+
+        return 1;
+    }
+
     string MontaCabecalhoObjetivos()
     {
         var str = "";
@@ -62,7 +85,12 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
 </tr>
 </tbody>
 </table>";
-                contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 80 ? (int)(objetivo.Descricao.Length / 80) + 1 : 1);
+                var totalLinhasPorObjetivo = 3;
+                if(objetivo.Descricao.Length > 80) {
+                    var total = CalcularLinhas(objetivo.Descricao.Length, 80);
+                    if (total > totalLinhasPorObjetivo) totalLinhasPorObjetivo = total;
+                }
+                contadorQuebrarPagina += totalLinhasPorObjetivo;
                 str += VerificaQuebra();
                 if(objetivo != last)
                 {
