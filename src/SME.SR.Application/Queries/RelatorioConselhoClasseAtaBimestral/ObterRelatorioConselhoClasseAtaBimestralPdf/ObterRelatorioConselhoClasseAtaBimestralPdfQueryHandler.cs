@@ -113,7 +113,7 @@ namespace SME.SR.Application
 
             var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
 
-            var frequenciaAlunos = await ObterFrequenciaComponente(listaTurmas.ToArray(), componentesCurricularesPorTurma, bimestres, tipoCalendarioId);
+            var frequenciaBimestre = await mediator.Send(new ObterFrequenciaAlunoPorComponentesBimestresETurmasQuery(listaTurmas.ToArray(), new int[] { filtro.Bimestre }, componentesCurricularesPorTurma.Select(a => a.Item2)));
 
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
 
@@ -139,7 +139,7 @@ namespace SME.SR.Application
 
             var anotacoesPedagogicaDosAlunos = await mediator.Send(new ObterAnotacoesPedagogicasPorConselhoClasseAlunoIdsQuery(conselhosDeClasseAlunosId));
 
-            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral,
+            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaBimestre, frequenciaAlunosGeral,
                 pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea, filtro.Bimestre, anotacoesPedagogicaDosAlunos);
 
             return MontarEstruturaPaginada(dadosRelatorio);
@@ -205,7 +205,7 @@ namespace SME.SR.Application
 
         private List<ConselhoClasseAtaBimestralPaginaDto> MontarEstruturaPaginada(ConselhoClasseAtaBimestralDto dadosRelatorio)
         {
-            var maximoComponentesPorPagina = 9;
+            var maximoComponentesPorPagina = 10;
             var maximoComponentesPorPaginaFinal = 3;
             var quantidadeDeLinhasPorPagina = 20;
 
@@ -374,7 +374,7 @@ namespace SME.SR.Application
                     var componentes = ObterComponentesCurriculares(grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()).ToList());
                     var componentesTurmas = ObterComponentesCurriculares(grupoMatriz.ToList());
 
-                    componentesCurricularesTotal += componentesTurmas.Select(a => a.CodDisciplina).Distinct().Count();
+                    componentesCurricularesTotal += componentesTurmas.Where(c => c.LancaNota).Select(a => a.CodDisciplina).Distinct().Count();
 
                     foreach (var componente in componentes)
                     {
@@ -418,7 +418,8 @@ namespace SME.SR.Application
                             continue;
                         }
 
-                        alunoComponenteConselhoClasse.Add((aluno.CodigoAluno, componente.CodDisciplina, possuiConselho));
+                        if(componente.LancaNota)
+                            alunoComponenteConselhoClasse.Add((aluno.CodigoAluno, componente.CodDisciplina, possuiConselho));
 
 
 

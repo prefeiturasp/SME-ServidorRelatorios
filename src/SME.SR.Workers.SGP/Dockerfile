@@ -1,11 +1,5 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-bionic AS base
 WORKDIR /app
-RUN apt-get update && apt-get install -y wget libfontconfig1 libgdiplus libxrender1 unzip fontconfig
-
-RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
-     && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono
-RUN find RobotoMono-main/fonts/ttf/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/robotomono/ \; || return 1 \
-     && rm -rf roboto.zip &&  rm -rf RobotoMono-main && rm -rf /usr/share/fonts/truetype/dejavu \ && fc-cache -f && rm -rf /var/cache/*
 
 EXPOSE 80
 EXPOSE 443
@@ -30,31 +24,11 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
+RUN apt-get update && apt-get install -y wget libfontconfig1 libgdiplus libxrender1 unzip fontconfig
 
-RUN apt-get update && apt-get install -y wget libgdiplus 
-# unzip fontconfig 
-# RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
-#     && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono
-# RUN find RobotoMono-main/fonts/ttf/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/robotomono/ \; || return 1 \
-#     && rm -rf roboto.zip &&  rm -rf RobotoMono-main && rm -rf /usr/share/fonts/truetype/dejavu \ && fc-cache -f && rm -rf /var/cache/*
-
-# TESTE v2
-# RUN apt-get update \
-#     && apt-get install -y --no-install-recommends \
-#         wget unzip \
-#         zlib1g \
-#         fontconfig \
-#         libfreetype6 \
-#         libx11-6 \
-#         libxext6 \
-#         libxrender1 \
-#     && curl -o /usr/lib/libwkhtmltox.so \
-#         --location \
-#         https://github.com/rdvojmoc/DinkToPdf/raw/v1.0.8/v0.12.4/64%20bit/libwkhtmltox.so
-
-# RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
-#     && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono
-# RUN find RobotoMono-main/fonts/ttf/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/robotomono/ \; || return 1 \
-#     && rm -rf roboto.zip &&  rm -rf RobotoMono-main && fc-cache -f && rm -rf /var/cache/*
+RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
+     && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono
+RUN find RobotoMono-main/fonts/ttf/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/robotomono/ \; || return 1 \
+     && rm -rf roboto.zip &&  rm -rf RobotoMono-main && rm -rf /usr/share/fonts/truetype/dejavu \ && fc-cache -f && rm -rf /var/cache/*
     
 ENTRYPOINT ["dotnet", "SME.SR.Workers.SGP.dll"]

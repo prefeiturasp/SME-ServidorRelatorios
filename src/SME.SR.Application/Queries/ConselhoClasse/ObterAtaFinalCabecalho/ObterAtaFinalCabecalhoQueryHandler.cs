@@ -4,6 +4,7 @@ using SME.SR.Infra;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SME.SR.Infra.Utilitarios;
 
 namespace SME.SR.Application
 {
@@ -27,7 +28,7 @@ namespace SME.SR.Application
                 Dre = dreUe?.DreNome,
                 Ue = dreUe?.UeNome,
                 Ciclo = ciclo,
-                Turma = turma.Nome,
+                Turma = $"{turma.ModalidadeCodigo.ShortName()} - {turma.Nome}",
                 AnoLetivo = turma.AnoLetivo,
                 Data = DateTime.Now.ToString("dd/MM/yyyy")
             };
