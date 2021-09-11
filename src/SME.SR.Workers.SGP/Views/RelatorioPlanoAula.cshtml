@@ -2,8 +2,8 @@
 @using SME.SR.Infra.Utilitarios;
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 64;
-    int contadorPagina = 0;
+    int contadorMaximoLinhasPorPagina = 67;
+    int tamanhoMaximoLinha = 80;
     bool montarCabecalhoObj = true;
 
     string VerificaQuebra()
@@ -86,8 +86,8 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
 </tbody>
 </table>";
                 var totalLinhasPorObjetivo = 3;
-                if(objetivo.Descricao.Length > 80) {
-                    var total = CalcularLinhas(objetivo.Descricao.Length, 80);
+                if(objetivo.Descricao.Length > tamanhoMaximoLinha) {
+                    var total = CalcularLinhas(objetivo.Descricao.Length, tamanhoMaximoLinha);
                     if (total > totalLinhasPorObjetivo) totalLinhasPorObjetivo = total;
                 }
                 contadorQuebrarPagina += totalLinhasPorObjetivo;
@@ -114,7 +114,15 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         {
             return "";
         }
-        var str = "<div class='m-30'>";
+        var str = "";
+        var totalMinimoLinhas = 4;
+
+        if(contadorQuebrarPagina + totalMinimoLinhas >= contadorMaximoLinhasPorPagina) {
+            contadorQuebrarPagina += totalMinimoLinhas;
+            str += VerificaQuebra();
+        }
+
+        str += "<div class='m-30'>";
 
         if (titulo != "")
         {
@@ -130,7 +138,6 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
 
         for (int i = 0; i < descricao.Length; i++)
         {
-
             if (tamanho <= 100)
             {
                 str += descricao[i];
@@ -138,7 +145,6 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
             }
             else
             {
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
                 var retornoVerificacao = VerificaQuebra();
                 if (retornoVerificacao != string.Empty)
                 {
@@ -158,6 +164,8 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
                 str += descricao[i];
             }
         }
+        var totalLinhas = CalcularLinhas(tamanho, tamanhoMaximoLinha);
+        contadorQuebrarPagina = contadorQuebrarPagina + (totalLinhas > totalMinimoLinhas ? totalLinhas : totalMinimoLinhas);
 
         if (!str.Substring(str.Length - 8).Equals("</table>"))
         {

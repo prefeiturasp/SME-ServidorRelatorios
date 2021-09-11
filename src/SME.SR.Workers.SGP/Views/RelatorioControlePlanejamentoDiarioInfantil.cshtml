@@ -107,7 +107,7 @@
 
         foreach (var planejamento in planejamentoDiario)
         {
-            detalhamento = false;            
+            detalhamento = false;
 
             if (!string.IsNullOrEmpty(planejamento.SecoesPreenchidas))
             {
@@ -196,7 +196,7 @@
                 }
                 else
                 {
-                    str += $@"{IncluirTdParaFechar()}</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'>";
+                    str += $@"{IncluirTdParaFechar()}</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'><tbody>";
                 }
             }
             else
@@ -208,8 +208,11 @@
                 }
                 else
                 {
-                    if (ultimoplanejamento.AulaId == ultimaAulaRelatorio)
-                        str += IncluirTdParaFechar();
+                    if (ultimoplanejamento.AulaId == ultimaAulaRelatorio || 
+                        contadorQuebrarPagina + 5 >= contadorMaximoLinhasPorPagina) { 
+                      str += IncluirTdParaFechar();
+                    }
+                    str += "</tbody></table>";
                 }
             }
 
