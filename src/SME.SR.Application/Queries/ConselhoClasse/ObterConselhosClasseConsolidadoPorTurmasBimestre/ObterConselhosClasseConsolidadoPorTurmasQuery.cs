@@ -6,12 +6,10 @@ namespace SME.SR.Application
 {
     public class ObterConselhosClasseConsolidadoPorTurmasQuery : IRequest<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>>
     {
-        public ObterConselhosClasseConsolidadoPorTurmasQuery(string[] turmasCodigo,bool todasUe)
+        public ObterConselhosClasseConsolidadoPorTurmasQuery(string[] turmasCodigo)
         {
             TurmasCodigo = turmasCodigo;
-            TodasUe = todasUe;
         }
-        public bool TodasUe { get; set; }
         public string[] TurmasCodigo { get; internal set; }
     }
 }
