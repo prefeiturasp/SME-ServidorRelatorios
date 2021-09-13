@@ -9,7 +9,7 @@ namespace SME.SR.Infra
         public RelatorioAcompanhamentoFechamentoConsolidadoTurmaDto(string turmaDescricao)
         {
             TurmaDescricao = turmaDescricao;
-            FechamentoConsolidadoBimestre = List<RelatorioAcompanhamentoFechamentoConsolidadoBimestreDto>();
+            FechamentoConsolidadoBimestre = new List<RelatorioAcompanhamentoFechamentoConsolidadoBimestreDto>();
         }
         public string TurmaDescricao { get; set; }
         public List<RelatorioAcompanhamentoFechamentoConsolidadoBimestreDto> FechamentoConsolidadoBimestre { get; set; }

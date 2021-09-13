@@ -33,5 +33,10 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
         }
+
+        public Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -40,10 +40,19 @@ namespace SME.SR.Application
 
             var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
-            
 
-            var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
-            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);
+            //IEnumerable<FechamentoConsolidadoComponenteTurmaDto> consolidadoFechamento = null;
+            //IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto> consolidadoConselhosClasse = null;
+            //if (request.UeCodigo != "-99")
+            //{
+                var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
+                var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);
+            //}
+            //else
+            //{
+            //    consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma);
+            //    consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma);
+            //}
 
             if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
                 (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
@@ -124,6 +133,15 @@ namespace SME.SR.Application
         }
 
         private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidado(string[] turmasId)
+        {
+            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasQuery(turmasId));
+        }
+        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoTodasUe(string[] turmasId)
+        {
+            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasQuery(turmasId));
+        }
+
+        private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidadoTodasUe(string[] turmasId)
         {
             return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasQuery(turmasId));
         }
