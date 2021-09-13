@@ -56,7 +56,7 @@ namespace SME.SR.Application
 
                     var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
 
-                    var uesHistorico = request.HistoricoUes?.FirstOrDefault(ue => ue.Key.ToString() == aluno.Key)?.ToList();
+                    var uesHistorico = request.HistoricoUes?.FirstOrDefault(ue => ue.Key.Item1.ToString() == aluno.Key && ue.Key.Item2 == agrupamentoTurmas.Key)?.ToList();
 
                     var estudosRealizados = ObterHistoricoUes(uesHistorico)?.ToList();
 
@@ -70,7 +70,7 @@ namespace SME.SR.Application
                         Legenda = ObterLegenda(notasAluno, request.Transferencias, request.Legenda),
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
-                        EstudosRealizados = estudosRealizados.Count() > 0 ? estudosRealizados : null,
+                        EstudosRealizados = estudosRealizados.Count > 0 ? estudosRealizados : null,
                         DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
                     };
 
