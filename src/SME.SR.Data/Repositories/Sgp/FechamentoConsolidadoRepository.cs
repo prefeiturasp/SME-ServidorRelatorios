@@ -31,5 +31,32 @@ namespace SME.SR.Data.Repositories.Sgp
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
         }
+
+        public async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo)
+        {
+            var query = new StringBuilder(@"
+                                                        select
+	                                t.turma_id TurmaCodigo,
+	                                u.nome as NomeUe,
+	                                t.nome as NomeTurma,
+	                                t.modalidade_codigo as ModalidadeCodigo,
+	                                cfct.bimestre,
+	                                'Não Iniciado'||(count(cfct.id) filter(where cfct.status = 0) 
+	                                ||', Em Processamento: '||count(cfct.id) filter(where cfct.status = 1)
+	                                ||', Processado Com Pendência: '||count(cfct.id) filter(where cfct.status = 2)
+	                                ||', Processado Com Sucesso: '||count(cfct.id) filter(where cfct.status = 3)) as SomatoriaStatus 
+                                from consolidado_fechamento_componente_turma cfct 
+	                                inner join turma t 
+		                                on t.id = cfct.turma_id 
+	                                inner join ue u 
+		                                on u.id = t.ue_id 
+                                    where t.turma_id  = ANY(@turmasCodigo)
+                                    and not cfct.excluido 
+	                                group  by t.turma_id,t.id,u.nome,t.nome,cfct.bimestre,t.modalidade_codigo ");
+            var parametros = new { turmasCodigo };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
+        }
     }
 }

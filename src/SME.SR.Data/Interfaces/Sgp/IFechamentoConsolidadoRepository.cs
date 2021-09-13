@@ -7,5 +7,6 @@ namespace SME.SR.Data
     public interface IFechamentoConsolidadoRepository
     {
         Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentoConsolidadoPorTurmas(string[] turmasCodigo);
+        Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo);
     }
 }

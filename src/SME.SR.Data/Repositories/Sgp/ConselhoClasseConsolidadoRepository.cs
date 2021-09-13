@@ -34,9 +34,31 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
         }
 
-        public Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo)
         {
-            throw new NotImplementedException();
+            var query = new StringBuilder(@" select 		
+	                                           t.turma_id TurmaCodigo,
+	                                           u.nome as NomeUe,
+	                                           t.nome as NomeTurma,
+	                                           cccat.bimestre,
+	                                           t.modalidade_codigo as ModalidadeCodigo,
+	                                           'Não Iniciado: '||(count(cccat.id) filter(where cccat.status = 0)
+	                                           ||', Em Andamento: '||count(cccat.id) filter(where cccat.status = 1)
+	                                           ||', Concluído: ' ||count(cccat.id) filter(where cccat.status = 2)) as SomatoriaStatus
+                                           from consolidado_conselho_classe_aluno_turma cccat
+	                                           inner join turma t 
+	                                               on t.id = cccat.turma_id
+	                                           inner join ue u
+	                                               on u.id = t.ue_id
+                                           where t.turma_id  = ANY(@turmasCodigo)
+	                                           and not cccat.excluido
+	                                           group  by t.turma_id,u.nome,t.nome,cccat.bimestre,t.modalidade_codigo;");
+
+
+            var parametros = new { turmasCodigo };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
         }
     }
 }
