@@ -66,7 +66,7 @@ namespace SME.SR.Application
             {
                 var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma);
                 var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma);
-                //return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmasCodigo?.ToArray(), turmas, null, bimestres, null,null, request.ListarPendencias, null, request.Usuario,true, consolidadoFechamento, consolidadoConselhosClasse));
+                return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmasCodigo?.ToArray(), turmas, null, bimestres, null,null, request.ListarPendencias, null, request.Usuario,true, consolidadoFechamento, consolidadoConselhosClasse));
 
             }
         }
