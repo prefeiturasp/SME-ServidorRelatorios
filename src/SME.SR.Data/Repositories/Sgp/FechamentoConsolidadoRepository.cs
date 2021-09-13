@@ -32,7 +32,7 @@ namespace SME.SR.Data.Repositories.Sgp
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo)
         {
             var query = new StringBuilder(@"
                                                         select
@@ -41,10 +41,9 @@ namespace SME.SR.Data.Repositories.Sgp
 	                                t.nome as NomeTurma,
 	                                t.modalidade_codigo as ModalidadeCodigo,
 	                                cfct.bimestre,
-	                                'Não Iniciado'||(count(cfct.id) filter(where cfct.status = 0) 
-	                                ||', Em Processamento: '||count(cfct.id) filter(where cfct.status = 1)
-	                                ||', Processado Com Pendência: '||count(cfct.id) filter(where cfct.status = 2)
-	                                ||', Processado Com Sucesso: '||count(cfct.id) filter(where cfct.status = 3)) as SomatoriaStatus 
+	                                count(cfct.id) filter(where cfct.status in(0,1)) as NaoIniciado,
+	                                count(cfct.id) filter(where cfct.status = 2) as ProcessadoComPendencia,
+	                                count(cfct.id) filter(where cfct.status = 3) as ProcessadoComSucesso
                                 from consolidado_fechamento_componente_turma cfct 
 	                                inner join turma t 
 		                                on t.id = cfct.turma_id 
@@ -56,7 +55,7 @@ namespace SME.SR.Data.Repositories.Sgp
             var parametros = new { turmasCodigo };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
+            return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo)
         {
             var query = new StringBuilder(@" select 		
 	                                           t.turma_id TurmaCodigo,
@@ -42,9 +42,9 @@ namespace SME.SR.Data
 	                                           t.nome as NomeTurma,
 	                                           cccat.bimestre,
 	                                           t.modalidade_codigo as ModalidadeCodigo,
-	                                           'Não Iniciado: '||(count(cccat.id) filter(where cccat.status = 0)
-	                                           ||', Em Andamento: '||count(cccat.id) filter(where cccat.status = 1)
-	                                           ||', Concluído: ' ||count(cccat.id) filter(where cccat.status = 2)) as SomatoriaStatus
+	                                           count(cccat.id) filter(where cccat.status = 0) as NaoIniciado,
+	                                           count(cccat.id) filter(where cccat.status = 1) as EmAndamento,
+	                                           count(cccat.id) filter(where cccat.status = 2) as Concluido
                                            from consolidado_conselho_classe_aluno_turma cccat
 	                                           inner join turma t 
 	                                               on t.id = cccat.turma_id
@@ -58,7 +58,7 @@ namespace SME.SR.Data
             var parametros = new { turmasCodigo };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
+            return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
         }
     }
 }
