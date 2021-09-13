@@ -19,7 +19,6 @@ namespace SME.SR.Application
         public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> Handle(ObterConselhosClasseConsolidadoPorTurmasQuery request, CancellationToken cancellationToken)
         {
             return await conselhoClasseConsolidadoRepository.ObterConselhosClasseConsolidadoPorTurmasAsync(request.TurmasCodigo);
-                                                                                                   
         }
     }
 }

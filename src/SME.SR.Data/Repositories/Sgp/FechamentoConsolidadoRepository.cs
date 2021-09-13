@@ -32,7 +32,7 @@ namespace SME.SR.Data.Repositories.Sgp
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo)
+        public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo)
         {
             var query = new StringBuilder(@"
                                                         select
