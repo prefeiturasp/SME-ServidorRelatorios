@@ -7,5 +7,6 @@ namespace SME.SR.Data
     public interface IConselhoClasseConsolidadoRepository
     {
         Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasAsync(string[] turmasCodigo);
+        Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo);
     }
 }

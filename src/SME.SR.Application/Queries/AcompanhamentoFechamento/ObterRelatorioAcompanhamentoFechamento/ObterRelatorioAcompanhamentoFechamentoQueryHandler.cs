@@ -34,16 +34,25 @@ namespace SME.SR.Application
 
             if (!string.IsNullOrEmpty(request.UeCodigo))
                 ue = await ObterUePorCodigo(request.UeCodigo);
-           
-            
+
+
             int[] bimestres = request.Bimestres?.ToArray();
 
             var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
-            
 
-            var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
-            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);
+            IEnumerable<FechamentoConsolidadoComponenteTurmaDto> consolidadoFechamento = null;
+            IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto> consolidadoConselhosClasse = null;
+                if (request.UeCodigo != "-99")
+                {
+                    consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
+                    consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);
+                }
+                else
+                {
+                    consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma);
+                    consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma);
+                }
 
             if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
                 (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
@@ -93,7 +102,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres )
+        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres)
         {
             try
             {
@@ -120,12 +129,21 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidado(string[] turmasId)
         {
-            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasQuery(turmasId));
+            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasQuery(turmasId,false));
         }
 
         private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidado(string[] turmasId)
         {
-            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasQuery(turmasId));
+            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasQuery(turmasId,false));
+        }
+        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoTodasUe(string[] turmasId)
+        {
+            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasQuery(turmasId,true));
+        }
+
+        private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidadoTodasUe(string[] turmasId)
+        {
+            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasQuery(turmasId,true));
         }
     }
 }
