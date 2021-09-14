@@ -196,7 +196,7 @@ namespace SME.SR.MVC.Controllers
                 Usuario = "JULIA FERREIRA DE OLIVEIRA ",
                 Turma = "TODOS",
                 RF = "1234567",
-            }; 
+            };
             return View("RelatorioFrequencias", model);
         }
 
@@ -7760,6 +7760,66 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 throw ex;
             }
         }
+
+        [HttpGet("acompanhamento-fechamento-ue")]
+        public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
+        {
+            var fechamentoConsolidado = new List<RelatorioAcompanhamentoFechamentoConsolidadoDto>();
+            var conselhoDeClasseConsolidado = new List<RelatorioAcompanhamentoConselhoClasseConsolidadoDto>();
+
+            var fechamento= new RelatorioAcompanhamentoFechamentoConsolidadoDto()
+            {
+                NaoIniciado = "3",
+                ProcessadoComPendencia = "2",
+                ProcessadoComSucesso = "5"
+            };
+            var conselhoDeClasse= new RelatorioAcompanhamentoConselhoClasseConsolidadoDto()
+            {
+                NaoIniciado = "4",
+                EmAndamento = "8",
+                Concluido = "7",
+            };
+            fechamentoConsolidado.Add(fechamento);
+            conselhoDeClasseConsolidado.Add(conselhoDeClasse);
+
+            var bimestres = new List<RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto>();
+            var bimestre = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto("1º Bimestre")
+            {
+                ConselhoDeClasseConsolidado = conselhoDeClasseConsolidado,
+                FechamentoConsolidado = fechamentoConsolidado,
+            };
+            bimestres.Add(bimestre);            
+
+            var turmas = new List<RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto>();
+            var turma = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto("EF - 1A")
+            {
+                Bimestres = bimestres,
+            };
+            turmas.Add(turma);
+
+            var ues = new List<RelatorioAcompanhamentoFechamentoConsolidadoUesDto>();
+            var ue = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto()
+            {
+               NomeUe = "CEU EMEF BUTANTA",
+               Turmas = turmas,
+            };
+            ues.Add(ue);
+
+            var model = new RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto()
+            {
+                DreNome = "DRE-BT",
+                UeNome = "TODAS",
+                Turma = "Todas",
+                Bimestre = "TODOS",
+                Usuario = "USUÁRIO: JULIA FERREIRA DE OLIVEIRA",
+                RF = "1234567",
+                Data = "13/09/2021",
+                Ues = ues,
+            };
+
+            return View("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", model);
+        }
+        
     }
 }
 
