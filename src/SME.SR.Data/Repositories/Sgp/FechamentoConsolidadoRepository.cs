@@ -55,7 +55,7 @@ namespace SME.SR.Data.Repositories.Sgp
             var parametros = new { turmasCodigo };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
+            return await conexao.QueryAsync<FechamentoConsolidadoTurmaDto>(query.ToString(), parametros);
         }
     }
 }

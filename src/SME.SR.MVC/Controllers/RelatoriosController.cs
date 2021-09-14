@@ -7769,21 +7769,21 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             var fechamento= new RelatorioAcompanhamentoFechamentoConsolidadoDto()
             {
-                NaoIniciado = "3",
-                ProcessadoComPendencia = "2",
-                ProcessadoComSucesso = "5"
+                NaoIniciado = 3,
+                ProcessadoComPendencia = 2,
+                ProcessadoComSucesso = 5
             };
             var conselhoDeClasse= new RelatorioAcompanhamentoConselhoClasseConsolidadoDto()
             {
-                NaoIniciado = "4",
-                EmAndamento = "8",
-                Concluido = "7",
+                NaoIniciado = 4,
+                EmAndamento = 8,
+                Concluido = 7,
             };
             fechamentoConsolidado.Add(fechamento);
             conselhoDeClasseConsolidado.Add(conselhoDeClasse);
 
             var bimestres = new List<RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto>();
-            var bimestre = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto("1º Bimestre")
+            var bimestre = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto("1º Bimestre", "EF - 1A")
             {
                 ConselhoDeClasseConsolidado = conselhoDeClasseConsolidado,
                 FechamentoConsolidado = fechamentoConsolidado,
@@ -7798,9 +7798,8 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             turmas.Add(turma);
 
             var ues = new List<RelatorioAcompanhamentoFechamentoConsolidadoUesDto>();
-            var ue = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto()
+            var ue = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto("CEU EMEF BUTANTA")
             {
-               NomeUe = "CEU EMEF BUTANTA",
                Turmas = turmas,
             };
             ues.Add(ue);

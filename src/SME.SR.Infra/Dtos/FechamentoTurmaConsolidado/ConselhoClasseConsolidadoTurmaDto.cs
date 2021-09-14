@@ -15,7 +15,9 @@ namespace SME.SR.Infra
         public int Bimestre { get; set; }
 
         public long ModalidadeCodigo { get; set; }
-        public string SomatoriaStatus { get; set; }
+        public int NaoIniciado { get; set; }
+        public int EmAndamento { get; set; }
+        public int Concluido { get; set; }
         public string NomeModalidade { get; set; }
         public string NomeTurmaFormatado { get => ObterNomeTurmaFormatado(); }
 
