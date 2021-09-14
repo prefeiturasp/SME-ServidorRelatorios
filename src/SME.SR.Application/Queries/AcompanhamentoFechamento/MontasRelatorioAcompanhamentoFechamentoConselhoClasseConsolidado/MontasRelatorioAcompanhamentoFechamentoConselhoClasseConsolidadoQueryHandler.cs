@@ -37,26 +37,38 @@ namespace SME.SR.Application
                                 request.TurmasCodigo.Count() == 1 ? "" : turma.NomeRelatorio;
 
                 var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(relatorio.UeNome);
+                var fechamentoConsolidadoTurmas = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto(turmaNome);
 
                 foreach (var bimestre in request.Bimestres)
                 {
                     var nomeBimestre = request.Bimestres != null && request.Bimestres.Any() &&
                                 request.Bimestres.Count() == 1 ? "" : (bimestre > 0 ? $"{bimestre}º BIMESTRE" : "FINAL");
 
-                    var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto(relatorio.UeNome);
                     var fechamentos = request.ConsolidadoFechamento.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre).OrderBy(x => x.NomeUe);
                     var conselhos = request.ConsolidadoConselhosClasse.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre).OrderBy(x => x.NomeUe);
-
+                    var bimestres = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto(nomeBimestre, turmaNome);
                     foreach (var fechamento in fechamentos)
                     {
-                        fechamentoConselhoClasseConsolidado.FechamentoConsolidado.Add(new RelatorioAcompanhamentoFechamentoConsolidadoDto(fechamento.NaoIniciado,fechamento.ProcessadoComPendencia,fechamento.ProcessadoComSucesso));
-                    }
-                    foreach (var conselho in conselhos)
-                    {
-                        fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.Add(new RelatorioAcompanhamentoConselhoClasseConsolidadoDto(conselho.NaoIniciado,conselho.EmAndamento,conselho.Concluido));
+                        bimestres.FechamentoConsolidado.Add(new RelatorioAcompanhamentoFechamentoConsolidadoDto()
+                        {
+                            NaoIniciado = fechamento.NaoIniciado,
+                            ProcessadoComPendencia = fechamento.ProcessadoComPendencia,
+                            ProcessadoComSucesso = fechamento.ProcessadoComSucesso
+                        });
                     }
 
-                    uesRelatorio.Turmas.Add(fechamentoConselhoClasseConsolidado);
+                    foreach (var conselho in conselhos)
+                    {
+                        bimestres.ConselhoDeClasseConsolidado.Add(new RelatorioAcompanhamentoConselhoClasseConsolidadoDto()
+                        {
+                            NaoIniciado = conselho.NaoIniciado,
+                            EmAndamento = conselho.EmAndamento,
+                            Concluido = conselho.Concluido
+                        });
+                    }
+                    fechamentoConsolidadoTurmas.Bimestres.Add(bimestres);
+
+                    uesRelatorio.Turmas.Add(fechamentoConsolidadoTurmas);
                 }
                 relatorio.Ues.Add(uesRelatorio);
             }
