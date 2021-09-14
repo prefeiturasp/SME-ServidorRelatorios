@@ -19,7 +19,7 @@ namespace SME.SR.Application
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery>();
             var relatorioDto = await mediator.Send(relatorioQuery);
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoFechamento", relatorioDto, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", relatorioDto, request.CodigoCorrelacao));
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.AcompanhamentoFechamento.ObterRelatorioAcompanhamentoFechamentoConselhoClasseConsolidado
+namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQueryHandler : IRequestHandler<ObterRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery, RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto>
     {
@@ -41,6 +41,11 @@ namespace SME.SR.Application.Queries.AcompanhamentoFechamento.ObterRelatorioAcom
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
             var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma);
             var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma);
+
+            if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
+               (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
+                        throw new NegocioException("Acompanhamento de Fechamentos das turmas do filtro não encontrado");
+
             return await mediator.Send(new MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(dre, ue, turmas, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.TurmasCodigo?.ToArray(), request.Usuario));
         }
 
