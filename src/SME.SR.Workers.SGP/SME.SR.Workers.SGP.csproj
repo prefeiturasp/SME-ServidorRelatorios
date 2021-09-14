@@ -8,6 +8,7 @@
   <ItemGroup>
     <Folder Include="Commons\Attributes\" />
     <Folder Include="Commons\Exceptions\" />
+    <Folder Include="fonts\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,6 +47,9 @@
     <Content Update="Views\RelatorioFaltasFrequencias.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Views\RelatorioPendencias.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\RelatorioFechamentoPendencias.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -68,6 +72,31 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="assets\css\bootstrap.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\css\bootstrap.min.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm32WWg.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm36WWoKC.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3CWWoKC.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3KWWoKC.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3mWWoKC.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\fonts\L0x7DF4xlVMF-BfR8bXMIjhOm3OWWoKC.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
     <None Update="libwkhtmltox.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

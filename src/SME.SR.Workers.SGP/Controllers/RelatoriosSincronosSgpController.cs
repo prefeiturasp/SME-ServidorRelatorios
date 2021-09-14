@@ -13,7 +13,7 @@ namespace SME.SR.Workers.SGP.Controllers
     public class RelatoriosSincronosSgpController : ControllerBase
     {
         [HttpPost("faltas-frequencia")]
-        public async Task<Guid> RelatorioFaltasFrequencias([FromBody] FiltroRelatorioFaltasFrequenciasDto filtro, [FromServices] IRelatorioFaltasFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
+        public async Task<Guid> RelatorioFaltasFrequencias([FromBody] FiltroRelatorioFrequenciasDto filtro, [FromServices] IRelatorioFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
         {
             var codigoCorrelacao = Guid.NewGuid();
             await relatorioFaltasFrequenciasUseCase.Executar(new FiltroRelatorioDto()

@@ -7,16 +7,18 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQuery : IRequest<RelatorioAcompanhamentoAprendizagemDto>
     {
-        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas)
+        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, long periodoId)
         {
             Turma = turma;
             AlunosEol = alunosEol;
             Professores = professores;
             AcompanhamentoTurma = acompanhamentoTurma;
             FrequenciaAlunos = frequenciaAlunos;
+            RegistrosIndividuais = registrosIndividuais;
             Ocorrencias = ocorrencias;
             Filtro = filtro;
             QuantidadeAulasDadas = quantidadeAulasDadas;
+            PeriodoId = periodoId;
         }
 
         public Turma Turma { get; set; }
@@ -24,9 +26,11 @@ namespace SME.SR.Application
         public IEnumerable<ProfessorTitularComponenteCurricularDto> Professores { get; set; }
         public IEnumerable<AcompanhamentoAprendizagemTurmaDto> AcompanhamentoTurma { get; set; }
         public IEnumerable<FrequenciaAluno> FrequenciaAlunos { get; set; }
+        public IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> RegistrosIndividuais { get; }
         public IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias { get; set; }
         public FiltroRelatorioAcompanhamentoAprendizagemDto Filtro { get; set; }
         public IEnumerable<QuantidadeAulasDadasBimestreDto> QuantidadeAulasDadas { get; set; }
+        public long PeriodoId { get; set; }
 
     }
 }

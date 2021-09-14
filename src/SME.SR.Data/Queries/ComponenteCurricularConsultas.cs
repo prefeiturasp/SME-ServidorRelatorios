@@ -52,11 +52,11 @@
 										serie_ensino.sg_resumida_serie   as AnoTurma,
                                         dtt.qt_hora_duracao              as TurnoTurma,
                                         te.cd_turma_escola               as CodigoTurma,
-                                        vmc.cd_aluno                    as CodigoAluno
-                    from turma_escola te
-
-	                inner join historico_matricula_turma_escola mte on mte.cd_turma_escola = te.cd_turma_escola 
-	                inner join v_historico_matricula_cotic vmc on vmc.cd_matricula = mte.cd_matricula 
+                                        aluno.cd_aluno                    as CodigoAluno
+                        FROM v_aluno_cotic aluno
+						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+                        INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola					
 
                              inner join escola esc ON te.cd_escola = esc.cd_escola
                              inner join v_cadastro_unidade_educacao ue on ue.cd_unidade_educacao = esc.cd_escola
@@ -84,7 +84,7 @@
                         and pcc.dt_cancelamento is null
                         -- Turno     
                              inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
-                    where vmc.cd_aluno in @alunosCodigos
+                    where aluno.cd_aluno in @alunosCodigos
                       and te.an_letivo = @anoLetivo
                       and te.st_turma_escola in ('O', 'A', 'C')";
 

@@ -64,6 +64,14 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="frequenciaFinal"/>
 			<fieldDescription><![CDATA[frequenciaFinal]]></fieldDescription>
 		</field>
+		<field name="lancaNota" class="java.lang.Boolean">
+			<property name="net.sf.jasperreports.json.field.expression" value="lancaNota"/>
+			<fieldDescription><![CDATA[lancaNota]]></fieldDescription>
+		</field>
+		<field name="lancaFrequencia" class="java.lang.Boolean">
+			<property name="net.sf.jasperreports.json.field.expression" value="lancaFrequencia"/>
+			<fieldDescription><![CDATA[lancaFrequencia]]></fieldDescription>
+		</field>
 	</subDataset>
 	<queryString language="JSON">
 		<![CDATA[]]>
@@ -73,7 +81,6 @@
 	</background>
 	<detail>
 		<band height="8" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<componentElement>
 				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="285" height="8" isRemoveLineWhenBlank="true" forecolor="#DADADA" uuid="1650bede-f586-4d7b-ab59-328b6a4c914b">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
@@ -88,7 +95,7 @@
 					<datasetRun subDataset="DatasetBoletim" uuid="c67c21b4-27c5-4821-9bdb-b20ecac4a9eb">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="126" uuid="93ca2197-afe2-48e9-acb2-04acf039ffdc">
+					<jr:column width="128" uuid="93ca2197-afe2-48e9-acb2-04acf039ffdc">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
 						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -101,11 +108,10 @@
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<textField textAdjust="StretchHeight">
-								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="126" height="8" forecolor="#42474A" uuid="d94f2f07-5fcc-4024-a489-8ff18f4ed87c">
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="128" height="8" forecolor="#42474A" uuid="d94f2f07-5fcc-4024-a489-8ff18f4ed87c">
 									<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 									<property name="property.name" value="value"/>
 									<property name="net.sf.jasperreports.export.xls.column.width" value="60"/>
-									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 								</reportElement>
 								<box>
@@ -140,11 +146,11 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaBimestre1} != "") ?  $F{notaBimestre1} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre1} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="15" uuid="cf98edc1-b113-4d86-8022-03e9f228cc2b">
+					<jr:column width="16" uuid="cf98edc1-b113-4d86-8022-03e9f228cc2b">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
 						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -155,14 +161,14 @@
 						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 						<jr:detailCell height="8">
 							<textField>
-								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="cb5f758a-f239-48bf-a84b-013734e2f642"/>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="cb5f758a-f239-48bf-a84b-013734e2f642"/>
 								<box>
 									<pen lineWidth="0.25"/>
 								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{frequenciaBimestre1} != "") ?  $F{frequenciaBimestre1} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre1} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -186,11 +192,11 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaBimestre2} != "") ?  $F{notaBimestre2} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre2} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="15" uuid="03f6f29c-0b21-4fd6-9ee7-b72d405abf89">
+					<jr:column width="16" uuid="03f6f29c-0b21-4fd6-9ee7-b72d405abf89">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
 						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -201,14 +207,14 @@
 						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 						<jr:detailCell height="8">
 							<textField>
-								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="656c64d3-2606-41c5-a324-e854d3ddbf43"/>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="656c64d3-2606-41c5-a324-e854d3ddbf43"/>
 								<box>
 									<pen lineWidth="0.25"/>
 								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{frequenciaBimestre2} != "") ?  $F{frequenciaBimestre2} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre2} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -230,11 +236,11 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaBimestre3} != "") ?  $F{notaBimestre3} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre3} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="15" uuid="e6d1f086-a90b-4e84-b3b9-8ddf6da39ede">
+					<jr:column width="16" uuid="e6d1f086-a90b-4e84-b3b9-8ddf6da39ede">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
 						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -245,7 +251,7 @@
 						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 						<jr:detailCell height="8">
 							<textField>
-								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="7b38795f-c68c-460a-b797-d3c53b519c0f">
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="7b38795f-c68c-460a-b797-d3c53b519c0f">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
 								<box>
@@ -254,7 +260,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{frequenciaBimestre3} != "") ?  $F{frequenciaBimestre3} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre3} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -278,7 +284,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaBimestre4} != "") ?  $F{notaBimestre4} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaBimestre4} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -300,11 +306,11 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{frequenciaBimestre4} != "") ?  $F{frequenciaBimestre4} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaBimestre4} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="16" uuid="59126ffb-50c4-4e92-b835-80ec99e5f9ba">
+					<jr:column width="15" uuid="59126ffb-50c4-4e92-b835-80ec99e5f9ba">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 						<property name="com.jaspersoft.layout.grid.x" value="-1"/>
 						<property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -315,14 +321,14 @@
 						<property name="com.jaspersoft.layout.grid.weight.fixed" value="true"/>
 						<jr:detailCell height="8">
 							<textField>
-								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="16" height="8" forecolor="#42474A" uuid="03a9ac50-3145-492e-bee7-d634e3004578"/>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="15" height="8" forecolor="#42474A" uuid="03a9ac50-3145-492e-bee7-d634e3004578"/>
 								<box>
 									<pen lineWidth="0.25"/>
 								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{notaFinal} != "") ? $F{notaFinal} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaNota} ? $F{notaFinal} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -346,7 +352,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="4"/>
 								</textElement>
-								<textFieldExpression><![CDATA[($F{frequenciaFinal} != "") ?  $F{frequenciaFinal} : "--"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lancaFrequencia} ? $F{frequenciaFinal} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

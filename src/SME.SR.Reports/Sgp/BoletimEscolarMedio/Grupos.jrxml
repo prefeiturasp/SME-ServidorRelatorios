@@ -22,7 +22,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="16" splitType="Stretch">
+		<band height="8" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
 				<reportElement x="0" y="0" width="200" height="8" isRemoveLineWhenBlank="true" uuid="d3d014cc-8f99-4e10-91ca-7d27000d9e1e">
@@ -33,16 +33,6 @@
 					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componentesCurriculares")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["ComponenteCurricular.jasper"]]></subreportExpression>
-			</subreport>
-			<subreport>
-				<reportElement positionType="Float" x="0" y="8" width="200" height="8" isRemoveLineWhenBlank="true" uuid="fb8ced9e-b6ff-4f21-ac7c-44add8cb189c">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<subreportParameter name="REPORT_DATA_SOURCE">
-					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonQLDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("componenteCurricularRegencia")]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportExpression><![CDATA["ComponenteCurricularRegencia.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

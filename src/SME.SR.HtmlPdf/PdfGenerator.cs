@@ -52,9 +52,8 @@ namespace SME.SR.HtmlPdf
                     WebSettings = { DefaultEncoding = "utf-8" } ,
                     PagesCount = true,
                 });
-
-
-            converter.Convert(doc);
+            
+                converter.Convert(doc);            
         }
 
         public void ConvertToPdf(List<string> paginas, string nomeArquivo)
@@ -92,9 +91,9 @@ namespace SME.SR.HtmlPdf
 
             converter.Convert(doc);
         }
-        public void ConvertToPdfPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string caminhoBase, string nomeArquivo)
+        public void ConvertToPdfPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string caminhoBase, string nomeArquivo, string tituloRelatorioRodape = "")
         {
-            HtmlToPdfDocument doc = StartBasicDocPaginacaoSolo(paginas);
+            HtmlToPdfDocument doc = StartBasicDocPaginacaoSolo(paginas, tituloRelatorioRodape);
 
             if (!string.IsNullOrWhiteSpace(nomeArquivo))
             {
@@ -135,9 +134,9 @@ namespace SME.SR.HtmlPdf
                     HtmlContent = pagina.Html,
                     WebSettings = { DefaultEncoding = "utf-8" },
                     FooterSettings = {
-                    FontName="Roboto",
+                    FontName="Roboto Mono",
                     FontSize = 9, Right = $"{pagina.Pagina} / {pagina.Total}",
-                    Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
+                    Left = !string.IsNullOrEmpty(tituloRelatorioRodape) ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
                 }
                 });
             }

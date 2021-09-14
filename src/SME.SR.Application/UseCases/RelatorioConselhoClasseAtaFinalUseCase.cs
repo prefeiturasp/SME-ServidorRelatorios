@@ -1,9 +1,6 @@
 ﻿using MediatR;
-using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
-using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,10 +18,11 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAtaFinalResultados;
             var filtros = request.ObterObjetoFiltro<FiltroConselhoClasseAtaFinalDto>();
-            var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
             var mensagensErro = new StringBuilder();
-            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtros, usuario));
+            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtros));
 
             if (!relatoriosTurmas.Any())
                 throw new NegocioException("Não há dados para o relatório de Ata Final de Resultados.");

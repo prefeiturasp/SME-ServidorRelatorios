@@ -43,7 +43,7 @@ namespace SME.SR.Infra
 
         private async Task PublicaMensagem(PublicaFilaDto publicaFilaDto, byte[] body, ConnectionFactory factory)
         {
-            var exchange = publicaFilaDto.Exchange ?? RotasRabbit.ExchangeListenerWorkerRelatorios;
+            var exchange = publicaFilaDto.Exchange ?? ExchangeRabbit.WorkerRelatorios;
 
             using (var conexaoRabbit = factory.CreateConnection())
             {

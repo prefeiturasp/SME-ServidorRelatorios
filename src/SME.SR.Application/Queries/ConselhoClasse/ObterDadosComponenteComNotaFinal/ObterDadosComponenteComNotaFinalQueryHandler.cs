@@ -83,8 +83,23 @@ namespace SME.SR.Application
         }
 
         private async Task<ComponenteFrequenciaRegenciaFinal> ObterNotasFrequenciaRegencia(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Usuario usuario)
-        {
-            var percentualFrequencia = frequenciaAluno != null && frequenciaAluno.Id > 0 && frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
+        {            
+            var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), turma.AnoLetivo));
+
+            double? percentualFrequencia = null;
+
+            if (disciplina.Frequencia)
+            {
+                percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
+                ?
+                100
+                :
+                frequenciaAluno.TotalAulas > 0
+                ?
+                frequenciaAluno?.PercentualFrequencia
+                :
+                null;
+            }
 
             //Frequência especifica para 2020.
             if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))
@@ -140,7 +155,22 @@ namespace SME.SR.Application
 
         private async Task<ComponenteComNotaFinal> ObterNotasFrequenciaComponenteComNotaFinal(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
-            var percentualFrequencia = frequenciaAluno != null && frequenciaAluno.Id > 0 && frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
+            var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), turma.AnoLetivo));
+            
+            double? percentualFrequencia = null;
+
+            if (disciplina.Frequencia)
+            {
+                percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
+                ?
+                100
+                :
+                frequenciaAluno.TotalAulas > 0
+                ?
+                frequenciaAluno?.PercentualFrequencia
+                :
+                null;
+            }
 
             if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))
                 percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
@@ -158,7 +188,8 @@ namespace SME.SR.Application
                 NotaConceitoBimestre2 = notasComponente.FirstOrDefault(n => n.Bimestre == 2)?.NotaConceito,
                 NotaConceitoBimestre3 = notasComponente.FirstOrDefault(n => n.Bimestre == 3)?.NotaConceito,
                 NotaConceitoBimestre4 = notasComponente.FirstOrDefault(n => n.Bimestre == 4)?.NotaConceito,
-                NotaFinal = ObterNotaPosConselho(disciplina, periodoEscolar?.Bimestre, notasConselhoClasseAluno, notasFechamentoAluno)
+                NotaFinal = ObterNotaPosConselho(disciplina, periodoEscolar?.Bimestre, notasConselhoClasseAluno, notasFechamentoAluno),
+                PermiteRegistroFrequencia = disciplina.Frequencia
             };
 
             return conselhoClasseComponente;

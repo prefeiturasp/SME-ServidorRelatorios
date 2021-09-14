@@ -23,11 +23,11 @@ namespace SME.SR.Application
 
             if (request.CodigosTurma != null && request.CodigosTurma.Any())
             {
-                turmas = await ObterTurmasPorCodigo(request.CodigosTurma.ToArray());
+                turmas = await ObterTurmasPorCodigoESituacaoConsolidacao(request.CodigosTurma.ToArray(), request.SituacaoFechamento, request.SituacaoConselhoClasse, request.Bimestres);
             }
             else
             {
-                var turmasFiltro = await ObterTurmasPorFiltro(request.CodigoUe, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
+                var turmasFiltro = await ObterTurmasPorFiltroSituacaoConsolidado(request.CodigoUe, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico, request.SituacaoConselhoClasse, request.SituacaoFechamento, request.Bimestres);
 
                 if (turmasFiltro != null && turmasFiltro.Any())
                     turmas = turmas.Concat(turmasFiltro);
@@ -39,12 +39,12 @@ namespace SME.SR.Application
                 return turmas.OrderBy(a => a.Nome);
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasPorCodigo(string[] codigosTurma)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorCodigoESituacaoConsolidacao(string[] codigosTurma, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres)
         {
-            return await mediator.Send(new ObterTurmasPorCodigoQuery(codigosTurma));
+            return await mediator.Send(new ObterTurmasSituacaoConsolidacaoQuery(codigosTurma, situacaoFechamento, situacaoConselhoClasse, bimestres));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltroSituacaoConsolidado(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoConselhoClasse? situacaoConselhoClasse, SituacaoFechamento? situacaoFechamento , int[] bimestres)
         {
             return await mediator.Send(new ObterTurmasPorAbrangenciaTiposFiltrosQuery()
             {
@@ -54,7 +54,11 @@ namespace SME.SR.Application
                 Semestre = semestre,
                 Login = usuario.Login,
                 Perfil = usuario.PerfilAtual,
-                ConsideraHistorico = consideraHistorico
+                ConsideraHistorico = consideraHistorico,
+                SituacaoFechamento = situacaoFechamento,
+                SituacaoConselhoClasse = situacaoConselhoClasse,
+                Bimestres = bimestres
+
             });
         }
     }

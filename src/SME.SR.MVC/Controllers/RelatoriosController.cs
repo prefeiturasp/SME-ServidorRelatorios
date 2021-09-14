@@ -48,30 +48,162 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioGraficoBarrasTeste", grafico);
         }
-        [HttpGet("faltas-frequencia")]
+        [HttpGet("frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
-            var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(new FiltroRelatorioFaltasFrequenciasDto()));
-            //mock
-            model.ExibeFaltas = true;
-            model.ExibeFrequencia = false;
-            model.Dre = "DRE 01";
-            model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
-            model.Ano = "001";
-            model.Bimestre = "1º";
-            model.ComponenteCurricular = "Matemática";
-            model.Usuario = "ADMIN";
-            model.Modalidade = "Fundamental";
-            model.RF = "123123123";
-            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            var model = new RelatorioFrequenciaDto();
 
-            return View(model);
+            var alunos = new List<RelatorioFrequenciaAlunoDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var aluno = new RelatorioFrequenciaAlunoDto()
+                {
+                    NumeroChamada = (i + 1).ToString(),
+                    CodigoAluno = 001,
+                    NomeAluno = "Marcos Almeida Machado" + i,
+                    NomeTurma = "Turma 001",
+                    CodigoTurma = "001",
+                    TotalAusencias = 1,
+                    TotalRemoto = 10,
+                    TotalCompensacoes = 1,
+                    TotalPresenca = 19,
+                    TotalAulas = 20,
+                };
+
+                var aluno1 = new RelatorioFrequenciaAlunoDto()
+                {
+                    NumeroChamada = (i + 2).ToString(),
+                    CodigoAluno = 002,
+                    NomeAluno = "Antonio Castro Santana",
+                    NomeTurma = "Turma 001",
+                    CodigoTurma = "001",
+                    TotalAusencias = 3,
+                    TotalRemoto = 10,
+                    TotalCompensacoes = 2,
+                    TotalPresenca = 17,
+                    TotalAulas = 20,
+                };
+                alunos.Add(aluno);
+                alunos.Add(aluno1);
+            }
+
+            var componentes = new List<RelatorioFrequenciaComponenteDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var componente = new RelatorioFrequenciaComponenteDto()
+                {
+                    NomeComponente = "Arte",
+                    CodigoComponente = "001",
+                    Alunos = alunos,
+                };
+                var componente1 = new RelatorioFrequenciaComponenteDto()
+                {
+                    NomeComponente = "Matematica",
+                    CodigoComponente = "002",
+                    Alunos = alunos,
+                };
+
+                componentes.Add(componente);
+                componentes.Add(componente1);
+            }
+
+            var bimestres = new List<RelatorioFrequenciaBimestreDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var bimestre = new RelatorioFrequenciaBimestreDto()
+                {
+                    NomeBimestre = "1º BIMESTRE",
+                    Numero = "1",
+                    Componentes = componentes,
+                };
+                var bimestre1 = new RelatorioFrequenciaBimestreDto()
+                {
+                    NomeBimestre = "2º BIMESTRE",
+                    Numero = "1",
+                    Componentes = componentes
+                };
+                bimestres.Add(bimestre);
+                bimestres.Add(bimestre1);
+            }
+
+            var turmaAnos = new List<RelatorioFrequenciaTurmaAnoDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var turmaAno = new RelatorioFrequenciaTurmaAnoDto()
+                {
+                    Nome = "EF-1A-1ºAno",
+                    Bimestres = bimestres,
+                    EhExibirTurma = false,
+                };
+                var turmaAno1 = new RelatorioFrequenciaTurmaAnoDto()
+                {
+                    Nome = "EF-2A-2ºAno",
+                    Bimestres = bimestres,
+                    EhExibirTurma = false,
+                };
+                turmaAnos.Add(turmaAno);
+                turmaAnos.Add(turmaAno1);
+            }
+
+            var ues = new List<RelatorioFrequenciaUeDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var ue = new RelatorioFrequenciaUeDto()
+                {
+                    CodigoUe = "1",
+                    NomeUe = "CEU EMEF BUTANTA",
+                    TipoUe = TipoEscola.CEMEI,
+                    TurmasAnos = turmaAnos
+                };
+                var ue1 = new RelatorioFrequenciaUeDto()
+                {
+                    CodigoUe = "1",
+                    NomeUe = "CEU EMEI BUTANTA",
+                    TipoUe = TipoEscola.CEMEI,
+                    TurmasAnos = turmaAnos
+                };
+                ues.Add(ue);
+                ues.Add(ue1);
+            }
+
+            var dres = new List<RelatorioFrequenciaDreDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var dre = new RelatorioFrequenciaDreDto()
+                {
+                    CodigoDre = "1",
+                    NomeDre = "DRE-BT",
+                    Ues = ues
+                };
+                var dre1 = new RelatorioFrequenciaDreDto()
+                {
+                    CodigoDre = "1",
+                    NomeDre = "DRE-JT",
+                    Ues = ues
+                };
+                dres.Add(dre);
+                dres.Add(dre1);
+            }
+
+            model.Dres = dres;
+            model.Cabecalho = new RelatorioFrequenciaCabecalhoDto()
+            {
+                Dre = "TODAS",
+                Ue = "TODAS",
+                Ano = "TODOS",
+                Bimestre = "TODOS",
+                ComponenteCurricular = "TODOS",
+                Usuario = "JULIA FERREIRA DE OLIVEIRA ",
+                Turma = "TODOS",
+                RF = "1234567",
+            }; 
+            return View("RelatorioFrequencias", model);
         }
 
         [HttpGet("fechamentos-pendencias")]
         public IActionResult RelatorioFechamentoPendencia([FromServices] IMediator mediator)
         {
-            RelatorioFechamentoPendenciasDto model = GeraVariasPendencias2Componentes2Turmas();
+            RelatorioPendenciasDto model = GeraVariasPendencias2Componentes2Turmas();
 
             return View("RelatorioFechamentoPendencias", model);
         }
@@ -119,9 +251,9 @@ namespace SME.SR.MVC.Controllers
             return View("RelatorioRecuperacaoParalela", model);
         }
 
-        private static RelatorioFechamentoPendenciasDto GeraVariasPendencias2Componentes2Turmas()
+        private static RelatorioPendenciasDto GeraVariasPendencias2Componentes2Turmas()
         {
-            var model = new RelatorioFechamentoPendenciasDto();
+            var model = new RelatorioPendenciasDto();
 
             model.DreNome = "DRE 001";
             model.UeNome = "UE 001";
@@ -135,31 +267,31 @@ namespace SME.SR.MVC.Controllers
             //model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            model.Dre = new RelatorioFechamentoPendenciasDreDto
+            model.Dre = new RelatorioPendenciasDreDto
             {
                 Codigo = "123",
                 Nome = "DRE 01",
-                Ue = new RelatorioFechamentoPendenciasUeDto
+                Ue = new RelatorioPendenciasUeDto
                 {
                     Nome = "UE 01",
                     Codigo = "456",
-                    Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>() {
-                         new RelatorioFechamentoPendenciasTurmaDto() {
+                    Turmas = new List<RelatorioPendenciasTurmaDto>() {
+                         new RelatorioPendenciasTurmaDto() {
                           Nome = "TURMA 01",
-                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                          Bimestres =  new List<RelatorioPendenciasBimestreDto>
                                 {
-                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    new RelatorioPendenciasBimestreDto
                                     {
-                                         Nome="1º BIMESTRE",
-                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         NomeBimestre="1º BIMESTRE",
+                                         Componentes = new List<RelatorioPendenciasComponenteDto>
                                          {
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "001",
                                                      NomeComponente = "Matemática",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -168,7 +300,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -177,7 +309,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -190,13 +322,13 @@ namespace SME.SR.MVC.Controllers
 
                                                       }
                                                },
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "002",
                                                      NomeComponente = "Ciências",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -205,7 +337,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -214,7 +346,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -232,22 +364,22 @@ namespace SME.SR.MVC.Controllers
                                     }
                         }
                          },
-                         new RelatorioFechamentoPendenciasTurmaDto() {
+                         new RelatorioPendenciasTurmaDto() {
                           Nome = "TURMA 02",
-                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                          Bimestres =  new List<RelatorioPendenciasBimestreDto>
                                 {
-                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    new RelatorioPendenciasBimestreDto
                                     {
-                                         Nome="1º BIMESTRE",
-                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         NomeBimestre="1º BIMESTRE",
+                                         Componentes = new List<RelatorioPendenciasComponenteDto>
                                          {
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "001",
                                                      NomeComponente = "Matemática",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -256,7 +388,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -265,7 +397,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -278,13 +410,13 @@ namespace SME.SR.MVC.Controllers
 
                                                       }
                                                },
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "002",
                                                      NomeComponente = "Ciências",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -293,7 +425,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -302,7 +434,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -7465,7 +7597,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
 
             var mensagensErro = new StringBuilder();
-            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtro, new Data.Usuario() { CodigoRf = "9999999", Nome = "Teste" }));
+            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtro));
 
             //var rel = relatoriosTurmas.Where(a => a.GruposMatriz)
             return View("RelatorioAtasComColunaFinal", relatoriosTurmas[2]);
@@ -7501,7 +7633,96 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             catch (Exception ex)
             {
                 throw ex;
+                throw ex;
             }
+        }
+
+        [HttpGet("boletim-escolar-detalhado")]
+        public async Task<IActionResult> RelatorioBoletimEscolarDetalhado([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+
+            var boletimEscolarDetalhadoDto = new BoletimEscolarDetalhadoDto();
+
+            var aluno01 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Emerson Ferreira e Silva",
+                    CodigoEol = "1234567",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                },
+                ParecerConclusivo = "Retido",
+                RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+
+                RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno01);
+
+            var aluno02 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Maria Ferreira e Silva",
+                    CodigoEol = "1234568",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                },
+
+                ParecerConclusivo = "",
+                RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+
+                RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
+
+
+            var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+
+            return View("RelatorioBoletimEscolarDetalhado", model);
+
         }
 
         //[HttpGet("boletim-escolar-detalhado")]
@@ -7617,13 +7838,10 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     NullValueHandling = NullValueHandling.Ignore
                 });
 
-                //var model = await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
-                // return View("RelatorioAcompanhamentoFechamento", model);
                 return default;
             }
             catch (Exception ex)
             {
-                throw ex;
                 throw ex;
             }
         }

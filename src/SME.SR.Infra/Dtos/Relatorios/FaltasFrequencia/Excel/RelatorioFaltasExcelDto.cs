@@ -25,10 +25,16 @@ namespace SME.SR.Infra
         [Display(Description = "Nome Estudante")]
         public string EstudanteNome { get; set; }
 
-        [Display(Description = "Qtd Faltas")]
+        [Display(Description = "Presença")]
+        public int TotalPresenca { get; set; }
+
+        [Display(Description = "Remoto")]
+        public int TotalRemoto { get; set; }
+
+        [Display(Description = "Ausências")]
         public int FaltasQuantidade { get; set; }
 
-        [Display(Description = "Qtd Aulas")]
-        public int AulasQuantidade { get; set; }
+        [Display(Description = "Compensações")]
+        public int TotalCompensacoes { get; set; }
     }
 }

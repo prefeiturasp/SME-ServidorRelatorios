@@ -11,25 +11,28 @@ namespace SME.SR.Application
 {
     public class ObterFrequenciaComponenteGlobalPorTurmaQueryHandler : IRequestHandler<ObterFrequenciaComponenteGlobalPorTurmaQuery, IEnumerable<FrequenciaAluno>>
     {
-        private readonly IFrequenciaAlunoRepository frequenciaRepository;
+        private readonly IFrequenciaAlunoRepository frequenciaAlunoRepository;
+
         private readonly IMediator mediator;
 
-        public ObterFrequenciaComponenteGlobalPorTurmaQueryHandler(IMediator mediator, IFrequenciaAlunoRepository frequenciaRepository)
+        public ObterFrequenciaComponenteGlobalPorTurmaQueryHandler(IMediator mediator, IFrequenciaAlunoRepository frequenciaAlunoRepository, IRegistroFrequenciaRepository registroFrequenciaRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            this.frequenciaRepository = frequenciaRepository ?? throw new ArgumentNullException(nameof(frequenciaRepository));
+            this.frequenciaAlunoRepository = frequenciaAlunoRepository ?? throw new ArgumentNullException(nameof(frequenciaAlunoRepository));
         }
 
         public async Task<IEnumerable<FrequenciaAluno>> Handle(ObterFrequenciaComponenteGlobalPorTurmaQuery request, CancellationToken cancellationToken)
         {
             var componentesCurricularesId = request.ComponentesCurricularesPorTurma.Select(cc => cc.ComponenteCurricularId.ToString()).Distinct().ToArray();
 
-            var frequenciaTurma = await frequenciaRepository.ObterFrequenciaDisciplinaGlobalPorTurma(request.TurmasCodigo, componentesCurricularesId, request.TipoCalendarioId);
+            var frequenciaTurma = await frequenciaAlunoRepository.ObterFrequenciaDisciplinaGlobalPorTurma(request.TurmasCodigo, componentesCurricularesId, request.TipoCalendarioId);
 
-            return await TratarFrequenciaAnualAluno(frequenciaTurma, request.Bimestres, request.ComponentesCurricularesPorTurma, request.TipoCalendarioId);
+            var totalAulas = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.TurmasCodigo, request.TipoCalendarioId, componentesCurricularesId, new int[] { }));
+
+            return await TratarFrequenciaAnualAluno(frequenciaTurma, request.Bimestres, request.ComponentesCurricularesPorTurma, request.TipoCalendarioId, totalAulas);
         }
 
-        private async Task<IEnumerable<FrequenciaAluno>> TratarFrequenciaAnualAluno(IEnumerable<FrequenciaAluno> frequenciaTurma, int[] bimestres, IEnumerable<(string CodigoTurma, long ComponenteCurricularId)> componentesCurricularesPorTurma, long tipoCalendarioId)
+        private async Task<IEnumerable<FrequenciaAluno>> TratarFrequenciaAnualAluno(IEnumerable<FrequenciaAluno> frequenciaTurma, int[] bimestres, IEnumerable<(string CodigoTurma, long ComponenteCurricularId)> componentesCurricularesPorTurma, long tipoCalendarioId, IEnumerable<Infra.TurmaComponenteQtdAulasDto> totalAulas)
         {
             var frequenciaGlobalAlunos = new List<FrequenciaAluno>();
 
@@ -43,19 +46,20 @@ namespace SME.SR.Application
                 };
 
                 var turmaCodigo = componentesCurricularesPorTurma.FirstOrDefault(cc => cc.ComponenteCurricularId.ToString() == alunoComponente.Key.DisciplinaId).CodigoTurma;
+                var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
 
                 foreach (var bimestre in bimestres)
                 {
                     var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
                     var disciplinaId = !string.IsNullOrEmpty(frequenciaAluno.DisciplinaId) ? Convert.ToInt64(frequenciaAluno.DisciplinaId) : 0;
 
-                    frequenciaAluno.TotalAulas += frequenciaBimestre?.TotalAulas ??
-                                        await mediator.Send(new ObterAulasDadasNoBimestreQuery(turmaCodigo, tipoCalendarioId, disciplinaId, bimestre));
+                    if (totalAulas.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()) != null)
+                        frequenciaAluno.TotalAulas += totalAulas.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()).AulasQuantidade;
 
                     frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
                     frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;
 
-                    var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
+                    frequenciaAluno.TotalAulas += frequenciaAluno.TotalAulas == 0 ? frequenciaBimestre?.TotalAulas ?? 0 : 0;
 
                     // Particularidade de cálculo de frequência para 2020.
                     if (turma.AnoLetivo.Equals(2020))
