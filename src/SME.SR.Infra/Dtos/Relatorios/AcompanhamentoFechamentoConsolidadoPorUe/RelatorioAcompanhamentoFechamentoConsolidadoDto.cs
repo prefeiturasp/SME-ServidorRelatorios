@@ -2,9 +2,15 @@
 {
     public class RelatorioAcompanhamentoFechamentoConsolidadoDto
     {
-        public string NaoIniciado { get; set; }
-        public string EmProcessamento { get; set; }
-        public string ProcessadoComPendencia { get; set; }
-        public string ProcessadoComSucesso { get; set; }
+        public RelatorioAcompanhamentoFechamentoConsolidadoDto(int naoIniciado, int processadoComPendencia, int processadoComSucesso)
+        {
+            NaoIniciado = naoIniciado;
+            ProcessadoComPendencia = processadoComPendencia;
+            ProcessadoComSucesso = processadoComSucesso;
+        }
+
+        public int NaoIniciado { get; set; }
+        public int ProcessadoComPendencia { get; set; }
+        public int ProcessadoComSucesso { get; set; }
     }
 }

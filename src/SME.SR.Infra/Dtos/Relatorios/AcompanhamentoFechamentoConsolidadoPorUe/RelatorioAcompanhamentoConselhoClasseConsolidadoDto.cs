@@ -2,8 +2,15 @@
 {
     public class RelatorioAcompanhamentoConselhoClasseConsolidadoDto
     {
-        public string NaoIniciado { get; set; }
-        public string EmAndamento { get; set; }
-        public string Concluido { get; set; }
+        public RelatorioAcompanhamentoConselhoClasseConsolidadoDto(int naoIniciado, int emAndamento, int concluido)
+        {
+            NaoIniciado = naoIniciado;
+            EmAndamento = emAndamento;
+            Concluido = concluido;
+        }
+
+        public int NaoIniciado { get; set; }
+        public int EmAndamento { get; set; }
+        public int Concluido { get; set; }
     }
 }
