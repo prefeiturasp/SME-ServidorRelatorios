@@ -37,7 +37,7 @@ namespace SME.SR.Application
 
             int[] bimestres = request.Bimestres?.ToArray();
 
-            var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres);
+            var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres, request.DreCodigo);
             if(turmas == null || turmas.Any())
                 throw new NegocioException("As turmas selecionadas não possuem fechamento.");
 
@@ -72,7 +72,7 @@ namespace SME.SR.Application
         {
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
-        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres)
+        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, string dreCodigo)
         {
             return await mediator.Send(new ObterTurmasRelatorioAcompanhamentoFechamentoQuery()
             {
@@ -85,8 +85,8 @@ namespace SME.SR.Application
                 ConsideraHistorico = consideraHistorico,
                 SituacaoConselhoClasse = situacaoConselhoClasse,
                 SituacaoFechamento = situacaoFechamento,
-                Bimestres = bimestres
-
+                Bimestres = bimestres,
+                CodigoDre = dreCodigo
             });
         }
 
