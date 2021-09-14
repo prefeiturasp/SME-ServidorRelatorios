@@ -11,7 +11,7 @@ namespace SME.SR.Infra
         {
 
             this.CodigoAluno = aluno.CodigoAluno;
-            this.NomeAluno = aluno.NomeAluno;
+            this.NomeAluno = string.IsNullOrEmpty(aluno.NomeSocialAluno) ? aluno.NomeAluno : aluno.NomeSocialAluno;
             this.CodigoSituacaoMatricula = aluno.CodigoSituacaoMatricula;
             this.SituacaoMatricula = aluno.SituacaoMatricula;
             this.NumeroAlunoChamada = aluno.NumeroAlunoChamada;

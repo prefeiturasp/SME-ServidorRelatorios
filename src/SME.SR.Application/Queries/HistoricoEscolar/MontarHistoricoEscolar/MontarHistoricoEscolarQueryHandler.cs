@@ -296,11 +296,9 @@ namespace SME.SR.Application
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
-                
+                componentes = new List<ComponenteCurricularHistoricoEscolarDto>();
 
-                List<ComponenteCurricularHistoricoEscolarDto> componentesRegencia = new List<ComponenteCurricularHistoricoEscolarDto>();
-                var componentesRegenciaFiltro = componentesCurricularesDaTurma.Where(x => x.Regencia);
-                foreach(var componenteCurricular in componentesRegenciaFiltro)
+                foreach (var componenteCurricular in componentesCurricularesDaTurma)
                 {
                     MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(),
                                               turmas.Where(t => t.Codigo == componenteCurricular.CodigoTurma),
@@ -310,38 +308,6 @@ namespace SME.SR.Application
                                               mediasFrequencia,
                                               componentes);
                 }
-
-                componentes = new List<ComponenteCurricularHistoricoEscolarDto>();
-                foreach (var componenteCurricular in componentesCurricularesDaTurma.Where(x => !x.Regencia))
-                {
-                    var regencia = componentesRegencia.FirstOrDefault(x => x.Codigo == componenteCurricular.CodDisciplina.ToString());
-                    componentes.Add(new ComponenteCurricularHistoricoEscolarDto()
-                    {
-                        Codigo = componenteCurricular.CodDisciplina.ToString(),
-                        Nome = componenteCurricular.Disciplina,
-                        Frequencia = componenteCurricular.Frequencia,
-                        Nota = componenteCurricular.LancaNota,
-                        FrequenciaPrimeiroAno = regencia != null ? regencia.FrequenciaPrimeiroAno : ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        FrequenciaSegundoAno = regencia != null ? regencia.FrequenciaSegundoAno : ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        FrequenciaTerceiroAno = regencia != null ? regencia.FrequenciaTerceiroAno : ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        FrequenciaQuartoAno = regencia != null ? regencia.FrequenciaQuartoAno : ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        FrequenciaQuintoAno = regencia != null ? regencia.FrequenciaQuintoAno : ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "5"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        FrequenciaSextoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "6"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        FrequenciaSetimoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "7"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        FrequenciaOitavoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "8"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        FrequenciaNonoAno = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "9"), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                        NotaConceitoPrimeiroAno = regencia != null ? regencia.NotaConceitoPrimeiroAno : ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        NotaConceitoSegundoAno = regencia != null ? regencia.NotaConceitoSegundoAno : ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        NotaConceitoTerceiroAno = regencia != null ? regencia.NotaConceitoTerceiroAno : ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        NotaConceitoQuartoAno = regencia != null ? regencia.NotaConceitoQuartoAno : ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        NotaConceitoQuintoAno = regencia != null ? regencia.NotaConceitoQuintoAno : ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "5"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        NotaConceitoSextoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "6"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        NotaConceitoSetimoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "7"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        NotaConceitoOitavoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "8"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        NotaConceitoNonoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "9"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                    });
-                }                
-
             }
 
             return componentes;

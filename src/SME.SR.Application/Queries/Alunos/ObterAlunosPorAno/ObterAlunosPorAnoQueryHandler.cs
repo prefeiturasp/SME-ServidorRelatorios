@@ -25,7 +25,7 @@ namespace SME.SR.Application
 
             return alunos.Select(a => new AlunoTurma()
             {
-                Nome = a.NomeAluno,
+                Nome = a.ObterNomeFinal(),
                 NumeroChamada = a.NumeroAlunoChamada,
                 CodigoAluno = a.CodigoAluno,
                 TurmaCodigo = a.CodigoTurma.ToString(),

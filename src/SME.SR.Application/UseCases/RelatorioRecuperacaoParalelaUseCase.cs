@@ -105,6 +105,7 @@ namespace SME.SR.Application
 
                 if (aluno == null)
                     throw new NegocioException($"Não foi possível localizar dados do aluno {filtros.AlunoCodigo}");
+                aluno.NomeAluno = aluno.ObterNomeFinal();
 
                 alunos.Add(aluno);
             }
