@@ -7779,7 +7779,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 EmAndamento = 8,
                 Concluido = 7,
             };
-            fechamentoConsolidado.Add(fechamento);
+            //fechamentoConsolidado.Add(fechamento);
             conselhoDeClasseConsolidado.Add(conselhoDeClasse);
 
             var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto>();
