@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Infra;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SME.SR.Application
 {
@@ -53,14 +54,14 @@ namespace SME.SR.Application
         private List<int> TodosParaNullBimestres(List<int> filtro)
         {
 
-            if (filtro != null && (filtro.Contains(-99)))
+            if (filtro != null && (filtro.Any(c => c == -99)))
                 return null;
             return filtro;
         }
 
         private List<string> TodosParaNullTurmas(List<string> filtro)
         {
-            if (filtro != null && (filtro.Contains("-99")))
+            if (filtro != null && (filtro.Any(c => c == "-99")))
                 return null;
             return filtro;
         }

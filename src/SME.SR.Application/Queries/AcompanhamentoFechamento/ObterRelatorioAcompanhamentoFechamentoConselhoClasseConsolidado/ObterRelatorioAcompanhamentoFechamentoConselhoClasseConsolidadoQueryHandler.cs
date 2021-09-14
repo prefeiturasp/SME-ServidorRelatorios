@@ -38,13 +38,16 @@ namespace SME.SR.Application
             int[] bimestres = request.Bimestres?.ToArray();
 
             var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres);
+            if(turmas == null || turmas.Any())
+                throw new NegocioException("As turmas selecionadas não possuem fechamento.");
+
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
             var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma);
             var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma);
 
             if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
                (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
-                        throw new NegocioException("Acompanhamento de Fechamentos das turmas do filtro não encontrado");
+                throw new NegocioException("Acompanhamento de Fechamentos das turmas do filtro não encontrado");
 
             return await mediator.Send(new MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(dre, ue, turmas, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.TurmasCodigo?.ToArray(), request.Usuario));
         }
@@ -71,27 +74,20 @@ namespace SME.SR.Application
         }
         private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres)
         {
-            try
+            return await mediator.Send(new ObterTurmasRelatorioAcompanhamentoFechamentoQuery()
             {
-                return await mediator.Send(new ObterTurmasRelatorioAcompanhamentoFechamentoQuery()
-                {
-                    CodigosTurma = turmasCodigo,
-                    CodigoUe = ueCodigo,
-                    Modalidade = modalidade,
-                    AnoLetivo = anoLetivo,
-                    Semestre = semestre,
-                    Usuario = usuario,
-                    ConsideraHistorico = consideraHistorico,
-                    SituacaoConselhoClasse = situacaoConselhoClasse,
-                    SituacaoFechamento = situacaoFechamento,
-                    Bimestres = bimestres
+                CodigosTurma = turmasCodigo,
+                CodigoUe = ueCodigo,
+                Modalidade = modalidade,
+                AnoLetivo = anoLetivo,
+                Semestre = semestre,
+                Usuario = usuario,
+                ConsideraHistorico = consideraHistorico,
+                SituacaoConselhoClasse = situacaoConselhoClasse,
+                SituacaoFechamento = situacaoFechamento,
+                Bimestres = bimestres
 
-                });
-            }
-            catch (NegocioException)
-            {
-                throw new NegocioException("As turmas selecionadas não possuem fechamento.");
-            }
+            });
         }
 
     }
