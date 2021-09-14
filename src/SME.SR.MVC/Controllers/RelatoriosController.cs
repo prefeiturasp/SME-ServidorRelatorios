@@ -7782,16 +7782,23 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             fechamentoConsolidado.Add(fechamento);
             conselhoDeClasseConsolidado.Add(conselhoDeClasse);
 
-            var bimestres = new List<RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto>();
-            var bimestre = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto("1º Bimestre", "EF - 1A")
+            var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto>();
+            var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto("EF -1A")
             {
-                ConselhoDeClasseConsolidado = conselhoDeClasseConsolidado,
                 FechamentoConsolidado = fechamentoConsolidado,
+                ConselhoDeClasseConsolidado = conselhoDeClasseConsolidado,
+            };
+            fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
+
+            var bimestres = new List<RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto>();
+            var bimestre = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto("1º Bimestre")
+            {                
+                FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
             };
             bimestres.Add(bimestre);            
 
             var turmas = new List<RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto>();
-            var turma = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto("EF - 1A")
+            var turma = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto("")
             {
                 Bimestres = bimestres,
             };
@@ -7808,9 +7815,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             {
                 DreNome = "DRE-BT",
                 UeNome = "TODAS",
-                Turma = "Todas",
+                Turma = "TODAS",
                 Bimestre = "TODOS",
-                Usuario = "USUÁRIO: JULIA FERREIRA DE OLIVEIRA",
+                Usuario = "JULIA FERREIRA DE OLIVEIRA",
                 RF = "1234567",
                 Data = "13/09/2021",
                 Ues = ues,
