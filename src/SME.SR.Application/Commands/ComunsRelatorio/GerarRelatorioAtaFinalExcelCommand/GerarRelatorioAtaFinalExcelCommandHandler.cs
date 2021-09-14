@@ -77,7 +77,7 @@ namespace SME.SR.Application
                 }
 
                 foreach (var codigoCorrelacao in lstCodigosCorrelacao)
-                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, codigoCorrelacao.Key));
+                    await servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, codigoCorrelacao.Key));
 
                 return await Task.FromResult(Unit.Value);
             }

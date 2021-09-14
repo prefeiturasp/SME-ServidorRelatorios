@@ -17,7 +17,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, string[] codigosTurmas, int anoLetivo, int modalidade, int semestre)
         {
             var query = @"select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
                                  fn.disciplina_id CodigoComponenteCurricular,
@@ -99,6 +99,7 @@ namespace SME.SR.Data
             var parametros = new
             {
                 codigosAluno,
+                codigosTurmas,
                 anoLetivo,
                 modalidade,
                 semestre
@@ -119,13 +120,14 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre, int[] tiposTurma)
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, string codigoTurma, int anoLetivo, int modalidade, int semestre, int[] tiposTurma)
         {
             var query = "select * from f_ata_final_obter_notas_turmas_alunos(@anoLetivo, @modalidade, @semestre, @tiposTurma, @codigosAlunos)";
 
             var parametros = new
             {
                 codigosAlunos,
+                codigoTurma,
                 anoLetivo,
                 modalidade,
                 semestre,

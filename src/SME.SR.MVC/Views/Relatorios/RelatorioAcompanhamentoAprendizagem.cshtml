@@ -284,60 +284,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
         return "";
     }
 
-    string MontarCabecalhoRegistroIndividual()
-    {
-        var classeRegistroIndividual = !quebrou ? "sem-border-top" : "";
-
-        <thead>
-            <tr>
-                <td width="20%" class='centralizar sem-border-bottom negrito {classeRegistroIndividual}'>DATA DO REGISTRO</td>
-                <td class='centralizar sem-border-bottom negrito'>REGISTRO</td>
-            </tr>
-        </thead>
-        return "";
-    }
-
-    string MontarRegistroIndividual(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
-    {
-        QuebrarLinhas(3, aluno.Nome);
-
-        var titulo = "REGISTRO INDIVIDUAL";
-        MontarTitulo(titulo);
-
-        <table class='tabela-alunos'>
-            @Html.Raw(MontarCabecalhoRegistroIndividual())
-
-            @{ contadorQuebrarPagina++; }
-
-            <tbody>
-
-                @foreach (var registroIndividual in aluno.RegistrosIndividuais)
-                {
-                    var descricaoRegistroIndividual = registroIndividual.Descricao;
-                    int numeroLinhasRegistroIndividual = CalcularLinhas(descricaoRegistroIndividual.Length);
-
-                    QuebrarLinhas(numeroLinhasRegistroIndividual, aluno.Nome, titulo);
-
-                    if (quebrou)
-                    {
-                        @Html.Raw(MontarCabecalhoRegistroIndividual())
-                    }
-
-                    SomaLinhasContador(numeroLinhasRegistroIndividual);
-
-                    <tr>
-                        <td width="15%" class='centralizar '>@registroIndividual.Data</td>
-                        <td width="85%" class='alinhar-esquerda espaco-esquerda-15 '>@descricaoRegistroIndividual</td>
-                    </tr>
-                }
-
-            </tbody>
-        </table>
-
-
-        return "";
-    }
-
     string MontarObservacoes(string observacao)
     {
         <table class='tabela-alunos sem-border-top'>
@@ -630,11 +576,6 @@ PROFESSORES: {Model.Cabecalho.Professores}
                 if (aluno.Frequencias.Count() > 0)
                 {
                     MontarFrequencia(aluno);
-                }
-
-                if (aluno.RegistrosIndividuais.Count() > 0)
-                {
-                    MontarRegistroIndividual(aluno);
                 }
 
                 var descricaoObservacoes = aluno.Observacoes;

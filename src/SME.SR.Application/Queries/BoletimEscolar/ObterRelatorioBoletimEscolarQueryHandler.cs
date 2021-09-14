@@ -29,7 +29,7 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
-            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();            
+            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
@@ -40,12 +40,17 @@ namespace SME.SR.Application
 
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
 
-            var notas = await ObterNotasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var notas = await ObterNotasAlunos(codigosAlunos, turmas.Select(t => t.Codigo).ToArray(), request.AnoLetivo, request.Modalidade, request.Semestre);
             var pareceresConclusivos = await ObterPareceresConclusivos(dre.Codigo, ue.Codigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var modalidadeCalendario = DefinirTipoModalidadeCalendario(request);
+            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
+            var codigosDisciplinas = componentesCurriculares.SelectMany(cc => cc.Select(cc => cc.CodDisciplina.ToString())).Distinct().ToArray();
+            var aulasPrevistas = await mediator.Send(new ObterAulasDadasTurmaBimestreComponenteCurricularQuery(codigosTurma, tipoCalendarioId, codigosDisciplinas));
+            var frequenciasAulasPrevistasInclusao = ObterAulasPrevistasParaInclusao(frequencias, aulasPrevistas);
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
 
-            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal);
+            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias.Concat(frequenciasAulasPrevistasInclusao), tiposNota, mediasFrequencia, frequenciaGlobal);
 
             return new RelatorioBoletimEscolarDto(boletins);
         }
@@ -63,6 +68,41 @@ namespace SME.SR.Application
                 Semestre = semestre,
                 TurmasCodigo = turmasCodigo
             });
+        }
+
+        private IEnumerable<IGrouping<string, FrequenciaAluno>> ObterAulasPrevistasParaInclusao(IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
+        {
+            return (from ap in aulasPrevistas
+                    from fq in frequencias
+                    where !fq.Any(f => f.TurmaId.Equals(ap.TurmaCodigo) &&
+                                       f.DisciplinaId.Equals(ap.ComponenteCurricularCodigo) &&
+                                       f.Bimestre.Equals(ap.Bimestre))
+                    select new FrequenciaAluno()
+                    {
+                        CodigoAluno = fq.Key,
+                        DisciplinaId = ap.ComponenteCurricularCodigo,
+                        TurmaId = ap.TurmaCodigo,
+                        TotalAulas = ap.AulasQuantidade,
+                        Bimestre = ap.Bimestre,
+                        PeriodoEscolarId = ap.PeriodoEscolarId
+                    }).GroupBy(fap => fap.CodigoAluno);
+        }
+
+        private ModalidadeTipoCalendario DefinirTipoModalidadeCalendario(ObterRelatorioBoletimEscolarQuery request)
+        {
+            var modalidadeCalendario = ModalidadeTipoCalendario.FundamentalMedio;
+
+            switch (request.Modalidade)
+            {
+                case Modalidade.Infantil:
+                    modalidadeCalendario = ModalidadeTipoCalendario.Infantil;
+                    break;
+                case Modalidade.EJA:
+                    modalidadeCalendario = ModalidadeTipoCalendario.EJA;
+                    break;
+            }
+
+            return modalidadeCalendario;
         }
 
         private async Task ObterFechamentoTurma(string codigoTurma)
@@ -106,7 +146,7 @@ namespace SME.SR.Application
             catch (NegocioException)
             {
                 throw new NegocioException("As turmas selecionadas não possuem fechamento.");
-            }            
+            }
         }
 
         private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo)
@@ -136,9 +176,9 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, string[] codigosTurmas, int anoLetivo, Modalidade modalidade, int semestre)
         {
-            return await mediator.Send(new ObterNotasRelatorioBoletimQuery(alunosCodigo, anoLetivo, (int)modalidade, semestre));
+            return await mediator.Send(new ObterNotasRelatorioBoletimQuery(alunosCodigo, codigosTurmas, anoLetivo, (int)modalidade, semestre));
         }
 
         private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
