@@ -37,19 +37,19 @@ namespace SME.SR.Application
                 //TODO: Aplicar Polly ??
                 if (await mediator.Send(new SalvarRelatorioJasperLocalCommand(dadosRelatorio.JSessionId, dadosRelatorio.RequisicaoId, dadosRelatorio.ExportacaoId, dadosRelatorio.CodigoCorrelacao)))
                 {
-                    servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, filtroRelatorioDto.CodigoCorrelacao));
+                    await servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, filtroRelatorioDto.CodigoCorrelacao));
                     SentrySdk.CaptureMessage("8 - MonitorarStatusRelatorioUseCase - Publicado na fila PRONTO OK!");
                 }
-                else PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
+                else await PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
 
             }
             else
             {
-                PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
+                await PublicarNovamenteNaFila(filtroRelatorioDto, dadosRelatorio);
             }
         }
 
-        private void PublicarNovamenteNaFila(FiltroRelatorioDto filtroRelatorioDto, DadosRelatorioDto dadosRelatorio)
+        private async Task PublicarNovamenteNaFila(FiltroRelatorioDto filtroRelatorioDto, DadosRelatorioDto dadosRelatorio)
         {
             SentrySdk.AddBreadcrumb($"Indo publicar na fila Processando..", "8 - MonitorarStatusRelatorioUseCase");
             UtilTimer.SetTimeout(5000, () => servicoFila.PublicaFila(new PublicaFilaDto(dadosRelatorio, filtroRelatorioDto.RotaProcessando, null, filtroRelatorioDto.CodigoCorrelacao)));

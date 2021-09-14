@@ -559,8 +559,8 @@ namespace SME.SR.Data
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 						WHERE aluno.cd_aluno in (#codigosAlunos)
-						and mte.dt_situacao_aluno =                    
-							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+						and mte.dt_situacao_aluno in                    
+							(select mte2.dt_situacao_aluno from v_historico_matricula_cotic  matr2
 							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							where
 								matr2.cd_aluno in (#codigosAlunos)

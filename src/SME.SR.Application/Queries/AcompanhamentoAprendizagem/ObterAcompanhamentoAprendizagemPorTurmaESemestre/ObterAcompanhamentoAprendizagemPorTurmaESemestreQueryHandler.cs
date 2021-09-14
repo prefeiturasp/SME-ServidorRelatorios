@@ -18,10 +18,6 @@ namespace SME.SR.Application
         }
 
         public async Task<IEnumerable<AcompanhamentoAprendizagemTurmaDto>> Handle(ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery request, CancellationToken cancellationToken)
-        {
-            var acompanhamentoAluno = await acompanhamentoAprendizagemRepository.ObterAcompanhamentoAprendizagemPorTurmaESemestre(request.TurmaId, request.AlunoCodigo, request.Semestre);
-
-            return acompanhamentoAluno;
-        }
+            => await acompanhamentoAprendizagemRepository.ObterAcompanhamentoAprendizagemPorTurmaESemestre(request.TurmaId, request.AlunoCodigo, request.Semestre);        
     }
 }

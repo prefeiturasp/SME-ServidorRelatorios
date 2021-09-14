@@ -70,7 +70,7 @@ namespace SME.SR.Application
                     var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
                     var publicacaoFila = new PublicaFilaDto(dadosRelatorio, request.RotaProcessando, ExchangeRabbit.WorkerRelatorios, request.CodigoCorrelacao);
 
-                    servicoFila.PublicaFila(publicacaoFila);
+                    await servicoFila.PublicaFila(publicacaoFila);
 
                     var jsonPublicaFila = UtilJson.ConverterApenasCamposNaoNulos(publicacaoFila);
                     Console.WriteLine(jsonPublicaFila);

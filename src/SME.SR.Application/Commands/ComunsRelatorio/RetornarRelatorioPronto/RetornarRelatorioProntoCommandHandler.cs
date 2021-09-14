@@ -13,10 +13,10 @@ namespace SME.SR.Application.Commands.RetornarRelatorioPronto
         {
             this.servicoFila = servicoFila ?? throw new System.ArgumentNullException(nameof(servicoFila));
         }
-        public Task<bool> Handle(RetornarRelatorioProntoCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(RetornarRelatorioProntoCommand request, CancellationToken cancellationToken)
         {
-            servicoFila.PublicaFila(new PublicaFilaDto(request, RotasRabbitSGP.RotaRelatoriosProntosSgp));
-            return Task.FromResult(true);
+            await servicoFila.PublicaFila(new PublicaFilaDto(request, RotasRabbitSGP.RotaRelatoriosProntosSgp));
+            return true;
         }
     }
 }

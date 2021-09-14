@@ -34,9 +34,6 @@ namespace SME.SR.Application
                                             request.PossuiFechamento,
                                             request.SomenteEscolarizadas,
                                             request.CodigoDre);
-
-
-    
         }
     }
 }

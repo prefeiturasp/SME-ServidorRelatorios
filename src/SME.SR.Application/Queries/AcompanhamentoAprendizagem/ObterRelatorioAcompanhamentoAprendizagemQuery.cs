@@ -26,7 +26,7 @@ namespace SME.SR.Application
         public IEnumerable<ProfessorTitularComponenteCurricularDto> Professores { get; set; }
         public IEnumerable<AcompanhamentoAprendizagemTurmaDto> AcompanhamentoTurma { get; set; }
         public IEnumerable<FrequenciaAluno> FrequenciaAlunos { get; set; }
-        public IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> RegistrosIndividuais { get; set; }
+        public IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> RegistrosIndividuais { get; }
         public IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias { get; set; }
         public FiltroRelatorioAcompanhamentoAprendizagemDto Filtro { get; set; }
         public IEnumerable<QuantidadeAulasDadasBimestreDto> QuantidadeAulasDadas { get; set; }

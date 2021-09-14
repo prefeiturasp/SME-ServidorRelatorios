@@ -1,5 +1,6 @@
 ﻿using DinkToPdf.Contracts;
 using MediatR;
+using Sentry;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
@@ -29,54 +30,62 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         public async Task<string> Handle(GerarRelatorioHtmlPDFAcompAprendizagemCommand request, CancellationToken cancellationToken)
         {
-            var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
-
-            var model = (RelatorioAcompanhamentoAprendizagemDto)request.Model;
-
-            var nomeTemplateCabecalho = "RelatorioAcompanhamentoAprendizagemCabecalho";
-            var nomeTemplateCorpo = "RelatorioAcompanhamentoAprendizagemCorpo";
-
-            var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, model.Cabecalho);
-            htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
-            htmlCabecalho = htmlCabecalho.Replace("logo.png", SmeConstants.LogoSme);
-
-            var alunos = model.Alunos.OrderBy(a => a.NomeEol);
-
-            foreach (var aluno in alunos)
+            try
             {
-                var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, aluno);
+                var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
 
-                var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
-                var iNumPagina = 1;
-                if (paginasDoAluno.Length > 0)
+                var model = (RelatorioAcompanhamentoAprendizagemDto)request.Model;
+
+                var nomeTemplateCabecalho = "RelatorioAcompanhamentoAprendizagemCabecalho";
+                var nomeTemplateCorpo = "RelatorioAcompanhamentoAprendizagemCorpo";
+
+                var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, model.Cabecalho);
+                htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
+                htmlCabecalho = htmlCabecalho.Replace("logo.png", SmeConstants.LogoSme);
+
+                var alunos = model.Alunos.OrderBy(a => a.NomeEol);
+
+                foreach (var aluno in alunos)
                 {
-                    foreach (var paginaDoAluno in paginasDoAluno)
+                    var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, aluno);
+
+                    var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
+                    var iNumPagina = 1;
+                    if (paginasDoAluno.Length > 0)
                     {
-                        var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", paginaDoAluno);
+                        foreach (var paginaDoAluno in paginasDoAluno)
+                        {
+                            var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", paginaDoAluno);
+                            paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
+                            iNumPagina++;
+                        }
+                    }
+                    else
+                    {
+                        var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", htmlCorpo);
                         paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
-                        iNumPagina++;
                     }
                 }
-                else
-                {
-                    var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", htmlCorpo);
-                    paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
-                }
-            }
 
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
+                var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+                var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
 
             //PdfGenerator pdfGenerator = new PdfGenerator(converter);
             reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
             
             if (request.EnvioPorRabbit)
             {
-                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
                 return string.Empty;
             }
 
-            return request.CodigoCorrelacao.ToString();
+                return request.CodigoCorrelacao.ToString();
+            }
+            catch (Exception e)
+            {
+                SentrySdk.CaptureMessage($"Erro na geração do relatório de acompanhamento de aprendizagem - {e.Message}");
+                throw e;
+            }
 
         }
     }
