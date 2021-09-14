@@ -35,8 +35,8 @@ namespace SME.SR.Application
             {
                 var turmaNome = request.TurmasCodigo != null && request.TurmasCodigo.Any() &&
                                 request.TurmasCodigo.Count() == 1 ? "" : turma.NomeRelatorio;
-
-                var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(relatorio.UeNome);
+                var nomeUe = request.ConsolidadoFechamento?.Where(x => x.TurmaCodigo == turma.Codigo).FirstOrDefault()?.NomeUe;
+                var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(nomeUe);
                 var fechamentoConsolidadoTurmas = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto(turmaNome);
 
                 foreach (var bimestre in request.Bimestres)
@@ -51,7 +51,7 @@ namespace SME.SR.Application
                     foreach (var fechamento in fechamentos)
                     {
                         var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(fechamento.NomeTurma);
-                        fechamentoConselhoClasseConsolidado.FechamentoConsolidado.Add(new RelatorioAcompanhamentoFechamentoConsolidadoDto() 
+                        fechamentoConselhoClasseConsolidado.FechamentoConsolidado.Add(new RelatorioAcompanhamentoFechamentoConsolidadoDto()
                         {
                             NaoIniciado = fechamento.NaoIniciado,
                             ProcessadoComPendencia = fechamento.ProcessadoComPendencia,
@@ -69,7 +69,9 @@ namespace SME.SR.Application
                             Concluido = conselho.Concluido
                         });
                     }
-                    fechamentoConsolidadoTurmas.Bimestres.Add(bimestres);
+                    if (bimestres.FechamentoConselhoClasseConsolidado.Any() && bimestres.FechamentoConselhoClasseConsolidado.Count() > 0)
+                        fechamentoConsolidadoTurmas.Bimestres.Add(bimestres);
+
                     uesRelatorio.Turmas.Add(fechamentoConsolidadoTurmas);
                 }
                 relatorio.Ues.Add(uesRelatorio);
