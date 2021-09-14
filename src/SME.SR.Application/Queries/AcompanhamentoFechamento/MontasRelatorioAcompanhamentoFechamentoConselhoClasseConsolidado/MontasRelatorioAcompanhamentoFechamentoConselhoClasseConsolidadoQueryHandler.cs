@@ -36,14 +36,14 @@ namespace SME.SR.Application
                 var turmaNome = request.TurmasCodigo != null && request.TurmasCodigo.Any() &&
                                 request.TurmasCodigo.Count() == 1 ? "" : turma.NomeRelatorio;
 
-                var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(turmaNome, relatorio.UeNome,relatorio.Bimestre);
+                var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(relatorio.UeNome);
 
                 foreach (var bimestre in request.Bimestres)
                 {
                     var nomeBimestre = request.Bimestres != null && request.Bimestres.Any() &&
                                 request.Bimestres.Count() == 1 ? "" : (bimestre > 0 ? $"{bimestre}º BIMESTRE" : "FINAL");
 
-                    var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(nomeBimestre);
+                    var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto(relatorio.UeNome);
                     var fechamentos = request.ConsolidadoFechamento.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre).OrderBy(x => x.NomeUe);
                     var conselhos = request.ConsolidadoConselhosClasse.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre).OrderBy(x => x.NomeUe);
 
@@ -56,7 +56,7 @@ namespace SME.SR.Application
                         fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.Add(new RelatorioAcompanhamentoConselhoClasseConsolidadoDto(conselho.NaoIniciado,conselho.EmAndamento,conselho.Concluido));
                     }
 
-                    uesRelatorio.FechamentoConselhoClasseConsolidado.Add(fechamentoConselhoClasseConsolidado);
+                    uesRelatorio.Turmas.Add(fechamentoConselhoClasseConsolidado);
                 }
                 relatorio.Ues.Add(uesRelatorio);
             }
