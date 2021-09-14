@@ -41,34 +41,25 @@ namespace SME.SR.Application
             var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
 
-            if (request.UeCodigo != "-99")
+            var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
+            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);
+            if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
+                (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
+                throw new NegocioException("Acompanhamento de Fechamentos das turmas do filtro não encontrado");
+
+            var componentesCurricularesId = consolidadoFechamento?.Select(c => c.ComponenteCurricularCodigo)?.Distinct()?.ToArray();
+
+            var componentesCurriculares = await ObterComponentesCurricularesPorCodigo(componentesCurricularesId);
+
+            componentesCurriculares = componentesCurriculares.ToList().OrderBy(c => c.Disciplina);
+            var pendencias = Enumerable.Empty<PendenciaParaFechamentoConsolidadoDto>();
+
+            if (request.ListarPendencias && componentesCurricularesId != null && componentesCurricularesId.Any())
             {
-                var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
-                var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);
-                if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
-                    (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
-                    throw new NegocioException("Acompanhamento de Fechamentos das turmas do filtro não encontrado");
-
-                var componentesCurricularesId = consolidadoFechamento?.Select(c => c.ComponenteCurricularCodigo)?.Distinct()?.ToArray();
-
-                var componentesCurriculares = await ObterComponentesCurricularesPorCodigo(componentesCurricularesId);
-
-                componentesCurriculares = componentesCurriculares.ToList().OrderBy(c => c.Disciplina);
-                var pendencias = Enumerable.Empty<PendenciaParaFechamentoConsolidadoDto>();
-
-                if (request.ListarPendencias && componentesCurricularesId != null && componentesCurricularesId.Any())
-                {
-                    pendencias = await ObterPendenciasFechamentosConsolidado(codigosTurma, bimestres, componentesCurricularesId);
-                }
-                return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmasCodigo?.ToArray(), turmas, componentesCurriculares, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
+                pendencias = await ObterPendenciasFechamentosConsolidado(codigosTurma, bimestres, componentesCurricularesId);
             }
-            else
-            {
-                var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma);
-                var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma);
-                //return await mediator.Send(new MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(dre, ue, turmas, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.TurmasCodigo?.ToArray(), request.Usuario));
-            }
-            return null;
+            return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmasCodigo?.ToArray(), turmas, componentesCurriculares, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
+
         }
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> OrdenarComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares)
@@ -132,15 +123,6 @@ namespace SME.SR.Application
         private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidado(string[] turmasId)
         {
             return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasQuery(turmasId));
-        }
-        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoTodasUe(string[] turmasId)
-        {
-            return await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(turmasId));
-        }
-
-        private async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentosConsolidadoTodasUe(string[] turmasId)
-        {
-            return await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(turmasId));
         }
     }
 }
