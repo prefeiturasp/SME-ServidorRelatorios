@@ -20,7 +20,7 @@ namespace SME.SR.Application
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAcompanhamentoFechamento;
 
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoQuery>();
-            if(relatorioQuery.UeCodigo == "-99")
+            if(relatorioQuery.UeCodigo == null)
             {
                 var relatorioQueryConsolidado = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery>();
                 var relatorioDto = await mediator.Send(relatorioQueryConsolidado);

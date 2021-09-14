@@ -38,7 +38,7 @@ namespace SME.SR.Application
             int[] bimestres = request.Bimestres?.ToArray();
 
             var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres, request.DreCodigo);
-            if(turmas == null || turmas.Any())
+            if(turmas == null && turmas.Any())
                 throw new NegocioException("As turmas selecionadas não possuem fechamento.");
 
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
