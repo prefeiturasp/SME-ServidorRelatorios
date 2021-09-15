@@ -9,6 +9,7 @@ namespace SME.SR.Infra
     public class ConselhoClasseConsolidadoTurmaDto
     {
         public string TurmaCodigo { get; set; }
+        public string UeCodigo { get; set; }
         public string NomeUe { get; set; }
         public string NomeTurma { get; set; }
 

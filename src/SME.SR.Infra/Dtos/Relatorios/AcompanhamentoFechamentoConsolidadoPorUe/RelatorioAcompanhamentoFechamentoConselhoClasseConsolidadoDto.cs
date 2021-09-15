@@ -7,12 +7,12 @@ namespace SME.SR.Infra
         public RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(string nomeTurma)
         {
             NomeTurma = nomeTurma;
-            FechamentoConsolidado = new List<RelatorioAcompanhamentoFechamentoConsolidadoDto>();
-            ConselhoDeClasseConsolidado = new List<RelatorioAcompanhamentoConselhoClasseConsolidadoDto>();
+            FechamentoConsolidado = new RelatorioAcompanhamentoFechamentoConsolidadoDto();
+            ConselhoDeClasseConsolidado = new RelatorioAcompanhamentoConselhoClasseConsolidadoDto();
         }
 
         public string NomeTurma { get; set; }
-        public List<RelatorioAcompanhamentoFechamentoConsolidadoDto> FechamentoConsolidado { get; set; }
-        public List<RelatorioAcompanhamentoConselhoClasseConsolidadoDto> ConselhoDeClasseConsolidado { get; set; }
+        public RelatorioAcompanhamentoFechamentoConsolidadoDto FechamentoConsolidado { get; set; }
+        public RelatorioAcompanhamentoConselhoClasseConsolidadoDto ConselhoDeClasseConsolidado { get; set; }
     }
 }
