@@ -37,7 +37,6 @@ namespace SME.SR.Application
                                 request.TurmasCodigo.Count() == 1 ? "" : turma.NomeRelatorio;
                 var nomeUe = request.ConsolidadoFechamento?.Where(x => x.TurmaCodigo == turma.Codigo).FirstOrDefault()?.NomeUe;
                 var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(nomeUe);
-                var fechamentoConsolidadoTurmas = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto(turmaNome);
 
                 foreach (var bimestre in request.Bimestres)
                 {
@@ -50,33 +49,34 @@ namespace SME.SR.Application
 
                     foreach (var fechamento in fechamentos)
                     {
-                        var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(fechamento.NomeTurma);
-                        fechamentoConselhoClasseConsolidado.FechamentoConsolidado.Add(new RelatorioAcompanhamentoFechamentoConsolidadoDto()
+                        var fechamentoConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(fechamento.NomeTurma);
+                        fechamentoConsolidado.FechamentoConsolidado.Add(new RelatorioAcompanhamentoFechamentoConsolidadoDto()
                         {
                             NaoIniciado = fechamento.NaoIniciado,
                             ProcessadoComPendencia = fechamento.ProcessadoComPendencia,
                             ProcessadoComSucesso = fechamento.ProcessadoComPendencia
                         });
-                        bimestres.FechamentoConselhoClasseConsolidado.Add(fechamentoConselhoClasseConsolidado);
+                        bimestres.FechamentoConselhoClasseConsolidado.Add(fechamentoConsolidado);
                     }
                     foreach (var conselho in conselhos)
                     {
-                        var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(conselho.NomeTurma);
-                        fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.Add(new RelatorioAcompanhamentoConselhoClasseConsolidadoDto()
+                        var conselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(conselho.NomeTurma);
+                        conselhoClasseConsolidado.ConselhoDeClasseConsolidado.Add(new RelatorioAcompanhamentoConselhoClasseConsolidadoDto()
                         {
                             NaoIniciado = conselho.NaoIniciado,
                             EmAndamento = conselho.EmAndamento,
                             Concluido = conselho.Concluido
                         });
+                        bimestres.FechamentoConselhoClasseConsolidado.Add(conselhoClasseConsolidado);
                     }
-                    if (bimestres.FechamentoConselhoClasseConsolidado.Any() && bimestres.FechamentoConselhoClasseConsolidado.Count() > 0)
-                        fechamentoConsolidadoTurmas.Bimestres.Add(bimestres);
 
-                    uesRelatorio.Turmas.Add(fechamentoConsolidadoTurmas);
+                    if (bimestres?.FechamentoConselhoClasseConsolidado.Count() > 0)
+                        uesRelatorio.Bimestres.Add(bimestres);
                 }
-                relatorio.Ues.Add(uesRelatorio);
+                if (uesRelatorio?.Bimestres?.Count() > 0)
+                    relatorio.Ues.Add(uesRelatorio);
             }
-
+            
             return await Task.FromResult(relatorio);
         }
         private void MontarCabecalho(RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto relatorio, Dre dre, Ue ue, string[] turmasCodigo, IEnumerable<Turma> turmas, int[] bimestres, Usuario usuario)
