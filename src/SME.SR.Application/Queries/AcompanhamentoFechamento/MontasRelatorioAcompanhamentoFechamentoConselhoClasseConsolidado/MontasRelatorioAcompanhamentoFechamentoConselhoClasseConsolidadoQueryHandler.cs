@@ -69,12 +69,14 @@ namespace SME.SR.Application
                             Concluido = conselho.Concluido
                         });
                     }
-                    if (bimestres.FechamentoConselhoClasseConsolidado.Any() && bimestres.FechamentoConselhoClasseConsolidado.Count() > 0)
+                    if (bimestres?.FechamentoConselhoClasseConsolidado.Count() > 0)
                         fechamentoConsolidadoTurmas.Bimestres.Add(bimestres);
 
-                    uesRelatorio.Turmas.Add(fechamentoConsolidadoTurmas);
+                    if (fechamentoConsolidadoTurmas?.Bimestres.Count() > 0)
+                        uesRelatorio.Turmas.Add(fechamentoConsolidadoTurmas);
                 }
-                relatorio.Ues.Add(uesRelatorio);
+                if (uesRelatorio?.Turmas?.Count() > 0)
+                    relatorio.Ues.Add(uesRelatorio);
             }
 
             return await Task.FromResult(relatorio);
