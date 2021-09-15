@@ -35,7 +35,8 @@ namespace SME.SR.Data.Repositories.Sgp
         public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo)
         {
             var query = new StringBuilder(@"
-                                                        select
+                                    select
+                                    u.id as UeCodigo,
 	                                t.turma_id TurmaCodigo,
 	                                u.nome as NomeUe,
 	                                t.nome as NomeTurma,
@@ -51,7 +52,8 @@ namespace SME.SR.Data.Repositories.Sgp
 		                                on u.id = t.ue_id 
                                     where t.turma_id  = ANY(@turmasCodigo)
                                     and not cfct.excluido 
-	                                group  by t.turma_id,t.id,u.nome,t.nome,cfct.bimestre,t.modalidade_codigo ");
+	                                group  by u.id ,t.turma_id,t.id,u.nome,t.nome,cfct.bimestre,t.modalidade_codigo  
+                                        order by cfct.bimestre,t.nome; ");
             var parametros = new { turmasCodigo };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
