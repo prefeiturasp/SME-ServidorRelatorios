@@ -267,7 +267,10 @@
                             }
 
                        <tbody>
-                           @Html.Raw(MontarCabecalhoDados())
+                           @if (contadorBimestres == 0)
+                           { 
+                                @Html.Raw(MontarCabecalhoDados())
+                           }
 
                            @foreach (var fechamentoConselhoClasseConsolidado in bimestres.FechamentoConselhoClasseConsolidado)
                            {
@@ -305,7 +308,8 @@
                                        <td>
                                            Não iniciado: @naoIniciadoConselhoClasse Em andamento: @emAndamento Concluído: @concluido
                                        </td>
-                                   }else
+                                   }
+                                   else
                                    {
                                        <td></td>
                                    }
