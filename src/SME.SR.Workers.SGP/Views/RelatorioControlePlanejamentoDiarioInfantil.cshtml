@@ -3,7 +3,7 @@
 @using SME.SR.Infra.Utilitarios;
 
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 60;
+    int contadorMaximoLinhasPorPagina = 57;
     int contadorPagina = 0;
     var retornoVerificacao = string.Empty;
     var tipoRelatorio = true;
@@ -25,7 +25,7 @@
 
     string MontarCabecalho()
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        contadorQuebrarPagina += 9;
 
         var str = $@"<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
                         <div class='titulo-relatorio'>
@@ -107,7 +107,7 @@
 
         foreach (var planejamento in planejamentoDiario)
         {
-            detalhamento = false;            
+            detalhamento = false;
 
             if (!string.IsNullOrEmpty(planejamento.SecoesPreenchidas))
             {
@@ -152,7 +152,7 @@
                 contadorQuebrarPagina += qtdLinhasDetalhamento;
 
                 if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
-                    str += IncluirTdParaFechar(5);
+                    str += IncluirTdParaFechar();
 
                 str += $"</tbody></table>";
 
@@ -162,7 +162,7 @@
                 retornoVerificacao = VerificaQuebra();
                 if (retornoVerificacao != string.Empty)
                 {
-                    str += $@"{IncluirTdParaFechar(5)}</tbody></table>{retornoVerificacao}";
+                    str += $@"{IncluirTdParaFechar()}</tbody></table>{retornoVerificacao}";
                     contadorQuebrarPagina += qtdLinhasDetalhamento;
                 }
                 str += MontarCabecalhoDetalhamento();
@@ -176,7 +176,7 @@
             else
             {
                 if (planejamento.AulaId == ultimaAulaRelatorio && NomeBimestre.Equals(ultimoBimestreNome.ToUpper()))
-                    str += IncluirTdParaFechar(5);
+                    str += IncluirTdParaFechar();
             }
 
 
@@ -191,12 +191,12 @@
                     }
                     else
                     {
-                        str += $@"</tbody></table>{retornoVerificacao}<table class='fixed'>";
+                        str += $@"</tbody></table>{retornoVerificacao}<table class='fixed'><tbody>";
                     }
                 }
                 else
                 {
-                    str += $@"{IncluirTdParaFechar(5)}</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'>";
+                    str += $@"{IncluirTdParaFechar()}</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'><tbody>";
                 }
             }
             else
@@ -208,8 +208,11 @@
                 }
                 else
                 {
-                    if (ultimoplanejamento.AulaId == ultimaAulaRelatorio)
-                        str += IncluirTdParaFechar(5);
+                    if (ultimoplanejamento.AulaId == ultimaAulaRelatorio || 
+                        contadorQuebrarPagina + 5 >= contadorMaximoLinhasPorPagina) { 
+                      str += IncluirTdParaFechar();
+                    }
+                    str += "</tbody></table>";
                 }
             }
 
@@ -222,7 +225,7 @@
         return "</tbody></table><table><tr><td class='td-linha-em-branco'><br/></td></tr></table><table class='fixed'><tbody>";
     }
 
-    string IncluirTdParaFechar(int quantidade)
+    string IncluirTdParaFechar(int quantidade = 5)
     {
         var str = "<tr>";
         for (var i = 1; i <= quantidade; i++)
@@ -536,7 +539,7 @@
             if (tipoRelatorio)
             {
                 tipoRelatorio = false;
-                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                contadorQuebrarPagina++;
                 @Html.Raw(VerificaQuebra())
 
                 <table class="tabela-planejamento">
@@ -568,7 +571,7 @@
                         var countTurma = contadorQuebrarPagina + 6;
                         if (countTurma >= contadorMaximoLinhasPorPagina)
                         {
-                            contadorQuebrarPagina += contadorQuebrarPagina + 6;
+                            contadorQuebrarPagina += 6;
                             @Html.Raw(VerificaQuebra())
                         }
                         else
@@ -602,7 +605,7 @@
                                         var countBimestre = contadorQuebrarPagina + 5;
                                         if (countBimestre >= contadorMaximoLinhasPorPagina)
                                         {
-                                            contadorQuebrarPagina += contadorQuebrarPagina + 5;
+                                            contadorQuebrarPagina += 5;
                                             @Html.Raw(VerificaQuebra())
                                         }
                                         else
@@ -633,7 +636,7 @@
                                     var countComponente = contadorQuebrarPagina + 4;
                                     if (countComponente >= contadorMaximoLinhasPorPagina)
                                     {
-                                        contadorQuebrarPagina += contadorQuebrarPagina + 4;
+                                        contadorQuebrarPagina += 4;
                                         @Html.Raw(VerificaQuebra())
                                     }
                                     else
@@ -657,7 +660,8 @@
                                 if (componente.PlanejamentoDiarioInfantil.Count() > 0)
                                 {
                                     @Html.Raw(MontarCabecalhoPlanejamento())
-                                    @Html.Raw(MontarDadosTabelaPlanejamento(componente.PlanejamentoDiarioInfantil, turma.Nome, bimestre.Nome, componente.Nome, turma, ultimaAula, ultimoBimestreNome))
+                                    var planejamentos = MontarDadosTabelaPlanejamento(componente.PlanejamentoDiarioInfantil, turma.Nome, bimestre.Nome, componente.Nome, turma, ultimaAula, ultimoBimestreNome);
+                                    @Html.Raw(planejamentos)
                                 }
                             }
                         }

@@ -9,7 +9,6 @@ using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
-using SME.SR.Data.Repositories;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
@@ -85,7 +84,7 @@ namespace SME.SR.IoC
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddScoped<IHtmlHelper, HtmlHelper>();
 
-            services.AddSingleton(new VariaveisAmbiente());
+            services.AddSingleton(new VariaveisAmbiente(configuration));
             RegistrarRepositorios(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
@@ -160,9 +159,9 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IDashboardAdesaoRepository), typeof(DashboardAdesaoRepository));
             services.TryAddScoped(typeof(IUsuarioAERepository), typeof(UsuarioAERepository));
-            
+
             services.TryAddScoped(typeof(IComunicadosRepository), typeof(ComunicadosRepository));
-            
+
             services.TryAddScoped(typeof(IDevolutivaRepository), typeof(DevolutivaRepository));
             services.TryAddScoped(typeof(IItineranciaRepository), typeof(ItineranciaRepository));
             services.TryAddScoped(typeof(IAcompanhamentoAprendizagemRepository), typeof(AcompanhamentoAprendizagemRepository));
@@ -226,6 +225,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioRegistroIndividualUseCase, RelatorioRegistroIndividualUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoAprendizagemUseCase, RelatorioAcompanhamentoAprendizagemUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoFechamentoUseCase, RelatorioAcompanhamentoFechamentoUseCase>();
+            services.TryAddScoped<IRelatorioConselhoClasseAtaBimestralUseCase, RelatorioConselhoClasseAtaBimestralUseCase>();
 
         }
     }

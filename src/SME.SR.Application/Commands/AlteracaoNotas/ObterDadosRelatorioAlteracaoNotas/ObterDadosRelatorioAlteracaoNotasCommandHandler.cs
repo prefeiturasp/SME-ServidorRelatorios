@@ -45,7 +45,7 @@ namespace SME.SR.Application
 
                         var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery()
                         {
-                            TurmaCodigo = turma.Codigo
+                            TurmaCodigo = turma.turma_id
                         });
 
                         var historicoAlteracaoNotas = await ObterHistoricoAlteracaoNotas(turma.Codigo, tipoCalendarioId, request.FiltroRelatorio.TipoAlteracaoNota);

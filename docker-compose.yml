@@ -1,145 +1,20 @@
-﻿version: "3"
+version: '3.4'
+
 services:
-  ##########################################################
-  ### Servidor de Relatorios Stack Completa ################
-  ##########################################################
-
-  #  web:
-  #    env_file:
-  #      - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
-  #    container_name: sme_sr_container
-  #    build: .
-  #    ports:
-  #      - "5001:5001"
-  #      - "5000:5000"
-  #    links:
-  #      - postgres
-  #    networks:
-  #      - default
-  #    depends_on:
-  #      - flyway
-  #      - jasper_reports_server
-
-  sme_sr_sgpworker:
-    env_file:
-      - sme_servidor_relatorios_worker.env
-    container_name: sme_sr_sgp_worker_container
-    restart: on-failure
-    build: 
-      context: .
-      dockerfile: ./src/SME.SR.Workers.SGP/Dockerfile
-    ports:
-      - "5011:5001"
-      - "5010:5000"    
-    networks:
-      - sme-network
-    volumes:
-      - ./relatorios:/app/relatorios:Z
-    depends_on:
-      - sme_sr_jasper_reports_server
-      - sme_sr_rabbitmq
-
-  ##########################################################
-  ### Database #############################################
-  ##########################################################
-  # postgres:
-  #   env_file:
-  #     - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
-  #   container_name: sme_sr_postgres_container
-  #   image: postgres
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER:-postgres}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-  #     PGDATA: /data/postgres
-  #   volumes:
-  #     - postgres:/data/postgres
-  #   ports:
-  #     - "5432:5432"
-  #   networks:
-  #     - default
-
-  # pgadmin:
-  #   env_file:
-  #     - sme_servidor_relatorios_${SME_SERVIDOR_RELATORIOS_ENVIRONMENT:-dev}.env
-  #   container_name: sme_sr_pgadmin_container
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.com}
-  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-  #   volumes:
-  #     - pgadmin:/root/.pgadmin
-  #   ports:
-  #     - "${PGADMIN_PORT:-5050}:80"
-  #   networks:
-  #     - default
-
-  # flyway:
-  #   container_name: sme_sr_flyway
-  #   image: boxfuse/flyway:5.2.4
-  #   command: -url=jdbc:postgresql://postgres_container:5432/sme_sr?user=${POSTGRES_USER:-postgres}&password=${POSTGRES_PASSWORD:-postgres} -locations='filesystem:/opt/scripts' -outOfOrder=false migrate
-  #   volumes:
-  #     - ./scripts:/opt/scripts
-  #   depends_on:
-  #     - postgres
-
-  ##########################################################
-  ### Mensageria ###########################################
-  ##########################################################
-  sme_sr_rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.7-management-alpine
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=bitnami
-    networks:
-      - default
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
-  ##########################################################
-  ### JRS - Jasper Reports Server ##########################
-  ##########################################################
-  mariadb:
-    image: "bitnami/mariadb:10.3"
-    environment:
-      - MARIADB_USER=jasperreports
-      - MARIADB_DATABASE=jasperreports
-      - ALLOW_EMPTY_PASSWORD=yes
-    #volumes:
-    #  - 'mariadb_data:/volumes/mariadb:Z'
-
-  sme_sr_jasper_reports_server:
-    container_name: jasper_reports_server_edited
-    environment:
-      - MARIADB_HOST=mariadb
-      - MARIADB_PORT_NUMBER=3306
-      - JASPERREPORTS_DATABASE_USER=jasperreports
-      - JASPERREPORTS_DATABASE_NAME=jasperreports
-      - ALLOW_EMPTY_PASSWORD=yes
+  sme.sr.workers.sgp:
+    image: ${DOCKER_REGISTRY-}smesrworkerssgp
     build:
       context: .
-      dockerfile: jasper_server/Dockerfile  
-    # volumes:
-    #  - ./jasper_server/WEB-INF/web.xml:/bitnami/tomcat/data/jasperserver/WEB-INF/web.xml:z
-    networks:
-      - default
+      dockerfile: src/SME.SR.Workers.SGP/Dockerfile.debug
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "8080:8080"
-      - "8443:8443"
-    depends_on:
-      - mariadb
-
-##########################################################
-### Volumes, rede e infra estrutura ######################
-##########################################################
-volumes:
-  jasperreports_data:
-    driver: local
-  mariadb_data:
-    driver: local
-
+      - '5010:80'
+      - '5011:443'
+    networks:
+      - sme-network
 networks:
   sme-network:
+    external:
+      name: sme-network
     driver: bridge
-    name: sme_external_network

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SME.SR.Infra
 {
@@ -18,10 +16,13 @@ namespace SME.SR.Infra
             this.DataSituacaoAluno = aluno.DataSituacaoAluno;
         }
 
-        public bool Inativo { get => !(new[] { SituacaoMatriculaAluno.Ativo,
+        public bool Inativo
+        {
+            get => !(new[] { SituacaoMatriculaAluno.Ativo,
                                                SituacaoMatriculaAluno.PendenteRematricula,
                                                SituacaoMatriculaAluno.Rematriculado,
                                                SituacaoMatriculaAluno.SemContinuidade,
-                                               SituacaoMatriculaAluno.Concluido }.Contains(this.CodigoSituacaoMatricula)); }
+                                               SituacaoMatriculaAluno.Concluido }.Contains(this.CodigoSituacaoMatricula));
+        }
     }
 }
