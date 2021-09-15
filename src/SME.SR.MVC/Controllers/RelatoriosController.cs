@@ -7779,7 +7779,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 EmAndamento = 8,
                 Concluido = 7,
             };
-            //fechamentoConsolidado.Add(fechamento);
+            fechamentoConsolidado.Add(fechamento);
             conselhoDeClasseConsolidado.Add(conselhoDeClasse);
 
             var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto>();
@@ -7796,18 +7796,11 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
             };
             bimestres.Add(bimestre);            
-
-            var turmas = new List<RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto>();
-            var turma = new RelatorioAcompanhamentoFechamentoConsolidadoTurmasDto("")
-            {
-                Bimestres = bimestres,
-            };
-            turmas.Add(turma);
-
+          
             var ues = new List<RelatorioAcompanhamentoFechamentoConsolidadoUesDto>();
             var ue = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto("CEU EMEF BUTANTA")
             {
-               Turmas = turmas,
+               Bimestres = bimestres,
             };
             ues.Add(ue);
 
