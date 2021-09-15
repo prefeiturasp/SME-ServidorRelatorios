@@ -445,14 +445,13 @@ namespace SME.SR.Application
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, notaConceito != null ? "0" : "", ++coluna);
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, notaConceito != null ? "100" : "", ++coluna);
                         }
-                        
+
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
                                                 possuiComponente ? (componente.LancaNota ?
-                                                    notaConceito?.NotaConceito ?? "" :
-                                                    notaConceito?.Sintese) : "-",
+                                                    notaConceito?.NotaConceito  ?? "" :
+                                                     notaConceito?.Sintese ?? "-") : "-",
                                                 ++coluna);
-
                     }
                 }
 
