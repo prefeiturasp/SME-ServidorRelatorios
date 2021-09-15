@@ -29,7 +29,7 @@ namespace SME.SR.Application
             var quantidadeAulasDadas = request.QuantidadeAulasDadas;
             var periodoId = request.PeriodoId;
 
-        var bimestres = ObterBimestresPorSemestre(filtro.Semestre);
+            var bimestres = ObterBimestresPorSemestre(filtro.Semestre);
 
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {

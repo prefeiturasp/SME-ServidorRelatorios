@@ -80,7 +80,7 @@ namespace SME.SR.Application
             else
                 tiposTurma.Add((int)TipoTurma.Regular);
 
-            var notas = await ObterNotasAlunos(alunosCodigos, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, tiposTurma.ToArray());
+            var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, tiposTurma.ToArray());
             if (notas == null || !notas.Any())
                 return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
@@ -176,7 +176,7 @@ namespace SME.SR.Application
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
 
-            var notas = await ObterNotasAlunos(alunosCodigos, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });
+            var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });
             if (notas == null || !notas.Any())
                 return default;
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
@@ -790,9 +790,9 @@ namespace SME.SR.Application
 
             return modelPagina.GruposMatriz.FirstOrDefault(x => x.Id == disciplina.IdGrupoMatriz);
         }
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre, int[] tiposTurma)
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, string codigoTurma, int anoLetivo, Modalidade modalidade, int semestre, int[] tiposTurma)
         {
-            return await mediator.Send(new ObterNotasRelatorioAtaFinalQuery(alunosCodigo, anoLetivo, (int)modalidade, semestre, tiposTurma));
+            return await mediator.Send(new ObterNotasRelatorioAtaFinalQuery(alunosCodigo, codigoTurma, anoLetivo, (int)modalidade, semestre, tiposTurma));
         }
 
         private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade)
