@@ -24,7 +24,6 @@ namespace SME.SR.Application
             var professores = request.Professores;
             var acompanhamentoTurma = request.AcompanhamentoTurma;
             var frequenciaAlunos = request.FrequenciaAlunos;
-            var registrosIndividuais = request.RegistrosIndividuais;
             var ocorrencias = request.Ocorrencias;
             var filtro = request.Filtro;
             var quantidadeAulasDadas = request.QuantidadeAulasDadas;
@@ -35,7 +34,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, registrosIndividuais, ocorrencias, quantidadeAulasDadas, bimestres, turma.AnoLetivo, periodoId, turma),
+                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, ocorrencias, quantidadeAulasDadas, bimestres, turma.AnoLetivo, periodoId, turma),
             };
 
             return relatorio;
@@ -61,7 +60,7 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, int ano, long periodoId, Turma turma)
+        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, int ano, long periodoId, Turma turma)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
@@ -135,7 +134,6 @@ namespace SME.SR.Application
                 }
 
                 alunoRelatorio.Frequencias = await MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres, periodoId, turma);
-                alunoRelatorio.RegistrosIndividuais = MontarRegistrosIndividuais(alunoRelatorio.CodigoEol, registrosIndividuais);
                 alunoRelatorio.Ocorrencias = MontarOcorrencias(alunoRelatorio.CodigoEol, ocorrencias);
 
                 alunosRelatorio.Add(alunoRelatorio);
@@ -171,30 +169,6 @@ namespace SME.SR.Application
             return frequenciasRelatorio;
         }
 
-        private List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> MontarRegistrosIndividuais(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais)
-        {
-            var registrosIndividuaisRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto>();
-
-            if (registrosIndividuais == null || !registrosIndividuais.Any())
-                return registrosIndividuaisRelatorio;
-
-            var registrosIndividuaisFiltrados = registrosIndividuais.Where(r => r.AlunoCodigo == long.Parse(alunoCodigo));
-
-            if (registrosIndividuaisFiltrados == null || !registrosIndividuaisFiltrados.Any())
-                return registrosIndividuaisRelatorio;
-
-            foreach (var registro in registrosIndividuaisFiltrados.OrderByDescending(b => b.DataRegistro))
-            {
-                var registroIndividualRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto
-                {
-                    Data = registro.DataRelatorio,
-                    Descricao = registro.RegistroFormatado(),
-                };
-
-                registrosIndividuaisRelatorio.Add(registroIndividualRelatorio);
-            }
-            return registrosIndividuaisRelatorio;
-        }
         private List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto> MontarOcorrencias(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias)
         {
             var ocorrenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();

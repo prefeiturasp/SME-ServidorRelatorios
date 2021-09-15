@@ -7,7 +7,6 @@ namespace SME.SR.Infra
         public RelatorioAcompanhamentoAprendizagemAlunoDto()
         {
             Fotos = new List<RelatorioAcompanhamentoAprendizagemAlunoFotoDto>();
-            RegistrosIndividuais = new List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto>();
             Frequencias = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
             Ocorrencias = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();
             PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();

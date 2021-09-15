@@ -148,6 +148,34 @@ namespace SME.SR.Data
                     , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
             }
         }
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaBimestralAsync(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre, int[] tiposTurma, int bimestre)
+        {
+            var query = "select * from f_ata_bimestral_obter_notas_turmas_alunos(@anoLetivo, @modalidade, @semestre, @tiposTurma, @codigosAlunos, @bimestre)";
+
+            var parametros = new
+            {
+                codigosAlunos,
+                anoLetivo,
+                modalidade,
+                semestre,
+                tiposTurma = tiposTurma.Length > 0 ? tiposTurma : null,
+                bimestre
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
+                                                NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
+                    , (notasFrequenciaAlunoBimestre, periodoEscolar, notaConceito) =>
+                    {
+                        notasFrequenciaAlunoBimestre.PeriodoEscolar = periodoEscolar;
+                        notasFrequenciaAlunoBimestre.NotaConceito = notaConceito;
+
+                        return notasFrequenciaAlunoBimestre;
+                    }
+                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
+            }
+        }
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaHistoricoEscolasAsync(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
