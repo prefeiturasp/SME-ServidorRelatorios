@@ -41,6 +41,7 @@ namespace SME.SR.Workers.SGP
             services.RegistrarDependencias(Configuration);            
 
             services.AddDirectoryBrowser();
+            services.AddPolicies();
 
             services.AddSwaggerGen(c =>
             {

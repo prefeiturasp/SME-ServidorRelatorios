@@ -22,6 +22,7 @@ namespace SME.SR.Infra
         public string PercursoIndividual { get; set; }
 
         public List<RelatorioAcompanhamentoAprendizagemAlunoFotoDto> Fotos { get; set; }
+        public List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> RegistrosIndividuais { get; set; }
         public List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> Frequencias { get; set; }
         public List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto> Ocorrencias { get; set; }
         public List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> PercursoTurmaImagens { get; set; }
