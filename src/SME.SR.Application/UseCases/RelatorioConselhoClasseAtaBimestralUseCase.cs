@@ -24,7 +24,7 @@ namespace SME.SR.Application
             var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaBimestralPdfQuery(filtros));
 
               if (!relatoriosTurmas.Any())
-                throw new NegocioException("Não há dados para o relatório de Ata Final de Resultados.");
+                throw new NegocioException("Não há dados para o relatório de Ata Bimestral de Resultados.");
 
 
             await mediator.Send(new GerarRelatorioAtaBimestralHtmlParaPdfCommand("RelatorioAtaBimestralComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
