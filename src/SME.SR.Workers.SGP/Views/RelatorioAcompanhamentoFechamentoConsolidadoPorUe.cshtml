@@ -2,7 +2,7 @@
 
 @{
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 48;
+    int contadorMaximoLinhasPorPagina = 46;
     bool quebrou = false;
 
     string informacoesQuebra()
@@ -107,7 +107,7 @@
         }
     }
 
-    string MontarCabecalhoDados(int contadorBimestres)
+    string MontarCabecalhoDados(int contadorBimestres = 0)
     {
         @if (contadorBimestres == 0)
         {
@@ -145,9 +145,9 @@
     {
         if (temFechamentoConsolidado)
         {
-            var naoIniciadoFechamento = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.FirstOrDefault().NaoIniciado;
-            var processadoComPendencia = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.FirstOrDefault().ProcessadoComPendencia;
-            var processadoComSucesso = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.FirstOrDefault().ProcessadoComSucesso;
+            var naoIniciadoFechamento = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.NaoIniciado;
+            var processadoComPendencia = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.ProcessadoComPendencia;
+            var processadoComSucesso = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.ProcessadoComSucesso;
 
             <td>
                 Não iniciado: @naoIniciadoFechamento Processado com pendência: @processadoComPendencia<br />
@@ -164,9 +164,9 @@
     {
         if (temConselhoDeClasseConsolidado)
         {
-            var naoIniciadoConselhoClasse = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.FirstOrDefault().NaoIniciado;
-            var emAndamento = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.FirstOrDefault().EmAndamento;
-            var concluido = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.FirstOrDefault().Concluido;
+            var naoIniciadoConselhoClasse = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.NaoIniciado;
+            var emAndamento = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.EmAndamento;
+            var concluido = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.Concluido;
 
             <td>
                 Não iniciado: @naoIniciadoConselhoClasse Em andamento: @emAndamento Concluído: @concluido
@@ -177,8 +177,8 @@
             <td></td>
         }
     }
-    
-    void MontarDados(SME.SR.Infra.RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto fechamentoConselhoClasseConsolidado)
+
+    void MontarDados(SME.SR.Infra.RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto fechamentoConselhoClasseConsolidado, string bimestre, bool temBimestre)
     {
         var quebra = VerificaQuebra();
         if (quebra)
@@ -186,12 +186,14 @@
             informacoesQuebra();
             MontarCabecalho();
             @Html.Raw("<table class='tabela-cabecalho'>");
+            MontarTituloBimestre(bimestre, temBimestre);
+            MontarCabecalhoDados();
         }
         <tr>
             @{
                 var nomeTurma = fechamentoConselhoClasseConsolidado.NomeTurma;
-                var temFechamentoConsolidado = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.Count() > 0;
-                var temConselhoDeClasseConsolidado = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.Count() > 0;
+                bool temFechamentoConsolidado = !String.IsNullOrEmpty(fechamentoConselhoClasseConsolidado.FechamentoConsolidado.NaoIniciado.ToString());
+                bool temConselhoDeClasseConsolidado = !String.IsNullOrEmpty(fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.NaoIniciado.ToString());
 
                 MontarCelulaTurma(nomeTurma);
 
@@ -364,7 +366,7 @@
 
                             @foreach (var fechamentoConselhoClasseConsolidado in bimestres.FechamentoConselhoClasseConsolidado)
                             {
-                                MontarDados(fechamentoConselhoClasseConsolidado);
+                                MontarDados(fechamentoConselhoClasseConsolidado, bimestre, temBimestre);
                             }
                         </tbody>
                     }
