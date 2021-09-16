@@ -424,7 +424,7 @@ namespace SME.SR.Application
 
                     componentesCurricularesTotal += componentesTurmas.Where(c => c.LancaNota).Select(a => a.CodDisciplina).Distinct().Count();
 
-                    foreach (var componente in componentes)
+                    foreach (var componente in componentes.OrderBy(c => c.Disciplina))
                     {
                         var coluna = 0;
 
@@ -497,10 +497,9 @@ namespace SME.SR.Application
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
                                                 possuiComponente ? (componente.LancaNota ?
-                                                    notaConceito?.NotaConceito ?? "" :
-                                                    notaConceito?.Sintese) : "-",
+                                                    notaConceito?.NotaConceito  ?? "" :
+                                                     notaConceito?.Sintese ?? "-") : "-",
                                                 ++coluna);
-
                     }
                 }
 
@@ -585,7 +584,7 @@ namespace SME.SR.Application
 
                     var componentes = ObterComponentesCurriculares(grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()).ToList());
 
-                    foreach (var componenteCurricular in componentes)
+                    foreach (var componenteCurricular in componentes.OrderBy(c => c.Disciplina))
                     {
                         if (!grupoMatrizDto.ComponentesCurriculares.Any(a => a.Id == componenteCurricular.CodDisciplina))
                             grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres);
@@ -605,7 +604,7 @@ namespace SME.SR.Application
                         componentesDoGrupo.AddRange(ObterComponentesDasAreasDeConhecimento(grupoMatriz.ComponentesCurriculares, area));
                     }
 
-                    grupoMatriz.ComponentesCurriculares = componentesDoGrupo;
+                    grupoMatriz.ComponentesCurriculares = componentesDoGrupo.OrderBy(c => c.Nome).ToList();
 
                 }
             }
