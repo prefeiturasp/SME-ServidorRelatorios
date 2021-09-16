@@ -145,9 +145,9 @@
     {
         if (temFechamentoConsolidado)
         {
-            var naoIniciadoFechamento = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.FirstOrDefault().NaoIniciado;
-            var processadoComPendencia = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.FirstOrDefault().ProcessadoComPendencia;
-            var processadoComSucesso = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.FirstOrDefault().ProcessadoComSucesso;
+            var naoIniciadoFechamento = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.NaoIniciado;
+            var processadoComPendencia = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.ProcessadoComPendencia;
+            var processadoComSucesso = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.ProcessadoComSucesso;
 
             <td>
                 Não iniciado: @naoIniciadoFechamento Processado com pendência: @processadoComPendencia<br />
@@ -164,9 +164,9 @@
     {
         if (temConselhoDeClasseConsolidado)
         {
-            var naoIniciadoConselhoClasse = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.FirstOrDefault().NaoIniciado;
-            var emAndamento = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.FirstOrDefault().EmAndamento;
-            var concluido = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.FirstOrDefault().Concluido;
+            var naoIniciadoConselhoClasse = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.NaoIniciado;
+            var emAndamento = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.EmAndamento;
+            var concluido = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.Concluido;
 
             <td>
                 Não iniciado: @naoIniciadoConselhoClasse Em andamento: @emAndamento Concluído: @concluido
@@ -190,8 +190,8 @@
         <tr>
             @{
                 var nomeTurma = fechamentoConselhoClasseConsolidado.NomeTurma;
-                var temFechamentoConsolidado = fechamentoConselhoClasseConsolidado.FechamentoConsolidado.Count() > 0;
-                var temConselhoDeClasseConsolidado = fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.Count() > 0;
+                bool temFechamentoConsolidado = !String.IsNullOrEmpty(fechamentoConselhoClasseConsolidado.FechamentoConsolidado.NaoIniciado.ToString());
+                bool temConselhoDeClasseConsolidado = !String.IsNullOrEmpty(fechamentoConselhoClasseConsolidado.ConselhoDeClasseConsolidado.NaoIniciado.ToString());
 
                 MontarCelulaTurma(nomeTurma);
 

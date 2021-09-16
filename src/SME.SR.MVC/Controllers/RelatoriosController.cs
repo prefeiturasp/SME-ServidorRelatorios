@@ -7764,9 +7764,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         [HttpGet("acompanhamento-fechamento-ue")]
         public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
         {
-            var fechamentoConsolidado = new List<RelatorioAcompanhamentoFechamentoConsolidadoDto>();
-            var conselhoDeClasseConsolidado = new List<RelatorioAcompanhamentoConselhoClasseConsolidadoDto>();
-
             var fechamento= new RelatorioAcompanhamentoFechamentoConsolidadoDto()
             {
                 NaoIniciado = 3,
@@ -7779,19 +7776,17 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 EmAndamento = 8,
                 Concluido = 7,
             };
-            fechamentoConsolidado.Add(fechamento);
-            conselhoDeClasseConsolidado.Add(conselhoDeClasse);
 
             var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto>();
             var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto("EF -1A")
             {
-                FechamentoConsolidado = fechamentoConsolidado,
-                ConselhoDeClasseConsolidado = conselhoDeClasseConsolidado,
+                FechamentoConsolidado = fechamento,
+                ConselhoDeClasseConsolidado =  conselhoDeClasse ,
             };
             fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
 
             var bimestres = new List<RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto>();
-            var bimestre = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto("1º Bimestre")
+            var bimestre = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto("1º Bimestre","0123")
             {                
                 FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
             };
