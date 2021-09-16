@@ -32,7 +32,7 @@ namespace SME.SR.Data.Repositories.Sgp
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo)
+        public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo,int modalidade)
         {
             var query = new StringBuilder(@"
                                     select
@@ -51,10 +51,11 @@ namespace SME.SR.Data.Repositories.Sgp
 	                                inner join ue u 
 		                                on u.id = t.ue_id 
                                     where t.turma_id  = ANY(@turmasCodigo)
+                                    and t.modalidade_codigo =@modalidade
                                     and not cfct.excluido 
 	                                group  by u.id ,t.turma_id,t.id,u.nome,t.nome,cfct.bimestre,t.modalidade_codigo  
                                         order by cfct.bimestre,t.nome; ");
-            var parametros = new { turmasCodigo };
+            var parametros = new { turmasCodigo, modalidade };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<FechamentoConsolidadoTurmaDto>(query.ToString(), parametros);

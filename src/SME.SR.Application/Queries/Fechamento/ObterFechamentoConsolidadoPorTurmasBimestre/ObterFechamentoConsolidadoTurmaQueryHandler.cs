@@ -17,7 +17,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> Handle(ObterFechamentoConsolidadoTurmaQuery request, CancellationToken cancellationToken)
         {
-            return await fechamentoConsolidadoRepository.ObterFechamentoConsolidadoPorTurmasTodasUe(request.TurmasCodigo);
+            return await fechamentoConsolidadoRepository.ObterFechamentoConsolidadoPorTurmasTodasUe(request.TurmasCodigo,request.ModalidadeCodigo);;
         }
     }
 }

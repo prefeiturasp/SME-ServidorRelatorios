@@ -34,7 +34,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo, int modalidade)
         {
             var query = new StringBuilder(@" select 		
 	                                           u.id as UeCodigo,
@@ -52,12 +52,13 @@ namespace SME.SR.Data
 	                                           inner join ue u
 	                                               on u.id = t.ue_id
                                            where t.turma_id  = ANY(@turmasCodigo)
+                                               and t.modalidade_codigo = @modalidade
 	                                           and not cccat.excluido
 	                                           group  by u.id,t.turma_id,u.nome,t.nome,cccat.bimestre,t.modalidade_codigo  
                                                order by cccat.bimestre,t.nome ;");
 
 
-            var parametros = new { turmasCodigo };
+            var parametros = new { turmasCodigo ,modalidade };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
