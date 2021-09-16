@@ -42,8 +42,8 @@ namespace SME.SR.Application
                 throw new NegocioException("As turmas selecionadas não possuem fechamento.");
 
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
-            var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma);
-            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma);
+            var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma,(int)request.Modalidade);
+            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma, (int)request.Modalidade);
 
             if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
                (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
@@ -52,13 +52,13 @@ namespace SME.SR.Application
             return await mediator.Send(new MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(dre, ue, turmas, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.TurmasCodigo?.ToArray(), request.Usuario));
         }
 
-        private async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentosConsolidadoTodasUe(string[] turmasId)
+        private async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentosConsolidadoTodasUe(string[] turmasId,int modalidadeId)
         {
-            return await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(turmasId));
+            return await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(turmasId, modalidadeId));
         }
-        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoTodasUe(string[] turmasId)
+        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoTodasUe(string[] turmasId, int modalidadeId)
         {
-            return await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(turmasId));
+            return await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(turmasId,modalidadeId));
         }
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
         {
