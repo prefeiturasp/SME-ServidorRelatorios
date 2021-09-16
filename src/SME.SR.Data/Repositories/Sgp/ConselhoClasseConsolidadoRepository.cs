@@ -37,7 +37,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo, int modalidade)
         {
             var query = new StringBuilder(@" select 		
-	                                           u.id as UeCodigo,
+	                                           u.ue_id as UeCodigo,
                                                t.turma_id TurmaCodigo,
 	                                           u.nome as NomeUe,
 	                                           t.nome as NomeTurma,
@@ -54,7 +54,7 @@ namespace SME.SR.Data
                                            where t.turma_id  = ANY(@turmasCodigo)
                                                and t.modalidade_codigo = @modalidade
 	                                           and not cccat.excluido
-	                                           group  by u.id,t.turma_id,u.nome,t.nome,cccat.bimestre,t.modalidade_codigo  
+	                                           group  by u.ue_id,t.turma_id,u.nome,t.nome,cccat.bimestre,t.modalidade_codigo  
                                                order by cccat.bimestre,t.nome ;");
 
 

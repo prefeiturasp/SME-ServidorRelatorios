@@ -36,7 +36,7 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             var query = new StringBuilder(@"
                                     select
-                                    u.id as UeCodigo,
+                                    u.ue_id as UeCodigo,
 	                                t.turma_id TurmaCodigo,
 	                                u.nome as NomeUe,
 	                                t.nome as NomeTurma,
@@ -53,7 +53,7 @@ namespace SME.SR.Data.Repositories.Sgp
                                     where t.turma_id  = ANY(@turmasCodigo)
                                     and t.modalidade_codigo =@modalidade
                                     and not cfct.excluido 
-	                                group  by u.id ,t.turma_id,t.id,u.nome,t.nome,cfct.bimestre,t.modalidade_codigo  
+	                                group  by u.ue_id ,t.turma_id,t.id,u.nome,t.nome,cfct.bimestre,t.modalidade_codigo  
                                         order by cfct.bimestre,t.nome; ");
             var parametros = new { turmasCodigo, modalidade };
 

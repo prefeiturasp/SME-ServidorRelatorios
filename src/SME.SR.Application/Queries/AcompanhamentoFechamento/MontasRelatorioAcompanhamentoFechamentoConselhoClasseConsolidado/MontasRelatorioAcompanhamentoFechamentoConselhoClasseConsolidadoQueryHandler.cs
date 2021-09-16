@@ -41,7 +41,8 @@ namespace SME.SR.Application
             var listaDeUes = MaperarUePorTurma(request);
             foreach (var ltsUes in listaDeUes)
             {
-                var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(ltsUes.NomeUe);
+                var nomeUe = await ObterNomeUe(ltsUes.UeCodigo);
+                var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(nomeUe);
 
                 foreach (var bimestre in request.Bimestres)
                 {
@@ -57,7 +58,7 @@ namespace SME.SR.Application
                     {
                         foreach (var fech in fechamento)
                         {
-                            var fechamentoCon = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(fech.NomeTurma);
+                            var fechamentoCon = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(fech.NomeTurmaFormatado);
                             var fechamentoConsolidado = new RelatorioAcompanhamentoFechamentoConsolidadoDto
                             {
                                 NaoIniciado = fech.NaoIniciado,
@@ -92,6 +93,13 @@ namespace SME.SR.Application
             return await Task.FromResult(relatorio);
 
 
+        }
+
+        private async Task<string> ObterNomeUe(string ueCodigo)
+        {
+            var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
+
+            return ue.TituloTipoEscolaNome;
         }
 
         private static IEnumerable<FechamentoConsolidadoTurmaDto> MaperarUePorTurma(MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery request)
