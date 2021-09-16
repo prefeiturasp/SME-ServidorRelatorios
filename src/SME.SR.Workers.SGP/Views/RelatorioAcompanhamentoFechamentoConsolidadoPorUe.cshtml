@@ -72,9 +72,9 @@
         return "";
     }
 
-    void MontarTituloUe(string nomeUe, int contadorTurmas, bool temBimestre)
+    void MontarTituloUe(string nomeUe, bool imprimirTitulo, bool temBimestre)
     {
-        if (!String.IsNullOrEmpty(nomeUe) && contadorTurmas == 0)
+        if (!String.IsNullOrEmpty(nomeUe) && imprimirTitulo)
         {
             var numLinhas = temBimestre ? 5 : 4;
             var quebra = VerificaQuebra(numLinhas);
@@ -350,6 +350,7 @@
             {
                 var nomeUe = ues.NomeUe;
                 int contadorBimestres = 0;
+                bool imprimirTitulo = true;
 
                 <table class="tabela-cabecalho">
                     @foreach (var bimestres in ues.Bimestres)
@@ -357,7 +358,9 @@
                         var bimestre = bimestres.Bimestre;
                         bool temBimestre = !String.IsNullOrEmpty(bimestre);
 
-                        MontarTituloUe(nomeUe, contadorBimestres, temBimestre);
+                        MontarTituloUe(nomeUe, imprimirTitulo, temBimestre);
+
+                        imprimirTitulo = false;
 
                         MontarTituloBimestre(bimestre, temBimestre);
 
