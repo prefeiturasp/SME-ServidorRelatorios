@@ -9,26 +9,24 @@ namespace SME.SR.Infra
     {
         public AcompanhamentoAprendizagemTurmaDto()
         {
-            alunos = new List<AcompanhamentoAprendizagemAlunoDto>();
+            Alunos = new List<AcompanhamentoAprendizagemAlunoDto>();
             PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
         }
 
         public long Id { get; set; }
         public string ApanhadoGeral { get; set; }
         public int Semestre { get; set; }
-        public List<AcompanhamentoAprendizagemAlunoDto> Alunos { get { return alunos; } }
+        public List<AcompanhamentoAprendizagemAlunoDto> Alunos { get; set; }
         public List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> PercursoTurmaImagens { get; set; }
-
-        private List<AcompanhamentoAprendizagemAlunoDto> alunos { get; set; }
 
         public void Add(AcompanhamentoAprendizagemAlunoDto acompanhamentoAprendizagemAluno)
         {
-            if (!alunos.Any(a => a.Id == acompanhamentoAprendizagemAluno.Id))
-                alunos.Add(acompanhamentoAprendizagemAluno);
+            if (!Alunos.Any(a => a.Id == acompanhamentoAprendizagemAluno.Id))
+                Alunos.Add(acompanhamentoAprendizagemAluno);
         }
         public void AddFotoAluno(string AlunoCodigo, ArquivoDto foto)
         {
-            var aluno = alunos.FirstOrDefault(a => a.AlunoCodigo == AlunoCodigo);
+            var aluno = Alunos.FirstOrDefault(a => a.AlunoCodigo == AlunoCodigo);
 
             if (aluno == null)
                 throw new NegocioException($"Não foi possível localizar o nível de código {AlunoCodigo}");

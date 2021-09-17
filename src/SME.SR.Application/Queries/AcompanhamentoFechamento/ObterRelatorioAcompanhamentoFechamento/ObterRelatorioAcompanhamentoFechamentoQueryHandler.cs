@@ -35,12 +35,15 @@ namespace SME.SR.Application
             if (!string.IsNullOrEmpty(request.UeCodigo))
                 ue = await ObterUePorCodigo(request.UeCodigo);
 
-            var turmas = await ObterTurmasRelatorio(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year);
-            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
+            
             int[] bimestres = request.Bimestres?.ToArray();
 
-            var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma, bimestres, request.SituacaoFechamento);
-            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma, bimestres, request.SituacaoConselhoClasse);
+            var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres);
+            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
+
+
+            var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
+            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);
 
             if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
                 (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
@@ -60,6 +63,11 @@ namespace SME.SR.Application
             }
 
             return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmasCodigo?.ToArray(), turmas, componentesCurriculares, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
+        }
+
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> OrdenarComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares)
+        {
+            return await mediator.Send(new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurriculares));
         }
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorCodigo(long[] componentesCurricularesId)
@@ -85,7 +93,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasRelatorio(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
+        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres )
         {
             try
             {
@@ -97,7 +105,11 @@ namespace SME.SR.Application
                     AnoLetivo = anoLetivo,
                     Semestre = semestre,
                     Usuario = usuario,
-                    ConsideraHistorico = consideraHistorico
+                    ConsideraHistorico = consideraHistorico,
+                    SituacaoConselhoClasse = situacaoConselhoClasse,
+                    SituacaoFechamento = situacaoFechamento,
+                    Bimestres = bimestres
+
                 });
             }
             catch (NegocioException)
@@ -106,14 +118,14 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidado(string[] turmasId, int[] bimestres, SituacaoConselhoClasse? situacaoConselhoClasse)
+        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidado(string[] turmasId)
         {
-            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasBimestreQuery(turmasId, bimestres, (int?)situacaoConselhoClasse));
+            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasQuery(turmasId));
         }
 
-        private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidado(string[] turmasId, int[] bimestres, SituacaoFechamento? situacaoFechamento)
+        private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidado(string[] turmasId)
         {
-            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasBimestreQuery(turmasId, bimestres, (int?)situacaoFechamento));
+            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasQuery(turmasId));
         }
     }
 }

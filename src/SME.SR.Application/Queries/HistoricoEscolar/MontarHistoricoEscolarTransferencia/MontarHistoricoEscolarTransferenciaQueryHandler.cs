@@ -42,10 +42,10 @@ namespace SME.SR.Application
                     var notasAluno = request.Notas.Where(n => agrupamentoTurmas.Select(t => t.Codigo).Contains(n.Key)).SelectMany(a => a).Where(w => w.CodigoAluno == aluno.Aluno.Codigo && w.PeriodoEscolar != null);
                     var frequenciasAluno = request.Frequencias.Where(f => agrupamentoTurmas.Select(t => t.Codigo).Contains(f.Key)).SelectMany(a => a).Where(a => a.CodigoAluno == aluno.Aluno.Codigo);
 
-                    var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento, request.GrupoAreaOrdenacao);
-                    var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento, request.GrupoAreaOrdenacao);
-                    var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
-                    var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
+                    var baseNacionalDto = ObterBaseNacionalComum(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, baseNacionalComum, request.AreasConhecimento, request.GrupoAreaOrdenacao, request.RegistroFrequenciasAlunos, aluno, request.BimestreAtual);
+                    var diversificadosDto = ObterGruposDiversificado(agrupamentoTurmas, notasAluno, frequenciasAluno, request.MediasFrequencia, diversificados, request.AreasConhecimento, request.GrupoAreaOrdenacao, request.RegistroFrequenciasAlunos, aluno, request.BimestreAtual);
+                    var enriquecimentoDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, enriquecimentos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento, request.RegistroFrequenciasAlunos, aluno, request.BimestreAtual)?.ToList();
+                    var projetosDto = MontarComponentesNotasFrequencia(agrupamentoTurmas, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento, request.RegistroFrequenciasAlunos, aluno, request.BimestreAtual)?.ToList();
 
                     var turma = aluno.Turmas.FirstOrDefault(x => x.TipoTurma == TipoTurma.Regular);
                     var tiposNotaDto = MapearTiposNota(agrupamentoTurmas.Key, request.TiposNota, turma);
@@ -96,7 +96,10 @@ namespace SME.SR.Application
                                                             IEnumerable<MediaFrequencia> mediasFrequencia,
                                                             IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
                                                             IEnumerable<AreaDoConhecimento> areasDoConhecimentos,
-                                                            IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> grupoAreaOrdenacao)
+                                                            IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> grupoAreaOrdenacao,
+                                                            IEnumerable<RegistroFrequenciaAlunoDto> registroFrequenciasAlunos,
+                                                            AlunoTurmasHistoricoEscolarDto aluno,
+                                                            int bimestreAtual)
         {
             var gruposComponentes = new List<GruposComponentesCurricularesTransferenciaDto>();
 
@@ -116,7 +119,7 @@ namespace SME.SR.Application
                             Nome = ac.Key.Nome,
                             ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
                                                     ObterComponentesDasAreasDeConhecimento(componentes, ac),
-                                                    notasAlunos, frequencias, mediasFrequencia, ac)?.OrderBy(o => o.Nome).ToList()
+                                                    notasAlunos, frequencias, mediasFrequencia, ac, registroFrequenciasAlunos, aluno, bimestreAtual)?.OrderBy(o => o.Nome).ToList()
                         }).ToList()
                     });
                 }
@@ -131,7 +134,10 @@ namespace SME.SR.Application
                                                             IEnumerable<MediaFrequencia> mediasFrequencia,
                                                             IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
                                                             IEnumerable<AreaDoConhecimento> areasDoConhecimentos,
-                                                            IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> grupoAreaOrdenacao)
+                                                            IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> grupoAreaOrdenacao,
+                                                            IEnumerable<RegistroFrequenciaAlunoDto> registroFrequenciasAlunos,
+                                                            AlunoTurmasHistoricoEscolarDto aluno,
+                                                            int bimestreAtual)
         {
             BaseNacionalComumTransferenciaDto baseNacional = null;
 
@@ -146,7 +152,7 @@ namespace SME.SR.Application
                         Nome = ac.Key.Nome,
                         ComponentesCurriculares = MontarComponentesNotasFrequencia(turmas,
                                                 ObterComponentesDasAreasDeConhecimento(componentesCurricularesDaTurma, ac),
-                                                notasAlunos, frequencias, mediasFrequencia, ac)?.OrderBy(o => o.Nome).ToList()
+                                                notasAlunos, frequencias, mediasFrequencia, ac, registroFrequenciasAlunos, aluno, bimestreAtual)?.OrderBy(o => o.Nome).ToList()
                     }).ToList()
                 };
             }
@@ -178,7 +184,7 @@ namespace SME.SR.Application
                                                                      .ThenBy(c => c.Key.Nome, StringComparer.OrdinalIgnoreCase);
         }
 
-        private IEnumerable<ComponenteCurricularHistoricoEscolarTransferenciaDto> MontarComponentesNotasFrequencia(IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
+        private IEnumerable<ComponenteCurricularHistoricoEscolarTransferenciaDto> MontarComponentesNotasFrequencia(IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<AreaDoConhecimento> areasDoConhecimentos, IEnumerable<RegistroFrequenciaAlunoDto> registroFrequenciasAlunos, AlunoTurmasHistoricoEscolarDto aluno, int bimestreAtual)
         {
             List<ComponenteCurricularHistoricoEscolarTransferenciaDto> componentes = null;
 
@@ -191,7 +197,7 @@ namespace SME.SR.Application
                 {
                     if (componenteCurricular.Regencia)
                     {
-                        componentes.AddRange(MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(), turmas, componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)), notas, frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()), mediasFrequencia));
+                        componentes.AddRange(MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(), turmas, componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)), notas, frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()), mediasFrequencia, registroFrequenciasAlunos, bimestreAtual));
                     }
                     else
                     {
@@ -203,14 +209,14 @@ namespace SME.SR.Application
                             Nome = componenteCurricular.Disciplina,
                             Frequencia = componenteCurricular.Frequencia,
                             Nota = componenteCurricular.LancaNota,
-                            FrequenciaPrimeiroBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 1),
-                            FrequenciaSegundoBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 2),
-                            FrequenciaTerceiroBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 3),
-                            FrequenciaQuartoBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 4),
-                            NotaConceitoPrimeiroBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 1),
-                            NotaConceitoSegundoBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 2),
-                            NotaConceitoTerceiroBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 3),
-                            NotaConceitoQuartoBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 4),
+                            FrequenciaPrimeiroBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 1, registroFrequenciasAlunos.Where(a => a.CodigoAluno.ToString() == aluno.Aluno.Codigo), bimestreAtual),
+                            FrequenciaSegundoBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 2, registroFrequenciasAlunos.Where(a => a.CodigoAluno.ToString() == aluno.Aluno.Codigo), bimestreAtual),
+                            FrequenciaTerceiroBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 3, registroFrequenciasAlunos.Where(a => a.CodigoAluno.ToString() == aluno.Aluno.Codigo), bimestreAtual),
+                            FrequenciaQuartoBimestre = ObterFrequenciaComponentePorTurma(turmaDoComponente, componenteCurricular.CodDisciplina.ToString(), frequencia, 4, registroFrequenciasAlunos.Where(a => a.CodigoAluno.ToString() == aluno.Aluno.Codigo), bimestreAtual),
+                            NotaConceitoPrimeiroBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 1, bimestreAtual),
+                            NotaConceitoSegundoBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 2, bimestreAtual),
+                            NotaConceitoTerceiroBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 3, bimestreAtual),
+                            NotaConceitoQuartoBimestre = ObterNotaComponentePorTurma(turmaDoComponente, turmaRegular, componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia, 4, bimestreAtual)
                         });
                     }
                 }
@@ -219,16 +225,21 @@ namespace SME.SR.Application
             return componentes;
         }
 
-        private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos, int bimestre)
+        private string ObterFrequenciaComponentePorTurma(Turma turma, string codigoComponente, IEnumerable<FrequenciaAluno> frequenciaAlunos, int bimestre, IEnumerable<RegistroFrequenciaAlunoDto> registroFrequenciasAlunos, int bimestreAtual)
         {
             if (turma != null)
             {
                 var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente && a.Bimestre == bimestre);
                 FrequenciaAluno frequenciaAluno;
+                var registroFrequenciaAluno = registroFrequenciasAlunos.Where(a => a.ComponenteCurricularId.ToString() == codigoComponente && a.Bimestre == bimestre && a.TurmaCodigo == turma.Codigo);
 
                 if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
                 {
-                    frequenciaAluno = new FrequenciaAluno() { DisciplinaId = codigoComponente, TurmaId = turma.Codigo };
+                    if (registroFrequenciaAluno.Any())
+                        return "100";
+                    if (bimestre <= bimestreAtual)
+                        return string.Empty;
+                    return "-";
                 }
                 else if (frequenciasAlunoParaTratar.Count() == 1)
                 {
@@ -255,7 +266,7 @@ namespace SME.SR.Application
         }
 
         private string ObterNotaComponentePorTurma(Turma turma, Turma turmaRegular, string codigoComponente, bool regencia, bool lancaNota, IEnumerable<FrequenciaAluno> frequenciaAlunos,
-            IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias, int bimestre)
+            IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias, int bimestre, int bimestreAtual)
         {
             if (turma is null)
                 return null;
@@ -266,12 +277,28 @@ namespace SME.SR.Application
             if (turmaRegular is null)
                 return notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
 
+            var nota = "";
             if (turma.Codigo == turmaRegular.Codigo)
-                return notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+            {
+                nota = notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+                return ChecarNota(nota, bimestre, bimestreAtual);
+            }
 
-            return
-                notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turmaRegular.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito
+            nota = notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turmaRegular.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito
                 ?? notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
+
+            return ChecarNota(nota, bimestre, bimestreAtual); ;
+        }
+
+        private string ChecarNota(string valor, int bimestre, int bimestreAtual)
+        {
+            if (valor == null)
+                if (bimestre <= bimestreAtual)
+                    valor = "";
+                else
+                    valor = "-";
+
+            return valor;
         }
 
         private string ObterNotaComponentePorTurmaRegencia(Turma turma, string codigoComponente, bool regencia, bool lancaNota, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias, int bimestre)
@@ -285,14 +312,14 @@ namespace SME.SR.Application
             return notasAluno.FirstOrDefault(n => n.CodigoComponenteCurricular == codigoComponente && n.CodigoTurma == turma.Codigo && n.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
         }
 
-        private IEnumerable<ComponenteCurricularHistoricoEscolarTransferenciaDto> MapearComponentesRegencia(string codigoComponenteRegencia, IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesRegencia, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia)
+        private IEnumerable<ComponenteCurricularHistoricoEscolarTransferenciaDto> MapearComponentesRegencia(string codigoComponenteRegencia, IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesRegencia, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<RegistroFrequenciaAlunoDto> registroFrequenciasAlunos, int bimestreAtual)
         {
             var componentes = new List<ComponenteCurricularHistoricoEscolarTransferenciaDto>();
 
-            var frequencia1Bimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), codigoComponenteRegencia, frequencia, 1);
-            var frequencia2Bimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), codigoComponenteRegencia, frequencia, 2);
-            var frequencia3Bimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), codigoComponenteRegencia, frequencia, 3);
-            var frequencia4Bimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), codigoComponenteRegencia, frequencia, 4);
+            var frequencia1Bimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), codigoComponenteRegencia, frequencia, 1, registroFrequenciasAlunos, bimestreAtual);
+            var frequencia2Bimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), codigoComponenteRegencia, frequencia, 2, registroFrequenciasAlunos, bimestreAtual);
+            var frequencia3Bimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), codigoComponenteRegencia, frequencia, 3, registroFrequenciasAlunos, bimestreAtual);
+            var frequencia4Bimestre = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(), codigoComponenteRegencia, frequencia, 4, registroFrequenciasAlunos, bimestreAtual);
 
             foreach (var componenteCurricular in componentesRegencia)
             {

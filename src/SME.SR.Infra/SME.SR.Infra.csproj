@@ -22,6 +22,13 @@
 
   <ItemGroup>
     <Folder Include="Dtos\Comunicado\" />
+    <Folder Include="Dtos\Relatorios\Frequencia\Excel\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Dtos\Relatorios\FechamentoPendencias\FiltroRelatorioPendenciasDto.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
 </Project>

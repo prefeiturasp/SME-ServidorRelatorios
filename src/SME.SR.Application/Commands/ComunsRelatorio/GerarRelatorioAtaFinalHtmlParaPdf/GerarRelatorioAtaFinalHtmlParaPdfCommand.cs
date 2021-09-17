@@ -3,7 +3,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 
-namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
+namespace SME.SR.Application
 {
     public class GerarRelatorioAtaFinalHtmlParaPdfCommand : IRequest<bool>
     {

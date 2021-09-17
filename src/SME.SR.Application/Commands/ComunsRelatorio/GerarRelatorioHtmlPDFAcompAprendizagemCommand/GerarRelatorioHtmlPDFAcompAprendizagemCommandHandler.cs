@@ -70,12 +70,14 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                 var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
 
-                reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
-                if (request.EnvioPorRabbit)
-                {
-                    await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, request.CodigoCorrelacao));
-                    return string.Empty;
-                }
+            //PdfGenerator pdfGenerator = new PdfGenerator(converter);
+            reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
+            
+            if (request.EnvioPorRabbit)
+            {
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
+                return string.Empty;
+            }
 
                 return request.CodigoCorrelacao.ToString();
             }

@@ -21,6 +21,7 @@ namespace SME.SR.Workers.SGP
                     .ConfigureAppConfiguration((hostingContext, config) =>
                        {
                            config.AddEnvironmentVariables();
+                           config.AddUserSecrets<Program>();
                        })
                     .UseStartup<Startup>();
             });

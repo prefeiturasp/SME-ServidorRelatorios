@@ -91,7 +91,7 @@
         @foreach (var objetivo in listaObjetivos)
         {
             <tr>
-                <td class="alinhar-esquerda espaco-esquerda-15">@objetivo.NomeObjetivo</td>
+                <td class="alinhar-esquerda espaco-esquerda-15 td-descricao"><span class="span-descricao">@objetivo.NomeObjetivo</span></td>
             </tr>
             contadorQuebrarPagina++;
 
@@ -123,7 +123,7 @@
         </tr>
         contadorQuebrarPagina++;
         <tr>
-            <td class="@classeAlinhamento" style="padding: 3px;">@valorSecao</td>
+            <td class="@classeAlinhamento td-descricao" style="padding: 3px;"><span class="span-descricao">@valorSecao</span></td>
         </tr>
 
         return "";
@@ -291,6 +291,15 @@
             .centralizar {
                 text-align: center;
             }
+
+            .td-descricao {
+                max-width: 784px;
+                height: auto;
+                word-wrap: break-word
+            }
+            .span-descricao {
+                padding: 16px;
+            }
         </style>
         <div>
             @{ int registrosIndex = 0; }
@@ -313,7 +322,7 @@
                         var encaminhamentos = temAlunos ? registros.Alunos.ToList()[i].Encaminhamentos : registros.Encaminhamentos;
                         var dataRetorno = registros.DataRetorno;
 
-                        QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false); 
+                        QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false);
 
                         if (i > 0 && i < registros?.Alunos?.Count() - 1 && !quebrou)
                         {
@@ -354,8 +363,12 @@
                             @Html.Raw(MontarSecoes("ENCAMINHAMENTOS", encaminhamentos))
 
                             @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue))
-                            @Html.Raw(MontarSecoes("DATA PARA RETORNO/VERIFICAÇÃO", dataRetorno, true))
-                           
+                            
+                            @if(!String.IsNullOrEmpty(dataRetorno))
+                            {
+                                @Html.Raw(MontarSecoes("DATA PARA RETORNO/VERIFICAÇÃO", dataRetorno, true))
+                            }
+
                             @if (i < registros?.Alunos?.Count() - 1)
                             {
                                 QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false);

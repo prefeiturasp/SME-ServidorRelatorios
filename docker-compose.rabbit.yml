@@ -1,0 +1,19 @@
+﻿version: '3.9'
+
+services:
+  sme-rabbitmq:
+    container_name: sme_rabbitmq
+    image: rabbitmq:3.7-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=bitnami
+    ports:
+      - "5672:5672"
+      - "15672:15672"    
+    networks:
+      - sme-network
+networks:
+  sme-network:
+    external:
+      name: sme-network
+    driver: bridge

@@ -3,7 +3,7 @@
 @{
 
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 48;
+    int contadorMaximoLinhasPorPagina = 63;
 
     string VerificaQuebra(int valorAdicionalParaSoma)
     {
@@ -33,8 +33,8 @@
 <table class='tblTopo'>
 <tbody>
 <tr>
-<td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
-<td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+<td  width='20%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+<td width='60%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
 <td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
 </tr>
 </tbody>
@@ -73,6 +73,7 @@
 
         if (!String.IsNullOrEmpty(quebra) && componente != "" && (string.IsNullOrEmpty(Model.Filtro.ComponenteCurricular) || Model.Filtro.ComponenteCurricular == "Todos"))
         {
+            contadorQuebrarPagina++;
             str += $@"<table class='tabela-alunos'>
                         <thead>
                           <tr>
@@ -81,6 +82,7 @@
                         </thead>
                       </table>";
         }
+        contadorQuebrarPagina++;
 
         str += $@"
                 <table class='tabela-alunos'>
@@ -115,17 +117,17 @@
 
             double tamanhoTexto1 = !string.IsNullOrEmpty(aluno.Nome) ? aluno.Nome.Length : 0;
 
-            var qtdLinhaNome = (int)Math.Truncate(tamanhoTexto1 / 9);
+            var qtdLinhaNome = (int)Math.Truncate(tamanhoTexto1 / 20);
 
             double tamanhoTexto2 = !string.IsNullOrEmpty(aluno.UsuarioAlteracao) ? aluno.UsuarioAlteracao.Length : 0;
 
-            var qtdLinhaUsuarioAlteracao = (int)Math.Truncate(tamanhoTexto2 / 9);
+            var qtdLinhaUsuarioAlteracao = (int)Math.Truncate(tamanhoTexto2 / 20);
 
             var qdtResult = Math.Max(qtdLinhaNome, qtdLinhaUsuarioAlteracao);
 
             double tamanhoTexto3 = !string.IsNullOrEmpty(aluno.UsuarioAprovacao) ? aluno.UsuarioAprovacao.Length : 0;
 
-            var qtdLinhaUsuarioAprovacao = (int)Math.Truncate(tamanhoTexto3 / 9);
+            var qtdLinhaUsuarioAprovacao = (int)Math.Truncate(tamanhoTexto3 / 20);
 
             var qtdResulFinal = Math.Max(qdtResult, qtdLinhaUsuarioAprovacao);
 
@@ -139,7 +141,7 @@
                         <th style='text-align:center' width='10%'>{aluno.NotaConceitoAnterior}</th>
                         <th style='text-align:center' width='10%'>{aluno.NotaConceitoAtribuido}</th>
                         <th style='text-align:center' width='10%'>{aluno.DataAlteracao}</th>
-                        <th style='text-align:center' width='15%'>{aluno.UsuarioAlteracao}</th>";
+                        <th style='text-align:center;' width='15%'>{aluno.UsuarioAlteracao}</th>";
 
             if (!turma.AnoAtual)
             {
@@ -150,7 +152,7 @@
             }
 
             str += $@"</tr>";
-            
+
             var quebra = VerificaQuebra(0);
 
             var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, turma) : "");
@@ -352,24 +354,24 @@
                                 if (componente.AlunosAlteracaoNotasBimestre.Count() > 0)
                                 {
                                     @Html.Raw(MontarCabecalhoTabela(quebra, componente.Nome, turma))
-                                    contadorQuebrarPagina++;
                                 }
                                 @Html.Raw(MontarDadosTabela(componente.AlunosAlteracaoNotasBimestre, componente.Nome, turma))
 
-                                <table class="tabela-alunos">
-                                    <thead>
-                                        <tr>
-                                            <th class="thLimpo"></th>
-                                        </tr>
-                                    </thead>
-                                </table>
-
+                                if (!String.IsNullOrEmpty(quebra))
+                                {
+                                    <table class="tabela-alunos">
+                                        <thead>
+                                            <tr>
+                                                <th class="thLimpo"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                }
                                 contadorQuebrarPagina++;
 
-
+                                }
                             }
                         }
-                    }
                 }
             }
         }

@@ -15,6 +15,12 @@ namespace SME.SR.Infra.Utilitarios
             return texto.Trim();
         }
 
+        public static string RemoverTagsLink(string texto)
+        {
+            texto = Regex.Replace(texto, @"<a[^>]*>", " ");
+            return texto.Trim();
+        }
+
         public static string RemoverTagsHtmlMidia(string texto)
         {
             texto = Regex.Replace(texto, @"<img[^>]*>", " [arquivo indisponível na impressão] ");

@@ -1,7 +1,8 @@
 ﻿@model SME.SR.Infra.RelatorioParecerConclusivoDto
 
-@{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 51;
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 44;
 
     string VerificaQuebra(int numeroLinhas = 0)
     {
@@ -17,6 +18,24 @@
 
     }
 
+    int CalcularLinhas(int valorLinha = 0, int caracteres = 120)
+    {
+        if (valorLinha <= caracteres)
+        {
+            return 1;
+        }
+        var valorMod = valorLinha % caracteres;
+        int valorInt = valorLinha / caracteres;
+        if (valorMod > 0)
+        {
+            return valorInt + 1;
+        }
+        else
+        {
+            return valorInt;
+        }
+    }
+
     string VerificaQuebraAlunos()
     {
         if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
@@ -24,15 +43,15 @@
             contadorQuebrarPagina = 1;
 
             var breakPage = $@"</tbody></table>
-    <div style='page-break-before:always' />";
+<div style='page-break-before:always' />";
 
             var init = $@"<table class='tblTopo'>
-            <thead>
-                <th class='thLimpo' width='10%'>TURMA</th>
-                <th class='thLimpo' width='5%'>Nº</th>
-                <th class='thLimpo' width='57%'>NOME</th>
-                <th class='thLimpo' width='28%'>PARECER CONCLUSIVO</th>
-            </thead>";
+<thead>
+<th class='thLimpo' width='10%'>TURMA</th>
+<th class='thLimpo' width='5%'>Nº</th>
+<th class='thLimpo' width='57%'>NOME</th>
+<th class='thLimpo' width='28%'>PARECER CONCLUSIVO</th>
+</thead>";
 
             var cabecalho = MontarCabecalho();
 
@@ -49,7 +68,7 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 6;
 
         var str =
-           $@"<div>
+        $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
@@ -58,10 +77,10 @@
 <table class='tblTopo'>
 <tbody>
 <tr>
-    <td  width='17%' >Ano Letivo: {Model.AnoLetivo}</td>
-    <td  width='21%' >DRE: {Model.DreNome}</td>
-    <td width='42%' >UE: {Model.UeNome}</td>
-    <td  width='20%' >ANO: {Model.Ano}</td>
+<td width='17%' >Ano Letivo: {Model.AnoLetivo}</td>
+<td width='21%' >DRE: {Model.DreNome}</td>
+<td width='42%' >UE: {Model.UeNome}</td>
+<td width='20%' >ANO: {Model.Ano}</td>
 </tr>
 </tbody>
 </table>
@@ -83,15 +102,17 @@
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Relatório Parecer Conclusivo</title>
 </head>
+
 <body class="body-rel-faltas-frequencia">
     <style>
-
-        tblTopo th, td {
+        tblTopo th,
+        td {
             padding: 3px 0px 3px 15px;
             text-align: left;
         }
@@ -127,9 +148,9 @@
             margin-bottom: 22px;
         }
 
-            .header-pagina td {
-                text-align: left;
-            }
+        .header-pagina td {
+            text-align: left;
+        }
 
         .campo-dre {
             width: 25%;
@@ -203,7 +224,7 @@
         .alinhar-esquerda {
             text-align: left;
         }
-        
+
         .espaco-esquerda-15 {
             padding-left: 15px;
         }
@@ -231,7 +252,8 @@
 
     <div>
         @{
-            @Html.Raw(MontarCabecalho());
+            @Html.Raw(MontarCabecalho())
+            ;
 
             foreach (var dre in Model.Dres)
             {
@@ -242,8 +264,10 @@
                             <th>@dre.Nome</th>
                         </tr>
                     </thead>
-                </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                @Html.Raw(VerificaQuebra());
+                </table>
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                @Html.Raw(VerificaQuebra())
+                ;
 
                 foreach (var ue in dre.Ues)
                 {
@@ -255,12 +279,15 @@
                                 <th>@ue.Nome</th>
                             </tr>
                         </thead>
-                    </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                    @Html.Raw(VerificaQuebra());
+                    </table>
+                    contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                    @Html.Raw(VerificaQuebra())
+                    ;
 
                     foreach (var ciclo in ue.Ciclos)
                     {
-                        @Html.Raw(VerificaQuebra(5));
+                        @Html.Raw(VerificaQuebra(5))
+                        ;
 
                         <table class="tabela-alunos">
                             <thead>
@@ -269,12 +296,14 @@
                                     <th>@ciclo.Nome</th>
                                 </tr>
                             </thead>
-                        </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                        </table>
+                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
 
                         foreach (var ano in ciclo.Anos)
                         {
 
-                            @Html.Raw(VerificaQuebra(3));
+                            @Html.Raw(VerificaQuebra(3))
+                            ;
                             <table class="tabela-alunos">
                                 <thead>
 
@@ -282,7 +311,8 @@
                                         <th>@ano.Nome</th>
                                     </tr>
                                 </thead>
-                            </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                            </table>
+                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
 
                             <table class="tabela-alunos">
                                 <thead>
@@ -291,37 +321,45 @@
                                         <th class="thLimpo"></th>
                                     </tr>
                                 </thead>
-                            </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                            </table>
+                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
 
                             <table class="tblTopo">
                                 <thead>
-                                <th class='thLimpo' width='10%'>TURMA</th>
-                                <th class='thLimpo' width='5%'>Nº</th>
-                                <th class='thLimpo' width='57%'>NOME</th>
-                                <th class='thLimpo' width='28%'>PARECER CONCLUSIVO</th>
+                                    <th class='thLimpo' width='10%'>TURMA</th>
+                                    <th class='thLimpo' width='5%'>Nº</th>
+                                    <th class='thLimpo' width='57%'>NOME</th>
+                                    <th class='thLimpo' width='28%'>PARECER CONCLUSIVO</th>
                                 </thead>
-                            </table> contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                            @Html.Raw(VerificaQuebra());
+                            </table>
+                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                            @Html.Raw(VerificaQuebra())
+                            ;
 
                             <table>
                                 <tbody>
 
                                     @foreach (var parecerConclusivo in ano.PareceresConclusivos)
                                     {
-                                        int numeroLinhas = (parecerConclusivo.AlunoNomeCompleto.Length / 47);
 
-                                        @Html.Raw(VerificaQuebraAlunos());
+                                        int numeroLinhasNomeAluno = CalcularLinhas(parecerConclusivo.AlunoNomeCompleto.Length, 47);
+                                        int numeroLinhasTipoParecer = CalcularLinhas(parecerConclusivo.ParecerConclusivoDescricao.Length, 20);
+                                        int numeroLinhas = numeroLinhasNomeAluno > numeroLinhasTipoParecer ? numeroLinhasNomeAluno : numeroLinhasTipoParecer;
+
+                                        @Html.Raw(VerificaQuebraAlunos())
+                                        ;
 
                                         <tr>
                                             <td width="10%">@parecerConclusivo.TurmaNome</td>
                                             <td width="5%">@parecerConclusivo.AlunoNumeroChamada</td>
-                                            <td width="57%" class="alinhar-esquerda espaco-esquerda-15">@parecerConclusivo.AlunoNomeCompleto</td>
+                                            <td width="57%" class="alinhar-esquerda espaco-esquerda-15">@parecerConclusivo.AlunoNomeCompleto
+                                            </td>
                                             <td width="28%">@parecerConclusivo.ParecerConclusivoDescricao</td>
                                         </tr>
 
                                         if (numeroLinhas > 0)
                                         {
-                                            contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas + 1;
+                                            contadorQuebrarPagina += numeroLinhas;
                                         }
                                         else
                                         {
@@ -329,12 +367,15 @@
                                         }
                                     }
                                 </tbody>
-                            </table> }
+                            </table>
+                        }
                     }
                 }
-            } }
+            } 
+        }
 
 
     </div>
 </body>
+
 </html>

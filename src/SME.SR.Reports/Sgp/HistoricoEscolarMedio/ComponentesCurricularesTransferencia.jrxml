@@ -128,7 +128,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoPrimeiroBimestre}!= null ? $F{notaConceitoPrimeiroBimestre} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoPrimeiroBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -149,7 +149,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoPrimeiroBimestre}!= null ? ($F{frequenciaPrimeiroBimestre}!= null ? $F{frequenciaPrimeiroBimestre} : "-") : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{frequenciaPrimeiroBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -170,7 +170,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoSegundoBimestre} != null ? $F{notaConceitoSegundoBimestre} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoSegundoBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -191,7 +191,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoSegundoBimestre}!= null ? ($F{frequenciaSegundoBimestre}!= null ? $F{frequenciaSegundoBimestre} : "-") : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{frequenciaSegundoBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -212,7 +212,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoTerceiroBimestre} != null ? $F{notaConceitoTerceiroBimestre} : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoTerceiroBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -233,7 +233,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoTerceiroBimestre}!= null ? ($F{frequenciaTerceiroBimestre}!= null ? $F{frequenciaTerceiroBimestre} : "-") : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{frequenciaTerceiroBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -254,7 +254,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoQuartoBimestre} != null ? $F{notaConceitoQuartoBimestre}: "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoQuartoBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -275,7 +275,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{notaConceitoQuartoBimestre}!= null ? ($F{frequenciaQuartoBimestre}!= null ? $F{frequenciaQuartoBimestre} : "-") : "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{notaConceitoQuartoBimestre}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

@@ -195,11 +195,11 @@ namespace SME.SR.Data
                 left join (select distinct dre_codigo, dre_nome from dashboard_adesao) da on da.dre_codigo = cn.dre_codigo
                 left join 
                 (
-	                select unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.grupo,',')) modalidade, nt.codigo_eol_turma, count(distinct usuario_cpf) leram
+	                select unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.modalidades,',')) modalidade, nt.codigo_eol_turma, count(distinct usuario_cpf) leram
 	                from usuario_notificacao_leitura unl 
 	                left join notificacao n on n.id = unl.notificacao_id
 	                left join notificacao_turma nt on nt.notificacao_id = unl.notificacao_id 
-	                group by unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.grupo,',')), nt.codigo_eol_turma 
+	                group by unl.notificacao_id, unl.dre_codigoeol, unl.ue_codigoeol, unnest(string_to_array(n.modalidades,',')), nt.codigo_eol_turma 
                 ) ul on ul.notificacao_id = cn.notificacao_id and ul.dre_codigoeol::varchar = cn.dre_codigo and ul.ue_codigoeol = cn.ue_codigo and ul.modalidade = cn.modalidade_codigo::text and ul.codigo_eol_turma = cn.turma_codigo 
                 where
 	                cn.notificacao_id = ANY(@comunicados) and

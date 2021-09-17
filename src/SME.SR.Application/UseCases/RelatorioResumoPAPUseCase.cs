@@ -19,6 +19,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroPapResumos;
             var filtros = request.ObterObjetoFiltro<FiltroRelatorioResumoPAPDto>();
 
             // Obter dados de dre e ue

@@ -9,7 +9,6 @@ using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
-using SME.SR.Data.Repositories;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
@@ -85,7 +84,7 @@ namespace SME.SR.IoC
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddScoped<IHtmlHelper, HtmlHelper>();
 
-            services.AddSingleton(new VariaveisAmbiente());
+            services.AddSingleton(new VariaveisAmbiente(configuration));
             RegistrarRepositorios(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
@@ -111,6 +110,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IFechamentoNotaRepository), typeof(FechamentoNotaRepository));
             services.TryAddScoped(typeof(IFechamentoTurmaRepository), typeof(FechamentoTurmaRepository));
             services.TryAddScoped(typeof(IFrequenciaAlunoRepository), typeof(FrequenciaAlunoRepository));
+            services.TryAddScoped(typeof(IRegistroFrequenciaRepository), typeof(RegistroFrequenciaRepository));
             services.TryAddScoped(typeof(INotaTipoRepository), typeof(NotaTipoRepository));
             services.TryAddScoped(typeof(IFuncionarioRepository), typeof(FuncionarioRepository));
             services.TryAddScoped(typeof(IParametroSistemaRepository), typeof(ParametroSistemaRepository));
@@ -124,9 +124,9 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IUeRepository), typeof(UeRepository));
             services.TryAddScoped(typeof(IObterCabecalhoHistoricoEscolarRepository), typeof(ObterCabecalhoHistoricoEscolarRepository));
             services.TryAddScoped(typeof(IObterEnderecoeAtosDaUeRepository), typeof(ObterEnderecoeAtosDaUeRepository));
-            services.TryAddScoped(typeof(IRelatorioFaltasFrequenciaRepository), typeof(RelatorioFaltasFrequenciaRepository));
+            services.TryAddScoped(typeof(IRelatorioFrequenciaRepository), typeof(RelatorioFrequenciaRepository));
             services.TryAddScoped(typeof(IConceitoValoresRepository), typeof(ConceitoValoresRepository));
-            services.TryAddScoped(typeof(IFechamentoPendenciaRepository), typeof(FechamentoPendenciaRepository));
+            services.TryAddScoped(typeof(IPendenciaRepository), typeof(PendenciaRepository));
             services.TryAddScoped(typeof(IRelatorioRecuperacaoParalelaRepository), typeof(RelatorioRecuperacaoParalelaRepository));
             services.TryAddScoped(typeof(IParecerConclusivoRepository), typeof(ParecerConclusivoRepository));
             services.TryAddScoped(typeof(ICompensacaoAusenciaRepository), typeof(CompensacaoAusenciaRepository));
@@ -159,9 +159,9 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IDashboardAdesaoRepository), typeof(DashboardAdesaoRepository));
             services.TryAddScoped(typeof(IUsuarioAERepository), typeof(UsuarioAERepository));
-            
+
             services.TryAddScoped(typeof(IComunicadosRepository), typeof(ComunicadosRepository));
-            
+
             services.TryAddScoped(typeof(IDevolutivaRepository), typeof(DevolutivaRepository));
             services.TryAddScoped(typeof(IItineranciaRepository), typeof(ItineranciaRepository));
             services.TryAddScoped(typeof(IAcompanhamentoAprendizagemRepository), typeof(AcompanhamentoAprendizagemRepository));
@@ -170,9 +170,12 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
             services.TryAddScoped(typeof(IArquivoRepository), typeof(ArquivoRepository));
 
+            services.TryAddScoped(typeof(IAlunoFotoRepository), typeof(AlunoFotoRepository));
+
             services.TryAddScoped(typeof(IConselhoClasseConsolidadoRepository), typeof(ConselhoClasseConsolidadoRepository));
             services.TryAddScoped(typeof(IFechamentoConsolidadoRepository), typeof(FechamentoConsolidadoRepository));
             services.TryAddScoped(typeof(IPendenciaFechamentoRepository), typeof(PendenciaFechamentoRepository));
+            services.TryAddScoped(typeof(IRegistroFrequenciaAlunoRepository), typeof(RegistroFrequenciaAlunoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -189,11 +192,12 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioConselhoClasseAlunoUseCase, RelatorioConselhoClasseAlunoUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
+            services.TryAddScoped<IRelatorioBoletimEscolarDetalhadoUseCase, RelatorioBoletimEscolarDetalhadoUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
             services.TryAddScoped<IDownloadRelatorioUseCase, DownloadRelatorioUseCase>();
-            services.TryAddScoped<IRelatorioFaltasFrequenciasUseCase, RelatorioFaltasFrequenciasUseCase>();
+            services.TryAddScoped<IRelatorioFrequenciasUseCase, RelatorioFrequenciasUseCase>();
             services.TryAddScoped<IRelatorioHistoricoEscolarUseCase, RelatorioHistoricoEscolarUseCase>();
-            services.TryAddScoped<IRelatorioFechamentoPendenciasUseCase, RelatorioFechamentoPendenciasUseCase>();
+            services.TryAddScoped<IRelatorioPendenciasUseCase, RelatorioPendenciasUseCase>();
             services.TryAddScoped<IRelatorioRecuperacaoParalelaUseCase, RelatorioRecuperacaoParalelaUseCase>();
             services.TryAddScoped<IRelatorioParecerConclusivoUseCase, RelatorioParecerConclusivoUseCase>();
             services.TryAddScoped<IRelatorioNotasEConceitosFinaisUseCase, RelatorioNotasEConceitosFinaisUseCase>();
@@ -221,6 +225,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioRegistroIndividualUseCase, RelatorioRegistroIndividualUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoAprendizagemUseCase, RelatorioAcompanhamentoAprendizagemUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoFechamentoUseCase, RelatorioAcompanhamentoFechamentoUseCase>();
+            services.TryAddScoped<IRelatorioConselhoClasseAtaBimestralUseCase, RelatorioConselhoClasseAtaBimestralUseCase>();
 
         }
     }

@@ -38,7 +38,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
             if (request.EnvioPorRabbit)
             {
-                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbit.RotaRelatoriosProntosSgp, RotasRabbit.ExchangeSgp, request.CodigoCorrelacao));
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
                 return string.Empty;
             }
             else return request.CodigoCorrelacao.ToString();
