@@ -28,13 +28,13 @@ namespace SME.SR.Data
                             and t.turma_id = ANY(@turmasCodigo) ");
 
 
-            var parametros = new { turmasCodigo};
+            var parametros = new { turmasCodigo };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string[] turmasCodigo, int modalidade)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string dreCodigo, int modalidade, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo)
         {
             var query = new StringBuilder(@" select 		
 	                                           u.ue_id as UeCodigo,
@@ -51,17 +51,34 @@ namespace SME.SR.Data
 	                                               on t.id = cccat.turma_id
 	                                           inner join ue u
 	                                               on u.id = t.ue_id
-                                           where t.turma_id  = ANY(@turmasCodigo)
-                                               and t.modalidade_codigo = @modalidade
-	                                           and not cccat.excluido
-	                                           group  by u.ue_id,t.turma_id,u.nome,t.nome,cccat.bimestre,t.modalidade_codigo  
-                                               order by cccat.bimestre,t.nome ;");
+                                               inner join dre d on d.id = u.dre_id 
+                                                where t.ano_letivo = @anoLetivo
+                                                and d.dre_id  = @dreCodigo
+                                               and t.modalidade_codigo = @modalidade ");
 
+            if (bimestres != null)
+                query.AppendLine(" and cccat.bimestre = ANY(@bimestres) ");
 
-            var parametros = new { turmasCodigo ,modalidade };
+            if (situacao != null)
+                query.AppendLine(" and cccat.status = @situacao ");
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
+            query.AppendLine(@" and not cccat.excluido
+                                group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cccat.bimestre, t.modalidade_codigo
+                                order by cccat.bimestre, t.nome; ");
+
+            try
+            {
+                var parametros = new { dreCodigo, modalidade, bimestres, situacao, anoLetivo };
+
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+                return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
         }
     }
 }

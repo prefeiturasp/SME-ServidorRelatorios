@@ -37,28 +37,23 @@ namespace SME.SR.Application
 
             int[] bimestres = request.Bimestres?.ToArray();
 
-            var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres, request.DreCodigo);
-            if(turmas == null && turmas.Any())
-                throw new NegocioException("As turmas selecionadas não possuem fechamento.");
-
-            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
-            var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(codigosTurma,(int)request.Modalidade);
-            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(codigosTurma, (int)request.Modalidade);
+            var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(request.DreCodigo, (int)request.Modalidade, bimestres, request.SituacaoFechamento, request.AnoLetivo);
+            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(request.DreCodigo, (int)request.Modalidade,bimestres,request.SituacaoConselhoClasse,request.AnoLetivo);
 
             if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
                (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
                 throw new NegocioException("Acompanhamento de Fechamentos das turmas do filtro não encontrado");
 
-            return await mediator.Send(new MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(dre, ue, turmas, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.TurmasCodigo?.ToArray(), request.Usuario));
+            return await mediator.Send(new MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(dre, ue, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.TurmasCodigo?.ToArray(), request.Usuario));
         }
 
-        private async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentosConsolidadoTodasUe(string[] turmasId,int modalidadeId)
+        private async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentosConsolidadoTodasUe(string dreCodigo,int modalidadeId,int[] bimestres,SituacaoFechamento? situacao,int anoLetivo)
         {
-            return await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(turmasId, modalidadeId));
+            return await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(dreCodigo, modalidadeId, anoLetivo, bimestres, situacao));
         }
-        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoTodasUe(string[] turmasId, int modalidadeId)
+        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoTodasUe(string dreCodigo, int modalidadeId, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo)
         {
-            return await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(turmasId,modalidadeId));
+            return await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(dreCodigo, modalidadeId,bimestres,situacao,anoLetivo));
         }
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
         {

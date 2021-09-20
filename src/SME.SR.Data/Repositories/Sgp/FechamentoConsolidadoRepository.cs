@@ -32,7 +32,7 @@ namespace SME.SR.Data.Repositories.Sgp
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string[] turmasCodigo, int modalidade, int[] bimestres, int situacao)
+        public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string dreCodigo, int modalidade, int[] bimestres, SituacaoFechamento? situacao, int anoLetivo)
         {
             var query = new StringBuilder(@"select
                                             u.ue_id as UeCodigo,
@@ -47,30 +47,43 @@ namespace SME.SR.Data.Repositories.Sgp
                                        from consolidado_fechamento_componente_turma cfct 
 	                                  inner join turma t on t.id = cfct.turma_id 
 	                                  inner join ue u on u.id = t.ue_id 
-                                      where t.ano_letivo = 2021
-                                        and t.turma_id  = ANY(@turmasCodigo)
+                                      inner join dre d on d.id = u.dre_id 
+                                        where t.ano_letivo = @anoLetivo
+                                        and d.dre_id  = @dreCodigo
                                         and t.modalidade_codigo = @modalidade ");
 
-            if(!bimestres.Any(b => b == -99))
+            if (bimestres != null)
                 query.AppendLine(" and cfct.bimestre = ANY(@bimestres) ");
 
-            if (situacao != -99)
+            if (situacao != null)
                 query.AppendLine(" and cfct.status = @situacao ");
 
             query.AppendLine(@" and not cfct.excluido
                                 group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cfct.bimestre, t.modalidade_codigo
                                 order by cfct.bimestre, t.nome; ");
 
-            var parametros = new 
+            var parametros = new
             {
-                turmasCodigo, 
+                dreCodigo,
                 modalidade,
                 bimestres,
-                situacao
+                situacao,
+                anoLetivo
             };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            return await conexao.QueryAsync<FechamentoConsolidadoTurmaDto>(query.ToString(), parametros);
+            try
+            {
+
+                return await conexao.QueryAsync<FechamentoConsolidadoTurmaDto>(query.ToString(), parametros);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+
         }
     }
 }
