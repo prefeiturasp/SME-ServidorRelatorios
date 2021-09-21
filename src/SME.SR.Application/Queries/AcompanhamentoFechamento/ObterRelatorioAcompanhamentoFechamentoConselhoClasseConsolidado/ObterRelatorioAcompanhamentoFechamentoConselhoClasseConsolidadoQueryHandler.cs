@@ -60,23 +60,5 @@ namespace SME.SR.Application
         private async Task<Ue> ObterUePorCodigo(string ueCodigo)
             => await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
 
-        //private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, string dreCodigo)
-        //{
-        //    return await mediator.Send(new ObterTurmasRelatorioAcompanhamentoFechamentoQuery()
-        //    {
-        //        CodigosTurma = turmasCodigo,
-        //        CodigoUe = ueCodigo,
-        //        Modalidade = modalidade,
-        //        AnoLetivo = anoLetivo,
-        //        Semestre = semestre,
-        //        Usuario = usuario,
-        //        ConsideraHistorico = consideraHistorico,
-        //        SituacaoConselhoClasse = situacaoConselhoClasse,
-        //        SituacaoFechamento = situacaoFechamento,
-        //        Bimestres = bimestres,
-        //        CodigoDre = dreCodigo
-        //    });
-        //}
-
     }
 }
