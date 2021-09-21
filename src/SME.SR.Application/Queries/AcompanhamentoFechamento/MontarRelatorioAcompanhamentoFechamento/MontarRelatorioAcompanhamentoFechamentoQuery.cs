@@ -7,7 +7,8 @@ namespace SME.SR.Application
 {
     public class MontarRelatorioAcompanhamentoFechamentoQuery : IRequest<RelatorioAcompanhamentoFechamentoPorUeDto>
     {
-        public MontarRelatorioAcompanhamentoFechamentoQuery(Dre dre, Ue ue, string[] turmasCodigo, IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, int[] bimestres, IEnumerable<FechamentoConsolidadoComponenteTurmaDto> consolidadoFechamento, IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto> consolidadoConselhosClasse, bool listarPendencias, IEnumerable<PendenciaParaFechamentoConsolidadoDto> pendencias, Usuario usuario)
+        public MontarRelatorioAcompanhamentoFechamentoQuery(Dre dre, Ue ue, string[] turmasCodigo, IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares, int[] bimestres, IEnumerable<FechamentoConsolidadoComponenteTurmaDto> consolidadoFechamento, IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto> consolidadoConselhosClasse, bool listarPendencias, IEnumerable<PendenciaParaFechamentoConsolidadoDto> pendencias, Usuario usuario
+            )
         {
             Dre = dre;
             Ue = ue;

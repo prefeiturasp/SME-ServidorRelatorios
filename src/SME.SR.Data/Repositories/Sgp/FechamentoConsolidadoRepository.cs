@@ -3,7 +3,6 @@ using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +29,49 @@ namespace SME.SR.Data.Repositories.Sgp
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string dreCodigo, int modalidade, int[] bimestres, SituacaoFechamento? situacao, int anoLetivo)
+        {
+            var query = new StringBuilder(@"select
+                                            u.ue_id as UeCodigo,
+	                                        t.turma_id TurmaCodigo,
+	                                        u.nome as NomeUe,
+	                                        t.nome as NomeTurma,
+	                                        t.modalidade_codigo as ModalidadeCodigo,
+	                                        cfct.bimestre,
+	                                        count(cfct.id) filter(where cfct.status in(0,1)) as NaoIniciado,
+	                                        count(cfct.id) filter(where cfct.status = 2) as ProcessadoComPendencia,
+	                                        count(cfct.id) filter(where cfct.status = 3) as ProcessadoComSucesso
+                                       from consolidado_fechamento_componente_turma cfct 
+	                                  inner join turma t on t.id = cfct.turma_id 
+	                                  inner join ue u on u.id = t.ue_id 
+                                      inner join dre d on d.id = u.dre_id 
+                                        where t.ano_letivo = @anoLetivo
+                                        and d.dre_id  = @dreCodigo
+                                        and t.modalidade_codigo = @modalidade ");
+
+            if (bimestres != null)
+                query.AppendLine(" and cfct.bimestre = ANY(@bimestres) ");
+
+            if (situacao != null)
+                query.AppendLine(" and cfct.status = @situacao ");
+
+            query.AppendLine(@" and not cfct.excluido
+                                group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cfct.bimestre, t.modalidade_codigo
+                                order by u.nome, t.nome, cfct.bimestre; ");
+
+            var parametros = new
+            {
+                dreCodigo,
+                modalidade,
+                bimestres,
+                situacao,
+                anoLetivo
+            };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<FechamentoConsolidadoTurmaDto>(query.ToString(), parametros);
         }
     }
 }
