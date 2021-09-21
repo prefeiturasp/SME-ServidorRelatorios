@@ -7,11 +7,10 @@ namespace SME.SR.Application
 {
     public class MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery : IRequest<RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto>
     {
-        public MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(Dre dre, Ue ue, IEnumerable<Turma> turmas, int[] bimestres, IEnumerable<FechamentoConsolidadoTurmaDto> consolidadoFechamento, IEnumerable<ConselhoClasseConsolidadoTurmaDto> consolidadoConselhosClasse, string[] turmasCodigo, Usuario usuario)
+        public MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(Dre dre, Ue ue, int[] bimestres, IEnumerable<FechamentoConsolidadoTurmaDto> consolidadoFechamento, IEnumerable<ConselhoClasseConsolidadoTurmaDto> consolidadoConselhosClasse, string[] turmasCodigo, Usuario usuario)
         {
             Dre = dre;
             Ue = ue;
-            Turmas = turmas;
             Bimestres = bimestres;
             ConsolidadoFechamento = consolidadoFechamento;
             ConsolidadoConselhosClasse = consolidadoConselhosClasse;
@@ -21,7 +20,6 @@ namespace SME.SR.Application
 
         public Dre Dre { get; set; }
         public Ue Ue { get; set; }
-        public IEnumerable<Turma> Turmas { get; set; }
         public int[] Bimestres { get; set; }
         public IEnumerable<FechamentoConsolidadoTurmaDto> ConsolidadoFechamento { get; set; }
         public IEnumerable<ConselhoClasseConsolidadoTurmaDto> ConsolidadoConselhosClasse { get; set; }

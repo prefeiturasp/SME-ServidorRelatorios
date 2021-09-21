@@ -7764,36 +7764,36 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         [HttpGet("acompanhamento-fechamento-ue")]
         public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
         {
-            var fechamento= new RelatorioAcompanhamentoFechamentoConsolidadoDto()
+            var fechamento= new RelatorioConsolidadoFechamento()
             {
                 NaoIniciado = 3,
                 ProcessadoComPendencia = 2,
                 ProcessadoComSucesso = 5
             };
-            var conselhoDeClasse= new RelatorioAcompanhamentoConselhoClasseConsolidadoDto()
+            var conselhoDeClasse= new RelatorioConsolidadoConselhoClasse()
             {
                 NaoIniciado = 4,
                 EmAndamento = 8,
                 Concluido = 7,
             };
 
-            var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto>();
-            var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto("EF -1A")
+            var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseDto>();
+            var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseDto("EF -1A")
             {
                 FechamentoConsolidado = fechamento,
                 ConselhoDeClasseConsolidado =  conselhoDeClasse ,
             };
             fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
 
-            var bimestres = new List<RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto>();
-            var bimestre = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto("1º Bimestre","0123")
+            var bimestres = new List<RelatorioAcompanhamentoFechamentoBimestresDto>();
+            var bimestre = new RelatorioAcompanhamentoFechamentoBimestresDto("1º Bimestre","0123")
             {                
                 FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
             };
             bimestres.Add(bimestre);            
           
-            var ues = new List<RelatorioAcompanhamentoFechamentoConsolidadoUesDto>();
-            var ue = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto("CEU EMEF BUTANTA")
+            var ues = new List<RelatorioAcompanhamentoFechamentoUesDto>();
+            var ue = new RelatorioAcompanhamentoFechamentoUesDto("CEU EMEF BUTANTA")
             {
                Bimestres = bimestres,
             };

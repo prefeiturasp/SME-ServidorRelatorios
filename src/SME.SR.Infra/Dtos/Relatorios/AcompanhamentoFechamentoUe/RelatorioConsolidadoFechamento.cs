@@ -1,6 +1,6 @@
 ﻿namespace SME.SR.Infra
 {
-    public class RelatorioAcompanhamentoFechamentoConsolidadoDto
+    public class RelatorioConsolidadoFechamento
     {
         public int NaoIniciado { get; set; }
         public int ProcessadoComPendencia { get; set; }

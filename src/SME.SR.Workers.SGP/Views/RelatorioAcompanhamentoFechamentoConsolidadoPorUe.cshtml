@@ -25,25 +25,25 @@
             <table class='tblTopo'>
                 <tbody>
                     <tr>
-                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.DreNome</td>
-                        <td width='80%' class='espaco-esquerda-15'>UE: @Model.UeNome</td>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.Cabecalho.DreNome</td>
+                        <td width='80%' class='espaco-esquerda-15'>UE: @Model.Cabecalho.UeNome</td>
                     </tr>
                 </tbody>
             </table>
             <table>
                 <tbody>
                     <tr>
-                        <td width='20%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Turma</td>
-                        <td width='20%' class='sem-border-top espaco-esquerda-15'>Bimestre: @Model.Bimestre</td>
-                        <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Cabecalho.Turma</td>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>Bimestre: @Model.Cabecalho.Bimestre</td>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Cabecalho.Usuario</td>
                     </tr>
                 </tbody>
             </table>
             <table>
                 <tbody>
                     <tr>
-                        <td width='50%' class='sem-border-top espaco-esquerda-15'>RF: @Model.RF</td>
-                        <td width='50%' class='sem-border-top espaco-esquerda-15'>DATA DE IMPRESSÃO: @Model.Data</td>
+                        <td width='50%' class='sem-border-top espaco-esquerda-15'>RF: @Model.Cabecalho.RF</td>
+                        <td width='50%' class='sem-border-top espaco-esquerda-15'>DATA DE IMPRESSÃO: @Model.Cabecalho.Data</td>
                     </tr>
                 </tbody>
             </table>
@@ -141,7 +141,7 @@
         }
     }
 
-    void MontarCelulaTurmaFechamento(bool temFechamentoConsolidado, SME.SR.Infra.RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto fechamentoConselhoClasseConsolidado)
+    void MontarCelulaTurmaFechamento(bool temFechamentoConsolidado, SME.SR.Infra.RelatorioAcompanhamentoFechamentoConselhoClasseDto fechamentoConselhoClasseConsolidado)
     {
         if (temFechamentoConsolidado)
         {
@@ -160,7 +160,7 @@
         }
     }
 
-    void MontarCelulaTurmaConselhoClasse(bool temConselhoDeClasseConsolidado, SME.SR.Infra.RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto fechamentoConselhoClasseConsolidado)
+    void MontarCelulaTurmaConselhoClasse(bool temConselhoDeClasseConsolidado, SME.SR.Infra.RelatorioAcompanhamentoFechamentoConselhoClasseDto fechamentoConselhoClasseConsolidado)
     {
         if (temConselhoDeClasseConsolidado)
         {
@@ -178,7 +178,7 @@
         }
     }
 
-    void MontarDados(SME.SR.Infra.RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto fechamentoConselhoClasseConsolidado, string bimestre, bool temBimestre)
+    void MontarDados(SME.SR.Infra.RelatorioAcompanhamentoFechamentoConselhoClasseDto fechamentoConselhoClasseConsolidado, string bimestre, bool temBimestre)
     {
         var quebra = VerificaQuebra();
         if (quebra)
@@ -346,7 +346,7 @@
             MontarCabecalho();
 
             int contadorUes = 0;
-            foreach (var ues in Model.Ues)
+            foreach (var ues in Model.Ues.OrderBy(c => c.NomeUe))
             {
                 var nomeUe = ues.NomeUe;
                 int contadorBimestres = 0;
@@ -367,7 +367,7 @@
                         <tbody>
                             @Html.Raw(MontarCabecalhoDados(contadorBimestres))
 
-                            @foreach (var fechamentoConselhoClasseConsolidado in bimestres.FechamentoConselhoClasseConsolidado)
+                            @foreach (var fechamentoConselhoClasseConsolidado in bimestres.Turmas)
                             {
                                 MontarDados(fechamentoConselhoClasseConsolidado, bimestre, temBimestre);
                             }
