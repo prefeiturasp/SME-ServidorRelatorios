@@ -49,7 +49,7 @@ namespace SME.SR.Infra
             {
                 using (IModel _channel = conexaoRabbit.CreateModel())
                 {
-                    _channel.BasicPublish(exchange, publicaFilaDto.Rota, null, body);
+                    _channel.BasicPublish(exchange, publicaFilaDto.Rota,  null, body);
                 }
             }
         }

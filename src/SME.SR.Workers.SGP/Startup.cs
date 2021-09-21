@@ -1,5 +1,3 @@
-using DinkToPdf;
-using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -10,10 +8,7 @@ using Microsoft.OpenApi.Models;
 using SME.SR.IoC;
 using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 
 namespace SME.SR.Workers.SGP
 {
@@ -38,7 +33,7 @@ namespace SME.SR.Workers.SGP
             services.AddMvc().AddControllersAsServices();
             services.AddHostedService<RabbitBackgroundListener>();
             services.AddTransient<ExcecaoMiddleware>();
-            services.RegistrarDependencias(Configuration);            
+            services.RegistrarDependencias(Configuration);
 
             services.AddDirectoryBrowser();
             services.AddPolicies();
@@ -50,7 +45,7 @@ namespace SME.SR.Workers.SGP
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        { 
+        {
 
             app.UseSwagger();
 
@@ -72,7 +67,7 @@ namespace SME.SR.Workers.SGP
 
             app.UseStaticFiles();
 
-            app.UseFileServer(enableDirectoryBrowsing: true);
+            app.UseFileServer(enableDirectoryBrowsing: false);
 
             app
                 .UseCors(x => x
