@@ -63,18 +63,24 @@ namespace SME.SR.Application
 
                     var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
                     foreach (var turmaAluno in aluno)
-                    {
                         MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()), boletimEscolarAlunoDto.Grupos);
-                    }
 
                     var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                    var frequenciasAluno = frequencia?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                    var frequenciasTurma = frequencia?.SelectMany(a => a).Where(f => f.TurmaId == turma.Codigo);
+
+                    var frequenciasAluno = frequencia?
+                        .Where(t => t.Key == aluno.First().CodigoAluno.ToString())
+                        .SelectMany(f => f);
+
+                    var frequenciasTurma = frequencia?
+                        .SelectMany(a => a)
+                        .Where(f => f.TurmaId == turma.Codigo);
 
                     if (notasAluno != null && notasAluno.Any())
                         SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno, frequenciasTurma, mediasFrequencia, conselhoClassBimestres, registroFrequencia, periodoAtual);
 
-                    var frequeciaGlobal = frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                    var frequeciaGlobal = frequenciasGlobal?
+                        .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+
                     var percentualFrequenciaGlobal = frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
                     var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
 

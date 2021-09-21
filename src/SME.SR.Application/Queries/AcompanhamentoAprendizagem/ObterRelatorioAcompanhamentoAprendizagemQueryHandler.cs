@@ -29,7 +29,7 @@ namespace SME.SR.Application
             var quantidadeAulasDadas = request.QuantidadeAulasDadas;
             var periodoId = request.PeriodoId;
 
-        var bimestres = ObterBimestresPorSemestre(filtro.Semestre);
+            var bimestres = ObterBimestresPorSemestre(filtro.Semestre);
 
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
@@ -169,30 +169,6 @@ namespace SME.SR.Application
             return frequenciasRelatorio;
         }
 
-        private List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> MontarRegistrosIndividuais(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemRegistroIndividualDto> registrosIndividuais)
-        {
-            var registrosIndividuaisRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto>();
-
-            if (registrosIndividuais == null || !registrosIndividuais.Any())
-                return registrosIndividuaisRelatorio;
-
-            var registrosIndividuaisFiltrados = registrosIndividuais.Where(r => r.AlunoCodigo == long.Parse(alunoCodigo));
-
-            if (registrosIndividuaisFiltrados == null || !registrosIndividuaisFiltrados.Any())
-                return registrosIndividuaisRelatorio;
-
-            foreach (var registro in registrosIndividuaisFiltrados.OrderByDescending(b => b.DataRegistro))
-            {
-                var registroIndividualRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto
-                {
-                    Data = registro.DataRelatorio,
-                    Descricao = registro.RegistroFormatado(),
-                };
-
-                registrosIndividuaisRelatorio.Add(registroIndividualRelatorio);
-            }
-            return registrosIndividuaisRelatorio;
-        }
         private List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto> MontarOcorrencias(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias)
         {
             var ocorrenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();

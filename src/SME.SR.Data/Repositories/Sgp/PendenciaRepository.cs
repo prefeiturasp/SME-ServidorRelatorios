@@ -242,7 +242,11 @@ namespace SME.SR.Data
 	                        t.ano_letivo as AnoLetivo,
 	                        t.modalidade_codigo as ModalidadeCodigo,
 	                        t.semestre,
-	                        t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
+                            t.nome ||
+	                            case t.ano
+		                            when '0' then ''
+		                            else ' - '|| t.ano || 'ºANO'
+	                            end as TurmaNome,
                             t.turma_id as TurmaCodigo,
 	                        a.disciplina_id::bigint as DisciplinaId,
 	                        pe.bimestre,
@@ -318,7 +322,11 @@ namespace SME.SR.Data
 	                        t.ano_letivo as AnoLetivo,
 	                        t.modalidade_codigo as ModalidadeCodigo,
 	                        t.semestre,
-	                        t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
+                            t.nome ||
+	                            case t.ano
+		                            when '0' then ''
+		                            else ' - '|| t.ano || 'ºANO'
+	                            end as TurmaNome,
                             t.turma_id as TurmaCodigo,
 	                        ftd.disciplina_id as DisciplinaId,
 	                        pe.bimestre,
@@ -394,7 +402,11 @@ namespace SME.SR.Data
 	                        t.ano_letivo as AnoLetivo,
 	                        t.modalidade_codigo as ModalidadeCodigo,
 	                        t.semestre,
-	                        t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
+                            t.nome ||
+	                            case t.ano
+		                            when '0' then ''
+		                            else ' - '|| t.ano || 'ºANO'
+	                            end as TurmaNome,
                             t.turma_id as TurmaCodigo,
 	                        pp.componente_curricular_id as DisciplinaId,
 	                        pe.bimestre,
@@ -469,7 +481,11 @@ namespace SME.SR.Data
 	                        t.ano_letivo as AnoLetivo,
 	                        t.modalidade_codigo as ModalidadeCodigo,
 	                        t.semestre,
-	                        t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
+                            t.nome ||
+	                            case t.ano
+		                            when '0' then ''
+		                            else ' - '|| t.ano || 'ºANO'
+	                            end as TurmaNome,
                             t.turma_id as TurmaCodigo,
 	                        pp.componente_curricular_id as DisciplinaId,
 	                        pe.bimestre,
@@ -550,7 +566,11 @@ namespace SME.SR.Data
                             t.ano_letivo as AnoLetivo,
                             t.modalidade_codigo as ModalidadeCodigo,
                             t.semestre,
-                            t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
+                            t.nome ||
+	                            case t.ano
+		                            when '0' then ''
+		                            else ' - '|| t.ano || 'ºANO'
+	                            end as TurmaNome,
                             t.turma_id as TurmaCodigo,
                             0 as DisciplinaId,
                             0 as bimestre,
@@ -613,7 +633,11 @@ namespace SME.SR.Data
                             t.ano_letivo as AnoLetivo,
                             t.modalidade_codigo as ModalidadeCodigo,
                             t.semestre,
-                            t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
+                            t.nome ||
+	                            case t.ano
+		                            when '0' then ''
+		                            else ' - '|| t.ano || 'ºANO'
+	                            end as TurmaNome,
                             t.turma_id as TurmaCodigo,
                             0 as DisciplinaId,
                             0 as bimestre,
@@ -679,7 +703,11 @@ namespace SME.SR.Data
                             t.ano_letivo as AnoLetivo,
                             t.modalidade_codigo as ModalidadeCodigo,
                             t.semestre,
-                            t.nome || ' - ' || t.ano || 'ºANO' as TurmaNome,
+                            t.nome ||
+	                            case t.ano
+		                            when '0' then ''
+		                            else ' - '|| t.ano || 'ºANO'
+	                            end as TurmaNome,
                             t.turma_id as TurmaCodigo,
                             0 as DisciplinaId,
                             0 as bimestre,

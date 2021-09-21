@@ -27,7 +27,6 @@ namespace SME.SR.Data
                           where not c.excluido 
                             and t.turma_id = ANY(@turmasCodigo) ");
 
-
             var parametros = new { turmasCodigo };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);

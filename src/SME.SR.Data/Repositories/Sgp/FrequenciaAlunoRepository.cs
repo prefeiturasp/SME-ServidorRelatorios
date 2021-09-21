@@ -399,5 +399,27 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<FrequenciaAluno>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<string>> ObterAlunosComRegistroFrequenciaPorTurmaBimestre(string turmaCodigo, int bimestre)
+        {
+            var query = @"select distinct rfa.codigo_aluno as AlunoCodigo
+                          from aula a
+                         inner join registro_frequencia rf on 
+ 	                        rf.aula_id = a.id
+ 	                        and not rf.excluido 
+                         inner join registro_frequencia_aluno rfa on 
+ 	                        rfa.registro_frequencia_id = rf.id
+ 	                        and not rfa.excluido 
+                         inner join periodo_escolar pe on 
+ 	                        pe.tipo_calendario_id = a.tipo_calendario_id 
+	                        and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
+                         where not a.excluido 
+                           and a.turma_id = @turmaCodigo
+                           and pe.bimestre = @bimestre";
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<string>(query, new { turmaCodigo, bimestre });
+            }
+        }
     }
 }

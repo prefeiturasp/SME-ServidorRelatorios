@@ -16,13 +16,14 @@ namespace SME.SR.Infra
             this.DataSituacaoAluno = aluno.DataSituacaoAluno;
         }
 
+        public bool Ativo
+            => new[] { SituacaoMatriculaAluno.Ativo,
+                       SituacaoMatriculaAluno.PendenteRematricula,
+                       SituacaoMatriculaAluno.Rematriculado,
+                       SituacaoMatriculaAluno.SemContinuidade,
+                       SituacaoMatriculaAluno.Concluido }.Contains(this.CodigoSituacaoMatricula);
+
         public bool Inativo
-        {
-            get => !(new[] { SituacaoMatriculaAluno.Ativo,
-                                               SituacaoMatriculaAluno.PendenteRematricula,
-                                               SituacaoMatriculaAluno.Rematriculado,
-                                               SituacaoMatriculaAluno.SemContinuidade,
-                                               SituacaoMatriculaAluno.Concluido }.Contains(this.CodigoSituacaoMatricula));
-        }
+            => !Ativo;
     }
 }
