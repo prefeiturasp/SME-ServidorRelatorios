@@ -25,7 +25,6 @@ namespace SME.SR.Application
 
             foreach(var ue in request.ConsolidadoFechamento.GroupBy(u => u.NomeUe).OrderBy(x => x.Key))
             {
-                //relatorio.Ues  .NomeUe = await ObterNomeUe(ue.FirstOrDefault().UeCodigo);
                 relatorio.Ues.Add(await MapearParaUe(ue, request.ConsolidadoConselhosClasse));                
             };
 
@@ -86,7 +85,7 @@ namespace SME.SR.Application
             var UeFechamento = new RelatorioAcompanhamentoFechamentoUesDto();
             UeFechamento.NomeUe = await ObterNomeUe(fechamentoTurma.FirstOrDefault().UeCodigo);
 
-            foreach (var bimestre in fechamentoTurma.GroupBy(c => c.Bimestre).OrderBy(d => d.Key))            
+            foreach (var bimestre in fechamentoTurma.GroupBy(c => c.Bimestre).OrderBy(d => d.Key == 0).ThenBy(d => d.Key))            
                 UeFechamento.Bimestres.Add(await MapearParaBimestre(bimestre, conselhosClasseTurma));
 
             return UeFechamento;
@@ -117,7 +116,7 @@ namespace SME.SR.Application
             turma.FechamentoConsolidado.ProcessadoComPendencia = fechamentoTurma.ProcessadoComPendencia;
             turma.FechamentoConsolidado.ProcessadoComSucesso = fechamentoTurma.ProcessadoComSucesso;
 
-            var conselhoClasseFiltrado = conselhosClasseTurma?.FirstOrDefault(c => c.TurmaCodigo == fechamentoTurma.TurmaCodigo);
+            var conselhoClasseFiltrado = conselhosClasseTurma?.FirstOrDefault(c => c.TurmaCodigo == fechamentoTurma.TurmaCodigo && c.Bimestre == fechamentoTurma.Bimestre);
             turma.ConselhoDeClasseConsolidado.NaoIniciado = conselhoClasseFiltrado != null ? conselhoClasseFiltrado.NaoIniciado : 0;
             turma.ConselhoDeClasseConsolidado.EmAndamento = conselhoClasseFiltrado != null ? conselhoClasseFiltrado.EmAndamento: 0;
             turma.ConselhoDeClasseConsolidado.Concluido = conselhoClasseFiltrado != null ? conselhoClasseFiltrado.Concluido : 0;
