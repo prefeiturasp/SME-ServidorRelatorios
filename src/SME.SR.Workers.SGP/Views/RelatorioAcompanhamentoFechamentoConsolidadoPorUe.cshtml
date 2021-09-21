@@ -346,7 +346,7 @@
             MontarCabecalho();
 
             int contadorUes = 0;
-            foreach (var ues in Model.Ues)
+            foreach (var ues in Model.Ues.OrderBy(c => c.NomeUe))
             {
                 var nomeUe = ues.NomeUe;
                 int contadorBimestres = 0;

@@ -27,7 +27,7 @@ namespace SME.SR.Application
             {
                 relatorio.Ues.Add(await MapearParaUe(ue, request.ConsolidadoConselhosClasse));                
             };
-
+            
             return await Task.FromResult(relatorio);
         }
 
@@ -87,7 +87,7 @@ namespace SME.SR.Application
 
             foreach (var bimestre in fechamentoTurma.GroupBy(c => c.Bimestre).OrderBy(d => d.Key == 0).ThenBy(d => d.Key))            
                 UeFechamento.Bimestres.Add(await MapearParaBimestre(bimestre, conselhosClasseTurma));
-
+            
             return UeFechamento;
         }
 
