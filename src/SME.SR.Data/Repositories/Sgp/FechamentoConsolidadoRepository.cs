@@ -3,7 +3,6 @@ using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -60,7 +59,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             query.AppendLine(@" and not cfct.excluido
                                 group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cfct.bimestre, t.modalidade_codigo
-                                order by cfct.bimestre, t.nome; ");
+                                order by u.nome, t.nome, cfct.bimestre; ");
 
             var parametros = new
             {
@@ -72,18 +71,7 @@ namespace SME.SR.Data.Repositories.Sgp
             };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-            try
-            {
-
-                return await conexao.QueryAsync<FechamentoConsolidadoTurmaDto>(query.ToString(), parametros);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-
+            return await conexao.QueryAsync<FechamentoConsolidadoTurmaDto>(query.ToString(), parametros);
         }
     }
 }

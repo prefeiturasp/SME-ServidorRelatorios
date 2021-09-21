@@ -48,42 +48,35 @@ namespace SME.SR.Application
         }
 
         private async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentosConsolidadoTodasUe(string dreCodigo,int modalidadeId,int[] bimestres,SituacaoFechamento? situacao,int anoLetivo)
-        {
-            return await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(dreCodigo, modalidadeId, anoLetivo, bimestres, situacao));
-        }
+            => await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(dreCodigo, modalidadeId, anoLetivo, bimestres, situacao));
+        
+       
         private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoTodasUe(string dreCodigo, int modalidadeId, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo)
-        {
-            return await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(dreCodigo, modalidadeId,bimestres,situacao,anoLetivo));
-        }
+            => await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(dreCodigo, modalidadeId, bimestres, situacao, anoLetivo));
+
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
-        {
-            return await mediator.Send(new ObterDrePorCodigoQuery()
-            {
-                DreCodigo = dreCodigo
-            });
-        }
+            => await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));        
 
         private async Task<Ue> ObterUePorCodigo(string ueCodigo)
-        {
-            return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
-        }
-        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, string dreCodigo)
-        {
-            return await mediator.Send(new ObterTurmasRelatorioAcompanhamentoFechamentoQuery()
-            {
-                CodigosTurma = turmasCodigo,
-                CodigoUe = ueCodigo,
-                Modalidade = modalidade,
-                AnoLetivo = anoLetivo,
-                Semestre = semestre,
-                Usuario = usuario,
-                ConsideraHistorico = consideraHistorico,
-                SituacaoConselhoClasse = situacaoConselhoClasse,
-                SituacaoFechamento = situacaoFechamento,
-                Bimestres = bimestres,
-                CodigoDre = dreCodigo
-            });
-        }
+            => await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
+
+        //private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, string dreCodigo)
+        //{
+        //    return await mediator.Send(new ObterTurmasRelatorioAcompanhamentoFechamentoQuery()
+        //    {
+        //        CodigosTurma = turmasCodigo,
+        //        CodigoUe = ueCodigo,
+        //        Modalidade = modalidade,
+        //        AnoLetivo = anoLetivo,
+        //        Semestre = semestre,
+        //        Usuario = usuario,
+        //        ConsideraHistorico = consideraHistorico,
+        //        SituacaoConselhoClasse = situacaoConselhoClasse,
+        //        SituacaoFechamento = situacaoFechamento,
+        //        Bimestres = bimestres,
+        //        CodigoDre = dreCodigo
+        //    });
+        //}
 
     }
 }

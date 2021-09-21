@@ -20,126 +20,30 @@ namespace SME.SR.Application
         public async Task<RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto> Handle(MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery request, CancellationToken cancellationToken)
         {
             var relatorio = new RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto();
-            MontarCabecalho(relatorio, request.Dre, request.Ue, request.Bimestres, request.Usuario);
-            if (request.Bimestres == null || !request.Bimestres.Any())
+            var relatorioUe = new RelatorioAcompanhamentoFechamentoUesDto();
+            relatorio.Cabecalho = MontarCabecalho(request.Dre, request.Ue, request.Bimestres, request.Usuario);
+
+            foreach(var ue in request.ConsolidadoFechamento.GroupBy(u => u.NomeUe).OrderBy(x => x.Key))
             {
-                var bimestresFechamento = request.ConsolidadoFechamento.Select(f => f.Bimestre);
-                var bimestresConselho = request.ConsolidadoConselhosClasse.Select(f => f.Bimestre);
+                //relatorio.Ues  .NomeUe = await ObterNomeUe(ue.FirstOrDefault().UeCodigo);
+                relatorio.Ues.Add(await MapearParaUe(ue, request.ConsolidadoConselhosClasse));                
+            };
 
-                var bimestres = new List<int>();
-                bimestres.AddRange(bimestresFechamento);
-                bimestres.AddRange(bimestresConselho);
-
-                bimestres = bimestres.Distinct().OrderBy(b => b == 0).ThenBy(b => b).ToList();
-
-                request.Bimestres = bimestres.ToArray();
-            }
-            else
-                request.Bimestres = request.Bimestres.OrderBy(b => b == 0).ThenBy(b => b).ToArray();
-
-
-            foreach (var bimestre in request.Bimestres)
-            {
-                var listaConsolidadoFechamento = request.ConsolidadoFechamento.GroupBy(x => x.UeCodigo).ToList();
-                var listaConsolidadoConselhoClasse = request.ConsolidadoConselhosClasse.GroupBy(x => x.UeCodigo).ToList();
-                foreach (var fechamento in listaConsolidadoFechamento)
-                {
-                    var agrupadoPorBimestre = fechamento.GroupBy(x =>x.Bimestre);
-                    foreach (var agrupado in agrupadoPorBimestre)
-                    {
-                        var agrupadoPorTurma = agrupado.GroupBy(x => x.TurmaCodigo);
-                        agrupadoPorTurma.
-                    }
-                }
-                var nomeUe = await ObterNomeUe(ue.Key);
-                var uesRelatorio = new RelatorioAcompanhamentoFechamentoConsolidadoUesDto(nomeUe);
-                var bimestreAgrupado = ue.GroupBy(x => x.Bimestre);
-                foreach (var bimestre in bimestreAgrupado)
-                {
-                    var nomeBimestre = bimestre.FirstOrDefault().Bimestre == 0 ?
-                                       "FINAL"
-                                       :
-                                       $"{bimestre.FirstOrDefault().Bimestre}º BIMESTRE";
-
-                    var fechamentos = request.ConsolidadoFechamento.Where(f => f.Bimestre == bimestre).GroupBy(x => x.NomeUe);
-                    var conselhos = request.ConsolidadoConselhosClasse.Where(f => f.Bimestre == bimestre).GroupBy(x => x.NomeUe);
-                    var bimestres = new RelatorioAcompanhamentoFechamentoConsolidadoBimestresDto(nomeBimestre, ltsUes.TurmaCodigo);
-
-                    foreach (var fechamento in fechamentos)
-                    {
-                        foreach (var fech in fechamento)
-                        {
-                            var fechamentoCon = new RelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoDto(fech.NomeTurmaFormatado);
-                            var fechamentoConsolidado = new RelatorioAcompanhamentoFechamentoConsolidadoDto
-                            {
-                                NaoIniciado = fech.NaoIniciado,
-                                ProcessadoComPendencia = fech.ProcessadoComPendencia,
-                                ProcessadoComSucesso = fech.ProcessadoComPendencia
-                            };
-                            fechamentoCon.FechamentoConsolidado = fechamentoConsolidado;
-                            foreach (var conselho in conselhos)
-                            {
-                                foreach (var cons in conselho)
-                                {
-                                    var conselhoClasseConsolidado = new RelatorioAcompanhamentoConselhoClasseConsolidadoDto
-                                    {
-                                        NaoIniciado = cons.NaoIniciado,
-                                        EmAndamento = cons.EmAndamento,
-                                        Concluido = cons.Concluido
-                                    };
-                                    fechamentoCon.ConselhoDeClasseConsolidado = conselhoClasseConsolidado;
-                                }
-                            }
-                            bimestres.FechamentoConselhoClasseConsolidado.Add(fechamentoCon);
-                        }
-                    }
-                    if (bimestres?.FechamentoConselhoClasseConsolidado.Count() > 0)
-                        uesRelatorio.Bimestres.Add(bimestres);
-                }
-
-
-                if (uesRelatorio?.Bimestres?.Count() > 0)
-                    relatorio.Ues.Add(uesRelatorio);
-            }
             return await Task.FromResult(relatorio);
-
-
         }
 
         private async Task<string> ObterNomeUe(string ueCodigo)
         {
             var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
+            if (ue == null)
+                return string.Empty;
 
             return ue.TituloTipoEscolaNome;
-        }
+        }       
 
-        private static IEnumerable<FechamentoConsolidadoTurmaDto> MaperarUePorTurma(MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery request)
+        private RelatorioAcompanhamentoFechamentoCabecalhoDto MontarCabecalho(Dre dre, Ue ue, int[] bimestres, Usuario usuario)
         {
-            var dto = new List<FechamentoConsolidadoTurmaDto>();
-            var retornoDto = new List<FechamentoConsolidadoTurmaDto>();
-
-            //foreach (var bimestre in request.Bimestres)
-            //{
-            //    var ues = request.ConsolidadoFechamento?.Where(x => x.TurmaCodigo == turma.Codigo && x.Bimestre == bimestre);
-            //    foreach (var ue in ues)
-            //    {
-            //        dto.Add(ue);
-            //    }
-            //}
-
-            //foreach (var agrupado in dto.GroupBy(x => x.Bimestre).ToList())
-            //{
-            //    var listaAgrupada = agrupado.ToArray();
-            //    foreach (var ltsAgrupado in listaAgrupada)
-            //    {
-            //        retornoDto.Add(ltsAgrupado);
-            //    }
-            //}
-            return retornoDto;
-        }
-
-        private void MontarCabecalho(RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto relatorio, Dre dre, Ue ue, int[] bimestres, Usuario usuario)
-        {
+            var cabecalho = new RelatorioAcompanhamentoFechamentoCabecalhoDto();
             string turma = "TODAS";
             string bimestre = "TODOS";
 
@@ -167,13 +71,58 @@ namespace SME.SR.Application
                     bimestre = string.Join(", ", bimestres.Select(b => $"{b}º").OrderBy(b => b));
             }
 
-            relatorio.Bimestre = bimestre;
-            relatorio.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            relatorio.DreNome = dre != null ? dre.Abreviacao : "TODAS";
-            relatorio.UeNome = ue != null ? ue.NomeRelatorio : "TODAS";
-            relatorio.Turma = turma;
-            relatorio.Usuario = usuario.Nome;
-            relatorio.RF = usuario.CodigoRf;
+            cabecalho.Bimestre = bimestre;            
+            cabecalho.DreNome = dre != null ? dre.Abreviacao : "TODAS";
+            cabecalho.UeNome = ue != null ? ue.NomeRelatorio : "TODAS";
+            cabecalho.Turma = turma;
+            cabecalho.Usuario = usuario.Nome;
+            cabecalho.RF = usuario.CodigoRf;
+
+            return cabecalho;
+        }
+
+        private async Task<RelatorioAcompanhamentoFechamentoUesDto> MapearParaUe(IGrouping<string, FechamentoConsolidadoTurmaDto> fechamentoTurma, IEnumerable<ConselhoClasseConsolidadoTurmaDto> conselhosClasseTurma)
+        {
+            var UeFechamento = new RelatorioAcompanhamentoFechamentoUesDto();
+            UeFechamento.NomeUe = await ObterNomeUe(fechamentoTurma.FirstOrDefault().UeCodigo);
+
+            foreach (var bimestre in fechamentoTurma.GroupBy(c => c.Bimestre).OrderBy(d => d.Key))            
+                UeFechamento.Bimestres.Add(await MapearParaBimestre(bimestre, conselhosClasseTurma));
+
+            return UeFechamento;
+        }
+
+
+        private async Task<RelatorioAcompanhamentoFechamentoBimestresDto> MapearParaBimestre(IGrouping<int, FechamentoConsolidadoTurmaDto> fechamentoTurma, IEnumerable<ConselhoClasseConsolidadoTurmaDto> conselhosClasseTurma)
+        {
+            var bimestreFechamento = new RelatorioAcompanhamentoFechamentoBimestresDto();
+
+            bimestreFechamento.Bimestre = fechamentoTurma.FirstOrDefault().Bimestre == 0 ?
+                                                 $"Bimestre Final"
+                                                 :
+                                                 $"{fechamentoTurma.FirstOrDefault().Bimestre}º Bimestre";
+
+            foreach (var turmaFechamento in fechamentoTurma.OrderBy(t => t.NomeTurma))
+                bimestreFechamento.Turmas.Add(MapearParaTurma(turmaFechamento, conselhosClasseTurma));
+
+            return await Task.FromResult(bimestreFechamento);
+        }
+
+        private RelatorioAcompanhamentoFechamentoConselhoClasseDto MapearParaTurma(FechamentoConsolidadoTurmaDto fechamentoTurma, IEnumerable<ConselhoClasseConsolidadoTurmaDto> conselhosClasseTurma)
+        {
+            var turma = new RelatorioAcompanhamentoFechamentoConselhoClasseDto();
+            turma.NomeTurma = fechamentoTurma.NomeTurmaFormatado;
+
+            turma.FechamentoConsolidado.NaoIniciado = fechamentoTurma.NaoIniciado;
+            turma.FechamentoConsolidado.ProcessadoComPendencia = fechamentoTurma.ProcessadoComPendencia;
+            turma.FechamentoConsolidado.ProcessadoComSucesso = fechamentoTurma.ProcessadoComSucesso;
+
+            var conselhoClasseFiltrado = conselhosClasseTurma?.FirstOrDefault(c => c.TurmaCodigo == fechamentoTurma.TurmaCodigo);
+            turma.ConselhoDeClasseConsolidado.NaoIniciado = conselhoClasseFiltrado != null ? conselhoClasseFiltrado.NaoIniciado : 0;
+            turma.ConselhoDeClasseConsolidado.EmAndamento = conselhoClasseFiltrado != null ? conselhoClasseFiltrado.EmAndamento: 0;
+            turma.ConselhoDeClasseConsolidado.Concluido = conselhoClasseFiltrado != null ? conselhoClasseFiltrado.Concluido : 0;
+
+            return turma;
         }
     }
 }
