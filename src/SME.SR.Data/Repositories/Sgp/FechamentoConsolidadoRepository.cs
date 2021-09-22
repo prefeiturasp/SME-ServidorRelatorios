@@ -31,7 +31,7 @@ namespace SME.SR.Data.Repositories.Sgp
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string dreCodigo, int modalidade, int[] bimestres, SituacaoFechamento? situacao, int anoLetivo)
+        public async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentoConsolidadoPorTurmasTodasUe(string dreCodigo, int modalidade, int[] bimestres, SituacaoFechamento? situacao, int anoLetivo, int semestre)
         {
             var query = new StringBuilder(@"select
                                             u.ue_id as UeCodigo,
@@ -54,6 +54,9 @@ namespace SME.SR.Data.Repositories.Sgp
             if (bimestres != null)
                 query.AppendLine(" and cfct.bimestre = ANY(@bimestres) ");
 
+            if(semestre > 0)
+                query.AppendLine(" and t.semestre = @semestre ");
+
             if (situacao != null)
                 query.AppendLine(" and cfct.status = @situacao ");
 
@@ -65,6 +68,7 @@ namespace SME.SR.Data.Repositories.Sgp
             {
                 dreCodigo,
                 modalidade,
+                semestre,
                 bimestres,
                 situacao,
                 anoLetivo

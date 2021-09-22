@@ -33,7 +33,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string dreCodigo, int modalidade, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string dreCodigo, int modalidade, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo, int semestre)
         {
             var query = new StringBuilder(@"select
                                             u.ue_id as UeCodigo,
@@ -60,13 +60,16 @@ namespace SME.SR.Data
             if (bimestres != null)
                 query.AppendLine(" and cccat.bimestre = ANY(@bimestres) ");
 
+            if(semestre > 0)
+                query.AppendLine(" and t.semestre = @semestre ");
+
             if (situacao != null)
                 query.AppendLine(" and cccat.status = @situacao ");
 
             query.AppendLine(@" group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cccat.bimestre, t.modalidade_codigo
-                                            order by u.nome, t.nome, cccat.bimestre;");
+                                order by u.nome, t.nome, cccat.bimestre;");
 
-            var parametros = new { dreCodigo, modalidade, bimestres, situacao, anoLetivo };
+            var parametros = new { dreCodigo, modalidade, bimestres, situacao, anoLetivo, semestre };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
