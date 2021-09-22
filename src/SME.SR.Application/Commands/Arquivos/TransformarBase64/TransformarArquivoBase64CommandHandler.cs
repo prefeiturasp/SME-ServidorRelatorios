@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<string> Handle(TransformarArquivoBase64Command request, CancellationToken cancellationToken)
         {
-            var diretorio = Path.Combine(variaveisAmbiente.PastaArquivosSGP ?? string.Empty,  $@"Arquivos\{request.Arquivo.Tipo}");
+            var diretorio = Path.Combine(variaveisAmbiente.PastaArquivosSGP ?? string.Empty,  $@"Arquivos/{request.Arquivo.Tipo}");
 
             if (!Directory.Exists(diretorio))
                 Directory.CreateDirectory(diretorio);
