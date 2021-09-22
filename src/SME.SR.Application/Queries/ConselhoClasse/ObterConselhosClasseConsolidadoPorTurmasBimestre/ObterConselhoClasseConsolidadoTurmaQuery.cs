@@ -11,13 +11,15 @@ namespace SME.SR.Application
         public int[] Bimestres { get; set; }
         public SituacaoConselhoClasse? SituacaoConselhoClasse { get; set; }
         public int AnoLetivo { get; set; }
-        public ObterConselhoClasseConsolidadoTurmaQuery(string dreCodigo, int modalidadeCodigo, int[] bimestres, SituacaoConselhoClasse? situacaoConselhoClasse, int anoLetivo)
+        public int Semestre { get; set; }
+        public ObterConselhoClasseConsolidadoTurmaQuery(string dreCodigo, int modalidadeCodigo, int[] bimestres, SituacaoConselhoClasse? situacaoConselhoClasse, int anoLetivo, int semestre = 0)
         {
             DreCodigo = dreCodigo;
             ModalidadeCodigo = modalidadeCodigo;
             Bimestres = bimestres;
             SituacaoConselhoClasse = situacaoConselhoClasse;
             AnoLetivo = anoLetivo;
+            Semestre = semestre;
         }
     }
 }
