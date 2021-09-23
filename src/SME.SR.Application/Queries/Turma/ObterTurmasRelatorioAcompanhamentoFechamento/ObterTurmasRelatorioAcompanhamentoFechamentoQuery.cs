@@ -10,6 +10,7 @@ namespace SME.SR.Application
         public string[] CodigosTurma { get; set; }
 
         public string CodigoUe { get; set; }
+        public string CodigoDre { get; set; }
 
         public Modalidade Modalidade { get; set; }
 
