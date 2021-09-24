@@ -9,7 +9,6 @@ namespace SME.SR.Infra
             Fotos = new List<RelatorioAcompanhamentoAprendizagemAlunoFotoDto>();
             Frequencias = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
             Ocorrencias = new List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto>();
-            PercursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
         }
         public string Nome { get; set; }
         public string DataNascimento { get; set; }
@@ -25,7 +24,6 @@ namespace SME.SR.Infra
         public List<RelatorioAcompanhamentoAprendizagemAlunoRegistroIndividualDto> RegistrosIndividuais { get; set; }
         public List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> Frequencias { get; set; }
         public List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto> Ocorrencias { get; set; }
-        public List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> PercursoTurmaImagens { get; set; }
         public string Situacao { get; set; }
     }
 }

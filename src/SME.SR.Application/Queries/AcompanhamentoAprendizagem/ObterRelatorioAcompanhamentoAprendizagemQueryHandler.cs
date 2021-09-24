@@ -67,31 +67,7 @@ namespace SME.SR.Application
             var acompanhamento = acompanhamentoTurma.Count() > 0 ? acompanhamentoTurma?.First() : null;
             var quantidadeImagensParam = await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(ano, TipoParametroSistema.QuantidadeImagensPercursoTurma));
             var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado(int.Parse(quantidadeImagensParam)) ?? "") : "";
-
-            List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> percursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
-
-            if (acompanhamento != null && acompanhamento.PercursoTurmaImagens.Count > 0)
-            {
-                foreach (var imagem in acompanhamento.PercursoTurmaImagens)
-                {
-                    var arr = imagem.Imagem.Split("/");
-                    var codigo = arr[arr.Length - 1];
-                    codigo = codigo.Split(".")[0];
-                    var arquivo = await mediator.Send(new ObterArquivoPorCodigoQuery(Guid.Parse(codigo)));
-
-                    var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(arquivo));
-                    if (!String.IsNullOrEmpty(fotoBase64))
-                    {
-                        percursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
-                        {
-                            NomeImagem = imagem.NomeImagem,
-                            Imagem = fotoBase64
-                        });
-                    }
-
-                }
-            }
-
+            
             foreach (var alunoEol in alunosEol)
             {
                 AcompanhamentoAprendizagemAlunoDto acompanhamentoAluno = null;
@@ -113,8 +89,7 @@ namespace SME.SR.Application
                     Telefone = alunoEol.ResponsavelCelularFormatado(),
                     RegistroPercursoTurma = percursoFormatado,
                     Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "",
-                    PercursoIndividual = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoIndividualFormatado() ?? "") : "",
-                    PercursoTurmaImagens = percursoTurmaImagens
+                    PercursoIndividual = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoIndividualFormatado() ?? "") : ""
                 };
 
 
