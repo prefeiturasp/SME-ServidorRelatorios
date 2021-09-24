@@ -454,24 +454,8 @@
                 var textParaExibir = registroPercursoTurma.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
                 iContadorCaracteres += textParaExibir.Length;
 
-                if (Model.PercursoTurmaImagens.Any() && textParaExibir.Contains("|imagem")) {
-                    var textoPercursoFormatado = "<span>";
-                    foreach (var arquivo in Model.PercursoTurmaImagens)
-                    {
-                        if (textParaExibir.Contains($"|{arquivo.NomeImagem}|"))
-                        {
-                            textoPercursoFormatado += textParaExibir.Replace($"|{arquivo.NomeImagem}|", $@"</span>
-                                                         <div style='text-align: center;'>
-                                                              <img style='margin:3px; max-width: 257px;' src='{arquivo.Imagem}' height='180px' />
-                                                         </div><span>");
-                            contadorQuebrarPagina += 9;
-                        }
-                    }
-                    textoPercursoFormatado += "</span>";
-                    @Html.Raw(textoPercursoFormatado);
-                } else {
-                    <span>@Html.Raw(textParaExibir)</span>
-                }
+                <span>@Html.Raw(textParaExibir)</span>
+           
                 contadorQuebrarPagina++;
             }
 
