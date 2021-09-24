@@ -35,7 +35,7 @@ namespace SME.SR.Workers.SGP
             services.AddTransient<ExcecaoMiddleware>();
             services.RegistrarDependencias(Configuration);
 
-            services.AddDirectoryBrowser();
+            //services.AddDirectoryBrowser();
             services.AddPolicies();
 
             services.AddSwaggerGen(c =>
