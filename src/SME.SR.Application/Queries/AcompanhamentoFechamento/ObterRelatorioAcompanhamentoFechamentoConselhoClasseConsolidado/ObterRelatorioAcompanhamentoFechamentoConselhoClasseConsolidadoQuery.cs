@@ -41,6 +41,8 @@ namespace SME.SR.Application
         public SituacaoConselhoClasse? SituacaoConselhoClasse { get; set; }
         public bool ListarPendencias { get; set; }
         public Usuario Usuario { get; set; }
+        public bool ExibirHistorico { get; set; }
+
 
         private string TodosParaNull(string filtro)
         {

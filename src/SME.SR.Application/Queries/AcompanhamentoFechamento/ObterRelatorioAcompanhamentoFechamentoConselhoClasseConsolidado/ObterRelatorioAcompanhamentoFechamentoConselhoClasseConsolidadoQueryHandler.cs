@@ -37,8 +37,8 @@ namespace SME.SR.Application
 
             int[] bimestres = request.Bimestres?.ToArray();
 
-            var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(request.DreCodigo, (int)request.Modalidade, bimestres, request.SituacaoFechamento, request.AnoLetivo, request.Semestre);
-            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(request.DreCodigo, (int)request.Modalidade, bimestres, request.SituacaoConselhoClasse, request.AnoLetivo, request.Semestre);
+            var consolidadoFechamento = await ObterFechamentosConsolidadoTodasUe(request.DreCodigo, (int)request.Modalidade, bimestres, request.SituacaoFechamento, request.AnoLetivo, request.Semestre, request.ExibirHistorico);
+            var consolidadoConselhosClasse = await ObterConselhosClasseConsolidadoTodasUe(request.DreCodigo, (int)request.Modalidade, bimestres, request.SituacaoConselhoClasse, request.AnoLetivo, request.Semestre, request.ExibirHistorico);
 
             if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
                (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
@@ -47,12 +47,12 @@ namespace SME.SR.Application
             return await mediator.Send(new MontasRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery(dre, ue, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.TurmasCodigo?.ToArray(), request.Usuario));
         }
 
-        private async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentosConsolidadoTodasUe(string dreCodigo, int modalidadeId, int[] bimestres, SituacaoFechamento? situacao, int anoLetivo, int semestre)
-            => await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(dreCodigo, modalidadeId, anoLetivo, bimestres, situacao, semestre));
+        private async Task<IEnumerable<FechamentoConsolidadoTurmaDto>> ObterFechamentosConsolidadoTodasUe(string dreCodigo, int modalidadeId, int[] bimestres, SituacaoFechamento? situacao, int anoLetivo, int semestre, bool exibirHistorico)
+            => await mediator.Send(new ObterFechamentoConsolidadoTurmaQuery(dreCodigo, modalidadeId, anoLetivo, bimestres, situacao, semestre, exibirHistorico));
 
 
-        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoTodasUe(string dreCodigo, int modalidadeId, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo, int semestre)
-            => await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(dreCodigo, modalidadeId, bimestres, situacao, anoLetivo, semestre));
+        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoTodasUe(string dreCodigo, int modalidadeId, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo, int semestre, bool exibirHistorico)
+            => await mediator.Send(new ObterConselhoClasseConsolidadoTurmaQuery(dreCodigo, modalidadeId, bimestres, situacao, anoLetivo, semestre, exibirHistorico));
 
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
             => await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
