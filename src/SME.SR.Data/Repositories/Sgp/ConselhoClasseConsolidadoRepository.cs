@@ -33,7 +33,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaAlunoDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string dreCodigo, int modalidade, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo, int semestre)
+        public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string dreCodigo, int modalidade, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo, int semestre, bool exibirHistorico)
         {
             var query = new StringBuilder(@"select
                                             u.ue_id as UeCodigo,
@@ -65,6 +65,9 @@ namespace SME.SR.Data
 
             if (situacao != null)
                 query.AppendLine(" and cccat.status = @situacao ");
+
+            if (!exibirHistorico)
+                query.AppendLine(" and not t.historica ");
 
             query.AppendLine(@" group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cccat.bimestre, t.modalidade_codigo
                                 order by u.nome, t.nome, cccat.bimestre;");
