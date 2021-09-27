@@ -67,7 +67,7 @@ namespace SME.SR.Infra
                     registroFormatado = registroFormatado.Replace(imagem.ToString(), $"");
                 }                               
             }
-            return UtilRegex.RemoverTagsHtml(registroFormatado);
+            return registroFormatado;
         }
     }
 }

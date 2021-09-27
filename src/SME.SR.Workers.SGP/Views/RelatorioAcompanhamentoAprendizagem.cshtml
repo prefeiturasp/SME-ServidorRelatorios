@@ -390,52 +390,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
         return "";
     }
 
-    string MontarImagensAnexas(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno, int minimoImpressaoFotos, int maximoImpressaoFotos, bool imprimirTitulo)
-    {
-        if (imprimirTitulo)
-        {
-            MontarTitulo("IMAGENS ANEXAS");
-        }
-
-        <table class='tabela-alunos sem-border-bottom'>
-            <tbody>
-                <tr>
-                    @for (int i = minimoImpressaoFotos; i < maximoImpressaoFotos; i++)
-                    {
-                        @if (aluno.PercursoTurmaImagens.ElementAtOrDefault(i) != null)
-                        {
-                            <td width="33%" class='centralizar'>
-                                <img style="margin:3px; max-width: 257px;" src="@aluno.PercursoTurmaImagens[i].Imagem" height="180px" />
-                            </td>
-                        }
-                        else
-                        {
-                            <td width="33%" class='centralizar'>
-                            </td>
-                        }
-                    }
-                </tr>
-                <tr>
-                    @for (int i = minimoImpressaoFotos; i < maximoImpressaoFotos; i++)
-                    {
-                        @if (aluno.PercursoTurmaImagens.ElementAtOrDefault(i) != null)
-                        {
-                            <td width="33%" class='centralizar'>
-                                @aluno.PercursoTurmaImagens[i].NomeImagem
-                            </td>
-                        }
-                        else
-                        {
-                            <td width="33%" class='centralizar'>
-                            </td>
-                        }
-                    }
-                </tr>
-            </tbody>
-        </table>
-
-        return "";
-    }
+    
 
     string MontarRegistroPercursoCabecalho()
     {        
@@ -685,44 +640,7 @@ PROFESSORES: {Model.Cabecalho.Professores}
                     MontarRegistroPercursoNovo(registroPercursoTurma, aluno.Nome);
                 }
 
-                @if (aluno.PercursoTurmaImagens.Any())
-                {
-                    int numeroMaximoFotos = 3;
-                    int maximoFotos = aluno.PercursoTurmaImagens.Count;
-                    int minimoImpressaoFotos = 0;
-                    int maximoImpressaoFotos = 3;
-                    int numeroLinhas = maximoFotos / numeroMaximoFotos;
-                    int restoLinhas = maximoFotos / numeroMaximoFotos;
-                    int pararImpressao = 1;
-
-                    if (maximoFotos > 3 && restoLinhas != 0)
-                    {
-                        pararImpressao = numeroLinhas + 1;
-                    }
-
-                    int contarImpressao = 0;
-                    while (contarImpressao < pararImpressao)
-                    {
-                        QuebrarLinhas(9, aluno.Nome);
-
-                        if (!quebrou)
-                        {
-                            contadorQuebrarPagina = contadorQuebrarPagina + 9;
-                        }
-
-                        bool imprimirTitulo = true;
-                        if (maximoFotos > 3 && restoLinhas != 0 && contarImpressao != 0)
-                        {
-                            minimoImpressaoFotos = 3 * numeroLinhas;
-                            maximoImpressaoFotos = 6 + (3 * (numeroLinhas - 1));
-                            imprimirTitulo = false;
-                        }
-
-                        MontarImagensAnexas(aluno, minimoImpressaoFotos, maximoImpressaoFotos, imprimirTitulo);
-
-                        contarImpressao++;
-                    }
-                }
+                
 
                 if (aluno.Frequencias.Count() > 0)
                 {
