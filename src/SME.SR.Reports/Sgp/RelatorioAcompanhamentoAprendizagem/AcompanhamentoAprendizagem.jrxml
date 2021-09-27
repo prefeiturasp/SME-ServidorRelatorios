@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AcompanhamentoAprendizagem" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="673b4fb2-d503-403f-b968-9ee6102a9a3c">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="Conteudo" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="Conteudo"/>
+		<fieldDescription><![CDATA[Conteudo]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="126" splitType="Stretch">
+			<staticText>
+				<reportElement x="306" y="0" width="250" height="20" uuid="b367e057-0000-486f-ae1b-1b67e00e7117">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SGP - SISTEMA DE GESTÃO PEDAGÓGICA]]></text>
+			</staticText>
+			<image>
+				<reportElement x="1" y="0" width="149" height="60" uuid="79ec1888-86e0-4b60-bdce-d81fe93074a2"/>
+				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="110" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="273" splitType="Stretch">
+			<componentElement>
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="10" y="10" width="500" height="250" uuid="86f6e313-fe2e-4930-acbf-0cdd4a05964b"/>
+				<hc:html xmlns:hc="http://jasperreports.sourceforge.net/htmlcomponent" xsi:schemaLocation="http://jasperreports.sourceforge.net/htmlcomponent http://jasperreports.sourceforge.net/xsd/htmlcomponent.xsd" scaleType="FillFrame" horizontalAlign="Left" verticalAlign="Top">
+					<hc:htmlContentExpression><![CDATA[$F{Conteudo}]]></hc:htmlContentExpression>
+				</hc:html>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
