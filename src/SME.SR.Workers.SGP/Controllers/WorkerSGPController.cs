@@ -94,7 +94,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/boletimescolardetalhadoescolaaqui")]
-        [Action("relatorios/boletimescolardetalhado", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
+        [Action("relatorios/boletimescolardetalhadoescolaaqui", typeof(IRelatorioBoletimEscolarDetalhadoEscolaAquiUseCase))]
         public async Task<bool> RelatorioBoletimEscolarDetalhadoEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoEscolaAquiUseCase relatorioBoletimEscolarDetalhadoUseCase)
         {
             await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
