@@ -5,7 +5,7 @@
         public const string RotaRelatoriosProntosSgp = "sgp.relatorios.prontos.notificar";
         public const string RotaRelatorioCorrelacaoCopiar = "sgp.relatorios.correlacao.copiar";
         public const string RotaRelatorioCorrelacaoInserir = "sgp.relatorios.correlacao.inserir";
-        public const string RotaRelatoriosProntosApp = "relatorio.app.pronto.notificar";
+        public const string RotaRelatoriosProntosApp = "sgp.relatorio.app.pronto.notificar";
         public const string RotaRelatorioComErro = "sgp.relatorios.erro.notificar";
         public const string RotaRelatoriosComErroBoletim = "sgp.relatorios.erro.notificar.boletim";
         public const string RotaRelatoriosComErroBoletimDetalhado = "sgp.relatorios.erro.boletimdetalhado";

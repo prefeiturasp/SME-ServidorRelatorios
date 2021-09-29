@@ -20,6 +20,7 @@ namespace SME.SR.Application
         public int AnoLetivo { get; set; }
 
         public Modalidade Modalidade { get; set; }
+        public int ModalidadeCodigo { get; set; }
 
         public string AlunosCodigo { get; set; }
 

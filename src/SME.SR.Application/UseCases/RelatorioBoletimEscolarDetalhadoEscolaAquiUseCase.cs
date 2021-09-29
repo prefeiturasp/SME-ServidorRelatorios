@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Infra;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -17,9 +18,15 @@ namespace SME.SR.Application
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletimDetalhadoEscolaAqui;
             request.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQuery>();
+            relatorioQuery.Modalidade = ObterModalidade(relatorioQuery.ModalidadeCodigo);
             var relatorio = await mediator.Send(relatorioQuery);
 
             await mediator.Send(new GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(relatorio, request.CodigoCorrelacao, relatorioQuery.Modalidade));
+        }
+        private Modalidade ObterModalidade(int modalidadeId)
+        {
+            return Enum.GetValues(typeof(Modalidade))
+            .Cast<Modalidade>().Where(x => (int)x == modalidadeId).FirstOrDefault();
         }
     }
 }
