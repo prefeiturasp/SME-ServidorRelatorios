@@ -4,18 +4,26 @@
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 44;
 
+    string Quebra()
+    {
+        contadorQuebrarPagina = 0;
+
+        var str = MontarCabecalho();
+        return $@"<div style='page-break-before:always'> </div>" + str;
+    }
+
     string VerificaQuebra(int numeroLinhas = 0)
     {
-        if ((contadorQuebrarPagina + numeroLinhas) >= contadorMaximoLinhasPorPagina)
+        if (contadorQuebrarPagina + numeroLinhas >= contadorMaximoLinhasPorPagina)//&& Model.EmAprovacao)
         {
-            contadorQuebrarPagina = 0;
-
-            var str = MontarCabecalho();
-            return $@"<div style='page-break-before:always' />" + str;
-
+            var quebra = Quebra();
+            return $@"{MontarLegenda()}{quebra}";
+        }
+        else if ((contadorQuebrarPagina + numeroLinhas) >= contadorMaximoLinhasPorPagina)
+        {
+            return Quebra();
         }
         return string.Empty;
-
     }
 
     int CalcularLinhas(int valorLinha = 0, int caracteres = 120)
@@ -42,6 +50,10 @@
         {
             contadorQuebrarPagina = 1;
 
+            var str= $@"</tbody></table>";
+
+            str += MontarLegenda();
+
             var breakPage = $@"</tbody></table>
 <div style='page-break-before:always' />";
 
@@ -55,7 +67,7 @@
 
             var cabecalho = MontarCabecalho();
 
-            return breakPage + cabecalho + init;
+            return str + breakPage + cabecalho + init;
 
         }
         return string.Empty;
@@ -97,6 +109,20 @@
 ";
 
         return str;
+    }
+
+    string MontarLegenda()
+    {
+        return "<span class='legenda'>* Aguardando aprovação</span>";
+    }
+
+    string VerificaMontagemLegendaFim()
+    {
+        if (contadorQuebrarPagina > 0)//&& Model.EmAprovacao)
+        {
+            return MontarLegenda();
+        }
+        return "";
     }
 }
 
@@ -374,6 +400,7 @@
             } 
         }
 
+        @Html.Raw(VerificaMontagemLegendaFim())                                
 
     </div>
 </body>
