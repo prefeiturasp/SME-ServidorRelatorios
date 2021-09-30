@@ -15,19 +15,20 @@
         {
             var str = "";
 
-            str += Quebra();
             if (Model.PossuiNotaFechamento)
             {
                 str += montarLegenda();
             }
-            if (true)
+            if (Model.EmAprovacao)
             {
                 if(Model.PossuiNotaFechamento)
                 {
-                    str += "<br />"
+                    str += "<br />";
                 }
-                MontarLegendaAprovacao();
+                str += MontarLegendaAprovacao();
             }
+            str += Quebra();
+
             return str;
         }
         return string.Empty;
@@ -45,7 +46,7 @@
         {
             str += montarLegenda();
         }
-        if (true)
+        if (Model.EmAprovacao)
         {
             if (temLegendaConselho)
             {
@@ -171,18 +172,9 @@
     }
 
 
-    string MontarLegendaAprovacao()
+    string MontarLegendaAprovacao(string leg = "")
     {
-        return "<span class='legenda'># Aguardando aprovação</span>";
-    }
-
-    string VerificaMontagemLegendaFimAprovacao()
-    {
-        if (contadorQuebrarPagina > 0)//&& Model.EmAprovacao)
-        {
-            return MontarLegendaAprovacao();
-        }
-        return "";
+        return "<span class='legenda'># Aguardando aprovação "+leg+"</span>";
     }
 }
 
@@ -453,8 +445,8 @@
                 }
             }
         }
+
         @Html.Raw(VerificaMontagemLegendaFim())
-        @Html.Raw(VerificaMontagemLegendaFimAprovacao())
 
     </div>
 </body>
