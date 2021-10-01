@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Infra;
 using System;
 
@@ -6,7 +7,7 @@ namespace SME.SR.Application
 {
     public class GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand : IRequest<string>
     {
-        public GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(object model, Guid codigoCorrelacao, Modalidade modalidade, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true)
+        public GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(object model, Guid codigoCorrelacao, Modalidade modalidade, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true, string mensagemdados = null)
         {
             CodigoCorrelacao = codigoCorrelacao;
             Model = model;
@@ -14,6 +15,7 @@ namespace SME.SR.Application
             MensagemTitulo = mensagemTitulo;
             EnvioPorRabbit = envioPorRabbit;
             Modalidade = modalidade;
+            MensagemDados = mensagemdados;
         }
 
         public Guid CodigoCorrelacao { get; set; }
@@ -22,5 +24,6 @@ namespace SME.SR.Application
         public string MensagemTitulo { get; set; }
         public bool EnvioPorRabbit { get; set; }
         public Modalidade Modalidade { get; set; }
+        public string MensagemDados { get; set; }
     }
 }

@@ -20,8 +20,9 @@ namespace SME.SR.Application
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQuery>();
             relatorioQuery.Modalidade = ObterModalidade(relatorioQuery.ModalidadeCodigo);
             var relatorio = await mediator.Send(relatorioQuery);
-
-            await mediator.Send(new GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(relatorio, request.CodigoCorrelacao, relatorioQuery.Modalidade));
+            relatorioQuery.CodigoArquivo = request.CodigoCorrelacao;
+            var mensagemdados = UtilJson.ConverterApenasCamposNaoNulos(relatorioQuery);
+            await mediator.Send(new GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(relatorio, request.CodigoCorrelacao, relatorioQuery.Modalidade,mensagemdados: mensagemdados));
         }
         private Modalidade ObterModalidade(int modalidadeId)
         {
