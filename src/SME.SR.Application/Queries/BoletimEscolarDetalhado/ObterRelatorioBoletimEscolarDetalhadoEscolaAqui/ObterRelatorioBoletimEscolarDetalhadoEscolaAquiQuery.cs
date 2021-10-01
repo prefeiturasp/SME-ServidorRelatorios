@@ -27,5 +27,6 @@ namespace SME.SR.Application
         public Usuario Usuario { get; set; }
 
         public bool ConsideraHistorico { get; set; }
+        public Guid CodigoArquivo { get; set; }
     }
 }
