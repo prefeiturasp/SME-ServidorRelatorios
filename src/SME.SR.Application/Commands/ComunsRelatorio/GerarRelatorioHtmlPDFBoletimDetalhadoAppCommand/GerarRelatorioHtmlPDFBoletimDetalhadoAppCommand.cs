@@ -7,7 +7,7 @@ namespace SME.SR.Application
 {
     public class GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand : IRequest<string>
     {
-        public GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(object model, Guid codigoCorrelacao, Modalidade modalidade, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true, string mensagemdados = null)
+        public GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(object model, Guid codigoCorrelacao, Modalidade modalidade, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true, string mensagemDados = null)
         {
             CodigoCorrelacao = codigoCorrelacao;
             Model = model;
@@ -15,7 +15,7 @@ namespace SME.SR.Application
             MensagemTitulo = mensagemTitulo;
             EnvioPorRabbit = envioPorRabbit;
             Modalidade = modalidade;
-            MensagemDados = mensagemdados;
+            MensagemDados = mensagemDados;
         }
 
         public Guid CodigoCorrelacao { get; set; }
