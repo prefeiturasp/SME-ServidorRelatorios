@@ -104,5 +104,17 @@ namespace SME.SR.Data
 
             return await conexao.QueryAsync<RelatorioParecerConclusivoRetornoDto>(query.ToString(), parametros);
         }
+
+        public async Task<string> ObterDescricaoParecerEmAprovacao(string codigoAluno, int ano)
+        {
+            var query = $@"select ccp.nome from wf_aprovacao_parecer_conclusivo wpc
+                                  inner join conselho_classe_aluno cca on cca.id = wpc.conselho_classe_aluno_id
+                                  inner join conselho_classe_parecer ccp on ccp.id = wpc.conselho_classe_parecer_id
+                           where cca.aluno_codigo = @codigoAluno and Extract('Year' from cca.criado_em) = @ano";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+
+            return await conexao.QueryFirstOrDefaultAsync<string>(query.ToString(), new { codigoAluno, ano });
+        }
     }
 }

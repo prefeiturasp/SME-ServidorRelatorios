@@ -156,6 +156,7 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
                             {
                                 parecerParaIncluir.ParecerConclusivoDescricao = parecerFiltradoParaIncluir == null ?
                                                                                     "Sem Parecer" : parecerFiltradoParaIncluir.ParecerConclusivo;
+                                await VerificarParecerEmAprovacao(parecerParaIncluir, anoLetivo);
                                 anoParaIncluir.PareceresConclusivos.Add(parecerParaIncluir);
                             }
                         }
@@ -167,6 +168,20 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
 
                 if (cicloParaAdicionar.Anos.Any())
                     ueParaAdicionar.Ciclos.Add(cicloParaAdicionar);
+            }
+        }
+
+        private async Task VerificarParecerEmAprovacao(RelatorioParecerConclusivoAlunoDto relatorioParecerAluno, int ano)
+        {
+            string parecerConclusivoDescricao = await mediator.Send(new ObterDescricaoParecerEmAprovacaoQuery(relatorioParecerAluno.AlunoCodigo, ano));
+            if(parecerConclusivoDescricao != null)
+            {
+                relatorioParecerAluno.ParecerConclusivoDescricao = parecerConclusivoDescricao;
+                relatorioParecerAluno.EmAprovacao = true;
+            }
+            else
+            {
+                relatorioParecerAluno.EmAprovacao = false;
             }
         }
         private async Task MontaCabecalho(ObterRelatorioParecerConclusivoQuery request, RelatorioParecerConclusivoDto retorno, System.Collections.Generic.IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar)
