@@ -4,11 +4,10 @@ namespace SME.SR.Infra
 {
     public class PublicaFilaDto
     {
-        public PublicaFilaDto(object dados, string nomeFila, string rota, string exchange = null, Guid codigoCorrelacao = default, string codigoRfUsuario = default)
+        public PublicaFilaDto(object dados, string rota, string exchange = null, Guid codigoCorrelacao = default, string codigoRfUsuario = default)
         {
             Dados = dados;
 
-            NomeFila = nomeFila;
             Rota = rota;
             if (!string.IsNullOrWhiteSpace(exchange))
                 Exchange = exchange;

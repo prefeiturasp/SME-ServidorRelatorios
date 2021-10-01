@@ -1,0 +1,302 @@
+﻿@model SME.SR.Infra.BoletimEscolarDetalhadoAlunoDto
+@using SME.SR.Infra;
+
+@{
+    double contadorQuebrarPagina = 8;
+    int contadorMaximoLinhasPorPagina = 49;
+    bool quebrou = false;
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
+    {
+        var str = $@"<div style='page-break-before:always' />";
+        return Html.Raw(str);
+    }
+
+    int contadorPagina = 1;
+
+    string VerificaQuebra(int linhas = 0)
+    {
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 8;
+            contadorPagina = contadorPagina + 1;
+
+            //var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always'></div>";
+
+        }
+        return string.Empty;
+
+    }
+
+    string ComponentesCurricularesCabecalho(bool conceito, bool possuiNotaFinal)
+    {
+        contadorQuebrarPagina += 2;
+        var notaConceito = conceito ? "Conc." : "Nota";
+        var str = $@"<table class='tabela margin-top'>
+<tr class='titulo'>
+<td rowspan='2' class='componente sem-borda-bottom'>Componentes curriculares</td>
+<td colspan='2' class='centro-bimestre-eja'>1° Bim.</td>
+<td colspan='2' class='centro-bimestre-eja'>2° Bim.</td>";
+        str += possuiNotaFinal ? "<td colspan='2' class='centro-bimestre'>Final</td>" : "";
+        str += $@"</tr>
+<tr class='titulo'>
+<td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
+<td class='centro-titulo-eja sem-borda-bottom'>%</td>
+<td class='centro-titulo-eja sem-borda-bottom'>{notaConceito}</td>
+<td class='centro-titulo-eja sem-borda-bottom'>%</td>";
+        str += possuiNotaFinal ? $@"<td class='centro-titulo sem-borda-bottom'>{notaConceito}</td>
+<td class='centro-titulo sem-borda-bottom'>%</td>" : "";
+        str += "</tr></table>";
+        return str;
+    }
+
+    bool ChecarNotaConceitoRegencia(List<ComponenteCurricularRegenciaNotaDto> componentes)
+    {
+        return componentes.Where(a =>
+            (a.NotaBimestre1 != null && (a.NotaBimestre1.Contains("P") || a.NotaBimestre1.Contains("S"))) ||
+            (a.NotaBimestre2 != null && (a.NotaBimestre2.Contains("P") || a.NotaBimestre2.Contains("S"))) ||
+            (a.NotaBimestre3 != null && (a.NotaBimestre3.Contains("P") || a.NotaBimestre3.Contains("S"))) ||
+            (a.NotaBimestre4 != null && (a.NotaBimestre4.Contains("P") || a.NotaBimestre4.Contains("S")))
+            ).Any();
+    }
+
+    bool ChecarNotaConceito(List<GrupoMatrizComponenteCurricularDto> grupos)
+    {
+        return grupos.Where(a =>
+            a.ComponentesCurriculares.Any(b =>
+                (b.NotaBimestre1 != null && (b.NotaBimestre1.Contains("P") || b.NotaBimestre1.Contains("S"))) ||
+                (b.NotaBimestre2 != null && (b.NotaBimestre2.Contains("P") || b.NotaBimestre2.Contains("S"))) ||
+                (b.NotaBimestre3 != null && (b.NotaBimestre3.Contains("P") || b.NotaBimestre3.Contains("S"))) ||
+                (b.NotaBimestre4 != null && (b.NotaBimestre4.Contains("P") || b.NotaBimestre4.Contains("S"))))
+            ).Any();
+    }
+
+
+    string ComponentesCurriculares(List<GrupoMatrizComponenteCurricularDto> areasConhecimento, ComponenteCurricularRegenciaDto componenteCurricularRegencia)
+    {
+        bool exibeLegendaConceito = false;
+        bool exibeLegendaSintese = false;
+
+        var str = "";
+        var notaConceito = componenteCurricularRegencia != null ? ChecarNotaConceitoRegencia(componenteCurricularRegencia.ComponentesCurriculares) : false;
+
+        if (!notaConceito)
+            notaConceito = ChecarNotaConceito(areasConhecimento);
+
+        var possuiNotaFinal = (Model.PossuiNotaFinalRegencia || Model.PossuiNotaFinal);
+        str += ComponentesCurricularesCabecalho(notaConceito, possuiNotaFinal);
+
+        int numeroCaracteresComponentesCurriculares = possuiNotaFinal ? 48 : 54;
+        double contadorLinhaDupla = possuiNotaFinal ? 1.4 : 1.8;
+        double contadorLinhaSimples = 0.7;
+        if (componenteCurricularRegencia != null)
+        {
+            str += "<table class='tabela'>";
+            foreach (var componente in componenteCurricularRegencia.ComponentesCurriculares)
+            {
+                if (!componente.Nota)
+                    exibeLegendaSintese = true;
+
+                if (notaConceito)
+                    exibeLegendaConceito = true;
+
+                var frequenciaFinal = string.IsNullOrEmpty(componenteCurricularRegencia.FrequenciaFinal) ? "" : (componenteCurricularRegencia.FrequenciaFinal != "-" ? $"{componenteCurricularRegencia.FrequenciaFinal}%" : componenteCurricularRegencia.FrequenciaFinal);
+
+                if (componente == componenteCurricularRegencia.ComponentesCurriculares.First())
+                {
+                    str += $@"<tr class='corpo'>
+<td class='valor-titulo'>{componente.Nome}</td>
+<td class='centro-valor-eja'>{componente.NotaBimestre1}</td>
+<td class='centro-valor-eja' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
+<td class='centro-valor-eja'>{componente.NotaBimestre2}</td>
+<td class='centro-valor-eja' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>";
+                    str += possuiNotaFinal ? $@"<td class='centro-valor'>{componente.NotaFinal}</td>
+<td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{frequenciaFinal}</td>" : "";
+                    str += "</tr>";
+                }
+                else
+                {
+                    str += $@"<tr class='corpo'>
+<td class='valor-titulo'>{componente.Nome}</td>
+<td class='centro-valor-eja'>{componente.NotaBimestre1}</td>
+<td class='centro-valor-eja'>{componente.NotaBimestre2}</td>";
+                    str += possuiNotaFinal ? $"<td class='centro-valor'>{componente.NotaFinal}</td>" : "";
+                    str += "</tr>";
+                }
+
+
+
+                contadorQuebrarPagina += componente.Nome.Length >= numeroCaracteresComponentesCurriculares ? contadorLinhaDupla : contadorLinhaSimples;
+            }
+            str += "</table>";
+        }
+
+        var quebrou = false;
+        for (var i = 0; i < areasConhecimento.Count; i++)
+        {
+
+            if (areasConhecimento[i].ComponentesCurriculares != null)
+            {
+                if (i == 0 && componenteCurricularRegencia != null)
+                {
+                    contadorQuebrarPagina += 0.5;
+                    str += "<table class='tabela margin-top'>";
+                }
+                else if (i > 0 && quebrou == false)
+                {
+                    contadorQuebrarPagina += 0.5;
+                    str += "<table class='tabela margin-top'>";
+                }
+                else
+                {
+                    quebrou = false;
+                    str += "<table class='tabela'>";
+                }
+                foreach (var componenteCurricular in areasConhecimento[i].ComponentesCurriculares)
+                {
+                    if (!componenteCurricular.Nota)
+                        exibeLegendaSintese = true;
+
+                    if (!string.IsNullOrEmpty(componenteCurricular.NotaBimestre1) && (componenteCurricular.NotaBimestre1.Contains("P") || componenteCurricular.NotaBimestre1.Contains("S")))
+                        exibeLegendaConceito = true;
+
+                    var frequenciaFinal = string.IsNullOrEmpty(componenteCurricular.FrequenciaFinal) ? "" : $"{componenteCurricular.FrequenciaFinal}%";
+
+                    str += $@"<tr class='corpo'>
+    <td class='valor-titulo'>{componenteCurricular.Nome}</td>
+    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre1}</td>
+    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre1}</td>
+    <td class='centro-valor-eja'>{componenteCurricular.NotaBimestre2}</td>
+    <td class='centro-valor-eja'>{componenteCurricular.FrequenciaBimestre2}</td>";
+                    str += possuiNotaFinal ? $@"<td class='centro-valor'>{componenteCurricular.NotaFinal}</td><td class='centro-valor'>{frequenciaFinal}</td>" : "";
+                    str += "</tr>";
+
+                    contadorQuebrarPagina += componenteCurricular.Nome.Length >= numeroCaracteresComponentesCurriculares ? contadorLinhaDupla : contadorLinhaSimples; ;
+                }
+                str += "</table>";
+                var quebra = VerificaQuebra();
+                if (quebra != String.Empty)
+                {
+                    str += quebra;
+                    str += ComponentesCurricularesCabecalho(notaConceito, possuiNotaFinal);
+                    quebrou = true;
+                }
+            }
+        }
+
+        if (exibeLegendaSintese || exibeLegendaConceito)
+        {
+            str += "<p style='font-size:12px'>Legenda: F:Frequente - NF:Não Frequente - P:Plenamente Satisfatório - S:Satisfatório - NS:Não Satisfatório</p>";
+        }
+
+        return str;
+    }
+
+    string ParecerConclusivo(string parecer)
+    {
+        var str = $@"<table class='tabela margin-top'>
+<tr class='titulo'>
+<td>Parecer Conclusivo: {parecer}</td>
+</tr>
+</table>";
+        contadorQuebrarPagina += string.IsNullOrEmpty(parecer) ? 1 : 0;
+        return !string.IsNullOrEmpty(parecer) ? str : null;
+    }
+
+    string MontarNovaRecomendacoesCabecalho(string titulo)
+    {
+        return $@"<table class='tabela-recomendacoes margin-top'>
+<tr class='titulo'>
+<td style='text-align:center;'>{titulo}</td>
+</tr>
+<tr>
+<td>";
+    }
+
+    int contadorMaximoCaracteresPorLinhaOcorrencias = 120;
+    string NovaRecomendacoes(string recomendacoes, string titulo)
+    {
+        if (string.IsNullOrEmpty(recomendacoes))
+        {
+            return null;
+        }
+
+        var quebra = VerificaQuebra(2);
+        if (quebra != String.Empty)
+        {
+            @Html.Raw("<div style='page-break-before:always'></div>");
+        }
+
+        @Html.Raw(MontarNovaRecomendacoesCabecalho(titulo));
+
+        contadorQuebrarPagina++;
+        var iContadorCaracteres = 0;
+        double numeroLimiteCaracteres = 0.7;
+        @while (iContadorCaracteres != recomendacoes.Length)
+        {
+            if (contadorQuebrarPagina + numeroLimiteCaracteres >= contadorMaximoLinhasPorPagina)
+            {
+                contadorQuebrarPagina = 7;
+                @Html.Raw("</td></tr></table>")
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                @Html.Raw(MontarNovaRecomendacoesCabecalho(titulo));
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = recomendacoes.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaOcorrencias ? recomendacoes.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaOcorrencias;
+                var textParaExibir = recomendacoes.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+
+                @Html.Raw(textParaExibir)
+
+                contadorQuebrarPagina += numeroLimiteCaracteres;
+            }
+        }
+
+        @Html.Raw("</td></tr>")
+
+        return "";
+    }
+
+
+    string Anotacoes()
+    {
+        var quebra = VerificaQuebra(2);
+        var str = "";
+
+        if (quebra != String.Empty)
+        {
+            str += quebra;
+        }
+
+        str = @"<table class='tabela-final margin-top'>
+<tr>
+<td width='100%' style='border-bottom: 1px solid #42474a;'>
+&nbsp
+</td>
+</tr>
+<tr>
+<td width='100%' style='border-bottom: 1px solid #42474a;'>
+&nbsp
+</td>
+</tr>
+</table>";
+
+        return str;
+    }
+
+}
+
+
+@Html.Raw(ComponentesCurriculares(Model.Grupos, Model.ComponenteCurricularRegencia))
+
+@if (Model.ParecerConclusivo != String.Empty)
+{
+    @Html.Raw(ParecerConclusivo(Model.ParecerConclusivo));
+}
+
+
+@Html.Raw(NovaRecomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
+@Html.Raw(NovaRecomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
+@Html.Raw(Anotacoes())

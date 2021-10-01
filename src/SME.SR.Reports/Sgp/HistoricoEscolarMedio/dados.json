@@ -1,1 +1,488 @@
-{"relatorioHistoricoEscolar":[{"nomeDre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE","cabecalho":{"nomeUe":"EMEFM - DERVILLE ALLEGRETTI, PROF.","endereco":"Rua VOLUNTARIOS DA PATRIA, 777   , SANTANA, 2011000 SÃO PAULO - SP","atoCriacao":null,"atoAutorizacao":null,"leiFundamental":"Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06","leiMedio":"Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"},"informacoesAluno":{"nome":"ALAN GRUGNALE MEDINA","rga":"7256028","cidadeNatal":"SAO PAULO","estadoNatal":null,"nacionalidade":"Brasileira","nascimento":"30/06/2003","rg":"000000055431701-1   ","expedicao":"03/09/2011","orgaoExpeditor":"10","estado":"","Codigo":"7256028"},"ciclos":null,"historicoEscolar":{"baseNacionalComum":{"areasDeConhecimento":[{"nome":"Linguagens","componentesCurriculares":[{"nome":"LINGUA PORTUGUESA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"ARTE","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]},{"nome":"Matemática","componentesCurriculares":[{"nome":"MATEMATICA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]},{"nome":"Ciências da Natureza","componentesCurriculares":[{"nome":"FISICA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"QUIMICA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"BIOLOGIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]},{"nome":"Ciências Humanas","componentesCurriculares":[{"nome":"HISTORIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"GEOGRAFIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]}]},"gruposComponentesCurriculares":[{"nome":"Diversificada","areasDeConhecimento":[{"nome":"Ciências Humanas","componentesCurriculares":[{"nome":"FILOSOFIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.5","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"SOCIOLOGIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]},{"nome":"Língua Estrangeira Moderna","componentesCurriculares":[{"nome":"INGLES","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"LINGUA ESPANHOLA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":"9.0","frequenciaSegundoAno":"100","notaConceitoTerceiroAno":"5.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]}]}],"ensinoReligioso":null,"enriquecimentoCurricular":null,"projetosAtividadesComplementares":null,"tipoNota":{"primeiroAno":"N","segundoAno":"N","terceiroAno":"N","quartoAno":null,"quintoAno":null,"sextoAno":null,"setimoAno":null,"oitavoAno":null,"nonoAno":null},"pareceresConclusivos":{"primeiroAno":null,"segundoAno":"Promovido","terceiroAno":"Promovido","quartoAno":null,"quintoAno":null,"sextoAno":null,"setimoAno":null,"oitavoAno":null,"nonoAno":null}},"legenda":{"texto":""},"Modalidade":6,"responsaveisUe":{"nomeSecretario":null,"documentoSecretario":null,"nomeDiretor":"ANDERSON DA COSTA E SILVA GRECCO","documentoDiretor":"26404792-8/SSP"},"dadosData":{"municipio":"São Paulo","dia":"28","mes":"novembro","ano":"2020"},"estudosRealizados":[{"ano":"1º ano","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"2º ano","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"3º ano","ueNome":"EMEFM - DERVILLE ALLEGRETTI, PROF. (DRE - JT)","ueMunicipio":"São Paulo","ueUf":"SP"}],"historicoEscolarTransferencia":null},{"nomeDre":"DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE","cabecalho":{"nomeUe":"EMEFM - DERVILLE ALLEGRETTI, PROF.","endereco":"Rua VOLUNTARIOS DA PATRIA, 777   , SANTANA, 2011000 SÃO PAULO - SP","atoCriacao":null,"atoAutorizacao":null,"leiFundamental":"Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06","leiMedio":"Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"},"informacoesAluno":{"nome":"ANAKELLY MUCHANTE SARDINHO DA SILVA","rga":"3913845","cidadeNatal":"SAO PAULO","estadoNatal":"SP","nacionalidade":"Brasileira","nascimento":"22/04/2003","rg":"000000057735717-7   ","expedicao":"21/11/2019","orgaoExpeditor":"10","estado":"","Codigo":"3913845"},"ciclos":null,"historicoEscolar":{"baseNacionalComum":{"areasDeConhecimento":[{"nome":"Linguagens","componentesCurriculares":[{"nome":"LINGUA PORTUGUESA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"10.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"ARTE","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"10.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]},{"nome":"Matemática","componentesCurriculares":[{"nome":"MATEMATICA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"10.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]},{"nome":"Ciências da Natureza","componentesCurriculares":[{"nome":"FISICA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"10.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"QUIMICA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"10.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"BIOLOGIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"10.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]},{"nome":"Ciências Humanas","componentesCurriculares":[{"nome":"HISTORIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"10.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"GEOGRAFIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"10.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]}]},"gruposComponentesCurriculares":[{"nome":"Diversificada","areasDeConhecimento":[{"nome":"Ciências Humanas","componentesCurriculares":[{"nome":"FILOSOFIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"8.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"SOCIOLOGIA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"8.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]},{"nome":"Língua Estrangeira Moderna","componentesCurriculares":[{"nome":"INGLES","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"8.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null},{"nome":"LINGUA ESPANHOLA","notaConceitoPrimeiroAno":null,"frequenciaPrimeiroAno":null,"notaConceitoSegundoAno":null,"frequenciaSegundoAno":null,"notaConceitoTerceiroAno":"8.0","frequenciaTerceiroAno":"100","notaConceitoQuartoAno":null,"frequenciaQuartoAno":null,"notaConceitoQuintoAno":null,"frequenciaQuintoAno":null,"notaConceitoSextoAno":null,"frequenciaSextoAno":null,"notaConceitoSetimoAno":null,"frequenciaSetimoAno":null,"notaConceitoOitavoAno":null,"frequenciaOitavoAno":null,"notaConceitoNonoAno":null,"frequenciaNonoAno":null}]}]}],"ensinoReligioso":null,"enriquecimentoCurricular":null,"projetosAtividadesComplementares":null,"tipoNota":{"primeiroAno":"N","segundoAno":"N","terceiroAno":"N","quartoAno":null,"quintoAno":null,"sextoAno":null,"setimoAno":null,"oitavoAno":null,"nonoAno":null},"pareceresConclusivos":{"primeiroAno":null,"segundoAno":null,"terceiroAno":"Promovido","quartoAno":null,"quintoAno":null,"sextoAno":null,"setimoAno":null,"oitavoAno":null,"nonoAno":null}},"legenda":{"texto":""},"Modalidade":6,"responsaveisUe":{"nomeSecretario":null,"documentoSecretario":null,"nomeDiretor":"ANDERSON DA COSTA E SILVA GRECCO","documentoDiretor":"26404792-8/SSP"},"dadosData":{"municipio":"São Paulo","dia":"28","mes":"novembro","ano":"2020"},"estudosRealizados":[{"ano":"1º ano","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"2º ano","ueNome":null,"ueMunicipio":null,"ueUf":null},{"ano":"3º ano","ueNome":"EMEFM - DERVILLE ALLEGRETTI, PROF. (DRE - JT)","ueMunicipio":"São Paulo","ueUf":"SP"}],"historicoEscolarTransferencia":null}]}
+{
+  "relatorioHistoricoEscolar": [
+    {
+      "nomeDre": "DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE",
+      "cabecalho": {
+        "nomeUe": "094668 - EMEFM - DERVILLE ALLEGRETTI, PROF.",
+        "endereco": "RUA VOLUNTARIOS DA PATRIA, 777   , SANTANA, 2011000 SÃO PAULO - SP",
+        "atoCriacao": "7.393 - 06/03/1968",
+        "atoAutorizacao": "01/81 - 06/04/1981",
+        "leiFundamental": "Ensino Fundamental – Lei Federal nº 9.394/96 - Lei Federal nº 11.274/06",
+        "leiMedio": "Ensino Médio – Lei Nº 9.394/1996 e 13.415/2017"
+      },
+      "informacoesAluno": {
+        "nome": "BRUNO LUCAS DOS SANTOS RIBEIRO",
+        "rga": "4546470",
+        "cidadeNatal": "SAO PAULO",
+        "estadoNatal": "SP",
+        "nacionalidade": "Brasileira",
+        "nascimento": "09/11/2004",
+        "rg": "000000039313652-8   ",
+        "expedicao": "24/02/2005",
+        "orgaoExpeditor": "10",
+        "estado": "",
+        "Codigo": "4546470"
+      },
+      "ciclos": null,
+      "historicoEscolar": null,
+      "legenda": { "texto": "", "TextoSintese": null, "TextoConceito": null },
+      "Modalidade": 6,
+      "responsaveisUe": {
+        "nomeSecretario": null,
+        "documentoSecretario": null,
+        "nomeDiretor": "ANDERSON DA COSTA E SILVA GRECCO",
+        "documentoDiretor": "26404792-8/SSP"
+      },
+      "dadosData": {
+        "municipio": "São Paulo",
+        "dia": "04",
+        "mes": "maio",
+        "ano": "2021"
+      },
+      "estudosRealizados": null,
+      "historicoEscolarTransferencia": {
+        "data": "04/05/2021",
+        "descricao": "NOTAS E Nº DE FALTAS DO 2º ANO DO ENSINO MÉDIO",
+        "rodape": "O (a) aluno (a) tem direito à matrícula no 2º ano do Ensino Médio",
+        "tipoNota": "N",
+        "baseNacionalComum": {
+          "areasDeConhecimento": [
+            {
+              "nome": "Linguagens e suas tecnologias",
+              "componentesCurriculares": [
+                {
+                  "nome": "Arte",
+                  "notaConceitoPrimeiroBimestre": "7.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                },
+                {
+                  "nome": "Ed. Física",
+                  "notaConceitoPrimeiroBimestre": "8.5",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                },
+                {
+                  "nome": "LEM - Língua Inglesa",
+                  "notaConceitoPrimeiroBimestre": "7.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                },
+                {
+                  "nome": "Língua Portuguesa",
+                  "notaConceitoPrimeiroBimestre": "7.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                }
+              ]
+            },
+            {
+              "nome": "Matemática e suas tecnologias",
+              "componentesCurriculares": [
+                {
+                  "nome": "Matemática",
+                  "notaConceitoPrimeiroBimestre": "7.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                }
+              ]
+            },
+            {
+              "nome": "Ciências Humanas e Sociais Aplicadas",
+              "componentesCurriculares": [
+                {
+                  "nome": "Geografia",
+                  "notaConceitoPrimeiroBimestre": "7.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                },
+                {
+                  "nome": "História",
+                  "notaConceitoPrimeiroBimestre": "7.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                }
+              ]
+            },
+            {
+              "nome": "Ciências da Natureza e suas tecnologias",
+              "componentesCurriculares": [
+                {
+                  "nome": "Biologia",
+                  "notaConceitoPrimeiroBimestre": "8.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                },
+                {
+                  "nome": "Física",
+                  "notaConceitoPrimeiroBimestre": "8.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                },
+                {
+                  "nome": "Química",
+                  "notaConceitoPrimeiroBimestre": "7.0",
+                  "frequenciaPrimeiroBimestre": "0",
+                  "notaConceitoSegundoBimestre": null,
+                  "frequenciaSegundoBimestre": "0",
+                  "notaConceitoTerceiroBimestre": null,
+                  "frequenciaTerceiroBimestre": "0",
+                  "notaConceitoQuartoBimestre": null,
+                  "frequenciaQuartoBimestre": "0"
+                }
+              ]
+            }
+          ]
+        },
+        "gruposComponentesCurriculares": [
+          {
+            "nome": "Diversificada    ",
+            "areasDeConhecimento": [
+              {
+                "nome": "Ciências Humanas e Sociais Aplicadas",
+                "componentesCurriculares": [
+                  {
+                    "nome": "Filosofia",
+                    "notaConceitoPrimeiroBimestre": "5.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Sociologia",
+                    "notaConceitoPrimeiroBimestre": "5.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  }
+                ]
+              },
+              {
+                "nome": "Itinerário Integrador",
+                "componentesCurriculares": [
+                  {
+                    "nome": "Cultura dos Países de Língua Espanhola",
+                    "notaConceitoPrimeiroBimestre": "5.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nome": "Percurso Comum",
+            "areasDeConhecimento": [
+              {
+                "nome": "Formação para estudos e apronfundamento",
+                "componentesCurriculares": [
+                  {
+                    "nome": "Biologia - Formação para Estudos e Aprofundamento",
+                    "notaConceitoPrimeiroBimestre": "8.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Física - Formação para Estudos e Aprofundamento",
+                    "notaConceitoPrimeiroBimestre": "8.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Geografia - Formação para Estudos e Aprofundamento",
+                    "notaConceitoPrimeiroBimestre": "8.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "História - Formação para Estudos e Aprofundamento",
+                    "notaConceitoPrimeiroBimestre": "7.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "LEM - Língua Inglesa - Formação para Estudos e Aprofundamento",
+                    "notaConceitoPrimeiroBimestre": "9.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Língua Portuguesa - Formação para Estudos e Aprofundamento",
+                    "notaConceitoPrimeiroBimestre": "9.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Matemática - Formação para Estudos e Aprofundamento",
+                    "notaConceitoPrimeiroBimestre": "9.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Química - Formação para Estudos e Aprofundamento",
+                    "notaConceitoPrimeiroBimestre": "9.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  }
+                ]
+              },
+              {
+                "nome": "Itinerário Integrador",
+                "componentesCurriculares": [
+                  {
+                    "nome": "Projeto de vida",
+                    "notaConceitoPrimeiroBimestre": "9.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Sala de Leitura",
+                    "notaConceitoPrimeiroBimestre": "9.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Tecnologias para Aprendizagem",
+                    "notaConceitoPrimeiroBimestre": "9.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  }
+                ]
+              },
+              {
+                "nome": "Linguagens e suas tecnologias",
+                "componentesCurriculares": [
+                  {
+                    "nome": "Expressões Culturais Artísticas",
+                    "notaConceitoPrimeiroBimestre": "8.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nome": "Itinerário Formativo",
+            "areasDeConhecimento": [
+              {
+                "nome": "Ciências Humanas e Sociais Aplicadas",
+                "componentesCurriculares": [
+                  {
+                    "nome": "Formação do Mundo Multipolar (Geografia)",
+                    "notaConceitoPrimeiroBimestre": "6.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Formação do Mundo Multipolar (História)",
+                    "notaConceitoPrimeiroBimestre": "6.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Sociedade, Cultura e Interculturalismo (Filosofia)",
+                    "notaConceitoPrimeiroBimestre": "6.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Sociedade, Cultura e Interculturalismo (Geografia)",
+                    "notaConceitoPrimeiroBimestre": "6.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Sociedade, Cultura e Interculturalismo (História)",
+                    "notaConceitoPrimeiroBimestre": "6.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Sociedade, Cultura e Interculturalismo (Sociologia)",
+                    "notaConceitoPrimeiroBimestre": "4.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Trajetória dos Direitos Humanos (Filosofia)",
+                    "notaConceitoPrimeiroBimestre": "3.5",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  },
+                  {
+                    "nome": "Trajetória dos Direitos Humanos (Sociologia)",
+                    "notaConceitoPrimeiroBimestre": "9.0",
+                    "frequenciaPrimeiroBimestre": "0",
+                    "notaConceitoSegundoBimestre": null,
+                    "frequenciaSegundoBimestre": "0",
+                    "notaConceitoTerceiroBimestre": null,
+                    "frequenciaTerceiroBimestre": "0",
+                    "notaConceitoQuartoBimestre": null,
+                    "frequenciaQuartoBimestre": "0"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "ensinoReligioso": null,
+        "enriquecimentoCurricular": null,
+        "projetosAtividadesComplementares": null
+      }
+    }
+  ]
+}

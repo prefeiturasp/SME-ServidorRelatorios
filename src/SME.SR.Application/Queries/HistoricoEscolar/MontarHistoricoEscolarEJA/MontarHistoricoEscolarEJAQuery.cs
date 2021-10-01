@@ -11,7 +11,8 @@ namespace SME.SR.Application
     {
         public MontarHistoricoEscolarEJAQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento,
                                            IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas,
-                                           IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas,
+                                            IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> ordenacaoGrupoArea,
+                                            IEnumerable<AlunoTurmasHistoricoEscolarDto> alunosTurmas,
                                            IEnumerable<MediaFrequencia> mediasFrequencia,
                                            IEnumerable<IGrouping<string, NotasAlunoBimestre>> notas,
                                            IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias,
@@ -19,7 +20,7 @@ namespace SME.SR.Application
                                            IEnumerable<TransferenciaDto> transferencias,
                                            string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda,
                                            DadosDataDto dadosData, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario,
-                                           IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> historicoUes, 
+                                           IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>> historicoUes,
                                            bool preencherDataImpressao, bool imprimirDadosResponsaveis)
         {
             Dre = dre;
@@ -41,15 +42,18 @@ namespace SME.SR.Application
             DadosSecretario = dadosSecretario;
             PreencherDataImpressao = preencherDataImpressao;
             ImprimirDadosResponsaveis = imprimirDadosResponsaveis;
+            GrupoAreaOrdenacao = ordenacaoGrupoArea;
         }
 
         public Dre Dre { get; set; }
         public Ue Ue { get; set; }
         public IEnumerable<IGrouping<string, NotasAlunoBimestre>> Notas { get; set; }
         public IEnumerable<IGrouping<string, FrequenciaAluno>> Frequencias { get; set; }
-        public IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>> HistoricoUes { get; set; }
+        public IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>> HistoricoUes { get; set; }
         public IEnumerable<MediaFrequencia> MediasFrequencia { get; set; }
         public IEnumerable<AreaDoConhecimento> AreasConhecimento { get; set; }
+
+        public IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> GrupoAreaOrdenacao { get; set; }
         public IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> ComponentesCurricularesTurmas { get; set; }
         public IEnumerable<AlunoTurmasHistoricoEscolarDto> AlunosTurmas { get; set; }
         public IEnumerable<TipoNotaCicloAno> TiposNota { get; set; }

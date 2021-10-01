@@ -11,8 +11,10 @@ namespace SME.SR.Infra
         public string NomeTurma { get; set; }
         public string CodigoTurma { get; set; }
         public int TotalAusencias { get; set; }
+        public int TotalRemoto { get; set; }
         public int TotalCompensacoes { get; set; }
         public int TotalAulas { get; set; }
+        public int TotalPresenca { get; set; }
         public int NumeroFaltasNaoCompensadas { get => TotalAusencias - TotalCompensacoes; }
         public double Frequencia
         {

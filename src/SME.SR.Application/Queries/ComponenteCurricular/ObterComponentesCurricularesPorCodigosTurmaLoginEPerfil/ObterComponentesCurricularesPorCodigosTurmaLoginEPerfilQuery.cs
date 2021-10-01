@@ -7,7 +7,7 @@ namespace SME.SR.Application
     public class ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery : IRequest<IEnumerable<ComponenteCurricularPorTurmaRegencia>>
     {
         public string[] CodigosTurma { get; set; }
-        public IEnumerable<ComponenteCurricularApiEol> ComponentesCurricularesApiEol { get; set; }
+        public IEnumerable<ComponenteCurricular> ComponentesCurriculares { get; set; }
         public IEnumerable<ComponenteCurricularGrupoMatriz> GruposMatriz { get; set; }
         public Usuario Usuario { get; set; }
     }

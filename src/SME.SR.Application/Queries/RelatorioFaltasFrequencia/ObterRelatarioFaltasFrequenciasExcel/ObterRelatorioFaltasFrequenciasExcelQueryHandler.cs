@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Infra;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +16,7 @@ namespace SME.SR.Application
             {
                 foreach (var ue in dre.Ues)
                 {
-                    foreach (var ano in ue.Anos)
+                    foreach (var ano in ue.TurmasAnos)
                     {
                         foreach (var bimestre in ano.Bimestres)
                         {
@@ -26,9 +25,7 @@ namespace SME.SR.Application
                                 foreach (var aluno in componente.Alunos)
                                 {
                                     listaFaltaFrequencia.Add(ObterRelatorioFaltasFrequencia(request.TipoRelatorio, dre.NomeDre, ue.NomeUe, bimestre.NomeBimestre,
-                                                                                            ano.NomeAno, aluno.NomeTurma, componente.NomeComponente,
-                                                                                            aluno.CodigoAluno, aluno.NomeAluno, aluno.TotalAulas, aluno.TotalAusencias,
-                                                                                            aluno.Frequencia));
+                                                                                            ano.Nome, componente.NomeComponente, aluno));
                                 }
                             }
                         }
@@ -86,61 +83,56 @@ namespace SME.SR.Application
 
         private RelatorioFaltasFrequenciasBaseExcelDto ObterRelatorioFaltasFrequencia(TipoRelatorioFaltasFrequencia tipoRelatorio,
                                                                                       string dreNome, string ueNome, string bimestre,
-                                                                                      string ano, string turma, string componenteCurricular,
-                                                                                      int alunoCodigo, string alunoNome, int totalAulas,
-                                                                                      int totalAusencias, double frequencia)
+                                                                                      string ano, string componenteCurricular, RelatorioFrequenciaAlunoDto aluno)
         {
             RelatorioFaltasFrequenciasBaseExcelDto relatorioBase;
 
-            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos)
-            { 
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
+            {
                 var relatorioAmbos = new RelatorioFaltasFrequenciasExcelDto();
-                ObterRelatorioFaltasFrequenciaBase(ref relatorioAmbos, dreNome, ueNome, bimestre, ano, turma, componenteCurricular, alunoCodigo.ToString(), alunoNome);
+                ObterRelatorioFaltasFrequenciaBase(ref relatorioAmbos, dreNome, ueNome, bimestre, ano, aluno.NomeTurma, componenteCurricular, aluno.CodigoAluno.ToString(), aluno.NomeAluno);
                 relatorioBase = relatorioAmbos;
             }
-            else if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Faltas)
-            { 
-               var relatorioFaltas = new RelatorioFaltasExcelDto();
-                ObterRelatorioFaltasFrequenciaBase(ref relatorioFaltas, dreNome, ueNome, bimestre, ano, turma, componenteCurricular, alunoCodigo.ToString(), alunoNome);
+            else if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Turma)
+            {
+                var relatorioFaltas = new RelatorioFaltasExcelDto();
+                ObterRelatorioFaltasFrequenciaBase(ref relatorioFaltas, dreNome, ueNome, bimestre, ano, aluno.NomeTurma, componenteCurricular, aluno.CodigoAluno.ToString(), aluno.NomeAluno);
                 relatorioBase = relatorioFaltas;
             }
             else
             {
                 var relatorioFrequencia = new RelatorioFrequenciasExcelDto();
-                ObterRelatorioFaltasFrequenciaBase(ref relatorioFrequencia, dreNome, ueNome, bimestre, ano, turma, componenteCurricular, alunoCodigo.ToString(), alunoNome);
+                ObterRelatorioFaltasFrequenciaBase(ref relatorioFrequencia, dreNome, ueNome, bimestre, ano, aluno.NomeTurma, componenteCurricular, aluno.CodigoAluno.ToString(), aluno.NomeAluno);
                 relatorioBase = relatorioFrequencia;
             }
 
-            if (tipoRelatorio != TipoRelatorioFaltasFrequencia.Faltas)
-                SetarFrequencia(ref relatorioBase, tipoRelatorio, frequencia);
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
+                SetarFrequencia(ref relatorioBase, tipoRelatorio, aluno);
 
-            if (tipoRelatorio != TipoRelatorioFaltasFrequencia.Frequencia)
-                SetarFaltas(ref relatorioBase, tipoRelatorio, totalAulas, totalAusencias);
+            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Turma)
+                SetarFaltas(ref relatorioBase, tipoRelatorio, aluno);
 
             return relatorioBase;
         }
 
 
-        private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, double frequenciaPercentual)
+        private void SetarFrequencia(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFrequenciaAlunoDto aluno)
         {
-            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos)
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = frequenciaPercentual;
-            else
-                ((RelatorioFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = frequenciaPercentual;
+
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FrequenciaPercentual = aluno.Frequencia;
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
+            ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
         }
 
-        private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, int totalAulas, int totalFaltas)
+        private void SetarFaltas(ref RelatorioFaltasFrequenciasBaseExcelDto relatorioDto, TipoRelatorioFaltasFrequencia tipoRelatorio, RelatorioFrequenciaAlunoDto aluno)
         {
-            if (tipoRelatorio == TipoRelatorioFaltasFrequencia.Ambos)
-            {
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).FaltasQuantidade = totalFaltas;
-                ((RelatorioFaltasFrequenciasExcelDto)relatorioDto).AulasQuantidade = totalAulas;
-            }
-            else
-            {
-                ((RelatorioFaltasExcelDto)relatorioDto).FaltasQuantidade = totalFaltas;
-                ((RelatorioFaltasExcelDto)relatorioDto).AulasQuantidade = totalAulas;
-            }
+
+            ((RelatorioFaltasExcelDto)relatorioDto).FaltasQuantidade = aluno.TotalAusencias;
+            ((RelatorioFaltasExcelDto)relatorioDto).TotalRemoto = aluno.TotalRemoto;
+            ((RelatorioFaltasExcelDto)relatorioDto).TotalPresenca = aluno.TotalPresenca;
+            ((RelatorioFaltasExcelDto)relatorioDto).TotalCompensacoes = aluno.TotalCompensacoes;
         }
     }
 }

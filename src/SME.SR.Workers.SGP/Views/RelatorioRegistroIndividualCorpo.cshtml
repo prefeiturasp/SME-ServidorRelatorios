@@ -1,0 +1,159 @@
+﻿@model SME.SR.Infra.RelatorioRegistroIndividualAlunoDto;
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 46;
+    int contadorPagina = 0;
+    int contadorDescricao = 0;
+
+    bool VerificaQuebra(int linhas = 0)
+    {
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+
+    string informacoesQuebra()
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");        
+        @Html.Raw("<table class='tabela-cabecalho'>");
+
+        return "";
+    }
+
+    int CalcularLinhas(int valorLinha = 0, int caracteres = 0)
+    {
+        if (valorLinha > 0)
+        {
+            var numeroLinhasDescricao = valorLinha / caracteres;
+
+            return numeroLinhasDescricao;
+        }
+        return 1;
+    }
+
+    string QuebrarLinhas(string estudante, int numeroQuebras = 1)
+    {
+        var quebra = VerificaQuebra(numeroQuebras);
+
+        if (quebra)
+        {
+            informacoesQuebra();
+            contadorQuebrarPagina = contadorQuebrarPagina + numeroQuebras;
+            MontarCabecalhoRegistros(estudante);
+        }
+
+        if (contadorDescricao > 1)
+        {
+            contadorDescricao = 0;
+            contadorQuebrarPagina++;
+        }
+        return "";
+    }
+
+    string SomaLinhasContador(int numeroLinhasDescricao)
+    {
+        if (numeroLinhasDescricao > 1)
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
+        }
+        else
+        {
+            contadorQuebrarPagina++;
+        }
+        return "";
+    }
+
+    string MontarCabecalhoRegistros(string nome)
+    {
+        <thead>
+            <tr>
+                <td colspan="3">@nome</td>
+            </tr>
+            <tr>
+                <td>DATA</td>
+                <td>DESCRIÇÃO</td>
+                <td>REGISTRADO POR</td>
+            </tr>
+        </thead>
+        return "";
+    }
+
+    string MontarDescricao(string dataRegistro, string descricao, string registradoPor)
+    {
+        <tr>
+            <td width="10%">@dataRegistro</td>
+            <td width="60%" class="justificar">@descricao</td>
+            <td width="30%" style="padding:0 3px">@registradoPor</td>
+        </tr>
+        return "";
+    }
+
+    string CalcularDescricao(string estudante, string descricaoRestante, string dataRegistro, string registradoPor)
+    {
+        int numeroLinhasDescricaoRestante = CalcularLinhas(descricaoRestante.Length, 100);
+
+        if (numeroLinhasDescricaoRestante > 36)
+        {
+            DivideDescricao(estudante, descricaoRestante, dataRegistro, registradoPor);
+        }
+        else
+        {
+            @Html.Raw(QuebrarLinhas(estudante, numeroLinhasDescricaoRestante))
+            @Html.Raw(MontarDescricao(dataRegistro, descricaoRestante, registradoPor))
+            @Html.Raw(SomaLinhasContador(numeroLinhasDescricaoRestante))
+        }
+
+        return "";
+    }
+
+    string DivideDescricao(string estudante, string descricao, string dataRegistro, string registradoPor)
+    {
+        var descricaoDivida = descricao.Substring(0, 3600);
+        var descricaoRetante = descricao.Substring(3601);
+        @Html.Raw(QuebrarLinhas(estudante, 43))
+        @Html.Raw(MontarDescricao(dataRegistro, descricaoDivida, registradoPor))
+        @Html.Raw(SomaLinhasContador(43))
+        CalcularDescricao(estudante, descricaoRetante, dataRegistro, registradoPor);
+
+        return "";
+    }
+
+    
+<table class="tabela-cabecalho">
+
+    @Html.Raw(MontarCabecalhoRegistros(Model.Nome))
+    @SomaLinhasContador(2)
+
+    <tbody>
+        @foreach (var registros in Model.Registros)
+        {
+            var estudante = Model.Nome;
+            var descricao = registros.Descricao;
+            var registradoPor = registros.RegistradoPor;
+            var dataRegistro = registros.DataRegistro;
+
+            int numeroLinhasDescricao = CalcularLinhas(descricao.Length, 80);
+            int numeroLinhasResgistradoPor = CalcularLinhas(registradoPor.Length, 30);
+            int numeroCalulo = numeroLinhasDescricao > numeroLinhasResgistradoPor ? numeroLinhasDescricao : numeroLinhasResgistradoPor;
+
+            if (numeroLinhasDescricao > 36)
+            {
+                DivideDescricao(estudante, descricao, dataRegistro, registradoPor);
+            }
+            else
+            {
+                @Html.Raw(QuebrarLinhas(estudante, numeroCalulo))
+                @Html.Raw(SomaLinhasContador(numeroCalulo))
+                @Html.Raw(MontarDescricao(dataRegistro, descricao, registradoPor))
+            }
+        }
+    </tbody>
+</table>
+            }

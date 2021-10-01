@@ -20,12 +20,12 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> Handle(ObterNotasRelatorioBoletimQuery request, CancellationToken cancellationToken)
         {
-            var notas = await notasConceitoRepository.ObterNotasTurmasAlunos(request.CodigosTurma, request.CodigosAlunos);
+            var notas = await notasConceitoRepository.ObterNotasTurmasAlunos(request.CodigosAlunos, request.CodigosTurmas, request.AnoLetivo, request.Modalidade, request.Semestre);
 
             if (notas == null || !notas.Any())
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
 
-            return notas.GroupBy(nf => nf.CodigoTurma);
+            return notas.GroupBy(nf => nf.CodigoAluno);
         }
     }
 }

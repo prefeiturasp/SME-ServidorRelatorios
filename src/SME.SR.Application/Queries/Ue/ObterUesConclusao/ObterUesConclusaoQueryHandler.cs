@@ -9,18 +9,17 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterUesConclusaoQueryHandler : IRequestHandler<ObterUesConclusaoQuery, IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>>
+    public class ObterUesConclusaoQueryHandler : IRequestHandler<ObterUesConclusaoQuery, IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>>>
     {
-        public IMediator mediator;
+        private readonly IMediator mediator;
 
         public ObterUesConclusaoQueryHandler(IMediator mediator)
         {
-            this.mediator = mediator;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IEnumerable<IGrouping<long, UeConclusaoPorAlunoAno>>> Handle(ObterUesConclusaoQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>>> Handle(ObterUesConclusaoQuery request, CancellationToken cancellationToken)
         {
-
             var pareceresConclusivosIds = await mediator.Send(new ObterPareceresConclusivosPorTipoAprovacaoQuery(true));
             if (!pareceresConclusivosIds.Any())
                 throw new NegocioException("Não foi possível localizar os pareceres conclusivos.");
@@ -30,11 +29,14 @@ namespace SME.SR.Application
             if (!informacoesDosAlunos.Any())
                 throw new NegocioException("Não foi possível obter a informação dos alunos.");
 
+            var codigosTurma = informacoesDosAlunos.Select(x => Convert.ToInt64(x.CodigoTurma)).Distinct().ToArray();
+
+            var turmasDetalhe = await mediator.Send(new ObterTurmasDetalhePorCodigoQuery(codigosTurma));
             //Obter as turmas dos Alunos
             var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigosAlunos, pareceresConclusivosIds.ToArray()));
-
-            if (!turmasDosAlunos.Any())
-                throw new NegocioException("Não foi possível obter os dados das turmas dos alunos.");
+            var turmasRegularesDosAlunos = turmasDosAlunos?.Where(x => x.TipoTurma == TipoTurma.Regular).ToList();
+            if (turmasRegularesDosAlunos == null || !turmasRegularesDosAlunos.Any())
+                return new List<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>>();
 
             var ues = await mediator.Send(new ObterUePorCodigosQuery(informacoesDosAlunos.Select(u => u.CodigoEscola).Distinct().ToArray()));
 
@@ -42,21 +44,23 @@ namespace SME.SR.Application
 
             var ciclos = await mediator.Send(new ObterCiclosPorModalidadeQuery(request.Modalidade));
 
-            foreach (var turmaAluno in turmasDosAlunos)
+            foreach (var turmaRegularAluno in turmasRegularesDosAlunos.Where(tra => tra.Modalidade == request.Modalidade))
             {
-                var turmaAlunoEol = informacoesDosAlunos.FirstOrDefault(a => a.CodigoAluno == turmaAluno.AlunoCodigo &&
-                                                                             a.CodigoTurma.ToString() == turmaAluno.TurmaCodigo &&
+                var turmaAlunoEol = informacoesDosAlunos.FirstOrDefault(a => a.CodigoAluno == turmaRegularAluno.AlunoCodigo &&
+                                                                             a.CodigoTurma.ToString() == turmaRegularAluno.TurmaCodigo &&
                                                                              ((a.AnoLetivo < DateTime.Now.Year && a.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Concluido) ||
                                                                              (a.AnoLetivo == DateTime.Now.Year && a.EstaAtivo(DateTime.Now))));
 
                 if (turmaAlunoEol != null)
                 {
                     var ue = ues.FirstOrDefault(ue => ue.Codigo == turmaAlunoEol.CodigoEscola);
+                    var turmaDetalhe = turmasDetalhe.FirstOrDefault(t => t.Codigo == turmaAlunoEol.CodigoTurma.ToString());
 
                     foreach (var ciclo in ciclos)
                     {
-                        var descricaoAno = request.Modalidade == Modalidade.EJA ? $"{ciclo.Descricao} - {(turmaAluno.EtapaEJA == 1 ? "I" : "II")}" : $"{ciclo.Ano}º ano";
-                        var existeRegistro = uesConclusao.FirstOrDefault(u => u.TurmaAno == descricaoAno && u.AlunoCodigo == turmaAluno.AlunoCodigo) != null;
+                        var etapaEja = turmaRegularAluno.EtapaEJA == 1 ? "I" : "II";
+                        var descricaoAno = request.Modalidade == Modalidade.EJA ? $"{ciclo.Descricao} - {etapaEja}" : $"{ciclo.Ano}º ano";
+                        var existeRegistro = uesConclusao.FirstOrDefault(u => u.TurmaAno == descricaoAno && u.AlunoCodigo == turmaRegularAluno.AlunoCodigo) != null;
                         if (!existeRegistro)
                         {
                             if (request.Modalidade == Modalidade.EJA)
@@ -64,7 +68,7 @@ namespace SME.SR.Application
                                 descricaoAno = $"{ciclo.Descricao} - I";
                                 uesConclusao.Add(new UeConclusaoPorAlunoAno()
                                 {
-                                    AlunoCodigo = turmaAluno.AlunoCodigo,
+                                    AlunoCodigo = turmaRegularAluno.AlunoCodigo,
                                     TurmaAno = descricaoAno,
                                     UeCodigo = null,
                                     UeNome = null,
@@ -72,7 +76,7 @@ namespace SME.SR.Application
                                 descricaoAno = $"{ciclo.Descricao} - II";
                                 uesConclusao.Add(new UeConclusaoPorAlunoAno()
                                 {
-                                    AlunoCodigo = turmaAluno.AlunoCodigo,
+                                    AlunoCodigo = turmaRegularAluno.AlunoCodigo,
                                     TurmaAno = descricaoAno,
                                     UeCodigo = null,
                                     UeNome = null,
@@ -80,23 +84,26 @@ namespace SME.SR.Application
                             }
                             else
                             {
-                                uesConclusao.Add(new UeConclusaoPorAlunoAno()
+                                if (request.Modalidade != Modalidade.Medio || (ciclo.Ano < 4 || (ciclo.Ano > 3 && turmaDetalhe.EhTurmaMagisterio))) 
                                 {
-                                    AlunoCodigo = turmaAluno.AlunoCodigo,
-                                    TurmaAno = descricaoAno,
-                                    UeCodigo = null,
-                                    UeNome = null,
-                                });
+                                    uesConclusao.Add(new UeConclusaoPorAlunoAno()
+                                    {
+                                        AlunoCodigo = turmaRegularAluno.AlunoCodigo,
+                                        TurmaAno = descricaoAno,
+                                        UeCodigo = null,
+                                        UeNome = null,
+                                    });
+                                }
                             }
                         }
                     }
 
-                    var ueConclusao = uesConclusao.FirstOrDefault(u => u.TurmaAno == turmaAluno.DescricaoAno && u.AlunoCodigo == turmaAluno.AlunoCodigo);
+                    var ueConclusao = uesConclusao.FirstOrDefault(u => u.TurmaAno == turmaRegularAluno.DescricaoAno && u.AlunoCodigo == turmaRegularAluno.AlunoCodigo);
 
                     if (ueConclusao != null)
                     {
-                        ueConclusao.AlunoCodigo = turmaAluno.AlunoCodigo;
-                        ueConclusao.TurmaAno = turmaAluno.DescricaoAno;
+                        ueConclusao.AlunoCodigo = turmaRegularAluno.AlunoCodigo;
+                        ueConclusao.TurmaAno = turmaRegularAluno.DescricaoAno;
                         ueConclusao.UeCodigo = ue.Codigo;
                         ueConclusao.UeNome = ue.NomeComTipoEscolaEDre;
                         ueConclusao.UeMunicipio = "São Paulo";
@@ -106,8 +113,8 @@ namespace SME.SR.Application
                     {
                         uesConclusao.Add(new UeConclusaoPorAlunoAno()
                         {
-                            AlunoCodigo = turmaAluno.AlunoCodigo,
-                            TurmaAno = turmaAluno.DescricaoAno,
+                            AlunoCodigo = turmaRegularAluno.AlunoCodigo,
+                            TurmaAno = turmaRegularAluno.DescricaoAno,
                             UeCodigo = ue.Codigo,
                             UeNome = ue.NomeComTipoEscolaEDre,
                             UeMunicipio = "São Paulo",
@@ -116,7 +123,7 @@ namespace SME.SR.Application
                     }
                 }
             }
-            var alunosAgrupados = uesConclusao.GroupBy(g => g.AlunoCodigo);
+            var alunosAgrupados = uesConclusao.GroupBy(g => (g.AlunoCodigo, request.Modalidade));
             return alunosAgrupados;
 
         }

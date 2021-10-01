@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using System.Timers;
 
 namespace SME.SR.Infra.Utilitarios
 {
@@ -9,8 +8,16 @@ namespace SME.SR.Infra.Utilitarios
         public static string RemoverTagsHtml(string texto)
         {
             texto = Regex.Replace(texto, @"<br[^>]*>", " ");
+            texto = Regex.Replace(texto, @"<p[^>]*>", " ");
+            texto = Regex.Replace(texto, @"<li[^>]*>", " ");
             texto = Regex.Replace(texto, @"<[^>]*>", String.Empty);
             texto = Regex.Replace(texto, @"&nbsp;", " ").Trim();
+            return texto.Trim();
+        }
+
+        public static string RemoverTagsLink(string texto)
+        {
+            texto = Regex.Replace(texto, @"<a[^>]*>", " ");
             return texto.Trim();
         }
 
@@ -18,6 +25,20 @@ namespace SME.SR.Infra.Utilitarios
         {
             texto = Regex.Replace(texto, @"<img[^>]*>", " [arquivo indisponível na impressão] ");
             texto = Regex.Replace(texto, @"<iframe[^>]*>", " [arquivo indisponível na impressão] ");
+            return texto;
+        }
+        public static string RemoverTagsHtmlMultiMidia(string texto)
+        {
+            texto = Regex.Replace(texto, @"<img[^>]*>", " [arquivo indisponível na impressão] ");
+            texto = Regex.Replace(texto, @"<iframe[^>]*>", " [arquivo indisponível na impressão] ");
+            texto = Regex.Replace(texto, @"<video.+</video>", " [arquivo indisponível na impressão] ");
+            return texto;
+        }
+
+        public static string RemoverTagsHtmlVideo(string texto)
+        {
+            texto = Regex.Replace(texto, @"<iframe[^>]*>", " [arquivo indisponível na impressão] ");
+            texto = Regex.Replace(texto, @"<video.+</video>", " [arquivo indisponível na impressão] ");
             return texto;
         }
 

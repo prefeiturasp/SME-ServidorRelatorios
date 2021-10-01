@@ -1,0 +1,451 @@
+﻿@model SME.SR.Infra.RelatorioFrequenciaDto
+
+@{
+    int paginaAtual = 0;
+    double contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 55;
+
+    void MontarComponente(string componenteNome, bool removerBorderTop = false)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 2;
+        <table class="tabela-cabecalho">
+            <thead>
+                <tr>
+                    <th>@componenteNome</th>
+                </tr>
+            </thead>
+        </table>
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent AbrirTabelaAluno(bool imprimeEspaco, bool ehExibirTurma)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        var str = "";
+
+        if (imprimeEspaco)
+        {
+            str+= $@"
+            <table>
+            <tbody>
+                <tr>
+                    <td colspan='4' style='border-bottom: none; border-top: none;'></td>
+                </tr>
+            </tbody>
+            </table>";
+        }
+
+        str += $@"
+        <table class='tabela-cabecalho'>
+        <thead>
+        <tr>
+        ";
+
+        if (ehExibirTurma)
+        {
+            str += $@"<th style='width: 9%;'>TURMA</th>";
+        }
+
+        str+=$@"
+        <th style='width: 6%;'>Nº</th>
+        <th style='width: 35%;' class='alinhar-esquerda espaco-esquerda-8'>NOME</th>
+        <th style='width: 8%;'>PRESENÇA</th>
+        <th style='width: 8%;'>REMOTO</th>
+        <th style='width: 8%;'>AUSÊNCIAS</th>
+        <th style='width: 8%;'>COMPENSAÇÕES</th>
+        <th style='width: 8%;'>FREQ. %</th></tr>
+        </thead>
+        <tbody>";
+
+        return Html.Raw(str);
+    }
+
+    void MontarLinhaAluno(SME.SR.Infra.RelatorioFrequenciaAlunoDto aluno, bool ehExibirTurma)
+    {
+        int numeroCaracteres = aluno == null
+            ?
+            0
+            :
+            string.IsNullOrWhiteSpace(aluno.NomeAluno)
+            ?
+            0
+            :
+            aluno.NomeAluno.Length;
+
+        int maximoCaracteres = 34;
+        if(numeroCaracteres > maximoCaracteres)
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + 1.5;
+        }
+        else {
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        }
+
+        <tr>
+            @if (ehExibirTurma) {
+                <td>@aluno.NomeTurma</td>
+             }
+            <td>@aluno.NumeroChamada</td>
+            <td class="alinhar-esquerda  espaco-esquerda-8">@aluno.NomeAluno</td>
+            <td>@aluno.TotalPresenca</td>
+            <td>@aluno.TotalRemoto</td>
+            <td>@aluno.TotalAusencias</td>
+            <td>@aluno.TotalCompensacoes</td>
+            <td>@aluno.Frequencia</td>
+
+        </tr>
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent FecharTabelaAluno()
+    {
+        var str = $@"</tbody></table>";
+        return Html.Raw(str);
+    }
+
+    void MontarCabecalho(SME.SR.Infra.RelatorioFrequenciaCabecalhoDto cabecalho)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE FREQUÊNCIA</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @cabecalho.Dre.ToUpper()</td>
+                        <td width='60%' class='espaco-esquerda-15'>UE: @cabecalho.Ue.ToUpper()</td>
+                        <td width='20%' class='espaco-esquerda-15'>ANO: @cabecalho.Ano.ToUpper()</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>TURMA: @cabecalho.Turma.ToUpper()</td>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>BIMESTRE: @cabecalho.Bimestre.ToUpper()</td>
+                        <td width='62%' class='sem-border-top espaco-esquerda-15'>COMPONENTE CURRICULAR: @cabecalho.ComponenteCurricular.ToUpper()</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='52%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @cabecalho.Usuario.ToUpper()</td>
+                        <td width='16%' class='sem-border-top espaco-esquerda-15'>RF: @cabecalho.RF</td>
+                        <td width='32%' class='sem-border-top espaco-esquerda-15'>DATA DE IMPRESSÃO: @cabecalho.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarQuebrarPagina()
+    {
+        paginaAtual++;
+        var str = $@"<div style='page-break-before:always' />";
+        return Html.Raw(str);
+    }
+    
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de Frequência</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 3px;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .subtitulo-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .espaco-esquerda-8 {
+            padding-left: 8px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .linha-pendencias {
+            height: 17px !important;
+            font-size: 12px !important;
+        }
+    </style>
+    <div>
+
+        @if (Model.Dres != null)
+        {
+            MontarCabecalho(Model.Cabecalho);
+
+            for (int d = 0; d < Model.Dres.Count; d++)
+            {
+                var dre = Model.Dres[d];
+                @if (Model.Dres[d].Ues != null)
+                {
+                    for (int u = 0; u < Model.Dres[d].Ues.Count; u++)
+                    {
+                        var ue = Model.Dres[d].Ues[u];
+                        if (ue.TurmasAnos != null)
+                        {
+                            for (int a = 0; a < ue.TurmasAnos.Count; a++)
+                            {
+                                var ano = ue.TurmasAnos[a];
+                                if (ano.Bimestres != null)
+                                {
+                                    for (int b = 0; b < ano.Bimestres.Count; b++)
+                                    {
+                                        var bimestre = ano.Bimestres[b];
+                                        bool imprimeEspaco = false;
+                                        bool ehTodasDre = Model.Cabecalho.Dre.ToLower() == "todas";
+                                        bool ehTodosTurmaAno = Model.Cabecalho.Ano.ToLower() == "todos" || Model.Cabecalho.Turma.ToLower() == "todas";
+                                        bool ehTodosBimestre = Model.Cabecalho.Bimestre.ToLower() == "todos";
+                                        bool ehTodosComponentesCurriculares = Model.Cabecalho.ComponenteCurricular.ToLower() == "todos";
+                                        int numeroLinhas = 2;
+
+                                        if (ehTodasDre)
+                                        {
+                                            numeroLinhas++;
+                                        }
+                                        if (ehTodosTurmaAno)
+                                        {
+                                            numeroLinhas++;
+                                        }
+                                        if (ehTodosBimestre)
+                                        {
+                                            numeroLinhas++;
+                                        }
+                                        if (ehTodosComponentesCurriculares)
+                                        {
+                                            numeroLinhas++;
+                                        }
+
+                                        bool quebra = (contadorQuebrarPagina + numeroLinhas) > contadorMaximoLinhasPorPagina;
+
+                                        if (quebra)
+                                        {
+                                            @MontarQuebrarPagina();
+                                            contadorQuebrarPagina = 0;
+                                            MontarCabecalho(Model.Cabecalho);
+                                        }
+
+                                        @if (bimestre.Componentes != null)
+                                        {
+                                            <table class="tabela-cabecalho">
+                                                <thead>
+                                                    @if (ehTodasDre)
+                                                    {
+                                                        <tr>
+                                                            <th>@dre.NomeDre</th>
+                                                        </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+
+                                                        <tr>
+                                                            <th>@ue.NomeUe</th>
+                                                        </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                                        imprimeEspaco = true;
+                                                    }
+                                                    @{contadorQuebrarPagina = contadorQuebrarPagina + 1;}
+                                                    @if (!string.IsNullOrWhiteSpace(Model.Cabecalho.Ano) || ehTodosTurmaAno || string.IsNullOrWhiteSpace(Model.Cabecalho.Turma))
+                                                    {
+                                                        <tr>
+                                                            <th>@ano.Nome</th>
+                                                        </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                                        imprimeEspaco = true;
+                                                    }
+                                                    @if (ehTodosBimestre)
+                                                    {
+                                                        <tr>
+                                                            <th>@bimestre.NomeBimestre</th>
+                                                        </tr>
+                                                        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                                                        imprimeEspaco = true;
+                                                    }
+                                                </thead>
+                                            </table>
+
+                                            var terminouListaAluno = false;
+                                            for (int c = 0; c < ano.Bimestres[b].Componentes.Count; c++)
+                                            {
+                                                var componente = ano.Bimestres[b].Componentes[c];
+
+                                                int numeroLinhasAluno = c == 0 ? 2 : numeroLinhas;
+
+                                                if ((contadorQuebrarPagina + numeroLinhasAluno) > contadorMaximoLinhasPorPagina)
+                                                {
+                                                    @MontarQuebrarPagina();
+                                                    contadorQuebrarPagina = 0;
+                                                    MontarCabecalho(Model.Cabecalho);
+                                                    if (Model.Cabecalho.ComponenteCurricular.ToLower() == "todos")
+                                                        MontarComponente(componente.NomeComponente);
+                                                }
+                                                else
+                                                {
+                                                    if (ehTodosComponentesCurriculares)
+                                                        MontarComponente(componente.NomeComponente, !terminouListaAluno);
+                                                }
+
+                                                terminouListaAluno = false;
+
+                                                @if (componente.Alunos != null)
+                                                {
+                                                    var stiloBorderTop = terminouListaAluno ? "border-top: none;" : "";
+                                                    @AbrirTabelaAluno(imprimeEspaco, ano.EhExibirTurma)
+                                                    for (int i = 0; i < componente.Alunos.Count; i++)
+                                                    {
+                                                        var aluno = componente.Alunos[i];
+                                                        MontarLinhaAluno(aluno, ano.EhExibirTurma);
+
+                                                        var atigiuLimiteDadosPorPagina = contadorQuebrarPagina > contadorMaximoLinhasPorPagina;
+
+                                                        terminouListaAluno = atigiuLimiteDadosPorPagina && componente.Alunos.Count == i + 1;
+
+                                                        @if (atigiuLimiteDadosPorPagina)
+                                                        {
+                                                            @FecharTabelaAluno()
+                                                            @MontarQuebrarPagina();
+                                                            contadorQuebrarPagina = 0;
+                                                            MontarCabecalho(Model.Cabecalho);
+                                                            if (!terminouListaAluno)
+                                                            {
+                                                                MontarComponente(componente.NomeComponente);
+                                                                @AbrirTabelaAluno(imprimeEspaco, ano.EhExibirTurma)
+                                                            }
+                                                        }
+                                                    }
+                                                    if (!terminouListaAluno)
+                                                    {
+                                                        @FecharTabelaAluno()
+                                                    }
+                                                }
+                                            }
+                                        }                                        
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    </div>
+</body>
+</html>

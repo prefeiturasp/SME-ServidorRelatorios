@@ -25,20 +25,20 @@ namespace SME.SR.Application
         {
             List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigosTurma);
 
-            await AdicionarComponentesTerritorio(request.CodigosTurma, componentesCurriculares, request.ComponentesCurricularesApiEol);
+            await AdicionarComponentesTerritorio(request.CodigosTurma, componentesCurriculares, request.ComponentesCurriculares);
 
-            await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurricularesApiEol);
+            await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurriculares);
 
-            return MapearParaDto(componentesCurriculares, request.ComponentesCurricularesApiEol, request.GruposMatriz);
+            return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
-        private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularApiEol> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
+        private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
             return componentesCurriculares?.Select(c => MapearParaDto(c, componentesApiEol, grupoMatrizes));
         }
 
-        private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricularApiEol> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
+        private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == componenteCurricular.Codigo);
+            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo);
 
             return new ComponenteCurricularPorTurmaRegencia
             {
@@ -51,12 +51,12 @@ namespace SME.SR.Application
                 Frequencia = componenteCurricular.ControlaFrequencia(componentesApiEol),
                 Regencia = componenteCurricular.EhRegencia(componentesApiEol) || componenteCurricular.ComponentePlanejamentoRegencia,
                 TerritorioSaber = componenteCurricular.TerritorioSaber,
-                BaseNacional = componenteCurricularEol?.EhBaseNacional ?? false,
-                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.IdGrupoMatriz)
+                BaseNacional = componenteCurricularEol?.BaseNacional ?? false,
+                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId)
             };
         }
 
-        private async Task AdicionarComponentesPlanejamento(List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
+        private async Task AdicionarComponentesPlanejamento(List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol)
         {
             var componentesRegencia = componentesCurriculares.Where(c => c.EhRegencia(componentesApiEol));
             if (componentesRegencia != null && componentesRegencia.Any())
@@ -111,12 +111,12 @@ namespace SME.SR.Application
             return componentes.Where(c => ids.Contains(c.Codigo));
         }
 
-        private async Task AdicionarComponentesTerritorio(string[] codigosTurma, List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
+        private async Task AdicionarComponentesTerritorio(string[] codigosTurma, List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol)
         {
-            var componentesTerritorioApiEol = componentesApiEol?.Where(x => x.EhTerritorio)?.ToList();
+            var componentesTerritorioApiEol = componentesApiEol?.Where(x => x.TerritorioSaber)?.ToList();
             if (componentesTerritorioApiEol != null && componentesTerritorioApiEol.Any())
             {
-                var codigoDisciplinasTerritorio = componentesCurriculares.Where(x => componentesTerritorioApiEol.Any(z => x.Codigo == z.IdComponenteCurricular))?.Select(t => t.Codigo)?.Distinct();
+                var codigoDisciplinasTerritorio = componentesCurriculares.Where(x => componentesTerritorioApiEol.Any(z => x.Codigo == z.Codigo))?.Select(t => t.Codigo)?.Distinct();
 
                 if (codigoDisciplinasTerritorio != null && codigoDisciplinasTerritorio.Any())
                 {

@@ -1,13 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SME.SR.Application;
+using SME.SR.Application.Interfaces;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.MVC.Controllers
@@ -15,10 +18,13 @@ namespace SME.SR.MVC.Controllers
     public class RelatoriosController : Controller
     {
         private readonly ILogger<RelatoriosController> _logger;
+        private readonly IMediator mediator;
         private Random rnd = new Random();
-        public RelatoriosController(ILogger<RelatoriosController> logger)
+
+        public RelatoriosController(ILogger<RelatoriosController> logger, IMediator mediator)
         {
             _logger = logger;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public IActionResult Index()
@@ -42,30 +48,162 @@ namespace SME.SR.MVC.Controllers
 
             return View("RelatorioGraficoBarrasTeste", grafico);
         }
-        [HttpGet("faltas-frequencia")]
+        [HttpGet("frequencia")]
         public async Task<IActionResult> RelatorioFaltasFrequencias([FromServices] IMediator mediator)
         {
-            var model = await mediator.Send(new ObterRelatorioFaltasFrequenciaPdfQuery(new FiltroRelatorioFaltasFrequenciasDto()));
-            //mock
-            model.ExibeFaltas = true;
-            model.ExibeFrequencia = false;
-            model.Dre = "DRE 01";
-            model.Ue = "UE EMEF MÁXIMO DE MOURA 01";
-            model.Ano = "001";
-            model.Bimestre = "1º";
-            model.ComponenteCurricular = "Matemática";
-            model.Usuario = "ADMIN";
-            model.Modalidade = "Fundamental";
-            model.RF = "123123123";
-            model.Data = DateTime.Now.ToString("dd/MM/yyyy");
+            var model = new RelatorioFrequenciaDto();
 
-            return View(model);
+            var alunos = new List<RelatorioFrequenciaAlunoDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var aluno = new RelatorioFrequenciaAlunoDto()
+                {
+                    NumeroChamada = (i + 1).ToString(),
+                    CodigoAluno = 001,
+                    NomeAluno = "Marcos Almeida Machado" + i,
+                    NomeTurma = "Turma 001",
+                    CodigoTurma = "001",
+                    TotalAusencias = 1,
+                    TotalRemoto = 10,
+                    TotalCompensacoes = 1,
+                    TotalPresenca = 19,
+                    TotalAulas = 20,
+                };
+
+                var aluno1 = new RelatorioFrequenciaAlunoDto()
+                {
+                    NumeroChamada = (i + 2).ToString(),
+                    CodigoAluno = 002,
+                    NomeAluno = "Antonio Castro Santana",
+                    NomeTurma = "Turma 001",
+                    CodigoTurma = "001",
+                    TotalAusencias = 3,
+                    TotalRemoto = 10,
+                    TotalCompensacoes = 2,
+                    TotalPresenca = 17,
+                    TotalAulas = 20,
+                };
+                alunos.Add(aluno);
+                alunos.Add(aluno1);
+            }
+
+            var componentes = new List<RelatorioFrequenciaComponenteDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var componente = new RelatorioFrequenciaComponenteDto()
+                {
+                    NomeComponente = "Arte",
+                    CodigoComponente = "001",
+                    Alunos = alunos,
+                };
+                var componente1 = new RelatorioFrequenciaComponenteDto()
+                {
+                    NomeComponente = "Matematica",
+                    CodigoComponente = "002",
+                    Alunos = alunos,
+                };
+
+                componentes.Add(componente);
+                componentes.Add(componente1);
+            }
+
+            var bimestres = new List<RelatorioFrequenciaBimestreDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var bimestre = new RelatorioFrequenciaBimestreDto()
+                {
+                    NomeBimestre = "1º BIMESTRE",
+                    Numero = "1",
+                    Componentes = componentes,
+                };
+                var bimestre1 = new RelatorioFrequenciaBimestreDto()
+                {
+                    NomeBimestre = "2º BIMESTRE",
+                    Numero = "1",
+                    Componentes = componentes
+                };
+                bimestres.Add(bimestre);
+                bimestres.Add(bimestre1);
+            }
+
+            var turmaAnos = new List<RelatorioFrequenciaTurmaAnoDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var turmaAno = new RelatorioFrequenciaTurmaAnoDto()
+                {
+                    Nome = "EF-1A-1ºAno",
+                    Bimestres = bimestres,
+                    EhExibirTurma = false,
+                };
+                var turmaAno1 = new RelatorioFrequenciaTurmaAnoDto()
+                {
+                    Nome = "EF-2A-2ºAno",
+                    Bimestres = bimestres,
+                    EhExibirTurma = false,
+                };
+                turmaAnos.Add(turmaAno);
+                turmaAnos.Add(turmaAno1);
+            }
+
+            var ues = new List<RelatorioFrequenciaUeDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var ue = new RelatorioFrequenciaUeDto()
+                {
+                    CodigoUe = "1",
+                    NomeUe = "CEU EMEF BUTANTA",
+                    TipoUe = TipoEscola.CEMEI,
+                    TurmasAnos = turmaAnos
+                };
+                var ue1 = new RelatorioFrequenciaUeDto()
+                {
+                    CodigoUe = "1",
+                    NomeUe = "CEU EMEI BUTANTA",
+                    TipoUe = TipoEscola.CEMEI,
+                    TurmasAnos = turmaAnos
+                };
+                ues.Add(ue);
+                ues.Add(ue1);
+            }
+
+            var dres = new List<RelatorioFrequenciaDreDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var dre = new RelatorioFrequenciaDreDto()
+                {
+                    CodigoDre = "1",
+                    NomeDre = "DRE-BT",
+                    Ues = ues
+                };
+                var dre1 = new RelatorioFrequenciaDreDto()
+                {
+                    CodigoDre = "1",
+                    NomeDre = "DRE-JT",
+                    Ues = ues
+                };
+                dres.Add(dre);
+                dres.Add(dre1);
+            }
+
+            model.Dres = dres;
+            model.Cabecalho = new RelatorioFrequenciaCabecalhoDto()
+            {
+                Dre = "TODAS",
+                Ue = "TODAS",
+                Ano = "TODOS",
+                Bimestre = "TODOS",
+                ComponenteCurricular = "TODOS",
+                Usuario = "JULIA FERREIRA DE OLIVEIRA ",
+                Turma = "TODOS",
+                RF = "1234567",
+            }; 
+            return View("RelatorioFrequencias", model);
         }
 
         [HttpGet("fechamentos-pendencias")]
         public IActionResult RelatorioFechamentoPendencia([FromServices] IMediator mediator)
         {
-            RelatorioFechamentoPendenciasDto model = GeraVariasPendencias2Componentes2Turmas();
+            RelatorioPendenciasDto model = GeraVariasPendencias2Componentes2Turmas();
 
             return View("RelatorioFechamentoPendencias", model);
         }
@@ -113,9 +251,9 @@ namespace SME.SR.MVC.Controllers
             return View("RelatorioRecuperacaoParalela", model);
         }
 
-        private static RelatorioFechamentoPendenciasDto GeraVariasPendencias2Componentes2Turmas()
+        private static RelatorioPendenciasDto GeraVariasPendencias2Componentes2Turmas()
         {
-            var model = new RelatorioFechamentoPendenciasDto();
+            var model = new RelatorioPendenciasDto();
 
             model.DreNome = "DRE 001";
             model.UeNome = "UE 001";
@@ -129,31 +267,31 @@ namespace SME.SR.MVC.Controllers
             //model.Modalidade = "Fundamental";
             model.RF = "123123123";
             model.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            model.Dre = new RelatorioFechamentoPendenciasDreDto
+            model.Dre = new RelatorioPendenciasDreDto
             {
                 Codigo = "123",
                 Nome = "DRE 01",
-                Ue = new RelatorioFechamentoPendenciasUeDto
+                Ue = new RelatorioPendenciasUeDto
                 {
                     Nome = "UE 01",
                     Codigo = "456",
-                    Turmas = new List<RelatorioFechamentoPendenciasTurmaDto>() {
-                         new RelatorioFechamentoPendenciasTurmaDto() {
+                    Turmas = new List<RelatorioPendenciasTurmaDto>() {
+                         new RelatorioPendenciasTurmaDto() {
                           Nome = "TURMA 01",
-                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                          Bimestres =  new List<RelatorioPendenciasBimestreDto>
                                 {
-                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    new RelatorioPendenciasBimestreDto
                                     {
-                                         Nome="1º BIMESTRE",
-                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         NomeBimestre="1º BIMESTRE",
+                                         Componentes = new List<RelatorioPendenciasComponenteDto>
                                          {
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "001",
                                                      NomeComponente = "Matemática",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -162,7 +300,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -171,7 +309,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -184,13 +322,13 @@ namespace SME.SR.MVC.Controllers
 
                                                       }
                                                },
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "002",
                                                      NomeComponente = "Ciências",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -199,7 +337,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -208,7 +346,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -226,22 +364,22 @@ namespace SME.SR.MVC.Controllers
                                     }
                         }
                          },
-                         new RelatorioFechamentoPendenciasTurmaDto() {
+                         new RelatorioPendenciasTurmaDto() {
                           Nome = "TURMA 02",
-                          Bimestres =  new List<RelatorioFechamentoPendenciasBimestreDto>
+                          Bimestres =  new List<RelatorioPendenciasBimestreDto>
                                 {
-                                    new RelatorioFechamentoPendenciasBimestreDto
+                                    new RelatorioPendenciasBimestreDto
                                     {
-                                         Nome="1º BIMESTRE",
-                                         Componentes = new List<RelatorioFechamentoPendenciasComponenteDto>
+                                         NomeBimestre="1º BIMESTRE",
+                                         Componentes = new List<RelatorioPendenciasComponenteDto>
                                          {
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "001",
                                                      NomeComponente = "Matemática",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -250,7 +388,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -259,7 +397,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -272,13 +410,13 @@ namespace SME.SR.MVC.Controllers
 
                                                       }
                                                },
-                                               new RelatorioFechamentoPendenciasComponenteDto()
+                                               new RelatorioPendenciasComponenteDto()
                                                {
                                                     CodigoComponente = "002",
                                                      NomeComponente = "Ciências",
-                                                      Pendencias = new List<RelatorioFechamentoPendenciasPendenciaDto>
+                                                      Pendencias = new List<RelatorioPendenciasPendenciaDto>
                                                       {
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -287,7 +425,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -296,7 +434,7 @@ namespace SME.SR.MVC.Controllers
                                                             NomeUsuarioAprovacao = "nome usuário aprovação",
                                                             Situacao = "situação do aluno"
                                                            },
-                                                           new RelatorioFechamentoPendenciasPendenciaDto() {
+                                                           new RelatorioPendenciasPendenciaDto() {
                                                             CodigoUsuarioAprovacaoRf  = "teste",
                                                             CodigoUsuarioRf = "123",
                                                             DescricaoPendencia = "descrição da pendencia",
@@ -1342,6 +1480,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioPlanoAula", model);
         }
 
+        [HttpGet("sondagem-numeros")]
         public async Task<IActionResult> SondagemComponentesNumeros([FromServices] IMediator mediator)
         {
             var linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
@@ -7266,7 +7405,446 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
 
             //return View("RelatorioControlePlanejamentoDiarioInfantil", model);
         }
-    }
 
+        [HttpGet("relatorio-devolutivas")]
+        public IActionResult RelatorioDevolutivas()
+        {
+            var turmas = new List<TurmasDevolutivasDto>();
+            var devolutivas1 = new List<DevolutivaRelatorioDto>();
+            var devolutivas2 = new List<DevolutivaRelatorioDto>();
+
+            for (var i = 0; i < 3; i++)
+            {
+                var DiasIntervalos1 = new List<String>();
+                for (var j = 0; j < 3; j++)
+                {
+                    DiasIntervalos1.Add(DateTime.Now.AddDays(j - 1).ToString("dd/MM"));
+                }
+
+                DevolutivaRelatorioDto valoresDevolutivas1 = new DevolutivaRelatorioDto()
+                {
+                    IntervaloDatas = DateTime.Now.AddDays(i).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(i + 5).ToString("dd/MM/yyyy"),
+                    DiasIntervalo = String.Join(", ", DiasIntervalos1.ToArray()),
+                    DataRegistro = DateTime.Now.AddDays(i + 10).ToString("dd/MM/yyyy"),
+                    ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
+                    Descricao = "77777777777777777777777777777777777777777777777777777777777777778888888888888888888888888888899999999999999999999999999999999999999999998888888888888888888888888888999999999999999999999997777777777777777777798888888"
+                };
+                devolutivas1.Add(valoresDevolutivas1);
+            }
+
+            for (var i = 0; i < 6; i++)
+            {
+                var DiasIntervalos2 = new List<String>();
+                for (var j = 0; j < 4; j++)
+                {
+                    DiasIntervalos2.Add(DateTime.Now.AddDays(j - 20).ToString("dd/MM"));
+                }
+
+                DevolutivaRelatorioDto valoresDevolutivas2 = new DevolutivaRelatorioDto()
+                {
+                    IntervaloDatas = DateTime.Now.AddDays(i).ToString("dd/MM/yyyy") + " até " + DateTime.Now.AddDays(i - 20).ToString("dd/MM/yyyy"),
+                    DiasIntervalo = String.Join(", ", DiasIntervalos2.ToArray()),
+                    DataRegistro = DateTime.Now.AddDays(i - 10).ToString("dd/MM/yyyy"),
+                    ResgistradoPor = "REGINA DA SILVA CAVALCANTE (2547458)",
+                    Descricao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled. "
+                };
+                devolutivas2.Add(valoresDevolutivas2);
+            }
+
+            for (var i = 0; i < 1; i++)
+            {
+
+                var turmasDevolutivasDto1 = new TurmasDevolutivasDto()
+                {
+                    NomeTurma = i + 1 + "A",
+                    Bimestres = new List<BimestresDevolutivasDto>()
+                    {
+                        new BimestresDevolutivasDto()
+                        {
+                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            Devolutivas = devolutivas1
+                        },
+
+                    }
+                };
+                turmas.Add(turmasDevolutivasDto1);
+            }
+
+            for (var i = 0; i < 1; i++)
+            {
+
+                var turmasDevolutivasDto2 = new TurmasDevolutivasDto()
+                {
+                    NomeTurma = i + 1 + "B",
+                    Bimestres = new List<BimestresDevolutivasDto>()
+                    {
+                        new BimestresDevolutivasDto()
+                        {
+                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            Devolutivas = devolutivas2
+                        },
+                        // new BimestresDevolutivasDto()
+                        //{
+                        //    NomeBimestre = "2º Bimestre (02/02/2020 à 29/04/2020)",
+                        //    Devolutivas = devolutivas1
+                        //}
+                    }
+                };
+                turmas.Add(turmasDevolutivasDto2);
+            }
+
+            var model = new RelatorioDevolutivasDto()
+            {
+                Dre = "DRE - BT",
+                Ue = "CEU EMEF BUTANTA",
+                Turma = "Todas",
+                Bimestre = "Todos",
+                Usuario = "Anala Ferreira de Oliveira",
+                RF = "9879878",
+                DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                ExibeConteudoDevolutivas = true,
+                Turmas = turmas
+            };
+
+            return View("RelatorioDevolutivas", model);
+        }
+
+        [HttpGet("relatorio-registro-itinerancia")]
+        public IActionResult RelatorioRegistroItinerancia()
+        {
+            var registros = new List<RegistrosRegistroItineranciaDto>();
+            var objetivos1 = new List<ObjetivosRegistroItineranciaDto>();
+
+            for (var i = 0; i < 1; i++)
+            {
+                var objetivo1 = new ObjetivosRegistroItineranciaDto()
+                {
+                    NomeObjetivo = "Mapeamento dos estudantes público da educação especial " + i,
+                };
+                var objetivo2 = new ObjetivosRegistroItineranciaDto()
+                {
+                    NomeObjetivo = "Reunião - Discussão sobre melhorias da SRM " + i,
+                };
+                objetivos1.Add(objetivo1);
+                objetivos1.Add(objetivo2);
+            }
+
+            var alunos1 = new List<AlunoRegistroItineranciaDto>();
+
+            for (var i = 0; i < 4; i++)
+            {
+                var aluno1 = new AlunoRegistroItineranciaDto()
+                {
+                    Estudante = "ALANA FERREIRA DE OLIVEIRA (1234567) - EF-" + i + "A",
+                    DescritivoEstudante = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                };
+                var aluno2 = new AlunoRegistroItineranciaDto()
+                {
+                    Estudante = "FERNANDO DOS SANTOS (1234567) - EF-" + i + "B",
+                    DescritivoEstudante = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                };
+                alunos1.Add(aluno1);
+                alunos1.Add(aluno2);
+            }
+
+            RegistrosRegistroItineranciaDto registro1 = new RegistrosRegistroItineranciaDto()
+            {
+                Dre = "DRE - BT",
+                Ue = "CEU EMEF BUTANTA",
+                DataVisita = DateTime.Now.ToString("dd/MM/yyyy"),
+                DataRetorno = DateTime.Now.ToString("dd/MM/yyyy"),
+                Objetivos = objetivos1,
+                Alunos = alunos1,
+            };
+
+            RegistrosRegistroItineranciaDto registro2 = new RegistrosRegistroItineranciaDto()
+            {
+                Dre = "DRE - BT",
+                Ue = "CEU EMEF BUTANTA",
+                DataVisita = DateTime.Now.ToString("dd/MM/yyyy"),
+                DataRetorno = DateTime.Now.ToString("dd/MM/yyyy"),
+                Objetivos = objetivos1,
+                AcompanhamentoSituacao = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                Encaminhamentos = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            };
+            registros.Add(registro1);
+            registros.Add(registro2);
+
+            var model = new RelatorioRegistroItineranciaDto()
+            {
+                Usuario = "Catia Pereira de Souza",
+                RF = "9879878",
+                DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                Registros = registros
+            };
+
+            return View("RelatorioRegistroItinerancia", model);
+        }
+
+        [HttpGet("relatorio-ata-final")]
+        public async Task<IActionResult> RelatorioAtaFinal()
+        {
+
+            var filtro = new FiltroConselhoClasseAtaFinalDto()
+            {
+                AnoLetivo = 2021,
+                TurmasCodigos = new[] { "2317820" },
+                Visualizacao = AtaFinalTipoVisualizacao.Estudantes
+            };
+
+            var mensagensErro = new StringBuilder();
+            var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtro));
+
+            //var rel = relatoriosTurmas.Where(a => a.GruposMatriz)
+            return View("RelatorioAtasComColunaFinal", relatoriosTurmas[2]);
+        }
+
+        [HttpGet("registro-individual")]
+        public async Task<IActionResult> RegistroIndividual([FromServices] IRelatorioRegistroIndividualUseCase useCase)
+        {
+            var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioRegistroIndividualDto() { TurmaId = 615813, DataInicio = DateTime.Now.AddDays(-90), DataFim = DateTime.Now, UsuarioNome = "ALANA FERREIRA DE OLIVEIRA", UsuarioRF = "1234567" }, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
+
+            await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem, CodigoCorrelacao = Guid.NewGuid() });
+
+            return default;
+        }
+
+        [HttpGet("acompanhamento-aprendizagem")]
+        public async Task<IActionResult> AcompanhamentoAprendizagem([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+            try
+            {
+                var mensagem = JsonConvert.SerializeObject(new FiltroRelatorioAcompanhamentoAprendizagemDto() { Semestre = 1, TurmaId = 615813 }, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+                await useCase.Executar(new FiltroRelatorioDto() { Mensagem = mensagem });
+                //  var model = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(615822, "6731135", 1));
+                return View("RelatorioAcompanhamentoAprendizagem", null);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                throw ex;
+            }
+        }
+
+        [HttpGet("boletim-escolar-detalhado")]
+        public async Task<IActionResult> RelatorioBoletimEscolarDetalhado([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+
+            var boletimEscolarDetalhadoDto = new BoletimEscolarDetalhadoDto();
+
+            var aluno01 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Emerson Ferreira e Silva",
+                    CodigoEol = "1234567",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                },
+                ParecerConclusivo = "Retido",
+                RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+
+                RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno01);
+
+            var aluno02 = new BoletimEscolarDetalhadoAlunoDto()
+            {
+                Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+                {
+                    NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+                    NomeUe = "CEU EMEF PARAISOPOLIS",
+                    NomeTurma = "EM-3A",
+                    Aluno = "Maria Ferreira e Silva",
+                    CodigoEol = "1234568",
+                    Data = "01/06/2021",
+                    FrequenciaGlobal = "100%",
+                    Foto = "https://via.placeholder.com/80",
+                    Ciclo = "Médio"
+                },
+
+                ParecerConclusivo = "",
+                RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+
+                RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+                blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+                vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+                feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+                nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+                laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+                lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+                Duis at tellus at urna condimentum mattis.",
+            };
+            boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
+
+
+            var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+
+            return View("RelatorioBoletimEscolarDetalhado", model);
+
+        }
+
+        //[HttpGet("boletim-escolar-detalhado")]
+        //public async Task<IActionResult> RelatorioBoletimEscolarDetalhado([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        //{
+
+        //    var boletimEscolarDetalhadoDto = new BoletimEscolarDetalhadoDto();
+
+        //    var aluno01 = new BoletimEscolarDetalhadoAlunoDto()
+        //    {
+        //        Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+        //        {
+        //            NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+        //            NomeUe = "CEU EMEF PARAISOPOLIS",
+        //            NomeTurma = "EM-3A",
+        //            Aluno = "Emerson Ferreira e Silva",
+        //            CodigoEol = "1234567",
+        //            Data = "01/06/2021",
+        //            FrequenciaGlobal = "100%",
+        //            Foto = "https://via.placeholder.com/80",
+        //            Ciclo = "Médio"
+        //        },
+        //        ParecerConclusivo = "Retido",
+        //        RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        //        eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+        //        blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+        //        vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+        //        feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+        //        nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+        //        laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+        //        lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+        //        Duis at tellus at urna condimentum mattis.",
+
+        //        RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        //        eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+        //        blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+        //        vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+        //        feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+        //        nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+        //        laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+        //        lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+        //        Duis at tellus at urna condimentum mattis.",
+        //    };
+        //    boletimEscolarDetalhadoDto.Boletins.Add(aluno01);
+
+        //    var aluno02 = new BoletimEscolarDetalhadoAlunoDto()
+        //    {
+        //        Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto()
+        //        {
+        //            NomeDre = "DIRETORIA REGIONAL DE EDUCAÇÃO CAMPO LIMPO",
+        //            NomeUe = "CEU EMEF PARAISOPOLIS",
+        //            NomeTurma = "EM-3A",
+        //            Aluno = "Maria Ferreira e Silva",
+        //            CodigoEol = "1234568",
+        //            Data = "01/06/2021",
+        //            FrequenciaGlobal = "100%",
+        //            Foto = "https://via.placeholder.com/80",
+        //            Ciclo = "Médio"
+        //        },
+
+        //        ParecerConclusivo = "",
+        //        RecomendacoesEstudante = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        //        eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+        //        blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+        //        vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+        //        feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+        //        nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+        //        laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+        //        lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+        //        Duis at tellus at urna condimentum mattis.",
+
+        //        RecomendacoesFamilia = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+        //        eiusmod tempor incididunt ut labore et dolore magna aliqua. Non
+        //        blandit massa enim nec dui nunc mattis enim ut. Nunc mi ipsum faucibus
+        //        vitae aliquet. Semper quis lectus nulla at volutpat diam. Molestie ac
+        //        feugiat sed lectus vestibulum. Nec tincidunt praesent semper feugiat
+        //        nibh sed pulvinar. Ut consequat semper viverra nam libero justo
+        //        laoreet sit amet. Est sit amet facilisis magna etiam tempor orci eu
+        //        lobortis. Massa placerat duis ultricies lacus sed turpis tincidunt.
+        //        Duis at tellus at urna condimentum mattis.",
+        //    };
+        //    boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
+
+
+        //    var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+
+        //    return View("RelatorioBoletimEscolarDetalhado", model);
+
+        //}
+
+
+        [HttpGet("acompanhamento-aprendizagem-teste")]
+        public async Task<IActionResult> AcompanhamentoAprendizagemTeste([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
+        {
+            try
+            {
+                var dto = new RelatorioAcompanhamentoAprendizagemDto();
+                return View("RelatorioAcompanhamentoAprendizagemTeste", dto);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("acompanhamento-fechamento")]
+        public async Task<IActionResult> AcompanhamentoFechamento([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
+        {
+            try
+            {
+                var mensagem = JsonConvert.SerializeObject(new RelatorioAcompanhamentoFechamentoPorUeDto() { }, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+                return default;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
 }
 

@@ -82,6 +82,15 @@ namespace SME.SR.Infra
                     !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo3) ||
                     !string.IsNullOrEmpty(NotaConceitoSegundaEtapaCiclo4)))
                     return true;
+                else if (!Nota && (!string.IsNullOrEmpty(FrequenciaPrimeiraEtapaCiclo1) ||
+                     !string.IsNullOrEmpty(FrequenciaPrimeiraEtapaCiclo2) ||
+                     !string.IsNullOrEmpty(FrequenciaPrimeiraEtapaCiclo3) ||
+                     !string.IsNullOrEmpty(FrequenciaPrimeiraEtapaCiclo4) ||
+                     !string.IsNullOrEmpty(FrequenciaSegundaEtapaCiclo1) ||
+                     !string.IsNullOrEmpty(FrequenciaSegundaEtapaCiclo2) ||
+                     !string.IsNullOrEmpty(FrequenciaSegundaEtapaCiclo3) ||
+                     !string.IsNullOrEmpty(FrequenciaSegundaEtapaCiclo4)))
+                    return true;
 
                 return false;
             }

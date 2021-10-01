@@ -55,7 +55,7 @@
 <table>
     <tbody>
         <tr>
-            <td class='campo-usuario'>PROFESSOR: {Model.Usuario}</td>
+            <td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
             <td class='campo-rf-data'>RF: {Model.RF}</td>
             <td class='campo-rf-data'>DATA: {Model.Data}</td>
         </tr>
@@ -127,13 +127,13 @@
                 }
 
                 str += MontaTitulo(Model.Modalidade);
-                if(ue.Anos.Any())
+                if(ue.TurmasAnos.Any())
                 {
-                    foreach (var ano in ue.Anos)
+                    foreach (var ano in ue.TurmasAnos)
                     {
-                        if(!ano.NomeAno.Equals("Turma de Programa"))
+                        if(!ano.Nome.Equals("Turma de Programa"))
                         {
-                            str += MontaTitulo(ano.NomeAno);
+                            str += MontaTitulo(ano.Nome);
                         }
 
                         if(ano.Bimestres.Any())
@@ -175,9 +175,9 @@
                                                     str += MontaTitulo(ue.NomeUe);
                                                 }
                                                 str += MontaTitulo(Model.Modalidade);
-                                                if (!ano.NomeAno.Equals("Turma de Programa"))
+                                                if (!ano.Nome.Equals("Turma de Programa"))
                                                 {
-                                                    str += MontaTitulo(ano.NomeAno);
+                                                    str += MontaTitulo(ano.Nome);
                                                 }
                                                 str += MontaTitulo(bimestre.NomeBimestre);
                                                 if (Model.ComponenteCurricular == "Todos" || Model.ComponenteCurricular == string.Empty)

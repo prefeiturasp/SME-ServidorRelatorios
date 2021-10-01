@@ -26,19 +26,27 @@ namespace SME.SR.Application
                 var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
-                return componentesDaTurma?.Select(c => new ComponenteCurricularPorTurma
+                List<ComponenteCurricularPorTurma> componentes = new List<ComponenteCurricularPorTurma>();
+
+                foreach (var componente in componentesDaTurma)
                 {
-                    CodDisciplina = c.Codigo,
-                    CodDisciplinaPai = c.CodigoComponentePai(componentesApiEol),
-                    BaseNacional = c.EhBaseNacional(componentesApiEol),
-                    Compartilhada = c.EhCompartilhada(componentesApiEol),
-                    Disciplina = c.DescricaoFormatada,
-                    GrupoMatriz = c.ObterGrupoMatriz(componentesApiEol, gruposMatriz),
-                    LancaNota = c.PodeLancarNota(componentesApiEol),
-                    Regencia = c.EhRegencia(componentesApiEol),
-                    TerritorioSaber = c.TerritorioSaber,
-                    TipoEscola = c.TipoEscola
-                });
+                    var cc = new ComponenteCurricularPorTurma
+                    {
+                        CodDisciplina = componente.Codigo,
+                        CodDisciplinaPai = componente.CodigoComponentePai(componentesApiEol),
+                        BaseNacional = componente.EhBaseNacional(componentesApiEol),
+                        Compartilhada = componente.EhCompartilhada(componentesApiEol),
+                        Disciplina = componente.DescricaoFormatada,
+                        GrupoMatriz = componente.ObterGrupoMatriz(gruposMatriz),
+                        LancaNota = componente.PodeLancarNota(componentesApiEol),
+                        Regencia = componente.EhRegencia(componentesApiEol),
+                        TerritorioSaber = componente.TerritorioSaber,
+                        TipoEscola = componente.TipoEscola,
+                        Frequencia = componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == componente.Codigo) != null ? componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == componente.Codigo).PermiteRegistroFrequencia : false
+                    };
+                    componentes.Add(cc);
+                }
+                return componentes;
             }
 
             return Enumerable.Empty<ComponenteCurricularPorTurma>();

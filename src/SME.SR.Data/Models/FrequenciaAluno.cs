@@ -40,6 +40,8 @@ namespace SME.SR.Data
 
         public long Id { get; set; }
         public int Bimestre { get; set; }
+        public int AnoTurma { get; set; }
+        public ModalidadeTipoCalendario ModalidadeTurma { get; set; }
         public string CodigoAluno { get; set; }
         public string DisciplinaId { get; set; }
         public int NumeroFaltasNaoCompensadas { get => TotalAusencias - TotalCompensacoes; }
@@ -52,7 +54,8 @@ namespace SME.SR.Data
 
                 var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
 
-                return Math.Round(porcentagem, 2);
+                return Math.Round(porcentagem > 100 ? 100 : porcentagem, 2);
+
             }
         }
         public long? PeriodoEscolarId { get; set; }

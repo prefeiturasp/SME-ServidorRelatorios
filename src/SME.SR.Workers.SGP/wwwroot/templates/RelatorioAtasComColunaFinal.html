@@ -1,4 +1,5 @@
-﻿﻿
+﻿@using SME.SR.Infra;
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -86,7 +87,7 @@
         td {
             border: 1px solid #42474a;
             text-align: center;
-            min-width: 13px;
+            min-width: 15px;
         }
 
         .tabela-alunos tr {
@@ -144,7 +145,7 @@
 
     <div class="margin-rel-atas">
         <div>
-            <img class="img-logo-sgp" src="logo.png" alt="Logo SGP" />
+            <img class="img-logo-sgp" src="logoMono.png" alt="Logo SGP" />
         </div>
         <div class="titulo-sgp">SGP - Sistema de gestão Pedagógica</div>
         <div class="titulo-ata">ATA FINAL DE RESULTADOS</div>
@@ -224,23 +225,38 @@
                 </tr>
             </thead>
             <tbody>
+
                 @foreach (var linha in Model.Linhas)
                 {
-                <tr class="@(linha.Inativo ? " estudante-inativo" : "" )">
-                    <td class="alinhar-centro">@linha.Id</td>
-                    @if (linha.Inativo)
-                    {
-                    <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
-                    } else
-                    {
-                    <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
+                IEnumerable
+                <ConselhoClasseAtaFinalCelulaDto>
+                    celulas = linha.Celulas;
+
+                    <tr class="@(linha.Inativo ? " estudante-inativo" : "" )">
+                        <td class="alinhar-centro">@linha.Id</td>
+                        @if (linha.Inativo)
+                        {
+                        <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
+                        }
+                        else
+                        {
+                        <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
+                        }
+                        @foreach (var grupoMatriz in Model.GruposMatriz)
+                        {
+                        foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
+                        {
+                        foreach (var celula in ((IEnumerable<ConselhoClasseAtaFinalCelulaDto>)celulas).Where(a => a.ComponenteCurricular == componenteCurricular.Id))
+                            {
+                                <td>@celula.Valor</td>
+                            }
+                            }
+                           }
+                            @foreach (var celula in ((IEnumerable<ConselhoClasseAtaFinalCelulaDto>)celulas).Where(a => a.GrupoMatriz == 99)){
+                                <td>@celula.Valor</td>
+                                }
+                    </tr>
                     }
-                    @foreach (var celula in linha.Celulas)
-                    {
-                    <td>@celula.Valor</td>
-                    }
-                </tr>
-                }
             </tbody>
         </table>
         <footer class="rodape-rel-atas">

@@ -44,13 +44,16 @@ namespace SME.SR.Application
 
                     MontarCorpo(request, worksheet);
 
+                    if(request.PossuiNotaRodape)
+                        MontarRodape(request, worksheet);
+
                     var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                     var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
                     
                     workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
                 }
-                
-                servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, request.CodigoCorrelacao));
+
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
 
                 return await Task.FromResult(Unit.Value);
             }
@@ -59,6 +62,13 @@ namespace SME.SR.Application
                 SentrySdk.CaptureException(ex);
                 throw ex;
             }
+        }
+
+        private void MontarRodape(GerarExcelGenericoCommand request, IXLWorksheet worksheet)
+        {
+            var ultimaLinha = worksheet.LastRowUsed().RowNumber();
+            worksheet.Row(ultimaLinha + 1).Cell(1).Value = request.NotaRodape;
+            worksheet.Columns().AdjustToContents();
         }
 
         private void MontarCorpo(GerarExcelGenericoCommand request, IXLWorksheet worksheet)

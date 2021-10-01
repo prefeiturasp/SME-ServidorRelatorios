@@ -4,13 +4,14 @@
     "SME.SR.Workers.SGP": {
       "commandName": "Project",
       "launchBrowser": true,
-      "environmentVariables": {
-        "SgpConnection": "User ID=postgres;Password=postgres;Host=10.50.1.33;Port=30808;Database=sgp_db-dev;Pooling=true;",
-        "EolConnection": "Server=10.49.16.60;Database=se1426;User Id=user_se1426_cotic;Password=3ol_c0tic@;MultiSubnetFailover=Yes;ApplicationIntent=ReadOnly;",
-        "EolApiConnection": "User ID=postgres;Password=postgres;Host=10.50.1.33;Port=30808;Database=eol_db-dev;Pooling=true;",
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
       "applicationUrl": "https://localhost:5011/"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "publishAllPorts": true,
+      "useSSL": true
     }
   }
 }

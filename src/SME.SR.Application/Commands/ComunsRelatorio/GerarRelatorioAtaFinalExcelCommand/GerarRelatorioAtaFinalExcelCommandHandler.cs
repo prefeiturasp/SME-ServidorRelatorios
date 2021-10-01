@@ -19,7 +19,6 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IServicoFila servicoFila;
-
         private const int LINHA_CABECALHO_DRE = 6;
         private const int LINHA_CABECALHO_CICLO = 7;
 
@@ -46,8 +45,14 @@ namespace SME.SR.Application
 
                 for (int i = 0; i < dadosAgrupadosTurma.Count(); i++)
                 {
+                    var codigoCorrelacao = Guid.NewGuid();
+                    var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
+                    await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbitSGP.RotaRelatorioCorrelacaoInserir, ExchangeRabbit.Sgp, codigoCorrelacao, request.UsuarioRf)));
+
                     using (var workbook = new XLWorkbook())
                     {
+                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbitSGP.RotaRelatorioCorrelacaoInserir, ExchangeRabbit.Sgp, codigoCorrelacao, request.UsuarioRf)));
+
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
 
                         var objetoExportacao = dadosAgrupadosTurma.ElementAt(i);
@@ -62,22 +67,17 @@ namespace SME.SR.Application
 
                         AdicionarEstilo(worksheet, tabelaDados);
 
-                        var codigoCorrelacao = Guid.NewGuid();
-
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
                         workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
-
-                        var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.ConselhoClasseAtaFinal, TipoFormatoRelatorio.Xlsx);
-                        await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbit.FilaSgp, RotasRabbit.RotaRelatorioCorrelacaoInserir, RotasRabbit.ExchangeSgp, codigoCorrelacao, request.UsuarioRf)));
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
                 }
 
                 foreach (var codigoCorrelacao in lstCodigosCorrelacao)
-                    servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbit.FilaSgp, RotasRabbit.RotaRelatoriosProntosSgp, null, codigoCorrelacao.Key));
+                    await servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(modalidade, codigoCorrelacao.Value), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, codigoCorrelacao.Key));
 
                 return await Task.FromResult(Unit.Value);
             }
@@ -136,12 +136,26 @@ namespace SME.SR.Application
 
             worksheet.Range(LINHA_COMPONENTES + 1, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontSize(5);
 
-            var linhaInicialInativos = tabelaDados.AsEnumerable()
-              .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
+            var linhasAlunosTransferidosComNumeroChamada = tabelaDados.Select("NumeroChamada <> '0' AND NomeAluno like '%(Transferido)%'");
+            foreach (DataRow linha in linhasAlunosTransferidosComNumeroChamada)
+            {
+                int indice = tabelaDados.Rows.IndexOf(linha);
+                worksheet.Range(LINHA_GRUPOS + indice, 1, LINHA_GRUPOS + indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            }
 
+            var linhasAlunosDesistentesComNumeroChamada = tabelaDados.Select("NumeroChamada <> '0' AND NomeAluno like '%(Desistente)%'");
+            foreach (DataRow linha in linhasAlunosDesistentesComNumeroChamada)
+            {
+                int indice = tabelaDados.Rows.IndexOf(linha);
+                worksheet.Range(LINHA_GRUPOS + indice, 1, LINHA_GRUPOS + indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            }
+
+            var linhaInicialInativos = tabelaDados.AsEnumerable()
+                        .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
             var indiceLinhaInativos = tabelaDados.Rows.IndexOf(linhaInicialInativos);
 
-            worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            if(indiceLinhaInativos != -1)
+                worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
             foreach (var celula in worksheet.Range(LINHA_COMPONENTES + 2, 1, ultimaLinhaUsada, ultimaColunaUsada).CellsUsed().Where(c => decimal.TryParse(c.Value.ToString().Replace(",", "."), out _)))
             {

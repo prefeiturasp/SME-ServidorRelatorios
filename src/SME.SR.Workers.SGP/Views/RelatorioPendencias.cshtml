@@ -1,0 +1,592 @@
+﻿@model SME.SR.Infra.RelatorioPendenciasDto
+@{
+    double contadorQuebrarPagina = 0;
+    int contadorCaracteresExtensos = 45;
+    int contadorMaximoLinhasPorPagina = 46;
+    int contadorPagina = 0;
+    bool quebrou = false;
+    int contadorMaximoCaracteresPorLinha = 115;
+    int contadorMaximoCaracteresPorLinhaDescricao = 35;
+
+    string VerificaQuebra(int linhas, string nomeBimestre, string nomeComponente, bool temOutrasPendencias = false)
+    {
+        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            <div style="page-break-before:always"></div>
+
+            MontarCabecalho();
+
+            MontarTitulos(nomeBimestre, nomeComponente, temOutrasPendencias);
+
+            quebrou = true;
+            return string.Empty;
+        }
+
+        quebrou = false;
+        return string.Empty;
+    }
+
+    void MontarLinhaPendenciaSemAprovacao(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias)
+    {
+        <table class="tabela-alunos estilo-texto">
+            <thead>
+            <th style="width: 20%;">TIPO DE PENDÊNCIA</th>
+            <th style="width: 20%;">SITUAÇÃO</th>
+            <th style="width: 60%;">USUÁRIO</th>
+            </thead>
+
+            @{ contadorQuebrarPagina++;}
+
+            <tbody>
+                <tr>
+                    <td>@pendencias.TipoPendencia</td>
+                    <td>@pendencias.Situacao</td>
+                    <td>@pendencias.NomeUsuario</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    void MontarLinhaPendenciaComAprovacao(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias)
+    {
+        <table class="tabela-alunos estilo-texto">
+            <thead>
+            <th style="width: 20%;">TIPO DE PENDÊNCIA</th>
+            <th style="width: 20%;">SITUAÇÃO</th>
+            <th style="width: 30%;">USUÁRIO</th>
+            <th style="width: 30%;">APROVAÇÃO</th>
+            </thead>
+
+            @{ contadorQuebrarPagina++;}
+
+            <tbody>
+                <tr>
+                    <td>@pendencias.TipoPendencia</td>
+                    <td>@pendencias.Situacao</td>
+                    <td>@pendencias.NomeUsuario</td>
+                    <td>@pendencias.NomeUsuarioAprovacao</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    void MontarCabecalhoDetalhamento()
+    {
+        <thead>
+            <th style="width: 40%;">DESCRIÇÃO DA PENDÊNCIA</th>
+            <th style="width: 60%;">DETALHAMENTO</th>
+        </thead>
+    }
+
+    void MontarDetalhamentoRodape()
+    {
+        @Html.Raw("</td></tr></tbody></table>")
+    }
+
+    void MontarLinhaDetalhamento(string tituloPendencia, int numeroCaracteresDescricaoPendencias)
+    {
+        int numeroCaracteresTituloPendencias = tituloPendencia.Length;
+
+        if (numeroCaracteresDescricaoPendencias < numeroCaracteresTituloPendencias)
+        {
+            int numeroLinhas = numeroCaracteresDescricaoPendencias / contadorMaximoCaracteresPorLinhaDescricao;
+            if (numeroLinhas > 1)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+            }
+        }
+
+        @Html.Raw("<tbody><tr><td>");
+        @Html.Raw(tituloPendencia)
+        @Html.Raw("</td><td>");
+    }
+
+    void MontarParteDetalhamento(string tituloPendencia, int numeroCaracteresDescricaoPendencias)
+    {
+        @Html.Raw("<table class='tabela-alunos estilo-texto'>");
+        MontarCabecalhoDetalhamento();
+        contadorQuebrarPagina++;
+        MontarLinhaDetalhamento(tituloPendencia, numeroCaracteresDescricaoPendencias);
+    }
+
+    void MontarQuebraPagina(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias, int numeroCaracteresDetalhamentoPendencias)
+    {
+        contadorQuebrarPagina = 0;
+        MontarDetalhamentoRodape();
+        @Html.Raw("<div style='page-break-before:always'></div>");
+        MontarCabecalho();
+        MontarTitulos(nomeBimestre, nomeComponente, temOutrasPendencias);
+        MontarParteDetalhamento(pendencias.Titulo, numeroCaracteresDetalhamentoPendencias);
+        quebrou = true;
+    }
+
+    void MontarDetalhamentoPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias)
+    {
+        int iContadorCaracteres = 0;
+        var descricaoPendencia = pendencias.DescricaoPendencia;
+        int numeroCaracteresDescricaoPendencias = descricaoPendencia != null ? descricaoPendencia.Length : 0;
+
+        @while (iContadorCaracteres != numeroCaracteresDescricaoPendencias)
+        {
+            contadorMaximoLinhasPorPagina = numeroCaracteresDescricaoPendencias > 3000 ? contadorCaracteresExtensos : contadorMaximoLinhasPorPagina;
+
+            bool quebrarPagina = contadorQuebrarPagina + 2 >= contadorMaximoLinhasPorPagina;
+            if (quebrarPagina)
+            {
+                MontarQuebraPagina(pendencias, nomeBimestre, nomeComponente, temOutrasPendencias, numeroCaracteresDescricaoPendencias);
+            }
+            else
+            {
+                if (!quebrou)
+                {
+                    MontarParteDetalhamento(pendencias.Titulo, numeroCaracteresDescricaoPendencias);
+                }
+
+                var qntCaracteresParaBuscar = numeroCaracteresDescricaoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDescricaoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = descricaoPendencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+                quebrou = true;
+
+                @Html.Raw(textParaExibir)
+
+                contadorQuebrarPagina++;
+            }
+        }
+
+        if (descricaoPendencia == null)
+        {
+            MontarParteDetalhamento(pendencias.DescricaoPendencia, 0);
+        }
+
+        if (pendencias.Detalhes.Count > 0)
+        {
+            foreach (var detalhes in pendencias.Detalhes)
+            {
+                bool quebrarPagina = contadorQuebrarPagina + 0.65 >= contadorMaximoLinhasPorPagina;
+                if (quebrarPagina)
+                {
+                    MontarQuebraPagina(pendencias, nomeBimestre, nomeComponente, temOutrasPendencias, detalhes.Length);
+                }
+
+                if (!quebrarPagina)
+                {
+                    @Html.Raw("<br>")
+                }
+
+                @Html.Raw(detalhes)
+                quebrou = false;
+                contadorQuebrarPagina = contadorQuebrarPagina + 0.65;
+            }
+        }
+
+        string instrucao = pendencias.Instrucao;
+        if (!string.IsNullOrEmpty(instrucao))
+        {
+            @Html.Raw("<br>")
+            @Html.Raw(instrucao)
+
+            int numeroCaracteresInstrucaos = instrucao.Length;
+            int numeroLinhas = numeroCaracteresDescricaoPendencias / numeroCaracteresDescricaoPendencias;
+
+            if (numeroLinhas > 0)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhas;
+            }
+            else
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + 0.5;
+            }
+        }
+
+        MontarDetalhamentoRodape();
+    }
+
+    void MontarLinhaPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, int contadorPendencias, int quantidadePendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias = false)
+    {
+        @if (contadorPendencias != 0 && !quebrou && contadorQuebrarPagina + 2 < contadorMaximoLinhasPorPagina)
+        {
+            <table class="tabela-alunos estilo-texto">
+                <tr style="height: 5px;">
+                    <td colspan="4" class="thLimpo" style="border-top: 0; border-bottom: 0;"></td>
+                </tr>
+            </table>
+        }
+
+        MontarDetalhamentoPendencia(pendencias, nomeBimestre, nomeComponente, temOutrasPendencias);
+
+        VerificaQuebra(2, nomeBimestre, nomeComponente, temOutrasPendencias);
+
+        if (pendencias.ExibirAprovacao)
+        {
+            MontarLinhaPendenciaComAprovacao(pendencias);
+        }
+        else
+        {
+            MontarLinhaPendenciaSemAprovacao(pendencias);
+        }
+
+        quebrou = false;
+        contadorQuebrarPagina++;
+    }
+
+    void MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE PENDÊNCIAS</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%'>DRE: @Model.DreNome</td>
+                        <td width='60%'>UE: @Model.UeNome</td>
+                        <td width='20%'>ANO LETIVO: @Model.Ano</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class='campo-bimestre'>MODALIDADE: @Model.Modalidade</td>
+                        <td class='campo-bimestre'>SEMESTRE: @Model.Semestre</td>
+                        <td class='campo-bimestre'>TURMA: @Model.TurmaNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class='campo-componente-curricular'>
+                            COMPONENTE CURRICULAR: @Model.ComponenteCurricular
+                        </td>
+                        <td class='campo-bimestre'>BIMESTRE: @Model.Bimestre</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class='campo-usuario'>USUÁRIO: @Model.UsuarioLogadoNome</td>
+                        <td class='campo-rf-data'>RF: @Model.UsuarioLogadoRf</td>
+                        <td class='campo-rf-data'>DATA: @Model.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    void MontarLinhaTabela(string nome, bool ehEspacoVazio = false)
+    {
+        var classeEspacoVazio = ehEspacoVazio ? "thLimpo" : "";
+        <table class="tabela-alunos">
+            <thead>
+                <tr>
+                    <th class="@classeEspacoVazio">@nome</th>
+                </tr>
+            </thead>
+        </table>
+    }
+
+    void MontarTitulos(string nomeBimestre, string nomeComponente, bool temOutrasPendencias = false)
+    {
+        if (Model.ComponenteCurricular == "Todos" && !String.IsNullOrEmpty(nomeComponente) && !temOutrasPendencias)
+        {
+            MontarLinhaTabela(nomeComponente);
+            contadorQuebrarPagina++;
+            quebrou = false;
+        }
+
+        if (temOutrasPendencias)
+        {
+            MontarLinhaTabela("Outras pendências");
+            contadorQuebrarPagina++;
+            quebrou = false;
+        }
+    }
+
+    int CalcularNumeroLinhasQuebra(string nomeModalidade, string nomeBimestre)
+    {
+        int contarNumeroLinhas = 0;
+
+        if (Model.TurmaNome == "Todas")
+        {
+            if (!String.IsNullOrEmpty(nomeModalidade))
+                contarNumeroLinhas++;
+            if (nomeModalidade == "EJA")
+                contarNumeroLinhas++;
+
+            contarNumeroLinhas++;
+        }
+
+        if (Model.Bimestre == "Todos" && !String.IsNullOrEmpty(nomeBimestre))
+            contarNumeroLinhas++;
+
+        return contarNumeroLinhas;
+    }
+
+    void MontarPendencias()
+    {
+        int numeroMaximoTurmas = Model.Dre.Ue.Turmas.Count;
+
+        for (int contadorTurmas = 0; contadorTurmas < numeroMaximoTurmas; contadorTurmas++)
+        {
+            @if (Model.Dre.Ue.Turmas[contadorTurmas].Bimestres != null)
+            {
+                int contadorBimestres = 0;
+                int numeroMaximoBimestres = Model.Dre.Ue.Turmas[contadorTurmas].Bimestres.Count;
+                foreach (var bimestre in Model.Dre.Ue.Turmas[contadorTurmas].Bimestres)
+                {
+                    var nomeBimestre = bimestre.NomeBimestre;
+                    var nomeModalidade = bimestre.NomeModalidade;
+
+                    @if (bimestre.Componentes != null)
+                    {
+                        int numLinhas = CalcularNumeroLinhasQuebra(nomeModalidade, nomeBimestre);
+                        VerificaQuebra(numLinhas, String.Empty, String.Empty);
+
+                        if (Model.TurmaNome == "Todas")
+                        {
+                            var turma = Model.Dre.Ue.Turmas[contadorTurmas];
+
+                            if (!String.IsNullOrEmpty(nomeModalidade))
+                            {
+                                MontarLinhaTabela(nomeModalidade);
+
+                                contadorQuebrarPagina++;
+
+                                if (nomeModalidade == "EJA")
+                                {
+                                    MontarLinhaTabela(bimestre.SemestreTurma);
+
+                                    contadorQuebrarPagina++;
+                                }
+                            }
+
+                            MontarLinhaTabela(turma.Nome);
+                            contadorQuebrarPagina++;
+                        }
+
+                        if (Model.Bimestre == "Todos" && !String.IsNullOrEmpty(nomeBimestre))
+                        {
+                            MontarLinhaTabela(nomeBimestre);
+                            contadorQuebrarPagina++;
+                            quebrou = false;
+                        }
+
+                        int numeroMaximoComponentes = bimestre.Componentes.Count;
+                        quebrou = false;
+                        for (int contadorComponentes = 0; contadorComponentes < numeroMaximoComponentes; contadorComponentes++)
+                        {
+                            int linhaQuebra = contadorComponentes != 0 && !quebrou ? 4 : 3;
+                            VerificaQuebra(linhaQuebra, String.Empty, String.Empty);
+
+                            var componente = bimestre.Componentes[contadorComponentes];
+                            var nomeComponente = componente.NomeComponente;
+
+                            if (contadorComponentes != 0 && !quebrou)
+                            {
+                                MontarLinhaTabela(String.Empty, true);
+                                contadorQuebrarPagina++;
+                            }
+
+                            MontarTitulos(nomeBimestre, nomeComponente);
+
+                            if (componente.Pendencias != null)
+                            {
+                                for (int contadorPendencias = 0; contadorPendencias < componente.Pendencias.Count; contadorPendencias++)
+                                {
+                                    var pendencias = componente.Pendencias[contadorPendencias];
+                                    var quantidadeMaximaPendencias = componente.Pendencias.Count;
+                                    MontarLinhaPendencia(pendencias, contadorPendencias, quantidadeMaximaPendencias, nomeBimestre, nomeComponente);
+                                }
+                            }
+                        }
+                    }
+
+                    contadorBimestres++;
+                }
+            }
+        }
+    }
+
+    void MontarOutrasPendencias()
+    {
+        if (Model.Dre.Ue.OutrasPendencias.Count > 0)
+        {
+            quebrou = false;
+            MontarLinhaTabela("Outras pendências");
+
+            int contadorOutrasPendencias = 0;
+            foreach (var outrasPendencias in Model.Dre.Ue.OutrasPendencias)
+            {
+                bool temOutrasPendencias = outrasPendencias.OutrasPendencias;
+
+                var quantidadeMaximaPendencias = Model.Dre.Ue.OutrasPendencias.Count;
+                MontarLinhaPendencia(outrasPendencias, contadorOutrasPendencias, quantidadeMaximaPendencias, "", "", temOutrasPendencias);
+            }
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de Pendências</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        tblTopo th, td {
+            padding: 3px 0px 3px 15px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        .campo-dre {
+            width: 25%;
+        }
+
+        .campo-ue {
+            width: 60%
+        }
+
+        .campo-ano {
+            width: 15%
+        }
+
+        .campo-bimestre {
+            width: 20%;
+            border-top: none;
+        }
+
+        .campo-componente-curricular {
+            width: 80%;
+            border-top: none;
+        }
+
+        .campo-usuario {
+            width: 60%;
+            border-top: none;
+        }
+
+        .campo-rf-data {
+            width: 20%;
+            border-top: none;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-alunos tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-relatorio {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+        }
+
+        .estilo-texto td, .estilo-texto th {
+            text-align: left;
+            padding: 3px 16px
+        }
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+
+            MontarPendencias();
+
+            MontarOutrasPendencias();
+        }
+    </div>
+</body>
+</html>

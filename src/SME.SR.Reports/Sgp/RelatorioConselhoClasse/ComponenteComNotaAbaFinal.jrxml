@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComponenteComNotaContainer" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="517d9b31-0633-4a8a-b1c5-e64dfb836c81">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -68,6 +68,10 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="Frequencia"/>
 			<fieldDescription><![CDATA[Frequencia]]></fieldDescription>
 		</field>
+		<field name="PermiteRegistroFrequencia" class="java.lang.Boolean">
+			<property name="net.sf.jasperreports.json.field.expression" value="permiteRegistroFrequencia"/>
+			<fieldDescription><![CDATA[PermiteRegistroFrequencia]]></fieldDescription>
+		</field>
 	</subDataset>
 	<subDataset name="DatasetRegencia" uuid="0acfadb3-fa95-4191-a669-845c01ac6554">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterAbaFinal.xml"/>
@@ -127,7 +131,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{Nome}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Nome} != null ? $F{Nome} : ""]]></textFieldExpression>
 			</textField>
 			<componentElement>
 				<reportElement positionType="Float" x="0" y="53" width="555" height="30" isRemoveLineWhenBlank="true" uuid="dbcc4fab-41ad-4ff4-b2a1-a1b149afd4f4">
@@ -203,7 +207,7 @@
 							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="57" height="30" uuid="4d5f3172-0543-4f59-a563-3ed75c50fa95"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{Frequencia}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{PermiteRegistroFrequencia} ? ($F{Frequencia} != null ? $F{Frequencia} : "") : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

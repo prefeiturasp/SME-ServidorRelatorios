@@ -53,7 +53,7 @@
         return Html.Raw(str);
     }
 
-    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string nomeTurma, string alunoNome, int alunoFaltas, double alunoFreq)
+    Microsoft.AspNetCore.Html.IHtmlContent MontarLinhaAluno(string alunoNumero, string nomeTurma, string alunoNome, int alunoFaltas, string alunoFreq)
     {
         // Contar
         contadorQuebrarPagina = contadorQuebrarPagina + 1;
@@ -285,11 +285,11 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                     for (int u = 0; u < Model.Dres[d].Ues.Count; u++)
                     {
                         var ue = Model.Dres[d].Ues[u];
-                        if (ue.Anos != null)
+                        if (ue.TurmasAnos != null)
                         {
-                            for (int a = 0; a < ue.Anos.Count; a++)
+                            for (int a = 0; a < ue.TurmasAnos.Count; a++)
                             {
-                                var ano = ue.Anos[a];
+                                var ano = ue.TurmasAnos[a];
                                 if (ano.Bimestres != null)
                                 {
                                     for (int b = 0; b < ano.Bimestres.Count; b++)
@@ -323,7 +323,7 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                                     @if (string.IsNullOrWhiteSpace(Model.Ano) || Model.Ano == "Todos")
                                                     {
                                                         <tr>
-                                                            <th>@ano.NomeAno</th>
+                                                            <th>@ano.Nome</th>
                                                         </tr>
                                                         contadorQuebrarPagina = contadorQuebrarPagina + 1;
                                                     }
@@ -396,7 +396,7 @@ COMPONENTE CURRICULAR: {componenteCurricular}
                                                 }
                                         if (((d + 1 != Model.Dres.Count) ||
                                              (u + 1 != dre.Ues.Count) ||
-                                             (a + 1 != ue.Anos.Count) ||
+                                             (a + 1 != ue.TurmasAnos.Count) ||
                                              (b + 1 != ano.Bimestres.Count)))
                                         {
                                             @MontarQuebrarPagina();

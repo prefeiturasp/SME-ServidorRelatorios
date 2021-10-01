@@ -20,15 +20,30 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletim;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
             var relatorio = await mediator.Send(relatorioQuery);
 
             var jsonString = JsonConvert.SerializeObject(relatorio, UtilJson.ObterConfigConverterNulosEmVazio());
-
-            if (relatorioQuery.Modalidade == Modalidade.EJA)
-                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
-            else
-                await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolar/BoletimEscolar", jsonString, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao));
+            
+            switch (relatorioQuery.Modalidade)
+            {
+                case Modalidade.EJA:
+                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja", 
+                        jsonString, TipoFormatoRelatorio.Pdf, 
+                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
+                    break;
+                case Modalidade.Medio:
+                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio", 
+                        jsonString, TipoFormatoRelatorio.Pdf, 
+                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
+                    break;
+                default:
+                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolar/BoletimEscolar", 
+                        jsonString, TipoFormatoRelatorio.Pdf, 
+                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
+                    break;
+            }   
         }
     }
 }
