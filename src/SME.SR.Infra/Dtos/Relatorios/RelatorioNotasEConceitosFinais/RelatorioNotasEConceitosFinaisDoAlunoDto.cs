@@ -9,6 +9,7 @@
             AlunoNumeroChamada = alunoNumeroChamada;
             AlunoNomeCompleto = alunoNomeCompleto;
             NotaConceito = notaConceito;
+            EmAprovacao = false;
         }
 
         public string TurmaNome { get; set; }
@@ -16,5 +17,6 @@
         public string AlunoNumeroChamada { get; set; }
         public string AlunoNomeCompleto { get; set; }
         public string NotaConceito { get; set; }
+        public bool EmAprovacao { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Relatorios.NotasEConceitosFinais;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -268,6 +269,39 @@ namespace SME.SR.Data
                         return notasFrequenciaAlunoBimestre;
                     }
                     , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
+            }
+        }
+
+        /*
+         , coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
+                	, coalesce(cvc.valor, cvf.valor) as Conceito
+                	, coalesce(ccn.nota, fn.nota) as Nota
+         */
+
+        public async Task<NotaConceitoEmAprovacaoDto> ObterNotaConceitoEmAprovacao(string codigoAluno, long? codigoConselhoClasseAlunoId)
+        {
+            var query = @"select  coalesce(wnc.conceito_id, wnf.conceito_id) as ConceitoId,
+                                  coalesce(cvnc.valor, cvnf.valor) as Conceito,
+                                  coalesce(wnc.nota, wnf.nota) as Nota
+                                    from conselho_classe_nota ccn 
+                                    inner join conselho_classe_aluno cca on cca.id = ccn.conselho_classe_aluno_id
+                                    left join wf_aprovacao_nota_conselho wnc on wnc.conselho_classe_nota_id = ccn.id
+                                    inner join conceito_valores cvnc on cvnc.id = wnc.conceito_id
+                                    inner join fechamento_aluno fa on fa.aluno_codigo = cca.aluno_codigo
+                                    inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
+                                    left join wf_aprovacao_nota_fechamento wnf on wnf.fechamento_nota_id = fn.id
+                                    inner join conceito_valores cvnf on cvnf.id = wnf.conceito_id
+                                    where cca.aluno_codigo = @codigoAluno and cca.id = @codigoConselhoClasseAlunoId order by Nota desc";
+
+            var parametros = new
+            {
+                codigoAluno,
+                codigoConselhoClasseAlunoId
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<NotaConceitoEmAprovacaoDto>(query, parametros);
             }
         }
     }
