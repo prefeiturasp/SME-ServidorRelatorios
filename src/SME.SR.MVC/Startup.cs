@@ -27,6 +27,7 @@ namespace SME.SR.MVC
             {
                 c.Filters.Add(new ExcecaoMiddleware(Configuration));
             });
+            services.AddPolicies();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

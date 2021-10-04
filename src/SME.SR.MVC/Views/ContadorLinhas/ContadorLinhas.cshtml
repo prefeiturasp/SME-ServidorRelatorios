@@ -1,0 +1,12 @@
+﻿<script type="text/javascript">
+    function getElementPosition(id) {
+        const position = document.querySelector(`#${id}`).getBoundingClientRect();
+        console.log(psition);
+    }
+
+    function stringToHTML(str) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(str, 'text/html');
+        return doc.body;
+    }
+</script>

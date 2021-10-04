@@ -216,7 +216,13 @@
         }
     </style>
     <div>
-        @{
+        
+
+    </div>
+</body>
+<script type="text/javascript">
+    window.onload = function () {
+    @{
             @Html.Raw(MontarCabecalho())
 
             for (int a = 0; a < Model.Dre.Ue.Turmas.Count; a++)
@@ -294,7 +300,10 @@
                                         @Html.Raw(MontarCabecalhoCompensacoes())
                                         contadorQuebrarPagina++;
                                     }
-                                    @Html.Raw(MontarTabelaCompensacoes(atividade.CompensacoesAluno))
+
+                                    var tabelaCompensacoes = MontarTabelaCompensacoes(atividade.CompensacoesAluno);
+
+                                    @Html.Raw(tabelaCompensacoes)
 
                                     <table class="tabela-alunos">
                                         <thead>
@@ -310,9 +319,8 @@
                         }
                     }
                 }
-            }
+            
         }
-
-    </div>
-</body>
+    }
+</script>
 </html>
