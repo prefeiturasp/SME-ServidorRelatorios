@@ -202,10 +202,14 @@ namespace SME.SR.Application
                 UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : " - ",
                 NotaConceitoAnterior = tipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAnterior.ToString() : historicoAlteracaoNotas.ConceitoAnteriorId.Name(),
                 NotaConceitoAtribuido = tipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAtribuida.ToString() : historicoAlteracaoNotas.ConceitoAtribuidoId.Name(),
+                EmAprovacao = historicoAlteracaoNotas.EmAprovacao
             };
+
+
 
             return AlunosAlteracaoNotasDto;
         }
+
 
         public string ToTitleCase(string str)
         {

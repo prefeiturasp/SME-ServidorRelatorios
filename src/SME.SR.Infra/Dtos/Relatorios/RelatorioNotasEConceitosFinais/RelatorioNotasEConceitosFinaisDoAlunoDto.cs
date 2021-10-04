@@ -2,7 +2,7 @@
 {
     public class RelatorioNotasEConceitosFinaisDoAlunoDto
     {
-        public RelatorioNotasEConceitosFinaisDoAlunoDto(string turmaNome, int alunoCodigo, string alunoNumeroChamada, string alunoNomeCompleto, string notaConceito, long? conselhoClasseAlunoId)
+        public RelatorioNotasEConceitosFinaisDoAlunoDto(string turmaNome, int alunoCodigo, string alunoNumeroChamada, string alunoNomeCompleto, string notaConceito, long? conselhoClasseAlunoId = 0)
         {
             TurmaNome = turmaNome;
             AlunoCodigo = alunoCodigo;
