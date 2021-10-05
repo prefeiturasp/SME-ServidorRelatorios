@@ -2,20 +2,30 @@
 
 @{
 
-    int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 63;
+        int contadorQuebrarPagina = 0;
+        int contadorMaximoLinhasPorPagina = 63;
 
-    string VerificaQuebra(int valorAdicionalParaSoma)
-    {
-        if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)
+        string Quebra()
         {
             contadorQuebrarPagina = 0;
 
             var str = MontarCabecalho();
-            str = $@"<div style='page-break-before:always' />" + str;
-            return str;
-
+            return $@"<div style='page-break-before:always'> </div>" + str;
         }
+
+        string VerificaQuebra(int valorAdicionalParaSoma)
+        {
+            if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)//&& Model.EmAprovacao)
+            {
+                var quebra = Quebra();
+                return $@"{MontarLegenda()}{quebra}";
+            }
+            else if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina && false)
+            {
+                return Quebra();
+
+            }
+            else 
         return string.Empty;
 
     }
@@ -162,7 +172,19 @@
         return str;
     }
 
+    string MontarLegenda()
+    {
+        return "<span class='legenda'>* Aguardando aprovação</span>";
+    }
 
+    string VerificaMontagemLegendaFim()
+    {
+        if (contadorQuebrarPagina > 0 && Model.EmAprovacao)
+        {
+            return MontarLegenda();
+        }
+        return "";
+    }
 }
 
 <!DOCTYPE html>
@@ -372,10 +394,13 @@
                                 }
                             }
                         }
-                }
-            }
+                }        
+                
+            }                        
         }
-
+       
+        @Html.Raw(VerificaMontagemLegendaFim())                                
+       
     </div>
 </body>
 </html>

@@ -1,49 +1,76 @@
 ﻿@model SME.SR.Infra.RelatorioNotasEConceitosFinaisDto
 
 @{ int contadorQuebrarPagina = 0;
-                int contadorMaximoLinhasPorPagina = 46;
-                int contadorPagina = 0;
+    int contadorMaximoLinhasPorPagina = 46;
+    int contadorPagina = 0;
 
-                string VerificaQuebra()
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            return Quebra();
+
+        }
+        else if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina)
+        {
+            var str = "";
+
+            if (Model.PossuiNotaFechamento)
+            {
+                str += montarLegenda();
+            }
+            if (Model.EmAprovacao)
+            {
+                if(Model.PossuiNotaFechamento)
                 {
-                    if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
-                    {
-                        return Quebra();
-
-                    }
-                    else if (contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina && Model.PossuiNotaFechamento)
-                    {
-                        var quebra = Quebra();
-                        return $@"{montarLegenda()}{quebra}";
-                    }
-                    return string.Empty;
-
+                    str += "<br />";
                 }
+                str += MontarLegendaAprovacao();
+            }
+            str += Quebra();
 
-                string montarLegenda(){
-                    return "<span class='legenda'>* Estudante sem conselho de classe registrado</span>";
-                }
+            return str;
+        }
+        return string.Empty;
 
-                string VerificaMontagemLegendaFim(){
-                    if(contadorQuebrarPagina > 0 && Model.PossuiNotaFechamento){
-                        return montarLegenda();
-                    }
-                    return "";
-                }
+    }
 
-                string Quebra()
-                {
-                    contadorQuebrarPagina = 0;
-                    contadorPagina = contadorPagina + 1;
+    string montarLegenda(){
+        return "<span class='legenda'>* Estudante sem conselho de classe registrado</span>";
+    }
 
-                    var str = MontarCabecalho();
-                    return $@"<div style='page-break-before:always'> </div>" + str;
-                }
+    string VerificaMontagemLegendaFim(){
+        var str = "";
+        bool temLegendaConselho = contadorQuebrarPagina > 0 && Model.PossuiNotaFechamento;
+        if (temLegendaConselho)
+        {
+            str += montarLegenda();
+        }
+        if (Model.EmAprovacao)
+        {
+            if (temLegendaConselho)
+            {
+                str += "<br />";
+            }
+            str += MontarLegendaAprovacao();
+        }
 
-                string CabecalhoTabelaNotas()
-                {
-                    contadorQuebrarPagina++;
-                    return $@"
+        return str;
+    }
+
+    string Quebra()
+    {
+        contadorQuebrarPagina = 0;
+        contadorPagina = contadorPagina + 1;
+
+        var str = MontarCabecalho();
+        return $@"<div style='page-break-before:always'> </div>" + str;
+    }
+
+    string CabecalhoTabelaNotas()
+    {
+        contadorQuebrarPagina++;
+        return $@"
                       <table class='tabela-alunos'>
                           <thead>
                               <th width='5%'>Nº</th>
@@ -53,54 +80,54 @@
                           </thead>
                       </table>";
 
-                }
+    }
 
-                string MontarCorpoInformacoesAluno(List<SME.SR.Infra.RelatorioNotasEConceitosFinaisDoAlunoDto> notas)
-                {
+    string MontarCorpoInformacoesAluno(List<SME.SR.Infra.RelatorioNotasEConceitosFinaisDoAlunoDto> notas)
+    {
 
-                    var str = $@"<table class='tabela-alunos'>
+        var str = $@"<table class='tabela-alunos'>
             <tbody>";
 
-                    foreach (var nota in notas)
-                    {
-                        str += $@"<tr>
+        foreach (var nota in notas)
+        {
+            str += $@"<tr>
                             <td width='5%'>{nota.AlunoNumeroChamada}</td>
                             <td width='10%'>{nota.TurmaNome}</td>
                             <td width='65%'>{nota.AlunoNomeCompleto}</td>
                             <td width='20%'>{nota.NotaConceito}</td>
                         </tr>";
-                        contadorQuebrarPagina++;
+            contadorQuebrarPagina++;
 
-                        var quebra = VerificaQuebra();
+            var quebra = VerificaQuebra();
 
-                        if (!string.IsNullOrEmpty(quebra))
-                        {
-                            str += $@"</tbody></table>{quebra}{CabecalhoTabelaNotas()}<table class='tabela-alunos'><tbody>";
-                        }
-                    }
-                    str += $@"</tbody></table>";
-                    return str;
-                }
+            if (!string.IsNullOrEmpty(quebra))
+            {
+                str += $@"</tbody></table>{quebra}{CabecalhoTabelaNotas()}<table class='tabela-alunos'><tbody>";
+            }
+        }
+        str += $@"</tbody></table>";
+        return str;
+    }
 
-                string EspacoEmBranco()
-                {
-                    if (contadorQuebrarPagina > 9)
-                    {
-                        contadorQuebrarPagina++;
-                        return $@"<table class='tabela-alunos'>
+    string EspacoEmBranco()
+    {
+        if (contadorQuebrarPagina > 9)
+        {
+            contadorQuebrarPagina++;
+            return $@"<table class='tabela-alunos'>
                           <thead>
                               <th class='thLimpo' width='100%'></th>
                           </thead>
                     </table>";
-                    }
-                    else return "";
-                }
+        }
+        else return "";
+    }
 
-                string MontarCabecalho()
-                {
-                    contadorQuebrarPagina = contadorQuebrarPagina + 6;
-                    var str =
-                       $@"<div>
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 6;
+        var str =
+           $@"<div>
 <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
 </div>
 <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
@@ -141,8 +168,16 @@
 </div>
 ";
 
-                    return str;
-                } }
+        return str;
+    }
+
+
+    string MontarLegendaAprovacao(string leg = "")
+    {
+        return "<span class='legenda'># Aguardando aprovação "+leg+"</span>";
+    }
+}
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -410,6 +445,7 @@
                 }
             }
         }
+
         @Html.Raw(VerificaMontagemLegendaFim())
 
     </div>
