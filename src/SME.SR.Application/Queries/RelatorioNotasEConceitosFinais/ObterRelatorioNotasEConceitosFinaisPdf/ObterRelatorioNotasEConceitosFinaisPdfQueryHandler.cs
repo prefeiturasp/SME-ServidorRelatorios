@@ -156,7 +156,7 @@ namespace SME.SR.Application
 
             if(dadosNotasConceitosEmAprovacao != null)
             {
-                notaConceitoNovo.NotaConceito = dadosNotasConceitosEmAprovacao.NotaConceito;
+                notaConceitoNovo.NotaConceito = $"{dadosNotasConceitosEmAprovacao.NotaConceito} #";
                 notaConceitoNovo.EmAprovacao = true;
             }
         }

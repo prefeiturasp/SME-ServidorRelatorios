@@ -3,6 +3,7 @@
 @{
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 44;
+    bool emAprovacao = false;
 
     string Quebra()
     {
@@ -113,13 +114,19 @@
 
     string MontarLegenda()
     {
-        return "<span class='legenda'>* Aguardando aprovação</span>";
+        if (emAprovacao)
+        {
+            emAprovacao = false;
+            return "<span class='legenda'>* Aguardando aprovação</span>";
+        }
+        return "";
     }
 
     string VerificaMontagemLegendaFim()
     {
-        if (contadorQuebrarPagina > 0 && Model.EmAprovacao)
+        if (contadorQuebrarPagina > 0 && emAprovacao)
         {
+            emAprovacao = false;
             return MontarLegenda();
         }
         return "";
@@ -382,6 +389,9 @@
                                             </td>
                                             <td width="28%">@parecerConclusivo.ParecerConclusivoDescricao</td>
                                         </tr>
+
+                                        if (parecerConclusivo.EmAprovacao)
+                                            emAprovacao = true;
 
                                         if (numeroLinhas > 0)
                                         {

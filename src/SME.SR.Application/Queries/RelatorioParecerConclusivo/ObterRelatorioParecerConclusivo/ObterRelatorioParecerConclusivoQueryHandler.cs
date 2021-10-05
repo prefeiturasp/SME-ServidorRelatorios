@@ -176,7 +176,7 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
             string parecerConclusivoDescricao = await mediator.Send(new ObterDescricaoParecerEmAprovacaoQuery(relatorioParecerAluno.AlunoCodigo, ano));
             if(parecerConclusivoDescricao != null)
             {
-                relatorioParecerAluno.ParecerConclusivoDescricao = parecerConclusivoDescricao;
+                relatorioParecerAluno.ParecerConclusivoDescricao = $"{parecerConclusivoDescricao}*";
                 relatorioParecerAluno.EmAprovacao = true;
             }
             else

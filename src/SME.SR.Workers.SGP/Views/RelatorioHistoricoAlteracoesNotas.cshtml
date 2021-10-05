@@ -2,31 +2,32 @@
 
 @{
 
-        int contadorQuebrarPagina = 0;
-        int contadorMaximoLinhasPorPagina = 63;
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 63;
+    bool emAprovacao = false;
 
-        string Quebra()
+    string Quebra()
+    {
+        contadorQuebrarPagina = 0;
+
+        var str = MontarCabecalho();
+        return $@"<div style='page-break-before:always'> </div>" + str;
+    }
+
+    string VerificaQuebra(int valorAdicionalParaSoma)
+    {
+        if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)//&& Model.EmAprovacao)
         {
-            contadorQuebrarPagina = 0;
-
-            var str = MontarCabecalho();
-            return $@"<div style='page-break-before:always'> </div>" + str;
+            var quebra = Quebra();
+            return $@"{MontarLegenda()}{quebra}";
         }
-
-        string VerificaQuebra(int valorAdicionalParaSoma)
+        else if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina && false)
         {
-            if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)//&& Model.EmAprovacao)
-            {
-                var quebra = Quebra();
-                return $@"{MontarLegenda()}{quebra}";
-            }
-            else if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina && false)
-            {
-                return Quebra();
+            return Quebra();
 
-            }
-            else 
-        return string.Empty;
+        }
+        else
+            return string.Empty;
 
     }
 
@@ -163,6 +164,9 @@
 
             str += $@"</tr>";
 
+            if(aluno.EmAprovacao)
+                emAprovacao = true;
+
             var quebra = VerificaQuebra(0);
 
             var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, turma) : "");
@@ -174,13 +178,21 @@
 
     string MontarLegenda()
     {
-        return "<span class='legenda'>* Aguardando aprovação</span>";
+        if (emAprovacao)
+        {
+            return "<span class='legenda'>* Aguardando aprovação</span>";
+        }
+        else
+        {
+            return "";
+        }
     }
 
     string VerificaMontagemLegendaFim()
     {
-        if (contadorQuebrarPagina > 0 && Model.EmAprovacao)
+        if (contadorQuebrarPagina > 0 && emAprovacao)
         {
+            emAprovacao = false;
             return MontarLegenda();
         }
         return "";

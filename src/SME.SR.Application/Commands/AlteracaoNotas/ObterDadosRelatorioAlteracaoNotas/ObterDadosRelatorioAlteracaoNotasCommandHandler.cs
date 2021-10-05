@@ -205,7 +205,7 @@ namespace SME.SR.Application
                 EmAprovacao = historicoAlteracaoNotas.EmAprovacao
             };
 
-
+            AlunosAlteracaoNotasDto.NotaConceitoAtribuido = AlunosAlteracaoNotasDto.EmAprovacao ? $"{AlunosAlteracaoNotasDto.NotaConceitoAtribuido}*" : AlunosAlteracaoNotasDto.NotaConceitoAtribuido;
 
             return AlunosAlteracaoNotasDto;
         }
