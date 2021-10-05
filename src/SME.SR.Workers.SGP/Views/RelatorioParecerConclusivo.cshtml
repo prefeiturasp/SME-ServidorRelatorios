@@ -3,19 +3,28 @@
 @{
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 44;
+    bool emAprovacao = false;
+
+    string Quebra()
+    {
+        contadorQuebrarPagina = 0;
+
+        var str = MontarCabecalho();
+        return $@"<div style='page-break-before:always'> </div>" + str;
+    }
 
     string VerificaQuebra(int numeroLinhas = 0)
     {
-        if ((contadorQuebrarPagina + numeroLinhas) >= contadorMaximoLinhasPorPagina)
+        if (contadorQuebrarPagina + numeroLinhas >= contadorMaximoLinhasPorPagina)//&& Model.EmAprovacao)
         {
-            contadorQuebrarPagina = 0;
-
-            var str = MontarCabecalho();
-            return $@"<div style='page-break-before:always' />" + str;
-
+            var quebra = Quebra();
+            return $@"{MontarLegenda()}{quebra}";
+        }
+        else if ((contadorQuebrarPagina + numeroLinhas) >= contadorMaximoLinhasPorPagina)
+        {
+            return Quebra();
         }
         return string.Empty;
-
     }
 
     int CalcularLinhas(int valorLinha = 0, int caracteres = 120)
@@ -42,6 +51,10 @@
         {
             contadorQuebrarPagina = 1;
 
+            var str= $@"</tbody></table>";
+
+            str += MontarLegenda();
+
             var breakPage = $@"</tbody></table>
 <div style='page-break-before:always' />";
 
@@ -55,7 +68,7 @@
 
             var cabecalho = MontarCabecalho();
 
-            return breakPage + cabecalho + init;
+            return str + breakPage + cabecalho + init;
 
         }
         return string.Empty;
@@ -97,6 +110,26 @@
 ";
 
         return str;
+    }
+
+    string MontarLegenda()
+    {
+        if (emAprovacao)
+        {
+            emAprovacao = false;
+            return "<span class='legenda'>* Aguardando aprovação</span>";
+        }
+        return "";
+    }
+
+    string VerificaMontagemLegendaFim()
+    {
+        if (contadorQuebrarPagina > 0 && emAprovacao)
+        {
+            emAprovacao = false;
+            return MontarLegenda();
+        }
+        return "";
     }
 }
 
@@ -357,6 +390,9 @@
                                             <td width="28%">@parecerConclusivo.ParecerConclusivoDescricao</td>
                                         </tr>
 
+                                        if (parecerConclusivo.EmAprovacao)
+                                            emAprovacao = true;
+
                                         if (numeroLinhas > 0)
                                         {
                                             contadorQuebrarPagina += numeroLinhas;
@@ -374,6 +410,7 @@
             } 
         }
 
+        @Html.Raw(VerificaMontagemLegendaFim())                                
 
     </div>
 </body>

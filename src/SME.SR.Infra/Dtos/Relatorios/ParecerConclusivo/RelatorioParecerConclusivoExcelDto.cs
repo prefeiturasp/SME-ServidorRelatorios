@@ -24,5 +24,6 @@ namespace SME.SR.Infra
 
         [Display(Description = "Parecer Conclusivo")]
         public string ParecerConclusivo { get; set; }
+        public bool EmAprovacao { get; set; }
     }
 }
