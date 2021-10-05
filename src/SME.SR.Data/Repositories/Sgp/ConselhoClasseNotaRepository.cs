@@ -294,6 +294,7 @@ namespace SME.SR.Data
                                  hn.criado_rf as rfAlteracao,
                                  hn.criado_em as dataAlteracao,
                                  ftd.disciplina_id as disciplinaId,
+                                 wanc.id is not null as EmAprovacao,
                                  pe.bimestre,
                                  coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome
                               from historico_nota hn
@@ -305,6 +306,7 @@ namespace SME.SR.Data
                              inner join fechamento_turma_disciplina ftd on ft.id = ftd.fechamento_turma_id 
                              inner join periodo_escolar pe on ft.periodo_escolar_id = pe.id
                              inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id 
+                             left join wf_aprovacao_nota_conselho wanc on wanc.conselho_classe_nota_id  = ccn.id
                              where ft.turma_id = @turmaId
                                and pe.tipo_calendario_id = @tipocalendarioId";
 

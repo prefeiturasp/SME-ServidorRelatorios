@@ -23,5 +23,6 @@ namespace SME.SR.Infra
         public WorkflowAprovacaoNivelStatus Situacao { get; set; }
         public string UsuarioAprovacao { get; set; }
         public string RfAprovacao { get; set; }
+        public bool EmAprovacao { get; set; }
     }
 }
