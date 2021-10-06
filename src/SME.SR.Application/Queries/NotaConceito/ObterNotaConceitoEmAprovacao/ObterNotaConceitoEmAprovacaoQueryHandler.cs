@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
-using SME.SR.Infra.Dtos.Relatorios.NotasEConceitosFinais;
+using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

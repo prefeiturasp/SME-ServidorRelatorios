@@ -1,8 +1,5 @@
 ﻿using MediatR;
-using SME.SR.Infra.Dtos.Relatorios.NotasEConceitosFinais;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SME.SR.Infra;
 
 namespace SME.SR.Application
 {

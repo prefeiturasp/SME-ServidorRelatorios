@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using System.Globalization;
 
-namespace SME.SR.Infra.Dtos.Relatorios.NotasEConceitosFinais
+namespace SME.SR.Infra
 {
     public class NotaConceitoEmAprovacaoDto
     {
