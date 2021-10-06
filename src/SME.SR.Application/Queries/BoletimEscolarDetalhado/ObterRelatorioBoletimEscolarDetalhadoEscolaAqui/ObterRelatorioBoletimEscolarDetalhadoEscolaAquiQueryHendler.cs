@@ -30,7 +30,7 @@ namespace SME.SR.Application
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
 
             var mediasFrequencia = await ObterMediasFrequencia();
-            string[] codAluno = { request.AlunosCodigo };
+            string[] codAluno = { request.AlunoCodigo };
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, codAluno);
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario);
