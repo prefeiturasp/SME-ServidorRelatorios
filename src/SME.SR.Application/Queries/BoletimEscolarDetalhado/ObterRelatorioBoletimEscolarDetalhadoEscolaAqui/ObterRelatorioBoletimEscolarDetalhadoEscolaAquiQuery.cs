@@ -22,7 +22,7 @@ namespace SME.SR.Application
         public Modalidade Modalidade { get; set; }
         public int ModalidadeCodigo { get; set; }
 
-        public string AlunosCodigo { get; set; }
+        public string AlunoCodigo { get; set; }
 
         public Usuario Usuario { get; set; }
 
