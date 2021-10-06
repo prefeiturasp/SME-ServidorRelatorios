@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Infra;
-using SME.SR.Infra.Dtos.Relatorios.NotasEConceitosFinais;
 using System;
 using System.Collections.Generic;
 using System.Text;
