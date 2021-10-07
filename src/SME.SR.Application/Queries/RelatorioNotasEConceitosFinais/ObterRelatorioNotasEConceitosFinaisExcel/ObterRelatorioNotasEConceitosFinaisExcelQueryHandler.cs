@@ -34,7 +34,7 @@ namespace SME.SR.Application
                                 {
                                     listaNotasEConceitosFinais.Add(await ObterRelatorioNotasEConceito(dre.Nome, ue.Nome, bimestre.Nome,
                                                                                             ano.Nome, aluno.TurmaNome, componente.Nome,
-                                                                                            aluno.AlunoCodigo, aluno.AlunoNomeCompleto, aluno.NotaConceito, aluno.ConselhoClasseAlunoId));
+                                                                                            aluno.AlunoCodigo, aluno.AlunoNomeCompleto, aluno.NotaConceito, aluno.ConselhoClasseAlunoId, aluno.EmAprovacao));
                                 }
                             }
                         }
@@ -48,7 +48,7 @@ namespace SME.SR.Application
 
         private async Task<RelatorioNotasEConceitosFinaisExcelDto> ObterRelatorioNotasEConceito(string dreNome, string ueNome, string bimestre,
                                                                                       string ano, string turma, string componenteCurricular,
-                                                                                      int alunoCodigo, string alunoNome, string notaConceito, long? conselhoClasseAlunoId)
+                                                                                      int alunoCodigo, string alunoNome, string notaConceito, long? conselhoClasseAlunoId, bool emAprovacao)
         {
             RelatorioNotasEConceitosFinaisExcelDto relatorioDto = new RelatorioNotasEConceitosFinaisExcelDto();
 
@@ -61,22 +61,9 @@ namespace SME.SR.Application
             relatorioDto.EstudanteCodigo = alunoCodigo.ToString();
             relatorioDto.EstudanteNome = alunoNome;
             relatorioDto.NotaConceito = notaConceito;
-            relatorioDto.EmAprovacao = false;
-
-            await VerificaSeTemNotaConceitoEmAprovacao(relatorioDto.EstudanteCodigo, conselhoClasseAlunoId, relatorioDto);
+            relatorioDto.EmAprovacao = emAprovacao;           
 
             return relatorioDto;
-        }
-
-        private async Task VerificaSeTemNotaConceitoEmAprovacao(string codigoAluno, long? conselhoClasseAlunoId, RelatorioNotasEConceitosFinaisExcelDto relatorioDto)
-        {
-            var dadosNotasConceitosEmAprovacao = await mediator.Send(new ObterNotaConceitoEmAprovacaoQuery(codigoAluno, conselhoClasseAlunoId));
-
-            if (dadosNotasConceitosEmAprovacao != null)
-            {
-                relatorioDto.NotaConceito = dadosNotasConceitosEmAprovacao.NotaConceito;
-                relatorioDto.EmAprovacao = true;
-            }
-        }
+        }        
     }
 }

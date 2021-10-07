@@ -269,34 +269,6 @@ namespace SME.SR.Data
                     }
                     , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
             }
-        }
-
-        public async Task<NotaConceitoEmAprovacaoDto> ObterNotaConceitoEmAprovacao(string codigoAluno, long? codigoConselhoClasseAlunoId)
-        {
-            var query = @"select distinct coalesce(wnc.wf_aprovacao_id, wnf.wf_aprovacao_id) as WorkflowId,
-                                         coalesce(wnc.conceito_id, wnf.conceito_id) as ConceitoId,
-                                         coalesce(cvnc.valor, cvnf.valor) as Conceito,
-                                         coalesce(wnc.nota, wnf.nota) as Nota
-                                            from conselho_classe_nota ccn 
-                                            inner join conselho_classe_aluno cca on cca.id = ccn.conselho_classe_aluno_id
-                                            inner join wf_aprovacao_nota_conselho wnc on wnc.conselho_classe_nota_id = ccn.id
-                                            left join conceito_valores cvnc on cvnc.id = wnc.conceito_id
-                                            inner join fechamento_aluno fa on fa.aluno_codigo = cca.aluno_codigo
-                                            inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
-                                            left join wf_aprovacao_nota_fechamento wnf on wnf.fechamento_nota_id = fn.id
-                                            left join conceito_valores cvnf on cvnf.id = wnf.conceito_id
-                                            where cca.aluno_codigo = @codigoAluno and cca.id = @codigoConselhoClasseAlunoId order by WorkflowId desc";
-
-            var parametros = new
-            {
-                codigoAluno,
-                codigoConselhoClasseAlunoId
-            };
-
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-            {
-                return await conexao.QueryFirstOrDefaultAsync<NotaConceitoEmAprovacaoDto>(query, parametros);
-            }
-        }
+        }        
     }
 }
