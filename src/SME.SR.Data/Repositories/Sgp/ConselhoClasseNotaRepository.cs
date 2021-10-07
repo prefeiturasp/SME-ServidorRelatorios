@@ -154,6 +154,7 @@ namespace SME.SR.Data
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
                 	, coalesce(cvc.valor, cvf.valor) as Conceito
                 	, coalesce(ccn.nota, fn.nota) as Nota
+                    , coalesce(wanf.nota::varchar, cv.valor) as notaConceitoEmAprovacao   
                     , CASE
 							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
 							ELSE 1
@@ -189,6 +190,8 @@ namespace SME.SR.Data
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvc on ccn.conceito_id = cvc.id
                   left join sintese_valores sv on sv.id = fn.sintese_id
+                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id 
+                  left join conceito_valores cv on cv.id = wanf.conceito_id 
                  where {(bimestres.Contains(0) ? "(pe.bimestre is null or" : "(")} pe.bimestre = ANY(@bimestres)) ");
 
             if (dresCodigos != null && dresCodigos.Length > 0)
@@ -219,6 +222,7 @@ namespace SME.SR.Data
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
                 	, coalesce(cvc.valor, cvf.valor) as Conceito
                 	, coalesce(ccn.nota, fn.nota) as Nota
+                    , coalesce(wanf.nota::varchar, cv.valor) as notaConceitoEmAprovacao
                     , CASE
 							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
 							ELSE 1
@@ -253,6 +257,8 @@ namespace SME.SR.Data
                   left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvf on fn.conceito_id = cvf.id
+                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id 
+                  left join conceito_valores cv on cv.id = wanf.conceito_id 
                  where {(bimestres.Contains(0) ? "(pe.bimestre is null or " : "(")} pe.bimestre = ANY(@bimestres)) ");
 
             if (dresCodigos != null && dresCodigos.Length > 0)
