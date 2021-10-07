@@ -71,7 +71,7 @@ namespace SME.SR.Application
 
             if (request.EnvioPorRabbit)
             {
-                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoAppDto(request.MensagemUsuario, request.MensagemTitulo,request.MensagemDados), RotasRabbitSGP.RotaRelatoriosProntosApp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoAppDto(request.MensagemUsuario, request.MensagemTitulo,request.MensagemDados), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
                 return string.Empty;
             }
 
