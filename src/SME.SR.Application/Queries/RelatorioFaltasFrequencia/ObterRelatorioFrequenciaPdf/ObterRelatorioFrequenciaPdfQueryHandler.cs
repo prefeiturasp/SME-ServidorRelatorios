@@ -92,12 +92,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 var componenteAtual = componentes.FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
                                 if (componenteAtual != null)
                                     componente.NomeComponente = componenteAtual.Descricao.ToUpper();
-
-
+                                
                                 for (int a = 0; a < componente.Alunos.Count; a++)
                                 {
                                     var aluno = componente.Alunos[a];
-                                    var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorTurmasQuery(aluno.CodigoTurma));
+                                    var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorFiltroQuery(aluno.CodigoTurma, componente.CodigoComponente, int.Parse(bimestre.Numero)));
                                     var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
                                     var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
 
@@ -174,7 +173,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     {
                                         var aluno = componente.Alunos[a];
                                         var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
-                                        var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorTurmasQuery(aluno.CodigoTurma));
+                                        var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorFiltroQuery(aluno.CodigoTurma, componente.CodigoComponente, int.Parse(bimestre.Numero)));
 
                                         if (frequencias != null && frequencias.Any())
                                             frequenciaAluno = frequencias.Where(f => f.AlunoCodigo == aluno.CodigoAluno.ToString()).ToList();
