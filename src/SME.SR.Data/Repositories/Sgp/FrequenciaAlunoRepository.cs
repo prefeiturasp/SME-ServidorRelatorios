@@ -380,9 +380,9 @@ namespace SME.SR.Data
             var query = @"select t.turma_id as TurmaCodigo,
                             rfa.codigo_aluno as AlunoCodigo,
                             rfa.valor as TipoFrequencia,	   
-                            sum(rfa.numero_aula) as Quantidade
+                            count(rfa.numero_aula) as Quantidade
                           from registro_frequencia_aluno rfa 
-                          inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id 
+                          inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id and not rfa.excluido and not rf.excluido
                           inner join aula a on a.id = rf.aula_id
                           inner join periodo_escolar pe on a.tipo_calendario_id = pe.tipo_calendario_id 
                           and a.data_aula >= pe.periodo_inicio and a.data_aula <= pe.periodo_fim
