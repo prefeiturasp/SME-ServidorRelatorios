@@ -113,7 +113,7 @@ namespace SME.SR.Application
 
                                 var notasDosAlunosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar
                                                                                        && a.Bimestre == bimestreParaAdicionar && a.ComponenteCurricularCodigo == componenteParaAdicionar?.CodDisciplina)
-                                                                                .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome, a.EhNotaConceitoFechamento, a.ConselhoClasseAlunoId, a.NotaConceitoEmAprovacao })
+                                                                                .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome, a.EhNotaConceitoFechamento, a.ConselhoClasseAlunoId, a.NotaConceitoEmAprovacao, a.NotaConceitoPosConselhoEmAprovacao, a.ConselhoClasseNotaId })
                                                                                 .Distinct();
 
 
@@ -122,14 +122,19 @@ namespace SME.SR.Application
                                     if (notaDosAlunosParaAdicionar.EhNotaConceitoFechamento)
                                         possuiNotaFechamento = true;
 
-                                    var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));   
+                                    var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));
                                     var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo.CodigoAluno, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componenteParaAdicionar.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese, notaDosAlunosParaAdicionar.ConselhoClasseAlunoId);
-                                    
-                                    if(notaDosAlunosParaAdicionar.NotaConceitoEmAprovacao != null)
+
+                                    if (notaDosAlunosParaAdicionar.NotaConceitoPosConselhoEmAprovacao != null)
                                     {
-                                        notaConceitoNovo.NotaConceito = $"{notaDosAlunosParaAdicionar.NotaConceitoEmAprovacao} **";
+                                        notaConceitoNovo.NotaConceito = $"{notaDosAlunosParaAdicionar.NotaConceitoPosConselhoEmAprovacao.Replace(".00", ".0")} **";
                                         notaConceitoNovo.EmAprovacao = true;
-                                    }                                   
+                                    }
+                                    else if (notaDosAlunosParaAdicionar.NotaConceitoEmAprovacao != null && notaDosAlunosParaAdicionar.ConselhoClasseNotaId == null)
+                                    {
+                                        notaConceitoNovo.NotaConceito = $"{notaDosAlunosParaAdicionar.NotaConceitoEmAprovacao.Replace(".00", ".0")} **";
+                                        notaConceitoNovo.EmAprovacao = true;
+                                    }
 
                                     componenteNovo.NotaConceitoAlunos.Add(notaConceitoNovo);
                                 }
@@ -154,7 +159,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Não encontramos dados para geração do relatório!");
 
             return relatorioNotasEConceitosFinaisDto;
-        }        
+        }
 
         private async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterTurmasAssociadas(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
         {

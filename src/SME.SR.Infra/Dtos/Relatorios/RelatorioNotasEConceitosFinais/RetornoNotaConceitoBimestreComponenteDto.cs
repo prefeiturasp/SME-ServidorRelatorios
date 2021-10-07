@@ -30,5 +30,7 @@ namespace SME.SR.Infra
         public string UeNomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {UeNome}"; } }
         public bool ExcluirNota { get; set; }        
         public string NotaConceitoEmAprovacao { get; set; }
+        public string NotaConceitoPosConselhoEmAprovacao { get; set; }
+        public long? ConselhoClasseNotaId { get; set; }
     }
 }
