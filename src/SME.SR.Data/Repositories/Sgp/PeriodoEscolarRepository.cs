@@ -22,7 +22,7 @@ namespace SME.SR.Data
             var query = PeriodoEscolarConsultas.ObterPorTipoCalendario;
             var parametros = new { TipoCalendarioId = tipoCalendarioId };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<PeriodoEscolar>(query, parametros);
             }
@@ -38,7 +38,7 @@ namespace SME.SR.Data
 
             var parametros = new { AnoLetivo = anoLetivo, Modalidade = (int)modalidadeTipoCalendario, DataReferencia = dataReferencia };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<PeriodoEscolar>(query, parametros);
             }

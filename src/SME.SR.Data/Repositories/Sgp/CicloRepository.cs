@@ -22,7 +22,7 @@ namespace SME.SR.Data
             var query = CicloConsultas.ObterPorAnoModalidade;
             var parametros = new { Ano = ano, Modalidade = (int)modalidadeCodigo };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QuerySingleOrDefaultAsync<long?>(query, parametros);
             }
@@ -36,7 +36,7 @@ namespace SME.SR.Data
 
             var parametros = new { Anos = anos, Modalidade = (int)modalidadeCodigo };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<TipoCiclo>(query, parametros);
             }
@@ -49,7 +49,7 @@ namespace SME.SR.Data
 
             var parametros = new { Id = id };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<TipoCiclo>(query, parametros);
             }
@@ -67,7 +67,7 @@ namespace SME.SR.Data
 
             var parametros = new { ueId };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<TipoCiclo>(query, parametros);
 
         }
@@ -86,7 +86,7 @@ namespace SME.SR.Data
 
             var parametros = new { modalidade };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<TipoCiclo>(query, parametros);
 
         }
@@ -99,7 +99,7 @@ namespace SME.SR.Data
 
             var parametros = new { ano, modalidade };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<CicloTurmaDto>(sql, parametros);
             }            
@@ -120,7 +120,7 @@ namespace SME.SR.Data
 
             var parametros = new { cicloId, dataAvalicao };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<NotaTipoValor>(sql, parametros);
             }            

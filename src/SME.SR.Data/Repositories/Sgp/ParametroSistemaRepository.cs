@@ -25,7 +25,7 @@ namespace SME.SR.Data
                          where ativo and tipo = ANY(@tipos) ";
             var parametros = new { Tipos = new int[] { (int)TipoParametroSistema.CompensacaoAusenciaPercentualFund2, (int)TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse } };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<MediaFrequencia>(query, parametros);
             }
@@ -36,7 +36,7 @@ namespace SME.SR.Data
             var query = ParametroSistemaConsultas.ObterValor;
             var parametros = new { Tipo = tipo };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<string>(query, parametros);
             }
@@ -49,7 +49,7 @@ namespace SME.SR.Data
                            and tipo = @tipo
                            and ano = @ano";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<string>(query, new { ano, tipo });
             }

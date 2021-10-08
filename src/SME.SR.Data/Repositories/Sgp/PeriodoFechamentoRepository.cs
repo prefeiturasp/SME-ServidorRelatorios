@@ -39,7 +39,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 AnoLetivo = anoLetivo
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<int>(query, parametros);
             };
@@ -57,7 +57,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 PeriodoEscolarId =  periodoEscolarId
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<PeriodoFechamentoBimestre>(query, parametros);
             };
@@ -84,7 +84,7 @@ namespace SME.SR.Data.Repositories.Sgp
                 AnoLetivo = anoLetivo
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<PeriodoFechamentoBimestre>(query, parametros);
             };

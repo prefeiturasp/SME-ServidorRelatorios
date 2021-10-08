@@ -30,7 +30,7 @@ namespace SME.SR.Data
                            and t.modalidade_codigo  = @modalidade
                            and t.semestre = @semestre";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryAsync<int>(query, new { codigoAluno, anoLetivo, modalidade, semestre });
         }
@@ -40,7 +40,7 @@ namespace SME.SR.Data
             var query = ConselhoClasseConsultas.ConselhoPorFechamentoId;
             var parametros = new { FechamentoTurmaId = fechamentoTurmaId };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<long>(query, parametros);
             }
@@ -53,7 +53,7 @@ namespace SME.SR.Data
 
             var parametros = new { aprovado };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryAsync<long>(query, parametros);
         }
