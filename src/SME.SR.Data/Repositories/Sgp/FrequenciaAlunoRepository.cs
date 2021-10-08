@@ -375,6 +375,32 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorFiltro(string[] codigosturma, string componenteCurricularId, int bimestre)
+        {
+            var query = @"select t.turma_id as TurmaCodigo,
+                            rfa.codigo_aluno as AlunoCodigo,
+                            rfa.valor as TipoFrequencia,	   
+                            count(rfa.numero_aula) as Quantidade
+                          from registro_frequencia_aluno rfa 
+                          inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id and not rfa.excluido and not rf.excluido
+                          inner join aula a on a.id = rf.aula_id
+                          inner join periodo_escolar pe on a.tipo_calendario_id = pe.tipo_calendario_id 
+                          and a.data_aula >= pe.periodo_inicio and a.data_aula <= pe.periodo_fim
+                          inner join turma t on t.turma_id = a.turma_id 
+                          inner join ue on ue.id = t.ue_id 
+                          inner join dre on dre.id = ue.dre_id 
+                            where not rfa.excluido 
+                                and t.turma_id = Any(@codigosturma)
+                                and pe.bimestre = @bimestre
+                                and a.disciplina_id = @componenteCurricularId
+                            group by t.turma_id, rfa.codigo_aluno, rfa.valor";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAlunoRetornoDto>(query, new { codigosturma, componenteCurricularId, bimestre });
+            }
+        }
+
         public async Task<IEnumerable<FrequenciaAluno>> ObterRegistroFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
             var query = @$"select fa.codigo_aluno CodigoAluno, t.turma_id as TurmaId, t.ano_letivo as AnoTurma, 
