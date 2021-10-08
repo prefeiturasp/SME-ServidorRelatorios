@@ -52,6 +52,7 @@ namespace SME.SR.Data
  	                        and t.modalidade_codigo = @modalidade
  	                        and t.semestre = @semestre
  	                        and fa.aluno_codigo = any(@codigosAluno)
+                            and t.turma_id = any(@codigosTurmas)
  
                          union
                           
@@ -94,7 +95,8 @@ namespace SME.SR.Data
                         where cca.aluno_codigo = any(@codigosAluno)
 	                        and t.ano_letivo = @anoLetivo
 	                        and t.modalidade_codigo = @modalidade
- 	                        and t.semestre = @semestre;";
+ 	                        and t.semestre = @semestre
+                            and t.turma_id = any(@codigosTurmas);";
 
             var parametros = new
             {
