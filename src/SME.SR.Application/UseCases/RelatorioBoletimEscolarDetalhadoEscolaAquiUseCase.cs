@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace SME.SR.Application
             request.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQuery>();
             relatorioQuery.Modalidade = ObterModalidade(relatorioQuery.ModalidadeCodigo);
+            relatorioQuery.Usuario = await ObterUsuarioLogado(request.UsuarioLogadoRF);
             var relatorio = await mediator.Send(relatorioQuery);
             relatorioQuery.CodigoArquivo = request.CodigoCorrelacao;
             var mensagemdados = UtilJson.ConverterApenasCamposNaoNulos(relatorioQuery);
@@ -28,6 +30,10 @@ namespace SME.SR.Application
         {
             return Enum.GetValues(typeof(Modalidade))
             .Cast<Modalidade>().Where(x => (int)x == modalidadeId).FirstOrDefault();
+        }
+        private async Task<Usuario> ObterUsuarioLogado(string usuarioLogadorf)
+        {
+            return await mediator.Send(new ObterUsuarioPorCodigoRfQuery(usuarioLogadorf));
         }
     }
 }

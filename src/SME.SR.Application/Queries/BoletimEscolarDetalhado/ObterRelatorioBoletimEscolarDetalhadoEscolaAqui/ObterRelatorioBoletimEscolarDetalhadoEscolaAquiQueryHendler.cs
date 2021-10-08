@@ -32,7 +32,7 @@ namespace SME.SR.Application
             var mediasFrequencia = await ObterMediasFrequencia();
             string[] codAluno = { request.AlunoCodigo };
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, codAluno);
-
+            
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
 
