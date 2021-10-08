@@ -28,11 +28,10 @@ namespace SME.SR.Application
             var ciclos = await ObterCiclosPorAnoModalidade(request.Modalidade);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
-
+            int semestreTurma = turmas != null ? turmas.FirstOrDefault().Semestre : 0;
             var mediasFrequencia = await ObterMediasFrequencia();
             string[] codAluno = { request.AlunoCodigo };
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, codAluno);
-            
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
 
@@ -42,7 +41,7 @@ namespace SME.SR.Application
 
             var alunosFoto = await ObterFotosAlunos(alunosPorTurma.Select(a => a.Key)?.ToArray());
 
-            var notas = await ObterNotasAlunos(codigosAlunos, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var notas = await ObterNotasAlunos(codigosAlunos, codigosTurma, request.AnoLetivo, request.Modalidade, semestreTurma);
             var pareceresConclusivos = await ObterPareceresConclusivos(dre.Codigo, ue.Codigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
