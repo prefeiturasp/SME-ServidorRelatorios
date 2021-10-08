@@ -37,7 +37,7 @@ namespace SME.SR.Data
 
             var parametros = new { };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<ConceitoDto>(query, parametros);
             }

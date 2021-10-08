@@ -34,7 +34,7 @@ namespace SME.SR.Workers.SGP.Services
         {
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory)); ;
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            this.sentryDSN = configuration.GetValue<string>("Sentry:DSN");            
+            this.sentryDSN = configuration.GetValue<string>("Sentry:DSN");
 
             var factory = new ConnectionFactory
             {
@@ -65,16 +65,8 @@ namespace SME.SR.Workers.SGP.Services
         {
             foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
             {
-                var args = new Dictionary<string, object>()
-                    {
-                        { "x-dead-letter-exchange", exchangeDeadletter}
-                    };
-                canalRabbit.QueueDeclare(fila, true, false, false, args);
+                canalRabbit.QueueDeclare(fila, true, false, false);
                 canalRabbit.QueueBind(fila, exchange, fila, null);
-
-                var filaDeadLetter = $"{fila}.deadletter";
-                canalRabbit.QueueDeclare(filaDeadLetter, true, false, false, null);
-                canalRabbit.QueueBind(filaDeadLetter, exchangeDeadletter, fila, null);
             }
         }
 

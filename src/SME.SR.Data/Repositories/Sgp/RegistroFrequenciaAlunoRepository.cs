@@ -64,7 +64,7 @@ namespace SME.SR.Data
                         pe.periodo_fim,
                         pe.bimestre");
             
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RegistroFrequenciaAlunoDto>(query.ToString(), new { codigosAlunos, turmasCodigo, componentesCurricularesId, tipoCalendarioId, bimestres });
             }

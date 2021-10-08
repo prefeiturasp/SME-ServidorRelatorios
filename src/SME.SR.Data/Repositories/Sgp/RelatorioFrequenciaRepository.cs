@@ -97,7 +97,7 @@ namespace SME.SR.Data
             else
                 query.AppendLine("order by t.nome , fa.bimestre");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 var dres = new List<RelatorioFrequenciaDreDto>();
 
