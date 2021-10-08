@@ -39,7 +39,7 @@ namespace SME.SR.Data
 
             var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodoId, anoLetivo };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RetornoResumoPAPTotalAlunosAnoDto>(query.ToString(), parametros);
             }
@@ -76,7 +76,7 @@ namespace SME.SR.Data
 
             var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodoId, anoLetivo };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RetornoResumoPAPTotalAlunosAnoFrequenciaDto>(query.ToString(), parametros);
             }
@@ -113,7 +113,7 @@ namespace SME.SR.Data
 
             var parametros = new { dreId, ueId, cicloId, turmaId, ano, periodoId, pagina, anoLetivo };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RetornoResumoPAPTotalResultadoDto>(query.ToString(), parametros);
             }
@@ -149,7 +149,7 @@ namespace SME.SR.Data
 
             var parametros = new { dreId, ueId, cicloId, turmaId, ano, pagina, periodoId, anoLetivo };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RetornoResumoPAPTotalResultadoDto>(query.ToString(), parametros);
             }
@@ -161,7 +161,7 @@ namespace SME.SR.Data
                          where not excluido and id = @Id";
             var parametros = new { Id = id };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<RecuperacaoParalelaPeriodo>(query, parametros);
             }
@@ -176,7 +176,7 @@ namespace SME.SR.Data
                             where rppor.objetivo_id = ANY(@idsObjetivos)";
             var parametros = new { idsObjetivos };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RetornoResumoPAPRespostasPorObjetivosIds>(query, parametros);
             }

@@ -21,7 +21,7 @@ namespace SME.SR.Data
             var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre where dre_id = @dreCodigo";
             var parametros = new { dreCodigo };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<Dre>(query, parametros);
             }
@@ -32,7 +32,7 @@ namespace SME.SR.Data
             var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre where id = @dreId";
             var parametros = new { dreId };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<Dre>(query, parametros);
             }
@@ -43,7 +43,7 @@ namespace SME.SR.Data
             var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre";
 
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryAsync<Dre>(query);
 

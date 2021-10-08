@@ -44,7 +44,7 @@ namespace SME.SR.Data
 
             query.AppendLine(" order by p.criado_em");
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<PendenciaParaFechamentoConsolidadoDto>(query.ToString(), new { turmasCodigo, bimestres, componentesCurricularesId });
         }
     }

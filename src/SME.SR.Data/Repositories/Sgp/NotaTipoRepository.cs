@@ -27,7 +27,7 @@ namespace SME.SR.Data.Repositories.Sgp
                             inner join tipo_ciclo tc on tca.tipo_ciclo_id = tc.id 
                             inner join notas_tipo_valor ntv on nccp.tipo_nota = ntv.id ";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<TipoNotaCicloAno>(query);
             };

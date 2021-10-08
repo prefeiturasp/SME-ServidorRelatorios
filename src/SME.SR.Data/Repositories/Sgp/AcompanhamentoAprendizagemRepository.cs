@@ -62,7 +62,7 @@ namespace SME.SR.Data
 
             var lookup = new Dictionary<long, AcompanhamentoAprendizagemTurmaDto>();
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 await conexao.QueryAsync<AcompanhamentoAprendizagemTurmaDto, AcompanhamentoAprendizagemAlunoDto, ArquivoDto, AcompanhamentoAprendizagemTurmaDto>(query.ToString(),
                  (acompanhamentoAprendizagemTurmaDto, acompanhamentoAprendizagemAlunoDto, arquivoDto) =>

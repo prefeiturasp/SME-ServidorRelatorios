@@ -23,7 +23,7 @@ namespace SME.SR.Data
             var query = FechamentoTurmaConsultas.FechamentoTurmaPeriodo;
             var parametros = new { FechamentoTurmaId = fechamentoTurmaId };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<FechamentoTurma, Turma, PeriodoEscolar, FechamentoTurma>(query
                 , (fechamentoTurma, turma, periodoEscolar) =>
@@ -47,7 +47,7 @@ namespace SME.SR.Data
 
             var parametros = new { TurmasCodigo = codigosTurma };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<FechamentoTurma>(query, parametros));
             }

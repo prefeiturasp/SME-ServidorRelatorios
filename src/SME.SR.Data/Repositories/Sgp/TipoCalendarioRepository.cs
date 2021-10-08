@@ -28,7 +28,7 @@ namespace SME.SR.Data
 
             var parametros = new { AnoLetivo = anoLetivo, Modalidade = (int)modalidade, DataReferencia = dataReferencia };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<long>(query, parametros);
             }
@@ -38,7 +38,7 @@ namespace SME.SR.Data
         {
             var query = "select tc.ano_letivo as anoLetivo, tc.id, tc.nome from tipo_calendario tc where tc.id = @id";
                         
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryFirstOrDefaultAsync<TipoCalendarioDto>(query, new { id });           
 
         }

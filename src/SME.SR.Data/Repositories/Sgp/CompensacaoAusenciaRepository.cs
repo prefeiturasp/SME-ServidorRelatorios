@@ -53,7 +53,7 @@ namespace SME.SR.Data
                 anoLetivo
             };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<RelatorioCompensacaoAusenciaRetornoConsulta>(query.ToString(), parametros);
         }
 

@@ -33,7 +33,7 @@ namespace SME.SR.Data
 
             var parametros = new { conselhoClasseAlunoIds };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<TurmaComplementarConselhoClasseAluno>(query, parametros);
             }

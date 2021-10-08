@@ -51,7 +51,7 @@ namespace SME.SR.Data
                  where p.tipo_calendario_id = @tipoCalendarioId
                 group by t.nome, cc.id, cc.descricao_sgp, cc.descricao, cc.eh_regencia, p.bimestre, p.periodo_inicio, p.periodo_fim, pv.aulas_previstas ";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<AulaPrevistaBimestreQuantidade>(query.ToString(), new { turmaId, componenteCurricularId, tipoCalendarioId });
             }            
@@ -98,7 +98,7 @@ namespace SME.SR.Data
 	                        ap.turma_id,
 	                        ap.disciplina_id;");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
                 return (await conexao.QueryAsync<TurmaComponenteQuantidadeAulasDto>(query.ToString(), new {  turmasCodigos, componentesCurricularesId, tipoCalendarioId }));
         }
     }

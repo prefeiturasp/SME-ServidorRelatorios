@@ -45,7 +45,7 @@ namespace SME.SR.Data
                 dataFim
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<AcompanhamentoAprendizagemOcorrenciaDto>(query.ToString(), parametros);
             }
