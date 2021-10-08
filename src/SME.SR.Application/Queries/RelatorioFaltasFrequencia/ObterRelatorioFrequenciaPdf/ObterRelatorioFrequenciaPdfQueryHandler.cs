@@ -92,7 +92,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 var componenteAtual = componentes.FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
                                 if (componenteAtual != null)
                                     componente.NomeComponente = componenteAtual.Descricao.ToUpper();
-                                
+
                                 for (int a = 0; a < componente.Alunos.Count; a++)
                                 {
                                     var aluno = componente.Alunos[a];
@@ -124,6 +124,19 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     .Where(a => a.Ativo)
                                     .Where(a => turmasccc.Contains(a.TurmaCodigo))
                                     .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
+
+                                var novosAlunosComFrequencia = await NovaBuscaAlunosSemFrequencia(componente,
+                                                                                                  turmasccc,
+                                                                                                  turmas.ToList(),
+                                                                                                  int.Parse(bimestre.Numero),
+                                                                                                  alunosSemFrequenciaNaTurma.ToList(),
+                                                                                                  filtro.Modalidade);
+
+                                if (novosAlunosComFrequencia.Any())
+                                {
+                                    componente.Alunos.AddRange(novosAlunosComFrequencia);
+                                    alunosSemFrequenciaNaTurma = alunosSemFrequenciaNaTurma.Where(asf => !novosAlunosComFrequencia.Any(naf => naf.CodigoAluno == asf.CodigoAluno && naf.CodigoTurma == asf.TurmaCodigo));
+                                }
 
                                 if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
                                 {
@@ -223,6 +236,44 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             return await Task.FromResult(model);
         }
 
+        private async Task<List<RelatorioFrequenciaAlunoDto>> NovaBuscaAlunosSemFrequencia(RelatorioFrequenciaComponenteDto componente, 
+                                                                                           List<string> codigosTurmas,
+                                                                                           List<Turma> turmas,
+                                                                                           int bimestre, 
+                                                                                           List<AlunoTurma> alunosSemFrequencia, 
+                                                                                           Modalidade Modalidade)
+        {
+            List<RelatorioFrequenciaAlunoDto> novosAlunos = new List<RelatorioFrequenciaAlunoDto>();
+            var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorFiltroQuery(codigosTurmas.ToArray(), componente.CodigoComponente, bimestre));
+            if (frequencias != null && frequencias.Any())
+            {
+                var alunosComFrequencia = alunosSemFrequencia.Where(asf => frequencias.Any(f => f.AlunoCodigo == asf.CodigoAluno.ToString()));
+                foreach (AlunoTurma aluno in alunosComFrequencia)
+                {
+                    var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
+                    frequenciaAluno = frequencias.Where(f => f.AlunoCodigo == aluno.CodigoAluno.ToString() && f.TurmaCodigo == aluno.TurmaCodigo).ToList();
+                    var totalPresenca = frequenciaAluno.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.C);
+                    var totalRemoto = frequenciaAluno.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.R);
+                    var totalAusente = frequenciaAluno.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.F);
+
+                    RelatorioFrequenciaAlunoDto alunoDto = new RelatorioFrequenciaAlunoDto();
+                    var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == frequenciaAluno.FirstOrDefault().TurmaCodigo);
+                    alunoDto.CodigoAluno = aluno.CodigoAluno;
+                    alunoDto.NomeAluno = aluno.NomeFinal;
+                    alunoDto.NumeroChamada = aluno.NumeroChamada;
+                    alunoDto.TotalPresenca = totalPresenca != null ? totalPresenca.Quantidade : 0;
+                    alunoDto.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
+                    alunoDto.TotalAusencias = totalAusente != null ? totalAusente.Quantidade : 0;
+                    alunoDto.NomeTurma = turmaFiltrada == null ? "" : $"{Modalidade.ShortName()}-{turmaFiltrada.Nome}";
+                    alunoDto.CodigoTurma = aluno.TurmaCodigo;
+                    alunoDto.TotalAulas = componente.Alunos.FirstOrDefault()?.TotalAulas ?? 0;
+
+                    novosAlunos.Add(alunoDto);
+                }
+            }
+            return novosAlunos;
+        }
+
         private List<RelatorioFrequenciaDreDto> FiltrarFaltasFrequencia(List<RelatorioFrequenciaDreDto> dres, FiltroRelatorioFrequenciasDto filtro)
         {
             Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao = new Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>>();
@@ -275,7 +326,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             model.Cabecalho.Ue = selecionouTodasUes ? "Todas" : dres.FirstOrDefault().Ues.FirstOrDefault().NomeUe;
             model.Cabecalho.Turma = selecionoutodasTurmas
                 ?
-                "Todas" 
+                "Todas"
                 :
                 filtro.CodigosTurma.Count() > 1
                 ?
