@@ -2,8 +2,6 @@
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -19,20 +17,13 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
-            {
-                var filtro = request.ObterObjetoFiltro<FiltroRelatorioUsuariosDto>();
-                var relatorioDto = new RelatorioUsuarioDto();
+            var filtro = request.ObterObjetoFiltro<FiltroRelatorioUsuariosDto>();
+            var relatorioDto = new RelatorioUsuarioDto();
 
-                await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
-                await ObterDadosRelatorioUsuarios(relatorioDto, filtro);
+            await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
+            await ObterDadosRelatorioUsuarios(relatorioDto, filtro);
 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioUsuarios", relatorioDto, request.CodigoCorrelacao));
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }        
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioUsuarios", relatorioDto, request.CodigoCorrelacao));
         }
 
         private async Task ObterDadosRelatorioUsuarios(RelatorioUsuarioDto relatorioDto, FiltroRelatorioUsuariosDto filtro)
