@@ -28,7 +28,7 @@ namespace SME.SR.Data.Repositories.Sgp
                                                  and t.turma_id = ANY(@turmasCodigo) ");
             var parametros = new { turmasCodigo };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
         }
     }

@@ -37,7 +37,7 @@ namespace SME.SR.Data
                 id = planoAulaId
             };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<ObjetivoAprendizagemDto>(query, parametros);
         }
 
@@ -88,7 +88,7 @@ namespace SME.SR.Data
                 id = planoAulaId
             };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryFirstOrDefaultAsync<PlanoAulaDto>(query, parametros);
         }
 
@@ -100,7 +100,7 @@ namespace SME.SR.Data
                      where not a.excluido
                        and a.professor_rf = @professorRf";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }
@@ -156,7 +156,7 @@ namespace SME.SR.Data
             if (semestre > 0)
                 query += " and t.semestre = @semestre ";            
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<AulaPlanoAulaDto>(query, new { anoLetivo, bimestre, codigoUe, componenteCurricular, codigoTurma, modalidadeTurma, modalidadeCalendario, semestre });
             }

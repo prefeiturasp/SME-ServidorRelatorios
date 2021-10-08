@@ -22,7 +22,7 @@ namespace SME.SR.Data
                                 FROM public.componente_curricular_grupo_area_ordenacao
                             where grupo_matriz_id = ANY(@grupoMatrizIds) and area_conhecimento_id = ANY(@areaConhecimentoIds)";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<ComponenteCurricularGrupoAreaOrdenacaoDto>(query.ToString(), new { grupoMatrizIds, areaConhecimentoIds });
         }
     }
