@@ -271,6 +271,6 @@ namespace SME.SR.Data
                     }
                     , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
             }
-        }
+        }        
     }
 }

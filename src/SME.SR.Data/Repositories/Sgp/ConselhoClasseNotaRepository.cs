@@ -154,6 +154,9 @@ namespace SME.SR.Data
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
                 	, coalesce(cvc.valor, cvf.valor) as Conceito
                 	, coalesce(ccn.nota, fn.nota) as Nota
+                    , coalesce(wanf.nota::varchar, cv.valor) as notaConceitoEmAprovacao
+                    , coalesce(wfnc.nota::varchar, cv1.valor) as notaConceitoPosConselhoEmAprovacao
+                    , ccn.id as conselhoClasseNotaId
                     , CASE
 							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
 							ELSE 1
@@ -189,6 +192,10 @@ namespace SME.SR.Data
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvc on ccn.conceito_id = cvc.id
                   left join sintese_valores sv on sv.id = fn.sintese_id
+                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id 
+                  left join conceito_valores cv on cv.id = wanf.conceito_id 
+                  left join wf_aprovacao_nota_conselho wfnc on wfnc.conselho_classe_nota_id = ccn.id
+                  left join conceito_valores cv1 on cv1.id = wfnc.conceito_id
                  where {(bimestres.Contains(0) ? "(pe.bimestre is null or" : "(")} pe.bimestre = ANY(@bimestres)) ");
 
             if (dresCodigos != null && dresCodigos.Length > 0)
@@ -219,6 +226,9 @@ namespace SME.SR.Data
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
                 	, coalesce(cvc.valor, cvf.valor) as Conceito
                 	, coalesce(ccn.nota, fn.nota) as Nota
+                    , coalesce(wanf.nota::varchar, cv.valor) as notaConceitoEmAprovacao
+                    , coalesce(wfnc.nota::varchar, cv1.valor) as notaConceitoPosConselhoEmAprovacao
+                    , ccn.id as conselhoClasseNotaId
                     , CASE
 							WHEN ccn.nota is not null OR ccn.conceito_id is not null  THEN 0
 							ELSE 1
@@ -253,6 +263,10 @@ namespace SME.SR.Data
                   left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvf on fn.conceito_id = cvf.id
+                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id 
+                  left join conceito_valores cv on cv.id = wanf.conceito_id
+                  left join wf_aprovacao_nota_conselho wfnc on wfnc.conselho_classe_nota_id = ccn.id
+                  left join conceito_valores cv1 on cv1.id = wfnc.conceito_id
                  where {(bimestres.Contains(0) ? "(pe.bimestre is null or " : "(")} pe.bimestre = ANY(@bimestres)) ");
 
             if (dresCodigos != null && dresCodigos.Length > 0)
@@ -294,6 +308,7 @@ namespace SME.SR.Data
                                  hn.criado_rf as rfAlteracao,
                                  hn.criado_em as dataAlteracao,
                                  ftd.disciplina_id as disciplinaId,
+                                 wanc.id is not null as EmAprovacao,
                                  pe.bimestre,
                                  coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome
                               from historico_nota hn
@@ -305,6 +320,7 @@ namespace SME.SR.Data
                              inner join fechamento_turma_disciplina ftd on ft.id = ftd.fechamento_turma_id 
                              inner join periodo_escolar pe on ft.periodo_escolar_id = pe.id
                              inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id 
+                             left join wf_aprovacao_nota_conselho wanc on wanc.conselho_classe_nota_id  = ccn.id
                              where ft.turma_id = @turmaId
                                and pe.tipo_calendario_id = @tipocalendarioId";
 

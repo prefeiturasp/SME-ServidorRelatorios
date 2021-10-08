@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -9,6 +10,12 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioNotasEConceitosFinaisExcelQueryHandler : IRequestHandler<ObterRelatorioNotasEConceitosFinaisExcelQuery, IEnumerable<RelatorioNotasEConceitosFinaisExcelDto>>
     {
+        private readonly IMediator mediator;
+
+        public ObterRelatorioNotasEConceitosFinaisExcelQueryHandler(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
         public async Task<IEnumerable<RelatorioNotasEConceitosFinaisExcelDto>> Handle(ObterRelatorioNotasEConceitosFinaisExcelQuery request, CancellationToken cancellationToken)
         {
             var listaNotasEConceitosFinais = new List<RelatorioNotasEConceitosFinaisExcelDto>();
@@ -25,9 +32,9 @@ namespace SME.SR.Application
                             {
                                 foreach (var aluno in componente.NotaConceitoAlunos)
                                 {
-                                    listaNotasEConceitosFinais.Add(ObterRelatorioNotasEConceito(dre.Nome, ue.Nome, bimestre.Nome,
+                                    listaNotasEConceitosFinais.Add(await ObterRelatorioNotasEConceito(dre.Nome, ue.Nome, bimestre.Nome,
                                                                                             ano.Nome, aluno.TurmaNome, componente.Nome,
-                                                                                            aluno.AlunoCodigo, aluno.AlunoNomeCompleto, aluno.NotaConceito));
+                                                                                            aluno.AlunoCodigo, aluno.AlunoNomeCompleto, aluno.NotaConceito, aluno.ConselhoClasseAlunoId, aluno.EmAprovacao));
                                 }
                             }
                         }
@@ -39,10 +46,9 @@ namespace SME.SR.Application
             return await Task.FromResult(listaNotasEConceitosFinais);
         }
 
-      
-        private RelatorioNotasEConceitosFinaisExcelDto ObterRelatorioNotasEConceito(string dreNome, string ueNome, string bimestre,
+        private async Task<RelatorioNotasEConceitosFinaisExcelDto> ObterRelatorioNotasEConceito(string dreNome, string ueNome, string bimestre,
                                                                                       string ano, string turma, string componenteCurricular,
-                                                                                      int alunoCodigo, string alunoNome, string notaConceito)
+                                                                                      int alunoCodigo, string alunoNome, string notaConceito, long? conselhoClasseAlunoId, bool emAprovacao)
         {
             RelatorioNotasEConceitosFinaisExcelDto relatorioDto = new RelatorioNotasEConceitosFinaisExcelDto();
 
@@ -55,8 +61,9 @@ namespace SME.SR.Application
             relatorioDto.EstudanteCodigo = alunoCodigo.ToString();
             relatorioDto.EstudanteNome = alunoNome;
             relatorioDto.NotaConceito = notaConceito;
+            relatorioDto.EmAprovacao = emAprovacao;           
 
             return relatorioDto;
-        }
+        }        
     }
 }

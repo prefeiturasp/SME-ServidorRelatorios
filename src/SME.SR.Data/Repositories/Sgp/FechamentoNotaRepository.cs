@@ -44,6 +44,7 @@ namespace SME.SR.Data
                              pe.bimestre,
                              coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome,
                              wan.status as Situacao,
+                             wanf.id is not null as EmAprovacao,
                              u.nome as usuarioaprovacao,
                              u.rf_codigo as rfaprovacao
                         from historico_nota hn 
@@ -57,7 +58,8 @@ namespace SME.SR.Data
                        inner join fechamento_turma_disciplina ftd on fa.fechamento_turma_disciplina_id = ftd.id 
                        inner join fechamento_turma ft on ftd.fechamento_turma_id = ft.id 
                        inner join periodo_escolar pe on ft.periodo_escolar_id = pe.id
-                       inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id  
+                       inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id
+                       left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id
                            where ft.turma_id = @turmaId
                              and (hnf.wf_aprovacao_id is null or wan.id = (select id from wf_aprovacao_nivel wan2 where wan2.wf_aprovacao_id = wan.wf_aprovacao_id order by wan2.nivel desc limit 1))";
 

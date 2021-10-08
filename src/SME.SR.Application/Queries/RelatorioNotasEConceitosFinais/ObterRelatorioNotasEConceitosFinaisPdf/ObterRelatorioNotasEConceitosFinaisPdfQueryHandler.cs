@@ -113,7 +113,7 @@ namespace SME.SR.Application
 
                                 var notasDosAlunosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar
                                                                                        && a.Bimestre == bimestreParaAdicionar && a.ComponenteCurricularCodigo == componenteParaAdicionar?.CodDisciplina)
-                                                                                .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome, a.EhNotaConceitoFechamento })
+                                                                                .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome, a.EhNotaConceitoFechamento, a.ConselhoClasseAlunoId, a.NotaConceitoEmAprovacao, a.NotaConceitoPosConselhoEmAprovacao, a.ConselhoClasseNotaId })
                                                                                 .Distinct();
 
 
@@ -123,7 +123,19 @@ namespace SME.SR.Application
                                         possuiNotaFechamento = true;
 
                                     var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));
-                                    var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo.CodigoAluno, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componenteParaAdicionar.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese);
+                                    var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo.CodigoAluno, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componenteParaAdicionar.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese, notaDosAlunosParaAdicionar.ConselhoClasseAlunoId);
+
+                                    if (notaDosAlunosParaAdicionar.NotaConceitoPosConselhoEmAprovacao != null)
+                                    {
+                                        notaConceitoNovo.NotaConceito = $"{notaDosAlunosParaAdicionar.NotaConceitoPosConselhoEmAprovacao.Replace(".00", ".0")} **";
+                                        notaConceitoNovo.EmAprovacao = true;
+                                    }
+                                    else if (notaDosAlunosParaAdicionar.NotaConceitoEmAprovacao != null && notaDosAlunosParaAdicionar.ConselhoClasseNotaId == null)
+                                    {
+                                        notaConceitoNovo.NotaConceito = $"{notaDosAlunosParaAdicionar.NotaConceitoEmAprovacao.Replace(".00", ".0")} **";
+                                        notaConceitoNovo.EmAprovacao = true;
+                                    }
+
                                     componenteNovo.NotaConceitoAlunos.Add(notaConceitoNovo);
                                 }
                                 componenteNovo.NotaConceitoAlunos = componenteNovo.NotaConceitoAlunos.OrderBy(t => t.TurmaNome).ThenBy(a => a.AlunoNomeCompleto).ToList();

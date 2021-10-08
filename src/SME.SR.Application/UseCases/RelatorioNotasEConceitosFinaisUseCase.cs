@@ -32,7 +32,7 @@ namespace SME.SR.Application
 
                     var possuiNotaFechamento = relatorioDto.Any(r => r.NotaConceito.Contains("*"));
 
-                    await mediator.Send(new GerarExcelGenericoCommand(relatorioDto.ToList<object>(), "RelatorioNotasEConceitosFinais", request.CodigoCorrelacao, possuiNotaFechamento, "* Estudante sem conselho de classe registrado"));
+                    await mediator.Send(new GerarExcelGenericoCommand(relatorioDto.ToList<object>(), "RelatorioNotasEConceitosFinais", request.CodigoCorrelacao, possuiNotaFechamento, "* Estudante sem conselho de classe registrado , ** Aguardando aprovação"));
 
                     break;
                 case TipoFormatoRelatorio.Pdf:
