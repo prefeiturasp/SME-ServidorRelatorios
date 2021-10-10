@@ -46,6 +46,10 @@
     <Content Update="Views\RelatorioAtasComColunaFinal.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Views\RelatorioCompensacaoAusencia.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="Views\RelatorioFaltasFrequencias - Copy.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
