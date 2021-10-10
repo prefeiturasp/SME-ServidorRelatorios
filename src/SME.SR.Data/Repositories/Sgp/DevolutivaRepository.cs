@@ -44,7 +44,7 @@ namespace SME.SR.Data.Repositories.Sgp
             if (bimestres.Any())
                 query.AppendLine(" and pe.bimestre = Any(@bimestres)");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
                     , (devolutiva, aula, turma, periodoEscolar) =>

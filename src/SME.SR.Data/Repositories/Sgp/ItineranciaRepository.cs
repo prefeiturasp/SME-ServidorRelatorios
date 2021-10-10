@@ -27,7 +27,7 @@ namespace SME.SR.Data.Interfaces
                          where not ia.excluido 
                            and ia.itinerancia_id = ANY(@ids)";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 var lookup = new Dictionary<long, ItineranciaAlunoDto>();
 
@@ -62,7 +62,7 @@ namespace SME.SR.Data.Interfaces
                          where i.id = ANY(@ids)
                         ";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<Itinerancia, Ue, Dre, Itinerancia>(query.ToString(),
                     (itinerancia, ue, dre) =>
@@ -84,7 +84,7 @@ namespace SME.SR.Data.Interfaces
                           where not io.excluido 
                             and io.itinerancia_id = ANY(@ids)";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<ItineranciaObjetivoDto>(query.ToString(), new { ids });
             }
@@ -98,7 +98,7 @@ namespace SME.SR.Data.Interfaces
                          where not iq.excluido 
                            and iq.itinerancia_id = ANY(@ids)";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<ItineranciaQuestaoDto>(query.ToString(), new { ids });
             }

@@ -96,7 +96,7 @@ namespace SME.SR.Data
                     }
                 }
             }
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             var pendencias = new Dictionary<long, RelatorioPendenciasQueryRetornoDto>();
 
