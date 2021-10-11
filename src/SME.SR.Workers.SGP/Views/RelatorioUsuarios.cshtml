@@ -1,7 +1,7 @@
 ﻿@model SME.SR.Infra.RelatorioUsuarioDto
 
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 47;
+    int contadorMaximoLinhasPorPagina = 49;
     int contadorPagina = 0;
     bool realizouQuebra = false;
 
@@ -263,6 +263,7 @@
                 {
                     var ultimohistorico = dre.HistoricoReinicioSenha.LastOrDefault();
                     var EhUltimohistorico = false;
+                    contadorMaximoLinhasPorPagina = 42;
                     if (ultimohistorico != null)
                     {
                         str += MontarCabecalhoHistoricoReinicioSenha();
@@ -275,7 +276,7 @@
                                        <td width='45%' class='td-valor-historico'>{historico.SenhaReiniciada} - {historico.SenhaReiniciadaPor} ({historico.SenhaReiniciadaPorRf}) - {historico.SenhaReiniciadaPorPerfil}</td>
                                        <td width='8%' class='td-valor-historico'>{historico.UtilizaSenhaPadao}</td>
                                      </tr>";
-                                                        
+
 
                             if (historico.Nome != null && historico.Nome.Length > 40)
                             {
@@ -313,6 +314,7 @@
                         if (!EhUltimohistorico)
                             str += LinhaEmBranco();
                     }
+                    contadorMaximoLinhasPorPagina = 47;
                 }
 
 
