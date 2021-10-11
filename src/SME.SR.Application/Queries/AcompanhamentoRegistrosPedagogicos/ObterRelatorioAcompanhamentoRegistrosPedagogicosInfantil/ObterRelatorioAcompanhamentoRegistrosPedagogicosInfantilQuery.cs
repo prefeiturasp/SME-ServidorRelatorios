@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioAcompanhamentoRegistrosPedagogicosQuery : IRequest<RelatorioAcompanhamentoRegistrosPedagogicosDto>
+    public class ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery : IRequest<RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto>
     {
         private string _dreCodigo;
         private string _ueCodigo;
@@ -65,6 +65,5 @@ namespace SME.SR.Application
                 return null;
             return filtro;
         }
-
     }
 }

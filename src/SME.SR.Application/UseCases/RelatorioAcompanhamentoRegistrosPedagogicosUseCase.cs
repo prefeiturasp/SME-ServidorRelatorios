@@ -26,13 +26,14 @@ namespace SME.SR.Application
 
             if (relatorioQuery.Modalidade == Modalidade.Infantil)
             {
-                // faz a query de consolidação infantil e monta o relatório
-                //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicos", relatorioDto, request.CodigoCorrelacao));
+                var relatorioQueryInfantil = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery>();
+                var relatorioInfantilDto = await mediator.Send(relatorioQueryInfantil);
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilDto, request.CodigoCorrelacao));
             }
             else
             {
-                // faz a query de consolidação dos restantes
-                //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicos", relatorioDto, request.CodigoCorrelacao));
+                var relatorioDto = await mediator.Send(relatorioQuery);
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicos", relatorioDto, request.CodigoCorrelacao));
             }
 
 

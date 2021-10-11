@@ -32,8 +32,11 @@ namespace SME.SR.Application
 
             int[] bimestres = request.Bimestres?.ToArray();
 
-            //return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.Turmas?.ToArray(), turmas, componentesCurriculares, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
-            return null;
+            var turmas = await ObterTurmasPorCodigo(request.Turmas);
+
+            var componenteCurriculares = await ObterComponentesCurricularesPorCodigo(request.ComponentesCurriculares);
+
+            return await mediator.Send(new MontarRelatorioAcompanhamentoRegistrosPedagogicosQuery(dre, ue, turmas, componenteCurriculares, bimestres, request.UsuarioNome, request.UsuarioRF));
         }
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
         {
@@ -48,39 +51,14 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorCodigo(List<string> turmas)
         {
-            try
-            {
-                return await mediator.Send(new ObterTurmasRelatorioAcompanhamentoFechamentoQuery()
-                {
-                    CodigosTurma = turmasCodigo,
-                    CodigoUe = ueCodigo,
-                    Modalidade = modalidade,
-                    AnoLetivo = anoLetivo,
-                    Semestre = semestre,
-                    Usuario = usuario,
-                    ConsideraHistorico = consideraHistorico,
-                    SituacaoConselhoClasse = situacaoConselhoClasse,
-                    SituacaoFechamento = situacaoFechamento,
-                    Bimestres = bimestres
-
-                });
-            }
-            catch (NegocioException)
-            {
-                throw new NegocioException("As turmas selecionadas não possuem fechamento.");
-            }
+            return await mediator.Send(new ObterTurmasPorCodigoQuery(turmas.ToArray()));
         }
 
-        private async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidado(string[] turmasId)
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorCodigo(long[] componentesCurriculares)
         {
-            return await mediator.Send(new ObterConselhosClasseConsolidadoPorTurmasQuery(turmasId));
-        }
-
-        private async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentosConsolidado(string[] turmasId)
-        {
-            return await mediator.Send(new ObterFechamentoConsolidadoPorTurmasQuery(turmasId));
+            return await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurriculares));
         }
     }
 }

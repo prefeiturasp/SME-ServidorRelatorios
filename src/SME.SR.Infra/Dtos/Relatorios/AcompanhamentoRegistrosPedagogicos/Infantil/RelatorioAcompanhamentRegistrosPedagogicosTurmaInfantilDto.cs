@@ -7,7 +7,6 @@ namespace SME.SR.Infra
     public class RelatorioAcompanhamentRegistrosPedagogicosTurmaInfantilDto
     {
         public string Nome { get; set; }
-        public string SiglaModalidade { get; set; }
         public int Aulas { get; set; }
         public int FrequenciasPendentes { get; set; }
         public DateTime DataUltimoRegistroFrequencia { get; set; }
