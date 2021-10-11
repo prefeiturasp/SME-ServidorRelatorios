@@ -1,0 +1,64 @@
+﻿using MediatR;
+using SME.SR.Data;
+using SME.SR.Infra;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SME.SR.Application
+{
+    public class ObterRelatorioAcompanhamentoRegistrosPedagogicosQueryHandler : IRequestHandler<ObterRelatorioAcompanhamentoRegistrosPedagogicosQuery, RelatorioAcompanhamentoRegistrosPedagogicosDto>
+    {
+        private readonly IMediator mediator;
+
+        public ObterRelatorioAcompanhamentoRegistrosPedagogicosQueryHandler(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); ;
+        }
+
+        public async Task<RelatorioAcompanhamentoRegistrosPedagogicosDto> Handle(ObterRelatorioAcompanhamentoRegistrosPedagogicosQuery request, CancellationToken cancellationToken)
+        {
+            Dre dre = null;
+            Ue ue = null;
+
+            if (!string.IsNullOrEmpty(request.DreCodigo))
+                dre = await ObterDrePorCodigo(request.DreCodigo);
+
+            if (!string.IsNullOrEmpty(request.UeCodigo))
+                ue = await ObterUePorCodigo(request.UeCodigo);
+
+            int[] bimestres = request.Bimestres?.ToArray();
+
+            var turmas = await ObterTurmasPorCodigo(request.Turmas);
+
+            var componenteCurriculares = await ObterComponentesCurricularesPorCodigo(request.ComponentesCurriculares);
+
+            return await mediator.Send(new MontarRelatorioAcompanhamentoRegistrosPedagogicosQuery(dre, ue, turmas, componenteCurriculares, bimestres, request.UsuarioNome, request.UsuarioRF));
+        }
+        private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
+        {
+            return await mediator.Send(new ObterDrePorCodigoQuery()
+            {
+                DreCodigo = dreCodigo
+            });
+        }
+
+        private async Task<Ue> ObterUePorCodigo(string ueCodigo)
+        {
+            return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
+        }
+
+        private async Task<IEnumerable<Turma>> ObterTurmasPorCodigo(List<string> turmas)
+        {
+            return await mediator.Send(new ObterTurmasPorCodigoQuery(turmas.ToArray()));
+        }
+
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorCodigo(long[] componentesCurriculares)
+        {
+            return await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurriculares));
+        }
+    }
+}
