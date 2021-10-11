@@ -58,7 +58,7 @@ namespace SME.SR.Data.Repositories.Sgp
             if (!string.IsNullOrEmpty(usuarioRf))
                 query.AppendLine(" and u.rf_codigo = @usuarioRf ");
 
-            query.AppendLine(" order by u.nome limit 100");
+            query.AppendLine(" order by u.nome ");
 
             var parametros = new
             {
