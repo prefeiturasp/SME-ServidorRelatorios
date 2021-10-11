@@ -52,7 +52,7 @@ namespace SME.SR.Data
                             and p.bimestre = @bimestre");
           
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QuerySingleOrDefaultAsync<int>(query.ToString(), new { tipoCalendarioId, codigoTurma, componenteCurricularCodigo, bimestre });
             }
@@ -64,7 +64,7 @@ namespace SME.SR.Data
                          where ap.tipo_calendario_id = @tipoCalendarioId and ap.turma_id = @turmaId and
                                ap.disciplina_id = @disciplinaId;";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<AulaPrevista>(query, new { tipoCalendarioId, turmaId, disciplinaId });
             }
@@ -76,7 +76,7 @@ namespace SME.SR.Data
                 inner join periodo_escolar p on p.tipo_calendario_id = a.tipo_calendario_id and a.data_aula between p.periodo_inicio and p.periodo_fim
                 where turma.id = @turmaId and a.disciplina_id = @componenteCurricularId and a.tipo_calendario_id = @tipoCalendarioId and p.bimestre = @bimestre;";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { turmaId, componenteCurricularId, bimestre, tipoCalendarioId });
             }
@@ -97,13 +97,12 @@ namespace SME.SR.Data
                           group by a.data_aula, a.professor_rf
                          having sum(a.quantidade) >= 2";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<int>(query, new { componenteCurricularId, bimestre, tipoCalendarioId })).Any();
             }
         }
-
-        // public Task<int> ObterQuantidadeAulas(long turmaId, string componenteCurricularId, string CodigoRF)
+       
         public async Task<bool> VerificaExisteMaisAulaCadastradaNoDia(long turmaId, string componenteCurricularId, long tipoCalendarioId, int bimestre)
         {
             var query = @"select distinct 1 
@@ -125,7 +124,7 @@ namespace SME.SR.Data
                 bimestre
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<bool>(query, parametros);
             }
@@ -145,7 +144,7 @@ namespace SME.SR.Data
                               group by a.data_aula
                             having count(distinct a.aula_cj) > 1";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<int>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre })).Any();
             }
@@ -166,7 +165,7 @@ namespace SME.SR.Data
                           group by a.data_aula, a.professor_rf
                         having sum(a.quantidade) >= 3 ";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<int>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre })).Any();
             }
@@ -194,7 +193,7 @@ namespace SME.SR.Data
                 bimestre
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<AulaDuplicadaControleGradeDto>(query, parametros);
             }
@@ -229,7 +228,7 @@ namespace SME.SR.Data
                         having (case when cc.eh_regencia then sum(a.quantidade) >= 2 else sum(a.quantidade) >= 3 end)
                         order by
 	                        data_aula";
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<AulaNormalExcedidoControleGradeDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre }));
             }
@@ -262,7 +261,7 @@ namespace SME.SR.Data
                             a.criado_rf
                         order by
 	                        data_aula";
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<AulaReduzidaDto>(query, new { turmaId, componenteCurricularId, tipoCalendarioId, bimestre, professorCJ }));
             }
@@ -284,7 +283,7 @@ namespace SME.SR.Data
 	                        t.id = @turmaId and 
 	                        gd.componente_curricular_id = @componenteCurricularId ";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId }));
             }
@@ -301,7 +300,7 @@ namespace SME.SR.Data
 		                        and not a.excluido 
 		                        and a.tipo_aula = 1";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId, dataInicio, dataFim }));
 
@@ -319,7 +318,7 @@ namespace SME.SR.Data
 		                        and not a.excluido 
 		                        and a.tipo_aula = 1";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryFirstOrDefaultAsync<int>(query, new { turmaId, componenteCurricularId, dataInicio, dataFim }));
 
@@ -330,7 +329,7 @@ namespace SME.SR.Data
         {
             var query = @"select max(criado_em) from aula where not excluido and professor_rf = @professorRf";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }
@@ -360,7 +359,7 @@ namespace SME.SR.Data
                             a.criado_rf
                         order by
 	                        data_aula";
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<AulaReduzidaDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
             }
@@ -419,7 +418,7 @@ namespace SME.SR.Data
                         order by
 	                        data_aula";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<AulaVinculosDto>(query, new { turmasId, componenteCurricularesId, professorCJ }));
             }
@@ -444,7 +443,7 @@ namespace SME.SR.Data
                 bimestres
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<QuantidadeAulasDadasBimestreDto>(query, parametros);
             }

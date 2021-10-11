@@ -22,7 +22,7 @@ namespace SME.SR.Data
         {
             var query = @" select arq.codigo, arq.tipo as Tipo, arq.nome as NomeOriginal, arq.tipo_conteudo as TipoConteudo from arquivo arq where arq.codigo = @codigo";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<ArquivoDto>(query.ToString(), new { codigo });
             }

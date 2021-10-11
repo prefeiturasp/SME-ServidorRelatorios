@@ -81,7 +81,7 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine("and t.semestre = @semestre");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return (await conexao.QueryAsync<AtribuicaoCJ, Turma, AtribuicaoCJ>(query.ToString(), (atribuicaoCJ, turma) =>
                 {

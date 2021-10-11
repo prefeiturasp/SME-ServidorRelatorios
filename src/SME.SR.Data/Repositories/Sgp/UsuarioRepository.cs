@@ -2,6 +2,7 @@
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -26,7 +27,7 @@ namespace SME.SR.Data
 
             var parametros = new { codigoRf };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<Usuario>(query, parametros);
             }
@@ -57,7 +58,7 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryFirstOrDefaultAsync<SituacaoUsuario>(query, new { usuarioRf });
             }
-        }
+        }      
 
         public async Task<string> ObterNomeUsuarioPorLogin(string usuarioLogin)
         {
@@ -102,7 +103,7 @@ namespace SME.SR.Data
             if (diasSemAcesso > 0)
                 query.AppendLine($"and u.ultimo_login <= NOW() - interval '{diasSemAcesso} day'");            
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<DadosUsuarioDto>(query.ToString(), new { dreCodigo, ueCodigo, usuarioRf, perfis });
             }
@@ -121,7 +122,7 @@ namespace SME.SR.Data
 				                               limit 10)
                                 order by hrs.ue_codigo, hrs.usuario_rf, hrs.criado_em desc";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<HistoricoReinicioSenhaDto>(query, new { codigoDre });
             }
@@ -132,7 +133,7 @@ namespace SME.SR.Data
             string query = @"select codigo_perfil as CodigoPerfil, nome_perfil as NomePerfil, ordem, tipo
                             from public.prioridade_perfil";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<PrioridadePerfil>(query);
             }

@@ -49,7 +49,7 @@ namespace SME.SR.Data
                         e.tipo_calendario_id = @tipoCalendarioId
                         and not e.excluido and data_inicio between @periodoInicio and @periodoFim;";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<Evento, EventoTipo, Evento>(query.ToString(), 
                     (evento, eventoTipo) =>
@@ -76,7 +76,7 @@ namespace SME.SR.Data
                 ObterContadorEventosNaoLetivosUE(cabecalho, whereTipoCalendario, query, true);
             }
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 var retorno = await conexao.QueryAsync<int?>(query.ToString(), new { tipoCalendarioId, dreId, ueId, data = data.Date });
                 return retorno != null && retorno.Sum() > 0;
@@ -99,7 +99,7 @@ namespace SME.SR.Data
                 ObterContadorEventosNaoLetivosUE(cabecalho, whereTipoCalendario, query, false);
             }
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 var retorno = await conexao.QueryAsync<int?>(query.ToString(), new { tipoCalendarioId, dreId, ueId, data = data.Date });
                 return retorno != null && retorno.Sum() > 0;
