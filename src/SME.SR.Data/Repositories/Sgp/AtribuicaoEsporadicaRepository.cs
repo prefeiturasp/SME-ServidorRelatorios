@@ -23,7 +23,7 @@ namespace SME.SR.Data
 
             var parametros = new { inicioAno = new DateTime(anoLetivo, 1, 1), fimAno = new DateTime(anoLetivo, 12, 31), dreId, ueId, codigoRF };
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryAsync<AtribuicaoEsporadica>(sql, parametros);
         }

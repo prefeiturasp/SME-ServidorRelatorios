@@ -46,7 +46,7 @@ namespace SME.SR.Data
 
                 query.AppendLine("order by ordem ");
 
-                await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+                await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
                 var parametros = new { turmaCodigo, alunoCodigo, semestre };
                 return await conexao.QueryAsync<RelatorioRecuperacaoParalelaRetornoQueryDto>(query.ToString(), parametros);          
         }
