@@ -56,9 +56,9 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterTurmasPorIdsQuery(turmasId));
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPedagogicoDto>> ObterDadosComponentesCurriculares(long[] componentesCurriculares, int anoLetivo, List<string> turmasCodigo)
+        private async Task<IEnumerable<ComponenteCurricularPedagogicoDto>> ObterDadosComponentesCurriculares(long[] componentesCurriculares, int anoLetivo, long[] turmasId)
         {
-            return await mediator.Send(new ObterDadosPedagogicosComponenteCurricularesQuery(componentesCurriculares, anoLetivo, turmasCodigo));
+            return await mediator.Send(new ObterDadosPedagogicosComponenteCurricularesQuery(componentesCurriculares, anoLetivo, turmasId));
         }
     }
 }
