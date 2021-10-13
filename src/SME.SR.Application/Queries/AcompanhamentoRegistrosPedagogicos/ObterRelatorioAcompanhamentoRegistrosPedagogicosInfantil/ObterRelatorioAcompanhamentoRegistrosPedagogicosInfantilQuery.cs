@@ -11,7 +11,7 @@ namespace SME.SR.Application
         private string _dreCodigo;
         private string _ueCodigo;
         private List<int> _bimestres { get; set; }
-        private List<string> _turmas { get; set; }
+        private long[] _turmasId { get; set; }
         public int AnoLetivo { get; set; }
 
         public string DreCodigo
@@ -26,11 +26,11 @@ namespace SME.SR.Application
         }
         public Modalidade Modalidade { get; set; }
         public int Semestre { get; set; }
-        public List<string> Turmas
+        public long[] TurmasId
 
         {
-            get => TodosParaNullTurmas(_turmas);
-            set { _turmas = value; }
+            get => TodosParaNullTurmas(_turmasId);
+            set { _turmasId = value; }
         }
         public List<int> Bimestres
         {
@@ -59,9 +59,9 @@ namespace SME.SR.Application
             return filtro;
         }
 
-        private List<string> TodosParaNullTurmas(List<string> filtro)
+        private long[] TodosParaNullTurmas(long[] filtro)
         {
-            if (filtro != null && (filtro.Contains("-99")))
+            if (filtro != null && filtro[0] == -99)
                 return null;
             return filtro;
         }
