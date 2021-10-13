@@ -57,7 +57,7 @@ namespace SME.SR.Data
                        inner join fechamento_turma_disciplina ftd on fa.fechamento_turma_disciplina_id = ftd.id 
                        inner join fechamento_turma ft on ftd.fechamento_turma_id = ft.id 
                        inner join periodo_escolar pe on ft.periodo_escolar_id = pe.id
-                       inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id  
+                       inner join componente_curricular cc2 on fn.disciplina_id = cc2.id  
                            where ft.turma_id = @turmaId
                              and (hnf.wf_aprovacao_id is null or wan.id = (select id from wf_aprovacao_nivel wan2 where wan2.wf_aprovacao_id = wan.wf_aprovacao_id order by wan2.nivel desc limit 1))";
 
