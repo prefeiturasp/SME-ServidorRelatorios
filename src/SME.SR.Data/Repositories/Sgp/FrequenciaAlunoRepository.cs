@@ -37,7 +37,7 @@ namespace SME.SR.Data
                 codigoTurma
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<FrequenciaAluno>(query, parametros);
             }
@@ -45,7 +45,7 @@ namespace SME.SR.Data
 
         public async Task<double> ObterFrequenciaGlobal(string codigoTurma, string codigoAluno)
         {
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
             return await conexao.QueryFirstOrDefaultAsync<double>(FrequenciaAlunoConsultas.FrequenciaGlobal, parametros);
@@ -64,7 +64,7 @@ namespace SME.SR.Data
                 codigoTurma
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<FrequenciaAluno>(query, parametros);
             }
@@ -75,7 +75,7 @@ namespace SME.SR.Data
             var query = FrequenciaAlunoConsultas.FrequenciaPorAlunoTurmaBimestre(bimestre);
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno, Bimestre = bimestre };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query, parametros);
             }
@@ -98,7 +98,7 @@ namespace SME.SR.Data
                               and fa.disciplina_id = ANY(@componentesCurricularesId)
                               and pe.tipo_calendario_id = @tipoCalendarioId ";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query, new { turmasCodigo, componentesCurricularesId, tipoCalendarioId });
             }
@@ -123,7 +123,7 @@ namespace SME.SR.Data
 
             var parametros = new { codigosAluno, anoLetivo, modalidade, semestre };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query, parametros);
             }
@@ -157,7 +157,7 @@ namespace SME.SR.Data
 
             var parametros = new { codigosAluno, anoLetivo, modalidade, semestre };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query.ToString(), parametros);
             }
@@ -177,7 +177,7 @@ namespace SME.SR.Data
                               and fa.tipo = 2 
                             group by fa.codigo_aluno";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade });
             }
@@ -200,7 +200,7 @@ namespace SME.SR.Data
             if (turmasCodigos.Any())
                 query.AppendLine("and turma_id = any(@turmasCodigos)");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query.ToString(), new { componentesCurriculares, bimestres, turmasCodigos });
             }
@@ -228,7 +228,7 @@ namespace SME.SR.Data
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao
                 .QueryAsync<FrequenciaAluno>(query.ToString(), new
@@ -262,7 +262,7 @@ namespace SME.SR.Data
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao
                 .QueryAsync<FrequenciaAluno>(query.ToString(), new
@@ -295,7 +295,7 @@ namespace SME.SR.Data
 
             var parametros = new { turmaId, alunoCodigo, bimestres };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query.ToString(), parametros);
             }
@@ -309,7 +309,7 @@ namespace SME.SR.Data
                          where not a.excluido 
                            and a.professor_rf = @professorRf";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }
@@ -333,7 +333,7 @@ namespace SME.SR.Data
             if (bimestres.Count() > 0)
                 query += @" and pe.bimestre = ANY(@bimestres) ";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId,bimestres });
         }
@@ -348,7 +348,7 @@ namespace SME.SR.Data
                              and a.disciplina_id = @componenteCurricularId
                              and extract(year from a.data_aula) = @anoLetivo ";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, anoLetivo });
         }
@@ -369,9 +369,35 @@ namespace SME.SR.Data
                              and t.turma_id = Any(@codigosturma)
                            group by t.turma_id, rfa.codigo_aluno, rfa.valor";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAlunoRetornoDto>(query, new { codigosturma });
+            }
+        }
+
+        public async Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorFiltro(string[] codigosturma, string componenteCurricularId, int bimestre)
+        {
+            var query = @"select t.turma_id as TurmaCodigo,
+                            rfa.codigo_aluno as AlunoCodigo,
+                            rfa.valor as TipoFrequencia,	   
+                            count(rfa.numero_aula) as Quantidade
+                          from registro_frequencia_aluno rfa 
+                          inner join registro_frequencia rf on rf.id = rfa.registro_frequencia_id and not rfa.excluido and not rf.excluido
+                          inner join aula a on a.id = rf.aula_id
+                          inner join periodo_escolar pe on a.tipo_calendario_id = pe.tipo_calendario_id 
+                          and a.data_aula >= pe.periodo_inicio and a.data_aula <= pe.periodo_fim
+                          inner join turma t on t.turma_id = a.turma_id 
+                          inner join ue on ue.id = t.ue_id 
+                          inner join dre on dre.id = ue.dre_id 
+                            where not rfa.excluido 
+                                and t.turma_id = Any(@codigosturma)
+                                and pe.bimestre = @bimestre
+                                and a.disciplina_id = @componenteCurricularId
+                            group by t.turma_id, rfa.codigo_aluno, rfa.valor";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryAsync<FrequenciaAlunoRetornoDto>(query, new { codigosturma, componenteCurricularId, bimestre });
             }
         }
 
@@ -394,7 +420,7 @@ namespace SME.SR.Data
 
             var parametros = new { codigosAluno, anoLetivo, modalidade, semestre };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FrequenciaAluno>(query, parametros);
             }
@@ -416,7 +442,7 @@ namespace SME.SR.Data
                          where not a.excluido 
                            and a.turma_id = @turmaCodigo
                            and pe.bimestre = @bimestre";
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<string>(query, new { turmaCodigo, bimestre });
             }

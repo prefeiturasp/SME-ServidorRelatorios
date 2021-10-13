@@ -22,7 +22,7 @@ namespace SME.SR.Data
             var query = FechamentoAlunoConsultas.AnotacoesAluno;
             var parametros = new { CodigoAluno = codigoAluno, FechamentoTurmaId = fechamentoTurmaId };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<FechamentoAlunoAnotacaoConselho>(query, parametros);
             }

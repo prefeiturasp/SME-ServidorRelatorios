@@ -60,7 +60,7 @@ namespace SME.SR.Data
             if (semestre > 0)
                 query += " and t.semestre = @semestre ";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<AulaDiarioBordoDto>(query, new { anoLetivo, bimestre, codigoUe, componenteCurricular, codigoTurma, modalidadeTurma, modalidadeCalendario, semestre });
             }
@@ -74,7 +74,7 @@ namespace SME.SR.Data
                          where not a.excluido
                            and a.professor_rf = @professorRf";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
             }

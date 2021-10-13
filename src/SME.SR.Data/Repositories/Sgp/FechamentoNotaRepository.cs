@@ -22,7 +22,7 @@ namespace SME.SR.Data
             var query = FechamentoNotaConsultas.NotasAlunoBimestre;
             var parametros = new { FechamentoTurmaId = fechamentoTurmaId, CodigoAluno = codigoAluno};
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, parametros);
             }
@@ -63,7 +63,7 @@ namespace SME.SR.Data
                            where ft.turma_id = @turmaId
                              and (hnf.wf_aprovacao_id is null or wan.id = (select id from wf_aprovacao_nivel wan2 where wan2.wf_aprovacao_id = wan.wf_aprovacao_id order by wan2.nivel desc limit 1))";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<HistoricoAlteracaoNotasDto>(query, new { turmaId, tipocalendarioId });
             }

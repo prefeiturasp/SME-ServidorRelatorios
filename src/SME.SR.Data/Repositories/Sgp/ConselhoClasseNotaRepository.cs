@@ -32,7 +32,7 @@ namespace SME.SR.Data
 
             var parametros = new { ConselhoClasseId = conselhoClasseId, CodigoAluno = codigoAluno };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, parametros);
             }
@@ -84,7 +84,7 @@ namespace SME.SR.Data
 
             var parametros = new { CodigoAluno = codigoAluno, CodigoTurma = codigoTurma };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, parametros);
             }
@@ -139,7 +139,7 @@ namespace SME.SR.Data
                  where t.turma_id = @turmaCodigo 
                 ) x	";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryAsync<NotaConceitoBimestreComponente>(query, new { turmaCodigo });
         }
@@ -292,7 +292,7 @@ namespace SME.SR.Data
 
             query.AppendLine(@") x ");
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<RetornoNotaConceitoBimestreComponenteDto>(query.ToString(), new { bimestres, dresCodigos, uesCodigos, semestre, modalidade, anos, anoLetivo, componentesCurricularesCodigos });
         }
 
@@ -324,7 +324,7 @@ namespace SME.SR.Data
                              where ft.turma_id = @turmaId
                                and pe.tipo_calendario_id = @tipocalendarioId";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<HistoricoAlteracaoNotasDto>(query, new { turmaId, tipocalendarioId });
             }

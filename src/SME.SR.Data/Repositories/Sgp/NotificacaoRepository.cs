@@ -56,7 +56,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
 			query += " order by u.nome";
 
-			using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+			using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
 			{
 				return await conexao.QueryAsync<NotificacaoDto>(query, new { ano, tipos, categorias, situacoes });
 			};
@@ -86,7 +86,7 @@ namespace SME.SR.Data.Repositories.Sgp
 			if (usuarioRf != "")
 				query += $" and u.rf_codigo = '{usuarioRf}'";
 
-			using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+			using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
 			{
 				return await conexao.QueryAsync<NotificacaoDto>(query, new { ano });
 			};
