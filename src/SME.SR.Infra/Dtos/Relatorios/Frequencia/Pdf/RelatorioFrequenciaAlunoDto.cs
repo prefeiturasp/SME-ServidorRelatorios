@@ -24,9 +24,9 @@ namespace SME.SR.Infra
                 if (TotalAulas == 0)
                     return "";
 
-                var porcentagem = ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
+                var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
 
-                return porcentagem == 0 ? "" : Math.Round(porcentagem, 2).ToString();
+                return Math.Round(porcentagem > 100 ? 100 : porcentagem, 2).ToString();
             }
         }        
     }

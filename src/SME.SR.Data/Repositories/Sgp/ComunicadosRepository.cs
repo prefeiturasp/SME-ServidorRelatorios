@@ -69,7 +69,7 @@ namespace SME.SR.Data
                 query += " and ct.turma_codigo = @Turma ";
             }
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<LeituraComunicadoDto>(query.ToString(), new
             {
                 NotificacaoId = long.Parse(!string.IsNullOrEmpty(filtro.NotificacaoId) ? filtro.NotificacaoId : "0"),
@@ -93,7 +93,7 @@ namespace SME.SR.Data
         from comunicado_aluno ca 
         where ca.comunicado_id = @comunicado";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return (await conexao.QueryAsync<long>(query.ToString(), new { comunicado })).AsList().ToArray();
         }
         public async Task<IEnumerable<LeituraComunicadoTurmaDto>> ObterComunicadoTurmasPorComunicadosIds(IEnumerable<long> comunicados)
@@ -110,7 +110,7 @@ namespace SME.SR.Data
         inner join turma t on ct.turma_codigo = t.turma_id
         where ct.comunicado_id = ANY(@comunicados)";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<LeituraComunicadoTurmaDto>(query.ToString(), new { comunicados = comunicados.ToArray() });
         }
 
