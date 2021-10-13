@@ -40,7 +40,7 @@ namespace SME.SR.Data
                 dataFim
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RegistroIndividualRetornoDto>(query.ToString(), parametros);
             }
@@ -68,7 +68,7 @@ namespace SME.SR.Data
                 dataFim 
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<AcompanhamentoAprendizagemRegistroIndividualDto>(query.ToString(), parametros);
             }

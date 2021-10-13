@@ -4,12 +4,13 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterAlunosPorTurmasQuery : IRequest<IEnumerable<AlunoDaTurmaDto>>
+    public class ObterAlunosPorTurmasAnosAnterioresQuery : IRequest<IEnumerable<AlunoDaTurmaDto>>
     {
-        public ObterAlunosPorTurmasQuery(IEnumerable<long> turmasId)
+        public ObterAlunosPorTurmasAnosAnterioresQuery(IEnumerable<long> turmasId)
         {
             TurmasId = turmasId;
         }
+
         public IEnumerable<long> TurmasId { get; set; }
     }
 }

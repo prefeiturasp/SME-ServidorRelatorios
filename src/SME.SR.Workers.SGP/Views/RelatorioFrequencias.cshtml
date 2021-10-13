@@ -48,7 +48,8 @@
         str+=$@"
         <th style='width: 6%;'>Nº</th>
         <th style='width: 35%;' class='alinhar-esquerda espaco-esquerda-8'>NOME</th>
-        <th style='width: 8%;'>PRESENÇA</th>
+        <th style='width: 8%;'>AULAS</th>
+        <th style='width: 8%;'>PRESENÇAS</th>
         <th style='width: 8%;'>REMOTO</th>
         <th style='width: 8%;'>AUSÊNCIAS</th>
         <th style='width: 8%;'>COMPENSAÇÕES</th>
@@ -86,6 +87,7 @@
              }
             <td>@aluno.NumeroChamada</td>
             <td class="alinhar-esquerda  espaco-esquerda-8">@aluno.NomeAluno</td>
+            <td>@aluno.TotalAulas</td>
             <td>@aluno.TotalPresenca</td>
             <td>@aluno.TotalRemoto</td>
             <td>@aluno.TotalAusencias</td>

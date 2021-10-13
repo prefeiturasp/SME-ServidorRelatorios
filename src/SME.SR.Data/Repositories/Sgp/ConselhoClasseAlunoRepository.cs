@@ -23,7 +23,7 @@ namespace SME.SR.Data
             var query = ConselhoClasseAlunoConsultas.ParecerConclusivo;
             var parametros = new { ConselhoClasseId = conselhoClasseId, CodigoAluno = codigoAluno };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QuerySingleOrDefaultAsync<string>(query, parametros);
             }
@@ -39,7 +39,7 @@ namespace SME.SR.Data
                         where
 	                        cca.id =  ANY(@conselhoClasseAlunoIds)";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<AnotacoesPedagogicasAlunoIdsQueryDto>(query, new { conselhoClasseAlunoIds });
             }
@@ -49,7 +49,7 @@ namespace SME.SR.Data
         {
             var query = ConselhoClasseAlunoConsultas.ParecerConclusivoPorTurma;
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<ConselhoClasseParecerConclusivo>(query, new { turmaCodigo });
             }
@@ -60,7 +60,7 @@ namespace SME.SR.Data
             var query = ConselhoClasseAlunoConsultas.Recomendacoes;
             var parametros = new { FechamentoTurmaId = fechamentoTurmaId, CodigoAluno = codigoAluno };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<RecomendacaoConselhoClasseAluno>(query, parametros);
             }
@@ -112,7 +112,7 @@ namespace SME.SR.Data
                 dataReferencia
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RecomendacaoConselhoClasseAluno>(query.ToString(), parametros);
             }
@@ -123,7 +123,7 @@ namespace SME.SR.Data
             var query = ConselhoClasseAlunoConsultas.ObterPorConselhoClasseId;
             var parametros = new { ConselhoClasseId = conselhoClasseId, CodigoAluno = codigoAluno };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QuerySingleOrDefaultAsync<bool>(query, parametros);
             }
