@@ -8,6 +8,9 @@
         public const string RotaRelatoriosSolicitadosBoletim = "sr.relatorios.solicitados.boletim";
         public const string RotaRelatoriosProcessandoBoletim = "sr.relatorios.processando.boletim";
 
+        public const string RotaRelatoriosSolicitadosBoletimUe = "sr.relatorios.solicitados.boletim.ue";
+        public const string RotaRelatoriosProcessandoBoletimUe = "sr.relatorios.processando.boletim.ue";
+
         public const string RotaRelatoriosSolicitadosBoletimDetalhado = "sr.relatorios.solicitados.boletimdetalhado";
 
         public const string RotaRelatoriosSolicitadosPlanoDeAula = "sr.relatorios.solicitados.planodeaula";
