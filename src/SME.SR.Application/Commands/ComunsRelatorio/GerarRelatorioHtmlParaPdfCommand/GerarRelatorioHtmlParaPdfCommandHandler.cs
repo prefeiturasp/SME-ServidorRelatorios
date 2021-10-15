@@ -1,9 +1,11 @@
 ﻿using DinkToPdf.Contracts;
+using HtmlAgilityPack;
 using MediatR;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using System;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,6 +34,15 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
+
+            //HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://google.com");
+            //HttpWebResponse response = (HttpWebResponse)req.GetResponse();
+            //Stream responseStream = response.GetResponseStream();
+            //StreamReader streamReader = new StreamReader(responseStream);
+            //var siteContent = streamReader.ReadToEnd();
+
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
 
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
             pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
