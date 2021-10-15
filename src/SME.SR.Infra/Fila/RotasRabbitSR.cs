@@ -8,8 +8,8 @@
         public const string RotaRelatoriosSolicitadosBoletim = "sr.relatorios.solicitados.boletim";
         public const string RotaRelatoriosProcessandoBoletim = "sr.relatorios.processando.boletim";
 
-        public const string RotaRelatoriosSolicitadosBoletimUe = "sr.relatorios.solicitados.boletim.ue";
-        public const string RotaRelatoriosProcessandoBoletimUe = "sr.relatorios.processando.boletim.ue";
+        public const string RotaRelatoriosSolicitadosBoletimTurma = "sr.relatorios.solicitados.boletim.turma";
+        public const string RotaRelatoriosProcessandoBoletimTurma = "sr.relatorios.processando.boletim.turma";
 
         public const string RotaRelatoriosSolicitadosBoletimDetalhado = "sr.relatorios.solicitados.boletimdetalhado";
 
