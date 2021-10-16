@@ -23,6 +23,7 @@ namespace SME.SR.MVC
                 .AddRazorRuntimeCompilation();
 
             services.RegistrarDependencias(Configuration);
+            services.AddPolicies();
             services.AddMvc(c =>
             {
                 c.Filters.Add(new ExcecaoMiddleware(Configuration));

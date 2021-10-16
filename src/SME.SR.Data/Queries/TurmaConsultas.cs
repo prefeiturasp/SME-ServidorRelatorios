@@ -131,8 +131,21 @@ namespace SME.SR.Data
 						CodigoSituacaoMatricula INT,
 						SituacaoMatricula VARCHAR(40),
 						NumeroAlunoChamada VARCHAR(5),
-						DataSituacaoAluno DATETIME
+						DataSituacaoAluno DATETIME,
+						DataMatricula DATETIME
 					)
+
+					IF OBJECT_ID('tempdb..#tmpMatriculas') IS NOT NULL
+						DROP TABLE #tmpMatriculas
+						select matr.cd_aluno matr_cd_aluno,
+						matr.dt_status_matricula,
+						mte.dt_situacao_aluno,
+						matr.cd_matricula matr_cd_matricula
+					into #tmpMatriculas
+					from v_matricula_cotic matr 
+						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+					WHERE mte.cd_turma_escola = @turmaCodigo
+
 					INSERT INTO #tmpAlunosSituacao
 					SELECT aluno.cd_aluno CodigoAluno,
 					   aluno.nm_aluno NomeAluno,
@@ -155,12 +168,24 @@ namespace SME.SR.Data
 							ELSE 'Fora do domínio liberado pela PRODAM'
 							END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
-						mte.dt_situacao_aluno DataSituacaoAluno
+						mte.dt_situacao_aluno DataSituacaoAluno,
+						ISNULL(max(hm.dt_status_matricula), MAX(matr.dt_status_matricula)) DataMatricula
 					FROM v_aluno_cotic aluno
-					INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+					INNER JOIN #tmpMatriculas TMT ON aluno.cd_aluno = TMT.matr_cd_aluno
+					INNER JOIN v_matricula_cotic matr ON TMT.matr_cd_aluno = matr.cd_aluno and matr.cd_matricula = TMT.matr_cd_matricula
 					INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+					LEFT JOIN v_historico_matricula_cotic hm ON matr.cd_matricula = hm.cd_matricula and matr.an_letivo = hm.an_letivo and hm.st_matricula <> 4
 					WHERE mte.cd_turma_escola = @turmaCodigo
+					group by
+					aluno.cd_aluno,
+					aluno.nm_aluno,
+					mte.cd_situacao_aluno,
+					mte.nr_chamada_aluno,
+					mte.dt_situacao_aluno
+
+
 						UNION 
+
 					SELECT  aluno.cd_aluno CodigoAluno,
 					    aluno.nm_aluno NomeAluno,
 					    mte.cd_situacao_aluno CodigoSituacaoMatricula,
@@ -182,7 +207,8 @@ namespace SME.SR.Data
 						    ELSE 'Fora do domínio liberado pela PRODAM'
 						    END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
-						mte.dt_situacao_aluno DataSituacaoAluno
+						mte.dt_situacao_aluno DataSituacaoAluno,
+						matr.dt_status_matricula DataMatricula
 					FROM v_aluno_cotic aluno
 					INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 					INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
@@ -208,7 +234,8 @@ namespace SME.SR.Data
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
 					NumeroAlunoChamada,
-					DataSituacaoAluno
+					DataSituacaoAluno,
+					DataMatricula
 					FROM #tmpAlunosSituacao
 					GROUP BY
 					CodigoAluno,
@@ -216,7 +243,9 @@ namespace SME.SR.Data
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
 					NumeroAlunoChamada,
-					DataSituacaoAluno";
+					DataSituacaoAluno,
+					DataMatricula
+					order by NomeAluno";
 
 
 

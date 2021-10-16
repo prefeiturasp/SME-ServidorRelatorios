@@ -44,6 +44,7 @@ namespace SME.SR.Workers.SGP.Services
                 VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
             };
 
+            factory.AutomaticRecoveryEnabled = true;
             conexaoRabbit = factory.CreateConnection();
             canalRabbit = conexaoRabbit.CreateModel();
 
