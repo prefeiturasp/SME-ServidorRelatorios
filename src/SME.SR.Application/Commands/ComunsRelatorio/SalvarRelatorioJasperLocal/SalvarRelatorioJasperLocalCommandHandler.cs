@@ -36,7 +36,7 @@ namespace SME.SR.Application
                 return await mediator.Send(new SalvarArquivoFisicoCommand(relatorioBytes, "relatorios", $"{request.CorrelacaoId}.pdf"));
                  
             }
-            else throw new NegocioException("Não foi possível fazer o download do relatório.");
+            else throw new NegocioException($"Não foi possível fazer o download do relatório. {request.CorrelacaoId}");
         }
         
     }
