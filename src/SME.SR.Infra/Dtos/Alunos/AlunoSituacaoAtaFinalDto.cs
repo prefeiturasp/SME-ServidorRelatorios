@@ -14,6 +14,7 @@ namespace SME.SR.Infra
             this.SituacaoMatricula = aluno.SituacaoMatricula;
             this.NumeroAlunoChamada = aluno.NumeroAlunoChamada;
             this.DataSituacaoAluno = aluno.DataSituacaoAluno;
+            this.DataMatricula = aluno.DataMatricula;
         }
 
         public bool Ativo
