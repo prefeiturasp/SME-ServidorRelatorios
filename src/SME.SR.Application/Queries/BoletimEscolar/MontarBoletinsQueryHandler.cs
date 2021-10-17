@@ -37,6 +37,7 @@ namespace SME.SR.Application
             var tiposNota = request.TiposNota;
             var mediasFrequencia = request.MediasFrequencia;
             var pareceresConclusivos = request.PareceresConclusivos;
+            var aulasPrevistas = request.AulasPrevistas;
 
             var registroFrequencia = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(turmas.Select(a => a.Codigo).ToArray(), 0, new string[] { }, new int[] { 1, 2, 3, 4 }));
             var periodoAtual = await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dre.Id, ue.Id, request.Turmas.Select(a => a.AnoLetivo).FirstOrDefault()));
@@ -76,7 +77,15 @@ namespace SME.SR.Application
                         .Where(f => f.TurmaId == turma.Codigo);
 
                     if (notasAluno != null && notasAluno.Any())
-                        SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos, notasAluno, frequenciasAluno, frequenciasTurma, mediasFrequencia, conselhoClassBimestres, registroFrequencia, periodoAtual);
+                        SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos,
+                                             notasAluno,
+                                             frequenciasAluno,
+                                             frequenciasTurma,
+                                             mediasFrequencia,
+                                             conselhoClassBimestres,
+                                             registroFrequencia,
+                                             periodoAtual,
+                                             aulasPrevistas);
 
                     var frequeciaGlobal = frequenciasGlobal?
                         .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
@@ -181,8 +190,9 @@ namespace SME.SR.Application
             }
         }
 
-        private void SetarNotasFrequencia(List<GrupoMatrizComponenteCurricularDto> gruposMatriz, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia, int periodoAtual)
+        private void SetarNotasFrequencia(List<GrupoMatrizComponenteCurricularDto> gruposMatriz, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia, int periodoAtual, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
         {
+            var aulasPrevistasTurma = aulasPrevistas.Where(a => a.TurmaCodigo == frequenciasTurma.FirstOrDefault().TurmaId);
             foreach (var grupoMatriz in gruposMatriz)
             {
                 if (grupoMatriz.ComponenteCurricularRegencia != null)
@@ -192,6 +202,7 @@ namespace SME.SR.Application
                         var frequenciasAlunoRegencia = frequenciasAluno?.Where(f => f.DisciplinaId == grupoMatriz.ComponenteCurricularRegencia.Codigo);
                         var frequenciasTurmaRegencia = frequenciasTurma?.Where(f => f.DisciplinaId == grupoMatriz.ComponenteCurricularRegencia.Codigo);
                         var aulasCadastradas = registroFrequencia?.Where(f => f.ComponenteCurricularCodigo == grupoMatriz.ComponenteCurricularRegencia.Codigo);
+                        var aulasPrevistasComponente = aulasPrevistasTurma.Where(a => a.ComponenteCurricularCodigo == grupoMatriz.ComponenteCurricularRegencia.Codigo);
 
                         grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre1 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoRegencia, frequenciasTurmaRegencia, 1, aulasCadastradas, periodoAtual);
                         grupoMatriz.ComponenteCurricularRegencia.FrequenciaBimestre2 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoRegencia, frequenciasTurmaRegencia, 2, aulasCadastradas, periodoAtual);
@@ -280,7 +291,8 @@ namespace SME.SR.Application
             var possuiFrequenciaTurma = aulasCadastradas?.Any(nf => nf.Bimestre == bimestre);
 
             var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) && !possuiFrequenciaTurma.Value ? "" :
-                frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? (possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
+                frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? 
+                (possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
 
             if (bimestre > periodoAtual && String.IsNullOrEmpty(frequencia))
                 frequencia = "-";

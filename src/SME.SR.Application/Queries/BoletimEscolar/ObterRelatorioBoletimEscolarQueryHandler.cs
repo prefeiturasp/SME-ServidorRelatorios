@@ -5,6 +5,7 @@ using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -47,10 +48,9 @@ namespace SME.SR.Application
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
             var codigosDisciplinas = componentesCurriculares.SelectMany(cc => cc.Select(cc => cc.CodDisciplina.ToString())).Distinct().ToArray();
             var aulasPrevistas = await mediator.Send(new ObterAulasDadasTurmaBimestreComponenteCurricularQuery(codigosTurma, tipoCalendarioId, codigosDisciplinas));
-            var frequenciasAulasPrevistasInclusao = ObterAulasPrevistasParaInclusao(frequencias, aulasPrevistas);
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
 
-            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias.Concat(frequenciasAulasPrevistasInclusao), tiposNota, mediasFrequencia, frequenciaGlobal);
+            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, aulasPrevistas);
 
             return new RelatorioBoletimEscolarDto(boletins);
         }
@@ -68,24 +68,6 @@ namespace SME.SR.Application
                 Semestre = semestre,
                 TurmasCodigo = turmasCodigo
             });
-        }
-
-        private IEnumerable<IGrouping<string, FrequenciaAluno>> ObterAulasPrevistasParaInclusao(IEnumerable<IGrouping<string, FrequenciaAluno>> frequencias, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
-        {
-            return (from ap in aulasPrevistas
-                    from fq in frequencias
-                    where !fq.Any(f => f.TurmaId.Equals(ap.TurmaCodigo) &&
-                                       f.DisciplinaId.Equals(ap.ComponenteCurricularCodigo) &&
-                                       f.Bimestre.Equals(ap.Bimestre))
-                    select new FrequenciaAluno()
-                    {
-                        CodigoAluno = fq.Key,
-                        DisciplinaId = ap.ComponenteCurricularCodigo,
-                        TurmaId = ap.TurmaCodigo,
-                        TotalAulas = ap.AulasQuantidade,
-                        Bimestre = ap.Bimestre,
-                        PeriodoEscolarId = ap.PeriodoEscolarId
-                    }).GroupBy(fap => fap.CodigoAluno);
         }
 
         private ModalidadeTipoCalendario DefinirTipoModalidadeCalendario(ObterRelatorioBoletimEscolarQuery request)
@@ -194,7 +176,8 @@ namespace SME.SR.Application
         private async Task<BoletimEscolarDto> MontarBoletins(Dre dre, Ue ue, IEnumerable<Turma> turmas, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares,
                                                              IEnumerable<IGrouping<string, Aluno>> alunosPorTurma, IEnumerable<IGrouping<string, NotasAlunoBimestre>> notasAlunos,
                                                              IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos, 
-                                                             IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal)
+                                                             IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal, 
+                                                             IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
         {
             return await mediator.Send(new MontarBoletinsQuery()
             {
@@ -208,7 +191,8 @@ namespace SME.SR.Application
                 TiposNota = tiposNota,
                 MediasFrequencia = mediasFrequencias,
                 PareceresConclusivos = pareceresConclusivos,
-                FrequenciasGlobal = frequenciaGlobal
+                FrequenciasGlobal = frequenciaGlobal,
+                AulasPrevistas = aulasPrevistas
             });
         }
 
@@ -216,5 +200,17 @@ namespace SME.SR.Application
         {
             return await mediator.Send(new ObterParametrosMediaFrequenciaQuery());
         }
+    }
+
+    class ComparadorFrequencia : IEqualityComparer<FrequenciaAluno>
+    {
+        public bool Equals([AllowNull] FrequenciaAluno x, [AllowNull] FrequenciaAluno y)
+            => x.CodigoAluno.Equals(y.CodigoAluno)
+            && x.TurmaId.Equals(y.TurmaId)
+            && x.DisciplinaId.Equals(y.DisciplinaId)
+            && x.Bimestre.Equals(y.Bimestre);
+
+        public int GetHashCode([DisallowNull] FrequenciaAluno obj)
+            => string.Concat(obj.TurmaId, obj.CodigoAluno, obj.DisciplinaId, obj.Bimestre.ToString()).GetHashCode();
     }
 }
